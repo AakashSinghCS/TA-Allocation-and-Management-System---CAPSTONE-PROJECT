@@ -3,14 +3,14 @@ services:
   frontend:
     container_name: frontend
     build:
-      context: .
+      context: ./app/TA-portal-infinity
       dockerfile: Dockerfile
     volumes:
       - type: bind
         source: ./app/TA-portal-infinity
         target: /app
       - type: volume
-        source: node_modules 
+        source: node_modules_frontend
         target: /app/node_modules
     ports:
       - "5173:5173"
@@ -23,4 +23,4 @@ services:
       #db:
         #condition: service_healthy
 volumes:
-  node_modules:
+  node_modules_frontend:
