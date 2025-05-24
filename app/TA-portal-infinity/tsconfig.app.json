@@ -22,9 +22,17 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-
-    "jsx": "react-jsx",
-    "types": ["vite/client", "vitest/globals"]
+    
+    /* jsx makes it so that you no longer need to import React from 'react' at the top of every .tsx file.*/
+    "jsx": "react-jsx", 
+    /* vitest/globals pulls in the global test-framework functions that Vitest exposes without imports: describe(), it() / test(), expect(), beforeEach(), etc.
+    Lets you write your tests idiomatically—no extra import { describe } from 'vitest' needed in every file.*/
+    /* vite/client Provides the typings for Vite-specific features, such as: 
+    import.meta.env (your VITE_… variables)
+    Hot-module-replacement helpers (e.g. import.meta.hot.accept)
+    Static asset imports (e.g. import logo from './logo.svg')*/
+    "types": ["vite/client", "vitest/globals"] 
   },
-  "include": ["src","vitest.config.ts"]
+  /* Defines which files TypeScript should parse, type-check, and watch.*/
+  "include": ["src"]
 }

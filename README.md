@@ -8,6 +8,8 @@
 
 More information on using Docker and the general files for setup can be found [here](https://docs.docker.com/manuals/)
 
+## Vitest
+1. for testing, run `npm run test` after entering the docker container shell. Run `npm run test:watch` when modifying files as you test.
 
 [![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=19555150&assignment_repo_type=AssignmentRepo)
 # Project-Starter
