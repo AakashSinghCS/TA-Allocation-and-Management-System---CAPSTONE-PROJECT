@@ -1,0 +1,29 @@
+services:
+  backend:
+    build: 
+      dockerfile: Dockerfile
+    container_name: backend
+    ports: 
+      - 8080:8080
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/dev_db
+      SPRING_DATASOURCE_USERNAME: dev_user
+      SPRING_DATASOURCE_PASSWORD: secret
+  mysql:
+    image: 'mysql:latest'
+    container_name: mysql
+    environment:
+      - 'MYSQL_DATABASE=dev_db'
+      - 'MYSQL_PASSWORD=secret'
+      - 'MYSQL_ROOT_PASSWORD=verysecret'
+      - 'MYSQL_USER=dev_user'
+    ports:
+      - '3306:3306'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
