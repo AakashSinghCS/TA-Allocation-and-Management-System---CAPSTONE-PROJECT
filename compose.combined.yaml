@@ -18,6 +18,20 @@ services:
       VITE_HOST: "0.0.0.0"
       NODE_ENV: "development"
       CHOKIDAR_USEPOLLING: "true"
+  backend:
+    build: 
+      context: ./app/backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports: 
+      - 8080:8080
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/dev_db
+      SPRING_DATASOURCE_USERNAME: dev_user
+      SPRING_DATASOURCE_PASSWORD: secret
   mysql:
     image: 'mysql:latest'
     container_name: mysql
