@@ -5,8 +5,7 @@
 4. Run `docker compose up --build` in the terminal. You don't need `--build` afterwards.
 5. To access the container shell,  run `docker exec -it <container-name> sh`. Container name for the frontend is `frontend`.
 6. When the container is running, website should be exposed at http://localhost:5173
-7. If you want to use a containerized backend, use the combined yaml file using command `docker compose -f compose.combined.yaml up`, default 
-compose only uses the frontend and MySQL containers
+7. If you want to use a containerized backend, use the combined yaml file using command `docker compose -f compose.combined.yaml up`, default compose only uses the frontend and MySQL containers. For this to work, you will need the newest maven and jdk versions so it can copy those files for the container. Instructions are under the spring boot section below.
 
 More information on using Docker and the general files for setup can be found [here](https://docs.docker.com/manuals/)
 
