@@ -18,13 +18,20 @@ services:
       VITE_HOST: "0.0.0.0"
       NODE_ENV: "development"
       CHOKIDAR_USEPOLLING: "true"
-  backend:
+  gateway-service:
     build: 
-      context: ./app/backend
+      context: ./app/Spring-Microservices/gatewayservice
       dockerfile: Dockerfile
-    container_name: backend
+    container_name: gateway-service
     ports: 
       - 8080:8080
+  user-service:
+    build: 
+      context: ./app/Spring-Microservices/userservice
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports: 
+      - 8081:8081
     depends_on:
       mysql:
         condition: service_healthy

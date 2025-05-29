@@ -1,10 +1,10 @@
-package com.infinity.TA_Backend;
+package com.infinity.userservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TaBackendApplicationTests {
+class UserServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
