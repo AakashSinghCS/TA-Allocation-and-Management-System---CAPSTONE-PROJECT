@@ -11,8 +11,8 @@
 	<groupId>com.infinity</groupId>
 	<artifactId>userservice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>user-service</name>
-	<description>User Service</description>
+	<name>userservice</name>
+	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>
