@@ -3,7 +3,7 @@
 
 ### Timesheet
 
-![alt text](clockify_images/5.21)
+![alt text](clockify_images/5.21.png)
 
 ### Current Tasks (Provide sufficient detail)
   * #1: Project Planning
