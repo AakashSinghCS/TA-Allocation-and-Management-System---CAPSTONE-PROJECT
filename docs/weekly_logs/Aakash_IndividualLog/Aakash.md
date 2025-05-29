@@ -37,7 +37,7 @@ Met with teammates on discord to work on the initial part of project plan. Compl
 
 ### Timesheet
 
-![alt text](clockify_images/5.22)
+![alt text](clockify_images/5.22.png)
 
 ### Current Tasks (Provide sufficient detail)
   * #1: Project Planning
@@ -70,7 +70,7 @@ Met with teammates on discord to further work on the project plan. Worked on the
 
 ### Timesheet
 
-![alt text](clockify_images/5.26)
+![alt text](clockify_images/5.26.png)
 
 ### Current Tasks (Provide sufficient detail)
   * #1: Project Planning
@@ -105,7 +105,7 @@ Retrospective: process is going well, we are finishing tasks well ahead of time.
 
 ### Timesheet
 
-![alt text](clockify_images/5.27)
+![alt text](clockify_images/5.27.png)
 
 ### Current Tasks (Provide sufficient detail)
   * #1: Project Planning
@@ -139,7 +139,7 @@ What went well: Met with teammates after our in class meeting with the professor
 
 ### Timesheet
 
-![alt text](clockify_images/5.28)
+![alt text](clockify_images/5.28.png)
 
 ### Current Tasks (Provide sufficient detail)
   * #1: Project Design
