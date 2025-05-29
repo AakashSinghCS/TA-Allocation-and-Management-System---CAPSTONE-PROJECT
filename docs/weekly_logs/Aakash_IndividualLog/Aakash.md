@@ -33,3 +33,35 @@ Met with teammates on discord to work on the initial part of project plan. Compl
   * Complete  technical requirements, tech stack, high-level risks, assumptions and constraints,summary milestone schedule, teamwork planning.
 
 
+## Thursday 5/22 (5/21 - 5/27)
+
+### Timesheet
+
+![alt text](clockify_images/5.22)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Project Planning
+
+### Progress Update (since 21/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Met with teammates on discord to further work on the project plan. Worked on the technical requirements, tech stack, high-level risks, milestones, team planning, project objectives, and proto-personas. Process is going well, communication and coordination between teammates is excellent.
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Review project plan before submission. Then, work on the the DFD, use case diagrams, database design, architecture design, and UI design.
