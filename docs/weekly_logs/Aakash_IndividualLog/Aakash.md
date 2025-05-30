@@ -75,7 +75,7 @@ Met with teammates on discord to further work on the project plan. Worked on the
 ### Current Tasks (Provide sufficient detail)
   * #1: Project Planning
 
-### Progress Update (since 21/5/2025) 
+### Progress Update (since 22/5/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -110,7 +110,7 @@ Retrospective: process is going well, we are finishing tasks well ahead of time.
 ### Current Tasks (Provide sufficient detail)
   * #1: Project Planning
 
-### Progress Update (since 21/5/2025) 
+### Progress Update (since 26/5/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -144,7 +144,7 @@ What went well: Met with teammates after our in class meeting with the professor
 ### Current Tasks (Provide sufficient detail)
   * #1: Project Design
 
-### Progress Update (since 21/5/2025) 
+### Progress Update (since 27/5/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -171,3 +171,38 @@ Retrospective: Process is going smoothly, we have to clean up the diagram as its
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin actual coding. We have not distributed the coding tasks yet but we will start with the workload distribution by weeks end.
 
+## Thursday 5/29 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/5.29.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Project Design
+
+### Progress Update (since 28/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Almost complete, few modifications left
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met with Dup on discord to work on use case diagram and descriptions. We have almost completed all of it. We just have to reorder and renumber a couple of things. 
+What didn't go well: Everything was good!
+Retrospective: Process is going smoothly, we are understanding more of how the system will function as we are discussing a lot of things whilst drawing the diagram and writing use case descriptions.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin actual coding. We have not distributed the coding tasks yet but we will start with the workload distribution by weeks end.
