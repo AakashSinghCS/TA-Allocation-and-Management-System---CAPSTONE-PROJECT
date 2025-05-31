@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
     container_name: gateway-service
     depends_on:
-      eureka:
+      service-registry:
           condition: service_healthy 
     ports: 
       - 8080:8080
@@ -35,6 +35,11 @@ services:
     container_name: eureka
     ports: 
       - 8761:8761
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
   user-service:
     build: 
       context: ./app/Spring-Microservices/userservice
@@ -45,7 +50,7 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      eureka:
+      service-registry:
         condition: service_healthy 
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/dev_db?schema=course_db
@@ -62,7 +67,7 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      eureka:
+      service-registry:
         condition: service_healthy 
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/dev_db?schema=course_db
