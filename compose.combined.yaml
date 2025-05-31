@@ -23,6 +23,9 @@ services:
       context: ./app/Spring-Microservices/gatewayservice
       dockerfile: Dockerfile
     container_name: gateway-service
+    depends_on:
+      eureka:
+          condition: service_healthy 
     ports: 
       - 8080:8080
   service-registry:
@@ -42,8 +45,27 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      eureka:
+        condition: service_healthy 
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/dev_db
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/dev_db?schema=course_db
+      SPRING_DATASOURCE_USERNAME: dev_user
+      SPRING_DATASOURCE_PASSWORD: secret
+    
+  course-service:
+    build: 
+      context: ./app/Spring-Microservices/courseservice
+      dockerfile: Dockerfile
+    container_name: course-service
+    ports: 
+      - 8082:8082
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy 
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/dev_db?schema=course_db
       SPRING_DATASOURCE_USERNAME: dev_user
       SPRING_DATASOURCE_PASSWORD: secret
   mysql:
