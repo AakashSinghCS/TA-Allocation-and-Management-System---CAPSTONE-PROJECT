@@ -25,6 +25,13 @@ services:
     container_name: gateway-service
     ports: 
       - 8080:8080
+  service-registry:
+    build: 
+      context: ./app/Spring-Microservices/serviceregistry
+      dockerfile: Dockerfile
+    container_name: eureka
+    ports: 
+      - 8761:8761
   user-service:
     build: 
       context: ./app/Spring-Microservices/userservice
