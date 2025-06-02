@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.courseservice.dtos.CourseDto;
-import com.infinity.courseservice.dtos.Response;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.services.CourseService;
 
@@ -17,22 +16,22 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/courses")
 @RequiredArgsConstructor
 @Data
+@RequestMapping("/courses")
 public class CourseController {
 
     private final CourseService courseService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Response<CourseDto>> findCourse(@PathVariable Long id) {
-        CourseDto course = courseService.findCourse(id);
-        return ResponseEntity.ok(new Response<>(true, "Course found", course));
+    public ResponseEntity<CourseDto> findCourse(@PathVariable Long id) {
+        CourseDto courseDto = courseService.findCourse(id);
+        return ResponseEntity.ok(courseDto);
     }
     
     @PostMapping("/add")
-    public ResponseEntity<Response<CourseDto>> addCourse(@RequestBody Course course) {
+    public ResponseEntity<CourseDto> addCourse(@RequestBody Course course) {
         CourseDto courseDto = courseService.addCourse(course);
-        return ResponseEntity.ok(new Response<>(true, "Course found", courseDto));
+        return ResponseEntity.ok(courseDto); 
     }
 }

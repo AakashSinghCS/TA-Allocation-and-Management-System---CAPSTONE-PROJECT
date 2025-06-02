@@ -77,12 +77,11 @@ services:
     image: 'mysql:latest'
     container_name: mysql
     environment:
-      - 'MYSQL_DATABASE=dev_db'
-      - 'MYSQL_PASSWORD=secret'
       - 'MYSQL_ROOT_PASSWORD=verysecret'
-      - 'MYSQL_USER=dev_user'
     ports:
       - '3306:3306'
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 2s
