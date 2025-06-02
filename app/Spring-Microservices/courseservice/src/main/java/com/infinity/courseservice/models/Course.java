@@ -1,5 +1,8 @@
 package com.infinity.courseservice.models;
 
+import java.util.List;
+
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -18,4 +21,9 @@ public class Course {
     private String deptCode;
     private Integer courseNum;
 
+    @ElementCollection
+    private List<Long> studentIds;
+
+    @ElementCollection
+    private List<Long> instructorIds;
 }

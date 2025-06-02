@@ -1,5 +1,6 @@
 package com.infinity.courseservice.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,11 @@ public class CourseService {
     public CourseDto findCourse(Long id) {
         Course course = courseRepository.findById(id).orElseThrow(() -> new NotFoundException("Course with ID " + id + " not found"));
         return new CourseDto(course.getDeptCode(), course.getCourseNum());
+    }
+
+    public List<CourseDto> findCoursesByIds(List<Long> ids) {
+        List<Course> courses = courseRepository.findAllById(ids);
+        return courses.stream().map(entry -> new CourseDto(entry.getDeptCode(), entry.getCourseNum())).toList();
     }
     
 }
