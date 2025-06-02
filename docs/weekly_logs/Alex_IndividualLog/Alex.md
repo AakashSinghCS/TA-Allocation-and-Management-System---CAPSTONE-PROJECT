@@ -1,4 +1,90 @@
 
+## Monday (May 29-June 2)
+
+### Timesheet
+Clockify report
+![alt text](./may29tojun2.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Finishing basic microservices implementation - user service and course service now work and register in the in the eureka server. The API gateway also now has routing for the two services - now just need to further connect them.
+  * #2: System architecture diagram
+
+### Progress Update (since May 29 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Implement basic microservices architecture
+        </td>
+        <!-- Status -->
+        <td>80% complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Architecture diagram
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+A lot of progress was made for the microservices. The User service and course service are functioning now on their own ports, and implementing the basic spring MVC pattern to them worked well for the API calls. They register properly with Eureka, and today(Monday) I managed to get the API gateway to route to them properly.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Get the Feign client working for inter service communication
+  * Implement many to many relationship between microservices
+  * Write basic unit tests with Junit and Mockito for the API calls
+
+## Thursday (May 24-29)
+
+### Timesheet
+Clockify report
+![alt text](./may25to29.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Implementing a microservice architecture in spring boot. Involved watching video tutorials and starting the implementation on a branch.
+  * #2: Helped create the ER diagram for the database model
+
+### Progress Update (since May 24 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Implement basic microservice architecture
+        </td>
+        <!-- Status -->
+        <td>50% complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>ER Diagram
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I watched a number of videos on microservices in the spring boot and how to implement them. I understand fundamentally now how they work, and it's just a matter now of following the documentation and tutorials to get them communicating.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Get the microservices basic implementation working, including the service registry, gateway, and some basic services
+  * Complete any missing diagrams i.e. an architecture diagram
 
 ## Sunday (May 18-24)
 
