@@ -18,6 +18,7 @@
 | [#12]   | Use Case Diagram | Project Design | Dup, Aakash  | Completed |
 | [#11]   | Data Flow Diagram | Project Design | Allen, Seiya  | Complete |
 | [#59]   | Project Design | Database Design | Dup, Alex | Complete |
+| [#64]   | Project Design | System Architecture Diagram | Dup, Alex, Allen | Complete |
 
 ### Alternatively, include image of the project board with tasks and status:
 ![board.png](week2_images/board.png)
@@ -38,7 +39,7 @@
 - ![docs/weekly logs/Burn Up Charts/[Burn Up Chart Image]](week2_images/burnup.png)
 
 ## Times for Team/Individual:
- Screenshot of Chart below taken at 2:11 PM on May 29:
+ Screenshot of Chart below taken at 8:02 PM on June 2:
 | Team Member | Logged Hours |
 | ----------- | ------------ |
 | Aakash      | 4:29    |
