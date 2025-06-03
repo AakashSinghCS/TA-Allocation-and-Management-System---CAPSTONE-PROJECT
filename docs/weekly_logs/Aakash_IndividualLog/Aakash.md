@@ -206,3 +206,85 @@ Retrospective: Process is going smoothly, we are understanding more of how the s
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin actual coding. We have not distributed the coding tasks yet but we will start with the workload distribution by weeks end.
+
+## Saturday 5/31 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/5.31.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Project Design
+
+### Progress Update (since 28/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Final modifications for my assigned part of use case completed. Proof read the entire document and made modifications in the user requirements upon discussing with the entire group. 
+What didn't go well: Everything was good!
+Retrospective: Process is going smoothly, we are understanding more of how the application will work at the end. 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Database creation and then begin actual coding for the issues.
+
+## Monday 6/02 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/6.02.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Project Design
+  * #2: SpringBoot Tutorials
+
+### Progress Update (since 28/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress, still learning
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: User requirements slightly modified and design document completed. Currently learning springboot from youtube tutorials, hard at first but I'm starting to learn more as i progress.
+What didn't go well: Everything was good!
+Retrospective: Process is going smoothly, all team members are on track with their assigned tasks. We should begin assigning issues to individual members from kanban soon to start coding the application.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * DataBase design. Assign issues from kanban to indiviudal members to begin coding of the application. 
+
