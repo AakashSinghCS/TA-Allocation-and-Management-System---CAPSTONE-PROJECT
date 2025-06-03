@@ -39,16 +39,16 @@
 - ![docs/weekly logs/Burn Up Charts/[Burn Up Chart Image]](week1_images/burnup.png)
 
 ## Times for Team/Individual:
- Screenshot of Chart below taken at 2:11 PM on May 29:
+
 | Team Member | Logged Hours |
 | ----------- | ------------ |
-| Aakash      | 10:05    |
-| Alex      | 44:49      |
-| Allen      | 3:06      |
-| Dup      | 28:39      |
-| Eddy      | 0:31      |
-|   Mandeep      | 13:36      |
-|   Seiya      |   0    |
+| Aakash      | 13:15    |
+| Alex      | 48:02      |
+| Allen      | 11:06      |
+| Dup      | 20:37      |
+| Eddy      | 02:54      |
+|   Mandeep      | 19:36      |
+|   Seiya      |   21:54    |
 
 - ![docs/weekly logs/Clockify/[Time Tracking Image]](week1_images/clockify.png)
 
