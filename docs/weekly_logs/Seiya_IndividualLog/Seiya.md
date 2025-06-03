@@ -1,3 +1,23 @@
+# Weekly Log (31 May – 2 Jun 2025)
+
+**Name:** Seiya  
+**Branch:** `seiya_logs`
+
+| Category | Activity | Date(s) | Time Spent |
+|----------|----------|---------|-----------|
+| DFD & ER | Wrote **DFD Description** (Level 0 & 1 narrative for project wiki) | 2 Jun | **2 h 50 m** |
+| **Total** | | | **2 h 50 m** |
+
+## Key Achievements
+- Completed a detailed English description of the Level 0 and Level 1 data‑flow diagrams, clarifying each external entity, data store, and process for upcoming peer review.
+
+
+<img width="1026" alt="clockify_weekly_log_2025‑05‑31_06‑02_seiya" src="https://github.com/user-attachments/assets/3a487deb-90d8-4cb9-8a8a-0db502351914" />
+
+
+
+
+
 # Weekly Log (25 May – 30 May)
 
 **Name:** Seiya  
@@ -19,3 +39,6 @@
  
 
 <img width="1026" alt="clockify_weekly_log_2025‑05‑25_30_seiya" src="https://github.com/user-attachments/assets/df0cf4f2-fcbf-46b8-8708-8a2a5d2412c4" />
+
+
+
