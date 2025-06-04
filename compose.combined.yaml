@@ -53,7 +53,7 @@ services:
       service-registry:
         condition: service_healthy 
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/dev_db?schema=course_db
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/user_db
       SPRING_DATASOURCE_USERNAME: dev_user
       SPRING_DATASOURCE_PASSWORD: secret
     
@@ -70,7 +70,7 @@ services:
       service-registry:
         condition: service_healthy 
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/dev_db?schema=course_db
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/user_db
       SPRING_DATASOURCE_USERNAME: dev_user
       SPRING_DATASOURCE_PASSWORD: secret
   mysql:
