@@ -70,6 +70,10 @@ Testing is done using [JUnit](https://junit.org/junit5/) and [Mockito](https://s
 
 Eventually, we can use `@SpringBootTest` for integration tests with an in-memory H2 database that can start for the tests and destroy itself after. Test service logic and utilities with Junit and Mockito, and test controllers with HTTP mappings with `@WebMvcTest` and MockMvc.
 
+## Auth
+
+Authentication is done using JWT's through the [jjwt](https://github.com/jwtk/jjwt) library to manage them.
+
 
 
 
