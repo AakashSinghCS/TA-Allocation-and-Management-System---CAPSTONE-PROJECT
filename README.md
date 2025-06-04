@@ -37,14 +37,40 @@ You can find additional information on folder structure convetions [here](https:
 Also, update your README.md file with the team and client/project information.  You can find details on writing GitHub Markdown [here](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) as well as a [handy cheatsheet](https://enterprise.github.com/downloads/en/markdown-cheatsheet.pdf).   
 
 # Spring Boot
-You can find documentation for the framework [here](https://docs.spring.io/spring-boot/index.html)
+You can find documentation for the framework [here](https://docs.spring.io/spring-boot/index.html).
+
+## Setup
+
+The database connection for MySQL comes from the docker container - this is specified in the normal docker compose file that has the frontend and database, as well as the combined yaml. You will need the MySQL container running for the applications to run.
 
 Since there's no hot reloading with the docker containers, it makes more sense when we are developing the backend to just have the DB and frontend running
-in the containers, and run the backend in the command line with `mvn spring-boot:run`. This can restart the application faster to see changes than needing to rebuild the container every time we change something. We can still use it as a container when deploying, or if you'd really rather wait for the container to build each time you make a change.
+in the containers, and run the backend as needed. If you are using VSCode, you can download the Spring Boot extension pack which gives a dashboard to easily start and stop the different services.
 
-For this to work, make sure you have open [jdk 24](https://jdk.java.net/24/) in your path system environment variables (or through a package manager), and [Maven 3.9.9](https://maven.apache.org/download.cgi) also in your path or through a package manager.
+ This can restart the application faster to see changes than needing to rebuild the container every time in docker when we change something. We can still use it as a container when deploying, or if you'd really rather wait for the container to build each time you make a change.
 
-When it's running the application properties should default to dev unless started as a container, which will adjust the url to connect to the running MySQL container.
+For this to work, make sure you have open [jdk 24](https://jdk.java.net/24/) in your path system environment variables (or through a package manager) and in your Vscode JDK path, and [Maven 3.9.9](https://maven.apache.org/download.cgi) also in your path or through a package manager.
+
+When the programs are running, the application properties should default to dev unless started as a container, which will then use the docker properties and adjust the url to connect to the running MySQL container appropriately.
+
+## Configuration
+
+The two current services User Service and Course Service connect to their databases using [Spring JPA](https://spring.io/projects/spring-data-jpa), which are initialized at first with the [init/init.sql](./init/init.sql) file which creates them first and grants privileges to dev_user. If you need more databases, add them to this file and rebuild the MySQL container.
+
+In the application.properties for the services, the database is set to `create-drop` which will recreate the database on restart of application. You can change this to `update` to persist the data between sessions, but will need to use `create-drop` if you change parameters at some point. You can also use command line runner interface to put in data consistently on application start with `create-drop` if you want.
+
+The [API Gateway](https://spring.io/projects/spring-cloud-gateway) is running on port 8080, and the routes for the various endpoints are configured in the application properties files, so you can add more as you implement new services. 
+
+The service registry microservice is running the [Eureka](https://cloud.spring.io/spring-cloud-netflix/reference/html/) server, and all other services have the Eureka client. This means that the Eureka server is connected to all of the subscribed Eureka clients. This allows the API Gateway to redirect as needed, and down the line can provide load balancing and other features.
+
+Inter service communication is done using [OpenFeign](https://spring.io/projects/spring-cloud-openfeign), and allows the use of interfaces to call methods in another microservice.
+
+## Tests
+
+Testing is done using [JUnit](https://junit.org/junit5/) and [Mockito](https://site.mockito.org/) is a nice library for mocking database and object calls for our unit testing, and coverage is run with [Jacoco](https://www.eclemma.org/jacoco/). Go to the service you are trying to get coverage for and run `mvn test jacoco:report`. You can run individual unit tests through the java test runner extension, but that won't give coverage. Once the tests pass there, you can then run the Jacoco command to get coverage. If you install the Coverage Gutters extension and set it so `watch` and `show coverage` in the command pallette you can then see which lines are covered and which aren't. Jacoco also creates an html if you just want to see it there found in `target/site/jacoco/index.html`.
+
+Eventually, we can use `@SpringBootTest` for integration tests with an in-memory H2 database that can start for the tests and destroy itself after. Test service logic and utilities with Junit and Mockito, and test controllers with HTTP mappings with `@WebMvcTest` and MockMvc.
+
+
 
 
 
