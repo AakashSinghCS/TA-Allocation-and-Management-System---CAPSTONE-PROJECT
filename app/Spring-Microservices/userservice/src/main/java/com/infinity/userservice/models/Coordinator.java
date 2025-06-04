@@ -12,5 +12,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @DiscriminatorValue("C")
 public class Coordinator extends User {
-    
+
+    public Coordinator(String email, String firstName, String lastName) {
+        super(email, firstName, lastName);
+    }
 }

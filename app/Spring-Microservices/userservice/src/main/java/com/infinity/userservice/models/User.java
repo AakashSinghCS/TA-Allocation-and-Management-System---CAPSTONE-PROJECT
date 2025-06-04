@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Inheritance
+@DiscriminatorColumn(name = "user_type")
 public class User {
     
     @Id
@@ -24,5 +25,11 @@ public class User {
 
     private String firstName;
     private String lastName;
+
+    public User(String email, String firstName, String lastName) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
 }

@@ -13,4 +13,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("I")
 public class Instructor extends User {
     
+    public Instructor(String email, String firstName, String lastName) {
+        super(email, firstName, lastName);
+    }
 }

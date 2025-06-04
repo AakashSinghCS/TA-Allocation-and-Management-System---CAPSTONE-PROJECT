@@ -17,4 +17,9 @@ public class Student extends User {
     @Column(unique = true)
     private Integer studentNumber;
 
+    public Student(String email, String firstName, String lastName, Integer studentNumber) {
+        super(email, firstName, lastName);
+        this.studentNumber = studentNumber;
+    }
+
 }

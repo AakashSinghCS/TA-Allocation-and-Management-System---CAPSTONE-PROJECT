@@ -12,6 +12,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(ex.getMessage());
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<String> handleBadRequest(BadRequestException ex) {
+        return ResponseEntity.status(400).body(ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneric(Exception ex) {
         return ResponseEntity.status(500).body("Internal Server Error: " + ex.getMessage());
