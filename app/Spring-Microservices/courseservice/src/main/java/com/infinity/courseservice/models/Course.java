@@ -2,10 +2,11 @@ package com.infinity.courseservice.models;
 
 import java.util.List;
 
-import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,12 +19,14 @@ public class Course {
     @GeneratedValue
     private Long id;
 
-    private String deptCode;
+    private String subject;
     private Integer courseNum;
 
-    @ElementCollection
-    private List<Long> studentIds;
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseEnrollment> enrollments;
 
-    @ElementCollection
-    private List<Long> instructorIds;
+    public Course(String subject, Integer courseNum) {
+        this.subject = subject;
+        this.courseNum = courseNum;
+    }
 }

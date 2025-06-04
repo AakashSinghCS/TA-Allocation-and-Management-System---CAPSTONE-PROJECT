@@ -1,0 +1,4 @@
+package com.infinity.courseservice.dtos;
+
+public record UserDto(Long id, String firstName, String lastName, UserRole role) {
+}

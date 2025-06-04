@@ -1,4 +1,4 @@
 package com.infinity.courseservice.dtos;
 
-public record CourseDto(String deptCode, Integer courseNum) {
+public record CourseDto(String subject, Integer courseNum) {
 }
