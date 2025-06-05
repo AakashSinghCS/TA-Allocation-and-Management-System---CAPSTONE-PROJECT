@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue("C")
+@DiscriminatorValue("COORDINATOR")
 public class Coordinator extends User {
 
-    public Coordinator(String email, String firstName, String lastName) {
-        super(email, firstName, lastName);
+    public Coordinator(String email, String firstName, String password, String lastName) {
+        super(email, firstName, lastName, password);
     }
 }

@@ -33,9 +33,9 @@ public class UserServiceTest {
 
     @Test
     void testRegisterStudent() {
-        RegisterRequest request = new RegisterRequest("john@example.com", "John", "Doe", "STUDENT", 42);
+        RegisterRequest request = new RegisterRequest("john@example.com", "John", "Doe", "password", "STUDENT", 42);
 
-        Student saved = new Student("john@example.com", "John", "Doe", 42);
+        Student saved = new Student("john@example.com", "John", "Doe", "password", 42);
         UserDto studentDto = new UserDto(Long.valueOf(1), "John", "Doe", UserRole.STUDENT);
         
         when(userRepository.save(any(User.class))).thenReturn(saved);

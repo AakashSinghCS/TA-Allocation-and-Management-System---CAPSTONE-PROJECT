@@ -30,7 +30,7 @@ public class UserControllerTest {
     
     @Test
     void testAddUser() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@example.com", "John", "Doe", "STUDENT", 42);
+        RegisterRequest request = new RegisterRequest("john@example.com", "John", "Doe", "password", "STUDENT", 42);
         UserDto mockResponse = new UserDto(Long.valueOf(1), "John", "Doe", UserRole.STUDENT);
 
         when(userService.register(any())).thenReturn(mockResponse);

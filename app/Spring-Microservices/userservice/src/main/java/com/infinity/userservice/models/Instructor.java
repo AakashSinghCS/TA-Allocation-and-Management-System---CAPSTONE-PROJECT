@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue("I")
+@DiscriminatorValue("INSTRUCTOR")
 public class Instructor extends User {
     
-    public Instructor(String email, String firstName, String lastName) {
-        super(email, firstName, lastName);
+    public Instructor(String email, String firstName, String password, String lastName) {
+        super(email, firstName, lastName, password);
     }
 }

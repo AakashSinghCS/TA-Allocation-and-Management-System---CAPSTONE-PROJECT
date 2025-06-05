@@ -23,7 +23,7 @@ public class UserMapperTest {
 
     @Test
     public void mapStudentWithProperRole() {
-        Student student = new Student("john@test.com", "john", "doe", 87);
+        Student student = new Student("john@test.com", "john", "doe", "password", 87);
         UserDto userDto = userMapper.toDto(student);
         assertEquals(userDto.firstName(), student.getFirstName());
         assertEquals(userDto.lastName(), student.getLastName());
@@ -32,7 +32,7 @@ public class UserMapperTest {
 
     @Test
     public void mapInstructorWithProperRole() {
-        Instructor instructor = new Instructor("john@test.com", "john", "doe");
+        Instructor instructor = new Instructor("john@test.com", "john", "doe", "password");
         UserDto userDto = userMapper.toDto(instructor);
         assertEquals(userDto.firstName(), instructor.getFirstName());
         assertEquals(userDto.lastName(), instructor.getLastName());
@@ -41,7 +41,7 @@ public class UserMapperTest {
 
     @Test
     public void mapCoordinatorWithProperRole() {
-        Coordinator coordinator = new Coordinator("john@test.com", "john", "doe");
+        Coordinator coordinator = new Coordinator("john@test.com", "john", "doe", "password");
         UserDto userDto = userMapper.toDto(coordinator);
         assertEquals(userDto.firstName(), coordinator.getFirstName());
         assertEquals(userDto.lastName(), coordinator.getLastName());
