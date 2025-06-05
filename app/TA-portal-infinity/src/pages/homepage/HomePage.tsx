@@ -1,3 +1,5 @@
+//This is just an example. Please redo this page later.
+
 export default function HomePage() {
   return (
     <section className="p-6">

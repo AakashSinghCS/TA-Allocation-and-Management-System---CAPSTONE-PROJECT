@@ -1,19 +1,24 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import Header from "./components/layout/header/Header"
+import Footer from "./components/layout/footer/Footer"
+import SideNav from "./components/layout/sidenav/SideNav";
 
 export default function App() {
   return (
-    <>
-      <header className="p-4 shadow">
-        <nav className="flex gap-4">
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-        </nav>
-      </header>
+    <div className="flex flex-col h-screen">
+      <Header />
 
-      {/* The child route element renders here */}
-      <main className="p-6">
-        <Outlet />
-      </main>
-    </>
+      {/* content area: sidebar + page body */}
+      <div className="flex flex-1 overflow-hidden">
+        <SideNav />
+
+        {/* child routes render here */}
+        <main className="flex-1 overflow-y-auto bg-white p-6">
+          <Outlet />
+        </main>
+      </div>
+
+      <Footer />
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 ## Getting the Docker Container Started
 1. Make sure you have docker installed on your computer
-2. Navigate to the main folder
+2. Navigate to the root folder
 3. Fill out .env files if they exist.
 4. Run `docker compose up --build` in the terminal. You don't need `--build` afterwards.
 5. To access the container shell,  run `docker exec -it <container-name> sh`. Container name for the frontend is `frontend`.
