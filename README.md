@@ -8,6 +8,11 @@
 7. If you want to use a containerized backend, use the combined yaml file using command `docker compose -f compose.combined.yaml up`, default compose only uses the frontend and MySQL containers. For this to work, you will need the newest maven and jdk versions so it can copy those files for the container. Instructions are under the spring boot section below.
 
 More information on using Docker and the general files for setup can be found [here](https://docs.docker.com/manuals/)
+## Docker instructions/tips
+ - when installing a new library using npm install, enter the container shell, and then run npm install `<name of library>`
+ - you will probably see a red underline when using the the new package that you installed. Outside of the shell, on your local terminal, after cd-ing to app/TA-portal-infinity, run npm install. Then the local node_modules will be updated too, and the red underline will disappear.
+ - If you think frontend container is still not running because of node_modules, try running this: `rm -rf node_modules package-lock.json`,`docker compose down -v`, ` docker compose build --no-cache `, `docker compose up` that removes any old node_modules locally and on the docker and rebuilds it.
+
 
 ## Vitest
 1. for testing, run `npm run test` after entering the docker container shell. Run `npm run test:watch` when modifying files as you test.
