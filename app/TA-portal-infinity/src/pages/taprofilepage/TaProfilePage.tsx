@@ -4,10 +4,10 @@ import formatDateForDisplay from '../../utility/formatdatefordisplay/formatDateF
 
 interface Props {
   student: Student;
-  termCourse : TermCourse;
+  termCourse? : TermCourse;
 }
 
-export default function TaProfilePage({ student }: Props) {
+export default function TaProfilePage({ student, termCourse }: Props) {
   const {
     firstName,
     lastName,
@@ -19,7 +19,13 @@ export default function TaProfilePage({ student }: Props) {
     createdAt,
   } = student;
 
-
+//   const {
+//     name,
+//     deptCode,
+//     courseNum,
+//     term,
+//     section
+//   } = termCourse;
 
   return (
     <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-2xl shadow space-y-4">
@@ -38,7 +44,7 @@ export default function TaProfilePage({ student }: Props) {
         </div>
         <h2>Currently Taking Courses:</h2>
         <div>
-
+            {termCourse && <ProfileTermCourseRow termCourse = {termCourse}/>}
         </div>
     </div>
   );
@@ -53,12 +59,12 @@ function ProfileRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ProfileTermCourseRow(termCourse :TermCourse){
-
-
+function ProfileTermCourseRow({termCourse} :{termCourse: TermCourse}){
     return (
-        <p>
-            
-        </p>
+        <div>
+            <p>{termCourse.deptCode} {termCourse.courseNum} {termCourse.section}</p>
+            <p>{termCourse.name}</p>
+            <p>{termCourse.term}</p>
+        </div>
     );
 }
