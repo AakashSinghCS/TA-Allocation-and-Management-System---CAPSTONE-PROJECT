@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.infinity.userservice.dtos.RegisterRequest;
 import com.infinity.userservice.dtos.UserDto;
-import com.infinity.userservice.dtos.UserRole;
+import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
 import com.infinity.userservice.repositories.UserRepository;

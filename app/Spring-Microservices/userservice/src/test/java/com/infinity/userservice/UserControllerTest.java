@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.userservice.controllers.UserController;
 import com.infinity.userservice.dtos.RegisterRequest;
 import com.infinity.userservice.dtos.UserDto;
-import com.infinity.userservice.dtos.UserRole;
+import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.services.UserService;
 
 @WebMvcTest(UserController.class)

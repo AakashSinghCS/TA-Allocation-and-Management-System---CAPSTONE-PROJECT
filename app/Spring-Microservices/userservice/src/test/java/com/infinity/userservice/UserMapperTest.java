@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.infinity.userservice.dtos.UserDto;
-import com.infinity.userservice.dtos.UserRole;
+import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.models.Coordinator;
 import com.infinity.userservice.models.Instructor;
 import com.infinity.userservice.models.Student;
