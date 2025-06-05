@@ -1,3 +1,45 @@
+## Thursday (May 29-June 2)
+
+### Timesheet
+Clockify report
+![alt text](./june2-5.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Getting auth working with login/registration/logout with JWT's and BCrypt.
+
+### Progress Update (since May 29 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Implement basic microservices architecture
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Design Video
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The final implementation I wanted for the basic microservices were finished with inter service communication, API Gateway, service discovery, and basic models of testing with Mockito and MockMvc for unit testing service layers and endpoints along with overall organization, error handling, DTO's, and basic database handling. 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Get registration to work with BCrypt for password hashing
+  * Have login return JWT for auth that can also be checked in the gateway
+  * Have logout destroy JWT and configure the rest of spring security for this to all work together
 
 ## Monday (May 29-June 2)
 
