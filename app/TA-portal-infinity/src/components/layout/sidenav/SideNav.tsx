@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 const navItems = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
+  { label: "Ta Profile", to: "/taprofile" },
 ];
 
 export default function SideNav() {
