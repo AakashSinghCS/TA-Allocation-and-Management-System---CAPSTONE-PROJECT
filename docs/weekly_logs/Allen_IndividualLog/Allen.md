@@ -97,3 +97,47 @@ finished DFD and overall project planning, learning of frameworks is still in pr
   * learn micro service
   * start actual development
 
+
+## June 02 - 05
+
+### Timesheet
+Clockify report
+![alt text](./clockify/6.05.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: learning spring boot and microservice
+  * #2: project deploy
+
+### Progress Update (since May 18 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>learning spring boot and microservice
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>project deploy
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+finished the video presentation, trying to understand the project and test runs
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * learning framwork and understand the project
+  * user story: browse available courses
+
