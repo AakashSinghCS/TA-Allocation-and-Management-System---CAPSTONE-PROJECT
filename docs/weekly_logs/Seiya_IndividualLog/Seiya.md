@@ -1,3 +1,19 @@
+# Weekly Log (2 Jun – 5 Jun 2025)
+
+**Name:** Seiya  
+**Branch:** `seiya_logs`
+
+| Category | Activity Summary | Date(s) | Time Spent |
+|----------|-----------------|---------|-----------|
+| Feature Dev. (TA Coordinator) | • Implement “Course viewing, filtering, and creation” feature <br>• Preparation & short sync meeting | 3 – 5 Jun | **4 h 46 m** |
+| Video & Docs (DFD Lv 1) | • Record transcript & walkthrough video <br>• Video preparation and scene planning | 3 – 4 Jun | **1 h 43 m** |
+| Meetings & Coordination | • General team meetings (DFD status, user‑story sub‑issues) | 3 & 4 Jun | **2 h 49 m** |
+| Logging / Admin | • Entered detailed time logs in Clockify | 5 Jun | **0 h 21 m** |
+| **Total** |  |  | **9 h 39 m** |
+
+<img width="2311" alt="clockify_weekly_log_2025-06-02_06-05_seiya" src="https://github.com/user-attachments/assets/93041f9f-72a3-4dbe-8d30-9e1332f2d98e" />
+
+
 # Weekly Log (31 May – 2 Jun 2025)
 
 **Name:** Seiya  
