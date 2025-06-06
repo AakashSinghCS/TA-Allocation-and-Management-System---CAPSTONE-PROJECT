@@ -288,3 +288,92 @@ Retrospective: Process is going smoothly, all team members are on track with the
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * DataBase design. Assign issues from kanban to indiviudal members to begin coding of the application. 
 
+## Tuesday 6/03 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/6.03.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Design Video Transcript and Recording
+  * #2: Kanban User Story Breakdown Into Sub-issues
+
+### Progress Update (since 28/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Completed the trascript for my part of use cases. I also recorded the video for the presentation and made the slide decks. The team also met up after the meeting to break down user stories on kanban into individual sub-issues.
+What didn't go well: Everything was good!
+Retrospective: Process is going smoothly, all team members are on track with their assigned tasks. We should begin assigning issues to individual members from kanban soon to start coding the application.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Assign issues from kanban to indiviudal members and begin coding of the application.
+
+## Wednesday 6/04 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/6.04.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Design video presentation compilation and editing
+  * #2: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 28/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress. 20% complete
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I received all videos from my team for the design video presentation. I volunteered to do the compilation and editing. At the end the video was perfect with all criteria met. I also met up with Dup on discord to discuss how we were going to code the profile section of the application. I am handling the backend while Dup is working on the frontend.
+What didn't go well: Some videos sent by the team members required a lot of time to edit. But i was able to handle it. 
+Retrospective: Process is going well. The entire team is working hard on the project. We have assigned individual coding tasks to everyone. 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team. 
