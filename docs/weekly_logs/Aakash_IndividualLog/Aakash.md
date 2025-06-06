@@ -364,7 +364,7 @@ Retrospective: Process is going smoothly, all team members are on track with the
         <td>Task 2
         </td>
         <!-- Status -->
-        <td> In progress. 20% complete
+        <td> In progress.
         </td>
     </tr>
         
@@ -374,6 +374,51 @@ Retrospective: Process is going smoothly, all team members are on track with the
 What went well: I received all videos from my team for the design video presentation. I volunteered to do the compilation and editing. At the end the video was perfect with all criteria met. I also met up with Dup on discord to discuss how we were going to code the profile section of the application. I am handling the backend while Dup is working on the frontend.
 What didn't go well: Some videos sent by the team members required a lot of time to edit. But i was able to handle it. 
 Retrospective: Process is going well. The entire team is working hard on the project. We have assigned individual coding tasks to everyone. 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Get environment set up locally, complete the profile section of the application, and begin next assigned coding task after meeting with the team.
+
+## Thursday 6/05 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/6.05.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Environment setup - Docker & Spring Boot
+  * #2: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 28/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress, 50% complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress.
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I was able to get the docker containers up and running. Front end on local host port was displaying as expected.
+What didn't go well: I wasn't able to figure out the setup for spring boot. I will be meeting with Alex tomorrow after the meeting to discuss how to get my environment up and running locally. 
+Retrospective: Process is going well. All team members are working hard to get their parts completed.
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Complete profile section of the application, and begin next assigned coding task after meeting with the team. 
