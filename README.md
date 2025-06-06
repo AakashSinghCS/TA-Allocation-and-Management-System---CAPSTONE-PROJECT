@@ -11,7 +11,7 @@ More information on using Docker and the general files for setup can be found [h
 ## Docker instructions/tips
  - when installing a new library using npm install, enter the container shell, and then run npm install `<name of library>`
  - you will probably see a red underline when using the the new package that you installed. Outside of the shell, on your local terminal, after cd-ing to app/TA-portal-infinity, run npm install. Then the local node_modules will be updated too, and the red underline will disappear.
- - If you think frontend container is still not running because of node_modules, try running this: `rm -rf node_modules package-lock.json`,`docker compose down -v`, ` docker compose build --no-cache `, `docker compose up` that removes any old node_modules locally and on the docker and rebuilds it.
+ - If you think frontend container is still not running because of node_modules, try running this: `rm -rf node_modules package-lock.json`,`docker compose down -v`, ` docker compose build --no-cache `, `docker compose up` that removes any old node_modules locally and on the docker and rebuilds it. Replace `docker compose up` with `docker compose -f compose.combined.yaml up` to have a containerized backend.
 
 
 ## Vitest
