@@ -1,19 +1,16 @@
 import type Student from '../../interfaces/Student';
-import type TermCourse from '../../interfaces/TermCourse';
+import type TaProfilePageData from './TaProfilePageData';
+import type Section from '../../interfaces/Section';
 import formatDateForDisplay from '../../utility/formatdatefordisplay/formatDateForDisplay';
 
-interface Props {
-    student: Student;
-    termCourse?: TermCourse;
-}
-
-export default function TaProfilePage({ student, termCourse }: Props) {
-
+export default function TaProfilePage({ data }: { data: TaProfilePageData }) {
+    const student = data.student;
+    const section = data.section;
 
     return (
         <div className="max-w-7xl mx-auto mt-8 p-6 bg-white rounded-2xl flex flex-col md:flex-row md:gap-8">
             <ProfileSection student={student} className="max-w-xs space-y-4 order-1 md:order-2 md:w-1/3 md:ml-auto" />
-            <TermCoursesSection termCourse={termCourse} className="space-y-4 order-2 md:order-1 md:w-2/3 mt-6 md:mt-0" />
+            <SectionSection section={section} className="space-y-4 order-2 md:order-1 md:w-2/3 mt-6 md:mt-0" />
             {/*need to do the following:
             - show the times for each of the courses ex: Wed~Fridya 2:30 etc.
             - make the card smaller, or make it into more of a list so that the coordinator doesn't have to scroll.
@@ -55,15 +52,15 @@ function ProfileSection({ student, className = "" }: { student: Student; classNa
     );
 }
 
-function TermCoursesSection({ termCourse, className = "" }: { termCourse?: TermCourse; className?: string }) {
+function SectionSection({ section, className = "" }: { section?: Section; className?: string }) {
     return (
         <section className={className}>
             <h2 className="text-xl font-semibold mb-2">Courses</h2>
 
-            {termCourse ? (
+            {section ? (
                 <div className="grid gap-3">
-                    {[termCourse].map((course) => (
-                        <TermCourseCard key={termCourseKey(course)} termCourse={course} />
+                    {[section].map((s) => (
+                        <SectionCard key={sectionKey(s)} section={s} />
                     ))}
                 </div>
             ) : (
@@ -75,20 +72,18 @@ function TermCoursesSection({ termCourse, className = "" }: { termCourse?: TermC
     );
 }
 
-function TermCourseCard({ termCourse }: { termCourse: TermCourse }) {
+function SectionCard({ section }: { section: Section }) {
     return (
-        <div
-            className="rounded-lg border border-slate-200 p-4 space-y-1 bg-slate-50"
-        >
-            <h3 className="font-medium">{termCourse.name}</h3>
-            <p>{`${termCourse.deptCode} ${termCourse.courseNum} ${termCourse.section}`}</p>
-            <p className="text-slate-600">{termCourse.term}</p>
+        <div className="rounded-lg border border-slate-200 p-4 space-y-1 bg-slate-50">
+            <h3 className="font-medium">{section.sectionDetails.name}</h3>
+            <p>{`${section.sectionDetails.deptCode} ${section.sectionDetails.courseNum} ${section.sectionDetails.section}`}</p>
+            <p className="text-slate-600">{section.sectionDetails.term}</p>
         </div>
     );
 }
 
-function termCourseKey(termCourse: TermCourse) {
-    return `${termCourse.deptCode}-${termCourse.courseNum}-${termCourse.section}`;
+function sectionKey(section: Section) {
+    return `${section.sectionDetails.deptCode}-${section.sectionDetails.courseNum}-${section.sectionDetails.section}`;
 }
 
 function ProfileRow({ label, value }: { label: string; value: string }) {

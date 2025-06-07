@@ -1,5 +1,6 @@
 import type Student from '../interfaces/Student';
-export const mockStudent : Student = {
+export const mockStudentJohnDoe : Student = {
+    id : 1,
     firstName : "John",
     lastName : "Doe",
     email : "johndoe@test.com",
@@ -10,5 +11,5 @@ export const mockStudent : Student = {
     createdAt : new Date("2021-01-01T00:00:00.000Z"),
 }
 
-//import type Instructor ...
+
 
