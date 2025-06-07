@@ -12,6 +12,7 @@ export async function fetchStudentDetails(studentId: number):Promise<Student>{
     
     if (!res.ok) {
         throw new Error(`Failed to fetch student details (HTTP ${res.status})`);
+        
     }
 
     return res.json() as Promise<Student>;

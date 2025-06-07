@@ -6,12 +6,14 @@ import TaProfilePage from "../pages/taprofilepage/TaProfilePage";
 import TaProfilePageContainer from "../pages/taprofilepage/TaProfilePageContainer";
 import { mockStudentJohnDoe } from "../mocked-objects/mockStudentJohnDoe";
 import { mockSectionCOSC111 } from "../mocked-objects/mockSectionCOSC111";
-import type TaProfilePageData from "../pages/taprofilepage/TaProfilePageData";
+import { mockSectionScheduleCOSC111ForTue } from "../mocked-objects/mockSectionCOSC111";
+import { mockSectionScheduleCOSC111ForFri } from "../mocked-objects/mockSectionCOSC111";
 import ErrorPage from "../pages/errorpage/ErrorPage"
+import type TaProfilePageData from "../pages/taprofilepage/TaProfilePageData";
 
-const mockTaProfileData = {
+const mockTaProfileData : TaProfilePageData= {
   student: mockStudentJohnDoe,
-  section: mockSectionCOSC111
+  section: {sectionDetails: mockSectionCOSC111,sectionSchedule: [mockSectionScheduleCOSC111ForTue,mockSectionScheduleCOSC111ForFri]}
 }
 
 export const router = createBrowserRouter([
@@ -20,7 +22,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/about", element: <AboutPage /> },
-      { path: "/taprofile", element: <TaProfilePage data ={mockTaProfileData}/> },
+      { path: "/taprofile", element: <TaProfilePage data ={mockTaProfileData}/> }, // /taprofile can be deleted later when development of taprofile is done
       { path: "/taprofile/:studentId", element: <TaProfilePageContainer /> },
       { path: "/error", element: <ErrorPage /> },
     ],

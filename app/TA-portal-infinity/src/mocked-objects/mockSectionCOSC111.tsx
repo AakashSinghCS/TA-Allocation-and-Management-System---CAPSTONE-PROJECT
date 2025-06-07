@@ -1,7 +1,7 @@
-import type {Section} from '../interfaces/SectionDetails';
+import type {SectionDetails} from '../interfaces/SectionDetails';
 import type SectionSchedule from '../interfaces/SectionSchedule';
 
-export const mockSectionCOSC111 : Section = {
+export const mockSectionCOSC111 : SectionDetails = {
     sectionId: 1,
     name: "Introduction to Computer Science",
     deptCode : "COSC",
