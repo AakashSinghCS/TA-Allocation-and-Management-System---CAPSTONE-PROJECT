@@ -1,4 +1,4 @@
-export default interface TermCourse{
+export default interface Section{
     name : string,
     deptCode : string,
     courseNum : string

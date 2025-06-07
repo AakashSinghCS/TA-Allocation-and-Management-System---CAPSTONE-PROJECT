@@ -3,12 +3,12 @@ import { describe, it, expect } from "vitest";
 import TaProfilePage from "./TaProfilePage";
 import formatDateForDisplay from "../../utility/formatdatefordisplay/formatDateForDisplay";
 import { mockStudent } from "../../mocked-objects/mockUsers";
-import { mockTermCourse } from "../../mocked-objects/mockCourses";
+import { mockSection } from "../../mocked-objects/mockSection";
 
 
 describe("TaProfilePage", () => {
     it("shows the TA's personal details", () => {
-        render(<TaProfilePage student={mockStudent} termCourse={mockTermCourse} />);
+        render(<TaProfilePage student={mockStudent} section={mockSection} />);
 
         const fullNameRegex = new RegExp(`^${mockStudent.firstName}\\s+${mockStudent.lastName}$`, "i");
 
@@ -24,12 +24,12 @@ describe("TaProfilePage", () => {
         expect(screen.getByText(new RegExp(`^${readableDate}$`))).toBeInTheDocument();
     })
     it("shows the list of courses the TA is taking", () => {
-        render(<TaProfilePage student={mockStudent} termCourse={mockTermCourse} />);
-        const fullTermCourseNameRegex = new RegExp(`^${mockTermCourse.deptCode}\\s+${mockTermCourse.courseNum}\\s+${mockTermCourse.section}$`, "i");
+        render(<TaProfilePage student={mockStudent} section={mockSection} />);
+        const fullTermCourseNameRegex = new RegExp(`^${mockSection.deptCode}\\s+${mockSection.courseNum}\\s+${mockSection.section}$`, "i");
 
         const courseRow = screen.getByText(fullTermCourseNameRegex).closest('div')!;
-        expect(within(courseRow).getByText(new RegExp(`^${mockTermCourse.name}$`))).toBeInTheDocument();
+        expect(within(courseRow).getByText(new RegExp(`^${mockSection.name}$`))).toBeInTheDocument();
         expect(within(courseRow).getByText(new RegExp(fullTermCourseNameRegex))).toBeInTheDocument();
-        expect(within(courseRow).getByText(new RegExp(`^${mockTermCourse.term}$`))).toBeInTheDocument();
+        expect(within(courseRow).getByText(new RegExp(`^${mockSection.term}$`))).toBeInTheDocument();
     })
 })

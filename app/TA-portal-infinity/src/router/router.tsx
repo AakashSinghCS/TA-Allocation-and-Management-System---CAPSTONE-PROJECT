@@ -4,7 +4,7 @@ import HomePage from "../pages/homepage/HomePage";
 import AboutPage from "../pages/aboutpage/AboutPage";
 import TaProfilePage from "../pages/taprofilepage/TaProfilePage";
 import { mockStudent } from "../mocked-objects/mockUsers";
-import { mockTermCourse } from "../mocked-objects/mockCourses";
+import { mockSection } from "../mocked-objects/mockSection";
 
 export const router = createBrowserRouter([
   {
@@ -12,7 +12,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/about", element: <AboutPage /> },
-      { path: "/taprofile", element: <TaProfilePage student = {mockStudent} termCourse={mockTermCourse}/> },
+      { path: "/taprofile", element: <TaProfilePage student = {mockStudent} section={mockSection}/> },
     ],
   },
 ]);
