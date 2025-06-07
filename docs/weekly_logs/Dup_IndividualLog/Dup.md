@@ -636,3 +636,50 @@ Today, we also had a meeting with Scott and each other. Made some more edits to 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
 
+## Saturday 6/07 (5/28~6/6)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June07.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue #175
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today, I worked on the issue 175. It was an issue about the API calls. I set up all the template API calls. they don't actually connect to the backend yet, but I restructured them and made everything organized. I made a lot of interfaces too.
+I'm hoping the others will look at my work as an examplar to write the code for their side of the business.
+One thing that didn't go well was that at one point the website would keep giving me a blank white page. The console log through DevTools was giving me the reason why. It took me a while to figure that out - GPT O3 engine helped me think about taking a look at that, and it got fixed. It was because in one of my files, I was importing something that didn't exist ( the name had changed)
+
+The process is going well, But I'm waiting for the others to show some of their work.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
+
