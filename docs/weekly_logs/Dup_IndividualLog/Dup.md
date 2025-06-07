@@ -579,3 +579,60 @@ Tommorrow, I should continue working on the course details.
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
 
+## Friday 6/06 (5/28~6/6)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June06.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue #168
+  * #3: issue #175
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+It was quite difficult to do test-first coding. 
+The code that I wrote today was naturally not something that required testing first.
+What I wrote was mock- API calls and a container of the TAprofilePage. Then I tried to write first the integration test of the TAprofilePage and the API calls. It's very simple, and while it did work and pass, I'm not sure if I did it correctly.
+I basically structured everything today. Made lots of interfaces, mock objects, and api calls which still use mock objects as a return value.
+That was issue number 175.
+Issue number 168 was requested some changes. I made some components reusable.
+Today, we also had a meeting with Scott and each other. Made some more edits to the ER diagram.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
+
