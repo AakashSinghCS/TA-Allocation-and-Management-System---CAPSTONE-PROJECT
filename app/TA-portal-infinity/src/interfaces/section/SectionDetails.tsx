@@ -9,7 +9,7 @@ export type SectionType =
     | "Independent Study"
 
 export interface SectionDetails {
-    sectionId: number,
+    id: number,
     name: string,
     deptCode: string,
     courseNum: string
