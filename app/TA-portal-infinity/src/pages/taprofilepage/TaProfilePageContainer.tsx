@@ -7,25 +7,27 @@ import type TaProfilePageData from './TaProfilePageData';
 
 export default function TaProfilePageContainer() {
     const { studentId } = useParams();
-    const id = Number(studentId);
+    const sId = Number(studentId);
 
     const [data, setData] = useState<TaProfilePageData>();
     const [errorMessage, setErrorMessage] = useState<string>();
 
     useEffect(() => {
-        if (Number.isNaN(id)) {
+        if (Number.isNaN(sId)) {
             setErrorMessage('Invalid student ID');
             return;
         }
 
-        fetchTaProfilePageData(id)
+        fetchTaProfilePageData(sId)
             .then((resp: TaProfilePageData) => {
                 setData(resp);
             })
             .catch((e: Error) => {
                 setErrorMessage(e.message);
             });
-    }, [id]);
+        /* To test if the Navigate component leading you to error works, uncomment the comment below.*/
+        // setErrorMessage("SOME ERROR MESSAGE");
+    }, [sId]);
 
     if (errorMessage) return (<Navigate to="/error" replace={true} state={{ message: errorMessage }}/>);
     if (!data) return <p>Loading…</p>;
