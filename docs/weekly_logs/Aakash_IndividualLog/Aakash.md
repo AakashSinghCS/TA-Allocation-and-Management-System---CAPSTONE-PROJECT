@@ -422,3 +422,48 @@ Retrospective: Process is going well. All team members are working hard to get t
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Complete profile section of the application, and begin next assigned coding task after meeting with the team. 
+
+## Friday 6/06 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/6.06.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Environment setup - Docker & Spring Boot
+  * #2: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 28/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress, 80% complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress.
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I met up with alex after our in-class meeting to get help in setting up the environment on my laptop. 
+What didn't go well: The environment was not setting up on my laptop after hours of work. There is a weird bug which we can't seem to fix. The microservices were running but my IDE is not able to recognize JavaSe24 which is required for our spring boot app. This was weird because everything was working but I had errors all over in my IDE which would cause issues in compiling code later on. I will try to fix this over the weekend.
+Retrospective: Process is going well. All team members are working hard to get their parts completed.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team. 
