@@ -1,4 +1,4 @@
-import type Student from "../../interfaces/Student";
+import type Student from "../../interfaces/student/Student";
 
 export async function fetchStudentDetails(studentId: number):Promise<Student>{
     // const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';

@@ -1,9 +1,9 @@
 import { useParams,Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { fetchTaProfilePageData } from '../../api/fetchStudentDetails/fetchTaProfilePageData';
+import { fetchTaProfilePageData } from '../../api/taprofile/fetchTaProfilePageData';
 import TaProfilePage from './TaProfilePage';
 
-import type TaProfilePageData from './TaProfilePageData';
+import type TaProfilePageData from '../../interfaces/taprofile/TaProfilePageData';
 
 export default function TaProfilePageContainer() {
     const { studentId } = useParams();

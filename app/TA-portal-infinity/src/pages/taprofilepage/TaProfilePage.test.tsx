@@ -25,7 +25,9 @@ describe("TaProfilePage", () => {
     })
     it("shows the list of courses the TA is taking", () => {
         render(<TaProfilePage data = {mockTaProfilePageData} />);
-        const section = mockTaProfilePageData.section;
+        const section =  mockTaProfilePageData.sectionsTaken?.[0];
+        expect(section).toBeTruthy();
+        
         const fullTermCourseNameRegex = new RegExp(`^${section?.sectionDetails.deptCode}\\s+${section?.sectionDetails.courseNum}\\s+${section?.sectionDetails.section}$`, "i");
 
         const courseRow = screen.getByText(fullTermCourseNameRegex).closest('div')!;

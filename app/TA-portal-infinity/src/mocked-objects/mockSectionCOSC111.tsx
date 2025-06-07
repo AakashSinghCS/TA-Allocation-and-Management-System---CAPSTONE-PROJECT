@@ -1,5 +1,5 @@
-import type {SectionDetails} from '../interfaces/SectionDetails';
-import type SectionSchedule from '../interfaces/SectionSchedule';
+import type {SectionDetails} from '../interfaces/section/SectionDetails';
+import type SectionSchedule from '../interfaces/section/SectionSchedule';
 
 export const mockSectionCOSC111 : SectionDetails = {
     sectionId: 1,

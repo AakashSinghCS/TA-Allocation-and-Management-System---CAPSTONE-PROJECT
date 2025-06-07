@@ -1,23 +1,17 @@
-import type Student from '../../interfaces/Student';
-import type TaProfilePageData from './TaProfilePageData';
-import type Section from '../../interfaces/Section';
+import type TaProfilePageData from '../../interfaces/taprofile/TaProfilePageData';
+import type Section from '../../interfaces/section/Section';
 import formatDateForDisplay from '../../utility/formatdatefordisplay/formatDateForDisplay';
 import ProfileSection from '../../components/features/profile/ProfileSection';
 import SectionCard from '../../components/features/section/SectionCard';
 
-interface Props {
-  student: Student;
-  section?: Section[];
-}
-
-export default function TaProfilePage({ student, section }: Props) {
+export default function TaProfilePage({ data} : {data :TaProfilePageData}) {
   const profileDetails = [
-    { label: "Email", value: student.email },
-    { label: "Student #", value: student.studentNumber.toString() },
-    { label: "Program", value: student.program },
-    { label: "Enrollment Year", value: student.enrollmentYear.toString() },
-    { label: "School Year", value: student.schoolYear.toString() },
-    { label: "Joined", value: formatDateForDisplay(student.createdAt) },
+    { label: "Email", value: data.student.email },
+    { label: "Student #", value: data.student.studentNumber.toString() },
+    { label: "Program", value: data.student.program },
+    { label: "Enrollment Year", value: data.student.enrollmentYear.toString() },
+    { label: "School Year", value: data.student.schoolYear.toString() },
+    { label: "Joined", value: formatDateForDisplay(data.student.createdAt) },
   ];
   /*need to do the following:
     - show the times for each of the courses ex: Wed~Fridya 2:30 etc.
@@ -30,13 +24,13 @@ export default function TaProfilePage({ student, section }: Props) {
   return (
     <div className="max-w-7xl mx-auto mt-8 p-6 bg-white rounded-2xl flex flex-col md:flex-row md:gap-8">
       <ProfileSection
-        name={`${student.firstName} ${student.lastName}`}
+        name={`${data.student.firstName} ${data.student.lastName}`}
         profileDetails={profileDetails}
         className="max-w-xs space-y-4 order-1 md:order-2 md:w-1/3 md:ml-auto"
       />
 
       <SectionSection
-        sections={section ? section : []}
+        sections={data.sectionsTaken ? data.sectionsTaken : []}
         className="space-y-4 order-2 md:order-1 md:w-2/3 mt-6 md:mt-0"
       />
     </div>
@@ -67,4 +61,4 @@ function SectionSection({ sections = [], className = "" }: SectionProps) {
   );
 }
 
-const sectionKey = (s: Section) => `${s.deptCode}-${s.courseNum}-${s.section}`;
+const sectionKey = (s: Section) => `${s.sectionDetails.deptCode}-${s.sectionDetails.courseNum}-${s.sectionDetails.section}`;
