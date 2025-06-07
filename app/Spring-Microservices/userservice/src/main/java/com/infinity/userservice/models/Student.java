@@ -22,4 +22,9 @@ public class Student extends User {
         this.studentNumber = studentNumber;
     }
 
+    @Override
+    public String getRole() {
+        return "ROLE_STUDENT";
+    }
+
 }

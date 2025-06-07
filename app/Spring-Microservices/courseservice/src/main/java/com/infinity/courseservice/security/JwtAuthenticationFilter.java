@@ -1,4 +1,4 @@
-package com.infinity.userservice.security;
+package com.infinity.courseservice.security;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -14,7 +14,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

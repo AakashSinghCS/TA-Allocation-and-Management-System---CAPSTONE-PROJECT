@@ -13,7 +13,12 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("COORDINATOR")
 public class Coordinator extends User {
 
-    public Coordinator(String email, String firstName, String password, String lastName) {
+    public Coordinator(String email, String firstName, String lastName, String password) {
         super(email, firstName, lastName, password);
+    }
+
+    @Override
+    public String getRole() {
+        return "ROLE_COORDINATOR";
     }
 }

@@ -13,7 +13,12 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("INSTRUCTOR")
 public class Instructor extends User {
     
-    public Instructor(String email, String firstName, String password, String lastName) {
+    public Instructor(String email, String firstName, String lastName, String password) {
         super(email, firstName, lastName, password);
+    }
+
+    @Override
+    public String getRole() {
+        return "ROLE_INSTRUCTOR";
     }
 }

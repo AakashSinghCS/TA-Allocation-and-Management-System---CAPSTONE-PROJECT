@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.infinity.userservice.dtos.RegisterRequest;
 import com.infinity.userservice.dtos.UserDto;
+import com.infinity.userservice.exceptions.BadRequestException;
 import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.models.User;
 import com.infinity.userservice.repositories.UserRepository;
@@ -23,6 +24,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserDto register(RegisterRequest request) {
+        if (userRepository.findByEmail(request.email()).isPresent()) {
+            throw new BadRequestException("An account with this email already exists");
+        }
         User user = userMapper.registerToUser(request);
         String hashedPassword = passwordEncoder.encode(request.password());
         user.setPassword(hashedPassword);

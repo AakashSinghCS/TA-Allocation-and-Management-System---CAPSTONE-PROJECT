@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Inheritance
 @DiscriminatorColumn(name = "user_type")
-public class User implements UserDetails{
+public abstract class User implements UserDetails{
     
     @Id
     @GeneratedValue
@@ -64,5 +64,7 @@ public class User implements UserDetails{
     public String getUsername() {
         return this.email;
     }
+
+    public abstract String getRole();
 
 }
