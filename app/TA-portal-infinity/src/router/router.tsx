@@ -12,7 +12,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/about", element: <AboutPage /> },
-      { path: "/taprofile", element: <TaProfilePage student = {mockStudent} section={mockSection}/> },
+      { path: "/taprofile", element: <TaProfilePage student = {mockStudent} section={[mockSection]}/> },
     ],
   },
 ]);

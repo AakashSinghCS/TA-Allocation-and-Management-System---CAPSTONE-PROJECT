@@ -2,16 +2,14 @@ import type Student from '../../interfaces/Student';
 import type Section from '../../interfaces/Section';
 import formatDateForDisplay from '../../utility/formatdatefordisplay/formatDateForDisplay';
 import ProfileSection from '../../components/features/profile/ProfileSection';
-import SectionSection from '../../components/features/section/SectionSection';
+import SectionCard from '../../components/features/section/SectionCard';
 
 interface Props {
   student: Student;
-  section?: Section;
+  section?: Section[];
 }
 
-// ✂ … container props
 export default function TaProfilePage({ student, section }: Props) {
-  /* transform student -> fields once, keeps JSX tidy */
   const profileDetails = [
     { label: "Email", value: student.email },
     { label: "Student #", value: student.studentNumber.toString() },
@@ -37,10 +35,35 @@ export default function TaProfilePage({ student, section }: Props) {
       />
 
       <SectionSection
-        sections={section ? [section] : []}
+        sections={section ? section : []}
         className="space-y-4 order-2 md:order-1 md:w-2/3 mt-6 md:mt-0"
       />
     </div>
   );
 }
+interface SectionProps {
+  sections?: Section[];      
+  className?: string;
+}
 
+function SectionSection({ sections = [], className = "" }: SectionProps) {
+  return (
+    <section className={className}>
+      <h2 className="text-xl font-semibold mb-2">Courses</h2>
+
+      {sections.length ? (
+        <div className="grid gap-3">
+          {sections.map(sec => (
+            <SectionCard key={sectionKey(sec)} section={sec} />
+          ))}
+        </div>
+      ) : (
+        <div className="p-4 text-slate-400 italic border border-dashed border-slate-200 rounded-lg">
+          No courses to display
+        </div>
+      )}
+    </section>
+  );
+}
+
+const sectionKey = (s: Section) => `${s.deptCode}-${s.courseNum}-${s.section}`;

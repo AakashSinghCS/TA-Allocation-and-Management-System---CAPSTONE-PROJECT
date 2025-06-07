@@ -8,7 +8,7 @@ import { mockSection } from "../../mocked-objects/mockSection";
 
 describe("TaProfilePage", () => {
     it("shows the TA's personal details", () => {
-        render(<TaProfilePage student={mockStudent} section={mockSection} />);
+        render(<TaProfilePage student={mockStudent} section={[mockSection]} />);
 
         const fullNameRegex = new RegExp(`^${mockStudent.firstName}\\s+${mockStudent.lastName}$`, "i");
 
@@ -24,7 +24,7 @@ describe("TaProfilePage", () => {
         expect(screen.getByText(new RegExp(`^${readableDate}$`))).toBeInTheDocument();
     })
     it("shows the list of courses the TA is taking", () => {
-        render(<TaProfilePage student={mockStudent} section={mockSection} />);
+        render(<TaProfilePage student={mockStudent} section={[mockSection]} />);
         const fullTermCourseNameRegex = new RegExp(`^${mockSection.deptCode}\\s+${mockSection.courseNum}\\s+${mockSection.section}$`, "i");
 
         const courseRow = screen.getByText(fullTermCourseNameRegex).closest('div')!;
