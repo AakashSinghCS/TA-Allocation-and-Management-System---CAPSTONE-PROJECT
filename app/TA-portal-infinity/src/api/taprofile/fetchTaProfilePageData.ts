@@ -1,6 +1,6 @@
 //Don't delete the yellow-underlined imports here. Will be used when backend works.
 import { fetchStudentDetails } from "../student/fetchStudentDetails";
-import { fetchStudentSectionDetails } from "../student/fetchStudentTakesSections";
+import { fetchStudentTakesSections } from "../student/fetchStudentTakesSections";
 import { fetchAllStudentSections } from "../student/fetchAllStudentSections";
 import type TaProfilePageData from "../../interfaces/taprofile/TaProfilePageData";
 import type Section from "../../interfaces/section/Section";

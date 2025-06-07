@@ -4,6 +4,7 @@ import Footer from "./components/layout/footer/Footer"
 import SideNav from "./components/layout/sidenav/SideNav";
 
 export default function App() {
+  console.log("✅ App layout rendering");
   return (
     <div className="flex flex-col h-screen">
       <Header />
