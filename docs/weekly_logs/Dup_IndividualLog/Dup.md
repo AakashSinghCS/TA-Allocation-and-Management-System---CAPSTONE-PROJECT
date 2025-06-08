@@ -633,6 +633,8 @@ That was issue number 175.
 Issue number 168 was requested some changes. I made some components reusable.
 Today, we also had a meeting with Scott and each other. Made some more edits to the ER diagram.
 
+
+
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
 
@@ -679,6 +681,7 @@ One thing that didn't go well was that at one point the website would keep givin
 
 The process is going well, But I'm waiting for the others to show some of their work.
 
+I also talked with Seiya today to tell him how I think he should work on his branch after the changes I made today.
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
