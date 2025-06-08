@@ -49,7 +49,7 @@ public class UserControllerTest {
     
     @Test
     void testGetUserById_Success() throws Exception {
-        UserDto mockResponse = new UserDto(Long.valueOf(1), "John", "Smith", UserRole.STUDENT);
+        UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
 
         when(userService.getUserById(any())).thenReturn(mockResponse);
 
