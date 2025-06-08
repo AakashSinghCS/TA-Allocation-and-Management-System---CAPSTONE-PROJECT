@@ -1,4 +1,4 @@
-import { useParams,Navigate } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { fetchTaProfilePageData } from '../../api/taprofile/fetchTaProfilePageData';
 import TaProfilePage from './TaProfilePage';
@@ -8,13 +8,13 @@ import type TaProfilePageData from '../../interfaces/taprofile/TaProfilePageData
 export default function TaProfilePageContainer() {
     const { studentId } = useParams();
     const sId = Number(studentId);
+    const navigate = useNavigate();
 
     const [data, setData] = useState<TaProfilePageData>();
-    const [errorMessage, setErrorMessage] = useState<string>();
 
     useEffect(() => {
         if (Number.isNaN(sId)) {
-            setErrorMessage('Invalid student ID');
+            navigate("/error", { replace: true, state: { message: "Invalid student ID" } });
             return;
         }
 
@@ -23,13 +23,12 @@ export default function TaProfilePageContainer() {
                 setData(resp);
             })
             .catch((e: Error) => {
-                setErrorMessage(e.message);
+                navigate("/error", { replace: true, state: { message: e.message } });
             });
         /* To test if the Navigate component leading you to error works, uncomment the comment below.*/
-        // setErrorMessage("SOME ERROR MESSAGE");
-    }, [sId]);
+        // navigate("/error", { replace: true, state: { message: "Test error redirection" } });
+    }, [sId,navigate]);
 
-    if (errorMessage) return (<Navigate to="/error" replace={true} state={{ message: errorMessage }}/>);
     if (!data) return <p>Loading…</p>;
 
     return <TaProfilePage data = {data} />;
