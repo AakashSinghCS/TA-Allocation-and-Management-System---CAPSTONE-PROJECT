@@ -37,7 +37,7 @@ public class AuthController {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 
-        User user = (User) auth.getPrincipal(); //TODO: move this into user service
+        User user = (User) auth.getPrincipal();
 
         String token = jwtUtil.generateToken(request.email(), user.getId(), List.of(user.getRole()));
         return ResponseEntity.ok(new LoginResponse(token));
