@@ -17,11 +17,17 @@ import lombok.NoArgsConstructor;
 public class Student extends User {
 
     @Column(unique = true)
-    private Integer studentNumber;
+    private Integer studentNum;
 
-    public Student(String email, String firstName, String lastName, String password, Integer studentNumber) {
+    private String program;
+
+    private Integer enrollmentYear;
+
+    private Integer schoolYear;
+
+
+    public Student(String email, String firstName, String lastName, String password) {
         super(email, firstName, lastName, password, UserRole.STUDENT);
-        this.studentNumber = studentNumber;
     }
 
     @Override

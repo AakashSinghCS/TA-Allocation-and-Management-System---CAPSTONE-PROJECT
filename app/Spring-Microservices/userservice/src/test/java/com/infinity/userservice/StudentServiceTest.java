@@ -47,7 +47,8 @@ public class StudentServiceTest {
     
     @Test
     void testGetUserByIdSuccess() {
-        Student mockUser = new Student("john@example.com", "John", "Smith", "password", 42);
+        Student mockUser = new Student("john@example.com", "John", "Smith", "password");
+        mockUser.setStudentNum(1);
         UserDto mockDto = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
 
         when(studentRepository.findByStudentNumber(any())).thenReturn(Optional.of(mockUser));

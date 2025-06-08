@@ -42,8 +42,8 @@ public class UserServiceTest {
     
     @Test
     void testRegisterFailEmailExists() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT", 42);
-        User user = new Student("john@test.com", "John", "Smith", "password", 42);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT");
+        User user = new Student("john@test.com", "John", "Smith", "password");
         
         when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
         assertThrows(BadRequestException.class, () -> {
@@ -53,9 +53,9 @@ public class UserServiceTest {
 
     @Test
     void testRegisterStudent() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT", 42);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT");
 
-        Student saved = new Student("john@test.com", "John", "Smith", "password", 42);
+        Student saved = new Student("john@test.com", "John", "Smith", "password");
         UserDto studentDto = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
 
         when(userRepository.save(any(User.class))).thenReturn(saved);
@@ -70,7 +70,7 @@ public class UserServiceTest {
     
     @Test
     void testRegisterInstructor() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "INSTRUCTOR", null);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "INSTRUCTOR");
 
         Instructor saved = new Instructor("john@test.com", "John", "Smith", "password");
         UserDto studentDto = new UserDto(1L, "John", "Smith", UserRole.INSTRUCTOR);
@@ -87,8 +87,7 @@ public class UserServiceTest {
 
     @Test
     void testRegisterCoordinator() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "COORDINATOR",
-                null);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "COORDINATOR");
 
         Coordinator saved = new Coordinator("john@test.com", "John", "Smith", "password");
         UserDto studentDto = new UserDto(1L, "John", "Smith", UserRole.COORDINATOR);

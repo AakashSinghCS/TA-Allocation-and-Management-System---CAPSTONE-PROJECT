@@ -22,6 +22,5 @@ public record RegisterRequest(
         @NotBlank(message = "User type is required") 
         @Pattern(regexp = "STUDENT|INSTRUCTOR|COORDINATOR", message = "User type must be STUDENT, INSTRUCTOR, or COORDINATOR")
         
-        String userType,
-        Integer studentNumber) {
+        String userType) {
 }
