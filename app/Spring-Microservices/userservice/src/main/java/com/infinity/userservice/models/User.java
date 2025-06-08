@@ -48,11 +48,12 @@ public abstract class User implements UserDetails{
     private UserRole userType;
 
 
-    public User(String email, String firstName, String lastName, String password) {
+    public User(String email, String firstName, String lastName, String password, UserRole userType) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
+        this.userType = userType;
     }
 
     @Override

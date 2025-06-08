@@ -19,9 +19,9 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final UserMapper userMapper;
 
-    public UserDto getStudentById(Integer studentId) {
-        Student student = studentRepository.findByStudentNumber(studentId)
-                .orElseThrow(() -> new NotFoundException("User with student number " + studentId + " not found"));
+    public UserDto getStudentByStudentNum(Integer studentNum) {
+        Student student = studentRepository.findByStudentNumber(studentNum)
+                .orElseThrow(() -> new NotFoundException("User with student number " + studentNum + " not found"));
         return userMapper.toDto(student);
     }
 }

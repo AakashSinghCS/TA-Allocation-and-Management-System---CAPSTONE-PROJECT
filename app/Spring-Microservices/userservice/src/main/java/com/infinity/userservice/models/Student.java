@@ -1,5 +1,7 @@
 package com.infinity.userservice.models;
 
+import com.infinity.userservice.enums.UserRole;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -18,7 +20,7 @@ public class Student extends User {
     private Integer studentNumber;
 
     public Student(String email, String firstName, String lastName, String password, Integer studentNumber) {
-        super(email, firstName, lastName, password);
+        super(email, firstName, lastName, password, UserRole.STUDENT);
         this.studentNumber = studentNumber;
     }
 

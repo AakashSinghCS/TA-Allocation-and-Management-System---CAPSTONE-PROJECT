@@ -23,8 +23,8 @@ public class UserController {
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> findUser(@PathVariable Long id) {
-        UserDto userDto = userService.findUser(id);
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
+        UserDto userDto = userService.getUserById(id);
         return ResponseEntity.ok(userDto);
     }
 }

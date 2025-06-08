@@ -2,6 +2,7 @@ package com.infinity.userservice.controllers;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,11 +33,11 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 
-        User user = (User) auth.getPrincipal();
+        User user = (User) auth.getPrincipal(); //TODO: move this into user service
 
         String token = jwtUtil.generateToken(request.email(), user.getId(), List.of(user.getRole()));
         return ResponseEntity.ok(new LoginResponse(token));
@@ -45,7 +46,7 @@ public class AuthController {
      @PostMapping("/register")
     public ResponseEntity<UserDto> addUser(@RequestBody @Valid RegisterRequest request) {
         UserDto userDto = userService.register(request);
-        return ResponseEntity.ok(userDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
     }
 
 }

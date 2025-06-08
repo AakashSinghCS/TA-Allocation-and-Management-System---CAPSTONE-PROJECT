@@ -34,7 +34,7 @@ public class UserService {
         return userMapper.toDto(user);
     }
     
-    public UserDto findUser(Long id) {
+    public UserDto getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User with ID " + id + " not found"));
         return userMapper.toDto(user);
