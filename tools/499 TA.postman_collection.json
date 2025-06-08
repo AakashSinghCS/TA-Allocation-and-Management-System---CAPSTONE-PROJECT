@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"student@test.com\",\r\n    \"firstName\": \"scoobert\",\r\n    \"lastName\": \"doobert\",\r\n    \"password\": \"password\",\r\n    \"userType\": \"STUDENT\",\r\n    \"studentNumber\":87\r\n}",
+							"raw": "{\r\n    \"email\":\"student@test.com\",\r\n    \"firstName\": \"scoobert\",\r\n    \"lastName\": \"doobert\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": \"STUDENT\",\r\n    \"studentNumber\":87\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
