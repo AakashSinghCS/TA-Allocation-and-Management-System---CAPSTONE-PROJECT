@@ -3,9 +3,8 @@ import App from "../App";
 import HomePage from "../pages/homepage/HomePage";
 import AboutPage from "../pages/aboutpage/AboutPage";
 import TaProfilePage from "../pages/taprofilepage/TaProfilePage";
-import TaProfilePageContainer from "../pages/taprofilepage/TaProfilePageContainer";
 import ErrorPage from "../pages/errorpage/ErrorPage";
-import { mockTaProfilePageData } from "../mocked-objects/mockTaProfilePageData";
+
 
 export const router = createBrowserRouter([
   {
@@ -15,8 +14,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },               
       { path: "about", element: <AboutPage /> },            
-      { path: "taprofile", element: <TaProfilePage data={mockTaProfilePageData} /> },
-      { path: "taprofile/:studentId", element: <TaProfilePageContainer /> },
+      { path: "taprofile/:studentId", element: <TaProfilePage />},
       { path: "error", element: <ErrorPage /> },
       { path: "*", element: <ErrorPage /> },                
     ],

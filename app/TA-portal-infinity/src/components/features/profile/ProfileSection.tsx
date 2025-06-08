@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import type Student from '../../../interfaces/student/Student';
+import formatDateForDisplay from "../../../utility/formatdatefordisplay/formatDateForDisplay";
 
 export interface ProfileField {
   label: string;
@@ -6,20 +8,27 @@ export interface ProfileField {
 }
 
 interface ProfileSectionProps {
-  name: string;
-  profileDetails: ProfileField[];
+  student?: Student
   className?: string;
 }
 
 export default function ProfileSection({
-  name,
-  profileDetails,
+  student,
   className = '',
 }: ProfileSectionProps) {
+  const profileDetails =  student ? [
+    { label: "Email", value: student?.email },
+    { label: "Student #", value: student?.studentNumber.toString() },
+    { label: "Program", value: student?.program },
+    { label: "Enrollment Year", value: student?.enrollmentYear.toString() },
+    { label: "School Year", value: student?.schoolYear.toString() },
+    { label: "Joined", value: formatDateForDisplay(student?.createdAt) },
+  ] :[];
+
   return (
     <section className={className}>
       <h1 className="text-3xl font-bold mb-4 text-center md:text-right">
-        {name}
+        {student?.firstName} {student?.lastName}
       </h1>
 
       <div className="grid gap-2">

@@ -1,8 +1,11 @@
+import type Section from '../interfaces/section/Section';
 import type {SectionDetails} from '../interfaces/section/SectionDetails';
 import type SectionSchedule from '../interfaces/section/SectionSchedule';
 
-export const mockSectionCOSC111 : SectionDetails = {
-    sectionId: 1,
+
+
+export const mockSectionCOSC111Details : SectionDetails = {
+    id: 1,
     name: "Introduction to Computer Science",
     deptCode : "COSC",
     courseNum : "111",
@@ -23,4 +26,9 @@ export const mockSectionScheduleCOSC111ForFri : SectionSchedule = {
     day: "Fri",
     startTime : "14:00:00",
     endTime: "16:00:00"
+}
+
+export const mockSectionCOSC111 : Section = {
+    sectionDetails : mockSectionCOSC111Details,
+    sectionSchedule : [mockSectionScheduleCOSC111ForTue,mockSectionScheduleCOSC111ForFri]
 }

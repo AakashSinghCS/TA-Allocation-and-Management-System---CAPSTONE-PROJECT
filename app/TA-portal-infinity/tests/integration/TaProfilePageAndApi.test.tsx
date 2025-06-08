@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import TaProfilePageContainer from '../../src/pages/taprofilepage/TaProfilePageContainer';
+import TaProfilePage from "../../src/pages/taprofilepage/TaProfilePage"
 import {mockStudentJohnDoe} from '../../src/mocked-objects/mockStudents'
 
 const mockProfile = {
@@ -25,7 +25,7 @@ describe('student details integration with api call', () => {
         let studentId = 1;
         render(<MemoryRouter initialEntries={[`/taprofile/${studentId}`]}>
         <Routes>
-          <Route path="/taprofile/:studentId" element={<TaProfilePageContainer />} />
+          <Route path="/taprofile/:studentId" element={<TaProfilePage />} />
           <Route path="/error" element={<div>Error Page</div>} />
         </Routes>
       </MemoryRouter>);
