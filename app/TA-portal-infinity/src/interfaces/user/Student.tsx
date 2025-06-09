@@ -13,6 +13,7 @@ export interface Student extends User{
 }
 
 export const studentProfileFields: (keyof Student)[] = [
+  "id",
   "firstName",
   "lastName",
   "email",

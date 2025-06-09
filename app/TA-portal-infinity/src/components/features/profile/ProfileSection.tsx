@@ -22,7 +22,7 @@ export default function ProfileSection<T extends User>({
   fieldLabels,
   className = '',
 }: ProfileSectionProps<T>) {
-
+  if (!user) return null;
   const profileDetails = createProfileDetails<T>(user, profileFields,fieldLabels);
 
   return (
