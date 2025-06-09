@@ -6,17 +6,15 @@ import jakarta.validation.constraints.Size;
 
 public record StudentUpdateRequest(
         @Email(message = "Email must be valid") String email,
-       String firstName,
+        String firstName,
         String lastName,
         @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-\\[\\]{}|;:',.<>?]).{8,}$", 
                  message = "Password must contain at least one uppercase letter, one number, and one special character") 
-       @Size(min = 8, message = "Password must be at least 8 characters")
+        @Size(min = 8, message = "Password must be at least 8 characters")
         String password,
-        @Pattern(regexp = "STUDENT|INSTRUCTOR|COORDINATOR", message = "User type must be STUDENT, INSTRUCTOR, or COORDINATOR")
-                String userType,
-                @Size(min = 8)
-                Integer studentNumber,
-                String program,
-                Integer enrollmentYear,
-                Integer schoolYear) {
+        @Size(min = 8)
+        Integer studentNumber,
+        String program,
+        Integer enrollmentYear,
+        Integer schoolYear) {
 }

@@ -21,7 +21,7 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    @GetMapping("/{studentId}")
+    @GetMapping("/{studentNum}")
     public ResponseEntity<UserDto> getStudentByStudentNum(@PathVariable Integer studentNum) {
         UserDto userDto = studentService.getStudentByStudentNum(studentNum);
         return ResponseEntity.ok(userDto);

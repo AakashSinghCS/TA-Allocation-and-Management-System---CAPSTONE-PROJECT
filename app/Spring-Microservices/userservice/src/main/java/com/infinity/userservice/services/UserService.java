@@ -82,9 +82,6 @@ public class UserService {
     public void updateStudent(Student student, Map<String, Object> payload) {
         StudentUpdateRequest req = validateAndMap(payload, StudentUpdateRequest.class);
 
-        if (req.userType() != null && !req.userType().equals("COORDINATOR")) {
-            throw new BadRequestException("User type mismatch");
-        }
         if (req.email() != null)
             student.setEmail(req.email());
         if (req.firstName() != null)
@@ -108,9 +105,6 @@ public class UserService {
     public void updateInstructor(Instructor instructor, Map<String, Object> payload) {
         InstructorUpdateRequest req = validateAndMap(payload, InstructorUpdateRequest.class);
 
-        if (req.userType() != null && !req.userType().equals("INSTRUCTOR")) {
-            throw new BadRequestException("User type mismatch");
-        }
         if (req.email() != null)
             instructor.setEmail(req.email());
         if (req.firstName() != null)
@@ -131,10 +125,7 @@ public class UserService {
 
     public void updateCoordinator(Coordinator coordinator, Map<String, Object> payload) {
         CoordinatorUpdateRequest req = validateAndMap(payload, CoordinatorUpdateRequest.class);
-        
-        if (req.userType() != null && !req.userType().equals("COORDINATOR")) {
-            throw new BadRequestException("User type mismatch");
-        }
+
         if (req.email() != null)
             coordinator.setEmail(req.email());
         if (req.firstName() != null)
