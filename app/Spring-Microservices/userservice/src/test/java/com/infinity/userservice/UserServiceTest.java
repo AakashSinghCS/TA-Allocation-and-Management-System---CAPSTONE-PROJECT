@@ -177,7 +177,7 @@ public class UserServiceTest {
         Map<String, Object> payload = new HashMap<>();
         payload.put("email", "john@te@st.com");
         StudentUpdateRequest invalidRequest = new StudentUpdateRequest(
-                "john@te@st.com", // invalid email
+                "john@te@st.com",
                 "John",
                 "Smith",
                 "P@ssword1",
