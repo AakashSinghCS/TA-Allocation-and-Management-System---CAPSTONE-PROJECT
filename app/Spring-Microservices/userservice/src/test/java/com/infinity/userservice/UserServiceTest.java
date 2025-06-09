@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,7 +40,6 @@ import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.services.UserService;
 import com.infinity.userservice.utility.UserMapper;
 
-import feign.FeignException.NotFound;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
