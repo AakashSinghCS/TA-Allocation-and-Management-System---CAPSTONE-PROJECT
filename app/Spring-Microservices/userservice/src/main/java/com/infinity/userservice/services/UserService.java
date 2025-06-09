@@ -74,8 +74,6 @@ public class UserService {
 
         } else if (user instanceof Coordinator coordinator) {
             updateCoordinator(coordinator, payload);
-        } else {
-            throw new BadRequestException("Unable to update with given data");   
         }
     }
     

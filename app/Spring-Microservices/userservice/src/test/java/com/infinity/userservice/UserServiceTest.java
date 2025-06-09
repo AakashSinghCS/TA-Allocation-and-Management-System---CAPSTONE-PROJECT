@@ -41,6 +41,7 @@ import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.services.UserService;
 import com.infinity.userservice.utility.UserMapper;
 
+import feign.FeignException.NotFound;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
@@ -159,7 +160,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testUpdateUserById_NotSameIdNotAdmin() {
+    void testUpdateUserById_NotSameIdNotAdmin_Forbidden() {
         User mockUser = new Student("john@test.com", "John", "Smith", "password");
         mockUser.setId(1L);
         when(userRepository.findById(any())).thenReturn(Optional.of(mockUser));
@@ -255,6 +256,45 @@ public class UserServiceTest {
         userService.updateUserById(1L, 1L, List.of("ROLE_COORDINATOR"), payload);
 
         verify(userRepository).save(coordinator);
+    }
+
+    @Test
+    void testDeleteUserById_NotSameIdNotAdmin_Forbidden() {
+        User mockUser = new Student("john@test.com", "John", "Smith", "password");
+        mockUser.setId(1L);
+        AuthorizationException e = assertThrows(AuthorizationException.class, () -> {
+            userService.deleteUserById(1L, 2L, List.of("ROLE_STUDENT"));
+        });
+        assertEquals("Not allowed", e.getMessage());
+    }
+
+    @Test
+    void testDeleteUserById_SameIdNotAdmin_NotExist() {
+        User mockUser = new Student("john@test.com", "John", "Smith", "password");
+        mockUser.setId(1L);
+        when(userRepository.existsById(any())).thenReturn(false);
+        NotFoundException e = assertThrows(NotFoundException.class, () -> {
+            userService.deleteUserById(1L, 1L, List.of("ROLE_STUDENT"));
+        });
+        assertEquals("User with id 1 doesn't exist", e.getMessage());
+    }
+
+    @Test
+    void testDeleteUserById_SameIdNotAdmin_Success() {
+        User mockUser = new Student("john@test.com", "John", "Smith", "password");
+        mockUser.setId(1L);
+        when(userRepository.existsById(any())).thenReturn(true);
+        userService.deleteUserById(1L, 1L, List.of("ROLE_STUDENT"));
+        verify(userRepository).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteUserById_NotSameIdAdmin_Success() {
+        User mockUser = new Student("john@test.com", "John", "Smith", "password");
+        mockUser.setId(2L);
+        when(userRepository.existsById(any())).thenReturn(true);
+        userService.deleteUserById(1L, 2L, List.of("ROLE_COORDINATOR"));
+        verify(userRepository).deleteById(1L);
     }
 
 }
