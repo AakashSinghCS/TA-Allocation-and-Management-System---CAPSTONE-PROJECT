@@ -75,6 +75,14 @@ Testing is done using [JUnit](https://junit.org/junit5/) and [Mockito](https://s
 
 Eventually, we can use `@SpringBootTest` for integration tests with an in-memory H2 database that can start for the tests and destroy itself after. Test service logic and utilities with Junit and Mockito, and test controllers with HTTP mappings with `@WebMvcTest` and MockMvc.
 
+## Auth
+
+Authentication is done using JWT's through the [jjwt](https://github.com/jwtk/jjwt) library to manage them. At the moment, the gateway service has a filter that checks if the JWT is valid before allowing any routes through, except for auth. On login in the user service, a JWT is created with the users email as the subject, and with claims of their role and id. The gateway when it parses this JWT extracts these and puts them into the headers to be forwarded downstream, which means that if the token is valid you'll know their privileges and id to do functions.
+
+I've commented out the part of assigning an expiration time, since it means that in the postman calls the JWT used for authentication would need to be changed constantly. This also means that if a user has their account deleted, they can still access the system if they have their old JWT. What this means is that in general for sensitive operations we should make sure the user is available, and once more of the core functionalities of the system are working, it would be good to re-introduce the time expiry for JWT's as well as using refresh tokens to account for users being deleted from the system.
+
+Each service will need spring security with JWT auth filter to handle granted authorities from the headers, and the method security provides the use of annotations to specify which role can do what function. Finally the security config just specifies that the JWT filter has to provide auth for anything to work in that service.
+
 
 
 
