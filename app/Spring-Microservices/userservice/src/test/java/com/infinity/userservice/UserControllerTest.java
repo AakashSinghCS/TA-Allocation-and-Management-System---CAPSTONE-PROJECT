@@ -1,10 +1,14 @@
 package com.infinity.userservice;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.infinity.userservice.controllers.UserController;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.enums.UserRole;
+import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.security.JwtUtil;
 import com.infinity.userservice.services.UserService;
@@ -55,9 +60,47 @@ public class UserControllerTest {
 
         mockMvc.perform(get("/users/1")
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.firstName").value("John"))
-            .andExpect(jsonPath("$.role").value("STUDENT"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.role").value("STUDENT"));
+    }
+    
+    @Test
+    void testDeleteById_notSameIdNotAdmin_Forbidden() throws Exception {
+        
+        when(userService.deleteUserById(eq(1L), eq(2L), eq(List.of(
+                "ROLE_STUDENT"))))
+                .thenThrow(new AuthorizationException("You don't have permission for this action"));
+        
+        mockMvc.perform(delete("/users/delete/1")
+                .header("X-User-Id", 2L)
+                .header("X-User-Roles", "ROLE_STUDENT"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testDeleteById_SameIdNotAdmin_Success() throws Exception {
+
+        when(userService.deleteUserById(eq(1L), eq(1L), eq(List.of("ROLE_STUDENT"))))
+                .thenReturn("User deleted");
+
+        mockMvc.perform(delete("/users/delete/1")
+                .header("X-User-Id", 1L)
+                .header("X-User-Roles", "ROLE_STUDENT"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testDeleteById_NotSameIdAdmin_Success() throws Exception {
+
+        when(userService.deleteUserById(eq(1L), eq(2L), eq(List.of(
+                "ROLE_COORDINATOR"))))
+                .thenReturn("User deleted");
+
+        mockMvc.perform(delete("/users/delete/1")
+                .header("X-User-Id", 2L)
+                .header("X-User-Roles", "ROLE_COORDINATOR"))
+                .andExpect(status().isOk());
     }
     
 }

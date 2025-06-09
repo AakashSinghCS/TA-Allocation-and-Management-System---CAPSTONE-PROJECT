@@ -2,6 +2,7 @@ package com.infinity.userservice.controllers;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,11 +38,15 @@ public class UserController {
     }
 
     @PutMapping("update/{id}")
-    public ResponseEntity<UserDto> putMethodName(@PathVariable String id, @RequestBody String entity) {
-        UserDto userDto = userService.updateUserById(id);
-        return ResponseEntity.ok(userDto);
+    public ResponseEntity<String> updateUser(@PathVariable Long id,
+            @RequestHeader("X-User-Id") Long requesterId,
+            @RequestHeader("X-User-Roles") List<String> roles,
+            @RequestBody Map<String, Object> payload) {
+
+        userService.updateUserById(id, requesterId, roles, payload);
+        return ResponseEntity.ok("User updated");
     }
-    
+
     @DeleteMapping("delete/{id}")
     public ResponseEntity<String> deleteUserById(@PathVariable Long id,
             @RequestHeader("X-User-Id") Long userIdFromHeader, @RequestHeader("X-User-Roles") List<String> roles) {

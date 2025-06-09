@@ -20,7 +20,7 @@ public class StudentService {
     private final UserMapper userMapper;
 
     public UserDto getStudentByStudentNum(Integer studentNum) {
-        Student student = studentRepository.findByStudentNumber(studentNum)
+        Student student = studentRepository.findByStudentNum(studentNum)
                 .orElseThrow(() -> new NotFoundException("User with student number " + studentNum + " not found"));
         return userMapper.toDto(student);
     }

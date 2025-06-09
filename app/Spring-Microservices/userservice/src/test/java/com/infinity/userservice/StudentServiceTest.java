@@ -36,7 +36,7 @@ public class StudentServiceTest {
     @Test
     void testGetUserByIdError() {
         Integer studentNum = 1;
-        when(studentRepository.findByStudentNumber(any())).thenReturn(Optional.empty());
+        when(studentRepository.findByStudentNum(any())).thenReturn(Optional.empty());
 
         NotFoundException e = assertThrows(NotFoundException.class, () -> {
         studentService.getStudentByStudentNum(studentNum);
@@ -51,7 +51,7 @@ public class StudentServiceTest {
         mockUser.setStudentNum(1);
         UserDto mockDto = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
 
-        when(studentRepository.findByStudentNumber(any())).thenReturn(Optional.of(mockUser));
+        when(studentRepository.findByStudentNum(any())).thenReturn(Optional.of(mockUser));
         when(userMapper.toDto(mockUser)).thenReturn(mockDto);
 
         UserDto dto = studentService.getStudentByStudentNum(1);
