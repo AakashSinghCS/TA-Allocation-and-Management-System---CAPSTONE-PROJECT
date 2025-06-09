@@ -51,11 +51,7 @@ public class AuthControllerTest {
 
     @Test
     void whenEmailIsInvalid_thenReturns400() throws Exception {
-<<<<<<< HEAD
         RegisterRequest request = new RegisterRequest("invalid-email", "John", "Smith", "P@ssword1", "STUDENT");
-=======
-        RegisterRequest request = new RegisterRequest("invalid-email", "John", "Smith", "P@ssword1", "STUDENT", 42);
->>>>>>> develop
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -66,11 +62,7 @@ public class AuthControllerTest {
     
     @Test
     void whenFirstNameIsMissing_thenReturns400() throws Exception {
-<<<<<<< HEAD
         RegisterRequest request = new RegisterRequest("john@test.com", "", "Smith", "P@ssword1", "STUDENT");
-=======
-        RegisterRequest request = new RegisterRequest("john@test.com", "", "Smith", "P@ssword1", "STUDENT", 42);
->>>>>>> develop
         
         mockMvc.perform(post("/auth/register")
         .contentType(MediaType.APPLICATION_JSON)
@@ -81,11 +73,7 @@ public class AuthControllerTest {
     
     @Test
     void whenLastNameIsMissing_thenReturns400() throws Exception {
-<<<<<<< HEAD
         RegisterRequest request = new RegisterRequest("john@test.com", "John", "", "P@ssword1", "STUDENT");
-=======
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "", "P@ssword1", "STUDENT", 42);
->>>>>>> develop
         
         mockMvc.perform(post("/auth/register")
         .contentType(MediaType.APPLICATION_JSON)
@@ -96,11 +84,7 @@ public class AuthControllerTest {
     
     @Test
     void whenPasswordIsWeak_thenReturns400() throws Exception {
-<<<<<<< HEAD
         RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "123", "STUDENT");
-=======
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "123", "STUDENT", 42);
->>>>>>> develop
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -111,11 +95,7 @@ public class AuthControllerTest {
 
     @Test
     void whenUserTypeIsMissing_thenReturns400() throws Exception {
-<<<<<<< HEAD
         RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "");
-=======
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "", 42);
->>>>>>> develop
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -126,11 +106,7 @@ public class AuthControllerTest {
 
     @Test
     void succesfullyRegisterStudent_thenReturns201() throws Exception {
-<<<<<<< HEAD
         RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT");
-=======
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT", 42);
->>>>>>> develop
         UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
 
         when(userService.register(any())).thenReturn(mockResponse);
@@ -145,11 +121,7 @@ public class AuthControllerTest {
 
     @Test
     void whenEmailIsMissing_thenReturns201() throws Exception {
-<<<<<<< HEAD
         RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "INSTRUCTOR");
-=======
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "INSTRUCTOR", null);
->>>>>>> develop
         UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.INSTRUCTOR);
 
         when(userService.register(any())).thenReturn(mockResponse);
@@ -164,12 +136,7 @@ public class AuthControllerTest {
 
     @Test
     void succesfullyRegisterCoordinator_thenReturns201() throws Exception {
-<<<<<<< HEAD
         RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "COORDINATOR");
-=======
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "COORDINATOR",
-                null);
->>>>>>> develop
         UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.COORDINATOR);
 
         when(userService.register(any())).thenReturn(mockResponse);

@@ -1,20 +1,10 @@
 package com.infinity.userservice.security;
 
-<<<<<<< HEAD
-=======
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
->>>>>>> develop
 import java.util.Date;
 import java.util.List;
 
 import javax.crypto.SecretKey;
 
-<<<<<<< HEAD
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +12,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
-=======
->>>>>>> develop
 @Component
 public class JwtUtil {
 

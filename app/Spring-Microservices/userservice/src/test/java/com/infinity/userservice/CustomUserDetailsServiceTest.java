@@ -30,11 +30,7 @@ public class CustomUserDetailsServiceTest {
 
     @Test
     void loadUserByUsername_Success() {
-<<<<<<< HEAD
         User mockUser = new Student("test@example.com", "John", "Doe", "hashedPassword");
-=======
-        User mockUser = new Student("test@example.com", "John", "Doe", "hashedPassword", 42);
->>>>>>> develop
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(mockUser));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername("test@example.com");
