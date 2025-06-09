@@ -1,22 +1,28 @@
-//This is just an example. Please redo this page later.
-
 import { Link } from "react-router-dom";
+import ubcLogo from "../../../assets/ubc-logo.png";
+import capIcon from "../../../assets/grad-cap.png";
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between bg-sky-900 text-white h-14 px-4">
-      {/* left — school branding */}
-      <div className="flex items-center gap-3">
-        {/* replace with a real SVG or PNG in /public */}
-        <img src="/ubc-logo.svg" alt="UBC logo" className="h-8 w-auto" />
-        <span className="hidden sm:inline font-semibold tracking-wide">
-          University of British Columbia
+    <header className="flex flex-col sm:flex-row items-center justify-between bg-[#040941] text-white px-4 sm:px-9 py-2">
+      
+      {/* UBC Logo and Name */}
+      <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+        <Link to="/" className="flex items-center">
+          <img
+            src={ubcLogo}
+            alt="UBC logo"
+            className="h-20 sm:h-20 w-auto transition hover:drop-shadow-[0_0_1em_#FFFFFF]"
+          />
+        </Link>
+        <span className="text-center font-medium tracking-wide text-base sm:text-lg text-white hover:text-gray-200 transition-colors">
+          UNIVERSITY OF BRITISH COLUMBIA
         </span>
       </div>
 
-      {/* right — app name links back to home */}
-      <Link to="/" className="text-lg font-bold hover:opacity-80">
-        TA Portal
+      {/* TA Portal icon */}
+      <Link to="/" className="flex items-center gap-2 mt-2 sm:mt-0">
+        <img src={capIcon} alt="Grad cap" className="h-20 sm:h-20 w-auto transition hover:drop-shadow-[0_0_1em_#FFFFFF]" />
       </Link>
     </header>
   );

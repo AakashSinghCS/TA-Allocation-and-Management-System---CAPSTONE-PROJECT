@@ -1,5 +1,7 @@
 package com.infinity.userservice.models;
 
+import com.infinity.userservice.enums.UserRole;
+
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Data;
@@ -10,10 +12,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue("I")
+@DiscriminatorValue("INSTRUCTOR")
 public class Instructor extends User {
     
-    public Instructor(String email, String firstName, String lastName) {
-        super(email, firstName, lastName);
+    public Instructor(String email, String firstName, String lastName, String password) {
+        super(email, firstName, lastName, password, UserRole.INSTRUCTOR);
+    }
+
+    @Override
+    public String getRole() {
+        return "ROLE_INSTRUCTOR";
     }
 }

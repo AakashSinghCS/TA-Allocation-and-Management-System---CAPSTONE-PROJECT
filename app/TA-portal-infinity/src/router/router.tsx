@@ -3,7 +3,11 @@ import App from "../App";
 import HomePage from "../pages/homepage/HomePage";
 import AboutPage from "../pages/aboutpage/AboutPage";
 import TaProfilePage from "../pages/taprofilepage/TaProfilePage";
+import LoginPage from "../pages/loginPage/LoginPage";
 import ErrorPage from "../pages/errorpage/ErrorPage";
+
+import PublicLayout from "../components/layout/publicLayout/PublicLayout";
+
 
 
 export const router = createBrowserRouter([
@@ -17,6 +21,17 @@ export const router = createBrowserRouter([
       { path: "taprofile/:studentId", element: <TaProfilePage />},
       { path: "error", element: <ErrorPage /> },
       { path: "*", element: <ErrorPage /> },                
+     
+    ],
+  },
+     {
+    path: "/login",
+    element: <PublicLayout />,
+    children: [
+      {
+        index: true,
+        element: <LoginPage />,
+      },
     ],
   },
 ]);
