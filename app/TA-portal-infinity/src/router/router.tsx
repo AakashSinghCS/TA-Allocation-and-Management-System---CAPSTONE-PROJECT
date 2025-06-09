@@ -7,6 +7,7 @@ import LoginPage from "../pages/loginPage/LoginPage";
 import { mockStudent } from "../mocked-objects/mockUsers";
 import { mockSection } from "../mocked-objects/mockSection";
 import PublicLayout from "../components/layout/publicLayout/PublicLayout";
+import SignUpPage from "../pages/signupPage/SignUpPage";
 
 
 
@@ -27,6 +28,16 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <LoginPage />,
+      },
+    ],
+  },
+  {
+    path: "/signup",
+    element: <PublicLayout />,
+    children: [
+      {
+        index: true,
+        element: <SignUpPage />,
       },
     ],
   },
