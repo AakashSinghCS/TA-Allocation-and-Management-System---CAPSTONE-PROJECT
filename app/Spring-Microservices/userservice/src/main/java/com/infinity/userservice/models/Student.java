@@ -1,5 +1,7 @@
 package com.infinity.userservice.models;
 
+import com.infinity.userservice.enums.UserRole;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -11,15 +13,20 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue("S")
+@DiscriminatorValue("STUDENT")
 public class Student extends User {
 
     @Column(unique = true)
     private Integer studentNumber;
 
-    public Student(String email, String firstName, String lastName, Integer studentNumber) {
-        super(email, firstName, lastName);
+    public Student(String email, String firstName, String lastName, String password, Integer studentNumber) {
+        super(email, firstName, lastName, password, UserRole.STUDENT);
         this.studentNumber = studentNumber;
+    }
+
+    @Override
+    public String getRole() {
+        return "ROLE_STUDENT";
     }
 
 }
