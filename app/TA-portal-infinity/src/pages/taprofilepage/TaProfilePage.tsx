@@ -5,7 +5,7 @@ import SectionCard from '../../components/features/section/SectionCard';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { fetchStudentDetails } from '../../api/student/fetchStudentDetails';
-import type Student from '../../interfaces/student/Student';
+import {type Student,studentProfileFields,studentFieldLabels} from '../../interfaces/user/Student';
 import { fetchAllStudentSectionsHasCompleted } from '../../api/student/fetchAllStudentSectionsHasCompleted';
 
 export default function TaProfilePage() {
@@ -50,13 +50,17 @@ function ProfileSectionContainer() {
     // navigate("/error", { replace: true, state: { message: "Test error redirection" } });
   }, [sId, navigate]);
 
-  
+  const filteredFields = studentProfileFields.filter(
+      (key) => key !== "id" && key !== "firstName" && key !== "lastName"
+    );
 
   return (
-    <ProfileSection
-        student={data}
+    data ? <ProfileSection
+        user={data}
+        profileFields = {filteredFields}
+        fieldLabels = {studentFieldLabels}
         className="max-w-xs space-y-4 order-1 md:order-2 md:w-1/3 md:ml-auto"
-      />
+      /> : <p>Is Loading! {/* replace the is loading later by a seperate component which is more user-friendly*/}</p> 
   );
 }
 

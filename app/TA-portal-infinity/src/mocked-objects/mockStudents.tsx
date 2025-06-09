@@ -1,4 +1,4 @@
-import type Student from '../interfaces/student/Student';
+import type Student from '../interfaces/user/Student';
 export const mockStudentJohnDoe : Student = {
     id : 1,
     firstName : "John",

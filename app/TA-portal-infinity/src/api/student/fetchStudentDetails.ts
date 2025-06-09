@@ -1,4 +1,4 @@
-import type Student from "../../interfaces/student/Student";
+import type Student from "../../interfaces/user/Student";
 import {mockStudentJohnDoe} from '../../mocked-objects/mockStudents';
 
 export async function fetchStudentDetails(studentId: number):Promise<Student>{
