@@ -12,6 +12,9 @@ public record RegisterRequest(
                 
         @NotBlank(message = "Last name is required")
         
+                
+        @NotBlank(message = "Last name is required")
+        
         String lastName,
         @NotBlank(message = "Password is required") 
         @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-\\[\\]{}|;:',.<>?]).{8,}$", 

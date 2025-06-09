@@ -30,3 +30,7 @@ coverage/
 
 # local caches
 .cache/
+
+
+# Maven
+**/target/

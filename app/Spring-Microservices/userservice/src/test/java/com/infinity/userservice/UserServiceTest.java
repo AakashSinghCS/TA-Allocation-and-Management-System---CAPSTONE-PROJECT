@@ -21,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.userservice.dtos.CoordinatorUpdateRequest;
@@ -79,6 +80,7 @@ public class UserServiceTest {
         UserDto studentDto = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
 
         when(userRepository.save(any(User.class))).thenReturn(saved);
+        when(userMapper.registerToUser(request)).thenReturn(saved);
         when(userMapper.registerToUser(request)).thenReturn(saved);
         when(userMapper.toDto(saved)).thenReturn(studentDto);
 
