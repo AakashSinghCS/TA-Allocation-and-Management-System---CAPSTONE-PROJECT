@@ -4,6 +4,7 @@ const navItems = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Ta Profile", to: "/taprofile" },
+  { label: "Courses Management", to: "/courses" },
 ];
 
 export default function SideNav() {
