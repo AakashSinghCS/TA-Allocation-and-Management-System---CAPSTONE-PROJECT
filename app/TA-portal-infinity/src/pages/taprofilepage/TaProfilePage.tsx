@@ -1,5 +1,4 @@
 import type Section from '../../interfaces/section/Section';
-import formatDateForDisplay from '../../utility/formatdatefordisplay/formatDateForDisplay';
 import ProfileSection from '../../components/features/profile/ProfileSection';
 import SectionCard from '../../components/features/section/SectionCard';
 import { useParams, useNavigate, type NavigateFunction } from 'react-router-dom';
@@ -31,13 +30,14 @@ export default function TaProfilePage() {
     - Finally, add the profile questions and answers.
 */
   return (
-    <div className=" mx-auto p-1 bg-white flex flex-col md:gap-3">
+    <div className=" mx-auto bg-white flex flex-col md:gap-3">
       <div className = "order-0">
         <ProfileSectionContainer studentId = {sId} navigate={navigate}/>
       </div>
-      <div className ="flex flex-col md:flex-row order-1">
-        <SectionSectionContainer studentId = {sId} navigate={navigate}/>
-        {/* other containers here*/}
+      <div className ="flex flex-col md:flex-row flex-wrap order-1 gap-3">
+        <AllocationHistoryContainer studentId = {sId} navigate={navigate}/>
+        <SectionsTakenContainer studentId = {sId} navigate={navigate}/>
+        <SectionsTakingContainer studentId = {sId} navigate={navigate}/>
       </div>
     </div>
   );
@@ -77,7 +77,7 @@ function ProfileSectionContainer({studentId, navigate}:containerProps) {
   );
 }
 
-function SectionSectionContainer({studentId, navigate}:containerProps){
+function SectionsTakenContainer({studentId, navigate}:containerProps){
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -98,18 +98,84 @@ function SectionSectionContainer({studentId, navigate}:containerProps){
 
 
   return (
-    <SectionSection
+    <div className="order-2">
+      <h2 className="text-lg font-bold">Courses Taken</h2>
+      <SectionSection
         sections={data ? data : []}
-        className="space-y-4 order-0 md:order-1 md:w-2/3 mt-6 md:mt-0"
+        className="space-y-4 flex-1 mt-6 md:mt-0"
       />
+    </div>
+    
   );
 }
+
+function SectionsTakingContainer({studentId, navigate}:containerProps){
+  const [data, setData] = useState<Section[]>();
+
+  useEffect(() => {
+    if (Number.isNaN(studentId)) {
+      navigate("/error", { replace: true, state: { message: "Invalid student ID" } });
+      return;
+    }
+
+    fetchAllStudentSectionsHasCompleted(studentId,true)
+      .then((resp: Section[]) => {
+        setData(resp);
+      })
+      .catch((e: Error) => {
+        navigate("/error", { replace: true, state: { message: e.message } });
+      });
+
+  }, [studentId, navigate]);
+
+
+  return (
+    <div className="order-1">
+      <h2 className="text-lg font-bold">Courses Taking</h2>
+      <SectionSection
+        sections={data ? data : []}
+        className="space-y-4 flex-1 mt-6 md:mt-0"
+      />
+    </div>
+  );
+}
+
+function AllocationHistoryContainer({studentId, navigate}:containerProps){
+  const [data, setData] = useState<Section[]>();
+
+  useEffect(() => {
+    if (Number.isNaN(studentId)) {
+      navigate("/error", { replace: true, state: { message: "Invalid student ID" } });
+      return;
+    }
+
+    fetchAllStudentSectionsHasCompleted(studentId,true)
+      .then((resp: Section[]) => {
+        setData(resp);
+      })
+      .catch((e: Error) => {
+        navigate("/error", { replace: true, state: { message: e.message } });
+      });
+
+  }, [studentId, navigate]);
+
+
+  return (
+    <div className="order-0">
+      <h2 className="text-lg font-bold">Allocation History</h2>
+      <SectionSection
+        sections={data ? data : []}
+        className="space-y-4 flex-1 mt-6 md:mt-0"
+      />
+    </div>
+    
+  );
+}
+
 
 function SectionSection({ sections = [], className = "" }: SectionProps) {
   return (
     <section className={className}>
-      <h2 className="text-lg font-bold">Courses Taken</h2>
-
       {sections.length ? (
         <div className="grid gap-1">
           {sections.map(sec => (
