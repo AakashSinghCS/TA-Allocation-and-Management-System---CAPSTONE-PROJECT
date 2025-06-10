@@ -467,3 +467,121 @@ Retrospective: Process is going well. All team members are working hard to get t
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Complete profile section of the application, and begin next assigned coding task after meeting with the team. 
+
+## Saturday 6/07 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.07.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Environment setup - Docker & Spring Boot
+  * #2: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 28/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress. 20% Complete
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I was finally able to fix the bug and got my environment set up. This process took me a long time close to 8 hours to get fixed. I was able to get started on my assigned part of the backend of the profile section service.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. I will continue working on the profile service to get it done ASAP.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team.
+
+## Sunday 6/08 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.08.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 28/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 70% Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I finished setting up the basic pom.xml files, linked the profile service to API gateway, and finished 70% of the requirements.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. I will continue working on the profile service to get it done ASAP.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team.
+
+## Monday 6/09 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.09.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 28/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> 90% Complete. Mods required.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Almost done with the profile service. Few modifications remaining after discussing with team members.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. I will continue working on the profile service to get it done ASAP.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team.
+
