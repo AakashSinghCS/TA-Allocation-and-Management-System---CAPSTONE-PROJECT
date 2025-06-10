@@ -64,7 +64,7 @@ Clockify report
   * #1: learning microservice
   * #2: project planning
 
-### Progress Update (since May 18 2025) 
+### Progress Update
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -108,7 +108,7 @@ Clockify report
   * #1: learning spring boot and microservice
   * #2: project deploy
 
-### Progress Update (since May 18 2025) 
+### Progress Update
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -153,7 +153,7 @@ Clockify report
   * #1: learning spring boot and microservice
   * #2: course filter backend coding
 
-### Progress Update (since May 18 2025) 
+### Progress Update
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
