@@ -23,9 +23,10 @@ const InputField = ({ label, name, type, value, onChange, ...rest }: any) => (
 
 const SignUpPage: React.FC = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
+   
+    firstName: '',
+    lastName: '',
     email: '',
-    phoneNumber: '',
     role: '',
     password: '',
     confirmPassword: '',
@@ -72,14 +73,14 @@ const SignUpPage: React.FC = () => {
           <h3 className="text-md font-semibold text-center mb-4">Create an Account</h3>
 
           <form onSubmit={handleSignUp} className="space-y-4">
-            <InputField label="Full Name" name="fullName" type="text" value={formData.fullName} onChange={handleChange} />
+            <InputField label="First Name" name="firstName" type="text" value={formData.firstName} onChange={handleChange} />
+             <InputField label="Last Name" name="lastName" type="text" value={formData.lastName} onChange={handleChange} />
             <InputField label="Email" name="email" type="email" value={formData.email} onChange={handleChange} pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" />
-            <InputField label="Phone Number" name="phoneNumber" type="tel" value={formData.phoneNumber} onChange={handleChange} pattern="[0-9]{10,15}" />
 
             <div>
              <label htmlFor="role" className="text-sm block mb-1">Role*</label>
                   <select
-                    id="role" // ✅ add this
+                    id="role" 
                     name="role"
                     value={formData.role}
                     onChange={handleChange}
