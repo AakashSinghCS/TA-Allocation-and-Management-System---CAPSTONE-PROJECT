@@ -1,23 +1,15 @@
-import type Student from '../../interfaces/Student';
-import type Section from '../../interfaces/Section';
+import type Section from '../../interfaces/section/Section';
 import formatDateForDisplay from '../../utility/formatdatefordisplay/formatDateForDisplay';
 import ProfileSection from '../../components/features/profile/ProfileSection';
 import SectionCard from '../../components/features/section/SectionCard';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { fetchStudentDetails } from '../../api/student/fetchStudentDetails';
+import {type Student,studentProfileFields,studentFieldLabels} from '../../interfaces/user/Student';
+import { fetchAllStudentSectionsHasCompleted } from '../../api/student/fetchAllStudentSectionsHasCompleted';
 
-interface Props {
-  student: Student;
-  section?: Section[];
-}
-
-export default function TaProfilePage({ student, section }: Props) {
-  const profileDetails = [
-    { label: "Email", value: student.email },
-    { label: "Student #", value: student.studentNumber.toString() },
-    { label: "Program", value: student.program },
-    { label: "Enrollment Year", value: student.enrollmentYear.toString() },
-    { label: "School Year", value: student.schoolYear.toString() },
-    { label: "Joined", value: formatDateForDisplay(student.createdAt) },
-  ];
+export default function TaProfilePage() {
+  
   /*need to do the following:
     - show the times for each of the courses ex: Wed~Fridya 2:30 etc.
     - make the card smaller, or make it into more of a list so that the coordinator doesn't have to scroll.
@@ -28,22 +20,85 @@ export default function TaProfilePage({ student, section }: Props) {
 */
   return (
     <div className="max-w-7xl mx-auto mt-8 p-6 bg-white rounded-2xl flex flex-col md:flex-row md:gap-8">
-      <ProfileSection
-        name={`${student.firstName} ${student.lastName}`}
-        profileDetails={profileDetails}
-        className="max-w-xs space-y-4 order-1 md:order-2 md:w-1/3 md:ml-auto"
-      />
-
-      <SectionSection
-        sections={section ? section : []}
-        className="space-y-4 order-2 md:order-1 md:w-2/3 mt-6 md:mt-0"
-      />
+      <ProfileSectionContainer />
+      <SectionSectionContainer/>
     </div>
   );
 }
+
+function ProfileSectionContainer() {
+  const { studentId } = useParams();
+  const sId = Number(studentId);
+  const navigate = useNavigate();
+
+  const [data, setData] = useState<Student>();
+
+  useEffect(() => {
+    if (Number.isNaN(sId)) {
+      navigate("/error", { replace: true, state: { message: "Invalid student ID" } });
+      return;
+    }
+
+    fetchStudentDetails(sId)
+      .then((resp: Student) => {
+        setData(resp);
+      })
+      .catch((e: Error) => {
+        navigate("/error", { replace: true, state: { message: e.message } });
+      });
+    /* To test if the Navigate component leading you to error works, uncomment the comment below.*/
+    // navigate("/error", { replace: true, state: { message: "Test error redirection" } });
+  }, [sId, navigate]);
+
+  const filteredFields = studentProfileFields.filter(
+      (key) => key !== "id" && key !== "firstName" && key !== "lastName"
+    );
+
+  return (
+    data ? <ProfileSection
+        user={data}
+        profileFields = {filteredFields}
+        fieldLabels = {studentFieldLabels}
+        className="max-w-xs space-y-4 order-1 md:order-2 md:w-1/3 md:ml-auto"
+      /> : <p>Is Loading! {/* replace the is loading later by a seperate component which is more user-friendly*/}</p> 
+  );
+}
+
 interface SectionProps {
-  sections?: Section[];      
+  sections?: Section[];
   className?: string;
+}
+
+function SectionSectionContainer(){
+  const { studentId } = useParams();
+  const sId = Number(studentId);
+  const navigate = useNavigate();
+
+  const [data, setData] = useState<Section[]>();
+
+  useEffect(() => {
+    if (Number.isNaN(sId)) {
+      navigate("/error", { replace: true, state: { message: "Invalid student ID" } });
+      return;
+    }
+
+    fetchAllStudentSectionsHasCompleted(sId,true)
+      .then((resp: Section[]) => {
+        setData(resp);
+      })
+      .catch((e: Error) => {
+        navigate("/error", { replace: true, state: { message: e.message } });
+      });
+
+  }, [sId, navigate]);
+
+
+  return (
+    <SectionSection
+        sections={data ? data : []}
+        className="space-y-4 order-2 md:order-1 md:w-2/3 mt-6 md:mt-0"
+      />
+  );
 }
 
 function SectionSection({ sections = [], className = "" }: SectionProps) {
@@ -66,4 +121,4 @@ function SectionSection({ sections = [], className = "" }: SectionProps) {
   );
 }
 
-const sectionKey = (s: Section) => `${s.deptCode}-${s.courseNum}-${s.section}`;
+const sectionKey = (s: Section) => `${s.sectionDetails.deptCode}-${s.sectionDetails.courseNum}-${s.sectionDetails.section}`;

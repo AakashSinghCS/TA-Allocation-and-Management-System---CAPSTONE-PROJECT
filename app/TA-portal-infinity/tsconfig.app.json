@@ -31,7 +31,7 @@
     import.meta.env (your VITE_… variables)
     Hot-module-replacement helpers (e.g. import.meta.hot.accept)
     Static asset imports (e.g. import logo from './logo.svg')*/
-    "types": ["vite/client", "vitest/globals"] 
+    "types": ["vite/client", "vitest/globals","@testing-library/jest-dom"] 
   },
   /* Defines which files TypeScript should parse, type-check, and watch.*/
   "include": ["src"]

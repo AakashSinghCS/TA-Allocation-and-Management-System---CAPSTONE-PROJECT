@@ -28,7 +28,7 @@ public class UserMapper {
         User user;
         switch (request.userType().toUpperCase()) {
             case "STUDENT" -> user = new Student(request.email(), request.firstName(), request.lastName(),
-                    request.password(), request.studentNumber());
+                    request.password());
             case "INSTRUCTOR" ->
                 user = new Instructor(request.email(), request.firstName(), request.lastName(), request.password());
             case "COORDINATOR" ->
