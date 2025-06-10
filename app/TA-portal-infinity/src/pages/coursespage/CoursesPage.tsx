@@ -22,17 +22,37 @@ export default function CoursesPage() {
     setFilteredCourses(mockCourses);
   }, []);
 
-  const handleFilterChange = (filters: { term: string; searchQuery: string }) => {
+  const handleFilterChange = (filters: {
+    term: string;
+    searchQuery: string;
+    deptCode: string;
+    courseNum: string;
+  }) => {
     let updatedCourses = courses;
 
+    // Filter by Term
     if (filters.term) {
       updatedCourses = updatedCourses.filter(course => course.term === filters.term);
     }
 
+    // Filter by Search Query (Course Name)
     if (filters.searchQuery) {
       updatedCourses = updatedCourses.filter(course =>
-        course.name.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-        `${course.deptCode} ${course.courseNum}`.toLowerCase().includes(filters.searchQuery.toLowerCase())
+        course.name.toLowerCase().includes(filters.searchQuery.toLowerCase())
+      );
+    }
+
+    // Filter by Department Code
+    if (filters.deptCode) {
+      updatedCourses = updatedCourses.filter(course =>
+        course.deptCode.toLowerCase().includes(filters.deptCode.toLowerCase())
+      );
+    }
+
+    // Filter by Course Number
+    if (filters.courseNum) {
+      updatedCourses = updatedCourses.filter(course =>
+        course.courseNum.toLowerCase().includes(filters.courseNum.toLowerCase())
       );
     }
 
@@ -40,16 +60,16 @@ export default function CoursesPage() {
   };
 
   const handleCreateCourse = (newCourse: Omit<Course, 'id'>) => {
-    // In a real application, we would send this to an API
+    // In a real application, we willl send this to an API
     const courseWithId = { ...newCourse, id: courses.length + 1 };
     setCourses([...courses, courseWithId]);
-    setFilteredCourses([...courses, courseWithId]);
+    setFilteredCourses([...courses, courseWithId]); // Also update the filtered list
   };
 
   const handleFileUpload = (file: File) => {
     // Handle CSV file parsing and course creation
     console.log('Uploaded file:', file);
-    // We will use a library like Papaparse to handle CSV parsing
+    // It's a good idea to use a library like Papaparse to handle CSV parsing
   };
 
   return (
@@ -58,12 +78,19 @@ export default function CoursesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
-          <CourseFilter onFilterChange={handleFilterChange} />
+          <h2 className="text-xl font-semibold mb-2">Course List & Filters</h2>
+          <div className="border p-4 rounded-md shadow-sm mb-4">
+            <CourseFilter onFilterChange={handleFilterChange} />
+          </div>
           <CourseList courses={filteredCourses} />
         </div>
         <div className="space-y-8">
-          <CreateCourseForm onCreateCourse={handleCreateCourse} />
-          <CsvUpload onFileUpload={handleFileUpload} />
+          <div className="border p-4 rounded-md shadow-sm">
+            <CreateCourseForm onCreateCourse={handleCreateCourse} />
+          </div>
+          <div className="border p-4 rounded-md shadow-sm">
+            <CsvUpload onFileUpload={handleFileUpload} />
+          </div>
         </div>
       </div>
     </div>
