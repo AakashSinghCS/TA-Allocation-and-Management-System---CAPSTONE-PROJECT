@@ -1,5 +1,6 @@
 package com.infinity.courseservice.dtos;
 
 public record CourseRequest(
-        String subject,
+        String deptCode,
+        String name,
         Integer courseNum) {}

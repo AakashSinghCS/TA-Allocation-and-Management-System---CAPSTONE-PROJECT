@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.courseservice.dtos.CourseDto;
+import com.infinity.courseservice.dtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseRequest;
+import com.infinity.courseservice.dtos.CourseSectionDto;
 import com.infinity.courseservice.services.CourseService;
 
 import lombok.Data;
@@ -38,16 +40,22 @@ public class CourseController {
         return ResponseEntity.ok(courseDto);
     }
     
+    @GetMapping("/filterCourses")
+    public ResponseEntity<List<CourseSectionDto>> filterCourses(@RequestBody CourseFilterRequest filter) {
+        List<CourseSectionDto> CourseSectionDto = courseService.filterCourses(filter);
+        return ResponseEntity.ok(CourseSectionDto);
+    }
+
     @GetMapping("/allById")
     public ResponseEntity<List<CourseDto>> getCoursesByIds(@RequestParam List<Long> ids) {
         List<CourseDto> courseDtos = courseService.findCoursesByIds(ids);
         return ResponseEntity.ok(courseDtos);
     }
 
-    @GetMapping("/getEnrolledCourses/{studentId}")
-    public ResponseEntity<List<CourseDto>> getMethodName(@PathVariable Integer studentId) {
-        List<CourseDto> courseDtos = courseService.getEnrolledCourses(studentId);
-        return ResponseEntity.ok(courseDtos);
-    }
+    // @GetMapping("/getEnrolledCourses/{studentId}")
+    // public ResponseEntity<List<CourseDto>> getMethodName(@PathVariable Integer studentId) {
+    //     List<CourseDto> courseDtos = courseService.getEnrolledCourses(studentId);
+    //     return ResponseEntity.ok(courseDtos);
+    // }
     
 }
