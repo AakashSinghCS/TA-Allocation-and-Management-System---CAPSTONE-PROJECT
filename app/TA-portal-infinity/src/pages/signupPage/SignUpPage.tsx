@@ -103,7 +103,7 @@ const SignUpPage: React.FC = () => {
 
             <p className="text-base text-left text-black mt-2">
               Already have an account?{" "}
-              <a href="/login" className="text-[#040491] hover:opacity-50 transition-opacity">Login Here</a>
+              <a href="/login" className="text-sm text-[#040491] hover:opacity-50 transition-opacity" style={{color:"#040941"}}>Login Here</a>
             </p>
 
             <button type="submit" className="w-full bg-[#040941] text-white py-2 rounded hover:bg-[#040491] transition-colors">
