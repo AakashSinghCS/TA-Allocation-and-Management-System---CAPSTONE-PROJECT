@@ -14,7 +14,7 @@ export default function App() {
         <SideNav />
 
         {/* child routes render here */}
-        <main className="flex-1 overflow-y-auto bg-white p-6">
+        <main className="flex-1 overflow-y-auto bg-white p-3">
           <Outlet />
         </main>
       </div>

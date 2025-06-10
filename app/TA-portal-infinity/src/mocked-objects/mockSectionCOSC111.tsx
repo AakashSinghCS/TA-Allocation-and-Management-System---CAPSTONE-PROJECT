@@ -17,15 +17,15 @@ export const mockSectionCOSC111Details : SectionDetails = {
 export const mockSectionScheduleCOSC111ForTue : SectionSchedule = {
     sectionId: 1,
     day: "Tue",
-    startTime : "14:00:00",
-    endTime: "16:00:00"
+    startTime : "14:00",
+    endTime: "16:00"
 }
 
 export const mockSectionScheduleCOSC111ForFri : SectionSchedule = {
     sectionId: 1,
     day: "Fri",
-    startTime : "14:00:00",
-    endTime: "16:00:00"
+    startTime : "14:00",
+    endTime: "16:00"
 }
 
 export const mockSectionCOSC111 : Section = {

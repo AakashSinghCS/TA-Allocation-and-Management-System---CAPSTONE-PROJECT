@@ -31,7 +31,7 @@ export default function TaProfilePage() {
     - Finally, add the profile questions and answers.
 */
   return (
-    <div className="max-w-7xl mx-auto p-1 bg-white flex flex-col md:gap-3">
+    <div className=" mx-auto p-1 bg-white flex flex-col md:gap-3">
       <div className = "order-0">
         <ProfileSectionContainer studentId = {sId} navigate={navigate}/>
       </div>
@@ -108,10 +108,10 @@ function SectionSectionContainer({studentId, navigate}:containerProps){
 function SectionSection({ sections = [], className = "" }: SectionProps) {
   return (
     <section className={className}>
-      <h2 className="text-xl font-semibold mb-2">Courses</h2>
+      <h2 className="text-lg font-bold">Courses Taken</h2>
 
       {sections.length ? (
-        <div className="grid gap-3">
+        <div className="grid gap-1">
           {sections.map(sec => (
             <SectionCard key={sectionKey(sec)} section={sec} />
           ))}
