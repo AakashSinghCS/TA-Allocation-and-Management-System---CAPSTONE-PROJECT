@@ -37,10 +37,10 @@ export default function TaProfilePage() {
       <div className = "order-0">
         <ProfileSectionContainer studentId = {sId} navigate={navigate} className="flex flex-col"/>
       </div>
-      <div className ="flex flex-col md:flex-row flex-wrap order-1 gap-3">
-        <AllocationHistoryContainer studentId = {sId} navigate={navigate} className="order-0 mx-w-1/3 space-y-4 flex-1 mt-6 md:mt-0"/>
-        <SectionsTakenContainer studentId = {sId} navigate={navigate} className="order-1 mx-w-1/3 space-y-4 flex-1 mt-6 md:mt-0"/>
-        <SectionsTakingContainer studentId = {sId} navigate={navigate} className="order-2 mx-w-1/3 space-y-4 flex-1 mt-6 md:mt-0"/>
+      <div className ="flex flex-col md:flex-row flex-wrap max-w-full order-1 gap-3">
+        <AllocationHistoryContainer studentId = {sId} navigate={navigate} className="order-0 max-w-1/3 space-y-4 flex-1 mt-6 md:mt-0"/>
+        <SectionsTakenContainer studentId = {sId} navigate={navigate} className="order-1 max-w-1/3 space-y-4 flex-1 mt-6 md:mt-0"/>
+        <SectionsTakingContainer studentId = {sId} navigate={navigate} className="order-2 max-w-1/3 space-y-4 flex-1 mt-6 md:mt-0"/>
       </div>
     </div>
   );
