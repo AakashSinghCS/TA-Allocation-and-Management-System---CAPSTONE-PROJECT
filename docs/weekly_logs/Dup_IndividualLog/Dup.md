@@ -686,3 +686,58 @@ I also talked with Seiya today to tell him how I think he should work on his bra
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
 
+
+## Monday 6/09 (5/28~6/6)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June09.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue #191
+  * #3: review other's PRs
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I spent about 3 hours reviewing other's PRs.
+I spent the rest of the time working on my PR-191. It was mostly to improve the aesthetics of the TA profile page.
+It wasnt necessary, but I made it work on smaller screens as well.
+I spent a long time on the css and layout of the html and etc.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
+
