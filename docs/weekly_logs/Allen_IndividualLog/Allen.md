@@ -141,3 +141,47 @@ finished the video presentation, trying to understand the project and test runs
   * learning framwork and understand the project
   * user story: browse available courses
 
+
+
+## June 05 - 09
+
+### Timesheet
+Clockify report
+![alt text](./clockify/6.09.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: learning spring boot and microservice
+  * #2: course filter backend coding
+
+### Progress Update (since May 18 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>learning spring boot and microservice
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>course filter backend coding
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+finished the learning part, started coding on course filter, almost completed, haven't integrate with frontend
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * integrating and testing course filter
+  * start on the nest feature
