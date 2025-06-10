@@ -27,7 +27,7 @@ public class UserMapperTest {
 
     @Test
     void mapStudentWithProperRole() {
-        Student student = new Student("john@test.com", "John", "Smith", "P@ssword1", 87);
+        Student student = new Student("john@test.com", "John", "Smith", "P@ssword1");
         UserDto userDto = userMapper.toDto(student);
         assertEquals(userDto.firstName(), student.getFirstName());
         assertEquals(userDto.lastName(), student.getLastName());
@@ -54,7 +54,7 @@ public class UserMapperTest {
 
     @Test
     void mapExceptionNoUserType() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "", 87);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "");
         BadRequestException e = assertThrows(BadRequestException.class, () -> {
             userMapper.registerToUser(request);
         });
@@ -64,7 +64,7 @@ public class UserMapperTest {
 
     @Test
     void mapRegisterRequestToStudent() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT", 87);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT");
         User user = (Student)userMapper.registerToUser(request);
         assertEquals(user.getFirstName(), request.firstName());
         assertEquals(user.getLastName(), request.lastName());
@@ -73,7 +73,7 @@ public class UserMapperTest {
 
     @Test
     void mapRegisterRequestToInstructor() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "INSTRUCTOR", null);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "INSTRUCTOR");
         Instructor user = (Instructor)userMapper.registerToUser(request);
         assertEquals(user.getFirstName(), request.firstName());
         assertEquals(user.getLastName(), request.lastName());
@@ -82,7 +82,7 @@ public class UserMapperTest {
 
     @Test
     void mapRegisterRequestToCoordinator() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "COORDINATOR", null);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "COORDINATOR");
         Coordinator user = (Coordinator)userMapper.registerToUser(request);
         assertEquals(user.getFirstName(), request.firstName());
         assertEquals(user.getLastName(), request.lastName());

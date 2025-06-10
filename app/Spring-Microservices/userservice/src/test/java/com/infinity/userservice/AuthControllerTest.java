@@ -51,7 +51,7 @@ public class AuthControllerTest {
 
     @Test
     void whenEmailIsInvalid_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("invalid-email", "John", "Smith", "P@ssword1", "STUDENT", 42);
+        RegisterRequest request = new RegisterRequest("invalid-email", "John", "Smith", "P@ssword1", "STUDENT");
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -62,7 +62,7 @@ public class AuthControllerTest {
     
     @Test
     void whenFirstNameIsMissing_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "", "Smith", "P@ssword1", "STUDENT", 42);
+        RegisterRequest request = new RegisterRequest("john@test.com", "", "Smith", "P@ssword1", "STUDENT");
         
         mockMvc.perform(post("/auth/register")
         .contentType(MediaType.APPLICATION_JSON)
@@ -73,7 +73,7 @@ public class AuthControllerTest {
     
     @Test
     void whenLastNameIsMissing_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "", "P@ssword1", "STUDENT", 42);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "", "P@ssword1", "STUDENT");
         
         mockMvc.perform(post("/auth/register")
         .contentType(MediaType.APPLICATION_JSON)
@@ -84,7 +84,7 @@ public class AuthControllerTest {
     
     @Test
     void whenPasswordIsWeak_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "123", "STUDENT", 42);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "123", "STUDENT");
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -95,7 +95,7 @@ public class AuthControllerTest {
 
     @Test
     void whenUserTypeIsMissing_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "", 42);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "");
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +106,7 @@ public class AuthControllerTest {
 
     @Test
     void succesfullyRegisterStudent_thenReturns201() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT", 42);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT");
         UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
 
         when(userService.register(any())).thenReturn(mockResponse);
@@ -121,7 +121,7 @@ public class AuthControllerTest {
 
     @Test
     void whenEmailIsMissing_thenReturns201() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "INSTRUCTOR", null);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "INSTRUCTOR");
         UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.INSTRUCTOR);
 
         when(userService.register(any())).thenReturn(mockResponse);
@@ -136,8 +136,7 @@ public class AuthControllerTest {
 
     @Test
     void succesfullyRegisterCoordinator_thenReturns201() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "COORDINATOR",
-                null);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "COORDINATOR");
         UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.COORDINATOR);
 
         when(userService.register(any())).thenReturn(mockResponse);

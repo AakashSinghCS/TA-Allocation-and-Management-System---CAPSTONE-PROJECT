@@ -12,6 +12,9 @@ public record RegisterRequest(
                 
         @NotBlank(message = "Last name is required")
         
+                
+        @NotBlank(message = "Last name is required")
+        
         String lastName,
         @NotBlank(message = "Password is required") 
         @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-\\[\\]{}|;:',.<>?]).{8,}$", 
@@ -22,6 +25,5 @@ public record RegisterRequest(
         @NotBlank(message = "User type is required") 
         @Pattern(regexp = "STUDENT|INSTRUCTOR|COORDINATOR", message = "User type must be STUDENT, INSTRUCTOR, or COORDINATOR")
         
-        String userType,
-        Integer studentNumber) {
+        String userType) {
 }
