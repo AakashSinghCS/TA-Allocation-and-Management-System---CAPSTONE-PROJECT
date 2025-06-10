@@ -1,18 +1,42 @@
 import type Section from "../../../interfaces/section/Section";
 
-export default function SectionCard({ section }: { section: Section }) {
-  return (
-    <div className="grid rounded-lg text-sm border border-slate-200 p-1 space-y-1 bg-slate-50">
+import { useState } from "react";
 
-      <div className="flex flex-row">
-        <h3 className="font-medium">{`${section.sectionDetails.deptCode} ${section.sectionDetails.courseNum} ${section.sectionDetails.section} - ${section.sectionDetails.name}`}</h3>
-        <p className="ml-1">{` | ${section.sectionDetails.type} | ${section.sectionDetails.term}`}</p>
-      </div>
-      <div className="flex flex-row gap-1">
-        <p>Section Schedule:</p>
-        <div className="flex gap-x-1">
+export default function SectionCard({ section }: { section: Section }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const courseCodeAndName = `${section.sectionDetails.deptCode} ${section.sectionDetails.courseNum} ${section.sectionDetails.section} - ${section.sectionDetails.name}`;
+  const metaInfo = `| ${section.sectionDetails.type} | ${section.sectionDetails.term}`;
+
+  return (
+    <div
+      className="grid rounded-lg text-sm border border-slate-200 p-2 bg-slate-50"
+    >
+      {expanded ? (
+        <>
+          <h3 className="font-medium">{courseCodeAndName}</h3>
+          <div className="flex flex-row items-center">
+            <span className="text-blue-500 text-xs cursor-pointer" onClick={() => setExpanded(!expanded)}>–</span>
+            <p className="ml-1 whitespace-nowrap text-xs text-slate-600">{metaInfo}</p>
+          </div>
+        </>
+      ) : (
+        <div className="flex flex-row flex-wrap items-center">
+          <div className="flex items-center">
+            <h3 className="font-medium truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[100px] md:max-w-xs" >
+              {courseCodeAndName}
+            </h3>
+            <span className="text-blue-500 text-xs cursor-pointer" onClick={() => setExpanded(!expanded)}>+</span>
+          </div>
+          <p className="ml-1 whitespace-nowrap text-xs text-slate-600 ">{metaInfo}</p>
+        </div>
+      )}
+
+      <div className="flex flex-row gap-1 flex-wrap mt-1">
+        <p className="font-medium text-slate-700">Section Schedule:</p>
+        <div className="flex gap-x-1 flex-wrap text-slate-800">
           {section.sectionSchedule.map((sch, index) => (
-            <span key={index} className="">
+            <span key={index}>
               {sch.day}-{sch.startTime}-{sch.endTime}
             </span>
           ))}
@@ -21,4 +45,3 @@ export default function SectionCard({ section }: { section: Section }) {
     </div>
   );
 }
-

@@ -10,6 +10,7 @@ import { fetchAllStudentSectionsHasCompleted } from '../../api/student/fetchAllS
 interface containerProps{
   studentId: number;
   navigate: NavigateFunction;
+  className: string;
 }
 
 interface SectionProps {
@@ -28,22 +29,24 @@ export default function TaProfilePage() {
     - MAYBE have a list of all the courses taken, which will be long, can should not be in the form of cards.
     
     - Finally, add the profile questions and answers.
-*/
+    -small visualization at the bottom on which courses he is currently taking. When you press a button, it would switch or add the allocations the TA has.
+    - don't let each column take up more than a certain height. Make it scrollable.
+    */
   return (
-    <div className=" mx-auto bg-white flex flex-col md:gap-3">
+    <div className="items-center mx-auto bg-white flex flex-col md:gap-3">
       <div className = "order-0">
-        <ProfileSectionContainer studentId = {sId} navigate={navigate}/>
+        <ProfileSectionContainer studentId = {sId} navigate={navigate} className="flex flex-col"/>
       </div>
       <div className ="flex flex-col md:flex-row flex-wrap order-1 gap-3">
-        <AllocationHistoryContainer studentId = {sId} navigate={navigate}/>
-        <SectionsTakenContainer studentId = {sId} navigate={navigate}/>
-        <SectionsTakingContainer studentId = {sId} navigate={navigate}/>
+        <AllocationHistoryContainer studentId = {sId} navigate={navigate} className="order-0 mx-w-1/3 space-y-4 flex-1 mt-6 md:mt-0"/>
+        <SectionsTakenContainer studentId = {sId} navigate={navigate} className="order-1 mx-w-1/3 space-y-4 flex-1 mt-6 md:mt-0"/>
+        <SectionsTakingContainer studentId = {sId} navigate={navigate} className="order-2 mx-w-1/3 space-y-4 flex-1 mt-6 md:mt-0"/>
       </div>
     </div>
   );
 }
 
-function ProfileSectionContainer({studentId, navigate}:containerProps) {
+function ProfileSectionContainer({studentId, navigate, className}:containerProps) {
   const [data, setData] = useState<Student>();
 
   useEffect(() => {
@@ -72,12 +75,12 @@ function ProfileSectionContainer({studentId, navigate}:containerProps) {
         user={data}
         profileFields = {filteredFields}
         fieldLabels = {studentFieldLabels}
-        className="flex flex-col"
+        className={className}
       /> : <p>Is Loading! {/* replace the is loading later by a seperate component which is more user-friendly*/}</p> 
   );
 }
 
-function SectionsTakenContainer({studentId, navigate}:containerProps){
+function SectionsTakenContainer({studentId, navigate, className}:containerProps){
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -98,18 +101,18 @@ function SectionsTakenContainer({studentId, navigate}:containerProps){
 
 
   return (
-    <div className="order-2">
+    <div className={className}>
       <h2 className="text-lg font-bold">Courses Taken</h2>
       <SectionSection
         sections={data ? data : []}
-        className="space-y-4 flex-1 mt-6 md:mt-0"
+        className=""
       />
     </div>
     
   );
 }
 
-function SectionsTakingContainer({studentId, navigate}:containerProps){
+function SectionsTakingContainer({studentId, navigate, className}:containerProps){
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -130,17 +133,17 @@ function SectionsTakingContainer({studentId, navigate}:containerProps){
 
 
   return (
-    <div className="order-1">
+    <div className={className}>
       <h2 className="text-lg font-bold">Courses Taking</h2>
       <SectionSection
         sections={data ? data : []}
-        className="space-y-4 flex-1 mt-6 md:mt-0"
+        className=""
       />
     </div>
   );
 }
 
-function AllocationHistoryContainer({studentId, navigate}:containerProps){
+function AllocationHistoryContainer({studentId, navigate,className}:containerProps){
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -161,11 +164,11 @@ function AllocationHistoryContainer({studentId, navigate}:containerProps){
 
 
   return (
-    <div className="order-0">
+    <div className={className}>
       <h2 className="text-lg font-bold">Allocation History</h2>
       <SectionSection
         sections={data ? data : []}
-        className="space-y-4 flex-1 mt-6 md:mt-0"
+        className=""
       />
     </div>
     
