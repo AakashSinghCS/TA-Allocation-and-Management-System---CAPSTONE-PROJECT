@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import com.infinity.profileservice.dtos.admin.AnswerRequest;
 import com.infinity.profileservice.dtos.admin.QuestionRequest;
+import com.infinity.profileservice.enums.QuestionType;
 import com.infinity.profileservice.exceptions.NotFoundException;
 import com.infinity.profileservice.models.*;
 import com.infinity.profileservice.repositories.AnswerRepo;

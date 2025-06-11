@@ -13,37 +13,41 @@ import com.infinity.profileservice.services.ProfileService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProfileController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class ProfileControllerTest {
 
-    @Autowired private MockMvc mvc;
-    @Autowired private ObjectMapper mapper;
+    @Autowired 
+    private MockMvc mvc;
+    @Autowired 
+    private ObjectMapper mapper;
 
-    @MockBean private ProfileService service;
+    @MockitoBean 
+    private ProfileService service;
 
     @Test
-    void getProfile_returnsOkJson() throws Exception {
+    void getProfile_returnsOnlyProfileAnswers() throws Exception {
         Integer sid = 101;
 
-        ProfileResponseDto mock = new ProfileResponseDto();
-        mock.setStudentNumber(sid);
-        mock.setFirstName("Alice");
-        mock.setLastName("Chen");
-        mock.setCourses(List.of(new CourseDto("COSC", 499)));
-        mock.setProfileAnswers(List.of(new QuestionAnswerDto("Fav", "Java")));
+        // Only profileAnswers field remains in the DTO
+        List<QuestionAnswerDto> answers = List.of(new QuestionAnswerDto("Fav", "Java"));
+        ProfileResponseDto mock = new ProfileResponseDto(answers);
 
         when(service.buildProfile(sid)).thenReturn(mock);
 
         mvc.perform(get("/profiles/{id}", sid))
-           .andExpect(MockMvcResultMatchers.status().isOk())
-           .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Alice"))
-           .andExpect(MockMvcResultMatchers.jsonPath("$.courses", hasSize(1)));
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.profileAnswers", hasSize(1)))
+           .andExpect(jsonPath("$.profileAnswers[0].question").value("Fav"))
+           .andExpect(jsonPath("$.profileAnswers[0].answer").value("Java"));
     }
 
     @Test
@@ -56,9 +60,10 @@ class ProfileControllerTest {
         mvc.perform(post("/profiles/{id}/answers", sid)
                .contentType(MediaType.APPLICATION_JSON)
                .content(mapper.writeValueAsString(answerIds)))
-           .andExpect(MockMvcResultMatchers.status().isOk());
+           .andExpect(status().isOk());
 
-        verify(service).saveAnswers(sid, answerIds);
+        // verify that the controller delegated correctly
+        org.mockito.Mockito.verify(service).saveAnswers(sid, answerIds);
     }
 }
 

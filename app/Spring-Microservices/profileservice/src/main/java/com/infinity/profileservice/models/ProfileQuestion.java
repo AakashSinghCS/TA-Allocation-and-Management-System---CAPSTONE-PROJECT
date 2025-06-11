@@ -1,5 +1,7 @@
 package com.infinity.profileservice.models;
 
+import com.infinity.profileservice.enums.QuestionType;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

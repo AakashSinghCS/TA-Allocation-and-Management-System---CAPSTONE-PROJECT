@@ -1,5 +1,0 @@
-package com.infinity.profileservice.dtos;
-
-public record UserDto(Long id, String firstName, String lastName, UserRole role) {
-    
-}
