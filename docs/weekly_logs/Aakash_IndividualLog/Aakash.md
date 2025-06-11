@@ -216,7 +216,7 @@ Retrospective: Process is going smoothly, we are understanding more of how the s
 ### Current Tasks (Provide sufficient detail)
   * #1: Project Design
 
-### Progress Update (since 28/5/2025) 
+### Progress Update (since 29/5/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -253,7 +253,7 @@ Retrospective: Process is going smoothly, we are understanding more of how the a
   * #1: Project Design
   * #2: SpringBoot Tutorials
 
-### Progress Update (since 28/5/2025) 
+### Progress Update (since 31/5/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -298,7 +298,7 @@ Retrospective: Process is going smoothly, all team members are on track with the
   * #1: Design Video Transcript and Recording
   * #2: Kanban User Story Breakdown Into Sub-issues
 
-### Progress Update (since 28/5/2025) 
+### Progress Update (since 02/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -343,7 +343,7 @@ Retrospective: Process is going smoothly, all team members are on track with the
   * #1: Design video presentation compilation and editing
   * #2: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
 
-### Progress Update (since 28/5/2025) 
+### Progress Update (since 03/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -388,7 +388,7 @@ Retrospective: Process is going well. The entire team is working hard on the pro
   * #1: Environment setup - Docker & Spring Boot
   * #2: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
 
-### Progress Update (since 28/5/2025) 
+### Progress Update (since 04/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -433,7 +433,7 @@ Retrospective: Process is going well. All team members are working hard to get t
   * #1: Environment setup - Docker & Spring Boot
   * #2: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
 
-### Progress Update (since 28/5/2025) 
+### Progress Update (since 05/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -478,7 +478,7 @@ Retrospective: Process is going well. All team members are working hard to get t
   * #1: Environment setup - Docker & Spring Boot
   * #2: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
 
-### Progress Update (since 28/5/2025) 
+### Progress Update (since 06/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -522,7 +522,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
 
-### Progress Update (since 28/5/2025) 
+### Progress Update (since 07/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -558,7 +558,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
 
-### Progress Update (since 28/5/2025) 
+### Progress Update (since 08/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
