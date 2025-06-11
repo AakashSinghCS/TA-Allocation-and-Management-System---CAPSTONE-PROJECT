@@ -70,7 +70,6 @@ const LoginPage: React.FC = () => {
                     setPasswordError('Password must be at least 8 characters and include uppercase, number, and special character')
                   }
                   onInput={() => setPasswordError('')}
-                  pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-\[\]{}|;:',.<>?]).{8,}$"
                   required
                   className="w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-[#040941] focus:border-[#040941] bg-white"
                 />
@@ -81,7 +80,7 @@ const LoginPage: React.FC = () => {
                 <a
                   href="#"
                   className="text-base text-[#040941] hover:opacity-70 transition-opacity"
-                  style={{ color: "#000000" }}
+                  style={{ color: "#040941" }}
                 >
                   Forgot password?
                 </a>

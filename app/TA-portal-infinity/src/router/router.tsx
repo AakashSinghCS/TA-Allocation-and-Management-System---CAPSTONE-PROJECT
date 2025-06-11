@@ -7,6 +7,7 @@ import LoginPage from "../pages/loginPage/LoginPage";
 import ErrorPage from "../pages/errorpage/ErrorPage";
 
 import PublicLayout from "../components/layout/publicLayout/PublicLayout";
+import SignUpPage from "../pages/signupPage/SignUpPage";
 
 
 
@@ -24,14 +25,13 @@ export const router = createBrowserRouter([
      
     ],
   },
-     {
-    path: "/login",
-    element: <PublicLayout />,
-    children: [
-      {
-        index: true,
-        element: <LoginPage />,
-      },
-    ],
-  },
+   {
+  path: "/",
+  element: <PublicLayout />,
+  children: [
+    { path: "login", element: <LoginPage /> },
+    { path: "signup", element: <SignUpPage /> },
+    
+  ],
+},
 ]);
