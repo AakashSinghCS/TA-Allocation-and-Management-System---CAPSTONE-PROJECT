@@ -5,7 +5,7 @@ interface CourseFilterProps {
     term: string;
     searchQuery: string;
     deptCode: string;
-    courseNum: string;
+    type: string;
   }) => void;
 }
 
@@ -13,11 +13,14 @@ export default function CourseFilter({ onFilterChange }: CourseFilterProps) {
   const [term, setTerm] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [deptCode, setDeptCode] = useState('');
-  const [courseNum, setCourseNum] = useState('');
+  const [type, setType] = useState('');
 
   const handleFilter = () => {
-    onFilterChange({ term, searchQuery, deptCode, courseNum });
+    onFilterChange({ term, searchQuery, deptCode, type });
   };
+
+  const courseTypes = ["Lecture", "Tutorial", "Laboratory", "Discussion", "Seminar", "Workshop", "Experential", "Independent Study"];
+
 
   return (
     <div className="space-y-4">
@@ -52,13 +55,16 @@ export default function CourseFilter({ onFilterChange }: CourseFilterProps) {
           {/* Add other department codes later OR Fetch from database */}
         </select>
 
-        <input
-          type="text"
-          placeholder="Course Number (e.g., 101)"
-          value={courseNum}
-          onChange={(e) => setCourseNum(e.target.value)}
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
           className="border p-2 rounded-md w-full"
-        />
+        >
+          <option value="">All Types</option>
+          {courseTypes.map(t => (
+            <option key={t} value={t}>{t}</option>
+          ))}
+        </select>
       </div>
       <button onClick={handleFilter} className="bg-blue-500 text-white p-2 rounded-md w-full">
         Filter

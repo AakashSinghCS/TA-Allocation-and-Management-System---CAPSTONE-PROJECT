@@ -11,6 +11,7 @@ export default function CreateCourseForm({ onCreateCourse }: CreateCourseFormPro
   const [courseNum, setCourseNum] = useState('');
   const [section, setSection] = useState('');
   const [term, setTerm] = useState('');
+  const [type, setType] = useState('Lecture');
   const [instructorId, setInstructorId] = useState('');
   const [prerequisites, setPrerequisites] = useState('');
 
@@ -22,10 +23,13 @@ export default function CreateCourseForm({ onCreateCourse }: CreateCourseFormPro
       courseNum,
       section,
       term,
+      type,
       instructorId: Number(instructorId),
       prerequisites: prerequisites.split(',').map(p => p.trim()),
     });
   };
+  
+  const courseTypes = ["Lecture", "Tutorial", "Laboratory", "Discussion", "Seminar", "Workshop", "Experential", "Independent Study"];
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -49,6 +53,14 @@ export default function CreateCourseForm({ onCreateCourse }: CreateCourseFormPro
       <div>
         <label>Term</label>
         <input type="text" value={term} onChange={e => setTerm(e.target.value)} className="border p-2 rounded-md w-full" />
+      </div>
+      <div>
+        <label>Type</label>
+        <select value={type} onChange={e => setType(e.target.value)} className="border p-2 rounded-md w-full">
+            {courseTypes.map(t => (
+                <option key={t} value={t}>{t}</option>
+            ))}
+        </select>
       </div>
       <div>
         <label>Instructor ID</label>

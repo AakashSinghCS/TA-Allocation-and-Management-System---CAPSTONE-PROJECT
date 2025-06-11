@@ -5,6 +5,7 @@ export interface Course {
   courseNum: string;
   section: string;
   term: string;
+  type: string;
   instructorId: number;
   prerequisites: string[];
 }

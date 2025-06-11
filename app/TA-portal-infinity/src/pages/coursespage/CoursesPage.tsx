@@ -7,9 +7,11 @@ import type { Course } from '../../interfaces/course/Course';
 
 // Mock data for demonstration
 const mockCourses: Course[] = [
-  { id: 1, name: 'Intro to Programming', deptCode: 'COSC', courseNum: '101', section: '001', term: 'Fall 2024', instructorId: 10, prerequisites: [] },
-  { id: 2, name: 'Data Structures', deptCode: 'COSC', courseNum: '211', section: '001', term: 'Fall 2024', instructorId: 12, prerequisites: ['COSC 101'] },
-  { id: 3, name: 'Databases', deptCode: 'COSC', courseNum: '304', section: '001', term: 'Winter 2025', instructorId: 15, prerequisites: ['COSC 211'] },
+  { id: 1, name: 'Intro to Programming', deptCode: 'COSC', courseNum: '101', section: '001', term: 'Fall 2024', type: 'Lecture', instructorId: 10, prerequisites: [] },
+  { id: 2, name: 'Data Structures', deptCode: 'COSC', courseNum: '211', section: '001', term: 'Fall 2024', type: 'Lecture', instructorId: 12, prerequisites: ['COSC 101'] },
+  { id: 3, name: 'Databases', deptCode: 'COSC', courseNum: '304', section: '001', term: 'Winter 2025', type: 'Laboratory', instructorId: 15, prerequisites: ['COSC 211'] },
+  { id: 4, name: 'Intro to Programming Lab', deptCode: 'COSC', courseNum: '101', section: 'L01', term: 'Fall 2024', type: 'Laboratory', instructorId: 10, prerequisites: [] },
+  { id: 5, name: 'Data Structures Tutorial', deptCode: 'COSC', courseNum: '211', section: 'T01', term: 'Fall 2024', type: 'Tutorial', instructorId: 12, prerequisites: ['COSC 101'] },
 ];
 
 export default function CoursesPage() {
@@ -26,7 +28,7 @@ export default function CoursesPage() {
     term: string;
     searchQuery: string;
     deptCode: string;
-    courseNum: string;
+    type: string;
   }) => {
     let updatedCourses = courses;
 
@@ -49,11 +51,9 @@ export default function CoursesPage() {
       );
     }
 
-    // Filter by Course Number
-    if (filters.courseNum) {
-      updatedCourses = updatedCourses.filter(course =>
-        course.courseNum.toLowerCase().includes(filters.courseNum.toLowerCase())
-      );
+    // Filter by Type
+    if (filters.type) {
+      updatedCourses = updatedCourses.filter(course => course.type === filters.type);
     }
 
     setFilteredCourses(updatedCourses);
