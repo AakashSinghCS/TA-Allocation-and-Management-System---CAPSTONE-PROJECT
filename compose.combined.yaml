@@ -69,6 +69,22 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/course_db
       SPRING_DATASOURCE_USERNAME: dev_user
       SPRING_DATASOURCE_PASSWORD: secret
+  application-service:
+    build: 
+      context: ./app/Spring-Microservices/applicationservice
+      dockerfile: Dockerfile
+    container_name: application-service
+    ports: 
+      - 8084:8084
+    depends_on:
+      mysql:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy 
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/application_db
+      SPRING_DATASOURCE_USERNAME: dev_user
+      SPRING_DATASOURCE_PASSWORD: secret
   mysql:
     image: 'mysql:latest'
     container_name: mysql
