@@ -1,13 +1,10 @@
 package com.infinity.applicationservice.models;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.MapsId;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,21 +12,21 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class Transcript {
-    
+public class Offer {
+
     @Id
-    @Column(name = "application_id")
+    @GeneratedValue
     private Long id;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "application_id")
+    @ManyToOne
+    @JoinColumn(name = "application_id", nullable = false)
     private Application application;
 
-    private String fileName;
+    @OneToOne
+    @JoinColumn(name = "allocation_id", nullable = false)
+    private Allocation allocation;
 
-    private String contentType;
+    private boolean isAccepted;
 
-    @Lob
-    private byte[] data;
+    private String description;
 }
