@@ -49,11 +49,26 @@ public class UserControllerTest {
         private AuthenticationManager authenticationManager;
 
         @Test
-        void testGetUserById_NotFound() throws Exception {
+        void testGetUserById_Forbidden() throws Exception {
 
-                when(userService.getUserById(any())).thenThrow(new NotFoundException("User with id 2 not found"));
+                when(userService.getUserById(any(), any(), any()))
+                                .thenThrow(new AuthorizationException("Not allowed"));
 
                 mockMvc.perform(get("/users/2")
+                                .header("X-User-Id", "1")
+                                .header("X-User-Roles", "ROLE_STUDENT")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isForbidden());
+        }
+
+        @Test
+        void testGetUserById_NotFound() throws Exception {
+
+                when(userService.getUserById(any(), any(), any())).thenThrow(new NotFoundException("User with id 2 not found"));
+
+                mockMvc.perform(get("/users/2")
+                                .header("X-User-Id", "2")
+                                .header("X-User-Roles", "ROLE_STUDENT")
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isNotFound());
         }
@@ -62,9 +77,11 @@ public class UserControllerTest {
         void testGetUserById_Success() throws Exception {
                 UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
 
-                when(userService.getUserById(any())).thenReturn(mockResponse);
+                when(userService.getUserById(any(), any(), any())).thenReturn(mockResponse);
 
                 mockMvc.perform(get("/users/1")
+                                .header("X-User-Id", "1")
+                                .header("X-User-Roles", "ROLE_STUDENT")
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.firstName").value("John"))

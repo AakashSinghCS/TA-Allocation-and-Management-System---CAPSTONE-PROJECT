@@ -29,10 +29,10 @@ public class UserController {
 
     private final UserService userService;
 
-    @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
-        UserDto userDto = userService.getUserById(id);
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id,  @RequestHeader("X-User-Id") Long requesterId,
+    @RequestHeader("X-User-Roles") List<String> roles) {
+        UserDto userDto = userService.getUserById(id, requesterId, roles);
         return ResponseEntity.ok(userDto);
     }
 
