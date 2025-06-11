@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import bgImage from '../../assets/ubc_image.png?url';
 import Navbar from '../../components/layout/login_navbar/Navbar';
 
@@ -9,9 +10,39 @@ const LoginPage: React.FC = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempted with:', { email, password });
+
+    try {
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        console.error("Login failed:", error);
+        alert("Invalid email or password.");
+        return;
+      }
+
+      const { token } = await response.json(); 
+      console.log("JWT token:", token);
+
+      localStorage.setItem("token", token); //  storing the token
+
+      alert("Login successful!");
+      navigate("/"); 
+
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Server error. Please try again later.");
+    }
   };
 
   return (
