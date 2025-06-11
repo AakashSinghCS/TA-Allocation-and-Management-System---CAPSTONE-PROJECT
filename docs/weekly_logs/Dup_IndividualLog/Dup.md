@@ -741,3 +741,67 @@ I spent a long time on the css and layout of the html and etc.
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
 
+
+## Tuesday 6/10 (5/28~6/6)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June10.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue #191
+  * #3: project discussion
+  * #4: issue #204
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I spent over 3 hours just discussing with team mates. 2 hours we met all together and we discussed about the section browsing page mainly. 1 hour I had to talk to Aakash about the response he was sending me back.
+What didn't go well was that Aakash wasn't willing to believe that the backend should be sending the frontend the response I was asking him to send. Fortunately, Alex concurred with me and Aakash seems to be on it now.
+So I could only spend like maximum 3 hours on actual development today, and I felt like I didn't make much progress in terms of coding.
+Tommorrow I hope to finish the profilequestions frontend, make the section containers consider overflow. And perhaps consider calling endpoints now, if it's possible.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
+
