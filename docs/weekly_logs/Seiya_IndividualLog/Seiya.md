@@ -1,7 +1,59 @@
-# Weekly Log (2 Jun – 5 Jun 2025)
+## Monday (June 6-9)
 
-**Name:** Seiya  
-**Branch:** `seiya_logs`
+### Timesheet
+Clockify report
+![alt text](./clockify_images/clockify_weekly_log_2025-06-06_06-09_seiya.png)
+
+### Current Tasks (Provide sufficient detail)
+* #1: Set up and troubleshoot the local development environment.
+* #2: Implement frontend for TA Coordinator's "Course Management" page.
+
+### Progress Update (since June 5, 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>#1: Local Environment Setup
+        </td>
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <td>#2: Course Management UI Implementation
+        </td>
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+My primary goal for this cycle was the initial implementation of the Course Management frontend. While the overall feature is still **In Progress**, I successfully completed the core functionality. 
+
+**What was done:**
+* I created a functional UI for viewing and filtering courses, accessible via a new sidebar link.
+* The page displays a list of courses from mock data.
+* A robust filtering system is in place, allowing users to filter by Keyword, Term, Department Code, and Course Number.
+* The "Add Course" form works visually, appending a new course to the list on the frontend.
+
+**What was not done:**
+* The CSV upload functionality has not been implemented yet.
+* The current UI styling is functional and will be refined to match the design wireframes after the feature scope is finalized.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Finalize the scope of the Course Management feature with the team.
+* Implement the required frontend changes based on the team's decisions.
+* Refine UI styling to align with the design wireframes in the design document.
+* Prepare for backend integration by understanding the required API endpoints once they are defined.
+
+
+
+# Weekly Log (2 Jun – 5 Jun 2025)
 
 | Category | Activity Summary | Date(s) | Time Spent |
 |----------|-----------------|---------|-----------|
@@ -17,9 +69,6 @@
 
 # Weekly Log (31 May – 2 Jun 2025)
 
-**Name:** Seiya  
-**Branch:** `seiya_logs`
-
 | Category | Activity | Date(s) | Time Spent |
 |----------|----------|---------|-----------|
 | DFD & ER | Wrote **DFD Description** (Level 0 & 1 narrative for project wiki) | 2 Jun | **2 h 50 m** |
@@ -32,9 +81,6 @@
 
 
 # Weekly Log (25 May – 30 May)
-
-**Name:** Seiya  
-**Branch:** `seiya_logs`
 
 | Category | Activity | Date(s) | Time Spent |
 |----------|----------|---------|-----------|
