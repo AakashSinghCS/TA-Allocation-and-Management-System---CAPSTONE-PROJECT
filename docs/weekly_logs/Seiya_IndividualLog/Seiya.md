@@ -28,7 +28,7 @@
 ## Key Achievements
 - Completed a detailed English description of the Level 0 and Level 1 data‑flow diagrams, clarifying each external entity, data store, and process for upcoming peer review.
 
-![alt text](./clockify_images/clockify_weekly_log_2025‑05‑31_06‑02_seiya.png)
+![alt text](./clockify_images/clockify_weekly_log_2025-05-31_06-02_seiya.png)
 
 
 # Weekly Log (25 May – 30 May)
@@ -51,6 +51,6 @@
   - Updated Level 0 & Level 1 diagrams.
  
 
-![alt text](./clockify_images/clockify_weekly_log_2025‑05‑25_30_seiya.png)
+![alt text](./clockify_images/clockify_weekly_log_2025-05-25_05-30_seiya.png)
 
 
