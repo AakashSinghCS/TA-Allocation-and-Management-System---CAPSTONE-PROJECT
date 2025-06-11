@@ -7,6 +7,8 @@ import { fetchStudentDetails } from '../../api/student/fetchStudentDetails';
 import {type Student,studentProfileFields,studentFieldLabels} from '../../interfaces/user/Student';
 import { fetchAllStudentSectionsHasCompleted } from '../../api/student/fetchAllStudentSectionsHasCompleted';
 import { type ProfileQuestion } from '../../interfaces/question/ProfileQuestion';
+import { fetchAllStudentQuestions} from '../../api/question/fetchAllStudentQuestion';
+
 interface ContainerProps{
   studentId: number;
   navigate: NavigateFunction;
@@ -18,8 +20,8 @@ interface SectionProps {
   className?: string;
 }
 
-interface ProfileQuestionsAnswersProps {
-  profileQuestionsAnswers?: ProfileQuestion[];
+interface ProfileQuestionsProps {
+  profileQuestions?: ProfileQuestion[];
   className: string;
 }
 
@@ -48,7 +50,7 @@ export default function TaProfilePage() {
         <SectionsTakenContainer studentId = {sId} navigate={navigate} className="space-y-4 mt-6 md:mt-0"/>
       </div>
       <div>
-        <ProfileQuestionsAnswersContainer studentId = {sId} navigate={navigate}  />
+        <ProfileQuestionsContainer studentId = {sId} navigate={navigate} className= ""/>
       </div>
     </div>
   );
@@ -88,7 +90,7 @@ function ProfileSectionContainer({studentId, navigate, className}:ContainerProps
   );
 }
 
-function SectionsTakenContainer({studentId, navigate, className}:containerProps){
+function SectionsTakenContainer({studentId, navigate, className}:ContainerProps){
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -120,7 +122,7 @@ function SectionsTakenContainer({studentId, navigate, className}:containerProps)
   );
 }
 
-function SectionsTakingContainer({studentId, navigate, className}:containerProps){
+function SectionsTakingContainer({studentId, navigate, className}:ContainerProps){
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -151,7 +153,7 @@ function SectionsTakingContainer({studentId, navigate, className}:containerProps
   );
 }
 
-function AllocationHistoryContainer({studentId, navigate,className}:containerProps){
+function AllocationHistoryContainer({studentId, navigate,className}:ContainerProps){
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -183,8 +185,8 @@ function AllocationHistoryContainer({studentId, navigate,className}:containerPro
   );
 }
 
-function ProfileQuestionsAnswersContainer({studentId, navigate,className}:containerProps){
-  const [data, setData] = useState<Section[]>();
+function ProfileQuestionsContainer({studentId, navigate,className}:ContainerProps){
+  const [data, setData] = useState<ProfileQuestion[]>();
 
   useEffect(() => {
     if (Number.isNaN(studentId)) {
@@ -192,8 +194,8 @@ function ProfileQuestionsAnswersContainer({studentId, navigate,className}:contai
       return;
     }
 
-    fetchAllStudentSectionsHasCompleted(studentId,true)
-      .then((resp: Section[]) => {
+    fetchAllStudentQuestions(studentId)
+      .then((resp: ProfileQuestion[]) => {
         setData(resp);
       })
       .catch((e: Error) => {
@@ -206,7 +208,7 @@ function ProfileQuestionsAnswersContainer({studentId, navigate,className}:contai
   return (
     <div className={className}>
       <h2 className="text-lg font-bold">Answers to questions</h2>
-      <ProfileQuestionsAnswersSection profileQuestionsAnswers = {} className = ""/>
+      <ProfileQuestionsAnswersSection profileQuestions = {data} className = ""/>
     </div>
     
   );
@@ -233,18 +235,19 @@ function SectionSection({ sections = [], className = "" }: SectionProps) {
 const sectionKey = (s: Section) => `${s.sectionDetails.deptCode}-${s.sectionDetails.courseNum}-${s.sectionDetails.section}`;
 
 
-function ProfileQuestionsAnswersSection({ sections = [], className = "" }: ProfileQuestionsAnswersProps) {
+function ProfileQuestionsAnswersSection({ profileQuestions = [], className = "" }: ProfileQuestionsProps) {
   return (
     <section className={className}>
-      {sections.length ? (
+      {profileQuestions.length ? (
         <div className="grid gap-1">
-          {sections.map(sec => (
-            <SectionCard key={sectionKey(sec)} section={sec} />
+          {profileQuestions.map(que => (
+            // <SectionCard key={sectionKey(sec)} section={sec} />
+            <></>
           ))}
         </div>
       ) : (
         <div className="p-4 text-slate-400 italic border border-dashed border-slate-200 rounded-lg">
-          No courses to display
+          No questions to display
         </div>
       )}
     </section>
