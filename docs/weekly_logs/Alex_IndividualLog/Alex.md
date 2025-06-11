@@ -1,4 +1,46 @@
-## Thursday (May 29-June 2)
+## Monday (June 6-9)
+
+### Timesheet
+Clockify report
+![alt text](./jun6-9.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Implementing the application microservice with appropriate libraries that will handle applications, offers, and allocations.
+
+### Progress Update (since June 5 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Implement Auth with registration and login
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>User update and delete operations with proper auth and error handling
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The auth works now with all the microservices having filters for the headers and the gateway can now parse the JWT created in login. Passwords are hashed with BCrypt, and overall it's a fine auth level to have at this point. I also finished up the the delete and update handling for users which took a bit longer to handle both auth and mapping between the different user types.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Get the next and last microservice created for applications with the right libraries
+  * Maybe, if time allows, start handling some JPA objects in said microservice
+
+## Thursday (June 2-5)
 
 ### Timesheet
 Clockify report
@@ -7,7 +49,7 @@ Clockify report
 ### Current Tasks (Provide sufficient detail)
   * #1: Getting auth working with login/registration/logout with JWT's and BCrypt.
 
-### Progress Update (since May 29 2025) 
+### Progress Update (since June 2 2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
