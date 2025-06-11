@@ -52,8 +52,11 @@ My primary goal for this cycle was the initial implementation of the Course Mana
 * Prepare for backend integration by understanding the required API endpoints once they are defined.
 
 
+## Thursday (June 2-5)
+### Timesheet
+Clockify report
+![alt text](./clockify_images/clockify_weekly_log_2025-06-02_06-05_seiya.png)
 
-# Weekly Log (2 Jun – 5 Jun 2025)
 
 | Category | Activity Summary | Date(s) | Time Spent |
 |----------|-----------------|---------|-----------|
@@ -64,23 +67,28 @@ My primary goal for this cycle was the initial implementation of the Course Mana
 | **Total** |  |  | **9 h 39 m** |
 
 
-![alt text](./clockify_images/clockify_weekly_log_2025-06-02_06-05_seiya.png)
+## Monday (May 31 - June 2)
 
+### Timesheet
+Clockify report
+![alt text](./clockify_images/clockify_weekly_log_2025-05-31_06-02_seiya.png)
 
-# Weekly Log (31 May – 2 Jun 2025)
 
 | Category | Activity | Date(s) | Time Spent |
 |----------|----------|---------|-----------|
 | DFD & ER | Wrote **DFD Description** (Level 0 & 1 narrative for project wiki) | 2 Jun | **2 h 50 m** |
 | **Total** | | | **2 h 50 m** |
 
-## Key Achievements
+### Key Achievements
 - Completed a detailed English description of the Level 0 and Level 1 data‑flow diagrams, clarifying each external entity, data store, and process for upcoming peer review.
 
-![alt text](./clockify_images/clockify_weekly_log_2025-05-31_06-02_seiya.png)
 
 
-# Weekly Log (25 May – 30 May)
+## Friday (May 25-30)
+
+### Timesheet
+Clockify report
+![alt text](./clockify_images/clockify_weekly_log_2025-05-25_05-30_seiya.png)
 
 | Category | Activity | Date(s) | Time Spent |
 |----------|----------|---------|-----------|
@@ -89,7 +97,7 @@ My primary goal for this cycle was the initial implementation of the Course Mana
 | DFD & ER Work | • DFD/ER review (COSC 310 reference)  <br>• DFD meeting preparation  <br>• Individual DFD review  <br>• Team DFD meeting (in‑class)  <br>• Follow‑up DFD meeting / fixes | 26 – 30 May | **12 h 35 m** |
 | **Total** | | | **22 h 36 m** |
 
-## Key Achievements
+### Key Achievements
 - **Team Planning Document:** Reviewed my previous experience and organized it into clear examples.
 - **Spring Boot**: Studied with tutorial (6 h)  
 - **DFD & ER**:  
@@ -97,6 +105,5 @@ My primary goal for this cycle was the initial implementation of the Course Mana
   - Updated Level 0 & Level 1 diagrams.
  
 
-![alt text](./clockify_images/clockify_weekly_log_2025-05-25_05-30_seiya.png)
 
 
