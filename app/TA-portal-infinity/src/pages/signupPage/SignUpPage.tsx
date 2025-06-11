@@ -36,6 +36,8 @@ const SignUpPage: React.FC = () => {
   });
 
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [formError, setFormError] = useState('');
+
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -50,7 +52,7 @@ const SignUpPage: React.FC = () => {
     return true;
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
+ const handleSignUp = async (e: React.FormEvent) => {
   e.preventDefault();
   if (!validateForm()) return;
 
@@ -71,23 +73,27 @@ const SignUpPage: React.FC = () => {
 
     if (!response.ok) {
       const error = await response.text();
+     if (error.includes("An account with this email already exists")) {
+  alert("Email already exists. Please use a different email.");
+      } else {
+        alert("Signup failed. Check the form or try again.");
+      }
+
       console.error("Signup failed:", error);
-      alert("Signup failed. Check the form or try again.");
       return;
     }
 
-    const user: User = await response.json(); // match your User interface
+    const user: User = await response.json();
     console.log("Signup success. User:", user);
 
-    // Optionally store user in localStorage or context
-    // localStorage.setItem("user", JSON.stringify(user));
+    alert("Signup successful! Redirecting to login...");
+    navigate("/login");
 
-        navigate("/login");
-      } catch (err) {
-        console.error("Signup error:", err);
-        alert("Server error. Please try again later.");
-      }
-    };
+  } catch (err) {
+    console.error("Signup error:", err);
+    alert("Server error. Please try again later.");
+  }
+};
 
 
   return (

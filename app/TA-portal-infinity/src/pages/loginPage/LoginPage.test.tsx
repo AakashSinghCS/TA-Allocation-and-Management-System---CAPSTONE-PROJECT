@@ -1,17 +1,21 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import LoginPage from "./LoginPage";
+
+const customRender = (ui: React.ReactElement) =>
+  render(<MemoryRouter>{ui}</MemoryRouter>);
 
 describe("LoginPage", () => {
   it("renders main headings", () => {
-    render(<LoginPage />);
+    customRender(<LoginPage />);
     expect(screen.getByText(/Welcome to TA Allocation/i)).toBeInTheDocument();
     expect(screen.getByText(/Management System/i)).toBeInTheDocument();
   });
 
   it("renders login form fields", () => {
-    render(<LoginPage />);
+    customRender(<LoginPage />);
     expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Login/i })).toBeInTheDocument();
@@ -19,12 +23,12 @@ describe("LoginPage", () => {
   });
 
   it("shows Forgot password link", () => {
-    render(<LoginPage />);
+    customRender(<LoginPage />);
     expect(screen.getByText(/Forgot password\?/i)).toBeInTheDocument();
   });
 
   it("accepts input and submits form", () => {
-    render(<LoginPage />);
+    customRender(<LoginPage />);
     const emailInput = screen.getByLabelText(/Email/i);
     const passwordInput = screen.getByLabelText(/Password/i);
 
@@ -36,9 +40,10 @@ describe("LoginPage", () => {
 
     const consoleSpy = vi.spyOn(console, "log");
     fireEvent.submit(screen.getByRole("button", { name: /Login/i }));
-    expect(consoleSpy).toHaveBeenCalledWith(
-      "Login attempted with:",
-      { email: "test@example.com", password: "Password@123" }
-    );
+
+    expect(consoleSpy).toHaveBeenCalledWith("Login attempted with:", {
+      email: "test@example.com",
+      password: "Password@123",
+    });
   });
 });
