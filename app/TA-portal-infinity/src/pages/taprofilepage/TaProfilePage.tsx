@@ -1,23 +1,18 @@
 import type Section from '../../interfaces/section/Section';
 import ProfileSection from '../../components/features/profile/ProfileSection';
-import SectionCard from '../../components/features/section/SectionCard';
 import { useParams, useNavigate, type NavigateFunction } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type JSX } from 'react';
 import { fetchStudentDetails } from '../../api/student/fetchStudentDetails';
-import {type Student,studentProfileFields,studentFieldLabels} from '../../interfaces/user/Student';
+import { type Student, studentProfileFields, studentFieldLabels } from '../../interfaces/user/Student';
 import { fetchAllStudentSectionsHasCompleted } from '../../api/student/fetchAllStudentSectionsHasCompleted';
 import { type ProfileQuestion } from '../../interfaces/question/ProfileQuestion';
-import { fetchAllStudentQuestions} from '../../api/question/fetchAllStudentQuestion';
+import { fetchAllStudentQuestions } from '../../api/question/fetchAllStudentQuestion';
+import SectionsColumn from '../../components/features/section/SectionsColumn';
 
-interface ContainerProps{
+interface ContainerProps {
   studentId: number;
   navigate: NavigateFunction;
   className: string;
-}
-
-interface SectionProps {
-  sections?: Section[];
-  className?: string;
 }
 
 interface ProfileQuestionsProps {
@@ -41,22 +36,58 @@ export default function TaProfilePage() {
     */
   return (
     <div className="mx-auto bg-white flex flex-col md:gap-3">
-      <div className = "order-0">
-        <ProfileSectionContainer studentId = {sId} navigate={navigate} className="flex flex-col"/>
+      <div className="order-0">
+        <ProfileSectionContainer studentId={sId} navigate={navigate} className="flex flex-col" />
       </div>
-      <div className ="grid grid-cols-1 lg:grid-cols-3 gap-3 w-full">
-        <AllocationHistoryContainer studentId = {sId} navigate={navigate} className=" space-y-4  mt-6 md:mt-0"/>
-        <SectionsTakingContainer studentId = {sId} navigate={navigate} className=" space-y-4  mt-6 md:mt-0"/>
-        <SectionsTakenContainer studentId = {sId} navigate={navigate} className="space-y-4 mt-6 md:mt-0"/>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 w-full">
+        <AllocationHistoryContainer studentId={sId} navigate={navigate} className=" space-y-4  mt-6 md:mt-0" />
+        <SectionsTakingContainer studentId={sId} navigate={navigate} className=" space-y-4  mt-6 md:mt-0" />
+        <SectionsTakenContainer studentId={sId} navigate={navigate} className="space-y-4 mt-6 md:mt-0" />
       </div>
       <div>
-        <ProfileQuestionsContainer studentId = {sId} navigate={navigate} className= ""/>
+        <ProfileQuestionsContainer studentId={sId} navigate={navigate} className="" />
+      </div>
+      <div>
+        <ComparerContainer studentId={sId} navigate={navigate} className="" />
       </div>
     </div>
   );
 }
 
-function ProfileSectionContainer({studentId, navigate, className}:ContainerProps) {
+function ComparerContainer({ studentId, navigate, className }: ContainerProps) {
+  const [selectedOption, setSelectedOption] = useState("allocationHistory");
+
+  const optionComponents: Record<string, JSX.Element> = {
+    allocationHistory: <ProfileSectionContainer studentId={studentId} navigate={navigate} className = ""/>,
+    sectionsTaking: <SectionsTakingContainer studentId={studentId} navigate={navigate} className = "" />,
+    sectionsTaken: <SectionsTakenContainer studentId={studentId} navigate={navigate} className = "" />,
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOption(event.target.value);
+  };
+
+  return (
+    <div className={className}>
+      <label htmlFor="columnSelect" className="block mb-2 font-medium">
+        Choose:
+      </label>
+      <select id="columnSelect" value={selectedOption} onChange={handleChange} className="border rounded px-2 py-1">
+        <option value="allocationHistory">Allocation History</option>
+        <option value="coursesTaking">Courses Taking</option>
+        <option value="coursesTaken">Courses Taken</option>
+      </select>
+      <h2 className="text-lg font-bold">{}</h2>
+      {/* <SectionsColumn
+        sections={data ? data : []}
+        className=""
+      /> */}
+      {optionComponents[selectedOption]}
+    </div>
+  );
+}
+
+function ProfileSectionContainer({ studentId, navigate, className }: ContainerProps) {
   const [data, setData] = useState<Student>();
 
   useEffect(() => {
@@ -77,20 +108,20 @@ function ProfileSectionContainer({studentId, navigate, className}:ContainerProps
   }, [studentId, navigate]);
 
   const filteredFields = studentProfileFields.filter(
-      (key) => key !== "id" && key !== "firstName" && key !== "lastName"
-    );
+    (key) => key !== "id" && key !== "firstName" && key !== "lastName"
+  );
 
   return (
     data ? <ProfileSection
-        user={data}
-        profileFields = {filteredFields}
-        fieldLabels = {studentFieldLabels}
-        className={className}
-      /> : <p>Is Loading! {/* replace the is loading later by a seperate component which is more user-friendly*/}</p> 
+      user={data}
+      profileFields={filteredFields}
+      fieldLabels={studentFieldLabels}
+      className={className}
+    /> : <p>Is Loading! {/* replace the is loading later by a seperate component which is more user-friendly*/}</p>
   );
 }
 
-function SectionsTakenContainer({studentId, navigate, className}:ContainerProps){
+function SectionsTakenContainer({ studentId, navigate, className }: ContainerProps) {
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -99,7 +130,7 @@ function SectionsTakenContainer({studentId, navigate, className}:ContainerProps)
       return;
     }
 
-    fetchAllStudentSectionsHasCompleted(studentId,true)
+    fetchAllStudentSectionsHasCompleted(studentId, true)
       .then((resp: Section[]) => {
         setData(resp);
       })
@@ -113,16 +144,15 @@ function SectionsTakenContainer({studentId, navigate, className}:ContainerProps)
   return (
     <div className={className}>
       <h2 className="text-lg font-bold">Courses Taken</h2>
-      <SectionSection
+      <SectionsColumn
         sections={data ? data : []}
         className=""
       />
     </div>
-    
   );
 }
 
-function SectionsTakingContainer({studentId, navigate, className}:ContainerProps){
+function SectionsTakingContainer({ studentId, navigate, className }: ContainerProps) {
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -131,7 +161,7 @@ function SectionsTakingContainer({studentId, navigate, className}:ContainerProps
       return;
     }
 
-    fetchAllStudentSectionsHasCompleted(studentId,true)
+    fetchAllStudentSectionsHasCompleted(studentId, true)
       .then((resp: Section[]) => {
         setData(resp);
       })
@@ -145,7 +175,7 @@ function SectionsTakingContainer({studentId, navigate, className}:ContainerProps
   return (
     <div className={className}>
       <h2 className="text-lg font-bold">Courses Taking</h2>
-      <SectionSection
+      <SectionsColumn
         sections={data ? data : []}
         className=""
       />
@@ -153,7 +183,7 @@ function SectionsTakingContainer({studentId, navigate, className}:ContainerProps
   );
 }
 
-function AllocationHistoryContainer({studentId, navigate,className}:ContainerProps){
+function AllocationHistoryContainer({ studentId, navigate, className }: ContainerProps) {
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -162,7 +192,7 @@ function AllocationHistoryContainer({studentId, navigate,className}:ContainerPro
       return;
     }
 
-    fetchAllStudentSectionsHasCompleted(studentId,true)
+    fetchAllStudentSectionsHasCompleted(studentId, true)
       .then((resp: Section[]) => {
         setData(resp);
       })
@@ -176,16 +206,15 @@ function AllocationHistoryContainer({studentId, navigate,className}:ContainerPro
   return (
     <div className={className}>
       <h2 className="text-lg font-bold">Allocation History</h2>
-      <SectionSection
+      <SectionsColumn
         sections={data ? data : []}
         className=""
       />
     </div>
-    
   );
 }
 
-function ProfileQuestionsContainer({studentId, navigate,className}:ContainerProps){
+function ProfileQuestionsContainer({ studentId, navigate, className }: ContainerProps) {
   const [data, setData] = useState<ProfileQuestion[]>();
 
   useEffect(() => {
@@ -208,32 +237,11 @@ function ProfileQuestionsContainer({studentId, navigate,className}:ContainerProp
   return (
     <div className={className}>
       <h2 className="text-lg font-bold">Answers to questions</h2>
-      <ProfileQuestionsSection profileQuestions = {data} className = ""/>
+      <ProfileQuestionsSection profileQuestions={data} className="" />
     </div>
-    
+
   );
 }
-
-function SectionSection({ sections = [], className = "" }: SectionProps) {
-  return (
-    <section className={className}>
-      {sections.length ? (
-        <div className="grid gap-1">
-          {sections.map(sec => (
-            <SectionCard key={sectionKey(sec)} section={sec} />
-          ))}
-        </div>
-      ) : (
-        <div className="p-4 text-slate-400 italic border border-dashed border-slate-200 rounded-lg">
-          No courses to display
-        </div>
-      )}
-    </section>
-  );
-}
-
-const sectionKey = (s: Section) => `${s.sectionDetails.deptCode}-${s.sectionDetails.courseNum}-${s.sectionDetails.section}`;
-
 
 function ProfileQuestionsSection({ profileQuestions = [], className = "" }: ProfileQuestionsProps) {
   return (

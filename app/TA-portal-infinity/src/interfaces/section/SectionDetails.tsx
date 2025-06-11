@@ -1,3 +1,5 @@
+import type { Course } from "../need/Course"
+
 export type SectionType =
     | "Lecture"
     | "Tutorial"
@@ -8,11 +10,8 @@ export type SectionType =
     | "Experential"
     | "Independent Study"
 
-export interface SectionDetails {
+export interface SectionDetails extends Course{
     id: number,
-    name: string,
-    deptCode: string,
-    courseNum: string
     term: string,
     section: string,
     type: SectionType,
