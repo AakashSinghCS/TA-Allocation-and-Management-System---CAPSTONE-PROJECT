@@ -40,11 +40,11 @@ export default function TaProfilePage() {
     - don't let each column take up more than a certain height. Make it scrollable.
     */
   return (
-    <div className="container mx-auto bg-white flex flex-col md:gap-3">
+    <div className="mx-auto bg-white flex flex-col md:gap-3">
       <div className = "order-0">
         <ProfileSectionContainer studentId = {sId} navigate={navigate} className="flex flex-col"/>
       </div>
-      <div className ="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
+      <div className ="grid grid-cols-1 lg:grid-cols-3 gap-3 w-full">
         <AllocationHistoryContainer studentId = {sId} navigate={navigate} className=" space-y-4  mt-6 md:mt-0"/>
         <SectionsTakingContainer studentId = {sId} navigate={navigate} className=" space-y-4  mt-6 md:mt-0"/>
         <SectionsTakenContainer studentId = {sId} navigate={navigate} className="space-y-4 mt-6 md:mt-0"/>
@@ -208,7 +208,7 @@ function ProfileQuestionsContainer({studentId, navigate,className}:ContainerProp
   return (
     <div className={className}>
       <h2 className="text-lg font-bold">Answers to questions</h2>
-      <ProfileQuestionsAnswersSection profileQuestions = {data} className = ""/>
+      <ProfileQuestionsSection profileQuestions = {data} className = ""/>
     </div>
     
   );
@@ -235,7 +235,7 @@ function SectionSection({ sections = [], className = "" }: SectionProps) {
 const sectionKey = (s: Section) => `${s.sectionDetails.deptCode}-${s.sectionDetails.courseNum}-${s.sectionDetails.section}`;
 
 
-function ProfileQuestionsAnswersSection({ profileQuestions = [], className = "" }: ProfileQuestionsProps) {
+function ProfileQuestionsSection({ profileQuestions = [], className = "" }: ProfileQuestionsProps) {
   return (
     <section className={className}>
       {profileQuestions.length ? (
