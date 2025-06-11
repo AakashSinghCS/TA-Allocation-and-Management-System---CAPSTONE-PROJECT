@@ -11,7 +11,8 @@
 | Logging / Admin | • Entered detailed time logs in Clockify | 5 Jun | **0 h 21 m** |
 | **Total** |  |  | **9 h 39 m** |
 
-<img width="2311" alt="clockify_weekly_log_2025-06-02_06-05_seiya" src="https://github.com/user-attachments/assets/93041f9f-72a3-4dbe-8d30-9e1332f2d98e" />
+
+![alt text](./clockify_images/clockify_weekly_log_2025-06-02_06-05_seiya.png)
 
 
 # Weekly Log (31 May – 2 Jun 2025)
@@ -27,11 +28,7 @@
 ## Key Achievements
 - Completed a detailed English description of the Level 0 and Level 1 data‑flow diagrams, clarifying each external entity, data store, and process for upcoming peer review.
 
-
-<img width="1026" alt="clockify_weekly_log_2025‑05‑31_06‑02_seiya" src="https://github.com/user-attachments/assets/3a487deb-90d8-4cb9-8a8a-0db502351914" />
-
-
-
+![alt text](./clockify_images/clockify_weekly_log_2025‑05‑31_06‑02_seiya.png)
 
 
 # Weekly Log (25 May – 30 May)
@@ -54,7 +51,6 @@
   - Updated Level 0 & Level 1 diagrams.
  
 
-<img width="1026" alt="clockify_weekly_log_2025‑05‑25_30_seiya" src="https://github.com/user-attachments/assets/df0cf4f2-fcbf-46b8-8708-8a2a5d2412c4" />
-
+![alt text](./clockify_images/clockify_weekly_log_2025‑05‑25_30_seiya.png)
 
 
