@@ -24,14 +24,17 @@ export default function CourseFilter({ onFilterChange }: CourseFilterProps) {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input
-          type="text"
-          placeholder="Search by course name..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="border p-2 rounded-md w-full"
-        />
+      {/* Row 1: Search by course name */}
+      <input
+        type="text"
+        placeholder="Search by course name..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="border p-2 rounded-md w-full"
+      />
+      
+      {/* Row 2: Dropdown filters */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <select
           value={term}
           onChange={(e) => setTerm(e.target.value)}
@@ -66,6 +69,7 @@ export default function CourseFilter({ onFilterChange }: CourseFilterProps) {
           ))}
         </select>
       </div>
+      
       <button onClick={handleFilter} className="bg-blue-500 text-white p-2 rounded-md w-full">
         Filter
       </button>
