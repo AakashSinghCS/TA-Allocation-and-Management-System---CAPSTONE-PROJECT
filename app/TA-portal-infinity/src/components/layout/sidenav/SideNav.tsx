@@ -5,6 +5,8 @@ const navItems = [
   { label: "About", to: "/about" },
   { label: "Ta Profile", to: "/taprofile" },
   { label: "Courses Management", to: "/courses" },
+  // Add a link to the new course page.
+  { label: "Add New Course", to: "/courses/add" },
 ];
 
 export default function SideNav() {

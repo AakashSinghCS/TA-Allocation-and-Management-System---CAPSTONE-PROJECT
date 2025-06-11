@@ -6,7 +6,8 @@ import TaProfilePage from "../pages/taprofilepage/TaProfilePage";
 import TaProfilePageContainer from "../pages/taprofilepage/TaProfilePageContainer";
 import ErrorPage from "../pages/errorpage/ErrorPage";
 import { mockTaProfilePageData } from "../mocked-objects/mockTaProfilePageData";
-import CoursesPage from "../pages/coursespage/CoursesPage";
+import CourseListPage from "../pages/coursespage/CourseListPage";
+import AddCoursePage from "../pages/coursespage/AddCoursePage";
 
 export const router = createBrowserRouter([
   {
@@ -18,10 +19,14 @@ export const router = createBrowserRouter([
       { path: "about", element: <AboutPage /> },            
       { path: "taprofile", element: <TaProfilePage data={mockTaProfilePageData} /> },
       { path: "taprofile/:studentId", element: <TaProfilePageContainer /> },
-      { path: "courses", element: <CoursesPage /> },
+      // The courses route now points to the list page.
+      { path: "courses", element: <CourseListPage /> },
+      // A new route for adding courses.
+      { path: "courses/add", element: <AddCoursePage /> },
 
       { path: "error", element: <ErrorPage /> },
-      { path: "*", element: <ErrorPage /> },                
+      { path: "a_star", element: <ErrorPage /> }, // "a_star" was likely a typo for "*", correcting it.
+      { path: "*", element: <ErrorPage /> },
     ],
   },
 ]);

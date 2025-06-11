@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import CourseList from '../../components/features/courses/CourseList';
 import CourseFilter from '../../components/features/courses/CourseFilter';
-import CreateCourseForm from '../../components/features/courses/CreateCourseForm';
-import CsvUpload from '../../components/features/courses/CsvUpload';
 import type { Course } from '../../interfaces/course/Course';
 
 // Mock data for demonstration
@@ -15,7 +13,7 @@ const mockCourses: Course[] = [
   { id: 5, name: 'Data Structures Tutorial', deptCode: 'COSC', courseNum: '211', section: 'T01', term: 'Fall 2024', type: 'Tutorial', instructorId: 12, prerequisites: ['COSC 101'] },
 ];
 
-export default function CoursesPage() {
+export default function CourseListPage() {
   const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
@@ -26,6 +24,10 @@ export default function CoursesPage() {
     setFilteredCourses(mockCourses);
   }, []);
 
+  /**
+   * Handles changes from the filter component and updates the displayed courses.
+   * @param filters - An object containing all the active filter values.
+   */
   const handleFilterChange = (filters: {
     term: string;
     searchQuery: string;
@@ -61,19 +63,6 @@ export default function CoursesPage() {
     setFilteredCourses(updatedCourses);
   };
 
-  const handleCreateCourse = (newCourse: Omit<Course, 'id'>) => {
-    // In a real application, we willl send this to an API
-    const courseWithId = { ...newCourse, id: courses.length + 1 };
-    setCourses([...courses, courseWithId]);
-    setFilteredCourses([...courses, courseWithId]); // Also update the filtered list
-  };
-
-  const handleFileUpload = (file: File) => {
-    // Handle CSV file parsing and course creation
-    console.log('Uploaded file:', file);
-    // It's a good idea to use a library like Papaparse to handle CSV parsing
-  };
-
   return (
     <div className="container mx-auto p-4">
       <div className='mb-6'>
@@ -81,28 +70,24 @@ export default function CoursesPage() {
           onClick={() => navigate('/')}
           className="text-sm font-semibold text-slate-600 hover:text-slate-800 flex items-center mb-2"
         >
+          {/* Using a simple arrow character for the icon */}
           <span aria-hidden="true" className='text-lg mr-1'>←</span>
           <span>Back to Home</span>
         </button>
         <h1 className="text-2xl font-bold">Course Management</h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Course List & Filters</h2>
-          <div className="border p-4 rounded-md shadow-sm mb-4">
-            <CourseFilter onFilterChange={handleFilterChange} />
-          </div>
-          <CourseList courses={filteredCourses} />
+      <div>
+        <div className='flex justify-between items-center mb-4'>
+            <h2 className="text-xl font-semibold">Course List & Filters</h2>
+            <Link to="/courses/add" className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600">
+              Add New Course
+            </Link>
         </div>
-        <div className="space-y-8">
-          <div className="border p-4 rounded-md shadow-sm">
-            <CreateCourseForm onCreateCourse={handleCreateCourse} />
-          </div>
-          <div className="border p-4 rounded-md shadow-sm">
-            <CsvUpload onFileUpload={handleFileUpload} />
-          </div>
+        <div className="border p-4 rounded-md shadow-sm mb-4">
+          <CourseFilter onFilterChange={handleFilterChange} />
         </div>
+        <CourseList courses={filteredCourses} />
       </div>
     </div>
   );
