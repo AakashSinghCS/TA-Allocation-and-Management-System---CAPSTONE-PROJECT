@@ -2,11 +2,6 @@ import type { ReactNode } from 'react';
 import type User from '../../../interfaces/user/User';
 import formatDateForDisplay from "../../../utility/formatdatefordisplay/formatDateForDisplay";
 
-export interface ProfileField {
-  label: string;
-  value: ReactNode;
-}
-
 interface ProfileSectionProps<T extends User> {
   user: T;
   profileFields: (keyof T)[]
@@ -48,8 +43,6 @@ function ProfileRow({ label, value }: { label: string; value: ReactNode }) {
     </p>
   );
 }
-
-
 
 function createProfileDetails<T extends User>(
   user: T,

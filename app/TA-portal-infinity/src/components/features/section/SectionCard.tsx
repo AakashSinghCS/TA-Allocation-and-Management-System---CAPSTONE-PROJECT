@@ -10,7 +10,7 @@ export default function SectionCard({ section }: { section: Section }) {
 
   return (
     <div
-      className="grid rounded-lg text-sm border border-slate-200 p-2 bg-slate-50"
+      className="w-full overflow-hidden rounded-lg text-sm border border-slate-200 p-2 bg-slate-50"
     >
       {expanded ? (
         <>
@@ -21,13 +21,13 @@ export default function SectionCard({ section }: { section: Section }) {
           </div>
         </>
       ) : (
-        <div className="flex flex-row flex-wrap items-center">
-          <div className="flex items-center">
-            <h3 className="font-medium truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[100px] md:max-w-xs" >
+        <div className="flex flex-wrap items-center">
+          {/* <div className="items-center md:w-full"> */}
+            <h3 className="font-medium truncate flex-1 whitespace-nowrap" >
               {courseCodeAndName}
             </h3>
             <span className="text-blue-500 text-xs cursor-pointer" onClick={() => setExpanded(!expanded)}>+</span>
-          </div>
+          {/* </div> */}
           <p className="ml-1 whitespace-nowrap text-xs text-slate-600 ">{metaInfo}</p>
         </div>
       )}

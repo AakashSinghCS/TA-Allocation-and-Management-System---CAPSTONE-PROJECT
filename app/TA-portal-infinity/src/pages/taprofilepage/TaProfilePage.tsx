@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 import { fetchStudentDetails } from '../../api/student/fetchStudentDetails';
 import {type Student,studentProfileFields,studentFieldLabels} from '../../interfaces/user/Student';
 import { fetchAllStudentSectionsHasCompleted } from '../../api/student/fetchAllStudentSectionsHasCompleted';
-
-interface containerProps{
+import { type ProfileQuestion } from '../../interfaces/question/ProfileQuestion';
+interface ContainerProps{
   studentId: number;
   navigate: NavigateFunction;
   className: string;
@@ -16,6 +16,11 @@ interface containerProps{
 interface SectionProps {
   sections?: Section[];
   className?: string;
+}
+
+interface ProfileQuestionsAnswersProps {
+  profileQuestionsAnswers?: ProfileQuestion[];
+  className: string;
 }
 
 export default function TaProfilePage() {
@@ -33,20 +38,23 @@ export default function TaProfilePage() {
     - don't let each column take up more than a certain height. Make it scrollable.
     */
   return (
-    <div className="items-center mx-auto bg-white flex flex-col md:gap-3">
+    <div className="container mx-auto bg-white flex flex-col md:gap-3">
       <div className = "order-0">
         <ProfileSectionContainer studentId = {sId} navigate={navigate} className="flex flex-col"/>
       </div>
-      <div className ="flex flex-col md:flex-row flex-wrap max-w-full order-1 gap-3">
-        <AllocationHistoryContainer studentId = {sId} navigate={navigate} className="order-0 max-w-1/3 space-y-4 flex-1 mt-6 md:mt-0"/>
-        <SectionsTakenContainer studentId = {sId} navigate={navigate} className="order-1 max-w-1/3 space-y-4 flex-1 mt-6 md:mt-0"/>
-        <SectionsTakingContainer studentId = {sId} navigate={navigate} className="order-2 max-w-1/3 space-y-4 flex-1 mt-6 md:mt-0"/>
+      <div className ="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
+        <AllocationHistoryContainer studentId = {sId} navigate={navigate} className=" space-y-4  mt-6 md:mt-0"/>
+        <SectionsTakingContainer studentId = {sId} navigate={navigate} className=" space-y-4  mt-6 md:mt-0"/>
+        <SectionsTakenContainer studentId = {sId} navigate={navigate} className="space-y-4 mt-6 md:mt-0"/>
+      </div>
+      <div>
+        <ProfileQuestionsAnswersContainer studentId = {sId} navigate={navigate}  />
       </div>
     </div>
   );
 }
 
-function ProfileSectionContainer({studentId, navigate, className}:containerProps) {
+function ProfileSectionContainer({studentId, navigate, className}:ContainerProps) {
   const [data, setData] = useState<Student>();
 
   useEffect(() => {
@@ -175,6 +183,34 @@ function AllocationHistoryContainer({studentId, navigate,className}:containerPro
   );
 }
 
+function ProfileQuestionsAnswersContainer({studentId, navigate,className}:containerProps){
+  const [data, setData] = useState<Section[]>();
+
+  useEffect(() => {
+    if (Number.isNaN(studentId)) {
+      navigate("/error", { replace: true, state: { message: "Invalid student ID" } });
+      return;
+    }
+
+    fetchAllStudentSectionsHasCompleted(studentId,true)
+      .then((resp: Section[]) => {
+        setData(resp);
+      })
+      .catch((e: Error) => {
+        navigate("/error", { replace: true, state: { message: e.message } });
+      });
+
+  }, [studentId, navigate]);
+
+
+  return (
+    <div className={className}>
+      <h2 className="text-lg font-bold">Answers to questions</h2>
+      <ProfileQuestionsAnswersSection profileQuestionsAnswers = {} className = ""/>
+    </div>
+    
+  );
+}
 
 function SectionSection({ sections = [], className = "" }: SectionProps) {
   return (
@@ -195,3 +231,22 @@ function SectionSection({ sections = [], className = "" }: SectionProps) {
 }
 
 const sectionKey = (s: Section) => `${s.sectionDetails.deptCode}-${s.sectionDetails.courseNum}-${s.sectionDetails.section}`;
+
+
+function ProfileQuestionsAnswersSection({ sections = [], className = "" }: ProfileQuestionsAnswersProps) {
+  return (
+    <section className={className}>
+      {sections.length ? (
+        <div className="grid gap-1">
+          {sections.map(sec => (
+            <SectionCard key={sectionKey(sec)} section={sec} />
+          ))}
+        </div>
+      ) : (
+        <div className="p-4 text-slate-400 italic border border-dashed border-slate-200 rounded-lg">
+          No courses to display
+        </div>
+      )}
+    </section>
+  );
+}
