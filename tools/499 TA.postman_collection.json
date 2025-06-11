@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"student@test.com\",\r\n    \"firstName\": \"scoobert\",\r\n    \"lastName\": \"doobert\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": \"STUDENT\",\r\n    \"studentNumber\":87\r\n}",
+							"raw": "{\r\n    \"email\":\"student@test.com\",\r\n    \"firstName\": \"scoobert\",\r\n    \"lastName\": \"doobert\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": \"STUDENT\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -44,7 +44,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"coordinator@test.com\",\r\n    \"firstName\": \"ched\",\r\n    \"lastName\": \"devis\",\r\n    \"password\": \"password\",\r\n    \"userType\": \"COORDINATOR\"\r\n}",
+							"raw": "{\r\n    \"email\":\"coordinator@test.com\",\r\n    \"firstName\": \"ched\",\r\n    \"lastName\": \"devis\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": \"COORDINATOR\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -223,7 +223,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"student@test.com\",\r\n    \"password\":\"password\"\r\n}",
+							"raw": "{\r\n    \"email\":\"student@test.com\",\r\n    \"password\":\"P@ssword1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -251,7 +251,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"coordinator@test.com\",\r\n    \"password\":\"password\"\r\n}",
+							"raw": "{\r\n    \"email\":\"coordinator@test.com\",\r\n    \"password\":\"P@ssword1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -279,7 +279,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"instructor@test.com\",\r\n    \"password\":\"password\"\r\n}",
+							"raw": "{\r\n    \"email\":\"instructor@test.com\",\r\n    \"password\":\"P@ssword1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -295,6 +295,113 @@
 							"path": [
 								"auth",
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete not auth",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzQ5MzE5ODQzfQ.82a0w2lLdGi1JJClzYMI_oM1_-k2gMsdY_oec8Y4Kq8bnBfX6fNGKBZhfyb2twgL",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/users/delete/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete auth",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/users/delete/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Coordinator",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"coordinator@test.com\",\r\n    \"firstName\": \"scooby\",\r\n    \"lastName\": \"doo\",\r\n    \"password\": \"P@ssword12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/update/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"update",
+								"1"
 							]
 						}
 					},
