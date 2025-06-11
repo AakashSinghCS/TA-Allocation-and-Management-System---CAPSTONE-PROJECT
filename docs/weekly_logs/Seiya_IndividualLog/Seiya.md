@@ -90,20 +90,23 @@ Clockify report
 Clockify report
 ![alt text](./clockify_images/clockify_weekly_log_2025-05-25_05-30_seiya.png)
 
-| Category | Activity | Date(s) | Time Spent |
-|----------|----------|---------|-----------|
-| Documentation | Drafted *Team Planning* document – sections **Experience / Strengths / Learning Goals** | 27 May | **3 h 19 m** |
-| Self‑Study | Spring Boot tutorial (DI, REST controller, basic CRUD) | 28 & 29 May | **6 h 42 m** |
-| DFD & ER Work | • DFD/ER review (COSC 310 reference)  <br>• DFD meeting preparation  <br>• Individual DFD review  <br>• Team DFD meeting (in‑class)  <br>• Follow‑up DFD meeting / fixes | 26 – 30 May | **12 h 35 m** |
-| **Total** | | | **22 h 36 m** |
+### Current Tasks (Provide sufficient detail)
+* #1: Fill *Team Planning* document (Experience / Strengths / Learning Goals sections).
+* #2: Self-Study Spring Boot tutorial (DI, REST controller, basic CRUD).
+* #3: DFD & ER collaborative work.
 
-### Key Achievements
-- **Team Planning Document:** Reviewed my previous experience and organized it into clear examples.
-- **Spring Boot**: Studied with tutorial (6 h)  
-- **DFD & ER**:  
-  - Consolidated feedback and split the single *User* entity into *Instructor*, *Coordinator*, and *Student*.  
-  - Updated Level 0 & Level 1 diagrams.
+### Progress Update
+| TASK/ISSUE # | STATUS | Category | Activity | Date(s) | Time Spent |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| #1 | Complete | Documentation | Drafted *Team Planning* document – sections **Experience / Strengths / Learning Goals** | 27 May | **3 h 19 m** |
+| #2 | Complete | Self‑Study | Spring Boot tutorial (DI, REST controller, basic CRUD) | 28 & 29 May | **6 h 42 m** |
+| #3 | Complete | DFD & ER Work | • DFD/ER review (COSC 310 reference) <br>• DFD meeting preparation <br>• Individual DFD review <br>• Team DFD meeting (in‑class) <br>• Follow‑up DFD meeting / fixes | 26 – 30 May | **12 h 35 m** |
+| **Total** | | | | | **22 h 36 m** |
+
+
  
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Key achievements for this cycle include drafting sections of the team planning document, completing over 6 hours of self-study on Spring Boot, and significantly advancing the DFD/ER diagrams. We consolidated feedback to split the 'User' entity into more specific roles and updated the Level 0 & 1 diagrams accordingly.
 
-
-
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Write DFD Description (Level 0 & 1 narrative for project wiki).
