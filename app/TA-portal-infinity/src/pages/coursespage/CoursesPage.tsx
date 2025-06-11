@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CourseList from '../../components/features/courses/CourseList';
 import CourseFilter from '../../components/features/courses/CourseFilter';
 import CreateCourseForm from '../../components/features/courses/CreateCourseForm';
@@ -15,6 +16,7 @@ const mockCourses: Course[] = [
 ];
 
 export default function CoursesPage() {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
 
@@ -74,7 +76,16 @@ export default function CoursesPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Course Management</h1>
+      <div className='mb-6'>
+        <button
+          onClick={() => navigate('/')}
+          className="text-sm font-semibold text-slate-600 hover:text-slate-800 flex items-center mb-2"
+        >
+          <span aria-hidden="true" className='text-lg mr-1'>←</span>
+          <span>Back to Home</span>
+        </button>
+        <h1 className="text-2xl font-bold">Course Management</h1>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
