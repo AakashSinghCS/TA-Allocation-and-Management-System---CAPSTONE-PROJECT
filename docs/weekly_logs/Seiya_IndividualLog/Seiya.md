@@ -57,14 +57,26 @@ My primary goal for this cycle was the initial implementation of the Course Mana
 Clockify report
 ![alt text](./clockify_images/clockify_weekly_log_2025-06-02_06-05_seiya.png)
 
+### Current Tasks (Provide sufficient detail)
+* #1: Implement “Course viewing, filtering, and creation” feature. (frontend)
+* #2: Record transcript & walkthrough video for DFD Lv 1.
 
-| Category | Activity Summary | Date(s) | Time Spent |
-|----------|-----------------|---------|-----------|
-| Feature Dev. (TA Coordinator) | • Implement “Course viewing, filtering, and creation” feature <br>• Preparation & short sync meeting | 3 – 5 Jun | **4 h 46 m** |
-| Video & Docs (DFD Lv 1) | • Record transcript & walkthrough video <br>• Video preparation and scene planning | 3 – 4 Jun | **1 h 43 m** |
-| Meetings & Coordination | • General team meetings (DFD status, user‑story sub‑issues) | 3 & 4 Jun | **2 h 49 m** |
-| Logging / Admin | • Entered detailed time logs in Clockify | 5 Jun | **0 h 21 m** |
-| **Total** |  |  | **9 h 39 m** |
+
+### Progress Update (since June 2, 2025)
+| TASK/ISSUE # | STATUS | Category | Activity Summary | Date(s) | Time Spent |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| #1 | In Progress | Feature Dev. (TA Coordinator) | • Implement “Course viewing, filtering, and creation” feature <br>• Preparation & short sync meeting | 3 – 5 Jun | **4 h 46 m** |
+| #2 | Complete | Video & Docs (DFD Lv 1) | • Record transcript & walkthrough video <br>• Video preparation and scene planning | 3 – 4 Jun | **1 h 43 m** |
+| #3 | Complete | Meetings & Coordination | • General team meetings (DFD status, user‑story sub‑issues) | 3 & 4 Jun | **2 h 49 m** |
+| #4 | Complete | Logging / Admin | • Entered detailed time logs in Clockify | 5 Jun | **0 h 21 m** |
+| **Total** | | | | | **9 h 39 m** |
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+This cycle focused on two main areas: developing the course management feature and creating documentation for the DFD. Progress was made on implementing the user interface for course viewing and creation. The walkthrough video and transcript for the Level 1 DFD were completed.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Set up the local development environment.
+* Implement frontend for TA Coordinator's "Course Management" page.
 
 
 ## Monday (May 31 - June 2)
@@ -73,15 +85,24 @@ Clockify report
 Clockify report
 ![alt text](./clockify_images/clockify_weekly_log_2025-05-31_06-02_seiya.png)
 
+### Current Tasks (Provide sufficient detail)
+* #1: Write DFD Level 0 & 1 narrative description for the project document.
 
-| Category | Activity | Date(s) | Time Spent |
-|----------|----------|---------|-----------|
-| DFD & ER | Wrote **DFD Description** (Level 0 & 1 narrative for project wiki) | 2 Jun | **2 h 50 m** |
-| **Total** | | | **2 h 50 m** |
 
-### Key Achievements
-- Completed a detailed English description of the Level 0 and Level 1 data‑flow diagrams, clarifying each external entity, data store, and process for upcoming peer review.
 
+### Progress Update (since May 30, 2025)
+| TASK/ISSUE # | STATUS | Category | Activity | Date(s) | Time Spent |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| #1 | Complete | DFD & ER | Wrote **DFD Description** (Level 0 & 1 narrative for project wiki) | 2 Jun | **2 h 50 m** |
+| **Total** | | | | | **2 h 50 m** |
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I completed a detailed  description of the Level 0 and Level 1 data-flow diagrams. This work involved clarifying each external entity, data store, and process, preparing the documentation for the upcoming peer review.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Record transcript & walkthrough video for DFD Lv 1.
+* Implement “Course viewing, filtering, and creation” feature.
 
 
 ## Friday (May 25-30)
