@@ -34,7 +34,7 @@ describe('postSectionByFilter', () => {
     await postSectionByFilter(filterData);
 
     // Assert: Check the results
-    const expectedApiEndpoint = 'http://localhost:8080/api/courses';
+    const expectedApiEndpoint = 'http://localhost:5173/courses';
     const expectedPayload = {
       sectionDetails: {
         id: 0,
