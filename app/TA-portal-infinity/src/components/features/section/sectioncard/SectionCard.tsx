@@ -1,10 +1,10 @@
-import type Section from "../../../interfaces/section/Section";
+import type Section from "../../../../interfaces/section/Section";
 
-export default function SectionCard({ section }: { section: Section }) {
+export default function SectionCard({ section , className=""}: { section: Section, className? :string }) {
 
   return (
     <div
-      className="w-full overflow-hidden rounded-lg text-sm border border-slate-200 p-2 bg-slate-50"
+      className={className + " w-full overflow-hidden rounded-lg text-sm border border-slate-200 p-2 bg-slate-50"}
     >
       <div className="flex flex-wrap items-center">
         <h3 className="font-medium truncate flex-1 whitespace-nowrap" >

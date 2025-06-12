@@ -1,5 +1,5 @@
-import SectionCard from "./SectionCard";
-import type Section from '../../../interfaces/section/Section';
+import SectionCard from "../sectioncard/SectionCard";
+import type Section from '../../../../interfaces/section/Section';
 
 interface SectionProps {
   sections?: Section[];

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import SectionsColumn from "./SectionsColumn";
-import type Section from "../../../interfaces/section/Section";
-import { mockSectionCOSC111 } from "../../../mocked-objects/mockSectionCOSC111";
+import type Section from "../../../../interfaces/section/Section";
+import { mockSectionCOSC111 } from "../../../../mocked-objects/mockSectionCOSC111";
 
 
 describe("SectionsColumn", () => {

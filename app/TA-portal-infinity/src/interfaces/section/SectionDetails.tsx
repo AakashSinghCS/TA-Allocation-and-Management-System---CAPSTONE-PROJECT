@@ -11,7 +11,7 @@ export type SectionType =
     | "Independent Study"
 
 export interface SectionDetails extends Course{
-    id: number,
+    sectionId: number,
     term: string,
     section: string,
     type: SectionType,

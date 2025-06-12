@@ -4,5 +4,6 @@ export interface Need {
     id: number;
     sectionId: number;
     description: string;
+    numOfHoursCurrentlyAllocated : number;
     courseNeeds: Course[];
 }

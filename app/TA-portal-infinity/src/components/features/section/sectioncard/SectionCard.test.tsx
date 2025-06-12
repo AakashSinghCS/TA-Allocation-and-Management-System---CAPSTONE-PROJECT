@@ -1,4 +1,4 @@
-import { mockSectionCOSC111 } from "../../../mocked-objects/mockSectionCOSC111";
+import { mockSectionCOSC111 } from "../../../../mocked-objects/mockSectionCOSC111";
 import { render, screen, within } from "@testing-library/react";
 import SectionCard from "./SectionCard";
 

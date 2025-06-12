@@ -7,7 +7,10 @@ import { type Student, studentProfileFields, studentFieldLabels } from '../../in
 import { fetchAllStudentSectionsHasCompleted } from '../../api/student/fetchAllStudentSectionsHasCompleted';
 import { type ProfileQuestion } from '../../interfaces/question/ProfileQuestion';
 import { fetchAllStudentQuestions } from '../../api/question/fetchAllStudentQuestion';
-import SectionsColumn from '../../components/features/section/SectionsColumn';
+import SectionsColumn from '../../components/features/section/sectionscolumn/SectionsColumn';
+import SectionCard from '../../components/features/section/sectioncard/SectionCard';
+import { mockSectionCOSC111 } from '../../mocked-objects/mockSectionCOSC111';
+import { mockSectionCOSC121 } from '../../mocked-objects/mockSectionCOSC121';
 
 interface ContainerProps {
   studentId: number;
@@ -24,12 +27,7 @@ export default function TaProfilePage() {
   const { studentId } = useParams();
   const sId = Number(studentId);
   const navigate = useNavigate();
-  /*need to do the following:
-    - show the times for each of the courses ex: Wed~Fridya 2:30 etc.
-    - make the card smaller, or make it into more of a list so that the coordinator doesn't have to scroll.
-    - divide Courses into the following: courses currently taking (which is most important), and courses with previous TA-experience
-    - MAYBE have a list of all the courses taken, which will be long, can should not be in the form of cards.
-    
+  /*need to do the following:   
     - Finally, add the profile questions and answers.
     -small visualization at the bottom on which courses he is currently taking. When you press a button, it would switch or add the allocations the TA has.
     - don't let each column take up more than a certain height. Make it scrollable.
@@ -48,44 +46,84 @@ export default function TaProfilePage() {
         <ProfileQuestionsContainer studentId={sId} navigate={navigate} className="" />
       </div>
       <div>
-        <ComparerContainer studentId={sId} navigate={navigate} className="" />
+        <ComparerContainer studentId={sId} navigate={navigate} className="grid grid-cols-[1fr_auto_1fr] gap-3" />
       </div>
     </div>
   );
 }
 
 function ComparerContainer({ studentId, navigate, className }: ContainerProps) {
-  const [selectedOption, setSelectedOption] = useState("allocationHistory");
+  const [selectedOption, setSelectedOption] = useState("sectionsTaken");
+  const [query, setQuery] = useState("");
+  const [filtered, setFiltered] = useState<Section[]>([]);
+  const [selectedSection, setSelectedSection] = useState<Section>();
 
-  const optionComponents: Record<string, JSX.Element> = {
-    allocationHistory: <ProfileSectionContainer studentId={studentId} navigate={navigate} className = ""/>,
-    sectionsTaking: <SectionsTakingContainer studentId={studentId} navigate={navigate} className = "" />,
-    sectionsTaken: <SectionsTakenContainer studentId={studentId} navigate={navigate} className = "" />,
+  const optionComponents: Record<string, () => JSX.Element> = {
+    allocationHistory: () => <ProfileSectionContainer studentId={studentId} navigate={navigate} className="" />,
+    sectionsTaking: () => <SectionsTakingContainer studentId={studentId} navigate={navigate} className="" />,
+    sectionsTaken: () => <SectionsTakenContainer studentId={studentId} navigate={navigate} className="" />,
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value);
   };
 
+  const handleSearch = () => {
+    setFiltered([mockSectionCOSC111,mockSectionCOSC121]);
+  };
+
+  const handleClickSection = (section : Section) =>{
+    setSelectedSection(section);
+  }
+
   return (
     <div className={className}>
-      <label htmlFor="columnSelect" className="block mb-2 font-medium">
-        Choose:
-      </label>
-      <select id="columnSelect" value={selectedOption} onChange={handleChange} className="border rounded px-2 py-1">
-        <option value="allocationHistory">Allocation History</option>
-        <option value="coursesTaking">Courses Taking</option>
-        <option value="coursesTaken">Courses Taken</option>
-      </select>
-      <h2 className="text-lg font-bold">{}</h2>
-      {/* <SectionsColumn
-        sections={data ? data : []}
-        className=""
-      /> */}
-      {optionComponents[selectedOption]}
+      <div className="">
+        <select id="columnSelect" value={selectedOption} onChange={handleChange} className="border rounded px-2 py-1">
+          <option value="allocationHistory">Allocation History</option>
+          <option value="sectionsTaking">Courses Taking</option>
+          <option value="sectionsTaken">Courses Taken</option>
+        </select>
+        {optionComponents[selectedOption]()}
+      </div>
+      <div>
+        Click to Compare
+      </div>
+      <div>
+        <div className="flex gap-2 mb-4">
+          <input
+            type="text"
+            placeholder="Search courses..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="flex-1 border border-slate-300 rounded px-3 py-2 text-sm"
+          />
+          <button
+            onClick={handleSearch}
+            className="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Search
+          </button>
+          </div>
+          {filtered.length ? (
+            <div className="grid gap-1">
+              {filtered.map((sec) => {
+                const isSelected = selectedSection && sec.sectionDetails.id === selectedSection.sectionDetails.id;
+                const cardClass = `cursor-pointer ${isSelected ? "outline-1 outline-red-300" : ""}`;
+                return <span key={sectionKey(sec)} onClick={()=>handleClickSection(sec)}><SectionCard section={sec} className={cardClass}/></span>
+              })}
+            </div>
+          ) : (
+            <div className="p-4 text-slate-400 italic border border-dashed border-slate-200 rounded-lg">
+              No courses to display
+            </div>
+          )}
+      </div>
     </div>
   );
 }
+
+const sectionKey = (s: Section) => `${s.sectionDetails.deptCode}-${s.sectionDetails.courseNum}-${s.sectionDetails.section}`;
 
 function ProfileSectionContainer({ studentId, navigate, className }: ContainerProps) {
   const [data, setData] = useState<Student>();
