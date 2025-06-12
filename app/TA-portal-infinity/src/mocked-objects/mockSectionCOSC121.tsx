@@ -4,6 +4,8 @@ import type SectionSchedule from '../interfaces/section/SectionSchedule';
 import { mockCourseCOSC121 } from './mockCourseCOSC121';
 import type { Need } from '../interfaces/need/Need';
 import { mockCourseCOSC111 } from './mockCourseCOSC111';
+import {mockCourseMATH125} from './mockCourseMATH125'
+
 export const mockSectionCOSC121Details : SectionDetails = {
     id: mockCourseCOSC121.id,
     sectionId: 91,
@@ -33,7 +35,7 @@ const mockSectionNeedCOSC121 :Need = {
     sectionId: mockSectionCOSC121Details.id,
     description: "I need smart people",
     numOfHoursCurrentlyAllocated: 0,
-    courseNeeds: [mockCourseCOSC111]
+    courseNeeds: [mockCourseCOSC111, mockCourseMATH125]
 }
 
 
