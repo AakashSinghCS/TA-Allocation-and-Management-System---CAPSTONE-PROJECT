@@ -2,19 +2,24 @@ import { mockTaProfileQuestions } from '../../mocked-objects/mockTaProfileQuesti
 import type { ProfileQuestion } from '../../interfaces/question/ProfileQuestion';
 
 export async function fetchAllStudentQuestions(studentId: number): Promise<ProfileQuestion[]> {
+  const baseUrl = 'mock'; // to be replaced when backend is ready
+  const url = `${baseUrl}/mock/questions/students/${studentId}`;
 
-//    const baseUrl = 'mock';
-       
-//     const res = await fetch(`${baseUrl}/mock/mock/mock/${studentId}`,{
-//         headers: {
-//             Accept: 'application/json'
-//         }
-//     })
-    
-//     if (!res.ok) {
-//         throw new Error(`Failed to fetch student details (HTTP ${res.status})`);
-    // }
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
 
-    // return res.json() as Promise<Section>;
-    return [mockTaProfileQuestions,mockTaProfileQuestions]; //delete when backend is implemented
+    const data = await res.json();
+
+    if (Array.isArray(data)) return data;
+
+    // Fallback if data is malformed
+    return [mockTaProfileQuestions, mockTaProfileQuestions];
+  } catch (err) {
+    // Fallback on error
+    return [mockTaProfileQuestions, mockTaProfileQuestions];
+  }
 }

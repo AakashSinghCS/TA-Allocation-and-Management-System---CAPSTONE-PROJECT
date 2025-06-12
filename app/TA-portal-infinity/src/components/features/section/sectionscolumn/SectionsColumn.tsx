@@ -12,14 +12,14 @@ export default function SectionsColumn({ sections = [], className = "",highlight
   return (
     <section className={className}>
       {sections.length ? (
-        <div className="grid gap-1">
+        <div className="grid gap-1 max-h-[50vh] overflow-y-auto">
           {sections.map((sec) => {
             const cid = sec.sectionDetails.id;
             const needMatch = highlightCourseIds.includes(cid);
             const exactMatch = exactMatchId === cid;
             let extra = "";
-            if (exactMatch)      extra = "outline-2 outline-blue-500";     
-            else if (needMatch)  extra = "outline-2 outline-green-400";
+            if (exactMatch)      extra = "outline-2 outline-offset-[-2px] outline-blue-500";     
+            else if (needMatch)  extra = "outline-2 outline-offset-[-2px] outline-green-400";
             return <SectionCard key={sectionKey(sec)} section={sec} className={extra}/>
           })}
         </div>
