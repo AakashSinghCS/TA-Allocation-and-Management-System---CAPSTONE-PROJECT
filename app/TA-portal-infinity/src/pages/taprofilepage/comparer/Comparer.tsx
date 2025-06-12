@@ -66,6 +66,7 @@ export default function Comparer({ studentId, className }: ComparerProps) {
         setSelectedSection(section);
         setHighlightCourseIds([]);
         setExactMatchId(null);
+        setNeededCourses([]); 
     }
 
     const handleCompareClick = () => {
@@ -76,7 +77,12 @@ export default function Comparer({ studentId, className }: ComparerProps) {
         setNeededCourses(needs); 
     };
 
-    const handleExactMatch = () => selectedSection && setExactMatchId(selectedSection.sectionDetails.id);
+    const handleExactMatch = () => {
+        if(!selectedSection) return;
+        setExactMatchId(selectedSection.sectionDetails.id);
+        setHighlightCourseIds([]);
+        setNeededCourses([]); 
+    };
 
 
     return (

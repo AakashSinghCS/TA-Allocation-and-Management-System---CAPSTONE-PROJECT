@@ -34,13 +34,13 @@ export default function SectionsColumn({ sections = [], className = "", highligh
           No courses to display
         </div>
       )}
-      {missing.length > 0 && neededCourses.length >0 && (
+      {highlightCourseIds.length > 0 && missing.length > 0 && neededCourses.length >0 && (
        <p className="text-xs text-red-600 mt-1">
           Missing in section needs:&nbsp;
           {missing.map(c => `${c.deptCode} ${c.courseNum}`).join(', ')}
         </p>
       )}
-      {missing.length == 0 && neededCourses.length>0 && (
+      {highlightCourseIds.length > 0 && missing.length == 0 && neededCourses.length>0 && (
         <p className="text-xs mt-1">
           No courses missing
         </p>

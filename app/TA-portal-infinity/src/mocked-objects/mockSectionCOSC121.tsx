@@ -35,6 +35,7 @@ const mockSectionNeedCOSC121 :Need = {
     sectionId: mockSectionCOSC121Details.id,
     description: "I need smart people",
     numOfHoursCurrentlyAllocated: 0,
+    requiredGradingHours: 12,
     courseNeeds: [mockCourseCOSC111, mockCourseMATH125]
 }
 

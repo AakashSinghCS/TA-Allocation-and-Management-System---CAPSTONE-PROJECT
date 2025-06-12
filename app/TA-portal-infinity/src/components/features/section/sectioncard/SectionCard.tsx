@@ -2,6 +2,12 @@ import type Section from "../../../../interfaces/section/Section";
 
 export default function SectionCard({ section , className=""}: { section: Section, className? :string }) {
 
+  const alloc = section?.need?.numOfHoursCurrentlyAllocated;
+  const req   = section?.need?.requiredGradingHours;     
+  const allocTxt = typeof alloc === "number" ? alloc : "-";
+  const reqTxt   = typeof req   === "number" ? req   : "-";
+  const hoursBadge = `(${allocTxt}/${reqTxt})`;
+
   return (
     <div
       className={className + " w-full overflow-hidden rounded-lg text-sm border border-slate-200 p-2 bg-slate-50"}
@@ -20,6 +26,7 @@ export default function SectionCard({ section , className=""}: { section: Sectio
             </span>
           ))}
         </div>
+        <span className="ml-2 text-xs text-slate-600">{hoursBadge} hrs alloc.</span>
       </div>
     </div>
   );
