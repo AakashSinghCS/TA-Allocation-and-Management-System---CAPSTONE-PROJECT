@@ -6,10 +6,9 @@ import Navbar from '../../components/layout/login_navbar/Navbar';
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-
+  const [loginMessage, setLoginMessage] = useState(""); 
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -27,7 +26,7 @@ const LoginPage: React.FC = () => {
       if (!response.ok) {
         const error = await response.text();
         console.error("Login failed:", error);
-        alert("Invalid email or password.");
+        alert("Invalid email or password."); 
         return;
       }
 
@@ -36,8 +35,10 @@ const LoginPage: React.FC = () => {
 
       localStorage.setItem("token", token); //  storing the token
 
-      alert("Login successful!");
-      navigate("/"); 
+      setLoginMessage("Login successful! Redirecting...");
+      setTimeout(() => {
+        navigate("/");
+      }, 1200); 
 
     } catch (err) {
       console.error("Login error:", err);
@@ -116,6 +117,11 @@ const LoginPage: React.FC = () => {
                   Forgot password?
                 </a>
               </div>
+
+             
+              {loginMessage && (
+                <p className="text-base text-green-700 text-center">{loginMessage}</p>
+              )}
 
               <button
                 type="submit"

@@ -2,12 +2,10 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
+import { act } from "react-dom/test-utils";
 import LoginPage from "./LoginPage";
 
-// Declare mockNavigate at the module level so it's in scope
 const mockNavigate = vi.fn();
-
-// Mock useNavigate at the module level so it's available before imports
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
@@ -16,7 +14,6 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-// Helper to wrap with router context
 const renderWithRouter = (ui: React.ReactElement) =>
   render(<MemoryRouter>{ui}</MemoryRouter>);
 
@@ -24,6 +21,8 @@ describe("LoginPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it("renders login headings, email and password fields, and login button", () => {
@@ -61,11 +60,8 @@ describe("LoginPage", () => {
     renderWithRouter(<LoginPage />);
     const emailInput = screen.getByLabelText(/Email/i);
 
-    // Simulate invalid input and blur
     fireEvent.change(emailInput, { target: { value: "bademail" } });
     fireEvent.blur(emailInput);
-
-    // Simulate native validation (optional, if browser supports)
     fireEvent.invalid(emailInput);
 
     expect(
@@ -87,46 +83,43 @@ describe("LoginPage", () => {
       )
     ).toBeInTheDocument();
   });
+it("submits form and handles successful login with UI message and redirect", async () => {
+  vi.useRealTimers(); 
+  const localStorageSpy = vi.spyOn(localStorage.__proto__, "setItem");
 
-  it("submits form and handles successful login", async () => {
-    // Spy on localStorage.setItem
-    const localStorageSpy = vi.spyOn(localStorage.__proto__, "setItem");
-    // Mock alert
-    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
-    // Mock fetch for successful login
-    vi.stubGlobal("fetch", vi.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({ token: "FAKE_JWT_TOKEN" }),
-      })
-    ));
+  vi.stubGlobal("fetch", vi.fn(() =>
+    Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve({ token: "FAKE_JWT_TOKEN" }),
+    })
+  ));
 
-    renderWithRouter(<LoginPage />);
-    fireEvent.change(screen.getByLabelText(/Email/i), {
-      target: { value: "user@ubc.ca" },
-    });
-    fireEvent.change(screen.getByLabelText(/Password/i), {
-      target: { value: "Password@123" },
-    });
-
-    fireEvent.submit(screen.getByRole("button", { name: /login/i }));
-
-    await waitFor(() => {
-      // Check for localStorage
-      expect(localStorageSpy).toHaveBeenCalledWith("token", "FAKE_JWT_TOKEN");
-      // Check for navigation
-      expect(mockNavigate).toHaveBeenCalledWith("/");
-      // Check for alert
-      expect(alertSpy).toHaveBeenCalledWith("Login successful!");
-    });
-
-    localStorageSpy.mockRestore();
-    alertSpy.mockRestore();
+  renderWithRouter(<LoginPage />);
+  fireEvent.change(screen.getByLabelText(/Email/i), {
+    target: { value: "user@ubc.ca" },
+  });
+  fireEvent.change(screen.getByLabelText(/Password/i), {
+    target: { value: "Password@123" },
   });
 
+  fireEvent.submit(screen.getByRole("button", { name: /login/i }));
+
+  expect(
+    await screen.findByText(/login successful! redirecting/i, {}, { timeout: 3000 })
+  ).toBeInTheDocument();
+  expect(localStorageSpy).toHaveBeenCalledWith("token", "FAKE_JWT_TOKEN");
+
+  
+  await waitFor(() => {
+    expect(mockNavigate).toHaveBeenCalledWith("/");
+  }, { timeout: 3000 });
+
+  localStorageSpy.mockRestore();
+}, 10000);
+
+  
   it("shows alert for invalid login credentials", async () => {
     const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
-    // Mock fetch for failed login
     vi.stubGlobal("fetch", vi.fn(() =>
       Promise.resolve({
         ok: false,
@@ -142,7 +135,9 @@ describe("LoginPage", () => {
       target: { value: "WrongPass@123" },
     });
 
-    fireEvent.submit(screen.getByRole("button", { name: /login/i }));
+    await act(async () => {
+      fireEvent.submit(screen.getByRole("button", { name: /login/i }));
+    });
 
     await waitFor(() => {
       expect(alertSpy).toHaveBeenCalledWith("Invalid email or password.");
@@ -154,7 +149,6 @@ describe("LoginPage", () => {
 
   it("shows alert for server error", async () => {
     const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
-    // Mock fetch to throw error
     vi.stubGlobal("fetch", vi.fn(() => Promise.reject(new Error("Server error"))));
 
     renderWithRouter(<LoginPage />);
@@ -165,7 +159,10 @@ describe("LoginPage", () => {
       target: { value: "Password@123" },
     });
 
-    fireEvent.submit(screen.getByRole("button", { name: /login/i }));
+    await act(async () => {
+      fireEvent.submit(screen.getByRole("button", { name: /login/i }));
+      await Promise.resolve(); 
+    });
 
     await waitFor(() => {
       expect(alertSpy).toHaveBeenCalledWith("Server error. Please try again later.");
