@@ -3,7 +3,11 @@ import { Link, useLocation } from "react-router-dom";
 const navItems = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
-  { label: "Ta Profile", to: "/taprofile/1" }, //change this value when backend is implemented.
+
+  { label: "Ta Profile", to: "/taprofile" },
+  { label: "Courses Management", to: "/courses" },
+  // Add a link to the new course page.
+  { label: "Add New Course", to: "/courses/add" },
 ];
 
 export default function SideNav() {
