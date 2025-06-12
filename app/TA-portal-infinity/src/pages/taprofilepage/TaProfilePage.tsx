@@ -12,7 +12,7 @@ import SectionCard from '../../components/features/section/sectioncard/SectionCa
 import { mockSectionCOSC111 } from '../../mocked-objects/mockSectionCOSC111';
 import { mockSectionCOSC121 } from '../../mocked-objects/mockSectionCOSC121';
 import { GenericAPIContainer } from '../../utility/genericapicontainer/GenericAPIContainer';
-
+import { QuestionAnswer } from '../../components/features/questionanswer/QuestionAnswer';
 
 interface ContainerProps {
   studentId: number;
@@ -36,28 +36,23 @@ export default function TaProfilePage() {
     -small visualization at the bottom on which courses he is currently taking. When you press a button, it would switch or add the allocations the TA has.
     - don't let each column take up more than a certain height. Make it scrollable.
     */
-   const filteredFields = studentProfileFields.filter(
+  const filteredFields = studentProfileFields.filter(
     (key) => key !== "id" && key !== "firstName" && key !== "lastName"
   );
   return (
     <div className="mx-auto bg-white flex flex-col md:gap-3">
       <div className="order-0">
-        <GenericAPIContainer<Student, null>
+        <GenericAPIContainer<Student>
           fetchFunction={() => fetchStudentDetails(sId)}
           render={(data) => (
-            <ProfileSection
-              user={data}  
-              profileFields={filteredFields}
-              fieldLabels={studentFieldLabels}
-              className="flex flex-col"
-            />
+            <ProfileSection user={data} profileFields={filteredFields} fieldLabels={studentFieldLabels} className="flex flex-col" />
           )}
         />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 w-full">
         <div className=" space-y-4  mt-6 md:mt-0">
           <h2 className="text-lg font-bold">Allocation History</h2>
-          <GenericAPIContainer<Section[], null>
+          <GenericAPIContainer<Section[]>
             fetchFunction={() => fetchAllStudentSectionsHasCompleted(sId,true)}
             render={(data) => (
               <SectionsColumn sections={data ? data : []}className=""/>
@@ -66,7 +61,7 @@ export default function TaProfilePage() {
         </div>
         <div className=" space-y-4  mt-6 md:mt-0">
           <h2 className="text-lg font-bold">Sections Taking</h2>
-          <GenericAPIContainer<Section[], null>
+          <GenericAPIContainer<Section[]>
             fetchFunction={() => fetchAllStudentSectionsHasCompleted(sId,true)}
             render={(data) => (
               <SectionsColumn sections={data ? data : []} className="" />
@@ -75,7 +70,7 @@ export default function TaProfilePage() {
         </div>
         <div className=" space-y-4  mt-6 md:mt-0">
           <h2 className="text-lg font-bold">Sections Taken</h2>
-          <GenericAPIContainer<Section[], null>
+          <GenericAPIContainer<Section[]>
             fetchFunction={() => fetchAllStudentSectionsHasCompleted(sId,true)}
             render={(data) => (
               <SectionsColumn sections={data ? data : []} className="" />
@@ -85,7 +80,7 @@ export default function TaProfilePage() {
       </div>
       <div>
           <h2 className="text-lg font-bold">Answers to questions</h2>
-          <GenericAPIContainer<ProfileQuestion[], null>
+          <GenericAPIContainer<ProfileQuestion[]>
             fetchFunction={() => fetchAllStudentQuestions(sId)}
             render={(data) => (
               <ProfileQuestionsSection profileQuestions={data} className="" />
@@ -110,7 +105,7 @@ function ComparerContainer({ studentId, className }: ContainerProps) {
   const [exactMatchId, setExactMatchId] = useState<number | null>(null);
 
   const optionComponents: Record<string, () => JSX.Element> = {
-    allocationHistory: ()=> <GenericAPIContainer<Section[], null>
+    allocationHistory: ()=> <GenericAPIContainer<Section[]>
             fetchFunction={() => fetchAllStudentSectionsHasCompleted(studentId,true)}
             render={(data) => (
               <SectionsColumn
@@ -120,7 +115,7 @@ function ComparerContainer({ studentId, className }: ContainerProps) {
               />
             )}
           />,
-    sectionsTaking: ()=> <GenericAPIContainer<Section[], null>
+    sectionsTaking: ()=> <GenericAPIContainer<Section[]>
             fetchFunction={() => fetchAllStudentSectionsHasCompleted(studentId,true)}
             render={(data) => (
               <SectionsColumn
@@ -130,7 +125,7 @@ function ComparerContainer({ studentId, className }: ContainerProps) {
               />
             )}
           />,
-          sectionsTaken: ()=> <GenericAPIContainer<Section[], null>
+          sectionsTaken: ()=> <GenericAPIContainer<Section[]>
             fetchFunction={() => fetchAllStudentSectionsHasCompleted(studentId,true)}
             render={(data) => (
               <SectionsColumn
@@ -231,8 +226,7 @@ function ProfileQuestionsSection({ profileQuestions = [], className = "" }: Prof
       {profileQuestions.length ? (
         <div className="grid gap-1">
           {profileQuestions.map(que => (
-            // <SectionCard key={sectionKey(sec)} section={sec} />
-            <></>
+            <QuestionAnswer key={que.id} profileQuestion={que} className="" />
           ))}
         </div>
       ) : (
@@ -243,3 +237,4 @@ function ProfileQuestionsSection({ profileQuestions = [], className = "" }: Prof
     </section>
   );
 }
+

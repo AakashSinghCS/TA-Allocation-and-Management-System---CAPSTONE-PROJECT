@@ -1,17 +1,16 @@
+// add caching here later using react-query library. Make it be an optional field to the interface below.
 import { useEffect, useState, type JSX } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface GenericContainerProps<T, P = {}> {
+interface GenericContainerProps<T> {
   fetchFunction: () => Promise<T>;
-  render: (data: T, extra: P) => JSX.Element;
-  extra?: P;
+  render: (data: T) => JSX.Element;
 }
 
-export function GenericAPIContainer<T, P={}>({
+export function GenericAPIContainer<T>({
   fetchFunction,
   render,
-  extra
-}: GenericContainerProps<T,P>) {
+}: GenericContainerProps<T>) {
   const navigate = useNavigate();
   const [data, setData] = useState<T>();
 
@@ -24,5 +23,5 @@ export function GenericAPIContainer<T, P={}>({
   }, [navigate, fetchFunction]);
 
   if (!data) return <p>Loading…</p>;
-  return <>{render(data, extra as P)}</>;
+  return <>{render(data)}</>;
 }
