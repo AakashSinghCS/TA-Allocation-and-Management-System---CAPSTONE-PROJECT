@@ -1,21 +1,54 @@
-//This is just an example. Please redo this page later.
+import ubcLogo from "../../../assets/icons/ubc_footer_logo.png";
+import instagramIcon from "../../../assets/icons/instagram_logo.png";
+import youtubeIcon from "../../../assets/icons/youtube_logo.png";
+import linkedinIcon from "../../../assets/icons/linkedin_logo.png";
+import twitterIcon from "../../../assets/icons/facebook_logo.png";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 border-t p-4 text-sm">
-      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center gap-4">
-        {/* crest / logo (optional) */}
-        <img src="/ubc-crest.svg" alt="" className="h-10 w-auto" />
+    <footer className="flex flex-col sm:flex-row items-center sm:justify-between bg-white border-t border-[#d1d5db] text-[#040941] px-4 sm:px-9 py-4 gap-y-4">
+      {/* UBC Logo and Navigation Links */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+        <img src={ubcLogo} alt="UBC logo" className="h-16 sm:h-20 w-auto hover:drop-shadow-[0_0_1em_#040941]" />
 
-        <p className="flex-1 text-gray-600">
-          © {new Date().getFullYear()} University of British Columbia
-        </p>
+        <div className="flex flex-wrap justify-center sm:justify-start gap-x-4 sm:gap-x-6 gap-y-2 text-sm font-medium tracking-wide">
+          <a href="#" className="hover:opacity-70 transition-opacity" style={{ color: "#000000" }}>
+            Terms of Use
+          </a>
+          <a href="#" className="hover:opacity-70 transition-opacity" style={{ color: "#000000" }}>
+            Accessibility
+          </a>
+          <a href="#" className="hover:opacity-70 transition-opacity" style={{ color: "#000000" }}>
+            Privacy
+          </a>
+          <a href="#" className="hover:opacity-70 transition-opacity" style={{ color: "#000000" }}>
+            Copyright
+          </a>
+          <a href="#" className="hover:opacity-70 transition-opacity" style={{ color: "#000000" }}>
+            Need Help?
+          </a>
+        </div>
+      </div>
 
-        <nav className="flex gap-4">
-          <a href="#" className="hover:underline">Terms of Use</a>
-          <a href="#" className="hover:underline">Privacy</a>
-          <a href="#" className="hover:underline">Accessibility</a>
-        </nav>
+      {/* Social Icons */}
+      <div className="flex items-center gap-4 sm:gap-3">
+        
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+          <img src={twitterIcon} alt="Twitter" className="h-8 w-8 hover:opacity-70 transition-opacity"/>
+        </a>
+        
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <img src={instagramIcon} alt="Instagram" className="h-8 w-8 hover:opacity-70 transition-opacity"/>
+        </a>
+        
+        <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" >
+          <img src={youtubeIcon} alt="YouTube" className="h-8 w-8 hover:opacity-70 transition-opacity"/>
+        </a>
+        
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" >
+          <img src={linkedinIcon} alt="LinkedIn" className="h-8 w-8 hover:opacity-70 transition-opacity" />
+        </a>
+     
       </div>
     </footer>
   );
