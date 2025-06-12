@@ -11,11 +11,13 @@ import SectionsColumn from '../../components/features/section/sectionscolumn/Sec
 import SectionCard from '../../components/features/section/sectioncard/SectionCard';
 import { mockSectionCOSC111 } from '../../mocked-objects/mockSectionCOSC111';
 import { mockSectionCOSC121 } from '../../mocked-objects/mockSectionCOSC121';
+import { type Need } from '../../interfaces/need/Need';
 
 interface ContainerProps {
   studentId: number;
   navigate: NavigateFunction;
   className: string;
+  highlightCourseIds? :number[];
 }
 
 interface ProfileQuestionsProps {
@@ -37,6 +39,7 @@ export default function TaProfilePage() {
       <div className="order-0">
         <ProfileSectionContainer studentId={sId} navigate={navigate} className="flex flex-col" />
       </div>
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 w-full">
         <AllocationHistoryContainer studentId={sId} navigate={navigate} className=" space-y-4  mt-6 md:mt-0" />
         <SectionsTakingContainer studentId={sId} navigate={navigate} className=" space-y-4  mt-6 md:mt-0" />
@@ -57,11 +60,12 @@ function ComparerContainer({ studentId, navigate, className }: ContainerProps) {
   const [query, setQuery] = useState("");
   const [filtered, setFiltered] = useState<Section[]>([]);
   const [selectedSection, setSelectedSection] = useState<Section>();
+  const [highlightCourseIds, setHighlightCourseIds] = useState<number[]>([]); 
 
   const optionComponents: Record<string, () => JSX.Element> = {
-    allocationHistory: () => <ProfileSectionContainer studentId={studentId} navigate={navigate} className="" />,
-    sectionsTaking: () => <SectionsTakingContainer studentId={studentId} navigate={navigate} className="" />,
-    sectionsTaken: () => <SectionsTakenContainer studentId={studentId} navigate={navigate} className="" />,
+    allocationHistory: () => <ProfileSectionContainer studentId={studentId} navigate={navigate} className="" highlightCourseIds={highlightCourseIds} />,
+    sectionsTaking: () => <SectionsTakingContainer studentId={studentId} navigate={navigate} className="" highlightCourseIds={highlightCourseIds}/>,
+    sectionsTaken: () => <SectionsTakenContainer studentId={studentId} navigate={navigate} className="" highlightCourseIds={highlightCourseIds}/>,
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -76,19 +80,18 @@ function ComparerContainer({ studentId, navigate, className }: ContainerProps) {
     setSelectedSection(section);
   }
 
+  const handleCompareClick = () =>{
+    if (!selectedSection?.need) {                                                  
+      setHighlightCourseIds([]);
+      return;
+    }
+    setHighlightCourseIds(
+      selectedSection.need.courseNeeds.map((c) => c.id)        
+    );
+  }
+
   return (
     <div className={className}>
-      <div className="">
-        <select id="columnSelect" value={selectedOption} onChange={handleChange} className="border rounded px-2 py-1">
-          <option value="allocationHistory">Allocation History</option>
-          <option value="sectionsTaking">Courses Taking</option>
-          <option value="sectionsTaken">Courses Taken</option>
-        </select>
-        {optionComponents[selectedOption]()}
-      </div>
-      <div>
-        Click to Compare
-      </div>
       <div>
         <div className="flex gap-2 mb-4">
           <input
@@ -109,7 +112,7 @@ function ComparerContainer({ studentId, navigate, className }: ContainerProps) {
             <div className="grid gap-1">
               {filtered.map((sec) => {
                 const isSelected = selectedSection && sec.sectionDetails.id === selectedSection.sectionDetails.id;
-                const cardClass = `cursor-pointer ${isSelected ? "outline-1 outline-red-300" : ""}`;
+                const cardClass = `cursor-pointer ${isSelected ? "outline-1 outline-red-400" : ""}`;
                 return <span key={sectionKey(sec)} onClick={()=>handleClickSection(sec)}><SectionCard section={sec} className={cardClass}/></span>
               })}
             </div>
@@ -118,6 +121,18 @@ function ComparerContainer({ studentId, navigate, className }: ContainerProps) {
               No courses to display
             </div>
           )}
+      </div>
+      <div>
+        <button onClick={handleCompareClick}  disabled={!selectedSection} className="mt-3 text-blue-600 underline disabled:text-slate-400">Compare Needs</button>
+      </div>
+          {/*add a feature to see if the id simply equals from left course to one of the right courses */}
+      <div className="">
+        <select id="columnSelect" value={selectedOption} onChange={handleChange} className="border rounded px-2 py-1">
+          <option value="allocationHistory">Allocation History</option>
+          <option value="sectionsTaking">Courses Taking</option>
+          <option value="sectionsTaken">Courses Taken</option>
+        </select>
+        {optionComponents[selectedOption]()}
       </div>
     </div>
   );
@@ -159,7 +174,7 @@ function ProfileSectionContainer({ studentId, navigate, className }: ContainerPr
   );
 }
 
-function SectionsTakenContainer({ studentId, navigate, className }: ContainerProps) {
+function SectionsTakenContainer({ studentId, navigate, className, highlightCourseIds = [] }: ContainerProps) {
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -185,12 +200,13 @@ function SectionsTakenContainer({ studentId, navigate, className }: ContainerPro
       <SectionsColumn
         sections={data ? data : []}
         className=""
+        highlightCourseIds={highlightCourseIds}  
       />
     </div>
   );
 }
 
-function SectionsTakingContainer({ studentId, navigate, className }: ContainerProps) {
+function SectionsTakingContainer({ studentId, navigate, className,highlightCourseIds=[] }: ContainerProps) {
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -216,12 +232,13 @@ function SectionsTakingContainer({ studentId, navigate, className }: ContainerPr
       <SectionsColumn
         sections={data ? data : []}
         className=""
+        highlightCourseIds={highlightCourseIds} 
       />
     </div>
   );
 }
 
-function AllocationHistoryContainer({ studentId, navigate, className }: ContainerProps) {
+function AllocationHistoryContainer({ studentId, navigate, className , highlightCourseIds=[]}: ContainerProps) {
   const [data, setData] = useState<Section[]>();
 
   useEffect(() => {
@@ -247,6 +264,7 @@ function AllocationHistoryContainer({ studentId, navigate, className }: Containe
       <SectionsColumn
         sections={data ? data : []}
         className=""
+        highlightCourseIds= {highlightCourseIds}
       />
     </div>
   );
