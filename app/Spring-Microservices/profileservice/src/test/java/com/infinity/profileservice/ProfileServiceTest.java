@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,13 +16,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.infinity.profileservice.dtos.*;
-
+import com.infinity.profileservice.enums.QuestionType;
 import com.infinity.profileservice.models.*;
-import com.infinity.profileservice.repositories.StudentAnswerRepo;
+import com.infinity.profileservice.repositories.*;
 
 class ProfileServiceTest {
 
     @Mock private StudentAnswerRepo studentRepo;
+    @Mock private AnswerRepo answerRepo;
+    @Mock private QuestionRepo questionRepo;
 
     @InjectMocks private ProfileService profileService;
 
@@ -29,35 +32,49 @@ class ProfileServiceTest {
     void init() { MockitoAnnotations.openMocks(this); }
 
     @Test
-    void buildProfile_returnsOnlyProfileAnswers() {
+    void buildProfile_groupsAnswersByQuestion() {
         Integer sid = 101;
 
-        // prepare a question + answer
+        // set up a SINGLE‐choice question
         ProfileQuestion q = new ProfileQuestion();
+        q.setId(10);
         q.setDescription("Fav Lang");
-        ProfileAnswer a = new ProfileAnswer();
-        a.setDescription("Java");
-        a.setQuestion(q);
+        q.setType(QuestionType.SINGLE);
 
-        // link entity
-        StudentHasProfileAnswer link = new StudentHasProfileAnswer();
-        link.setStudentId(sid);
-        link.setAnswerId(a.getId());
-        link.setAnswer(a);
+        // two answers belonging to that question
+        ProfileAnswer a1 = new ProfileAnswer();
+        a1.setId(1);
+        a1.setDescription("Java");
+        a1.setQuestion(q);
 
-        when(studentRepo.findByStudentId(sid))
-            .thenReturn(List.of(link));
+        ProfileAnswer a2 = new ProfileAnswer();
+        a2.setId(2);
+        a2.setDescription("Python");
+        a2.setQuestion(q);
+
+        // stub the join rows
+        StudentHasProfileAnswer l1 = link(sid, 1, a1);
+        StudentHasProfileAnswer l2 = link(sid, 2, a2);
+        when(studentRepo.findByStudentId(sid)).thenReturn(List.of(l1, l2));
 
         // exercise
         ProfileResponseDto dto = profileService.buildProfile(sid);
 
-        // verify only the answers list is present
-        List<QuestionAnswerDto> answers = dto.profileAnswers();
-        assertThat(answers).hasSize(1);
-        assertThat(answers.get(0).question()).isEqualTo("Fav Lang");
-        assertThat(answers.get(0).answer()).isEqualTo("Java");
+        // verify one grouped entry
+        var list = dto.profileAnswers();
+        assertThat(list).hasSize(1);
 
-        verify(studentRepo).findByStudentId(sid);
+        var item = list.get(0);
+        assertThat(item.id()).isEqualTo(10);
+        assertThat(item.type()).isEqualTo(QuestionType.SINGLE);
+        assertThat(item.description()).isEqualTo("Fav Lang");
+
+        // now check that the two AnswerInfoDto objects carry the right descriptions
+        var answers = item.answers();
+        assertThat(answers).hasSize(2);
+        assertThat(answers)
+            .extracting(AnswerDto::description)
+            .containsExactlyInAnyOrder("Java", "Python");
     }
 
     @Test
@@ -94,4 +111,41 @@ class ProfileServiceTest {
         l.setAnswerId(aid);
         return l;
     }
+    // helper for grouping test
+    private StudentHasProfileAnswer link(Integer sid, Integer aid, ProfileAnswer answer) {
+        StudentHasProfileAnswer l = link(sid, aid);
+        l.setAnswer(answer);
+        return l;
+    }
+
+    @Test
+    void saveFreeTextAnswer_createsAndLinksAnswer() {
+        Integer sid = 42, qid = 10;
+        String text = "My answer";
+
+        ProfileQuestion q = new ProfileQuestion();
+        q.setId(qid);
+        q.setType(QuestionType.FREE_TEXT);
+        when(questionRepo.findById(qid)).thenReturn(Optional.of(q));
+
+        ProfileAnswer saved = new ProfileAnswer();
+        saved.setId(99);
+        saved.setQuestion(q);
+        saved.setDescription(text);
+        when(answerRepo.save(any())).thenReturn(saved);
+        when(studentRepo.findByStudentId(sid)).thenReturn(List.of());
+
+        profileService.saveFreeTextAnswer(sid, qid, text);
+
+        verify(answerRepo).save(argThat(a ->
+            a.getQuestion().getId().equals(qid) &&
+            text.equals(a.getDescription())
+        ));
+        verify(studentRepo).save(argThat(l ->
+            l.getStudentId().equals(sid) &&
+            l.getAnswerId().equals(99) &&
+            text.equals(l.getAnswerText())
+        ));
+    }
+
 }

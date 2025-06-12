@@ -11,7 +11,6 @@ import com.infinity.profileservice.dtos.admin.*;
 import com.infinity.profileservice.models.ProfileAnswer;
 import com.infinity.profileservice.models.ProfileQuestion;
 import com.infinity.profileservice.services.QuestionService;
-import com.infinity.profileservice.services.ProfileService;
 
 import lombok.RequiredArgsConstructor;
 

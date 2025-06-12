@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import com.infinity.profileservice.dtos.TextRequestDto;
 import com.infinity.profileservice.dtos.ProfileResponseDto;
 import com.infinity.profileservice.services.ProfileService;
 
@@ -30,4 +31,14 @@ public class ProfileController {
         profileService.saveAnswers(studentNum, answerIds);
         return ResponseEntity.ok().build();
     }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @PostMapping("/{studentNum}/questions/{questionId}/answer/text")
+    public ResponseEntity<Void> saveFreeText(@PathVariable Integer studentNum,
+                                             @PathVariable Integer questionId,
+                                             @RequestBody TextRequestDto req) {
+        profileService.saveFreeTextAnswer(studentNum, questionId, req.text());
+        return ResponseEntity.ok().build();
+    }
+
 }
