@@ -30,16 +30,15 @@ export const mockSectionScheduleCOSC111ForFri : SectionSchedule = {
     endTime: "16:00"
 }
 
-const mockSectionNeedCOSC111 :Need = {
-    id : 1,
-    sectionId: mockSectionCOSC111Details.id,
-    description: "I need smart people",
-    numOfHoursCurrentlyAllocated: 0,
-    courseNeeds: [mockCourseCOSC111]
-}
+// const mockSectionNeedCOSC111 :Need = {
+//     sectionId: mockSectionCOSC111Details.id,
+//     description: "I need smart people",
+//     numOfHoursCurrentlyAllocated: 0,
+//     courseNeeds: [mockCourseCOSC111]
+// }
 
 export const mockSectionCOSC111 : Section = {
     sectionDetails : mockSectionCOSC111Details,
     sectionSchedule : [mockSectionScheduleCOSC111ForTue,mockSectionScheduleCOSC111ForFri],
-    need : mockSectionNeedCOSC111
+    // need : mockSectionNeedCOSC111
 }
