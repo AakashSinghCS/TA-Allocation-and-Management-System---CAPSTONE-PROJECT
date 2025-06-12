@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bgImage from '../../assets/ubc_image.png?url';
 import Navbar from '../../components/layout/login_navbar/Navbar';
+import { useAuth } from '../../context/AuthContext';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -10,41 +11,40 @@ const LoginPage: React.FC = () => {
   const [passwordError, setPasswordError] = useState('');
   const [loginMessage, setLoginMessage] = useState(""); 
   const navigate = useNavigate();
-
+  const { login } = useAuth(); 
+  
+  
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const response = await fetch("http://localhost:8080/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
-      });
+  try {
+    const response = await fetch("http://localhost:8080/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
 
-      if (!response.ok) {
-        const error = await response.text();
-        console.error("Login failed:", error);
-        alert("Invalid email or password."); 
-        return;
-      }
-
-      const { token } = await response.json(); 
-      console.log("JWT token:", token);
-
-      localStorage.setItem("token", token); //  storing the token
-
-      setLoginMessage("Login successful! Redirecting...");
-      setTimeout(() => {
-        navigate("/");
-      }, 1200); 
-
-    } catch (err) {
-      console.error("Login error:", err);
-      alert("Server error. Please try again later.");
+    if (!response.ok) {
+      const error = await response.text();
+      console.error("Login failed:", error);
+      alert("Invalid email or password.");
+      return;
     }
-  };
+
+    const { token } = await response.json();
+    login({ token }); 
+    setLoginMessage("Login successful! Redirecting...");
+    setTimeout(() => {
+      navigate("/");
+    }, 1200);
+
+  } catch (err) {
+    console.error("Login error:", err);
+    alert("Server error. Please try again later.");
+  }
+};
 
   return (
     <div className="min-h-screen relative">
@@ -82,7 +82,6 @@ const LoginPage: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   onInvalid={(e) => setEmailError('Please enter a valid email address')}
                   onInput={() => setEmailError('')}
-                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                   required
                   className="w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-[#040941] focus:border-[#040941] bg-white"
                 />

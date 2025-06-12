@@ -16,7 +16,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtil {
 
     private final SecretKey secretKey;
-    //private final long EXPIRATION_MS = 1000 * 60 * 60; can add this later on - annoying for development
+    private final long EXPIRATION_MS = 1000 * 60 * 60; // can add this later on - annoying for development
 
     public JwtUtil(@Value("${jwt.secret}") String secret) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
@@ -28,7 +28,7 @@ public class JwtUtil {
                 .claim("userId", userId)
                 .claim("roles", roles)
                 .issuedAt(new Date())
-                //.expiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
                 .signWith(secretKey)
                 .compact();
     }
