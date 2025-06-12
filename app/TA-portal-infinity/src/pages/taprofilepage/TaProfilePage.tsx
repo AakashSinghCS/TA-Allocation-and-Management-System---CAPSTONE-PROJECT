@@ -11,7 +11,6 @@ import SectionsColumn from '../../components/features/section/sectionscolumn/Sec
 import SectionCard from '../../components/features/section/sectioncard/SectionCard';
 import { mockSectionCOSC111 } from '../../mocked-objects/mockSectionCOSC111';
 import { mockSectionCOSC121 } from '../../mocked-objects/mockSectionCOSC121';
-import { type Need } from '../../interfaces/need/Need';
 
 interface ContainerProps {
   studentId: number;
