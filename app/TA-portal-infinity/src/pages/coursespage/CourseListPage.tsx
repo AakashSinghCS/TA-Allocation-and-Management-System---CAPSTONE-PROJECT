@@ -4,7 +4,11 @@ import CourseList from '../../components/features/courses/CourseList';
 import CourseFilter from '../../components/features/courses/CourseFilter';
 import type { Course } from '../../interfaces/course/Course';
 
-// Mock data for demonstration
+// ★ STEP 1: import API
+import { postSectionByFilter } from '../../api/section/postSectionByFilter';
+
+
+// Mock data for demonstration - This will likely be replaced by API data later
 const mockCourses: Course[] = [
   { id: 1, name: 'Intro to Programming', deptCode: 'COSC', courseNum: '101', section: '001', term: 'Fall 2024', type: 'Lecture', instructorId: 10, prerequisites: [] },
   { id: 2, name: 'Data Structures', deptCode: 'COSC', courseNum: '211', section: '001', term: 'Fall 2024', type: 'Lecture', instructorId: 12, prerequisites: ['COSC 101'] },
@@ -25,7 +29,9 @@ export default function CourseListPage() {
   }, []);
 
   /**
-   * Handles changes from the filter component and updates the displayed courses.
+   * ★ STEP 2: Update this 
+   * Handles changes from the filter component.
+   * Now it calls the API function instead of just filtering local data.
    * @param filters - An object containing all the active filter values.
    */
   const handleFilterChange = (filters: {
@@ -34,33 +40,18 @@ export default function CourseListPage() {
     deptCode: string;
     type: string;
   }) => {
+    console.log("Filters received in CourseListPage:", filters);
+
+    // Call the API function with the filter data
+    postSectionByFilter(filters);
+
+    // Note: The old local filtering logic is now bypassed.
+    // You can remove it or keep it if you need it for other purposes.
+    /*
     let updatedCourses = courses;
-
-    // Filter by Term
-    if (filters.term) {
-      updatedCourses = updatedCourses.filter(course => course.term === filters.term);
-    }
-
-    // Filter by Search Query (Course Name)
-    if (filters.searchQuery) {
-      updatedCourses = updatedCourses.filter(course =>
-        course.name.toLowerCase().includes(filters.searchQuery.toLowerCase())
-      );
-    }
-
-    // Filter by Department Code
-    if (filters.deptCode) {
-      updatedCourses = updatedCourses.filter(course =>
-        course.deptCode.toLowerCase().includes(filters.deptCode.toLowerCase())
-      );
-    }
-
-    // Filter by Type
-    if (filters.type) {
-      updatedCourses = updatedCourses.filter(course => course.type === filters.type);
-    }
-
+    // ... old filtering logic was here ...
     setFilteredCourses(updatedCourses);
+    */
   };
 
   return (
