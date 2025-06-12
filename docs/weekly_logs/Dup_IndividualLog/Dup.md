@@ -638,7 +638,7 @@ Today, we also had a meeting with Scott and each other. Made some more edits to 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
 
-## Saturday 6/07 (5/28~6/6)
+## Saturday 6/07 (6/7~6/13)
 
 ### Timesheet
 Clockify report
@@ -687,7 +687,7 @@ I also talked with Seiya today to tell him how I think he should work on his bra
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
 
 
-## Monday 6/09 (5/28~6/6)
+## Monday 6/09 (6/7~6/13)
 
 ### Timesheet
 Clockify report
@@ -742,7 +742,7 @@ I spent a long time on the css and layout of the html and etc.
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
 
 
-## Tuesday 6/10 (5/28~6/6)
+## Tuesday 6/10 (6/7~6/13)
 
 ### Timesheet
 Clockify report
@@ -801,6 +801,70 @@ Today I spent over 3 hours just discussing with team mates. 2 hours we met all t
 What didn't go well was that Aakash wasn't willing to believe that the backend should be sending the frontend the response I was asking him to send. Fortunately, Alex concurred with me and Aakash seems to be on it now.
 So I could only spend like maximum 3 hours on actual development today, and I felt like I didn't make much progress in terms of coding.
 Tommorrow I hope to finish the profilequestions frontend, make the section containers consider overflow. And perhaps consider calling endpoints now, if it's possible.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
+
+
+## Wednesday 6/11 (6/7~6/13)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June11.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue #191 frontend aesthetics
+  * #3: issue #206 backend getStudentbyId
+  * #4: issue #204 frontend comparer and profilequestions
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I fixed some minor problems in issue #191 that had to do with the text-ellipsis.
+Then I worked on  the backend concerning findbyStudentId. I made sure to include tests.
+Then I worked on the frontend. I decided to create a small app that compares the course needs with the courses the ta takes/has taken/allocation history.
+Tommorrow, I will focus on refactoring in issue 204. and hopefully integrate backend to the frontend using api endpoints to some extent.
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
