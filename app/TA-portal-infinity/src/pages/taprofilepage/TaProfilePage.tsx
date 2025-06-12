@@ -11,13 +11,15 @@ import SectionsColumn from '../../components/features/section/sectionscolumn/Sec
 import SectionCard from '../../components/features/section/sectioncard/SectionCard';
 import { mockSectionCOSC111 } from '../../mocked-objects/mockSectionCOSC111';
 import { mockSectionCOSC121 } from '../../mocked-objects/mockSectionCOSC121';
+import { GenericAPIContainer } from '../../utility/genericapicontainer/GenericAPIContainer';
+
 
 interface ContainerProps {
   studentId: number;
-  navigate: NavigateFunction;
+  navigate?: NavigateFunction;
   className: string;
-  highlightCourseIds? :number[];
-  exactMatchId? :number | null;
+  highlightCourseIds?: number[];
+  exactMatchId?: number | null;
 }
 
 interface ProfileQuestionsProps {
@@ -34,70 +36,139 @@ export default function TaProfilePage() {
     -small visualization at the bottom on which courses he is currently taking. When you press a button, it would switch or add the allocations the TA has.
     - don't let each column take up more than a certain height. Make it scrollable.
     */
+   const filteredFields = studentProfileFields.filter(
+    (key) => key !== "id" && key !== "firstName" && key !== "lastName"
+  );
   return (
     <div className="mx-auto bg-white flex flex-col md:gap-3">
       <div className="order-0">
-        <ProfileSectionContainer studentId={sId} navigate={navigate} className="flex flex-col" />
+        <GenericAPIContainer<Student, null>
+          fetchFunction={() => fetchStudentDetails(sId)}
+          render={(data) => (
+            <ProfileSection
+              user={data}  
+              profileFields={filteredFields}
+              fieldLabels={studentFieldLabels}
+              className="flex flex-col"
+            />
+          )}
+        />
       </div>
-      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 w-full">
-        <AllocationHistoryContainer studentId={sId} navigate={navigate} className=" space-y-4  mt-6 md:mt-0" />
-        <SectionsTakingContainer studentId={sId} navigate={navigate} className=" space-y-4  mt-6 md:mt-0" />
-        <SectionsTakenContainer studentId={sId} navigate={navigate} className="space-y-4 mt-6 md:mt-0" />
+        <div className=" space-y-4  mt-6 md:mt-0">
+          <h2 className="text-lg font-bold">Allocation History</h2>
+          <GenericAPIContainer<Section[], null>
+            fetchFunction={() => fetchAllStudentSectionsHasCompleted(sId,true)}
+            render={(data) => (
+              <SectionsColumn sections={data ? data : []}className=""/>
+            )}
+          />
+        </div>
+        <div className=" space-y-4  mt-6 md:mt-0">
+          <h2 className="text-lg font-bold">Sections Taking</h2>
+          <GenericAPIContainer<Section[], null>
+            fetchFunction={() => fetchAllStudentSectionsHasCompleted(sId,true)}
+            render={(data) => (
+              <SectionsColumn sections={data ? data : []} className="" />
+            )}
+          />
+        </div>
+        <div className=" space-y-4  mt-6 md:mt-0">
+          <h2 className="text-lg font-bold">Sections Taken</h2>
+          <GenericAPIContainer<Section[], null>
+            fetchFunction={() => fetchAllStudentSectionsHasCompleted(sId,true)}
+            render={(data) => (
+              <SectionsColumn sections={data ? data : []} className="" />
+            )}
+          />
+        </div>
       </div>
       <div>
-        <ProfileQuestionsContainer studentId={sId} navigate={navigate} className="" />
+          <h2 className="text-lg font-bold">Answers to questions</h2>
+          <GenericAPIContainer<ProfileQuestion[], null>
+            fetchFunction={() => fetchAllStudentQuestions(sId)}
+            render={(data) => (
+              <ProfileQuestionsSection profileQuestions={data} className="" />
+            )}
+          />
       </div>
       <div>
-        <h2 className= "text-lg font-bold">Compare a course to the student's profile </h2>
-        {/* <p className= "text-xs text-slate-500">Search for a course, choose a course, and click compare</p> */}
+        <h2 className="text-lg font-bold">Compare a course to the student's profile </h2>
+        <p className="text-xs text-slate-500">Search for a course, choose a course, and click compare</p>
         <ComparerContainer studentId={sId} navigate={navigate} className="flex flex-wrap lg:grid lg:grid-cols-[1fr_auto_1fr] gap-3" />
       </div>
     </div>
   );
 }
 
-function ComparerContainer({ studentId, navigate, className }: ContainerProps) {
+function ComparerContainer({ studentId, className }: ContainerProps) {
   const [selectedOption, setSelectedOption] = useState("sectionsTaken");
   const [query, setQuery] = useState("");
   const [filtered, setFiltered] = useState<Section[]>([]);
   const [selectedSection, setSelectedSection] = useState<Section>();
-  const [highlightCourseIds, setHighlightCourseIds] = useState<number[]>([]); 
-  const [exactMatchId, setExactMatchId] = useState<number | null>(null);   
+  const [highlightCourseIds, setHighlightCourseIds] = useState<number[]>([]);
+  const [exactMatchId, setExactMatchId] = useState<number | null>(null);
 
   const optionComponents: Record<string, () => JSX.Element> = {
-    allocationHistory: () => <ProfileSectionContainer studentId={studentId} navigate={navigate} className="" highlightCourseIds={highlightCourseIds} exactMatchId={exactMatchId} />,
-    sectionsTaking: () => <SectionsTakingContainer studentId={studentId} navigate={navigate} className="" highlightCourseIds={highlightCourseIds} exactMatchId={exactMatchId}/>,
-    sectionsTaken: () => <SectionsTakenContainer studentId={studentId} navigate={navigate} className="" highlightCourseIds={highlightCourseIds} exactMatchId={exactMatchId}/>,
-  };
+    allocationHistory: ()=> <GenericAPIContainer<Section[], null>
+            fetchFunction={() => fetchAllStudentSectionsHasCompleted(studentId,true)}
+            render={(data) => (
+              <SectionsColumn
+                sections={data ? data : []}
+                className=""
+                highlightCourseIds={highlightCourseIds} exactMatchId={exactMatchId}
+              />
+            )}
+          />,
+    sectionsTaking: ()=> <GenericAPIContainer<Section[], null>
+            fetchFunction={() => fetchAllStudentSectionsHasCompleted(studentId,true)}
+            render={(data) => (
+              <SectionsColumn
+                sections={data ? data : []}
+                className=""
+                highlightCourseIds={highlightCourseIds} exactMatchId={exactMatchId}
+              />
+            )}
+          />,
+          sectionsTaken: ()=> <GenericAPIContainer<Section[], null>
+            fetchFunction={() => fetchAllStudentSectionsHasCompleted(studentId,true)}
+            render={(data) => (
+              <SectionsColumn
+                sections={data ? data : []}
+                className=""
+                highlightCourseIds={highlightCourseIds} exactMatchId={exactMatchId}
+              />
+            )}
+          />,
+  }
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value);
   };
 
   const handleSearch = () => {
-    setFiltered([mockSectionCOSC111,mockSectionCOSC121]);
+    setFiltered([mockSectionCOSC111, mockSectionCOSC121]);
   };
 
-  const handleClickSection = (section : Section) =>{
+  const handleClickSection = (section: Section) => {
     setSelectedSection(section);
     setHighlightCourseIds([]);
     setExactMatchId(null);
   }
 
-  const handleCompareClick = () =>{
+  const handleCompareClick = () => {
     setExactMatchId(null);
-    if (!selectedSection?.need) {                                                  
+    if (!selectedSection?.need) {
       setHighlightCourseIds([]);
       return;
     }
     setHighlightCourseIds(
-      selectedSection.need.courseNeeds.map((c) => c.id)        
+      selectedSection.need.courseNeeds.map((c) => c.id)
     );
   }
 
-  const handleExactMatch = () =>{
-    if(selectedSection){
+  const handleExactMatch = () => {
+    if (selectedSection) {
       console.log("asdf");
       setExactMatchId(selectedSection.sectionDetails.id);
     }
@@ -120,24 +191,24 @@ function ComparerContainer({ studentId, navigate, className }: ContainerProps) {
           >
             Search
           </button>
+        </div>
+        {filtered.length ? (
+          <div className="grid gap-1">
+            {filtered.map((sec) => {
+              const isSelected = selectedSection && sec.sectionDetails.id === selectedSection.sectionDetails.id;
+              const cardClass = `cursor-pointer ${isSelected ? "outline-1 outline-yellow-400" : ""}`;
+              return <span key={sectionKey(sec)} onClick={() => handleClickSection(sec)}><SectionCard section={sec} className={cardClass} /></span>
+            })}
           </div>
-          {filtered.length ? (
-            <div className="grid gap-1">
-              {filtered.map((sec) => {
-                const isSelected = selectedSection && sec.sectionDetails.id === selectedSection.sectionDetails.id;
-                const cardClass = `cursor-pointer ${isSelected ? "outline-1 outline-yellow-400" : ""}`;
-                return <span key={sectionKey(sec)} onClick={()=>handleClickSection(sec)}><SectionCard section={sec} className={cardClass}/></span>
-              })}
-            </div>
-          ) : (
-            <div className="p-4 text-slate-400 italic border border-dashed border-slate-200 rounded-lg">
-              No courses to display
-            </div>
-          )}
+        ) : (
+          <div className="p-4 text-slate-400 italic border border-dashed border-slate-200 rounded-lg">
+            No courses to display
+          </div>
+        )}
       </div>
       <div className="grid">
-        <button onClick={handleCompareClick}  disabled={!selectedSection} className="mt-3 text-blue-600 underline disabled:text-slate-400">Compare Needs</button>
-        <button onClick={handleExactMatch}  disabled={!selectedSection} className="mt-3 text-blue-600 underline disabled:text-slate-400">Exact Match </button>
+        <button onClick={handleCompareClick} disabled={!selectedSection} className="mt-3 text-blue-600 underline disabled:text-slate-400">Compare Needs</button>
+        <button onClick={handleExactMatch} disabled={!selectedSection} className="mt-3 text-blue-600 underline disabled:text-slate-400">Exact Match </button>
       </div>
       <div className="flex flex-col">
         <select id="columnSelect" value={selectedOption} onChange={handleChange} className="border rounded px-2 py-1">
@@ -145,7 +216,7 @@ function ComparerContainer({ studentId, navigate, className }: ContainerProps) {
           <option value="sectionsTaking">Courses Taking</option>
           <option value="sectionsTaken">Courses Taken</option>
         </select>
-        <p className = "text-xs text-slate-500 text-grey">A green or blue outline means it is matched</p>
+        <p className="text-xs text-slate-500 text-grey">A green or blue outline means it is matched</p>
         {optionComponents[selectedOption]()}
       </div>
     </div>
@@ -153,168 +224,6 @@ function ComparerContainer({ studentId, navigate, className }: ContainerProps) {
 }
 
 const sectionKey = (s: Section) => `${s.sectionDetails.deptCode}-${s.sectionDetails.courseNum}-${s.sectionDetails.section}`;
-
-function ProfileSectionContainer({ studentId, navigate, className }: ContainerProps) {
-  const [data, setData] = useState<Student>();
-
-  useEffect(() => {
-    if (Number.isNaN(studentId)) {
-      navigate("/error", { replace: true, state: { message: "Invalid student ID" } });
-      return;
-    }
-
-    fetchStudentDetails(studentId)
-      .then((resp: Student) => {
-        setData(resp);
-      })
-      .catch((e: Error) => {
-        navigate("/error", { replace: true, state: { message: e.message } });
-      });
-    /* To test if the Navigate component leading you to error works, uncomment the comment below.*/
-    // navigate("/error", { replace: true, state: { message: "Test error redirection" } });
-  }, [studentId, navigate]);
-
-  const filteredFields = studentProfileFields.filter(
-    (key) => key !== "id" && key !== "firstName" && key !== "lastName"
-  );
-
-  return (
-    data ? <ProfileSection
-      user={data}
-      profileFields={filteredFields}
-      fieldLabels={studentFieldLabels}
-      className={className}
-    /> : <p>Is Loading! {/* replace the is loading later by a seperate component which is more user-friendly*/}</p>
-  );
-}
-
-function SectionsTakenContainer({ studentId, navigate, className, highlightCourseIds = [], exactMatchId = null}: ContainerProps) {
-  const [data, setData] = useState<Section[]>();
-
-  useEffect(() => {
-    if (Number.isNaN(studentId)) {
-      navigate("/error", { replace: true, state: { message: "Invalid student ID" } });
-      return;
-    }
-
-    fetchAllStudentSectionsHasCompleted(studentId, true)
-      .then((resp: Section[]) => {
-        setData(resp);
-      })
-      .catch((e: Error) => {
-        navigate("/error", { replace: true, state: { message: e.message } });
-      });
-
-  }, [studentId, navigate]);
-
-
-  return (
-    <div className={className}>
-      <h2 className="text-lg font-bold">Courses Taken</h2>
-      <SectionsColumn
-        sections={data ? data : []}
-        className=""
-        highlightCourseIds={highlightCourseIds}  
-        exactMatchId = {exactMatchId}
-      />
-    </div>
-  );
-}
-
-function SectionsTakingContainer({ studentId, navigate, className,highlightCourseIds=[], exactMatchId=null }: ContainerProps) {
-  const [data, setData] = useState<Section[]>();
-
-  useEffect(() => {
-    if (Number.isNaN(studentId)) {
-      navigate("/error", { replace: true, state: { message: "Invalid student ID" } });
-      return;
-    }
-
-    fetchAllStudentSectionsHasCompleted(studentId, true)
-      .then((resp: Section[]) => {
-        setData(resp);
-      })
-      .catch((e: Error) => {
-        navigate("/error", { replace: true, state: { message: e.message } });
-      });
-
-  }, [studentId, navigate]);
-
-
-  return (
-    <div className={className}>
-      <h2 className="text-lg font-bold">Courses Taking</h2>
-      <SectionsColumn
-        sections={data ? data : []}
-        className=""
-        highlightCourseIds={highlightCourseIds} 
-        exactMatchId={exactMatchId}
-      />
-    </div>
-  );
-}
-
-function AllocationHistoryContainer({ studentId, navigate, className , highlightCourseIds=[], exactMatchId=null}: ContainerProps) {
-  const [data, setData] = useState<Section[]>();
-
-  useEffect(() => {
-    if (Number.isNaN(studentId)) {
-      navigate("/error", { replace: true, state: { message: "Invalid student ID" } });
-      return;
-    }
-
-    fetchAllStudentSectionsHasCompleted(studentId, true)
-      .then((resp: Section[]) => {
-        setData(resp);
-      })
-      .catch((e: Error) => {
-        navigate("/error", { replace: true, state: { message: e.message } });
-      });
-
-  }, [studentId, navigate]);
-
-
-  return (
-    <div className={className}>
-      <h2 className="text-lg font-bold">Allocation History</h2>
-      <SectionsColumn
-        sections={data ? data : []}
-        className=""
-        highlightCourseIds= {highlightCourseIds}
-        exactMatchId = {exactMatchId}
-      />
-    </div>
-  );
-}
-
-function ProfileQuestionsContainer({ studentId, navigate, className }: ContainerProps) {
-  const [data, setData] = useState<ProfileQuestion[]>();
-
-  useEffect(() => {
-    if (Number.isNaN(studentId)) {
-      navigate("/error", { replace: true, state: { message: "Invalid student ID" } });
-      return;
-    }
-
-    fetchAllStudentQuestions(studentId)
-      .then((resp: ProfileQuestion[]) => {
-        setData(resp);
-      })
-      .catch((e: Error) => {
-        navigate("/error", { replace: true, state: { message: e.message } });
-      });
-
-  }, [studentId, navigate]);
-
-
-  return (
-    <div className={className}>
-      <h2 className="text-lg font-bold">Answers to questions</h2>
-      <ProfileQuestionsSection profileQuestions={data} className="" />
-    </div>
-
-  );
-}
 
 function ProfileQuestionsSection({ profileQuestions = [], className = "" }: ProfileQuestionsProps) {
   return (
