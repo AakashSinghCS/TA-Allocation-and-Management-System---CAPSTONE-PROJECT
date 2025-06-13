@@ -2,7 +2,7 @@ package com.infinity.courseservice.dtos;
 
 import java.time.LocalTime;
 
-public record CourseFilterRequest(
+public record CourseSectionScheduleDto(
         String deptCode,
         String name,
         Integer courseNum,

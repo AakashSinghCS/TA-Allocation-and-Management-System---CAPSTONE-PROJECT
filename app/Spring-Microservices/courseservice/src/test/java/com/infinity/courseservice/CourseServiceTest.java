@@ -1,5 +1,6 @@
 package com.infinity.courseservice;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.infinity.courseservice.dtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseRequest;
-import com.infinity.courseservice.dtos.CourseSectionDto;
+import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
@@ -88,16 +89,17 @@ public class CourseServiceTest {
 
     @Test
     void testFilterCourses() {
-        CourseSectionDto dto1 = new CourseSectionDto("COSC", "Distributed Systems", 455, "001", "2025W1");
-        CourseSectionDto dto2 = new CourseSectionDto("COSC", "Operating Systems", 315, "002", "2025W2");
+        CourseSectionScheduleDto dto1 = new CourseSectionScheduleDto("COSC", "Distributed Systems", 455, "001", "2025W1", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
+        CourseSectionScheduleDto dto2 = new CourseSectionScheduleDto("COSC", "Operating Systems", 315, "002", "2025W2", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
 
-        CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", null, null, null, "2025W1");
-        when(courseRepository.courseFilter("COSC", null, null, null, "2025W1"))
+        CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", null, null, null, "2025W1", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
+        when(courseRepository.courseFilter("COSC", null, null, null, "2025W1", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30)))
             .thenReturn(List.of(dto1, dto2));
 
-        List<CourseSectionDto> result = courseService.filterCourses(filterRequest);
+        List<CourseSectionScheduleDto> result = courseService.filterCourses(filterRequest);
 
         assertEquals(1, result.size());
         assertEquals("Distributed Systems", result.get(0).name());
+        assertEquals(LocalTime.of(14, 00), result.get(0).startTime());
     }
 }

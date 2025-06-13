@@ -1,6 +1,7 @@
 package com.infinity.courseservice;
 
-import java.util.List;
+import java.time.LocalTime;
+import  java.util.List;
 
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,7 +21,7 @@ import com.infinity.courseservice.controllers.CourseController;
 import com.infinity.courseservice.dtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseRequest;
-import com.infinity.courseservice.dtos.CourseSectionDto;
+import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.services.CourseService;
 
 @WebMvcTest(CourseController.class)
@@ -65,8 +66,8 @@ public class CourseControllerTest {
 
     @Test
     void testFilterCourses() throws Exception {
-        CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", null, null, null, "2024W1");
-        CourseSectionDto dto = new CourseSectionDto("COSC", "Distributed Systems", 455, "001", "2024W1");
+        CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", null, null, null, "2024W1", null, LocalTime.of(14, 00), null);
+        CourseSectionScheduleDto dto = new CourseSectionScheduleDto("COSC", "Distributed Systems", 455, "001", "2024W1", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
 
         when(courseService.filterCourses(any(CourseFilterRequest.class)))
             .thenReturn(List.of(dto));

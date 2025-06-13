@@ -10,27 +10,17 @@ interface CourseFilterData {
 }
 
 
-<<<<<<< HEAD
-  // Step 2: Transform the filter data into the required SectionDetails structure.
-  const sectionDetailsData: SectionDetails = {
-    // NOTE: These fields are not in the filter. You must decide how to source them.
-    // They are placeholders for now.
-    // id: 0,
-    // courseNum: "000", // e.g., "111" from "COSC 111"
-    // section: "000",   // e.g., "001", "L01"
-=======
-// Defines the structure for the backend request.
-// Based on `CourseFilterRequest.java` DTO.
+
  
 interface CourseFilterRequest {
   term: string;
   name: string; // Backend expects `name` for the search query
   deptCode: string;
+  type: string;
   // `type` is part of the filter UI but not in the backend DTO,
   // so we omit it from the request.
   // We can add it to the backend DTO if filtering by type is needed.
 }
->>>>>>> 8968cbcd433884c83014030f64336ae92fc40ac9
 
 // Fetches courses from the backend based on filter criteria.
 // @param filters - The data object from the course filter form.
@@ -46,6 +36,7 @@ export async function fetchFilteredCourses(filters: CourseFilterData): Promise<C
     term: filters.term || null, // Send null if empty, so backend can ignore it
     name: filters.searchQuery || null,
     deptCode: filters.deptCode || null,
+    type: filters.type || null,
   };
 
   try {

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.infinity.courseservice.dtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseRequest;
-import com.infinity.courseservice.dtos.CourseSectionDto;
+import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.services.CourseService;
 
 import lombok.Data;
@@ -42,17 +42,10 @@ public class CourseController {
         return ResponseEntity.ok(courseDto);
     }
     
-<<<<<<< HEAD
     @PostMapping("/filterCourses")
-=======
-    /* 
-    @GetMapping("/filterCourses")
-    */
-    @PostMapping("/filterCourses") // Changed to @PostMapping
->>>>>>> 8968cbcd433884c83014030f64336ae92fc40ac9
-    public ResponseEntity<List<CourseSectionDto>> filterCourses(@RequestBody CourseFilterRequest filter) {
-        List<CourseSectionDto> CourseSectionDto = courseService.filterCourses(filter);
-        return ResponseEntity.ok(CourseSectionDto);
+    public ResponseEntity<List<CourseSectionScheduleDto>> filterCourses(@RequestBody CourseFilterRequest filter) {
+        List<CourseSectionScheduleDto> CourseSectionScheduleDto = courseService.filterCourses(filter);
+        return ResponseEntity.ok(CourseSectionScheduleDto);
     }
 
     @GetMapping("/allById")

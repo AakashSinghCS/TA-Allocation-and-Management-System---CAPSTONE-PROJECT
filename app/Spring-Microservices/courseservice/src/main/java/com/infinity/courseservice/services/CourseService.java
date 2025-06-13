@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.infinity.courseservice.dtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseRequest;
-import com.infinity.courseservice.dtos.CourseSectionDto;
+import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
@@ -41,8 +41,8 @@ public class CourseService {
         return courses.stream().map(entry -> new CourseDto(entry.getDeptCode(), entry.getName(), entry.getCourseNum())).toList();
     }
 
-    public List<CourseSectionDto> filterCourses(CourseFilterRequest filter) {
-        return courseRepository.courseFilter(filter.deptCode(), filter.courseNum(), filter.name(), filter.section(), filter.term());
+    public List<CourseSectionScheduleDto> filterCourses(CourseFilterRequest filter) {
+        return courseRepository.courseFilter(filter.deptCode(), filter.courseNum(), filter.name(), filter.section(), filter.term(), filter.day(), filter.startTime(), filter.endTime());
     }
 
     // public List<CourseDto> getEnrolledCourses(Integer studentId) {
