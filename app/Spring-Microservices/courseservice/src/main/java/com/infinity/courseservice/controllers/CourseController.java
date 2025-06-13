@@ -42,7 +42,14 @@ public class CourseController {
         return ResponseEntity.ok(courseDto);
     }
     
+<<<<<<< HEAD
     @PostMapping("/filterCourses")
+=======
+    /* 
+    @GetMapping("/filterCourses")
+    */
+    @PostMapping("/filterCourses") // Changed to @PostMapping
+>>>>>>> 8968cbcd433884c83014030f64336ae92fc40ac9
     public ResponseEntity<List<CourseSectionDto>> filterCourses(@RequestBody CourseFilterRequest filter) {
         List<CourseSectionDto> CourseSectionDto = courseService.filterCourses(filter);
         return ResponseEntity.ok(CourseSectionDto);

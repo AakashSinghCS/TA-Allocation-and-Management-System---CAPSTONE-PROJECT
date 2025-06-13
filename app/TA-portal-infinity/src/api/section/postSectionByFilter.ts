@@ -1,27 +1,16 @@
-// Step 1: Import the necessary TypeScript interfaces.
-// The paths are relative to the new file's location.
-import type Section from '../../interfaces/section/Section';
-import type { SectionDetails, SectionType } from '../../interfaces/section/SectionDetails';
+import type { Course } from '../../interfaces/course/Course'; // Assuming CourseSectionDto matches Course structure
 
-/**
- * Defines the structure of the filter data we expect to receive.
- */
+// Defines the structure for the filter data from the UI.
+
 interface CourseFilterData {
   term: string;
-  searchQuery: string; // This will be used for the course name.
+  searchQuery: string;
   deptCode: string;
   type: string;
 }
 
-/**
- * Takes filter data, maps it to the Section interface, and POSTs it to the API.
- * This function is exported so it can be used from UI components.
- *
- * @param filters - The data object from the course filter form.
- * @returns A promise that resolves when the operation is complete.
- */
-export async function postSectionByFilter(filters: CourseFilterData): Promise<void> {
 
+<<<<<<< HEAD
   // Step 2: Transform the filter data into the required SectionDetails structure.
   const sectionDetailsData: SectionDetails = {
     // NOTE: These fields are not in the filter. You must decide how to source them.
@@ -29,46 +18,55 @@ export async function postSectionByFilter(filters: CourseFilterData): Promise<vo
     // id: 0,
     // courseNum: "000", // e.g., "111" from "COSC 111"
     // section: "000",   // e.g., "001", "L01"
+=======
+// Defines the structure for the backend request.
+// Based on `CourseFilterRequest.java` DTO.
+ 
+interface CourseFilterRequest {
+  term: string;
+  name: string; // Backend expects `name` for the search query
+  deptCode: string;
+  // `type` is part of the filter UI but not in the backend DTO,
+  // so we omit it from the request.
+  // We can add it to the backend DTO if filtering by type is needed.
+}
+>>>>>>> 8968cbcd433884c83014030f64336ae92fc40ac9
 
-    // These fields come directly from the filter data.
-    name: filters.searchQuery,
-    deptCode: filters.deptCode,
-    term: filters.term,
-    type: filters.type as SectionType, // Cast string to the specific SectionType
+// Fetches courses from the backend based on filter criteria.
+// @param filters - The data object from the course filter form.
+// @returns A promise that resolves to an array of courses.
+
+
+export async function fetchFilteredCourses(filters: CourseFilterData): Promise<Course[]> {
+  // 1. Correct API endpoint for the backend gateway and service
+  const apiEndpoint = 'http://localhost:8080/courses/filterCourses';
+
+  // 2. Create a payload that matches the backend's `CourseFilterRequest` DTO
+  const requestPayload: CourseFilterRequest = {
+    term: filters.term || null, // Send null if empty, so backend can ignore it
+    name: filters.searchQuery || null,
+    deptCode: filters.deptCode || null,
   };
-
-  // Step 3: Create the main Section object to be sent in the request body.
-  // As requested, sectionSchedule is an empty array.
-  const sectionPayload: Section = {
-    sectionDetails: sectionDetailsData,
-    sectionSchedule: [],
-  };
-
-  // Step 4: Define the API endpoint and send the data.
-  // IMPORTANT: Replace this URL with your actual backend API endpoint.
-  const apiEndpoint = 'http://localhost:5173/courses';
-
-  console.log('Sending data to API:', JSON.stringify(sectionPayload, null, 2));
 
   try {
     const response = await fetch(apiEndpoint, {
-      method: 'POST',
+      method: 'POST', // Matches the @PostMapping on the backend
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(sectionPayload), // Convert the object to a JSON string
+      body: JSON.stringify(requestPayload),
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`API call failed with status ${response.status}: ${errorText}`);
+      throw new Error(`API call failed with status ${response.status}`);
     }
 
-    const responseData = await response.json();
-    console.log('API call successful. Response:', responseData);
+    // The backend returns a list of courses, so we return that.
+    return await response.json() as Course[];
 
   } catch (error) {
-    console.error('Failed to post section data:', error);
-    // Here you could add logic to show an error message to the user.
+    console.error('Failed to fetch filtered courses:', error);
+    // Return an empty array in case of an error to prevent the app from crashing
+    return [];
   }
 }
