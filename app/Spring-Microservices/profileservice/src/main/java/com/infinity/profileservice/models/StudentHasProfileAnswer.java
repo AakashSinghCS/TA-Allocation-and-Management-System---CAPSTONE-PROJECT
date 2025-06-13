@@ -8,7 +8,7 @@ import lombok.Data;
 @IdClass(StudentAnswerKey.class)
 public class StudentHasProfileAnswer {
 
-    @Id private Integer studentId;   // PK + FK → userservice.student.id
+    @Id private Long studentId;   // PK + FK → userservice.student.id
     @Id private Integer answerId;    // PK + FK → profile_answer.id
 
     /** Only used if the question type is FREE_TEXT */

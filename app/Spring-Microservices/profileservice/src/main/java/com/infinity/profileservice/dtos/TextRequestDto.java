@@ -1,5 +1,5 @@
 package com.infinity.profileservice.dtos;
 
 public record TextRequestDto(
-    String text
+    String description
 ) {}

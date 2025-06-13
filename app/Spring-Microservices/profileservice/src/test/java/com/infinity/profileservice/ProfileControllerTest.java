@@ -49,7 +49,7 @@ class ProfileControllerTest {
 
     @Test
     void getProfile_returnsGroupedAnswers() throws Exception {
-        Integer sid = 101;
+        Long sid = 101L;
         // prepare two AnswerDto entries
         AnswerDto a1 = new AnswerDto(42, "Java");
         AnswerDto a2 = new AnswerDto(43, "Python");
@@ -80,7 +80,7 @@ class ProfileControllerTest {
 
     @Test
     void saveAnswers_returnsOkAndDelegates() throws Exception {
-        Integer sid = 101;
+        Long sid = 101L;
         List<Integer> answerIds = List.of(3, 4, 5);
 
         doNothing().when(service).saveAnswers(sid, answerIds);
@@ -96,17 +96,18 @@ class ProfileControllerTest {
 
     @Test
     void saveFreeText_returnsOkAndDelegates() throws Exception {
-        Integer sid = 101, qid = 10;
+        Long sid = 101L;
+        Integer qid = 10;
         TextRequestDto req = new TextRequestDto("Some text");
 
-        doNothing().when(service).saveFreeTextAnswer(sid, qid, req.text());
+        doNothing().when(service).saveFreeTextAnswer(sid, qid, req.description());
 
         mvc.perform(post("/profiles/{sid}/questions/{qid}/answer/text", sid, qid)
                 .contentType(APPLICATION_JSON)
                 .content(mapper.writeValueAsString(req)))
            .andExpect(status().isOk());
 
-        verify(service).saveFreeTextAnswer(sid, qid, req.text());
+        verify(service).saveFreeTextAnswer(sid, qid, req.description());
     }
 
 }

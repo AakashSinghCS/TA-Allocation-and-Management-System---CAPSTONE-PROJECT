@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface StudentAnswerRepo
         extends JpaRepository<StudentHasProfileAnswer, StudentAnswerKey> {
 
-    List<StudentHasProfileAnswer> findByStudentId(Integer studentId);
+    List<StudentHasProfileAnswer> findByStudentId(Long studentId);
 }

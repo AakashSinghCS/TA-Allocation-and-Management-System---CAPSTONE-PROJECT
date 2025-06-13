@@ -19,25 +19,25 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PreAuthorize("hasRole('STUDENT')")
-    @GetMapping("/{studentNum}")
-    public ResponseEntity<ProfileResponseDto> getProfile(@PathVariable Integer studentNum) {
-        return ResponseEntity.ok(profileService.buildProfile(studentNum));
+    @GetMapping("/{studentId}")
+    public ResponseEntity<ProfileResponseDto> getProfile(@PathVariable Long studentId) {
+        return ResponseEntity.ok(profileService.buildProfile(studentId));
     }
 
     @PreAuthorize("hasRole('STUDENT')")
-    @PostMapping("/{studentNum}/answers")
-    public ResponseEntity<Void> saveAnswers(@PathVariable Integer studentNum,
+    @PostMapping("/{studentId}/answers")
+    public ResponseEntity<Void> saveAnswers(@PathVariable Long studentId,
                                             @RequestBody List<Integer> answerIds) {
-        profileService.saveAnswers(studentNum, answerIds);
+        profileService.saveAnswers(studentId, answerIds);
         return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('STUDENT')")
-    @PostMapping("/{studentNum}/questions/{questionId}/answer/text")
-    public ResponseEntity<Void> saveFreeText(@PathVariable Integer studentNum,
+    @PostMapping("/{studentId}/questions/{questionId}/answer/description")
+    public ResponseEntity<Void> saveFreeText(@PathVariable Long studentId,
                                              @PathVariable Integer questionId,
                                              @RequestBody TextRequestDto req) {
-        profileService.saveFreeTextAnswer(studentNum, questionId, req.text());
+        profileService.saveFreeTextAnswer(studentId, questionId, req.description());
         return ResponseEntity.ok().build();
     }
 

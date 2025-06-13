@@ -25,9 +25,9 @@ public class ProfileService {
     private final AnswerRepo answerRepo;
 
     @Transactional(readOnly = true)
-    public ProfileResponseDto buildProfile(Integer studentNum) {
+    public ProfileResponseDto buildProfile(Long studentId) {
         // fetch all answer‐links
-        var links = studentAnsRepo.findByStudentId(studentNum);
+        var links = studentAnsRepo.findByStudentId(studentId);
 
         // group by question, collecting all answer descriptions
         var grouped = links.stream().collect(
@@ -58,17 +58,17 @@ public class ProfileService {
 
     /* save / replace answers */
     @Transactional
-    public void saveAnswers(Integer studentNum, List<Integer> answerIds) {
-        studentAnsRepo.deleteAll(studentAnsRepo.findByStudentId(studentNum));
+    public void saveAnswers(Long studentId, List<Integer> answerIds) {
+        studentAnsRepo.deleteAll(studentAnsRepo.findByStudentId(studentId));
         answerIds.forEach(aid -> {
             StudentHasProfileAnswer link = new StudentHasProfileAnswer();
-            link.setStudentId(studentNum);
+            link.setStudentId(studentId);
             link.setAnswerId(aid);
             studentAnsRepo.save(link);
         });
     }
     @Transactional
-    public void saveFreeTextAnswer(Integer studentNum, Integer questionId, String text) {
+    public void saveFreeTextAnswer(Long studentId, Integer questionId, String text) {
         // load & validate question
         ProfileQuestion q = questionRepo.findById(questionId)
             .orElseThrow(() -> new NotFoundException("Question not found"));
@@ -82,14 +82,14 @@ public class ProfileService {
         ProfileAnswer saved = answerRepo.save(freeAnswer);
 
         // remove old links
-        var oldLinks = studentAnsRepo.findByStudentId(studentNum).stream()
+        var oldLinks = studentAnsRepo.findByStudentId(studentId).stream()
             .filter(l -> l.getAnswer().getQuestion().getId().equals(questionId))
             .toList();
         studentAnsRepo.deleteAll(oldLinks);
 
         // insert new link
         StudentHasProfileAnswer link = new StudentHasProfileAnswer();
-        link.setStudentId(studentNum);
+        link.setStudentId(studentId);
         link.setAnswerId(saved.getId());
         link.setAnswerText(text);
         link.setAnswer(saved);

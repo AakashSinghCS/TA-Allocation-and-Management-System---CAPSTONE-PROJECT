@@ -33,7 +33,7 @@ class ProfileServiceTest {
 
     @Test
     void buildProfile_groupsAnswersByQuestion() {
-        Integer sid = 101;
+        Long sid = 101L;
 
         // set up a SINGLE‐choice question
         ProfileQuestion q = new ProfileQuestion();
@@ -79,18 +79,18 @@ class ProfileServiceTest {
 
     @Test
     void saveAnswers_replacesLinks() {
-        Integer studentNum = 7;
+        Long studentId = 7L;
         List<Integer> answerIds = List.of(3, 4, 5);
 
         // existing links to delete
-        when(studentRepo.findByStudentId(studentNum))
-            .thenReturn(List.of(link(studentNum, 1), link(studentNum, 2)));
+        when(studentRepo.findByStudentId(studentId))
+            .thenReturn(List.of(link(studentId, 1), link(studentId, 2)));
 
         // exercise
-        profileService.saveAnswers(studentNum, answerIds);
+        profileService.saveAnswers(studentId, answerIds);
 
         // verify lookup was called
-        verify(studentRepo).findByStudentId(studentNum);
+        verify(studentRepo).findByStudentId(studentId);
 
         // verify deletion of old links
         verify(studentRepo).deleteAll(any());
@@ -105,14 +105,14 @@ class ProfileServiceTest {
         verifyNoMoreInteractions(studentRepo);
     }
 
-    private StudentHasProfileAnswer link(Integer sid, Integer aid) {
+    private StudentHasProfileAnswer link(Long sid, Integer aid) {
         StudentHasProfileAnswer l = new StudentHasProfileAnswer();
         l.setStudentId(sid);
         l.setAnswerId(aid);
         return l;
     }
     // helper for grouping test
-    private StudentHasProfileAnswer link(Integer sid, Integer aid, ProfileAnswer answer) {
+    private StudentHasProfileAnswer link(Long sid, Integer aid, ProfileAnswer answer) {
         StudentHasProfileAnswer l = link(sid, aid);
         l.setAnswer(answer);
         return l;
@@ -120,7 +120,8 @@ class ProfileServiceTest {
 
     @Test
     void saveFreeTextAnswer_createsAndLinksAnswer() {
-        Integer sid = 42, qid = 10;
+        Long sid = 42L; 
+        Integer qid = 10;
         String text = "My answer";
 
         ProfileQuestion q = new ProfileQuestion();
