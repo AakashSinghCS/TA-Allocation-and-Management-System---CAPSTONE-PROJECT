@@ -573,7 +573,7 @@ During the meeting with Alex, we discussed the technical steps needed to integra
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 9 June, Monday 1.49PM–3:17PM 
 
-**Clockify:** 
+**Clockify:** ![alt text](image-24.png)
 ## Current Tasks  
 - **#1:** Nav bar component with tests
 ## Progress Update  
@@ -592,3 +592,119 @@ While building the Nav Bar component, I focused on reusability, responsiveness, 
 
 ## Next Cycle Goals  
 - **#1:** Signup Page
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 10 June,Tuesday 10.30AM–1:10PM 
+
+**Clockify:** ![alt text](image-26.png)
+## Current Tasks  
+- **#1:** Team Meeting 
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       |        Team meeting to discuss further plan and helped Seiya in setup         | N/A |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle centered on collaboration and onboarding support. I participated in a productive team meeting where we discussed upcoming plans, clarified responsibilities, and aligned on priorities. Additionally, I assisted Seiya with environment setup issues, which deepened my understanding of the development stack and improved my troubleshooting skills
+
+### Retrospective  
+Helping Seiya set up their environment revealed several configuration issues, mainly due to attempting the setup on a personal home PC rather than their main development machine. This led to unnecessary delays and compatibility problems that could have been avoided.
+
+## Next Cycle Goals  
+- **#1:** Signup Page
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 10 June,Tuesday 4:47PM–8:41PM
+
+**Clockify:** ![alt text](image-26.png)
+## Current Tasks  
+- **#1:** Signup Page
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       |        Designed frontend of the Signup page with testing                        | Completed  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle focused on developing the Signup page frontend. I implemented a clean and responsive design using React and Tailwind CSS, ensuring usability across devices. I also wrote unit tests to validate input handling and form submission behavior.
+
+### Retrospective  
+The Signup page development went smoothly overall. One area for improvement would be earlier peer feedback to refine the UI design and validation logic. Additionally, I noticed that having clearer form validation rules from the start could have reduced rework.
+
+## Next Cycle Goals  
+- **#1:** Integration of frontend and backend Signup
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 10 June,Tuesday 8:41PM–10:41PM
+
+**Clockify:** ![alt text](image-26.png)
+## Current Tasks  
+- **#1:** Integrated the Signup page with backend, including frontend retesting   
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       | Integrated the Signup page with backend, including refrontend testing          | Completed  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle centered on integrating the Signup page with the backend API. I implemented the POST request to send user registration data and ensured the payload matched the backend's expected format. I also verified endpoint connectivity using a basic GET request.
+
+### Retrospective  
+The integration required careful matching of request structures and field names with the backend. Minor issues like mismatched keys and missing headers were encountered but quickly resolved through testing and debugging.
+
+## Next Cycle Goals  
+- **#1:** Integration of frontend and backend Login
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 11 June,Wednesday 1:15PM–3:58PM
+
+**Clockify:** ![alt text](image-28.png)
+## Current Tasks  
+- **#1:** Integrated Login page frontend with backend using appropriate API calls
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       | Integrated Login page frontend with backend using appropriate API calls          | Completed  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle was focused on integrating the Login page with the backend authentication API. I implemented a POST request to send login credentials and handled the response by storing the JWT token in local storage for session management.
+
+### Retrospective  
+During the integration, attention to detail was required to ensure the request payload and headers matched the backend's expectations. Minor debugging was needed to handle incorrect status codes and token parsing.
+
+## Next Cycle Goals  
+- **#1:** JWT authentication
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 12 June,Thursday 10:50AM–3:27PM
+
+**Clockify:** ![alt text](image-29.png)
+## Current Tasks  
+- **#1:** Implemented JWT authentication
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       | 	Implemented JWT authentication between frontend and backend                  | In progress  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle was dedicated to implementing JWT-based authentication across the frontend and backend. Upon successful login, the backend issues a JWT token, which is stored in the frontend's local storage. The token is then used to maintain the user’s session and authorize access to protected routes. I also parsed the token to extract user information (like roles and ID) for use in the UI. This task strengthened my understanding of secure authentication flows and token-based session handling.
+
+### Retrospective  
+Integrating JWT authentication required careful attention to token structure, expiration handling, and secure storage. Ensuring consistency in the backend response format and correctly decoding the token on the frontend were key steps. In the future, adding token refresh logic and improving error handling for expired or invalid tokens will be the next priorities to enhance security and user experience.
+
+## Next Cycle Goals  
+- **#1:** JWT authentication completion
