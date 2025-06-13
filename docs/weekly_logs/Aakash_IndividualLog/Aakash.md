@@ -585,3 +585,110 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Complete profile section of the application, and begin next assigned coding task after meeting with the team.
 
+## Tuesday 6/10 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.10.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> 70% Complete. Bug fix and mods required.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Almost done with the profile service. I ran into a bug while doing modifications which i will fix today and tomorrow.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. I will continue working on the profile service to get it done ASAP.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team.
+
+## Wednesday 6/11 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.11.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> 80% Complete. Mods left
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Almost done with the profile service. I fixed the bug i encountered yesterday. Now i am working on modifications so Dup gets the required things from the backend for his assigned front-end.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. I will continue working on the profile service to get it done ASAP.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team.
+
+## Thursday 6/12 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.12.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Done with the profile service. I completed all modifications that Dup required. He now gets everything required in the front end.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task after meeting with group tomorrow. 
