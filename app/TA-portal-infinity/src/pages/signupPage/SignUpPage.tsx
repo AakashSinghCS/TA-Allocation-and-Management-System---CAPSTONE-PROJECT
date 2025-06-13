@@ -3,6 +3,9 @@ import bgImage from '../../assets/ubc_image.png?url';
 import Navbar from '../../components/layout/login_navbar/Navbar';
 import { useNavigate } from 'react-router-dom';
 import gradCap from '../../assets/grad-cap-blue.png';
+import type User from '../../interfaces/user/User';
+
+
 
 const InputField = ({ label, name, type, value, onChange, ...rest }: any) => (
   <div>
@@ -33,6 +36,8 @@ const SignUpPage: React.FC = () => {
   });
 
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [formError, setFormError] = useState('');
+
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -47,12 +52,49 @@ const SignUpPage: React.FC = () => {
     return true;
   };
 
-  const handleSignUp = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+ const handleSignUp = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    console.log('Signup attempted with:', formData);
-  };
+  try {
+    const response = await fetch("http://localhost:8080/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        password: formData.password,
+        userType: formData.role
+      })
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+     if (error.includes("An account with this email already exists")) {
+  alert("Email already exists. Please use a different email.");
+      } else {
+        alert("Signup failed. Check the form or try again.");
+      }
+
+      console.error("Signup failed:", error);
+      return;
+    }
+
+    const user: User = await response.json();
+    console.log("Signup success. User:", user);
+
+    alert("Signup successful! Redirecting to login...");
+    navigate("/login");
+
+  } catch (err) {
+    console.error("Signup error:", err);
+    alert("Server error. Please try again later.");
+  }
+};
+
 
   return (
     <div className="min-h-screen relative">
@@ -89,9 +131,10 @@ const SignUpPage: React.FC = () => {
                   >
 
                 <option value="">Select Role</option>
-                <option value="student">Student</option>
-                <option value="instructor">Instructor</option>
-                <option value="coordinator">TA Coordinator</option>
+               <option value="STUDENT">Student</option>
+                <option value="INSTRUCTOR">Instructor</option>
+                <option value="COORDINATOR">TA Coordinator</option>
+
               </select>
             </div>
 

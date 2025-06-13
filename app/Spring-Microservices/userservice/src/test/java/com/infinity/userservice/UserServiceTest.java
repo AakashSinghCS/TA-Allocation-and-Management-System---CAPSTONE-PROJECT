@@ -125,12 +125,23 @@ public class UserServiceTest {
     }
 
     @Test
+    void testGetUserById_NotSameIdNotCoordinator() {
+        Long userId = 1L;
+
+        AuthorizationException e = assertThrows(AuthorizationException.class, () -> {
+            userService.getUserById(userId, 2L, List.of("ROLE_STUDENT"));
+        });
+
+        assertEquals("Not allowed", e.getMessage());
+    }
+
+    @Test
     void testGetUserById_NotFound() {
         Long userId = 1L;
         when(userRepository.findById(any())).thenReturn(Optional.empty());
 
         NotFoundException e = assertThrows(NotFoundException.class, () -> {
-            userService.getUserById(userId);
+            userService.getUserById(userId, 1L, List.of("ROLE_STUDENT"));
         });
 
         assertEquals("User with ID 1 not found", e.getMessage());
@@ -144,7 +155,7 @@ public class UserServiceTest {
         when(userRepository.findById(any())).thenReturn(Optional.of(mockUser));
         when(userMapper.toDto(mockUser)).thenReturn(mockDto);
 
-        UserDto dto = userService.getUserById(1L);
+        UserDto dto = userService.getUserById(1L, 1L, List.of("ROLE_STUDENT"));
         assertEquals(dto.firstName(), "John");
         assertEquals(dto.role(), UserRole.COORDINATOR);
     }

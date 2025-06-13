@@ -51,7 +51,10 @@ public class UserService {
         return userMapper.toDto(user);
     }
     
-    public UserDto getUserById(Long id) {
+    public UserDto getUserById(Long id, Long userIdFromHeader, List<String> headerRoles) {
+        if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
+            throw new AuthorizationException("Not allowed");
+        }
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User with ID " + id + " not found"));
         return userMapper.toDto(user);
