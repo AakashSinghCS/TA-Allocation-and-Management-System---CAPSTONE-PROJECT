@@ -15,16 +15,16 @@
 
 | Task ID | Description                                         | Feature               | Assigned To | Status      |
 | ------- | --------------------------------------------------- | --------------------- | ----------- | ----------- |
-| #210    | Integration of frontend and backend login/Signup    | LoginFeature          | Mandeep     | Completed   |
-| #208    | Create new application service                      | ApplicationService    | Alex        | In Progress |
-| #207    | TA Profile backend getStudents                      | TAprofile             | Dup         | In Review |
-| #203    | View the TA profile enhancing aesthetics            | TAprofile             | Dup         | In Progress |
-| #188    | Added Fully Functional ProfileService               | ProfileService        | Aakash      | Completed   |
-| #201    | 80 registering frontend (merged)                    | Frontend Registration | Mandeep     | Completed   |
-| #199    | 80 registering frontend (closed - not merged)       | Frontend Registration | Mandeep     | Closed      |
-| #194    | 32 browse available courses | Course service     | Seiya&Allen      | In PProgress       |
-| #193    | View the TA profile enhancing aesthetics (closed)   | TAprofile             | Dup         | Closed      |
-| [#214](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/pull/214)    |JWT Authentication                                   | LoginFeature          | Mandeep     | In Progress   |
+| [#200](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/200)    | Integration of frontend and backend login/Signup    | LoginFeature          | Mandeep     | Completed   |
+| [#192](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/192)    | Create new application service                      | ApplicationService    | Alex        | In Progress |
+| [#206](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/206)    | TA Profile backend getStudents                      | TAprofile             | Dup         | In Review |
+| [#175](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/175)    | View the TA profile enhancing aesthetics            | TAprofile             | Dup         | Closed |
+| [#165](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/165)    | Added Fully Functional ProfileService               | ProfileService        | Aakash      | Completed   |
+| [#80](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/80)    | 80 registering frontend (merged)                    | Frontend Registration | Mandeep     | Completed   |
+| [#82](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/82)    | 80 registering frontend (closed - not merged)       | Frontend Registration | Mandeep     | Closed      |
+| [#--]    | 32 browse available courses | Course service     | Seiya&Allen      | In PProgress       |
+| [#191](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/191)   | View the TA profile enhancing aesthetics   | TAprofile             | Dup         | Review      |
+| [#211](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/211)    |JWT Authentication                                   | LoginFeature          | Mandeep     | In Progress   |
 ### Alternatively, include image of the project board with tasks and status:
 ![kanban.png](week5_images/kanban.png)
 
