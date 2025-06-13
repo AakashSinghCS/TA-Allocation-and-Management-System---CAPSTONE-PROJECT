@@ -26,9 +26,9 @@ export async function postSectionByFilter(filters: CourseFilterData): Promise<vo
   const sectionDetailsData: SectionDetails = {
     // NOTE: These fields are not in the filter. You must decide how to source them.
     // They are placeholders for now.
-    id: 0,
-    courseNum: "000", // e.g., "111" from "COSC 111"
-    section: "000",   // e.g., "001", "L01"
+    // id: 0,
+    // courseNum: "000", // e.g., "111" from "COSC 111"
+    // section: "000",   // e.g., "001", "L01"
 
     // These fields come directly from the filter data.
     name: filters.searchQuery,
