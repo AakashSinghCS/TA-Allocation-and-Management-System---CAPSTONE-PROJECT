@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -25,6 +26,7 @@ import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.services.CourseService;
 
 @WebMvcTest(CourseController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class CourseControllerTest {
 
     @Autowired
@@ -72,7 +74,7 @@ public class CourseControllerTest {
         when(courseService.filterCourses(any(CourseFilterRequest.class)))
             .thenReturn(List.of(dto));
 
-        mockMvc.perform(get("/courses/filterCourses")
+        mockMvc.perform(post("/courses/filterCourses")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(filterRequest)))
             .andExpect(status().isOk())

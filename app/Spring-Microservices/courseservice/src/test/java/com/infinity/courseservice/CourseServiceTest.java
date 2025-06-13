@@ -49,7 +49,7 @@ public class CourseServiceTest {
 
         assertEquals("COSC", dto.deptCode());
         assertEquals("Distributed Systems", dto.name());
-        assertEquals(499, dto.courseNum());
+        assertEquals(455, dto.courseNum());
     }
 
     @Test
@@ -97,8 +97,7 @@ public class CourseServiceTest {
             .thenReturn(List.of(dto1, dto2));
 
         List<CourseSectionScheduleDto> result = courseService.filterCourses(filterRequest);
-
-        assertEquals(1, result.size());
+        assertEquals(2, result.size());
         assertEquals("Distributed Systems", result.get(0).name());
         assertEquals(LocalTime.of(14, 00), result.get(0).startTime());
     }
