@@ -185,3 +185,46 @@ finished the learning part, started coding on course filter, almost completed, h
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * integrating and testing course filter
   * start on the nest feature
+
+## June 09 - 12
+
+### Timesheet
+Clockify report
+![alt text](./clockify/6.12.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: course filter backend coding
+  * #2: course filter integration and learning frontend
+
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>integrating with frontend
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>course filter backend coding(adding time filter)
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+finished backend of course filter, having trouble with integrating, also learned frontend.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * integrating and testing course filter
+  * start on the nest feature
