@@ -24,7 +24,7 @@
 | #199    | 80 registering frontend (closed - not merged)       | Frontend Registration | Mandeep     | Closed      |
 | #194    | 32 browse available courses | Course service     | Seiya&Allen      | In PProgress       |
 | #193    | View the TA profile enhancing aesthetics (closed)   | TAprofile             | Dup         | Closed      |
-| #211    |JWT Authentication                                   | LoginFeature          | Mandeep     | In Progress   |
+| [#214](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/pull/214)    |JWT Authentication                                   | LoginFeature          | Mandeep     | In Progress   |
 ### Alternatively, include image of the project board with tasks and status:
 ![kanban.png](week5_images/kanban.png)
 
