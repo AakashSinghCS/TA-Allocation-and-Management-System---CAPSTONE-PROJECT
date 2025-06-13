@@ -15,16 +15,16 @@
 
 | Task ID | Description                                         | Feature               | Assigned To | Status      |
 | ------- | --------------------------------------------------- | --------------------- | ----------- | ----------- |
-| #210    | Integration of frontend and backend login/Signup    | LoginFeature          | Mandeep     | In Progress |
+| #210    | Integration of frontend and backend login/Signup    | LoginFeature          | Mandeep     | Completed   |
 | #208    | Create new application service                      | ApplicationService    | Alex        | In Progress |
-| #207    | TA Profile backend getStudents                      | TAprofile             | Dup         | In Progress |
+| #207    | TA Profile backend getStudents                      | TAprofile             | Dup         | In Review |
 | #203    | View the TA profile enhancing aesthetics            | TAprofile             | Dup         | In Progress |
 | #188    | Added Fully Functional ProfileService               | ProfileService        | Aakash      | Completed   |
 | #201    | 80 registering frontend (merged)                    | Frontend Registration | Mandeep     | Completed   |
 | #199    | 80 registering frontend (closed - not merged)       | Frontend Registration | Mandeep     | Closed      |
 | #194    | 32 browse available courses | Course service     | Seiya&Allen      | In PProgress       |
 | #193    | View the TA profile enhancing aesthetics (closed)   | TAprofile             | Dup         | Closed      |
-
+| #211    |JWT Authentication                                   | LoginFeature          | Mandeep     | In Progress   |
 ### Alternatively, include image of the project board with tasks and status:
 ![kanban.png](week5_images/kanban.png)
 
