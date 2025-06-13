@@ -852,7 +852,7 @@ Clockify report
     </tr>
     <tr>
         <!-- Task/Issue # -->
-        <td>Task 3
+        <td>Task 4
         </td>
         <!-- Status -->
         <td>In progress
@@ -865,6 +865,60 @@ Today I fixed some minor problems in issue #191 that had to do with the text-ell
 Then I worked on  the backend concerning findbyStudentId. I made sure to include tests.
 Then I worked on the frontend. I decided to create a small app that compares the course needs with the courses the ta takes/has taken/allocation history.
 Tommorrow, I will focus on refactoring in issue 204. and hopefully integrate backend to the frontend using api endpoints to some extent.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
+
+## Thursday 6/12 (6/7~6/13)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June12.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue #204 frontend comparer and profilequestions
+  * #3: review #210 and #188
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+#204 is complete. I completed the frontend side of the comparer. The comparer can now consider the course needs and then display what courses are missing for the ta. I fixed the max-height of sectionColumns. I spent over 3 hours just refactoring. I created GenericAPIcontainer which now takes in a fetch function and a JSX element and returns the JSX element with the fetch function's data inside of it. The profile questions section is now complete. You can now see the list of questions and answers. The tests for all the components are complete.
+#188 was Aakash's PR. I checked the result of the endpoint I was looking forward to which was the endpoint that gives me the data of the student's questions. it worked and I approved it after checking other stuff.
+#210 was Mandeep's PR. I noticed that he has now made it so that the JWTs are stored in the localStorage. I expect him to implement the authentication for the rest of the pages using that JWT now.
+Tommorrow, I will work a new PR that creates the Course backend. I will try to make Aakash's endpoint work with the frontend. I will be discussing with teammates tommorrow. I need to add more filters to the searchbar in Comparer.
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
