@@ -4,7 +4,6 @@ import { describe, it, expect, vi } from "vitest";
 import SignUpPage from "./SignUpPage";
 import { MemoryRouter } from "react-router-dom";
 
-// Wrap with router context
 const renderWithRouter = (ui: React.ReactElement) => {
   return render(<MemoryRouter>{ui}</MemoryRouter>);
 };
@@ -47,7 +46,6 @@ describe("SignUpPage", () => {
   it("submits form when valid", async () => {
     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-    // Mock fetch to simulate successful signup
     vi.stubGlobal("fetch", vi.fn(() =>
       Promise.resolve({
         ok: true,
@@ -64,7 +62,6 @@ describe("SignUpPage", () => {
 
     renderWithRouter(<SignUpPage />);
 
-  // Fill the form
     fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: "Lindsay" } });
     fireEvent.change(screen.getByLabelText(/Last Name/i), { target: { value: "Will" } });
     fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "jane@example.com" } });
@@ -74,7 +71,6 @@ describe("SignUpPage", () => {
 
     fireEvent.submit(screen.getByRole("button", { name: /Signup/i }));
 
-  // Wait for async log to happen
     await waitFor(() => {
       expect(consoleSpy).toHaveBeenCalledWith("Signup success. User:", expect.any(Object));
     });
