@@ -1,10 +1,16 @@
-import { Outlet } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
+import { Navigate, Outlet } from "react-router-dom";
 import Header from "./components/layout/header/Header"
 import Footer from "./components/layout/footer/Footer"
 import SideNav from "./components/layout/sidenav/SideNav";
 
 export default function App() {
-
+  // Authentication check
+  const { isAuthenticated } = useAuth();
+  console.log("isAuthenticated:", isAuthenticated);
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
   return (
     <div className="flex flex-col h-screen">
       <Header />
