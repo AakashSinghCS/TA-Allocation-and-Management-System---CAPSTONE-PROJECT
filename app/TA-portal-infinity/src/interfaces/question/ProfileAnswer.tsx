@@ -4,8 +4,8 @@ export type AnswerType =
     | "MC_TEXT"
 
 export interface ProfileAnswer{
-    id: number;
-    description: string;
+    id?: number;
+    description?: string;
     answerText? : string;
     type? :AnswerType; //optional for now. change later.
 }

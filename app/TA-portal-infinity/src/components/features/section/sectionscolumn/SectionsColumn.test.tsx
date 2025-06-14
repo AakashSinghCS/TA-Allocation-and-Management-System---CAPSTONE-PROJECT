@@ -11,15 +11,19 @@ describe("SectionsColumn", () => {
 
   it("renders a SectionCard for each section and displays their details", () => {
     render(<SectionsColumn sections={mockSections} />);
-    const fullHeadingText = 
-  `${mockSections[0].sectionDetails.deptCode} ` +
-  `${mockSections[0].sectionDetails.courseNum} ` +
-  `${mockSections[0].sectionDetails.section}` +
-  ` - ${mockSections[0].sectionDetails.name}`;
+          const fullHeadingText = 
+  `${mockSections[0].sectionDetails?.deptCode} ` +
+  `${mockSections[0].sectionDetails?.courseNum} ` +
+  `${mockSections[0].sectionDetails?.section}` +
+  ` - ${mockSections[0].sectionDetails?.name}`;
     const headings = screen.getAllByRole("heading", { level: 3 });
     expect(headings).toHaveLength(mockSections.length);
     expect(screen.getByText(fullHeadingText)).toBeInTheDocument();
-    expect( screen.getByText(new RegExp(mockSections[0].sectionDetails.term))).toBeInTheDocument();
+    
+// expect(screen.getByText((_, node) => node?.textContent?.trim() === mockSections[0].sectionDetails?.term)).toBeInTheDocument();
+    expect( screen.getByText(new RegExp(`${mockSections[0].sectionDetails?.term?.replace(/\s+/g, "\\s*")}`, "i"))).toBeInTheDocument();
+
+
     
     expect(screen.queryByText("No courses to display")).toBeNull();
   });

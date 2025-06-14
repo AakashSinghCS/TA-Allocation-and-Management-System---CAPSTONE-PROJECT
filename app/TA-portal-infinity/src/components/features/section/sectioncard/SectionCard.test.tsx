@@ -10,9 +10,9 @@ describe("SectionCard", () => {
     render(<SectionCard section={section} />);
 
     const courseCodeAndName =
-      `${section.sectionDetails.deptCode} ${section.sectionDetails.courseNum} ` +
-      `${section.sectionDetails.section} - ${section.sectionDetails.name}`;
-    const metaInfo = `| ${section.sectionDetails.type} | ${section.sectionDetails.term}`;
+      `${section.sectionDetails?.deptCode} ${section.sectionDetails?.courseNum} ` +
+      `${section.sectionDetails?.section} - ${section.sectionDetails?.name}`;
+    const metaInfo = `| ${section.sectionDetails?.type} | ${section.sectionDetails?.term}`;
 
     const card = screen.getByText(courseCodeAndName).closest("div")!;
     expect(within(card).getByText(courseCodeAndName)).toBeInTheDocument();
@@ -23,7 +23,7 @@ describe("SectionCard", () => {
     const section = mockSectionCOSC111;
     render(<SectionCard section={section} />);
 
-    section.sectionSchedule.forEach(({ day, startTime, endTime }) => {
+    section.sectionSchedule?.forEach(({ day, startTime, endTime }) => {
       const time = `${day}-${startTime}-${endTime}`;
       expect(
         screen.getByText((_, node) => node?.textContent?.trim() === time)

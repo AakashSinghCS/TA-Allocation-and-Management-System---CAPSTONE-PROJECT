@@ -54,8 +54,11 @@ export default function Comparer({ studentId, className }: ComparerProps) {
         />,
     }
 
-    const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleDropdownChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(event.target.value);
+        setHighlightCourseIds([]);
+        setExactMatchId(null);
+        setNeededCourses([]);
     };
 
     const handleSearch = () => {
@@ -66,22 +69,22 @@ export default function Comparer({ studentId, className }: ComparerProps) {
         setSelectedSection(section);
         setHighlightCourseIds([]);
         setExactMatchId(null);
-        setNeededCourses([]); 
+        setNeededCourses([]);
     }
 
     const handleCompareClick = () => {
         if (!selectedSection) return;
         setExactMatchId(null);
         const needs = selectedSection?.need?.courseNeeds ?? [];
-        setHighlightCourseIds(needs.map((c) => c.id));
-        setNeededCourses(needs); 
+        setHighlightCourseIds(needs.flatMap((c) => c.id ? [c.id]:[]));
+        setNeededCourses(needs);
     };
 
     const handleExactMatch = () => {
-        if(!selectedSection) return;
-        setExactMatchId(selectedSection.sectionDetails.id);
+        if (!selectedSection) return;
+        setExactMatchId(selectedSection.sectionDetails?.id ?? null);
         setHighlightCourseIds([]);
-        setNeededCourses([]); 
+        setNeededCourses([]);
     };
 
 
@@ -106,9 +109,9 @@ export default function Comparer({ studentId, className }: ComparerProps) {
                 {filtered.length ? (
                     <div className="grid gap-1">
                         {filtered.map((sec) => {
-                            const isSelected = selectedSection && sec.sectionDetails.id === selectedSection.sectionDetails.id;
+                            const isSelected = selectedSection && sec.sectionDetails?.id === selectedSection.sectionDetails?.id;
                             const cardClass = `cursor-pointer ${isSelected ? "outline-1 outline-offset-[-1px] outline-yellow-400" : ""}`;
-                            return <span key={sec.sectionDetails.id} onClick={() => handleClickSection(sec)}><SectionCard section={sec} className={cardClass} /></span>
+                            return <span key={sec.sectionDetails?.id} onClick={() => handleClickSection(sec)}><SectionCard section={sec} className={cardClass} /></span>
                         })}
                     </div>
                 ) : (
@@ -122,7 +125,7 @@ export default function Comparer({ studentId, className }: ComparerProps) {
                 <button onClick={handleExactMatch} disabled={!selectedSection} className="mt-3 text-blue-600 underline disabled:text-slate-400">Exact Match </button>
             </div>
             <div className="flex flex-col">
-                <select id="columnSelect" value={selectedOption} onChange={handleChange} className="border rounded px-2 py-1">
+                <select id="columnSelect" value={selectedOption} onChange={handleDropdownChange} className="border rounded px-2 py-1">
                     <option value="allocationHistory">Allocation History</option>
                     <option value="sectionsTaking">Courses Taking</option>
                     <option value="sectionsTaken">Courses Taken</option>
