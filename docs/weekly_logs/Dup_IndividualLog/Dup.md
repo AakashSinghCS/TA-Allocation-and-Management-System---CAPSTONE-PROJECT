@@ -923,3 +923,66 @@ Tommorrow, I will work a new PR that creates the Course backend. I will try to m
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
 
+
+
+## Friday 6/12 (6/13~6/17)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June13.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue [#204](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/204) frontend comparer and profilequestions
+  * #3: Reviewed other's PRs
+  * #4: instructor profile frontend
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 4
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today was mostly about project discussion. I worked a little bit more on [UBCO-COSC499-S2025/team-10-capstone-infinity#204](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/204) because the previous PR issue #191 is still not merged to develop. I created the Allocations table and created a test for QuestionAnswers. I will work on the instructor profile tommorrow. 
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the instructor profile. The instructor profile will not be done in this cycle. It will be done until the cycle after this one. I will probably be working on the Comparer. But because the Comparer is already done in the ta-profile, I believe I will have time to work on some other part of the project as well. I think I may consider looking at Seiya's code and refactoring it and integrating it more to our project if there's anything offlandish.
+
