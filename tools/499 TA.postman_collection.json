@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "723e66d3-43db-4705-afa7-bea31e1bfcad",
+		"_postman_id": "8292f8ae-55a1-47d9-8275-76b1b39dcece",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "36957617"
+		"_exporter_id": "45669202",
+		"_collection_link": "https://allen-9145341.postman.co/workspace/Allen's-Workspace~5d13c9f6-ede4-4301-81d3-649ab495ae62/collection/45669202-8292f8ae-55a1-47d9-8275-76b1b39dcece?action=share&source=collection_link&creator=45669202"
 	},
 	"item": [
 		{
@@ -569,6 +570,45 @@
 								"courses",
 								"getEnrolledCourses",
 								"87"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "filter courses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6MSwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDk3ODkwNzB9.zZmDrIYwy3s9tCU9QuREC9btJ5Khy_D08BIlBfx2w_w8NBuylSezdV2Xe0YJ6pVW",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"introduction\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/courses/filterCourses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"courses",
+								"filterCourses"
 							]
 						}
 					},

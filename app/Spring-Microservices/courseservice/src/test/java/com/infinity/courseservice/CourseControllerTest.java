@@ -68,7 +68,7 @@ public class CourseControllerTest {
 
     @Test
     void testFilterCourses() throws Exception {
-        CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", null, null, null, "2024W1", null, LocalTime.of(14, 00), null);
+        CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", "systems", null, null, "2024W1", null, LocalTime.of(14, 00), null);
         CourseSectionScheduleDto dto = new CourseSectionScheduleDto("COSC", "Distributed Systems", 455, "001", "2024W1", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
 
         when(courseService.filterCourses(any(CourseFilterRequest.class)))
