@@ -8,4 +8,8 @@ GRANT ALL PRIVILEGES ON user_db.* TO 'dev_user';
 
 GRANT ALL PRIVILEGES ON course_db.* TO 'dev_user';
 
+CREATE DATABASE IF NOT EXISTS profiles_db;
+
+GRANT ALL PRIVILEGES ON profiles_db.* TO 'dev_user';
+
 FLUSH PRIVILEGES;
