@@ -2,11 +2,11 @@ package com.infinity.userservice.services;
 
 import org.springframework.stereotype.Service;
 
-import com.infinity.userservice.dtos.UserDto;
+import com.infinity.userservice.dtos.StudentDto;
 import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.repositories.StudentRepository;
-import com.infinity.userservice.utility.UserMapper;
+import com.infinity.userservice.utility.StudentMapper;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +17,17 @@ import lombok.RequiredArgsConstructor;
 public class StudentService {
 
     private final StudentRepository studentRepository;
-    private final UserMapper userMapper;
+    private final StudentMapper studentMapper;
 
-    public UserDto getStudentByStudentNum(Integer studentNum) {
+    public StudentDto getStudentByNum(Integer studentNum) {
         Student student = studentRepository.findByStudentNum(studentNum)
                 .orElseThrow(() -> new NotFoundException("User with student number " + studentNum + " not found"));
-        return userMapper.toDto(student);
+        return studentMapper.toDto(student);
+    }
+
+     public StudentDto getStudentById(Long id) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with student number " + id + " not found"));
+        return studentMapper.toDto(student);
     }
 }

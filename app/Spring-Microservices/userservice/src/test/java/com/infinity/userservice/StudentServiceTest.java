@@ -13,13 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.infinity.userservice.dtos.UserDto;
+import com.infinity.userservice.dtos.StudentDto;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.repositories.StudentRepository;
 import com.infinity.userservice.services.StudentService;
-import com.infinity.userservice.utility.UserMapper;
+import com.infinity.userservice.utility.StudentMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class StudentServiceTest {
@@ -28,18 +28,18 @@ public class StudentServiceTest {
     private StudentRepository studentRepository;
 
     @Mock
-    private UserMapper userMapper;
+    private StudentMapper studentMapper;
 
     @InjectMocks
     StudentService studentService;
 
     @Test
-    void testGetUserByIdError() {
-        Integer studentNum = 1;
-        when(studentRepository.findByStudentNum(any())).thenReturn(Optional.empty());
+    void testGetStudentByIdError() {
+        Long studentId = 1L;
+        when(studentRepository.findById(any())).thenReturn(Optional.empty());
 
         NotFoundException e = assertThrows(NotFoundException.class, () -> {
-        studentService.getStudentByStudentNum(studentNum);
+        studentService.getStudentById(studentId);
         });
 
         assertEquals("User with student number 1 not found", e.getMessage());
@@ -47,14 +47,33 @@ public class StudentServiceTest {
     
     @Test
     void testGetUserByIdSuccess() {
-        Student mockUser = new Student("john@example.com", "John", "Smith", "P@ssword1");
-        mockUser.setStudentNum(1);
-        UserDto mockDto = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
+        Student mockStudent = new Student(
+            "john@example.com", 
+            "John", 
+            "Smith", 
+            "P@ssword1",
+            12345678,
+            "Computer Science",
+            2021,
+            3
+        );
+        mockStudent.setId(1L);
+        StudentDto mockDto = new StudentDto(
+            mockStudent.getId(), 
+            mockStudent.getFirstName(), 
+            mockStudent.getLastName(), 
+            mockStudent.getUserType(),
+            mockStudent.getStudentNum(),
+            mockStudent.getProgram(),
+            mockStudent.getEnrollmentYear(),
+            mockStudent.getSchoolYear(),
+            mockStudent.getCreatedAt()
+        );
 
-        when(studentRepository.findByStudentNum(any())).thenReturn(Optional.of(mockUser));
-        when(userMapper.toDto(mockUser)).thenReturn(mockDto);
+        when(studentRepository.findById(any())).thenReturn(Optional.of(mockStudent));
+        when(studentMapper.toDto(mockStudent)).thenReturn(mockDto);
 
-        UserDto dto = studentService.getStudentByStudentNum(1);
+        StudentDto dto = studentService.getStudentById(1L);
         assertEquals(dto.firstName(), "John");
         assertEquals(dto.role(), UserRole.STUDENT);
     }
