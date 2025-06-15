@@ -925,7 +925,7 @@ Tommorrow, I will work a new PR that creates the Course backend. I will try to m
 
 
 
-## Friday 6/12 (6/13~6/17)
+## Friday 6/13 (6/13~6/17)
 
 ### Timesheet
 Clockify report
@@ -981,6 +981,52 @@ Clockify report
 
 ### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
 Today was mostly about project discussion. I worked a little bit more on [UBCO-COSC499-S2025/team-10-capstone-infinity#204](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/204) because the previous PR issue #191 is still not merged to develop. I created the Allocations table and created a test for QuestionAnswers. I will work on the instructor profile tommorrow. 
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the instructor profile. The instructor profile will not be done in this cycle. It will be done until the cycle after this one. I will probably be working on the Comparer. But because the Comparer is already done in the ta-profile, I believe I will have time to work on some other part of the project as well. I think I may consider looking at Seiya's code and refactoring it and integrating it more to our project if there's anything offlandish.
+
+## Saturday 6/14 (6/13~6/17)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June14.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: instructor profile frontend 
+  * #2: issue [UBCO-COSC499-S2025/team-10-capstone-infinity#113](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/113)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I created the instructor profile. A lot of it was copy and paste from the Taprofile. Of course there were modifications. 
+Therefore, I was able to get most of it done today, including the tests.
+It's unforunate my teammates are not reviewing my [UBCO-COSC499-S2025/team-10-capstone-infinity#191](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/191) PR. It has been over 4 days since I put it up. A huge refactor concerning the code in that issue happens in #204.
+I've been a litle bit setback and less motivated due to a clash with a teammate, whom I won't name. It was my fault, as I wasn't careful with my words. I intended differently. He also isn't the kind of person to quickly say how he feels about things.
 
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
