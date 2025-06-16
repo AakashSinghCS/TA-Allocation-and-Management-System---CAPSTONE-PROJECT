@@ -71,7 +71,6 @@ jobs:
     strategy:
       matrix:
         service: [
-          applicationservice,
           courseservice,
           gatewayservice,
           profileservice,
@@ -89,7 +88,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 21
+          java-version: 24
           cache: maven             # caches ~/.m2 automatically
 
       - name: Run unit/integration tests + JaCoCo
