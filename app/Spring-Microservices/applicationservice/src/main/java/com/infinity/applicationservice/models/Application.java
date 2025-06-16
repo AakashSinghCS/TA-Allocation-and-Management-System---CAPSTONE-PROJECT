@@ -1,13 +1,18 @@
 package com.infinity.applicationservice.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.infinity.applicationservice.enums.Subject;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -30,7 +35,14 @@ public class Application {
 
     private boolean isAccepted;
 
-    private String subjectPreferences;
+    @Enumerated(EnumType.STRING)
+    private Subject subjectPreference1;
+
+    @Enumerated(EnumType.STRING)
+    private Subject subjectPreference2;
+
+    @Enumerated(EnumType.STRING)
+    private Subject subjectPreference3;
 
     @Column(nullable = false)
     private boolean wantRemote;
@@ -48,5 +60,19 @@ public class Application {
 
     @OneToMany
     private Set<Offer> offers;
+
+    public Application(Long studentId, List<Subject> preferences, boolean wantRemote, Integer wantWorkingHours) {
+        this.studentId = studentId;
+        try{
+        subjectPreference1 = preferences.get(0);
+        subjectPreference2 = preferences.get(1);
+        subjectPreference3 = preferences.get(2);
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        this.wantRemote = wantRemote;
+        this.wantWorkingHours = wantWorkingHours;
+        this.isAccepted = false;
+    }
 
 }
