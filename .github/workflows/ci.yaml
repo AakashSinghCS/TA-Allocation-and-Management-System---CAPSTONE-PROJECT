@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+      branches: [ develop,main ]
+  pull_request:
+      branches: [ develop,main ]
+
+concurrency:                       # cancel stale runs for the same branch
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+
+##############################################################################
+# 1. FRONT-END  – tests run *inside* the Docker container called “frontend”
+##############################################################################
+jobs:
+  frontend-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      #######################################################################
+      # Put any secrets you need in the container here
+      #######################################################################
+      # - name: Create .env.test
+        # env:
+          # SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
+        # run: |
+          # echo "DATABASE_URL=" > .env.test
+          # echo "SECRET_TOKEN=$SECRET_TOKEN" >> .env.test
+
+      #######################################################################
+      # Build & start the compose stack (frontend + mysql)
+      #######################################################################
+      - name: Build and start containers
+        run: docker compose up -d --build          # uses your existing compose.yml
+
+      # very small pause – or replace with a proper health-check loop
+      - name: Wait for services to be ready
+        run: sleep 15
+
+      #######################################################################
+      # Run the *real* tests inside the already-running container
+      #######################################################################
+      - name: Run Jest/Vitest tests in container
+        run: docker exec frontend npm run test -- --coverage
+
+      # - uses: actions/upload-artifact@v4
+        # with:
+          # name: frontend-coverage
+          # path: app/TA-portal-infinity/coverage   # adjust if your coverage dir differs
+
+      # always tear everything down, even on failure
+      - name: Tear down containers
+        if: always()
+        run: docker compose down -v
+
+##############################################################################
+# 2. BACK-END  – native Maven, one matrix job per micro-service
+##############################################################################
+  backend-test:
+    needs: frontend-test
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        service: [
+          applicationservice,
+          courservice,
+          gatewayservice,
+          profileservice,
+          userservice          # serviceregistry skipped; no tests
+        ]
+
+    defaults:
+      run:
+        working-directory: app/Spring-Microservices/${{ matrix.service }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK + cache Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven             # caches ~/.m2 automatically
+
+      - name: Run unit/integration tests + JaCoCo
+        run: mvn -B test jacoco:report
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-${{ matrix.service }}
+          path: target/site/jacoco
