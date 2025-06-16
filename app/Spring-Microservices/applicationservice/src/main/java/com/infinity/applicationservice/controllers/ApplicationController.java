@@ -3,6 +3,7 @@ package com.infinity.applicationservice.controllers;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -25,6 +26,7 @@ public class ApplicationController {
 
     private ApplicationService applicationService;
 
+    @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/add")
     public ResponseEntity<ApplicationDto> apply(@RequestBody @Valid ApplicationRequest req,
             @RequestHeader("X-User-Id") Long requesterId,
