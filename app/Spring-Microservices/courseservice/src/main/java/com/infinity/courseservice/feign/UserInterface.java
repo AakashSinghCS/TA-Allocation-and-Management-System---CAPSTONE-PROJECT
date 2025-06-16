@@ -10,6 +10,6 @@ import com.infinity.courseservice.dtos.UserDto;
 public interface UserInterface {
 
     @GetMapping("/students/{studentId}")
-    public ResponseEntity<UserDto> getStudentById(@PathVariable Integer studentId);
+    UserDto getStudentById(@PathVariable("studentId") Integer studentId);
 
 }
