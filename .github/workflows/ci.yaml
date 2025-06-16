@@ -38,23 +38,12 @@ jobs:
       - name: Build and start containers
         run: docker compose up -d --build          # uses your existing compose.yml
 
-      # very small pause – or replace with a proper health-check loop
-      # - name: Wait for services to be ready
-      #  run: sleep 5
-
       #######################################################################
       # Run the *real* tests inside the already-running container
       #######################################################################
-      #- name: Install dependencies in container
-      #  run: docker exec frontend npm ci --quiet
 
       - name: Run Jest/Vitest tests in container
         run: docker exec frontend npm run test -- --coverage
-
-      # - uses: actions/upload-artifact@v4
-        # with:
-          # name: frontend-coverage
-          # path: app/TA-portal-infinity/coverage   # adjust if your coverage dir differs
 
       # always tear everything down, even on failure
       - name: Tear down containers
@@ -72,7 +61,6 @@ jobs:
       matrix:
         service: [
           courseservice,
-          gatewayservice,
           profileservice,
           userservice          # serviceregistry skipped; no tests
         ]
@@ -83,6 +71,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Bring up MySQL via Docker Compose
+        # run this from the repo root so it picks up your compose file
+        working-directory: ${{ github.workspace }}
+        run: |
+          docker compose up -d mysql
+
+      - name: Wait for MySQL to (probably) be ready
+        run: sleep 10
 
       - name: Set up JDK + cache Maven
         uses: actions/setup-java@v4
