@@ -45,6 +45,9 @@ jobs:
       #######################################################################
       # Run the *real* tests inside the already-running container
       #######################################################################
+      - name: Install dependencies in container
+        run: docker exec frontend npm ci --quiet
+        
       - name: Run Jest/Vitest tests in container
         run: docker exec frontend npm run test -- --coverage
 
