@@ -1032,3 +1032,61 @@ Next time I work on the project, I will try to integrate endpoints I can integra
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, I wiil continue to work on the instructor profile. The instructor profile will not be done in this cycle. It will be done until the cycle after this one. I will probably be working on the Comparer. But because the Comparer is already done in the ta-profile, I believe I will have time to work on some other part of the project as well. I think I may consider looking at Seiya's code and refactoring it and integrating it more to our project if there's anything offlandish.
 
+## Monday 6/16 (6/13~6/17)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June16.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: instructor profile frontend 
+  * #2: issue [UBCO-COSC499-S2025/team-10-capstone-infinity#113](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/113)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#223](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/223)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+     <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today, I further cleaned up the aesthetics of the instructor page and comparer. I heeded the feedback of my teammate and made some user interfaces more approachable for the comparer in both the instructor page and the ta page.
+I worked on the continuous integration of our project. I made sure that github runs the tests commands in the same way we do locally.
+It was a smooth process, and I faced no difficulties.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- show orange when allocated/numberofhours is greater than 1 (show overbooking)
+- student can update profile with previous experience
+- need student to show skills/qualitifcations. (small description)
+- preferences have to be ranked. profile must show course preferences.
+- Create ta-profile question creating page and page where student answers.
+- sectionCard has to show grade and classAvg for students.
