@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "bec632a3-3ec9-4e1b-8057-dbf89d9bfb7b",
+		"_postman_id": "8292f8ae-55a1-47d9-8275-76b1b39dcece",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45690522"
+		"_exporter_id": "45669202"
 	},
 	"item": [
 		{
@@ -582,7 +582,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6MSwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDk3ODkwNzB9.zZmDrIYwy3s9tCU9QuREC9btJ5Khy_D08BIlBfx2w_w8NBuylSezdV2Xe0YJ6pVW",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6MSwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NTAxMjk0NDAsImV4cCI6MTc1MDEzMzA0MH0.7tmaJNs2Hipq7VWxBisef7rNDBIJpi7LAESpgUSLQyKMgdSTOn8j9iNjjsIfKz8u",
 									"type": "string"
 								}
 							]
@@ -591,7 +591,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"introduction\"\r\n}",
+							"raw": "{\r\n    \"startTime\": \"14:00\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -616,16 +616,81 @@
 				{
 					"name": "Add section",
 					"request": {
-						"method": "GET",
-						"header": []
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6MSwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NTAxMjk0NDAsImV4cCI6MTc1MDEzMzA0MH0.7tmaJNs2Hipq7VWxBisef7rNDBIJpi7LAESpgUSLQyKMgdSTOn8j9iNjjsIfKz8u",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"section\": \"001\",\r\n    \"term\": \"2025W1\",\r\n    \"type\": \"Lecture\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/courses/1/addSection",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"courses",
+								"1",
+								"addSection"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Add section schedule",
 					"request": {
-						"method": "GET",
-						"header": []
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6MSwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NTAxMjk0NDAsImV4cCI6MTc1MDEzMzA0MH0.7tmaJNs2Hipq7VWxBisef7rNDBIJpi7LAESpgUSLQyKMgdSTOn8j9iNjjsIfKz8u",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"day\": \"Wed\",\r\n    \"startTime\": \"14:00\",\r\n    \"endTime\": \"15:30\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/courses/1/1/addSectionSchedule",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"courses",
+								"1",
+								"1",
+								"addSectionSchedule"
+							]
+						}
 					},
 					"response": []
 				}
