@@ -52,7 +52,7 @@ public class CourseControllerTest {
 
     @Test
     void testAddCourse() throws Exception {
-        CourseRequest request = new CourseRequest("COSC", "Distributed Systems", 455);
+        CourseRequest request = new CourseRequest("COSC", "Distributed Systems", 455, null, null, null, null, null, null);
         CourseDto response = new CourseDto("COSC", "Distributed Systems", 455);
 
         when(courseService.addCourse(any(CourseRequest.class))).thenReturn(response);

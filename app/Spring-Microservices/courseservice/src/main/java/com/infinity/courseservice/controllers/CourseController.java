@@ -16,6 +16,8 @@ import com.infinity.courseservice.dtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
+import com.infinity.courseservice.dtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionScheduleDto;
 import com.infinity.courseservice.services.CourseService;
 
 import lombok.Data;
@@ -29,17 +31,31 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/{course_id}")
     public ResponseEntity<CourseDto> findCourse(@PathVariable Long id) {
         CourseDto courseDto = courseService.findCourse(id);
         return ResponseEntity.ok(courseDto);
     }
     
     @PreAuthorize("hasRole('COORDINATOR')")
-    @PostMapping("/add")
+    @PostMapping("/addCourse")
     public ResponseEntity<CourseDto> addCourse(@RequestBody CourseRequest request) {
         CourseDto courseDto = courseService.addCourse(request);
         return ResponseEntity.ok(courseDto);
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @PostMapping("{courseId}/addSection")
+    public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId, @RequestBody CourseRequest request) {       
+        SectionDto sectionDto = courseService.addSection(courseId,request);
+        return ResponseEntity.ok(sectionDto);
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @PostMapping("/{courseId}/{sectionId}/addSectionSchedule")
+    public ResponseEntity<SectionScheduleDto> addSectionSchedule(@PathVariable Long sectionId, @RequestBody CourseRequest request) {
+        SectionScheduleDto courseScheduleDto = courseService.addSectionSchedule(sectionId, request);
+        return ResponseEntity.ok(courseScheduleDto);
     }
     
     @PostMapping("/filterCourses")

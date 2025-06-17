@@ -1,5 +1,6 @@
 package com.infinity.courseservice.services;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,11 +9,18 @@ import com.infinity.courseservice.dtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
+import com.infinity.courseservice.dtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionScheduleDto;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
+import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.SectionSchedule;
 import com.infinity.courseservice.repositories.CourseRepository;
+import com.infinity.courseservice.repositories.SectionRepository;
+import com.infinity.courseservice.repositories.SectionScheduleRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 public class CourseService {
 
     private final CourseRepository courseRepository;
+    private final SectionRepository sectionRepository;
+    private final SectionScheduleRepository sectionScheduleRepository;
     private final UserInterface userInterface;
     // private final EnrollmentService enrollmentService;
 
@@ -29,6 +39,27 @@ public class CourseService {
         Course course = new Course(request.deptCode(), request.name(), request.courseNum());
         courseRepository.save(course);
         return new CourseDto(course.getDeptCode(), course.getName(), course.getCourseNum());
+    }
+
+    public SectionDto addSection(Long courseId, CourseRequest request) {
+        Course course = courseRepository.findById(courseId)
+                        .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+        
+        Section section = new Section(request.term(), request.section(), request.type(), course);
+        sectionRepository.save(section);
+        
+        return new SectionDto(section.getTerm(), section.getSection(), section.getType(), section.getCourse());
+    }
+
+    public SectionScheduleDto addSectionSchedule(Long secionId, CourseRequest request) {
+        Section section = sectionRepository.findById(secionId)
+                        .orElseThrow(() -> new EntityNotFoundException("section not found"));
+        LocalTime startTime = request.startTime() != null ? LocalTime.parse(request.startTime()) : null;
+        LocalTime endTime = request.endTime() != null ? LocalTime.parse(request.endTime()) : null;
+        SectionSchedule sectionSchedule = new SectionSchedule(request.day(), startTime, endTime, section);
+        sectionScheduleRepository.save(sectionSchedule);
+        
+        return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(), sectionSchedule.getEndTime(), sectionSchedule.getSection());
     }
     
     public CourseDto findCourse(Long id) {
@@ -44,6 +75,7 @@ public class CourseService {
     public List<CourseSectionScheduleDto> filterCourses(CourseFilterRequest filter) {
         return courseRepository.courseFilter(filter.deptCode(), filter.courseNum(), filter.name(), filter.section(), filter.term(), filter.day(), filter.startTime(), filter.endTime());
     }
+
 
     // public List<CourseDto> getEnrolledCourses(Integer studentId) {
     //     UserDto user = userInterface.getStudentById(studentId).getBody();

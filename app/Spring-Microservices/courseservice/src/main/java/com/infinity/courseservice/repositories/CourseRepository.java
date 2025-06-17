@@ -17,8 +17,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         c.deptCode, c.name, c.courseNum, s.section, s.term, ss.day, ss.startTime, ss.endTime
     )
     FROM Course c
-    JOIN c.sections s
-    JOIN s.sectionSchedules ss
+    LEFT JOIN c.sections s
+    LEFT JOIN s.sectionSchedules ss
     WHERE (:deptCode IS NULL OR c.deptCode = :deptCode)
       AND (:courseNum IS NULL OR c.courseNum = :courseNum)
       AND (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
