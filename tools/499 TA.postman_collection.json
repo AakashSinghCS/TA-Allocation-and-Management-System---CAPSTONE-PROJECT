@@ -437,14 +437,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/courses/add",
+							"raw": "localhost:8080/courses/addCourse",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"courses",
-								"add"
+								"addCourse"
 							]
 						}
 					},
@@ -475,14 +475,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/courses/add",
+							"raw": "localhost:8080/courses/addCourse",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"courses",
-								"add"
+								"addCourse"
 							]
 						}
 					},
