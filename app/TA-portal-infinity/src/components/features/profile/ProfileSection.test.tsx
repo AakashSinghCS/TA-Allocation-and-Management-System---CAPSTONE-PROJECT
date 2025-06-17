@@ -17,12 +17,13 @@ describe("SectionCard", () => {
       expect(screen.getByText(new RegExp(`^${student.email}$`))).toBeInTheDocument();
       expect(screen.getByRole("heading", { level: 1, name: fullNameRegex })).toBeInTheDocument();
       expect(screen.getByText(new RegExp(`^${student.studentNumber}$`))).toBeInTheDocument();
-      expect(within(screen.getByText(/^Program:/i).closest('p')!).getByText(student.program)).toBeInTheDocument();
+      expect(within(screen.getByText(/^Program:/i).closest('p')!).getByText(new RegExp(`^${student.program}$`))).toBeInTheDocument();
       expect(within(screen.getByText(/^Enrollment Year:/i).closest('p')!).getByText(String(student.enrollmentYear))).toBeInTheDocument(); // Enrollment year
       expect(within(screen.getByText(/^School Year:/i).closest('p')!).getByText(String(student.schoolYear))).toBeInTheDocument();
 
-
-      const readableDate = formatDateForDisplay(student.createdAt);
-      expect(screen.getByText(new RegExp(`^${readableDate}$`))).toBeInTheDocument();
+      if(student.createdAt){
+         const readableDate = formatDateForDisplay(student.createdAt);
+         expect(screen.getByText(new RegExp(`^${readableDate}$`))).toBeInTheDocument();
+      }
    });
 });
