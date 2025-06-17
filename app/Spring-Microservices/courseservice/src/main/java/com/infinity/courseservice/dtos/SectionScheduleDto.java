@@ -4,5 +4,5 @@ import java.time.LocalTime;
 
 import com.infinity.courseservice.models.Section;
 
-public record SectionScheduleDto(String day, LocalTime startTime, LocalTime endTime, Section section) {
+public record SectionScheduleDto(String day, LocalTime startTime, LocalTime endTime, Long sectionId) {
 }

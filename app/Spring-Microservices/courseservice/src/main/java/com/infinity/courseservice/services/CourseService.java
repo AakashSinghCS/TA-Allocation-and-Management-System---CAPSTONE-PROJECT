@@ -62,7 +62,7 @@ public class CourseService {
             throw new BadRequestException("Section already exists" + ex);
         }
         
-        return new SectionDto(section.getTerm(), section.getSection(), section.getType(), section.getCourse());
+        return new SectionDto(section.getTerm(), section.getSection(), section.getType(), section.getCourse().getId());
     }
 
     @Transactional
@@ -77,7 +77,7 @@ public class CourseService {
         } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException("Schedule already exists" + ex);
         }
-        return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(), sectionSchedule.getEndTime(), sectionSchedule.getSection());
+        return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(), sectionSchedule.getEndTime(), sectionSchedule.getSection().getId());
     }
     
     public CourseDto findCourse(Long id) {
