@@ -30,7 +30,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 """)
     List<CourseSectionScheduleDto> courseFilter(
         @Param("deptCode") String deptCode,
-        @Param("courseNum") Integer courseNum,
+        @Param("courseNum") String courseNum,
         @Param("name") String name,
         @Param("section") String section,
         @Param("term") String term,

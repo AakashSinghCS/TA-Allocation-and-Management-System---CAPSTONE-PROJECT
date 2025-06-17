@@ -5,7 +5,7 @@ import java.time.LocalTime;
 public record CourseSectionScheduleDto(
         String deptCode,
         String name,
-        Integer courseNum,
+        String courseNum,
         String section,
         String term,
         String type,

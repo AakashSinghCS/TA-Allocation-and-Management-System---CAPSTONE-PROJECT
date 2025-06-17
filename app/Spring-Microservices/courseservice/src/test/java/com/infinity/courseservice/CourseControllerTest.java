@@ -40,7 +40,7 @@ public class CourseControllerTest {
 
     @Test
     void testFindCourse() throws Exception {
-        CourseDto courseDto = new CourseDto("COSC", "Distributed Systems", 455);
+        CourseDto courseDto = new CourseDto("COSC", "Distributed Systems", "455");
         when(courseService.findCourse(1L)).thenReturn(courseDto);
 
         mockMvc.perform(get("/courses/1"))
@@ -52,8 +52,8 @@ public class CourseControllerTest {
 
     @Test
     void testAddCourse() throws Exception {
-        CourseRequest request = new CourseRequest("COSC", "Distributed Systems", 455, null, null, null, null, null, null);
-        CourseDto response = new CourseDto("COSC", "Distributed Systems", 455);
+        CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null, null);
+        CourseDto response = new CourseDto("COSC", "Distributed Systems", "455");
 
         when(courseService.addCourse(any(CourseRequest.class))).thenReturn(response);
 
@@ -69,7 +69,7 @@ public class CourseControllerTest {
     @Test
     void testFilterCourses() throws Exception {
         CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", "systems", null, null, "2024W1", null, null, LocalTime.of(14, 00), null);
-        CourseSectionScheduleDto dto = new CourseSectionScheduleDto("COSC", "Distributed Systems", 455, "001", "2024W1","L", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
+        CourseSectionScheduleDto dto = new CourseSectionScheduleDto("COSC", "Distributed Systems", "455", "001", "2024W1","L", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
 
         when(courseService.filterCourses(any(CourseFilterRequest.class)))
             .thenReturn(List.of(dto));
@@ -84,8 +84,8 @@ public class CourseControllerTest {
 
     @Test
     void testGetCoursesByIds() throws Exception {
-        CourseDto dto1 = new CourseDto("COSC", "Distributed Systems", 455);
-        CourseDto dto2 = new CourseDto("COSC", "Operating Systems", 315);
+        CourseDto dto1 = new CourseDto("COSC", "Distributed Systems", "455");
+        CourseDto dto2 = new CourseDto("COSC", "Operating Systems", "315");
 
         when(courseService.findCoursesByIds(List.of(1L, 2L))).thenReturn(List.of(dto1, dto2));
 

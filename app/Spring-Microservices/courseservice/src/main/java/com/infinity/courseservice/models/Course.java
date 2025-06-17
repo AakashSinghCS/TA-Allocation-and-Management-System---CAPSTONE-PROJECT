@@ -9,13 +9,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
-import lombok.NoArgsConstructor; // I need these extra imports to avoid error
+import lombok.NoArgsConstructor; 
 
 
 @Entity
 @Data
 @NoArgsConstructor
+@Table(name = "course",
+       uniqueConstraints = {
+           @UniqueConstraint(
+               name = "uk_course_unique_row",
+               columnNames = {"deptCode", "name", "courseNum"})
+       })
 public class Course {
     
     @Id
@@ -24,13 +32,13 @@ public class Course {
 
     private String deptCode;
     private String name;
-    private Integer courseNum;
+    private String courseNum;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Section> sections;
 
-    public Course(String deptCode, String name, Integer courseNum) {
+    public Course(String deptCode, String name, String courseNum) {
         this.deptCode = deptCode;
         this.name = name;
         this.courseNum = courseNum;

@@ -5,7 +5,7 @@ import io.micrometer.common.lang.Nullable;
 public record CourseRequest(
         @Nullable String deptCode,
         @Nullable String name,
-        @Nullable Integer courseNum,
+        @Nullable String courseNum,
         @Nullable String section,
         @Nullable String type,
         @Nullable String term,
