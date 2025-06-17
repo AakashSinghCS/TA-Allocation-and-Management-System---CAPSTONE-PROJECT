@@ -8,6 +8,7 @@ public record CourseSectionScheduleDto(
         Integer courseNum,
         String section,
         String term,
+        String type,
         String day,
         LocalTime startTime,
         LocalTime endTime

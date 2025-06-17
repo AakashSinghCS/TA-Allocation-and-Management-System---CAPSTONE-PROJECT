@@ -89,11 +89,11 @@ public class CourseServiceTest {
 
     @Test
     void testFilterCourses() {
-        CourseSectionScheduleDto dto1 = new CourseSectionScheduleDto("COSC", "Distributed Systems", 455, "001", "2025W1", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
-        CourseSectionScheduleDto dto2 = new CourseSectionScheduleDto("COSC", "Operating Systems", 315, "002", "2025W2", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
+        CourseSectionScheduleDto dto1 = new CourseSectionScheduleDto("COSC", "Distributed Systems", 455, "001","L", "2025W1", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
+        CourseSectionScheduleDto dto2 = new CourseSectionScheduleDto("COSC", "Operating Systems", 315, "002", "2025W2","L", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
 
-        CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", null, null, null, "2025W1", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
-        when(courseRepository.courseFilter("COSC", null, null, null, "2025W1", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30)))
+        CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", null, null, null, "2025W1",null, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
+        when(courseRepository.courseFilter("COSC", null, null, null, "2025W1", null, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30)))
             .thenReturn(List.of(dto1, dto2));
 
         List<CourseSectionScheduleDto> result = courseService.filterCourses(filterRequest);

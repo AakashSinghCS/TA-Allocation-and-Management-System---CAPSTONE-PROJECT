@@ -73,7 +73,7 @@ public class CourseService {
     }
 
     public List<CourseSectionScheduleDto> filterCourses(CourseFilterRequest filter) {
-        return courseRepository.courseFilter(filter.deptCode(), filter.courseNum(), filter.name(), filter.section(), filter.term(), filter.day(), filter.startTime(), filter.endTime());
+        return courseRepository.courseFilter(filter.deptCode(), filter.courseNum(), filter.name(), filter.section(), filter.term(), filter.type(), filter.day(), filter.startTime(), filter.endTime());
     }
 
 
