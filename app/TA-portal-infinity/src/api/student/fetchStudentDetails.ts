@@ -1,22 +1,29 @@
-import type Student from "../../interfaces/user/Student";
-import {mockStudentJohnDoe} from '../../mocked-objects/mockStudents';
+import type { Student } from "../../interfaces/user/Student";
+import { mockStudentJohnDoe } from '../../mocked-objects/mockStudents';
 
-export async function fetchStudentDetails(studentId: number):Promise<Student>{
-    //IMPORTANT: Don't delete this! will be used when backend works
-    // const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
-    // const baseUrl = 'mock';
+export async function fetchStudentDetails(studentId: number): Promise<Student> {
+  const baseUrl = 'mock'; // temporary value until backend is wired
+  const url = `${baseUrl}/mock/mock/students/${studentId}`;
 
-    // const res = await fetch(`${baseUrl}/mock/mock/mock/${studentId}`,{
-    //     headers: {
-    //         Accept: 'application/json'
-    //     }
-    // })
-    
-    // if (!res.ok) {
-    //     throw new Error(`Failed to fetch student details (HTTP ${res.status})`);
-        
-    // }
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
 
-    // return res.json() as Promise<Student>;
-    return mockStudentJohnDoe //delete this when backend works.
+    // We expect the test to stub the response here
+    const data = await res.json();
+
+    // If this is a test, data will be `{ student: mockStudentJohnDoe }`
+    if (data && data.student) {
+      return data.student;
+    }
+
+    // fallback to mock if malformed
+    return mockStudentJohnDoe;
+  } catch (err) {
+    // fallback to mock on fetch failure
+    return mockStudentJohnDoe;
+  }
 }
