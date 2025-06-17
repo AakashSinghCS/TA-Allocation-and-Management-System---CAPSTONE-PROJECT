@@ -1,15 +1,15 @@
 import type User from "./User";
 
 export interface Student extends User{
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  studentNumber: number;
-  program: string;
-  enrollmentYear: number;
-  schoolYear: number;
-  createdAt: Date;
+  id?: number;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  studentNumber?: number;
+  program?: string;
+  enrollmentYear?: number;
+  schoolYear?: number;
+  createdAt?: Date;
 }
 
 export const studentProfileFields: (keyof Student)[] = [
