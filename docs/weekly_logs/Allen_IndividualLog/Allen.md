@@ -186,7 +186,7 @@ finished the learning part, started coding on course filter, almost completed, h
   * integrating and testing course filter
   * start on the nest feature
 
-## June 09 - 12
+## June 10 - 12
 
 ### Timesheet
 Clockify report
@@ -228,3 +228,47 @@ finished backend of course filter, having trouble with integrating, also learned
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * integrating and testing course filter
   * start on the nest feature
+
+
+## June 13 - 16
+
+### Timesheet
+Clockify report
+![alt text](./clockify/6.16.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: addSection&addSectionSchedule method, updated postman calls
+  * #2: dealt with duplicate entries
+
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>addSection&addSectionSchedule method, updated postman calls
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>dealt with duplicate entries
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+adding features to the backend of course filter, brainstorming about the enrollment table design.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * building enrollment table to enable frontend comparer
+  * building backend for instructor pages
