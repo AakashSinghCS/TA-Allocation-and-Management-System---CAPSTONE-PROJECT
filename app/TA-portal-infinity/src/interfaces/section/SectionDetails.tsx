@@ -8,7 +8,7 @@ export type SectionType =
     | "Seminar"
     | "Workshop"
     | "Experential"
-    | "Independent Study";
+    | "Independent Study"
 
 export interface SectionDetails extends Course{
     sectionId?: number,
