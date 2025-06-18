@@ -1,4 +1,50 @@
-## Monday (June 10-12)
+## Monday (June 13-16)
+
+### Timesheet
+Clockify report
+![alt text](./clockify_images/clockify_weekly_log_2025-06-13_06-16_seiya.png)
+
+### Current Tasks (Provide sufficient detail)
+#1: Implement filter component and pass selected parameters to backend API (frontend side)
+
+### Progress Update (since June 5, 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>Implement filter component and pass selected parameters to backend API (frontend side)
+        </td>
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+My primary goal for this cycle was to make the Course Management filters functional on the frontend and ensure the selected parameters reach the backend endpoint.
+
+What was done:
+* Completed the filter UI component and made it capture user input and send requests to the API in the correct format.
+* Aligned verbally with the backend owner on the endpoint URL and request/response schema
+
+
+What was not done:
+* Could not integrate the frontend with the backend because my database tests are still incomplete
+* Implementing full role-based access control so only Coordinator users can access the page has been deferred until after integration.
+* End-to-end tests and UI bug fixes remain unstarted because they depend on the integration
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Finalize database tests so the frontend can be safely integrated with the live backend.
+* Complete frontend–backend integration for the Course Management page and confirm successful data exchange.
+* Implement role-based access control so only Coordinator users can access the page.
+
+
+## Thursday (June 10-12)
 
 ### Timesheet
 Clockify report
