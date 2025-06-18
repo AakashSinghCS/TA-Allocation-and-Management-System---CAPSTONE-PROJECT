@@ -40,7 +40,7 @@ What was not done:
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
 * Complete frontend–backend integration for the Course Management page and confirm successful data exchange.
-* Implement role-based access control so only Coordinator users can access the page.
+* Begin implementing role-based access control so only Coordinator users can access the page.
 
 
 ## Thursday (June 10-12)
