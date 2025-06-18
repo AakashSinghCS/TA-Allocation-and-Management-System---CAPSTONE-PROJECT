@@ -8,7 +8,7 @@ import ErrorPage from "../pages/errorpage/ErrorPage";
 
 import PublicLayout from "../components/layout/publicLayout/PublicLayout";
 import SignUpPage from "../pages/signupPage/SignUpPage";
-
+import ApplicationPage from "../pages/applicationpage/ApplicationPage";
 
 
 export const router = createBrowserRouter([
@@ -20,6 +20,7 @@ export const router = createBrowserRouter([
       { index: true, element: <HomePage /> },               
       { path: "about", element: <AboutPage /> },            
       { path: "taprofile/:studentId", element: <TaProfilePage />},
+      { path: "application", element: <ApplicationPage /> },
       { path: "error", element: <ErrorPage /> },
       { path: "*", element: <ErrorPage /> },                
      

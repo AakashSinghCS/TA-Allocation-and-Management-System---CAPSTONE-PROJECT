@@ -1,13 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 const navItems = [
-  { label: "Home", to: "/" },
-  { label: "About", to: "/about" },
-  { label: "Ta Profile", to: "/taprofile/1" }, //change this value when backend is implemented.
+  { label: "Home",     to: "/" },
+  { label: "About",    to: "/about" },
+  { label: "Ta Profile", to: "/taprofile/1" }, // update when backend is ready
 ];
 
 export default function SideNav() {
   const { pathname } = useLocation();
+  const { logout } = useAuth();
 
   return (
     <aside className="h-full w-40 bg-gray-800 text-gray-200 flex flex-col">
@@ -17,20 +19,19 @@ export default function SideNav() {
             key={to}
             to={to}
             className={`block px-4 py-2 rounded-r-lg transition
-               ${pathname === to ? "bg-sky-700 text-white" : "hover:bg-gray-700"}`}
+              ${pathname === to ? "bg-sky-700 text-white" : "hover:bg-gray-700"}`}
           >
             {label}
           </Link>
         ))}
       </nav>
 
-      {/* logout stays at bottom */}
-      <Link
-        to="/logout"
-        className="mt-auto px-4 py-2 bg-red-600 text-white hover:bg-red-500 text-center"
+      <button
+        onClick={logout}
+        className="mt-auto w-full text-left px-4 py-2 bg-red-600 text-white hover:bg-red-500 rounded-br-lg transition"
       >
         Logout
-      </Link>
+      </button>
     </aside>
   );
 }
