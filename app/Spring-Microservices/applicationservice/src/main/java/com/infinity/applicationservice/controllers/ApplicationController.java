@@ -18,6 +18,11 @@ import com.infinity.applicationservice.services.ApplicationService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+
+
 
 @RestController
 @RequiredArgsConstructor
@@ -35,9 +40,24 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.apply(req, requesterId, roles));
     }
 
+    @GetMapping("/get/{studentId}/{year}")
+    public ResponseEntity<ApplicationDto> getApplication(@PathVariable Long studentId,
+            @PathVariable Integer year,
+            @RequestHeader("X-User-Id") Long requesterId,
+            @RequestHeader("X-User-Roles") List<String> roles) {
+        return ResponseEntity.ok(applicationService.getApplication(studentId, year, requesterId, roles));
+    }
+
+    @PutMapping("update/{studentId}")
+    public ResponseEntity<ApplicationDto> updateApplication(@PathVariable Long studentId, 
+            @RequestHeader("X-User-Id") Long requesterId,
+            @RequestHeader("X-User-Roles") List<String> roles) {        
+        return ResponseEntity.ok(applicationService.updateApplication(studentId, requesterId, roles));
+    }    
+
     @DeleteMapping("/delete/{studentId}")
     public ResponseEntity<String> deleteApplication(@PathVariable Long studentId,
-        @RequestHeader("X-User-Id") Long requesterId,
+            @RequestHeader("X-User-Id") Long requesterId,
             @RequestHeader("X-User-Roles") List<String> roles) {
         return ResponseEntity.ok(applicationService.deleteApplication(studentId, requesterId, roles));
     }

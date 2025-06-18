@@ -1,5 +1,6 @@
 package com.infinity.applicationservice.models;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -18,12 +19,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
 @Data
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "studentId", "year" }) })
 public class Application {
 
     @Id
@@ -54,6 +59,9 @@ public class Application {
     @CreationTimestamp
     private LocalDateTime submittedAt;
 
+    @Column(nullable = false)
+    private Integer year;
+
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Transcript transcript;
@@ -69,6 +77,7 @@ public class Application {
         this.wantRemote = wantRemote;
         this.wantWorkingHours = wantWorkingHours;
         this.isAccepted = false;
+        this.year = LocalDate.now().getYear();
     }    
 
 }
