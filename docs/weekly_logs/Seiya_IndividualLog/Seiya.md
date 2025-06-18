@@ -33,7 +33,7 @@ What was done:
 
 
 What was not done:
-* Could not integrate the frontend with the backend because my database tests are still incomplete
+* Could not integrate the frontend with the backend because my database setting is still incomplete
 * Implementing full role-based access control so only Coordinator users can access the page has been deferred until after integration.
 * End-to-end tests and UI bug fixes remain unstarted because they depend on the integration
 
