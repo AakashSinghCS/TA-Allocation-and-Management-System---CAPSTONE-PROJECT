@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -15,23 +17,28 @@ import com.infinity.applicationservice.dtos.ApplicationRequest;
 import com.infinity.applicationservice.services.ApplicationService;
 
 import jakarta.validation.Valid;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@Data
 @RequestMapping("/applications")
 public class ApplicationController {
 
-    private ApplicationService applicationService;
+    private final ApplicationService applicationService;
 
     @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/add")
-    public ResponseEntity<ApplicationDto> apply(@RequestBody @Valid ApplicationRequest req,
+    public ResponseEntity<ApplicationDto> apply(
+            @RequestBody @Valid ApplicationRequest req,
             @RequestHeader("X-User-Id") Long requesterId,
-    @RequestHeader("X-User-Roles") List<String> roles) {
+            @RequestHeader("X-User-Roles") List<String> roles) {
         return ResponseEntity.ok(applicationService.apply(req, requesterId, roles));
     }
-    
+
+    @DeleteMapping("/delete/{studentId}")
+    public ResponseEntity<String> deleteApplication(@PathVariable Long studentId,
+        @RequestHeader("X-User-Id") Long requesterId,
+            @RequestHeader("X-User-Roles") List<String> roles) {
+        return ResponseEntity.ok(applicationService.deleteApplication(studentId, requesterId, roles));
+    }
 }

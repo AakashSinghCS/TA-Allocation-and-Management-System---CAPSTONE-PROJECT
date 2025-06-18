@@ -7,8 +7,10 @@ import com.infinity.applicationservice.enums.Subject;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record ApplicationRequest(
+                @Size(min = 1, max = 3, message = "At least one and at most three subject preferences allowed")
                 List<Subject> preferences,
                 @NotNull(message = "Remote work preference not specified") 
                 boolean wantRemote,

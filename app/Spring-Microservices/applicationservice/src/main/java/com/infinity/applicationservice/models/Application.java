@@ -63,16 +63,12 @@ public class Application {
 
     public Application(Long studentId, List<Subject> preferences, boolean wantRemote, Integer wantWorkingHours) {
         this.studentId = studentId;
-        try{
-        subjectPreference1 = preferences.get(0);
-        subjectPreference2 = preferences.get(1);
-        subjectPreference3 = preferences.get(2);
-        } catch (IndexOutOfBoundsException e) {
-            
-        }
+        this.subjectPreference1 = preferences.size() > 0 ? preferences.get(0) : null;
+        this.subjectPreference2 = preferences.size() > 1 ? preferences.get(1) : null;
+        this.subjectPreference3 = preferences.size() > 2 ? preferences.get(2) : null;
         this.wantRemote = wantRemote;
         this.wantWorkingHours = wantWorkingHours;
         this.isAccepted = false;
-    }
+    }    
 
 }

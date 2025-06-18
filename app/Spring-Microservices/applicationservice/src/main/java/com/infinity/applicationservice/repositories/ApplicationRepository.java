@@ -7,5 +7,7 @@ import com.infinity.applicationservice.models.Application;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long>{
+
+    void deleteByStudentId(Long studentId);
     
 }
