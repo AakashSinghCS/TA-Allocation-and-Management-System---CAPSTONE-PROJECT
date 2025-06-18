@@ -57,7 +57,7 @@ public class CourseControllerTest {
 
         when(courseService.addCourse(any(CourseRequest.class))).thenReturn(response);
 
-        mockMvc.perform(post("/courses/add")
+        mockMvc.perform(post("/courses/addCourse")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())

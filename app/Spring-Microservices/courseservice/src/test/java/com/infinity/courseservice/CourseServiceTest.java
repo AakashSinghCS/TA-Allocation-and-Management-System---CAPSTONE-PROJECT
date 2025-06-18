@@ -49,7 +49,7 @@ public class CourseServiceTest {
 
         assertEquals("COSC", dto.deptCode());
         assertEquals("Distributed Systems", dto.name());
-        assertEquals(455, dto.courseNum());
+        assertEquals("455", dto.courseNum());
     }
 
     @Test
@@ -61,7 +61,7 @@ public class CourseServiceTest {
 
         assertEquals("COSC", dto.deptCode());
         assertEquals("Distributed Systems", dto.name());
-        assertEquals(455, dto.courseNum());
+        assertEquals("455", dto.courseNum());
     }
 
     @Test
