@@ -1,3 +1,87 @@
+## Monday (June 13-16)
+
+### Timesheet
+Clockify report
+![alt text](./jun13-16.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: CRUD operations for the application objects
+
+### Progress Update (since June 13 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>CRUD operations for application object
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Implement new application microservice with basic JPA objects
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I was in Toronto for a few days, so I when I got back I caught up on the PR's that were merged and the new ones that have showed up to get familiarized, and discussed with Mandeep about our next goal of the getting the application objects working. I've started those endpoints, and have the create part working, but still have the other 3 to do. I will have more time now to do these things.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Finish the CRUD operations for applications.
+
+## Thursday (June 10-12)
+
+### Timesheet
+Clockify report
+![alt text](./june10-12_1.png)
+![alt text](./june10-12_2.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Getting the application service to start handling various endpoint calls.
+
+### Progress Update (since June 9 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Implement new application microservice with basic JPA objects
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Help integrate frontend with backend login and auth
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The frontend is successfully calling the backend, which I helped Mandeep with, and a new application microservice with the entities created as specified in the ER diagram is now in review.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Get the endpoints for CRUD operations for the application microservice working
+
 ## Monday (June 6-9)
 
 ### Timesheet
