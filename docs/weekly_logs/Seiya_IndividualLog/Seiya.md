@@ -39,7 +39,6 @@ What was not done:
 
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
-* Finalize database tests so the frontend can be safely integrated with the live backend.
 * Complete frontend–backend integration for the Course Management page and confirm successful data exchange.
 * Implement role-based access control so only Coordinator users can access the page.
 
