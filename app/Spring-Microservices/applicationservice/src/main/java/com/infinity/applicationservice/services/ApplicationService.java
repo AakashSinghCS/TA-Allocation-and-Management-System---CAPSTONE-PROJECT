@@ -9,6 +9,7 @@ import com.infinity.applicationservice.dtos.ApplicationDto;
 import com.infinity.applicationservice.dtos.ApplicationRequest;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
+import com.infinity.applicationservice.exceptions.NotFoundException;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 
@@ -38,6 +39,9 @@ public class ApplicationService {
     public String deleteApplication(Long studentId, Long userIdFromHeader, List<String> headerRoles) {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
+        }
+        if (!applicationRepository.existsByStudentId(studentId)) {
+            throw new NotFoundException("Application with student id " + studentId + " doesn't exist");
         }
         applicationRepository.deleteByStudentId(studentId);
         return "Application deleted";

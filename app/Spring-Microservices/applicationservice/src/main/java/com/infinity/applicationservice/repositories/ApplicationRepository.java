@@ -9,5 +9,7 @@ import com.infinity.applicationservice.models.Application;
 public interface ApplicationRepository extends JpaRepository<Application, Long>{
 
     void deleteByStudentId(Long studentId);
+
+    boolean existsByStudentId(Long studentId);
     
 }
