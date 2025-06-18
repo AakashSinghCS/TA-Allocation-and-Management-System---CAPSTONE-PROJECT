@@ -695,7 +695,7 @@ During the integration, attention to detail was required to ensure the request p
 ## Progress Update  
 | TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
 |--------------|-------------------------------------------------------------------------------|------------|  
-| Task 1       | 	Implemented JWT authentication between frontend and backend                  | In progress  |  
+| Task 1       | 	Implemented JWT authentication between frontend and backend                  | Completed   |  
  
 
 ## Cycle Goal Review  
@@ -708,3 +708,79 @@ Integrating JWT authentication required careful attention to token structure, ex
 
 ## Next Cycle Goals  
 - **#1:** JWT authentication completion
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 13 June,Thursday 10:30AM–1:03PM
+
+**Clockify:** ![alt text](image-30.png)
+## Current Tasks  
+- **#1:** Team meeting 
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       | 	Team meeting to discuss feature set and milestone review                  | Completed |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+The team meeting focused on reviewing our current feature set and evaluating progress toward upcoming milestones. We discussed the state of authentication, profile management, and TA application workflows. This session clarified team responsibilities, exposed any blockers, and aligned our next development priorities.
+
+### Retrospective  
+During the meeting, we identified areas needing improvement in coordination and documentation, particularly when integrating frontend components with evolving backend APIs.
+
+## Next Cycle Goals  
+- **#1:** Application and Application status
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 15 June,Sunday 1:08PM–3:52PM & 4:28PM-5:58PM & 8.02AM-10:22PM
+
+**Clockify:** ![alt text](image-31.png)
+## Current Tasks  
+- **#1:** Quiz one prep
+- **#2:** Meeting with Alex and Dup
+- **#3:** Role based routing learning 
+
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|-----------|  
+| Task 1       | 	       Quiz one prep                                                         | Completed |  
+ | Task 2       | 	     Meeting with Alex and Dup                                             | Completed |  
+ | Task 3       | 	     Role based routing learning                                           | Completed |  
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle involved preparing for our first quiz, collaborating through a team meeting with Alex and Dup, and diving into role-based routing for our frontend system.
+
+### Retrospective  
+During the meeting, we identified areas needing improvement in coordination and documentation, particularly when integrating frontend components with evolving backend APIs.
+
+## Next Cycle Goals  
+- **#1:** Application and Application status
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 16 June,Monday 10:11PM–12:19AM & 3:35PM-6:09PM
+
+**Clockify:** ![alt text](image-32.png)
+## Current Tasks  
+- **#1:** Mini Presentation
+- **#2:** Application page
+
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|-----------|  
+| Task 1       | 	    Mini Presentation                                                    | Completed |  
+ | Task 2       | 	     Application page frontend                                           | IN Progress |  
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle focused on two main areas: preparing and delivering a mini presentation, and working on the frontend of the TA application page. 
+The presentation helped improve communication skills and reinforced our understanding of project components. 
+
+### Retrospective  
+The mini presentation was well-received and helped the team articulate progress clearly. For the application page, we encountered some challenges in aligning the frontend design
+
+## Next Cycle Goals  
+- **#1:** Application and Application status
