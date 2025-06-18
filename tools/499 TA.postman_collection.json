@@ -430,7 +430,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"subject\":\"COSC\", \"courseNum\":\"499\"}",
+							"raw": "{\"deptCode\":\"COSC\", \"courseNum\":\"499\"}",
 							"options": {
 								"raw": {
 									"language": "json"
