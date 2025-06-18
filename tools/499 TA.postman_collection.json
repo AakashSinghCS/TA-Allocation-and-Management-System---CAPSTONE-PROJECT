@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "8292f8ae-55a1-47d9-8275-76b1b39dcece",
+		"_postman_id": "8d2f10f2-2426-4a19-aa67-8fb3d68f1ea9",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45669202"
+		"_exporter_id": "45669202",
+		"_collection_link": "https://allen-9145341.postman.co/workspace/Allen's-Workspace~5d13c9f6-ede4-4301-81d3-649ab495ae62/collection/45669202-8d2f10f2-2426-4a19-aa67-8fb3d68f1ea9?action=share&source=collection_link&creator=45669202"
 	},
 	"item": [
 		{
@@ -467,7 +468,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"subject\":\"COSC\", \"courseNum\":\"499\"}",
+							"raw": "{\"deptCode\":\"COSC\", \"courseNum\":\"499\"}",
 							"options": {
 								"raw": {
 									"language": "json"
