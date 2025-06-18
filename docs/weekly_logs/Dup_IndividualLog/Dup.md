@@ -1069,7 +1069,7 @@ Clockify report
     </tr>
      <tr>
         <!-- Task/Issue # -->
-        <td>Task 2
+        <td>Task 3
         </td>
         <!-- Status -->
         <td>In review
@@ -1085,6 +1085,65 @@ It was a smooth process, and I faced no difficulties.
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, I wiil continue to work on the list I wrote below.
 - show orange when allocated/numberofhours is greater than 1 (show overbooking)
+- student can update profile with previous experience
+- need student to show skills/qualitifcations. (small description)
+- preferences have to be ranked. profile must show course preferences.
+- Create ta-profile question creating page and page where student answers.
+- sectionCard has to show grade and classAvg for students.
+
+## Tuesday 6/17 (6/13~6/17)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June17.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: instructor profile frontend 
+  * #2: issue [UBCO-COSC499-S2025/team-10-capstone-infinity#113](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/113)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#228](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/228)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+     <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I focused on revamping the TaProfile and InstructorPage design. It was easy to do since I coded the code such that restructuring and refactoring is easy. I added tabs to each profile so that the components are better organized and navigation is still easy.
+I reviewed PR #233, which is Mandeep's PR.
+Today we had a mini-presentation, and this affected my teammates opinion of my work. But I hope I have fixed it to their satisfaction, and I now agree it looks better this way.
+The integration with the backend is still waiting.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
 - student can update profile with previous experience
 - need student to show skills/qualitifcations. (small description)
 - preferences have to be ranked. profile must show course preferences.
