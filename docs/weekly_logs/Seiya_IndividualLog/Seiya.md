@@ -29,7 +29,7 @@ My primary goal for this cycle was to make the Course Management filters functio
 
 What was done:
 * Completed the filter UI component and made it capture user input and send requests to the API in the correct format.
-* Aligned verbally with the backend owner on the endpoint URL and request/response schema
+* Aligned verbally with the backend side on the endpoint URL and request/response schema
 
 
 What was not done:
