@@ -102,7 +102,7 @@ class ProfileControllerTest {
 
         doNothing().when(service).saveFreeTextAnswer(sid, qid, req.description());
 
-        mvc.perform(post("/profiles/{sid}/questions/{qid}/answer/text", sid, qid)
+        mvc.perform(post("/profiles/{studentId}/questions/{questionId}/answer/text", sid, qid)
                 .contentType(APPLICATION_JSON)
                 .content(mapper.writeValueAsString(req)))
            .andExpect(status().isOk());

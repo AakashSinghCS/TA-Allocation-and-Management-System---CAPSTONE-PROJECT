@@ -1,0 +1,16 @@
+package com.infinity.applicationservice.feign;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.infinity.applicationservice.dtos.UserDto;
+
+@FeignClient("USER-SERVICE")
+public interface UserInterface {
+
+    @GetMapping("/students/{studentId}")
+    public ResponseEntity<UserDto> getStudentById(@PathVariable Integer studentId);
+
+}
