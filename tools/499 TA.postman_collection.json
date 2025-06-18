@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "8e844bab-9108-4219-983e-6b10c5ea71e4",
-		"name": "499 TA",
+		"_postman_id": "7bab768e-ffe9-4b4a-88e6-fc5a9631d4e3",
+		"name": "499 TA Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45669202",
-		"_collection_link": "https://allen-9145341.postman.co/workspace/Allen's-Workspace~5d13c9f6-ede4-4301-81d3-649ab495ae62/collection/45669202-8e844bab-9108-4219-983e-6b10c5ea71e4?action=share&source=collection_link&creator=45669202"
+		"_exporter_id": "36957617"
 	},
 	"item": [
 		{
@@ -500,7 +499,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6MSwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NTAxODYzMjQsImV4cCI6MTc1MDE4OTkyNH0.sr-0sFKsDvSYTUed5XZM4uCBvuZxcFP02LItzSRmoH28ZgPUcLECrGpl4sh3UcOO",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
 									"type": "string"
 								}
 							]
