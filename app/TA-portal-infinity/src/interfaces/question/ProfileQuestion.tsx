@@ -6,8 +6,8 @@ export type QuestionType =
     | "TEXT"
 
 export interface ProfileQuestion{
-    id: number;
-    description: string;
-    answers: ProfileAnswer[];
-    type: QuestionType;
+    id?: number;
+    description?: string;
+    answers?: ProfileAnswer[];
+    type?: QuestionType;
 }

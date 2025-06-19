@@ -33,7 +33,7 @@ public class ProfileController {
     }
 
     @PreAuthorize("hasRole('STUDENT')")
-    @PostMapping("/{studentId}/questions/{questionId}/answer/description")
+    @PostMapping("/{studentId}/questions/{questionId}/answer/text")
     public ResponseEntity<Void> saveFreeText(@PathVariable Long studentId,
                                              @PathVariable Integer questionId,
                                              @RequestBody TextRequestDto req) {

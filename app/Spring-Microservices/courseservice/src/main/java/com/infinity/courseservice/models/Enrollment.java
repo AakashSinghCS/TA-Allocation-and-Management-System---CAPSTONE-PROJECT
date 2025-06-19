@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class CourseEnrollment {
+// @Table(name = "course_enrollment")
+public class Enrollment {
 
     @Id
     @GeneratedValue
@@ -20,14 +21,14 @@ public class CourseEnrollment {
     private Long studentId;
 
     @ManyToOne
-    @JoinColumn(name = "course", nullable = false)
-    private Course course; 
+    @JoinColumn(name = "section_id", nullable = false)
+    private Section section; 
 
     private boolean hasCompleted;
 
-    public CourseEnrollment(Long studentId, Course course, boolean hasCompleted) {
+    public Enrollment(Long studentId, Section section, boolean hasCompleted) {
         this.studentId = studentId;
-        this.course = course;
+        this.section = section;
         this.hasCompleted = hasCompleted;
     }
 }
