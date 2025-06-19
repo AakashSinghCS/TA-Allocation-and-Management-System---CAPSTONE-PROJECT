@@ -10,6 +10,7 @@ import com.infinity.applicationservice.dtos.ApplicationDto;
 import com.infinity.applicationservice.dtos.ApplicationRequest;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
+import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
@@ -22,9 +23,13 @@ import lombok.RequiredArgsConstructor;
 public class ApplicationService {
     
     private final ApplicationRepository applicationRepository;
-    //private final UserInterface userInterface;
 
-    public ApplicationDto apply(ApplicationRequest req, Long userIdFromHeader, List<String> headerRoles) {
+    public ApplicationDto submitApplication(ApplicationRequest req, Long userIdFromHeader, List<String> headerRoles) {
+        int year = LocalDate.now().getYear();
+
+        if (applicationRepository.existsByStudentIdAndYear(userIdFromHeader, year)) {
+            throw new BadRequestException("You have already submitted an application for this year.");
+        }
         Application application = new Application(userIdFromHeader, req.preferences(), req.wantRemote(),
                 req.wantWorkingHours());
         application = applicationRepository.save(application);
@@ -37,10 +42,8 @@ public class ApplicationService {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
         }
-        if (!applicationRepository.existsByStudentIdAndYear(studentId, year)) {
-            throw new NotFoundException("Application with that student id and year doesn't exist");
-        }
-        Application application = applicationRepository.getByStudentIdAndYear(studentId, year);
+        Application application = applicationRepository.findByStudentIdAndYear(studentId, year)
+                    .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
         List<Subject> preferences = filterPreferences(application);
         return new ApplicationDto(application.getStudentId(), preferences, application.isWantRemote(),
                 application.getWantWorkingHours(), application.getSubmittedAt());
@@ -52,20 +55,26 @@ public class ApplicationService {
             throw new AuthorizationException("Not allowed");
         }
         if (!applicationRepository.existsByStudentIdAndYear(studentId, LocalDate.now().getYear())) {
-            throw new NotFoundException("Application with student id " + studentId + " doesn't exist");
+            throw new NotFoundException("Application with that student id and year doesn't exist");
         }
-        applicationRepository.existsByStudentIdAndYear(studentId, LocalDate.now().getYear());
+        applicationRepository.deleteByStudentIdAndYear(studentId, LocalDate.now().getYear());
         return "Application deleted";
     }
 
-    public ApplicationDto updateApplication(Long studentId, Long userIdFromHeader, List<String> headerRoles) {
+    @Transactional
+    public ApplicationDto updateApplication(ApplicationRequest req, Long studentId, Long userIdFromHeader, List<String> headerRoles) {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
         }
-        if (!applicationRepository.existsByStudentIdAndYear(studentId, LocalDate.now().getYear())) {
-            throw new NotFoundException("Application with student id " + studentId + " doesn't exist");
-        }
-        Application application = applicationRepository.getByStudentIdAndYear(studentId, LocalDate.now().getYear());
+        int year = LocalDate.now().getYear();
+
+        Application application = applicationRepository
+                .findByStudentIdAndYear(studentId, year)
+                .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
+        application.setSubjectPreferences(req);
+        application.setWantRemote(req.wantRemote());
+        application.setWantWorkingHours(req.wantWorkingHours());
+        applicationRepository.save(application);
         List<Subject> preferences = filterPreferences(application);
         return new ApplicationDto(application.getStudentId(), preferences, application.isWantRemote(),
                 application.getWantWorkingHours(), application.getSubmittedAt());

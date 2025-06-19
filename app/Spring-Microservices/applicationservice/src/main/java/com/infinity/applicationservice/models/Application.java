@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.infinity.applicationservice.dtos.ApplicationRequest;
 import com.infinity.applicationservice.enums.Subject;
 
 import jakarta.persistence.CascadeType;
@@ -78,6 +79,13 @@ public class Application {
         this.wantWorkingHours = wantWorkingHours;
         this.isAccepted = false;
         this.year = LocalDate.now().getYear();
-    }    
+    }
+    
+    public void setSubjectPreferences(ApplicationRequest req){
+        List<Subject> preferences = req.preferences();
+        this.setSubjectPreference1(preferences.size() > 0 ? preferences.get(0) : null);
+        this.setSubjectPreference2(preferences.size() > 1 ? preferences.get(1) : null);
+        this.setSubjectPreference3(preferences.size() > 2 ? preferences.get(2) : null);
+    }
 
 }
