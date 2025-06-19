@@ -1149,3 +1149,53 @@ The integration with the backend is still waiting.
 - preferences have to be ranked. profile must show course preferences.
 - Create ta-profile question creating page and page where student answers.
 - sectionCard has to show grade and classAvg for students.
+
+
+## Wednesday 6/18 (6/18~6/20)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June18.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile Questions Answers
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#240](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/240)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+This morning, we discussed about the project. We decided to create a new table called Qualification to show the instructors needs for lab skill and the student's personal skills.
+Therefore, it followed that I would carry out doing the ProfileQuestionAnswers as planned. It will be for a "general" purpose and not for any other purpose such as instructor needs.
+I created the Student's and the coordinator's perspective of the questions and answers. 
+Tommorrow I will integrate the backend to it, because this happens to be one of the few features that actually has a backend so far.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- CSV- upload and export of project
+- visual calendar in ta profile. Maybe in instructor profile too. This will have to be discussed first with teammates because we have not imported the library concerning this yet.
+- any other feature sets we have not completed.
