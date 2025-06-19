@@ -2,6 +2,7 @@ package com.infinity.applicationservice.models;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -81,11 +82,16 @@ public class Application {
         this.year = LocalDate.now().getYear();
     }
     
-    public void setSubjectPreferences(ApplicationRequest req){
+    public void setSubjectPreferences(ApplicationRequest req) {
         List<Subject> preferences = req.preferences();
         this.setSubjectPreference1(preferences.size() > 0 ? preferences.get(0) : null);
         this.setSubjectPreference2(preferences.size() > 1 ? preferences.get(1) : null);
         this.setSubjectPreference3(preferences.size() > 2 ? preferences.get(2) : null);
+    }
+    
+    public List<Subject> getSubjectPreferences() { 
+        return Arrays.asList(this.getSubjectPreference1(), this.getSubjectPreference2(),
+                this.getSubjectPreference3());
     }
 
 }

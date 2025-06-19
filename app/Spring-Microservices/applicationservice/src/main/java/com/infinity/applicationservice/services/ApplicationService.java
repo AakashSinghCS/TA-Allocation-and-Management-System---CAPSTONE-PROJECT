@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ApplicationService {
-    
+
     private final ApplicationRepository applicationRepository;
 
     public ApplicationDto submitApplication(ApplicationRequest req, Long userIdFromHeader, List<String> headerRoles) {
@@ -38,12 +38,13 @@ public class ApplicationService {
                 application.getWantWorkingHours(), application.getSubmittedAt());
     }
 
-    public ApplicationDto getApplication(Long studentId, Integer year, Long userIdFromHeader, List<String> headerRoles) {
+    public ApplicationDto getApplication(Long studentId, Integer year, Long userIdFromHeader,
+            List<String> headerRoles) {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
         }
         Application application = applicationRepository.findByStudentIdAndYear(studentId, year)
-                    .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
+                .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
         List<Subject> preferences = filterPreferences(application);
         return new ApplicationDto(application.getStudentId(), preferences, application.isWantRemote(),
                 application.getWantWorkingHours(), application.getSubmittedAt());
@@ -62,7 +63,8 @@ public class ApplicationService {
     }
 
     @Transactional
-    public ApplicationDto updateApplication(ApplicationRequest req, Long studentId, Long userIdFromHeader, List<String> headerRoles) {
+    public ApplicationDto updateApplication(ApplicationRequest req, Long studentId, Long userIdFromHeader,
+            List<String> headerRoles) {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
         }
@@ -86,6 +88,26 @@ public class ApplicationService {
                 application.getSubjectPreference2(),
                 application.getSubjectPreference3()).stream()
                 .filter(s -> s != null)
+                .toList();
+    }
+
+    public List<ApplicationDto> getAllApplicationsByStudentId(Long studentId, Long userIdFromHeader,
+            List<String> headerRoles) {
+        if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
+            throw new AuthorizationException("Not allowed");
+        }
+        List<Application> applications = applicationRepository.findAllByStudentId(studentId)
+                .orElseThrow(() -> new NotFoundException("No applications exist for this user"));
+        return applications.stream()
+                .map(app -> {
+                    List<Subject> preferences = filterPreferences(app);
+                    return new ApplicationDto(
+                            app.getStudentId(),
+                            preferences,
+                            app.isWantRemote(),
+                            app.getWantWorkingHours(),
+                            app.getSubmittedAt());
+                })
                 .toList();
     }
 }

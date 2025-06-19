@@ -20,6 +20,8 @@ import com.infinity.applicationservice.services.ApplicationService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -61,4 +63,12 @@ public class ApplicationController {
             @RequestHeader("X-User-Roles") List<String> roles) {
         return ResponseEntity.ok(applicationService.deleteApplication(studentId, requesterId, roles));
     }
+
+    @GetMapping("/getAll/{studentId}")
+    public ResponseEntity<List<ApplicationDto>> getAllApplicationsByStudentId(@PathVariable Long studentId,
+            @RequestHeader("X-User-Id") Long requesterId,
+            @RequestHeader("X-User-Roles") List<String> roles) {
+        return ResponseEntity.ok(applicationService.getAllApplicationsByStudentId(studentId, requesterId, roles));
+    }
+    
 }

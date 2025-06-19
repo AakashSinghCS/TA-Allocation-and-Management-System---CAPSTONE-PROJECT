@@ -1,5 +1,6 @@
 package com.infinity.applicationservice.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +16,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>{
     boolean existsByStudentIdAndYear(Long studentId, Integer year);
 
     Optional<Application> findByStudentIdAndYear(Long studentId, Integer year);
+
+    Optional<List<Application>> findAllByStudentId(Long studentId);
     
 }
