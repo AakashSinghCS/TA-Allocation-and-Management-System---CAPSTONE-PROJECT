@@ -1,3 +1,104 @@
+## Monday (June 13-16)
+
+### Timesheet
+Clockify report
+![alt text](./clockify_images/clockify_weekly_log_2025-06-13_06-16_seiya.png)
+
+### Current Tasks (Provide sufficient detail)
+#1: Implement filter component and pass selected parameters to backend API (frontend side)
+
+### Progress Update (since June 5, 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>Implement filter component and pass selected parameters to backend API (frontend side)
+        </td>
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+My primary goal for this cycle was to make the Course Management filters functional on the frontend and ensure the selected parameters reach the backend endpoint.
+
+What was done:
+* Completed the filter UI component and made it capture user input and send requests to the API in the correct format.
+* Aligned verbally with the backend side on the endpoint URL and request/response schema
+
+
+What was not done:
+* Could not integrate the frontend with the backend because my database setting was still incomplete
+* Implementing full role-based access control so only Coordinator users can access the page has been deferred until after integration.
+* End-to-end tests and UI bug fixes remain unstarted because they depend on the integration
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Complete frontend–backend integration for the Course Management page and confirm successful data exchange.
+* Begin implementing role-based access control so only Coordinator users can access the page.
+
+
+## Thursday (June 10-12)
+
+### Timesheet
+Clockify report
+![alt text](./clockify_images/clockify_weekly_log_2025-06-10_06-12_seiya.png)
+
+### Current Tasks (Provide sufficient detail)
+* #1: Finalize the UI for the Course Management page.
+* #2: Connect the Course Management page frontend to the backend API.
+
+### Progress Update (since June 5, 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>#1: Update Course Management UI (fix filters, adjust layout, split page)
+        </td>
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <td>#2: Create function to send data to the API
+        </td>
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <td>#3: Integrate Course Management Frontend with Backend
+        </td>
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+My primary goal for this cycle was to complete the planned UI overhaul and establish the foundation for backend integration. While full integration is still In Progress, I successfully delivered the core UI updates and initial backend setup.
+
+What was done:
+* Completed the UI overhaul on schedule, improving both appearance and usability.
+* Implemented preparatory work for backend connectivity, including API scaffolding.
+
+What was not done:
+* Integration between the frontend and backend.
+* Restricting page access so that only users logged in as Coordinator can view this page.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Complete the full frontend and backend integration for the Course Management page.
+* Implement role-based access control so that only users logged in as Coordinator can access this page
+* Do testing of the features and functionality.
+* Address and fix any bugs or remaining UI issues.
+
 ## Monday (June 6-9)
 
 ### Timesheet
