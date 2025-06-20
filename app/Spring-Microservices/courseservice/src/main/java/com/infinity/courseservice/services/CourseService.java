@@ -1,17 +1,29 @@
 package com.infinity.courseservice.services;
 
+import java.time.LocalTime;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.infinity.courseservice.dtos.CourseDto;
+import com.infinity.courseservice.dtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseRequest;
-import com.infinity.courseservice.dtos.UserDto;
+import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
+import com.infinity.courseservice.dtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionScheduleDto;
+import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
+import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.SectionSchedule;
 import com.infinity.courseservice.repositories.CourseRepository;
+import com.infinity.courseservice.repositories.SectionRepository;
+import com.infinity.courseservice.repositories.SectionScheduleRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -21,32 +33,75 @@ import lombok.RequiredArgsConstructor;
 public class CourseService {
 
     private final CourseRepository courseRepository;
+    private final SectionRepository sectionRepository;
+    private final SectionScheduleRepository sectionScheduleRepository;
     private final UserInterface userInterface;
-    private final EnrollmentService enrollmentService;
+    // private final EnrollmentService enrollmentService;
 
+    @Transactional
     public CourseDto addCourse(CourseRequest request) {
-        Course course = new Course(request.subject(), request.courseNum());
-        courseRepository.save(course);
-        return new CourseDto(course.getSubject(), course.getCourseNum());
+        Course course = new Course(request.deptCode(), request.name(), request.courseNum());
+        try {
+            courseRepository.save(course);
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("Course already exists" + ex);
+        }
+        
+        return new CourseDto(course.getDeptCode(), course.getName(), course.getCourseNum());
+    }
+
+    @Transactional
+    public SectionDto addSection(Long courseId, CourseRequest request) {
+        Course course = courseRepository.findById(courseId)
+                        .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+        
+        Section section = new Section(request.term(), request.section(), request.type(), course);
+        try {
+            sectionRepository.save(section);
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("Section already exists" + ex);
+        }
+        
+        return new SectionDto(section.getTerm(), section.getSection(), section.getType(), section.getCourse().getId());
+    }
+
+    @Transactional
+    public SectionScheduleDto addSectionSchedule(Long secionId, CourseRequest request) {
+        Section section = sectionRepository.findById(secionId)
+                        .orElseThrow(() -> new EntityNotFoundException("section not found"));
+        LocalTime startTime = request.startTime() != null ? LocalTime.parse(request.startTime()) : null;
+        LocalTime endTime = request.endTime() != null ? LocalTime.parse(request.endTime()) : null;
+        SectionSchedule sectionSchedule = new SectionSchedule(request.day(), startTime, endTime, section);
+        try {
+            sectionScheduleRepository.save(sectionSchedule);
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("Schedule already exists" + ex);
+        }
+        return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(), sectionSchedule.getEndTime(), sectionSchedule.getSection().getId());
     }
     
     public CourseDto findCourse(Long id) {
         Course course = courseRepository.findById(id).orElseThrow(() -> new NotFoundException("Course with ID " + id + " not found"));
-        return new CourseDto(course.getSubject(), course.getCourseNum());
+        return new CourseDto(course.getDeptCode(), course.getName(), course.getCourseNum());
     }
 
     public List<CourseDto> findCoursesByIds(List<Long> ids) {
         List<Course> courses = courseRepository.findAllById(ids);
-        return courses.stream().map(entry -> new CourseDto(entry.getSubject(), entry.getCourseNum())).toList();
+        return courses.stream().map(entry -> new CourseDto(entry.getDeptCode(), entry.getName(), entry.getCourseNum())).toList();
     }
 
-    public List<CourseDto> getEnrolledCourses(Integer studentId) {
-        UserDto user = userInterface.getStudentById(studentId).getBody();
-        if(user == null){
-            throw new NotFoundException("User with student number " + studentId + " not found");
-        }
-        List<Long> courseIds = enrollmentService.getCourseEnrollments(user.id());
-        return findCoursesByIds(courseIds);
+    public List<CourseSectionScheduleDto> filterCourses(CourseFilterRequest filter) {
+        return courseRepository.courseFilter(filter.deptCode(), filter.courseNum(), filter.name(), filter.section(), filter.term(), filter.type(), filter.day(), filter.startTime(), filter.endTime());
     }
+
+
+    // public List<CourseDto> getEnrolledCourses(Integer studentId) {
+    //     UserDto user = userInterface.getStudentById(studentId).getBody();
+    //     if(user == null){
+    //         throw new NotFoundException("User with student number " + studentId + " not found");
+    //     }
+    //     List<Long> courseIds = enrollmentService.getCourseEnrollments(user.id());
+    //     return findCoursesByIds(courseIds);
+    // }
     
 }
