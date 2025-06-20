@@ -1199,3 +1199,55 @@ Tommorrow I will integrate the backend to it, because this happens to be one of 
 - CSV- upload and export of project
 - visual calendar in ta profile. Maybe in instructor profile too. This will have to be discussed first with teammates because we have not imported the library concerning this yet.
 - any other feature sets we have not completed.
+
+## Thursday 6/19 (6/18~6/20)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June19.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile Questions Answers
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#240](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/240)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I integrated the backend with the frontend for the ProfileQuestionsAnswers. Anything related to the Profile Questions and Answers should work now in terms of both the backend and frontend.
+I heavily modified the backend espescially concerning the FREE_TEXT situations and the update situations.
+It is possibly the first feature in the system that is fully integrated with the backend. The tests also pass.
+The backend integration for ProfileQuestions was particularly tricky because there were so many edge cases with Student updates and coordinator updates. the FREE_TEXT code in the backend wasn't quite as desired as well. It constantly made new rows in the backend for ProfileAnswers when it's better to have one placeholder row which the User would refer to when saving their answers in the intermediate table. Thus, there are some complicated situations.
+Tommorrow, I will do some refactoring and possibly delete some redundant code. There are two PRs and I will review at least one of them.
+If that all gets done within 4 hours or 5, I may perhaps start on a task for the next cycle.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- CSV- upload and export of project
+- visual calendar in ta profile. Maybe in instructor profile too. This will have to be discussed first with teammates because we have not imported the library concerning this yet.
+- any other feature sets we have not completed.
+- qualifications page
