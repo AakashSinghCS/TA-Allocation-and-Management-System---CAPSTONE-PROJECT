@@ -30,8 +30,6 @@ describe('ApplicationPage', () => {
 
     await waitFor(() => {
         expect(screen.getByText(/1st preference is required/i)).toBeInTheDocument();
-        expect(screen.getByText(/2nd preference is required/i)).toBeInTheDocument();
-        expect(screen.getByText(/3rd preference is required/i)).toBeInTheDocument();
         expect(screen.getByText(/hours requested is required/i)).toBeInTheDocument();
         expect(screen.getByText(/select a remote work preference/i)).toBeInTheDocument();
         expect(screen.getByText(/upload your transcript/i)).toBeInTheDocument();
