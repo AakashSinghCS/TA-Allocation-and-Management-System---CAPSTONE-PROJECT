@@ -579,3 +579,675 @@ Tommorrow, I should continue working on the course details.
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
 
+## Friday 6/06 (5/28~6/6)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June06.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue #168
+  * #3: issue #175
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+It was quite difficult to do test-first coding. 
+The code that I wrote today was naturally not something that required testing first.
+What I wrote was mock- API calls and a container of the TAprofilePage. Then I tried to write first the integration test of the TAprofilePage and the API calls. It's very simple, and while it did work and pass, I'm not sure if I did it correctly.
+I basically structured everything today. Made lots of interfaces, mock objects, and api calls which still use mock objects as a return value.
+That was issue number 175.
+Issue number 168 was requested some changes. I made some components reusable.
+Today, we also had a meeting with Scott and each other. Made some more edits to the ER diagram.
+
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
+
+## Saturday 6/07 (6/7~6/13)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June07.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue #175
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today, I worked on the issue 175. It was an issue about the API calls. I set up all the template API calls. they don't actually connect to the backend yet, but I restructured them and made everything organized. I made a lot of interfaces too.
+I'm hoping the others will look at my work as an examplar to write the code for their side of the business.
+One thing that didn't go well was that at one point the website would keep giving me a blank white page. The console log through DevTools was giving me the reason why. It took me a while to figure that out - GPT O3 engine helped me think about taking a look at that, and it got fixed. It was because in one of my files, I was importing something that didn't exist ( the name had changed)
+
+The process is going well, But I'm waiting for the others to show some of their work.
+
+I also talked with Seiya today to tell him how I think he should work on his branch after the changes I made today.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
+
+
+## Monday 6/09 (6/7~6/13)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June09.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue #191
+  * #3: review other's PRs
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I spent about 3 hours reviewing other's PRs.
+I spent the rest of the time working on my PR-191. It was mostly to improve the aesthetics of the TA profile page.
+It wasnt necessary, but I made it work on smaller screens as well.
+I spent a long time on the css and layout of the html and etc.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
+
+
+## Tuesday 6/10 (6/7~6/13)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June10.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue #191
+  * #3: project discussion
+  * #4: issue #204
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I spent over 3 hours just discussing with team mates. 2 hours we met all together and we discussed about the section browsing page mainly. 1 hour I had to talk to Aakash about the response he was sending me back.
+What didn't go well was that Aakash wasn't willing to believe that the backend should be sending the frontend the response I was asking him to send. Fortunately, Alex concurred with me and Aakash seems to be on it now.
+So I could only spend like maximum 3 hours on actual development today, and I felt like I didn't make much progress in terms of coding.
+Tommorrow I hope to finish the profilequestions frontend, make the section containers consider overflow. And perhaps consider calling endpoints now, if it's possible.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
+
+
+## Wednesday 6/11 (6/7~6/13)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June11.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue #191 frontend aesthetics
+  * #3: issue #206 backend getStudentbyId
+  * #4: issue #204 frontend comparer and profilequestions
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 4
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I fixed some minor problems in issue #191 that had to do with the text-ellipsis.
+Then I worked on  the backend concerning findbyStudentId. I made sure to include tests.
+Then I worked on the frontend. I decided to create a small app that compares the course needs with the courses the ta takes/has taken/allocation history.
+Tommorrow, I will focus on refactoring in issue 204. and hopefully integrate backend to the frontend using api endpoints to some extent.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
+
+## Thursday 6/12 (6/7~6/13)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June12.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue #204 frontend comparer and profilequestions
+  * #3: review #210 and #188
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+#204 is complete. I completed the frontend side of the comparer. The comparer can now consider the course needs and then display what courses are missing for the ta. I fixed the max-height of sectionColumns. I spent over 3 hours just refactoring. I created GenericAPIcontainer which now takes in a fetch function and a JSX element and returns the JSX element with the fetch function's data inside of it. The profile questions section is now complete. You can now see the list of questions and answers. The tests for all the components are complete.
+#188 was Aakash's PR. I checked the result of the endpoint I was looking forward to which was the endpoint that gives me the data of the student's questions. it worked and I approved it after checking other stuff.
+#210 was Mandeep's PR. I noticed that he has now made it so that the JWTs are stored in the localStorage. I expect him to implement the authentication for the rest of the pages using that JWT now.
+Tommorrow, I will work a new PR that creates the Course backend. I will try to make Aakash's endpoint work with the frontend. I will be discussing with teammates tommorrow. I need to add more filters to the searchbar in Comparer.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, our team will implement the instructor features and the TA applications. We have not divided our roles yet. 
+
+
+
+## Friday 6/13 (6/13~6/17)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June13.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: TA profile frontend 
+  * #2: issue [#204](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/204) frontend comparer and profilequestions
+  * #3: Reviewed other's PRs
+  * #4: instructor profile frontend
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 4
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today was mostly about project discussion. I worked a little bit more on [UBCO-COSC499-S2025/team-10-capstone-infinity#204](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/204) because the previous PR issue #191 is still not merged to develop. I created the Allocations table and created a test for QuestionAnswers. I will work on the instructor profile tommorrow. 
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the instructor profile. The instructor profile will not be done in this cycle. It will be done until the cycle after this one. I will probably be working on the Comparer. But because the Comparer is already done in the ta-profile, I believe I will have time to work on some other part of the project as well. I think I may consider looking at Seiya's code and refactoring it and integrating it more to our project if there's anything offlandish.
+
+## Saturday 6/14 (6/13~6/17)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June14.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: instructor profile frontend 
+  * #2: issue [UBCO-COSC499-S2025/team-10-capstone-infinity#113](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/113)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I created the instructor profile. A lot of it was copy and paste from the Taprofile. Of course there were modifications. 
+Therefore, I was able to get most of it done today, including the tests.
+It's unforunate my teammates are not reviewing my [UBCO-COSC499-S2025/team-10-capstone-infinity#191](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/191) PR. It has been over 4 days since I put it up. A huge refactor concerning the code in that issue happens in #204.
+I've been a litle bit setback and less motivated due to a clash with a teammate, whom I won't name. It was my fault, as I wasn't careful with my words. I intended differently. He also isn't the kind of person to quickly say how he feels about things.
+Next time I work on the project, I will try to integrate endpoints I can integrate, create integration test for intstructor Profile page, add a filter button to the searchbar in TAprofile, and review others work.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the instructor profile. The instructor profile will not be done in this cycle. It will be done until the cycle after this one. I will probably be working on the Comparer. But because the Comparer is already done in the ta-profile, I believe I will have time to work on some other part of the project as well. I think I may consider looking at Seiya's code and refactoring it and integrating it more to our project if there's anything offlandish.
+
+## Monday 6/16 (6/13~6/17)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June16.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: instructor profile frontend 
+  * #2: issue [UBCO-COSC499-S2025/team-10-capstone-infinity#113](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/113)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#223](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/223)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+     <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today, I further cleaned up the aesthetics of the instructor page and comparer. I heeded the feedback of my teammate and made some user interfaces more approachable for the comparer in both the instructor page and the ta page.
+I worked on the continuous integration of our project. I made sure that github runs the tests commands in the same way we do locally.
+It was a smooth process, and I faced no difficulties.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- show orange when allocated/numberofhours is greater than 1 (show overbooking)
+- student can update profile with previous experience
+- need student to show skills/qualitifcations. (small description)
+- preferences have to be ranked. profile must show course preferences.
+- Create ta-profile question creating page and page where student answers.
+- sectionCard has to show grade and classAvg for students.
+
+## Tuesday 6/17 (6/13~6/17)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June17.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: instructor profile frontend 
+  * #2: issue [UBCO-COSC499-S2025/team-10-capstone-infinity#113](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/113)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#228](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/228)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+     <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I focused on revamping the TaProfile and InstructorPage design. It was easy to do since I coded the code such that restructuring and refactoring is easy. I added tabs to each profile so that the components are better organized and navigation is still easy.
+I reviewed PR #233, which is Mandeep's PR.
+Today we had a mini-presentation, and this affected my teammates opinion of my work. But I hope I have fixed it to their satisfaction, and I now agree it looks better this way.
+The integration with the backend is still waiting.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- student can update profile with previous experience
+- need student to show skills/qualitifcations. (small description)
+- preferences have to be ranked. profile must show course preferences.
+- Create ta-profile question creating page and page where student answers.
+- sectionCard has to show grade and classAvg for students.
+
+
+## Wednesday 6/18 (6/18~6/20)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June18.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile Questions Answers
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#240](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/240)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+This morning, we discussed about the project. We decided to create a new table called Qualification to show the instructors needs for lab skill and the student's personal skills.
+Therefore, it followed that I would carry out doing the ProfileQuestionAnswers as planned. It will be for a "general" purpose and not for any other purpose such as instructor needs.
+I created the Student's and the coordinator's perspective of the questions and answers. 
+Tommorrow I will integrate the backend to it, because this happens to be one of the few features that actually has a backend so far.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- CSV- upload and export of project
+- visual calendar in ta profile. Maybe in instructor profile too. This will have to be discussed first with teammates because we have not imported the library concerning this yet.
+- any other feature sets we have not completed.
+
+## Thursday 6/19 (6/18~6/20)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June19.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile Questions Answers
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#240](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/240)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I integrated the backend with the frontend for the ProfileQuestionsAnswers. Anything related to the Profile Questions and Answers should work now in terms of both the backend and frontend.
+I heavily modified the backend espescially concerning the FREE_TEXT situations and the update situations.
+It is possibly the first feature in the system that is fully integrated with the backend. The tests also pass.
+The backend integration for ProfileQuestions was particularly tricky because there were so many edge cases with Student updates and coordinator updates. the FREE_TEXT code in the backend wasn't quite as desired as well. It constantly made new rows in the backend for ProfileAnswers when it's better to have one placeholder row which the User would refer to when saving their answers in the intermediate table. Thus, there are some complicated situations.
+Tommorrow, I will do some refactoring and possibly delete some redundant code. There are two PRs and I will review at least one of them.
+If that all gets done within 4 hours or 5, I may perhaps start on a task for the next cycle.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- CSV- upload and export of project
+- visual calendar in ta profile. Maybe in instructor profile too. This will have to be discussed first with teammates because we have not imported the library concerning this yet.
+- any other feature sets we have not completed.
+- qualifications page
