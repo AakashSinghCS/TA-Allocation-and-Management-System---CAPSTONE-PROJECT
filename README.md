@@ -11,7 +11,7 @@ More information on using Docker and the general files for setup can be found [h
 ## Docker instructions/tips
  - when installing a new library using npm install, enter the container shell, and then run npm install `<name of library>`
  - you will probably see a red underline when using the the new package that you installed. Outside of the shell, on your local terminal, after cd-ing to app/TA-portal-infinity, run npm install. Then the local node_modules will be updated too, and the red underline will disappear.
- - If you think frontend container is still not running because of node_modules, try running this: `rm -rf node_modules package-lock.json`,`docker compose down -v`, ` docker compose build --no-cache `, `docker compose up` that removes any old node_modules locally and on the docker and rebuilds it.
+ - If you think frontend container is still not running because of node_modules, try running this: `rm -rf node_modules package-lock.json`,`docker compose down -v`, ` docker compose build --no-cache `, `docker compose up` that removes any old node_modules locally and on the docker and rebuilds it. Replace `docker compose up` with `docker compose -f compose.combined.yaml up` to have a containerized backend.
 
 
 ## Vitest
@@ -74,6 +74,14 @@ Inter service communication is done using [OpenFeign](https://spring.io/projects
 Testing is done using [JUnit](https://junit.org/junit5/) and [Mockito](https://site.mockito.org/) is a nice library for mocking database and object calls for our unit testing, and coverage is run with [Jacoco](https://www.eclemma.org/jacoco/). Go to the service you are trying to get coverage for and run `mvn test jacoco:report`. You can run individual unit tests through the java test runner extension, but that won't give coverage. Once the tests pass there, you can then run the Jacoco command to get coverage. If you install the Coverage Gutters extension and set it so `watch` and `show coverage` in the command pallette you can then see which lines are covered and which aren't. Jacoco also creates an html if you just want to see it there found in `target/site/jacoco/index.html`.
 
 Eventually, we can use `@SpringBootTest` for integration tests with an in-memory H2 database that can start for the tests and destroy itself after. Test service logic and utilities with Junit and Mockito, and test controllers with HTTP mappings with `@WebMvcTest` and MockMvc.
+
+## Auth
+
+Authentication is done using JWT's through the [jjwt](https://github.com/jwtk/jjwt) library to manage them. At the moment, the gateway service has a filter that checks if the JWT is valid before allowing any routes through, except for auth. On login in the user service, a JWT is created with the users email as the subject, and with claims of their role and id. The gateway when it parses this JWT extracts these and puts them into the headers to be forwarded downstream, which means that if the token is valid you'll know their privileges and id to do functions.
+
+I've commented out the part of assigning an expiration time, since it means that in the postman calls the JWT used for authentication would need to be changed constantly. This also means that if a user has their account deleted, they can still access the system if they have their old JWT. What this means is that in general for sensitive operations we should make sure the user is available, and once more of the core functionalities of the system are working, it would be good to re-introduce the time expiry for JWT's as well as using refresh tokens to account for users being deleted from the system.
+
+Each service will need spring security with JWT auth filter to handle granted authorities from the headers, and the method security provides the use of annotations to specify which role can do what function. Finally the security config just specifies that the JWT filter has to provide auth for anything to work in that service.
 
 
 

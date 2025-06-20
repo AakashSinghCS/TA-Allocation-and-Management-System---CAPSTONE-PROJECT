@@ -449,3 +449,338 @@ This cycle was primarily focused on the technical setup of the frontend and back
 
 ## Next Cycle Goals  
 - **#1:** Login frontend part
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 5 June, Thursday 3.13PM–3:55PM   & 10:38PM-11:45PM
+
+### Timesheet
+
+**Clockify:**  ![alt text](image-20.png)
+## Current Tasks  
+- **#1:** Weekly Team logs
+ 
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       |Weekly log completed for team, prepared presentation for meeting on firday    | Completed  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+I finalized the team log and prepared a presentation for Friday’s meeting. These tasks helped align our work, clarified progress, and ensured we’re ready to present confidently.
+
+### Retrospective  
+The log and presentation were completed on schedule. While effective, we could enhance preparation by involving more team members earlier and updating logs more frequently to reduce last-minute effort.
+
+## Next Cycle Goals  
+- **#1:** Login frontend part
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 6 June, Friday 10.10AM–1:17PM 
+
+**Clockify:** ![alt text](image-21.png)
+## Current Tasks  
+- **#1:** Team meeting and helped seiya in setup backend and frontend 
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       | Team meeting and helped seiya in setup backend and frontend                 | Completed  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+Supported Seiya with backend and frontend setup, ensuring Spring Boot and React were correctly configured. The collaboration improved team productivity and deepened understanding of full-stack project structure and integration.
+
+### Retrospective  
+The setup went smoothly and teamwork was effective. Future setups can be faster with clearer step-by-step guides and pre-documented environment requirements to help team members avoid common configuration issues.
+
+## Next Cycle Goals  
+- **#1:** Header and Footer Components
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 8 June, Sunday 10.10AM–1:17PM 
+
+**Clockify:** ![alt text](image-22.png)
+## Current Tasks  
+- **#1:** Coded header and footer as reusable components in react with testing 
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       |     Coded header and footer as reusable components in react with testing          | Completed  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+I developed the header and footer as reusable components in React to maintain a consistent layout throughout the application. I structured them using functional components and styled them with Tailwind CSS. To ensure these components worked reliably, I also wrote unit tests to verify their rendering and behavior. Creating these reusable elements not only streamlined future development but also helped establish a cleaner codebase. This task enhanced my understanding of component reusability, modular design, and test-driven development in a React environment.
+
+### Retrospective  
+While coding the header and footer components, I ensured they were modular and reusable, which will save time during future UI development. Writing tests early gave me confidence in their stability. However, I could have involved teammates earlier for feedback on design consistency and accessibility. In future UI work, I plan to create shared style guidelines and documentation to support consistent design patterns. Overall, this task was productive and contributed significantly to the maintainability of our frontend codebase.
+
+## Next Cycle Goals  
+- **#1:** Login frontend page
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 8 June, Sunday 10.10AM–1:17PM 
+
+**Clockify:** ![alt text](image-22.png)
+## Current Tasks  
+- **#1:** Login page in react with testing 
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       |        Login page in react with testing                                     | Completed  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+I built the login page using React, focusing on a responsive layout and intuitive user experience. The form includes controlled components for managing user input, and I implemented basic frontend validation for required fields. To ensure stability, I also wrote unit tests verifying correct rendering and input behavior. This task helped reinforce best practices in form handling, state management, and test-driven development, and it contributes to a more reliable and user-friendly authentication process within the application.
+
+### Retrospective  
+The login page was successfully implemented with a clean design and working tests. I ensured the form structure was modular and easily extendable. However, in future iterations, I could improve by adding real-time validation feedback, handling error states more gracefully, and integrating with backend authentication for a complete flow. Involving teammates early for UI/UX feedback and conducting user testing would also help catch design or usability issues early, ensuring the login page meets both functional and accessibility standards.
+
+## Next Cycle Goals  
+- **#1:** Signup Page
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 9 June, Monday 10.10AM–1:17PM 
+
+**Clockify:** ![alt text](image-23.png)
+## Current Tasks  
+- **#1:** Integration of frontend and backend discussed with Alex, Meeting
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       |         Integration of frontend and backend discussed with Alex, Meeting      | Completed  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+I participated in a discussion with Alex to plan the integration of the frontend and backend for our project. We focused on aligning the API endpoints between the React frontend and Spring Boot backend. This meeting clarified how data would flow between components and services, helping us avoid future mismatches. It also gave me a clearer picture of where each part fits into the system, strengthening my understanding of full-stack communication and project structure.
+
+### Retrospective  
+During the meeting with Alex, we discussed the technical steps needed to integrate the React frontend with the Spring Boot backend. The session was informative, but we could have documented the integration plan more clearly for future reference. Creating a shared API contract earlier would help prevent discrepancies. In future meetings, I’ll propose documenting action items and diagrams.
+
+## Next Cycle Goals  
+- **#1:** Signup Page
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 9 June, Monday 1.49PM–3:17PM 
+
+**Clockify:** ![alt text](image-24.png)
+## Current Tasks  
+- **#1:** Nav bar component with tests
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       |        Nav bar component with tests                                           | Completed  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+I developed a responsive and reusable Nav Bar component in React to enhance site navigation and user experience. Using Tailwind CSS, I ensured it fit seamlessly with the existing UI. I also wrote unit tests to verify its structure, links, and behavior across different screen sizes. This work improved my skills in building modular UI components and reinforced the importance of testing in maintaining consistent, error-free functionality as the application evolves.
+
+### Retrospective  
+While building the Nav Bar component, I focused on reusability, responsiveness, and test coverage. The implementation went well, but in hindsight, I could have gathered early feedback from the team to align design preferences and navigation structure. In future component development, I plan to involve peers earlier and document key decisions. 
+
+## Next Cycle Goals  
+- **#1:** Signup Page
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 10 June,Tuesday 10.30AM–1:10PM 
+
+**Clockify:** ![alt text](image-26.png)
+## Current Tasks  
+- **#1:** Team Meeting 
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       |        Team meeting to discuss further plan and helped Seiya in setup         | N/A |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle centered on collaboration and onboarding support. I participated in a productive team meeting where we discussed upcoming plans, clarified responsibilities, and aligned on priorities. Additionally, I assisted Seiya with environment setup issues, which deepened my understanding of the development stack and improved my troubleshooting skills
+
+### Retrospective  
+Helping Seiya set up their environment revealed several configuration issues, mainly due to attempting the setup on a personal home PC rather than their main development machine. This led to unnecessary delays and compatibility problems that could have been avoided.
+
+## Next Cycle Goals  
+- **#1:** Signup Page
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 10 June,Tuesday 4:47PM–8:41PM
+
+**Clockify:** ![alt text](image-26.png)
+## Current Tasks  
+- **#1:** Signup Page
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       |        Designed frontend of the Signup page with testing                        | Completed  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle focused on developing the Signup page frontend. I implemented a clean and responsive design using React and Tailwind CSS, ensuring usability across devices. I also wrote unit tests to validate input handling and form submission behavior.
+
+### Retrospective  
+The Signup page development went smoothly overall. One area for improvement would be earlier peer feedback to refine the UI design and validation logic. Additionally, I noticed that having clearer form validation rules from the start could have reduced rework.
+
+## Next Cycle Goals  
+- **#1:** Integration of frontend and backend Signup
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 10 June,Tuesday 8:41PM–10:41PM
+
+**Clockify:** ![alt text](image-26.png)
+## Current Tasks  
+- **#1:** Integrated the Signup page with backend, including frontend retesting   
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       | Integrated the Signup page with backend, including refrontend testing          | Completed  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle centered on integrating the Signup page with the backend API. I implemented the POST request to send user registration data and ensured the payload matched the backend's expected format. I also verified endpoint connectivity using a basic GET request.
+
+### Retrospective  
+The integration required careful matching of request structures and field names with the backend. Minor issues like mismatched keys and missing headers were encountered but quickly resolved through testing and debugging.
+
+## Next Cycle Goals  
+- **#1:** Integration of frontend and backend Login
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 11 June,Wednesday 1:15PM–3:58PM
+
+**Clockify:** ![alt text](image-28.png)
+## Current Tasks  
+- **#1:** Integrated Login page frontend with backend using appropriate API calls
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       | Integrated Login page frontend with backend using appropriate API calls          | Completed  |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle was focused on integrating the Login page with the backend authentication API. I implemented a POST request to send login credentials and handled the response by storing the JWT token in local storage for session management.
+
+### Retrospective  
+During the integration, attention to detail was required to ensure the request payload and headers matched the backend's expectations. Minor debugging was needed to handle incorrect status codes and token parsing.
+
+## Next Cycle Goals  
+- **#1:** JWT authentication
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 12 June,Thursday 10:50AM–3:27PM
+
+**Clockify:** ![alt text](image-29.png)
+## Current Tasks  
+- **#1:** Implemented JWT authentication
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       | 	Implemented JWT authentication between frontend and backend                  | Completed   |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle was dedicated to implementing JWT-based authentication across the frontend and backend. Upon successful login, the backend issues a JWT token, which is stored in the frontend's local storage. The token is then used to maintain the user’s session and authorize access to protected routes. I also parsed the token to extract user information (like roles and ID) for use in the UI. This task strengthened my understanding of secure authentication flows and token-based session handling.
+
+### Retrospective  
+Integrating JWT authentication required careful attention to token structure, expiration handling, and secure storage. Ensuring consistency in the backend response format and correctly decoding the token on the frontend were key steps. In the future, adding token refresh logic and improving error handling for expired or invalid tokens will be the next priorities to enhance security and user experience.
+
+## Next Cycle Goals  
+- **#1:** JWT authentication completion
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 13 June,Thursday 10:30AM–1:03PM
+
+**Clockify:** ![alt text](image-30.png)
+## Current Tasks  
+- **#1:** Team meeting 
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|------------|  
+| Task 1       | 	Team meeting to discuss feature set and milestone review                  | Completed |  
+ 
+
+## Cycle Goal Review  
+
+### Reflection  
+The team meeting focused on reviewing our current feature set and evaluating progress toward upcoming milestones. We discussed the state of authentication, profile management, and TA application workflows. This session clarified team responsibilities, exposed any blockers, and aligned our next development priorities.
+
+### Retrospective  
+During the meeting, we identified areas needing improvement in coordination and documentation, particularly when integrating frontend components with evolving backend APIs.
+
+## Next Cycle Goals  
+- **#1:** Application and Application status
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 15 June,Sunday 1:08PM–3:52PM & 4:28PM-5:58PM & 8.02AM-10:22PM
+
+**Clockify:** ![alt text](image-31.png)
+## Current Tasks  
+- **#1:** Quiz one prep
+- **#2:** Meeting with Alex and Dup
+- **#3:** Role based routing learning 
+
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|-----------|  
+| Task 1       | 	       Quiz one prep                                                         | Completed |  
+ | Task 2       | 	     Meeting with Alex and Dup                                             | Completed |  
+ | Task 3       | 	     Role based routing learning                                           | Completed |  
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle involved preparing for our first quiz, collaborating through a team meeting with Alex and Dup, and diving into role-based routing for our frontend system.
+
+### Retrospective  
+During the meeting, we identified areas needing improvement in coordination and documentation, particularly when integrating frontend components with evolving backend APIs.
+
+## Next Cycle Goals  
+- **#1:** Application and Application status
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 16 June,Monday 10:11PM–12:19AM & 3:35PM-6:09PM
+
+**Clockify:** ![alt text](image-32.png)
+## Current Tasks  
+- **#1:** Mini Presentation
+- **#2:** Application page
+
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|-----------|  
+| Task 1       | 	    Mini Presentation                                                    | Completed |  
+ | Task 2       | 	     Application page frontend                                           | IN Progress |  
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle focused on two main areas: preparing and delivering a mini presentation, and working on the frontend of the TA application page. 
+The presentation helped improve communication skills and reinforced our understanding of project components. 
+
+### Retrospective  
+The mini presentation was well-received and helped the team articulate progress clearly. For the application page, we encountered some challenges in aligning the frontend design
+
+## Next Cycle Goals  
+- **#1:** Application and Application status
