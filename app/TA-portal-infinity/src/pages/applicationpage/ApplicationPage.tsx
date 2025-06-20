@@ -39,8 +39,6 @@ const ApplicationPage: React.FC = () => {
     const newErrors: { [key: string]: string } = {};
 
     if (!formData.firstPreference) newErrors.firstPreference = '1st preference is required.';
-    if (!formData.secondPreference) newErrors.secondPreference = '2nd preference is required.';
-    if (!formData.thirdPreference) newErrors.thirdPreference = '3rd preference is required.';
     if (!formData.wantWorkingHours) newErrors.wantWorkingHours = 'Hours requested is required.';
     if (!formData.wantRemote) newErrors.wantRemote = 'Select a remote work preference.';
     if (!formData.transcriptFile) newErrors.transcriptFile = 'Upload your transcript.';
