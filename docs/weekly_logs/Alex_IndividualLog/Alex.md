@@ -1,3 +1,37 @@
+## Thursday (June 17-19)
+
+### Timesheet
+Clockify report
+![alt text](./jun17-19.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: CRUD operations for the application objects
+
+### Progress Update (since June 16 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>CRUD operations for application object
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I finished up the rest of the CRUD for applications so that's nice - there were a lot of distractions this week that made this slower, but I'm still happy it got finished.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Discussing with team members today about next steps - I believe that it will be working on CRUD for offers, or maybe adding the admin role as a possible option to coordinators.
+
 ## Monday (June 13-16)
 
 ### Timesheet
