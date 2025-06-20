@@ -1,70 +1,83 @@
-import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
 
-import AboutPage from "../pages/aboutpage/AboutPage";
-import TaProfilePage from "../pages/taprofilepage/TaProfilePage";
-import LoginPage from "../pages/loginPage/LoginPage";
-import ErrorPage from "../pages/errorpage/ErrorPage";
+import { createBrowserRouter, Outlet } from "react-router-dom";
+import App from "../App";
 import PublicLayout from "../components/layout/publicLayout/PublicLayout";
+
+import LoginPage from "../pages/loginPage/LoginPage";
 import SignUpPage from "../pages/signupPage/SignUpPage";
+import ErrorPage from "../pages/errorpage/ErrorPage";
+
+import StudentHomePage from "../pages/student_homepage/StudentHomePage";
 import ApplicationPage from "../pages/applicationpage/ApplicationPage";
-import RoleGuard from "../components/features/roleguard/RoleGuard";
-import StudentHomePage from "../pages/student_homepage/StudentHomePage";  
-import CoordinatorHomePage from "../pages/coordinator_homepage/CoordinatorHomePage";
+
 import InstructorHomePage from "../pages/instructor_homepage/InstructorHomePage";
+import CoordinatorHomePage from "../pages/coordinator_homepage/CoordinatorHomePage";
+import TaProfilePage from "../pages/taprofilepage/TaProfilePage";
+
+import RoleGuard from "../components/features/roleguard/RoleGuard";
+import { UserRole } from "../interfaces/enum/UserRole";
 
 export const router = createBrowserRouter([
   {
-    path: '/user',
+    path: "/user",
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
+      // STUDENT routes
       {
-        path: 'student',
+        path: "student",
         element: (
-          <RoleGuard role="ROLE_STUDENT">
-            <StudentHomePage />
+          <RoleGuard role={UserRole.STUDENT}>
+            <Outlet />
           </RoleGuard>
-        ),children: [
-          { path: 'home', element: <StudentHomePage /> },
-          { path: 'application', element: <ApplicationPage /> },
-          { path: 'error', element: <ErrorPage /> },
+        ),
+        children: [
+          { path: "home", element: <StudentHomePage /> },
+          { path: "application", element: <ApplicationPage /> },
+          { path: "error", element: <ErrorPage /> },
         ],
       },
-      {
-        path: 'instructor',
-        element: (
-          <RoleGuard role="ROLE_INSTRUCTOR">
-            <InstructorHomePage />
-          </RoleGuard>
-        ),children: [
-          { path: 'home', element: <InstructorHomePage /> },
-          { path: 'error', element: <ErrorPage /> },
 
-        ],
-      },
+      // INSTRUCTOR routes
       {
-        path: 'coordinator',
+        path: "instructor",
         element: (
-          <RoleGuard role="ROLE_COORDINATOR">
-            <CoordinatorHomePage />
+          <RoleGuard role={UserRole.INSTRUCTOR}>
+            <Outlet />
           </RoleGuard>
-        ),children: [
-          { path: 'home', element: <CoordinatorHomePage /> },
-          { path: 'taprofile/:studentId', element: <TaProfilePage /> },
-          { path: 'error', element: <ErrorPage /> },
-          { path: '*', element: <ErrorPage /> },
+        ),
+        children: [
+          { path: "home", element: <InstructorHomePage /> },
+          { path: "error", element: <ErrorPage /> },
         ],
       },
-      
+
+      // COORDINATOR routes
+      {
+        path: "coordinator",
+        element: (
+          <RoleGuard role={UserRole.COORDINATOR}>
+            <Outlet />
+          </RoleGuard>
+        ),
+        children: [
+          { path: "home", element: <CoordinatorHomePage /> },
+          { path: "taprofile/:studentId", element: <TaProfilePage /> },
+          { path: "error", element: <ErrorPage /> },
+        ],
+      },
+      { path: "*", element: <ErrorPage /> },
     ],
   },
+
+  // Public (no auth required)
   {
-    path: '/',
+    path: "/",
     element: <PublicLayout />,
     children: [
-      { path: 'login', element: <LoginPage /> },
-      { path: 'signup', element: <SignUpPage /> },
+      { path: "login", element: <LoginPage /> },
+      { path: "signup", element: <SignUpPage /> },
+      { path: "*", element: <ErrorPage /> },
     ],
   },
 ]);
