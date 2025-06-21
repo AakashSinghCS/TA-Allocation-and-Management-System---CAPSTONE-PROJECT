@@ -1,6 +1,7 @@
 package com.infinity.courseservice.dtos;
 
 import java.time.LocalTime;
+import com.infinity.courseservice.enums.*;
 
 public record CourseSectionScheduleDto(
         String deptCode,
@@ -8,7 +9,7 @@ public record CourseSectionScheduleDto(
         String courseNum,
         String section,
         String term,
-        String type,
+        SectionType type,
         String day,
         LocalTime startTime,
         LocalTime endTime

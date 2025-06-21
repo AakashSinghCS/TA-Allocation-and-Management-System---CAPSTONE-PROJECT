@@ -62,7 +62,7 @@ public class CourseService {
             throw new BadRequestException("Section already exists" + ex);
         }
         
-        return new SectionDto(section.getTerm(), section.getSection(), section.getType(), section.getCourse().getId());
+        return new SectionDto(section.getId(),section.getTerm(), section.getSection(), section.getType(), new CourseDto(course.getDeptCode(),course.getName(),course.getCourseNum()));
     }
 
     @Transactional
@@ -92,6 +92,10 @@ public class CourseService {
 
     public List<CourseSectionScheduleDto> filterCourses(CourseFilterRequest filter) {
         return courseRepository.courseFilter(filter.deptCode(), filter.courseNum(), filter.name(), filter.section(), filter.term(), filter.type(), filter.day(), filter.startTime(), filter.endTime());
+    }
+
+    public Section getSectionById(Long id) {
+        return sectionRepository.findById(id).orElse(null);
     }
 
 

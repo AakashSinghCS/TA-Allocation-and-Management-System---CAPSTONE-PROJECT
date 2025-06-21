@@ -1,5 +1,6 @@
 package com.infinity.courseservice.dtos;
 
+import com.infinity.courseservice.enums.*;
 import io.micrometer.common.lang.Nullable;
 
 public record CourseRequest(
@@ -7,7 +8,7 @@ public record CourseRequest(
         @Nullable String name,
         @Nullable String courseNum,
         @Nullable String section,
-        @Nullable String type,
+        @Nullable SectionType type,
         @Nullable String term,
         @Nullable String day,
         @Nullable String startTime,

@@ -1,8 +1,6 @@
 package com.infinity.applicationservice.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,14 +8,23 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Allocation {
-    
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private boolean isConfirmed;
+
+    private int numberOfHours;
+
+    @Column(name = "student_id")
     private Long studentId;
 
-    private Long sectionId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "offer_id")
+    private Offer offer;
 
-    private boolean isConfirmed;
+    @Column(name = "section_id")
+    private Long sectionId;
 }
+
