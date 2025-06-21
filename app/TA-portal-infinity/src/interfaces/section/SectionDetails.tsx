@@ -1,4 +1,4 @@
-import type { Course } from "../need/Course"
+import type { Course } from "../course/Course"
 
 export type SectionType =
     | "Lecture"

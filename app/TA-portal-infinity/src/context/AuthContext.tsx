@@ -4,6 +4,7 @@ import type { AuthResponse } from "../interfaces/auth/AuthResponse";
 import type { DecodedToken } from "../interfaces/auth/DecodedToken";
 import type { UserRole } from "../interfaces/enum/UserRole";
 
+
 interface AuthContextType {
   token: string | null;
   login: (data: AuthResponse) => void;

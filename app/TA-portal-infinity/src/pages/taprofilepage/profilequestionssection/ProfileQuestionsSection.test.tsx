@@ -4,10 +4,10 @@ import type { ProfileQuestion } from '../../../interfaces/question/ProfileQuesti
 import ProfileQuestionsSection from './ProfileQuestionsSection';
 
 vi.mock(
-  '../../../components/features/questionanswer/QuestionAnswer',
+  "../../../components/features/questionanswer/profilequestionanswer/ProfileQuestionAnswer",
   () => {
     return {
-      QuestionAnswer: ({ profileQuestion }: { profileQuestion: ProfileQuestion }) => (
+      ProfileQuestionAnswer: ({ profileQuestion }: { profileQuestion: ProfileQuestion }) => (
         <div data-testid={`qa-${profileQuestion.id}`}>
           QA {profileQuestion.id}
         </div>
@@ -25,7 +25,7 @@ describe('ProfileQuestionsSection', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders one QuestionAnswer per item in `profileQuestions`', () => {
+  it('renders one ProfileQuestionAnswer per item in `profileQuestions`', () => {
     const questions = [
       { id: 1 } as ProfileQuestion,
       { id: 2 } as ProfileQuestion,

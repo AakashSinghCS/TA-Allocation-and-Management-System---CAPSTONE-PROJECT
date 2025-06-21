@@ -8,5 +8,10 @@ export default defineConfig({
     environment: 'jsdom',         // simulate a browser DOM
     setupFiles: './setupTests.ts',
     include: ['src/**/*.{test,spec}.{ts,tsx}','tests/**/*.{test,spec}.{ts,tsx}'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      reportsDirectory: './my-custom-coverage', 
+    },
   },
 })

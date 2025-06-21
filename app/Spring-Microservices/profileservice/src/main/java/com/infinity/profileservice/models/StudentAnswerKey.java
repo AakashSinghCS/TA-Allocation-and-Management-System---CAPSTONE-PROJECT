@@ -9,5 +9,5 @@ import lombok.EqualsAndHashCode;
 
 public class StudentAnswerKey implements Serializable {
     private Long studentId;
-    private Integer answerId;
+    private Long answerId;
 }

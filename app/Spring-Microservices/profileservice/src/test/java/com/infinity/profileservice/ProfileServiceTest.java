@@ -1,9 +1,7 @@
 package com.infinity.profileservice;
 
-import com.infinity.profileservice.services.ProfileService;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -15,138 +13,135 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.infinity.profileservice.dtos.*;
+import com.infinity.profileservice.dtos.AnswerDto;
+import com.infinity.profileservice.dtos.ProfileQuestionAnswerDto;
+import com.infinity.profileservice.dtos.ProfileResponseDto;
+import com.infinity.profileservice.dtos.profile.FreeTextRequest;
+import com.infinity.profileservice.dtos.profile.ProfileAnswerRequest;
 import com.infinity.profileservice.enums.QuestionType;
-import com.infinity.profileservice.models.*;
-import com.infinity.profileservice.repositories.*;
+import com.infinity.profileservice.models.ProfileAnswer;
+import com.infinity.profileservice.models.ProfileQuestion;
+import com.infinity.profileservice.models.StudentHasProfileAnswer;
+import com.infinity.profileservice.repositories.AnswerRepo;
+import com.infinity.profileservice.repositories.QuestionRepo;
+import com.infinity.profileservice.repositories.StudentAnswerRepo;
+import com.infinity.profileservice.services.ProfileService;
 
 class ProfileServiceTest {
 
     @Mock private StudentAnswerRepo studentRepo;
-    @Mock private AnswerRepo answerRepo;
-    @Mock private QuestionRepo questionRepo;
+    @Mock private AnswerRepo        answerRepo;
+    @Mock private QuestionRepo      questionRepo;
 
-    @InjectMocks private ProfileService profileService;
+    @InjectMocks private ProfileService service;
 
     @BeforeEach
-    void init() { MockitoAnnotations.openMocks(this); }
+    void setup() { MockitoAnnotations.openMocks(this); }
 
     @Test
     void buildProfile_groupsAnswersByQuestion() {
         Long sid = 101L;
 
-        // set up a SINGLE‐choice question
         ProfileQuestion q = new ProfileQuestion();
-        q.setId(10);
+        q.setId(10L);
         q.setDescription("Fav Lang");
         q.setType(QuestionType.SINGLE);
 
-        // two answers belonging to that question
-        ProfileAnswer a1 = new ProfileAnswer();
-        a1.setId(1);
-        a1.setDescription("Java");
-        a1.setQuestion(q);
+        ProfileAnswer a1 = answer(1L, "Java",   q);
+        ProfileAnswer a2 = answer(2L, "Python", q);
 
-        ProfileAnswer a2 = new ProfileAnswer();
-        a2.setId(2);
-        a2.setDescription("Python");
-        a2.setQuestion(q);
+        when(studentRepo.findByStudentId(sid))
+            .thenReturn(List.of(link(sid, a1), link(sid, a2)));
 
-        // stub the join rows
-        StudentHasProfileAnswer l1 = link(sid, 1, a1);
-        StudentHasProfileAnswer l2 = link(sid, 2, a2);
-        when(studentRepo.findByStudentId(sid)).thenReturn(List.of(l1, l2));
+        ProfileResponseDto dto = service.buildProfile(sid);
 
-        // exercise
-        ProfileResponseDto dto = profileService.buildProfile(sid);
-
-        // verify one grouped entry
-        var list = dto.profileAnswers();
-        assertThat(list).hasSize(1);
-
-        var item = list.get(0);
-        assertThat(item.id()).isEqualTo(10);
+        assertThat(dto.profileAnswers()).hasSize(1);
+        ProfileQuestionAnswerDto item = dto.profileAnswers().get(0);
+        assertThat(item.id()).isEqualTo(10L);
         assertThat(item.type()).isEqualTo(QuestionType.SINGLE);
         assertThat(item.description()).isEqualTo("Fav Lang");
-
-        // now check that the two AnswerInfoDto objects carry the right descriptions
-        var answers = item.answers();
-        assertThat(answers).hasSize(2);
-        assertThat(answers)
+        assertThat(item.answers())
             .extracting(AnswerDto::description)
             .containsExactlyInAnyOrder("Java", "Python");
     }
 
     @Test
-    void saveAnswers_replacesLinks() {
-        Long studentId = 7L;
-        List<Integer> answerIds = List.of(3, 4, 5);
+    void saveAnswers_replacesChoiceLinks() {
+        Long sid = 7L;
+        List<Long> ids = List.of(3L, 4L, 5L);
 
-        // existing links to delete
-        when(studentRepo.findByStudentId(studentId))
-            .thenReturn(List.of(link(studentId, 1), link(studentId, 2)));
+        when(answerRepo.existsById(anyLong())).thenReturn(true);
 
-        // exercise
-        profileService.saveAnswers(studentId, answerIds);
+        ProfileAnswerRequest req =
+                new ProfileAnswerRequest(ids, List.of());
 
-        // verify lookup was called
-        verify(studentRepo).findByStudentId(studentId);
+        service.saveAnswers(sid, req);
 
-        // verify deletion of old links
-        verify(studentRepo).deleteAll(any());
+        verify(studentRepo).deleteAllByStudentId(sid);
 
-        // verify saving of exactly 3 new links
-        verify(studentRepo, times(3)).save(any());
-        verify(studentRepo).save(argThat(l -> l.getAnswerId().equals(3)));
-        verify(studentRepo).save(argThat(l -> l.getAnswerId().equals(4)));
-        verify(studentRepo).save(argThat(l -> l.getAnswerId().equals(5)));
-
-        // no other interactions
+        verify(studentRepo, times(3)).save(any(StudentHasProfileAnswer.class));
+        verify(studentRepo).save(argThat(l -> l.getAnswerId().equals(3L)));
+        verify(studentRepo).save(argThat(l -> l.getAnswerId().equals(4L)));
+        verify(studentRepo).save(argThat(l -> l.getAnswerId().equals(5L)));
         verifyNoMoreInteractions(studentRepo);
     }
 
-    private StudentHasProfileAnswer link(Long sid, Integer aid) {
-        StudentHasProfileAnswer l = new StudentHasProfileAnswer();
-        l.setStudentId(sid);
-        l.setAnswerId(aid);
-        return l;
-    }
-    // helper for grouping test
-    private StudentHasProfileAnswer link(Long sid, Integer aid, ProfileAnswer answer) {
-        StudentHasProfileAnswer l = link(sid, aid);
-        l.setAnswer(answer);
-        return l;
-    }
-
     @Test
-    void saveFreeTextAnswer_createsAndLinksAnswer() {
-        Long sid = 42L; 
-        Integer qid = 10;
+    void saveAnswers_createsPlaceholderAndLinksFreeText() {
+        Long sid = 42L;
+        Long qid = 10L;
         String text = "My answer";
+
 
         ProfileQuestion q = new ProfileQuestion();
         q.setId(qid);
         q.setType(QuestionType.FREE_TEXT);
+
         when(questionRepo.findById(qid)).thenReturn(Optional.of(q));
 
-        ProfileAnswer saved = new ProfileAnswer();
-        saved.setId(99);
-        saved.setQuestion(q);
-        saved.setDescription(text);
-        when(answerRepo.save(any())).thenReturn(saved);
-        when(studentRepo.findByStudentId(sid)).thenReturn(List.of());
 
-        profileService.saveFreeTextAnswer(sid, qid, text);
+        ProfileAnswer placeholder = new ProfileAnswer();
+        placeholder.setId(99L);
+        placeholder.setQuestion(q);
+        placeholder.setDescription("");
+        when(answerRepo.save(any())).thenReturn(placeholder);
 
-        verify(answerRepo).save(argThat(a ->
-            a.getQuestion().getId().equals(qid) &&
-            text.equals(a.getDescription())
-        ));
+        ProfileAnswerRequest req =
+                new ProfileAnswerRequest(
+                        List.of(),                       
+                        List.of(new FreeTextRequest(qid, text))
+                );
+
+        service.saveAnswers(sid, req);
+
+        verify(studentRepo).deleteAllByStudentId(sid);
+
+
+        verify(answerRepo).save(any(ProfileAnswer.class));
+
+
         verify(studentRepo).save(argThat(l ->
-            l.getStudentId().equals(sid) &&
-            l.getAnswerId().equals(99) &&
-            text.equals(l.getAnswerText())
+                l.getStudentId().equals(sid) &&
+                l.getAnswerId().equals(99L) &&
+                text.equals(l.getAnswerText())
         ));
     }
 
+
+
+    private static ProfileAnswer answer(Long id, String desc, ProfileQuestion q) {
+        ProfileAnswer a = new ProfileAnswer();
+        a.setId(id);
+        a.setDescription(desc);
+        a.setQuestion(q);
+        return a;
+    }
+
+    private static StudentHasProfileAnswer link(Long sid, ProfileAnswer a) {
+        StudentHasProfileAnswer l = new StudentHasProfileAnswer();
+        l.setStudentId(sid);
+        l.setAnswerId(a.getId());
+        l.setAnswer(a);
+        return l;
+    }
 }

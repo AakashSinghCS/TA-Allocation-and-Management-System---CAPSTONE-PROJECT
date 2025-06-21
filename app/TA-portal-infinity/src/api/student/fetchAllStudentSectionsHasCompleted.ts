@@ -1,6 +1,6 @@
 import type Section from "../../interfaces/section/Section";
-import { mockSectionCOSC111 } from "../../mocked-objects/mockSectionCOSC111";
-import { mockSectionCOSC121 } from "../../mocked-objects/mockSectionCOSC121";
+import { mockSectionCOSC111 } from "../../mocked-objects/section/mockSectionCOSC111";
+import { mockSectionCOSC121 } from "../../mocked-objects/section/mockSectionCOSC121";
 
 export async function fetchAllStudentSectionsHasCompleted(
   studentId: number,
@@ -23,12 +23,12 @@ export async function fetchAllStudentSectionsHasCompleted(
 
     // fallback to mock
     return hasCompletedFilter
-      ? [mockSectionCOSC111]
-      : Array(10).fill(mockSectionCOSC121);
+      ? Array(6).fill(mockSectionCOSC121)
+      : Array(6).fill(mockSectionCOSC121);
   } catch (err) {
     // fallback to mock on error
     return hasCompletedFilter
-      ? [mockSectionCOSC111]
-      : Array(10).fill(mockSectionCOSC121);
+      ? Array(6).fill(mockSectionCOSC121)
+      : Array(6).fill(mockSectionCOSC121);
   }
 }

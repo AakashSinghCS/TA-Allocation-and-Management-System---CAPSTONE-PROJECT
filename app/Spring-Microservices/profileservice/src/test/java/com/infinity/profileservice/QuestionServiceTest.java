@@ -1,9 +1,10 @@
 package com.infinity.profileservice;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import org.mockito.stubbing.Answer;
-import com.infinity.profileservice.services.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,129 +12,163 @@ import com.infinity.profileservice.dtos.admin.AnswerRequest;
 import com.infinity.profileservice.dtos.admin.QuestionRequest;
 import com.infinity.profileservice.enums.QuestionType;
 import com.infinity.profileservice.exceptions.NotFoundException;
-import com.infinity.profileservice.models.*;
+import com.infinity.profileservice.models.ProfileAnswer;
+import com.infinity.profileservice.models.ProfileQuestion;
 import com.infinity.profileservice.repositories.AnswerRepo;
 import com.infinity.profileservice.repositories.QuestionRepo;
+import com.infinity.profileservice.repositories.StudentAnswerRepo;
+import com.infinity.profileservice.services.QuestionService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class QuestionServiceTest {
 
-    @Mock  private QuestionRepo questionRepo;
-    @Mock  private AnswerRepo   answerRepo;
+    @Mock  private QuestionRepo      questionRepo;
+    @Mock  private AnswerRepo        answerRepo;
+    @Mock  private StudentAnswerRepo studentAnsRepo;
 
-    @InjectMocks
-    private QuestionService service;
+    @InjectMocks private QuestionService service;
 
     private ProfileQuestion existingQ;
 
     @BeforeEach
     void setUp() {
         existingQ = new ProfileQuestion();
-        existingQ.setId(10);
+        existingQ.setId(10L);
         existingQ.setDescription("Old");
         existingQ.setType(QuestionType.SINGLE);
+        existingQ.setAnswers(new ArrayList<>());
     }
 
-    //helper to echo save(...) argument
-    private <T> Answer <T> self() {
+    private <T> org.mockito.stubbing.Answer<T> self() {
         return invocation -> invocation.getArgument(0);
     }
 
-    @Test
-    @DisplayName("createQuestion saves entity and returns it")
+
+    @Test @DisplayName("createQuestion saves entity and returns it")
     void createQuestion() {
-        QuestionRequest req = new QuestionRequest("Fav lang?", QuestionType.SINGLE);
+        QuestionRequest req =
+            new QuestionRequest("Fav lang?", QuestionType.SINGLE, List.of());
+
         when(questionRepo.save(any())).thenAnswer(self());
 
         ProfileQuestion saved = service.createQuestion(req);
 
         assertThat(saved.getDescription()).isEqualTo("Fav lang?");
         assertThat(saved.getType()).isEqualTo(QuestionType.SINGLE);
-        verify(questionRepo).save(saved);
+        // only ONE call to save(question) for SINGLE/MULTI
+        verify(questionRepo, times(1)).save(any(ProfileQuestion.class));
+        // no answers supplied ⇒ repo.save(ProfileAnswer) never called
+        verifyNoInteractions(answerRepo);
     }
 
     @Test
     void updateQuestion_success() {
-        when(questionRepo.findById(10)).thenReturn(Optional.of(existingQ));
+        when(questionRepo.findById(10L)).thenReturn(Optional.of(existingQ));
+        when(questionRepo.save(any(ProfileQuestion.class))).thenAnswer(self());
+        when(answerRepo.save(any(ProfileAnswer.class))).thenAnswer(self());
 
-        QuestionRequest req = new QuestionRequest("New text", QuestionType.MULTI);
-        ProfileQuestion updated = service.updateQuestion(10, req);
+        AnswerRequest newAns = new AnswerRequest(null, "New1");
+        AnswerRequest updAns = new AnswerRequest(5L, "New2");
+
+        QuestionRequest req =
+            new QuestionRequest("New text", QuestionType.MULTI, List.of(newAns, updAns));
+
+        ProfileQuestion updated = service.updateQuestion(10L, req);
 
         assertThat(updated.getDescription()).isEqualTo("New text");
         assertThat(updated.getType()).isEqualTo(QuestionType.MULTI);
+        assertThat(updated.getAnswers()).hasSize(2);
+
+        verify(answerRepo, times(2)).save(any(ProfileAnswer.class));
+        verify(questionRepo).save(any(ProfileQuestion.class));
     }
 
     @Test
     void updateQuestion_notFound() {
-        when(questionRepo.findById(99)).thenReturn(Optional.empty());
+        when(questionRepo.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.updateQuestion(99,
-                new QuestionRequest("x", QuestionType.SINGLE)))
-            .isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() ->
+            service.updateQuestion(99L,
+                    new QuestionRequest("x", QuestionType.SINGLE, List.of()))
+        ).isInstanceOf(NotFoundException.class);
     }
 
     @Test
     void deleteQuestion_callsRepo() {
-        service.deleteQuestion(7);
-        verify(questionRepo).deleteById(7);
+        ProfileQuestion q = new ProfileQuestion();
+        q.setId(7L);
+        q.setAnswers(new ArrayList<>());
+
+        when(questionRepo.findById(7L)).thenReturn(Optional.of(q));
+
+        service.deleteQuestion(7L);
+
+        verify(questionRepo).deleteById(7L);
     }
 
     @Test
     void listAll_returnsRepoList() {
         when(questionRepo.findAll()).thenReturn(List.of(existingQ));
+
         assertThat(service.listAll()).hasSize(1);
     }
 
     @Test
     void addAnswer_success() {
-        when(questionRepo.findById(10)).thenReturn(Optional.of(existingQ));
+        when(questionRepo.findById(10L)).thenReturn(Optional.of(existingQ));
         when(answerRepo.save(any())).thenAnswer(self());
 
-        ProfileAnswer a = service.addAnswer(10, new AnswerRequest("Java"));
+        AnswerRequest areq = new AnswerRequest(null, "Java");
+        ProfileAnswer a = service.addAnswer(10L, areq);
 
         assertThat(a.getDescription()).isEqualTo("Java");
         assertThat(a.getQuestion()).isSameAs(existingQ);
     }
 
-    @Test
+    @Test @DisplayName("addAnswer throws when question not found")
     void addAnswer_questionNotFound() {
-        when(questionRepo.findById(11)).thenReturn(Optional.empty());
+        when(questionRepo.findById(11L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.addAnswer(11, new AnswerRequest("X")))
-            .isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() ->
+            service.addAnswer(11L, new AnswerRequest(null, "X"))
+        ).isInstanceOf(NotFoundException.class);
     }
 
-    @Test
+    @Test @DisplayName("updateAnswer updates description")
     void updateAnswer_success() {
         ProfileAnswer ans = new ProfileAnswer();
-        ans.setId(5);
+        ans.setId(5L);
         ans.setDescription("Old");
-        when(answerRepo.findById(5)).thenReturn(Optional.of(ans));
 
-        ProfileAnswer upd = service.updateAnswer(5, new AnswerRequest("New"));
+        when(answerRepo.findById(5L)).thenReturn(Optional.of(ans));
+
+        ProfileAnswer upd = service.updateAnswer(5L, new AnswerRequest(null, "New"));
 
         assertThat(upd.getDescription()).isEqualTo("New");
     }
 
-    @Test
+    @Test @DisplayName("updateAnswer throws when not found")
     void updateAnswer_notFound() {
-        when(answerRepo.findById(42)).thenReturn(Optional.empty());
+        when(answerRepo.findById(42L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.updateAnswer(42, new AnswerRequest("x")))
-            .isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() ->
+            service.updateAnswer(42L, new AnswerRequest(null, "x"))
+        ).isInstanceOf(NotFoundException.class);
     }
 
-    @Test
+    @Test @DisplayName("deleteAnswer calls repos")
     void deleteAnswer_callsRepo() {
-        service.deleteAnswer(3);
-        verify(answerRepo).deleteById(3);
+        service.deleteAnswer(3L);
+
+        verify(studentAnsRepo).deleteAllByAnswerId(3L);
+        verify(answerRepo).deleteById(3L);
     }
 }
