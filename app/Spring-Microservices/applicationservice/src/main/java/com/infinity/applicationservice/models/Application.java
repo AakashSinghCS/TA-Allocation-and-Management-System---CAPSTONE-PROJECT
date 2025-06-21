@@ -96,11 +96,6 @@ public class Application {
     public List<Subject> getSubjectPreferences() {
         return Arrays.asList(this.getSubjectPreference1(), this.getSubjectPreference2(),
                 this.getSubjectPreference3());
-    }
-    
-    public void addAvailability(Availability availability) {
-        availability.setApplication(this);
-        this.availabilities.add(availability);
-    }    
+    }  
 
 }
