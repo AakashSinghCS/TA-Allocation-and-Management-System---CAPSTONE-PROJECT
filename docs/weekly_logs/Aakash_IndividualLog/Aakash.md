@@ -873,4 +873,3 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin coding of assigning students to courses/labs manually.
 
-
