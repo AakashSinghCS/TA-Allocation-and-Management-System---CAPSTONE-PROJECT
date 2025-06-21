@@ -692,3 +692,185 @@ Retrospective: Process is going well. All team members are working hard to get t
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin next assigned coding task after meeting with group tomorrow. 
+
+## Sunday 6/15 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.15.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation History - Backend: I have to create the backend to view the allocation history of a TA.
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 10% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I started the planning of allocation history backend. I designed the tables required and how i plan on implementing the functionality. I will begin coding it soon once i have finalized the design. I am currently a bit busy with other commitments so i will not be able to put much time into this until tuesday. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete Allocation History and begin next assigned coding task after meeting with group.
+
+## Tuesday 6/17 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.17.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation History - Backend: I have to create the backend to view the allocation history of a TA.
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 30% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I started coding the backend for allocationhistory. Made the initial DTOs, controllers, etc. Have to figure out how to implement the feign clients in spring boot microservices. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete Allocation History and begin next assigned coding task after meeting with group.
+
+## Wednesday 6/18 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.18.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation History - Backend: I have to create the backend to view the allocation history of a TA.
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 80% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I finished most of the backend for allocation history. However, I ran into a bug which i am currently trying to fix. The tests are working as expected but when trying to test the endpoints on postman, I get a 403/503 error when the feign client is called.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete Allocation History and begin next assigned coding task after meeting with group.
+
+## Thursday 6/19 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.19.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation History - Backend: I have to create the backend to view the allocation history of a TA.
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I finished coding the backend for allocation history. The bug was fixed. Turns out I needed to add a request interceptor so that the json token is forwarded to the feign client. This took me a while to figure out but i got it done!
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin coding of next assigned task after meeting with group.
+
+## Friday 6/20 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.20.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation History - Merge Conflict Fix
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: There were a lot of merge conflicts that came up as Allen and I had worked on sections due to miscommunication. I had to modify/delete a lot of files to prevent breakage of either of our codes. I successfully did it. I also met with the team in the morning to assign coding tasks for next cycle. 
+What didn't go well: After the merge conflicts were resolved, i was unable to synch the changes with my branch due to a bug. So, i had to create a new branch and submit a new PR. I got the issue fixed. 
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin coding of assigning students to courses/labs manually.
+
+
