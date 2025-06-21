@@ -1,0 +1,100 @@
+import { useState } from "react";
+import { fetchAllProfileQuestions } from "../../api/question/fetchAllProfileQuestions";
+import type { ProfileQuestion } from "../../interfaces/question/ProfileQuestion";
+import { GenericAPIContainer } from "../../utility/genericapicontainer/GenericAPIContainer";
+import QuestionItem from "../../components/features/questionanswer/questionitem/QuestionItem";
+import { fallbackTempId } from "../../utility/fallbackTempId/fallbackTempId";
+
+
+//TODO: Confirm with the coordinator first when he clicks submit! Explain the consequences of the submit. 
+//That any preexisting questions that have been updated or deleted will have all students' answers deleted in the database. And students will be notified that the questions changed and they must update it again.
+//In summary: updaing or deleting does a CASCADE delete on ProfileAnswers.
+//TODO: CoordinatorQuestionnaire will need a seperate testing file, as it has too much functionality to not get tested.
+function CoordinatorQuestionnaire({ initial }: { initial: ProfileQuestion[] | null }) {
+    //TODO: make a toTempProfileQuestion function for decoupling and clearer code.
+    const [questions, setQuestions] = useState<TempProfileQuestion[]>(() =>{
+        if(initial){
+            return initial.map(q => ({ ...q, tempId: fallbackTempId(), }))
+        }else{
+            return []
+        }        
+    }
+
+    );
+
+    const addQuestion = () => setQuestions(qs => [...qs, emptyQuestion()]);
+
+    // const updateQuestion = (idx: number, q: ProfileQuestion) =>
+    //     setQuestions(prev => prev.map((old, i) => (i === idx ? ({ ...old, ...q } as TempProfileQuestion)  : old)));
+
+    // const deleteQuestion = (idx: number) =>
+    //     setQuestions(qs => qs.filter((_, i) => i !== idx));
+
+    return (
+        <div>
+            {questions.map((q, i) => (
+                <div key={q.id ?? (q as any).tempId} className="relative">
+                    <QuestionItem
+                        key={q.id ?? q.tempId}
+                        initialQuestion={q}
+                        onSaved={saved =>
+                            setQuestions(qs =>
+                                qs.map(x =>
+                                    (x.id ?? x.tempId) === (q.id ?? q.tempId) ? { ...saved, tempId: x.tempId } : x
+                                )
+                            )
+                        }
+                        onRemoved={key =>
+                            setQuestions(qs => qs.filter(x => (x.id ?? x.tempId) !== key))
+                        }
+                    />
+                </div>
+            ))}
+            <div className="flex gap-4">
+                <button type="button" onClick={addQuestion} className="px-4 py-2 bg-green-600 text-white rounded">
+                    + Add question
+                </button>
+
+            </div>
+        </div>
+    );
+}
+
+export function emptyQuestion(): TempProfileQuestion {
+    return {
+        id: undefined,
+        tempId: fallbackTempId(),                     // local key until the server returns an id
+        description: "",
+        type: "SINGLE",
+        answers: [
+            { id: undefined, description: "", type: "MC" },
+            { id: undefined, description: "", type: "MC" },
+        ],
+    };
+}
+
+interface TempProfileQuestion extends ProfileQuestion {
+    tempId: string;
+}
+
+export function CoordinatorQuestionnairePage() {
+    return (
+        <GenericAPIContainer<ProfileQuestion[] | null>
+            fetchFunction={fetchAllProfileQuestions}
+            render={initialQs => <CoordinatorQuestionnaire initial={initialQs} />}
+        />
+    );
+}
+
+function toProfileQuestion(t: TempProfileQuestion): ProfileQuestion {
+    return {
+        id: t.id,
+        description: t.description,
+        type: t.type,
+        answers: t.answers?.map(a => ({
+            id: a.id,
+            description: a.description,
+            type: a.type,
+        }))
+    };
+}

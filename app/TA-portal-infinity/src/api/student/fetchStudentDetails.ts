@@ -1,5 +1,5 @@
 import type { Student } from "../../interfaces/user/Student";
-import { mockStudentJohnDoe } from '../../mocked-objects/mockStudents';
+import { mockStudentJohnDoe } from '../../mocked-objects/user/mockStudents';
 
 export async function fetchStudentDetails(studentId: number): Promise<Student> {
   const baseUrl = 'mock'; // temporary value until backend is wired

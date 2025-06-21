@@ -1,5 +1,5 @@
 package com.infinity.profileservice.dtos;
 
-public record AnswerDto(Integer id, String description) {
+public record AnswerDto(Long id, String description) {
     
 }

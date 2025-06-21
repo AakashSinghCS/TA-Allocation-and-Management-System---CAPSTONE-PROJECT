@@ -3,19 +3,17 @@ import { useAuth } from "../../../context/AuthContext";
 import { Home, BookOpen, ClipboardList, Presentation, User, LogOut,} from "lucide-react";
 import { useState } from "react";
 
-const navItems = [
-  { label: "Home", to: "/user/instructor/home", icon: <Home size={22} /> },
-  { label: "My Courses", to: "/user/instructor/courses", icon: <BookOpen size={22} /> },
-  { label: "TA Requirements", to: "/user/instructor/requirements", icon: <ClipboardList size={22} /> },
-  { label: "TA Allocations", to: "/user/instructor/allocations", icon: <Presentation size={22} /> },
-  { label: "Profile", to: "/user/instructor/profile", icon: <User size={22} /> },
-];
-
 export default function SideNavInstructor() {
   const { pathname } = useLocation();
   const { logout } = useAuth();
   const [hovered, setHovered] = useState(false);
-
+  const navItems = [
+  { label: "Home", to: "/user/instructor/home", icon: <Home size={22} /> },
+  { label: "My Courses", to: "/user/instructor/courses", icon: <BookOpen size={22} /> },
+  { label: "TA Requirements", to: "/user/instructor/requirements", icon: <ClipboardList size={22} /> },
+  { label: "TA Allocations", to: "/user/instructor/allocations", icon: <Presentation size={22} /> },
+  { label: "Profile", to: `/user/instructorprofile/${useAuth().userId}`, icon: <User size={22} /> },
+];
   const expanded = hovered;
 
   return (

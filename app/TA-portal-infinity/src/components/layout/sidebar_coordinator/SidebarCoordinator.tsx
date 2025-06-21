@@ -9,7 +9,7 @@ const navItems = [
   { label: "TA Applications", to: "/user/coordinator/applications", icon: <GraduationCap size={22} /> },
   { label: "TA Allocations", to: "/user/coordinator/allocations", icon: <Presentation size={22} /> },
   { label: "Profile", to: "/user/coordinator/profile", icon: <UserRoundPen size={22} /> },
-  { label: "User Management", to: "/user/taprofile/1", icon: <Users size={22} /> },
+  { label: "TA Questions", to: "/user/coordinator/questions", icon: <Users size={22} /> }, 
 ];
 
 export default function SideNavCoordinator() {

@@ -1,5 +1,7 @@
 package com.infinity.profileservice.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,11 +14,12 @@ public class ProfileAnswer {
 
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
-    private ProfileQuestion question;        // FK → profile_question.id
+    @JsonBackReference
+    private ProfileQuestion question;       
 
     private String description;
 }

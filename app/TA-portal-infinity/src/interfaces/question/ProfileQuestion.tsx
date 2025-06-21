@@ -3,7 +3,7 @@ import { type ProfileAnswer } from "./ProfileAnswer";
 export type QuestionType =
     | "SINGLE"
     | "MULTI"
-    | "TEXT"
+    | "FREE_TEXT"
 
 export interface ProfileQuestion{
     id?: number;
