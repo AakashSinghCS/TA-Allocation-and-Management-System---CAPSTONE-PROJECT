@@ -4,20 +4,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.infinity.applicationservice.dtos.ApplicationDto;
 import com.infinity.applicationservice.dtos.ApplicationRequest;
+import com.infinity.applicationservice.dtos.AvailabilityDto;
+import com.infinity.applicationservice.enums.Day;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
@@ -35,9 +42,18 @@ public class ApplicationServiceTest {
     @InjectMocks
     ApplicationService applicationService;
 
+    static Set<AvailabilityDto> availabilities;
+
+    @BeforeAll
+    static void setUp() {
+        availabilities = new HashSet<>();
+        availabilities.add(new AvailabilityDto(Day.MONDAY, "09:00", "10:00"));
+    }
+    
+
     @Test
     void testSubmitApplication_AlreadySubmitted_BadRequest() {
-        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6);
+        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6, availabilities);
 
         when(applicationRepository.existsByStudentIdAndYear(1L, 2025)).thenReturn(true);
 
@@ -48,12 +64,42 @@ public class ApplicationServiceTest {
     }
 
     @Test
-    void testSubmitApplication_Success() {
-        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6);
-        Application application = new Application(1L, List.of(Subject.COSC), false, 6);
+    void testSubmitApplication_MissingAvailabilityFields_BadRequest() {
+        Set<AvailabilityDto> badAvailabilities = new HashSet<>();
+        badAvailabilities.add(new AvailabilityDto(null, "10:00", "9:00"));
+        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6,
+                badAvailabilities);
 
         when(applicationRepository.existsByStudentIdAndYear(1L, 2025)).thenReturn(false);
-        when(applicationRepository.save(application)).thenReturn(application);
+
+        BadRequestException e = assertThrows(BadRequestException.class, () -> {
+            applicationService.submitApplication(applicationRequest, 1L, List.of("ROLE_STUDENT"));
+        });
+        assertEquals("Availability entries must include day, startTime, and endTime.", e.getMessage());
+    }
+
+    @Test
+    void testSubmitApplication_BadAvailability_BadRequest() {
+        Set<AvailabilityDto> badAvailabilities = new HashSet<>();
+        badAvailabilities.add(new AvailabilityDto(Day.MONDAY, "10:00", "09:00"));
+        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6,
+                badAvailabilities);
+
+        when(applicationRepository.existsByStudentIdAndYear(1L, 2025)).thenReturn(false);
+
+        BadRequestException e = assertThrows(BadRequestException.class, () -> {
+            applicationService.submitApplication(applicationRequest, 1L, List.of("ROLE_STUDENT"));
+        });
+        assertEquals("Start time must be before end time for availability on MONDAY", e.getMessage());
+    }
+    
+    @Test
+    void testSubmitApplication_Success() {
+        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6, availabilities);
+
+        when(applicationRepository.existsByStudentIdAndYear(1L, 2025)).thenReturn(false);
+        when(applicationRepository.save(Mockito.any(Application.class)))
+            .thenAnswer(invocation -> invocation.getArgument(0));
 
         ApplicationDto applicationDto = applicationService.submitApplication(applicationRequest, 1L,
                 List.of("ROLE_STUDENT"));
@@ -121,7 +167,7 @@ public class ApplicationServiceTest {
 
     @Test
     void testUpdateApplication_Forbidden() {
-        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6);
+        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6, availabilities);
         AuthorizationException e = assertThrows(AuthorizationException.class, () -> {
             applicationService.updateApplication(applicationRequest, 2L, 1L,
                     List.of("ROLE_STUDENT"));
@@ -131,7 +177,7 @@ public class ApplicationServiceTest {
     
     @Test
     void testUpdateApplication_NotFound() {
-        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6);
+        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6, availabilities);
         when(applicationRepository.findByStudentIdAndYear(1L, 2025)).thenReturn(Optional.empty());
         NotFoundException e = assertThrows(NotFoundException.class, () -> {
             applicationService.updateApplication(applicationRequest, 1L, 1L,
@@ -142,7 +188,7 @@ public class ApplicationServiceTest {
     
     @Test
     void testUpdateApplication_Success() {
-        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6);
+        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6, availabilities);
         Application application = new Application(1L, List.of(Subject.DATA, Subject.MATH, Subject.PHYS), true, 12);
         when(applicationRepository.findByStudentIdAndYear(1L, 2025)).thenReturn(Optional.of(application));
         ApplicationDto applicationDto = applicationService.updateApplication(applicationRequest, 1L, 1L,
