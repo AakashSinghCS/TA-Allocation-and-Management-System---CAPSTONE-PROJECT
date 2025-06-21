@@ -1,18 +1,24 @@
 package com.infinity.applicationservice.services;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.infinity.applicationservice.dtos.ApplicationDto;
 import com.infinity.applicationservice.dtos.ApplicationRequest;
+import com.infinity.applicationservice.dtos.AvailabilityDto;
+import com.infinity.applicationservice.enums.Day;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
 import com.infinity.applicationservice.models.Application;
+import com.infinity.applicationservice.models.Availability;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 
 import jakarta.transaction.Transactional;
@@ -30,12 +36,17 @@ public class ApplicationService {
         if (applicationRepository.existsByStudentIdAndYear(userIdFromHeader, year)) {
             throw new BadRequestException("You have already submitted an application for this year.");
         }
+        validateAvailabilities(req);
         Application application = new Application(userIdFromHeader, req.preferences(), req.wantRemote(),
                 req.wantWorkingHours());
-        application = applicationRepository.save(application);
+
+        mapAvailability(req, application);
+
+        applicationRepository.save(application);
+
         List<Subject> preferences = filterPreferences(application);
         return new ApplicationDto(application.getStudentId(), preferences, application.isWantRemote(),
-                application.getWantWorkingHours(), application.getSubmittedAt());
+                application.getWantWorkingHours(), application.getSubmittedAt(), toDtoSet(application.getAvailabilities()));
     }
 
     public ApplicationDto getApplication(Long studentId, Integer year, Long userIdFromHeader,
@@ -47,7 +58,8 @@ public class ApplicationService {
                 .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
         List<Subject> preferences = filterPreferences(application);
         return new ApplicationDto(application.getStudentId(), preferences, application.isWantRemote(),
-                application.getWantWorkingHours(), application.getSubmittedAt());
+                application.getWantWorkingHours(), application.getSubmittedAt(), 
+                toDtoSet(application.getAvailabilities()));
     }
 
     @Transactional
@@ -68,18 +80,25 @@ public class ApplicationService {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
         }
+        validateAvailabilities(req);
         int year = LocalDate.now().getYear();
 
         Application application = applicationRepository
                 .findByStudentIdAndYear(studentId, year)
                 .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
+
         application.setSubjectPreferences(req);
         application.setWantRemote(req.wantRemote());
         application.setWantWorkingHours(req.wantWorkingHours());
+
+        application.getAvailabilities().clear();
+        mapAvailability(req, application);
+
         applicationRepository.save(application);
         List<Subject> preferences = filterPreferences(application);
         return new ApplicationDto(application.getStudentId(), preferences, application.isWantRemote(),
-                application.getWantWorkingHours(), application.getSubmittedAt());
+                application.getWantWorkingHours(), application.getSubmittedAt(), 
+                toDtoSet(application.getAvailabilities()));
     }
 
     private List<Subject> filterPreferences(Application application) {
@@ -106,8 +125,50 @@ public class ApplicationService {
                             preferences,
                             app.isWantRemote(),
                             app.getWantWorkingHours(),
-                            app.getSubmittedAt());
+                            app.getSubmittedAt(),
+                            toDtoSet(app.getAvailabilities()));
                 })
                 .toList();
     }
+
+    private void validateAvailabilities(ApplicationRequest req) {
+        if (req.availabilities() != null) {
+            for (AvailabilityDto a : req.availabilities()) {
+                if (a.startTime() == null || a.endTime() == null || a.day() == null) {
+                    throw new BadRequestException("Availability entries must include day, startTime, and endTime.");
+                }
+                if (!LocalTime.parse(a.startTime()).isBefore(LocalTime.parse(a.endTime()))) {
+                    throw new BadRequestException(
+                            "Start time must be before end time for availability on " + a.day());
+                }
+            }
+        }
+    }
+  
+    private Set<AvailabilityDto> toDtoSet(Set<Availability> entities) {
+        return entities.stream()
+                .map(a -> new AvailabilityDto(
+                        Day.valueOf(a.getDay().name()),
+                        a.getStartTime().toString(),
+                        a.getEndTime().toString()))
+                .collect(Collectors.toSet());
+    }
+
+    private void mapAvailability(ApplicationRequest req, Application application) {
+        if (req.availabilities() != null) {
+            Set<Availability> availabilities = req.availabilities().stream()
+                    .map(a -> {
+                        Availability availability = new Availability();
+                        availability.setDay(a.day());
+                        availability.setStartTime(LocalTime.parse(a.startTime()));
+                        availability.setEndTime(LocalTime.parse(a.endTime()));
+                        availability.setApplication(application);
+                        return availability;
+                    }).collect(Collectors.toSet());
+
+            application.getAvailabilities().addAll(availabilities);
+        }
+
+    }
+
 }
