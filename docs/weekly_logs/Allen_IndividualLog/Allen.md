@@ -272,3 +272,47 @@ adding features to the backend of course filter, brainstorming about the enrollm
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * building enrollment table to enable frontend comparer
   * building backend for instructor pages
+
+
+## June 17 - 19
+
+### Timesheet
+Clockify report
+![alt text](./clockify/6.19.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: finished course filtering
+  * #2: building erollment table with feign
+
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>finished course filtering
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>building erollment table with feign
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+finished the backend of course filter, enrollment table building with feign to request another service.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * building enrollment table to enable frontend comparer
+  * building qualification table and corresponding services
