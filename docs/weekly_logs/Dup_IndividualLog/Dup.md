@@ -1174,7 +1174,7 @@ Clockify report
         <td>Task 1
         </td>
         <!-- Status -->
-        <td>In review
+        <td>In progress
         </td>
     </tr>
     <tr>
@@ -1223,7 +1223,7 @@ Clockify report
         <td>Task 1
         </td>
         <!-- Status -->
-        <td>In review
+        <td>In progress
         </td>
     </tr>
     <tr>
@@ -1251,3 +1251,100 @@ If that all gets done within 4 hours or 5, I may perhaps start on a task for the
 - visual calendar in ta profile. Maybe in instructor profile too. This will have to be discussed first with teammates because we have not imported the library concerning this yet.
 - any other feature sets we have not completed.
 - qualifications page
+
+
+## Friday 6/20 (6/18~6/20)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June20.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile Questions Answers
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#240](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/240)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I refactored the ProfileQuestions backend. I had to make sure that the students' answers get dropped when a question gets updated. It was difficult to do.
+This made me learn the following when working with someone else in pairs:
+- Prepare a request body and response body that is agreed by both the frontend and backend developer.
+- consider all the edge cases. Especially in updates and deletes.
+I also discussed with all my teammates today and what i will do the next week has been established.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- User management : search, delete, update, etc.
+- qualifications page (instructor's and student's skill labs)
+
+
+## Saturday 6/21 (6/18~6/20)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June21.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Qualifications page
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#260](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/260)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I created the qualifications page for the frontend. A lot of the code was similar to what I had for the profile questions, because it was a feature about inputting or selecting an option and displaying it.
+I created the mocks and interfaces. I discussed with allen how the response body and request body will look like, and I hope we covered all the edge cases.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- User management : search, delete, update, etc.
+- qualifications page (instructor's and student's skill labs)
