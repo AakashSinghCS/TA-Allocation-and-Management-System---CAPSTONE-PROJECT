@@ -3,6 +3,7 @@ package com.infinity.applicationservice.models;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -68,8 +69,11 @@ public class Application {
     @PrimaryKeyJoinColumn
     private Transcript transcript;
 
-    @OneToMany
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Offer> offers;
+
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Availability> availabilities = new HashSet<>();
 
     public Application(Long studentId, List<Subject> preferences, boolean wantRemote, Integer wantWorkingHours) {
         this.studentId = studentId;
@@ -89,9 +93,9 @@ public class Application {
         this.setSubjectPreference3(preferences.size() > 2 ? preferences.get(2) : null);
     }
     
-    public List<Subject> getSubjectPreferences() { 
+    public List<Subject> getSubjectPreferences() {
         return Arrays.asList(this.getSubjectPreference1(), this.getSubjectPreference2(),
                 this.getSubjectPreference3());
-    }
+    }  
 
 }

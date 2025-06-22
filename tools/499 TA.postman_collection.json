@@ -941,7 +941,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"preferences\":[\"COSC\", \"MATH\", null],\r\n    \"wantRemote\":false,\r\n    \"wantWorkingHours\":6\r\n}",
+							"raw": "{\r\n  \"preferences\": [\"COSC\", \"MATH\"],\r\n  \"wantRemote\": false,\r\n  \"wantWorkingHours\": 6,\r\n  \"availabilities\": [\r\n    {\r\n      \"day\": \"MONDAY\",\r\n      \"startTime\": \"14:00\",\r\n      \"endTime\": \"16:00\"\r\n    },\r\n    {\r\n      \"day\": \"WEDNESDAY\",\r\n      \"startTime\": \"09:30\",\r\n      \"endTime\": \"11:30\"\r\n    }\r\n  ]\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -979,7 +979,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"preferences\":[\"COSC\", \"MATH\", \"DATA\"],\r\n    \"wantRemote\":true,\r\n    \"wantWorkingHours\":12\r\n}",
+							"raw": "{\r\n    \"preferences\":[\"COSC\", \"MATH\", \"DATA\"],\r\n    \"wantRemote\":true,\r\n    \"wantWorkingHours\":12,\r\n    \"availabilities\": [\r\n    {\r\n      \"day\": \"TUESDAY\",\r\n      \"startTime\": \"09:00\",\r\n      \"endTime\": \"11:30\"\r\n    },\r\n    {\r\n      \"day\": \"FRIDAY\",\r\n      \"startTime\": \"12:30\",\r\n      \"endTime\": \"14:00\"\r\n    }\r\n  ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1045,7 +1045,7 @@
 					"response": []
 				},
 				{
-					"name": "Get All By Student Id",
+					"name": "Get All Applications By Student Id",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},

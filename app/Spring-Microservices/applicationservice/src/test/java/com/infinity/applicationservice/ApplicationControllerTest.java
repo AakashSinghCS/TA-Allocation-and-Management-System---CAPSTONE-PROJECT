@@ -35,7 +35,7 @@ public class ApplicationControllerTest {
 
     @Test
     void submitApplication_NullPreferences_BadRequest() throws Exception {
-        ApplicationRequest request = new ApplicationRequest(null, false, 4);
+        ApplicationRequest request = new ApplicationRequest(null, false, 4, null);
 
         mockMvc.perform(post("/applications/add")
                 .header("X-User-Id", "1")
@@ -48,7 +48,7 @@ public class ApplicationControllerTest {
 
     @Test
     void submitApplication_EmptyPreferences_BadRequest() throws Exception {
-        ApplicationRequest request = new ApplicationRequest(List.of(), false, 4);
+        ApplicationRequest request = new ApplicationRequest(List.of(), false, 4, null);
 
         mockMvc.perform(post("/applications/add")
                 .header("X-User-Id", "1")
@@ -62,7 +62,7 @@ public class ApplicationControllerTest {
     @Test
     void submitApplication_Over3Preferences_BadRequest() throws Exception {
         ApplicationRequest request = new ApplicationRequest(
-                List.of(Subject.COSC, Subject.MATH, Subject.DATA, Subject.PHYS), false, 4);
+                List.of(Subject.COSC, Subject.MATH, Subject.DATA, Subject.PHYS), false, 4, null);
 
         mockMvc.perform(post("/applications/add")
                 .header("X-User-Id", "1")
@@ -76,7 +76,7 @@ public class ApplicationControllerTest {
     @Test
     void submitApplication_TooFewHours_BadRequest() throws Exception {
         ApplicationRequest request = new ApplicationRequest(
-                List.of(Subject.COSC), false, 1);
+                List.of(Subject.COSC), false, 1, null);
 
         mockMvc.perform(post("/applications/add")
                 .header("X-User-Id", "1")
@@ -90,7 +90,7 @@ public class ApplicationControllerTest {
     @Test
     void submitApplication_TooManyHours_BadRequest() throws Exception {
         ApplicationRequest request = new ApplicationRequest(
-                List.of(Subject.COSC), false, 13);
+                List.of(Subject.COSC), false, 13, null);
 
         mockMvc.perform(post("/applications/add")
                 .header("X-User-Id", "1")
@@ -103,7 +103,7 @@ public class ApplicationControllerTest {
     
     @Test
     void submitApplication_Success() throws Exception {
-            ApplicationRequest request = new ApplicationRequest(List.of(Subject.COSC), false, 4);
+            ApplicationRequest request = new ApplicationRequest(List.of(Subject.COSC), false, 4, null);
 
             mockMvc.perform(post("/applications/add")
                             .header("X-User-Id", "1")
@@ -124,7 +124,7 @@ public class ApplicationControllerTest {
 
     @Test
     void updateApplication_Success() throws Exception {
-            ApplicationRequest request = new ApplicationRequest(List.of(Subject.COSC), false, 4);
+            ApplicationRequest request = new ApplicationRequest(List.of(Subject.COSC), false, 4, null);
 
             mockMvc.perform(put("/applications/update/1")
                             .header("X-User-Id", "1")

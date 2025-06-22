@@ -1,6 +1,7 @@
 package com.infinity.applicationservice.dtos;
 
 import java.util.List;
+import java.util.Set;
 
 import com.infinity.applicationservice.enums.Subject;
 
@@ -18,5 +19,6 @@ public record ApplicationRequest(
                 @NotNull(message = "Working hour preferences not specified")
                 @Min(value = 2, message = "The value must be greater than or equal to 2")
                 @Max(value = 12, message = "The value must be less than or equal to 12")
-                Integer wantWorkingHours) {
+                Integer wantWorkingHours,
+                Set<AvailabilityDto> availabilities) {
 }
