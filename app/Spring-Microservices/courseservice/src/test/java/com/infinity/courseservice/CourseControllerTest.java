@@ -24,6 +24,7 @@ import com.infinity.courseservice.dtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.services.CourseService;
+import com.infinity.courseservice.enums.*;
 
 @WebMvcTest(CourseController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -69,7 +70,7 @@ public class CourseControllerTest {
     @Test
     void testFilterCourses() throws Exception {
         CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", "systems", null, null, "2024W1", null, null, LocalTime.of(14, 00), null);
-        CourseSectionScheduleDto dto = new CourseSectionScheduleDto("COSC", "Distributed Systems", "455", "001", "2024W1","L", "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
+        CourseSectionScheduleDto dto = new CourseSectionScheduleDto("COSC", "Distributed Systems", "455", "001", "2024W1",SectionType.LAB, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
 
         when(courseService.filterCourses(any(CourseFilterRequest.class)))
             .thenReturn(List.of(dto));

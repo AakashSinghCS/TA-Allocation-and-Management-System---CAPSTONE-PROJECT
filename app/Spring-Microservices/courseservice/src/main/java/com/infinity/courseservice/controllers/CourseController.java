@@ -18,6 +18,8 @@ import com.infinity.courseservice.dtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.dtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionScheduleDto;
+import com.infinity.courseservice.models.Course;
+import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.services.CourseService;
 
 import lombok.Data;
@@ -68,6 +70,26 @@ public class CourseController {
     public ResponseEntity<List<CourseDto>> getCoursesByIds(@RequestParam List<Long> ids) {
         List<CourseDto> courseDtos = courseService.findCoursesByIds(ids);
         return ResponseEntity.ok(courseDtos);
+    }
+
+    @GetMapping("/sections/get/{id}")
+    public ResponseEntity<SectionDto> getSectionById(@PathVariable Long id) {
+        Section section = courseService.getSectionById(id);
+        Course course = section.getCourse(); 
+
+        SectionDto dto = new SectionDto(
+            section.getId(),
+            section.getTerm(),
+            section.getSection(),
+            section.getType(),
+            new CourseDto(
+                course.getDeptCode(),
+                course.getName(),
+                course.getCourseNum()
+            )
+        );
+
+        return ResponseEntity.ok(dto);
     }
 
     // @GetMapping("/getEnrolledCourses/{studentId}")

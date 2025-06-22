@@ -2,10 +2,9 @@ package com.infinity.courseservice.dtos;
 
 import com.infinity.courseservice.enums.SectionType;
 
-public record SectionDto(
+public record SectionRequest(
     Long id,
     String term,
     String section,
     SectionType type,
-    CourseDto course
-) {}
+    Long courseId) {}

@@ -9,10 +9,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.infinity.applicationservice.dtos.UserDto;
+import com.infinity.applicationservice.config.FeignClientInterceptor;
+import com.infinity.applicationservice.dtos.StudentDto;
 
-@FeignClient("USER-SERVICE")
+@FeignClient(name = "USER-SERVICE", configuration = FeignClientInterceptor.class)
 public interface UserInterface {
 
+    @GetMapping("/students/{studentId}")
+    public ResponseEntity<StudentDto> getStudentById(@PathVariable Long studentId);
+    
     @GetMapping("/users/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id,  @RequestHeader("X-User-Id") Long requesterId,
             @RequestHeader("X-User-Roles") List<String> roles);
