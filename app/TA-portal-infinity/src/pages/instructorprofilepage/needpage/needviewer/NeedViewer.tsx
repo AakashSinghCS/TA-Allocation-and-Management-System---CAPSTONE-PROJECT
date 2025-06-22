@@ -6,13 +6,8 @@ import { fetchAllInstructorTeachesSection } from "../../../../api/instructor/fet
 import type Section from "../../../../interfaces/section/Section";
 import { Link } from "react-router-dom";
 
-export default function NeedViewer({
-  instructorId,
-  className = "",
-}: {
-  instructorId: number;
-  className?: string;
-}) {
+export default function NeedViewer({ instructorId, className = "",}: { instructorId: number; className?: string;}) {
+  
   return (
     <GenericAPIContainer<Section[]>
       fetchFunction={() => fetchAllInstructorTeachesSection(instructorId)}

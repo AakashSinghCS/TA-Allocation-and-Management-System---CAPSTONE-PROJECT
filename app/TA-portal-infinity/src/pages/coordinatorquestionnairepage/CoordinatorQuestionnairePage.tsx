@@ -32,15 +32,15 @@ function CoordinatorQuestionnaire({ initial }: { initial: ProfileQuestion[] | nu
 
     return (
         <div>
-            {questions.map((q, i) => (
-                <div key={q.id ?? (q as any).tempId} className="relative">
+            {questions.map((currentq, i) => (
+                <div key={currentq.id ?? (currentq as any).tempId} className="relative">
                     <QuestionItem
-                        key={q.id ?? q.tempId}
-                        initialQuestion={q}
-                        onSaved={saved =>
-                            setQuestions(qs =>
-                                qs.map(x =>
-                                    (x.id ?? x.tempId) === (q.id ?? q.tempId) ? { ...saved, tempId: x.tempId } : x
+                        key={currentq.id ?? currentq.tempId}
+                        initialQuestion={currentq}
+                        onSaved={savedques =>
+                            setQuestions(q =>
+                                q.map(x =>
+                                    (x.id ?? x.tempId) === (currentq.id ?? currentq.tempId) ? { ...savedques, tempId: x.tempId } : x
                                 )
                             )
                         }
