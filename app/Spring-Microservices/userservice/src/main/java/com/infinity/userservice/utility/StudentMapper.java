@@ -11,7 +11,6 @@ public class StudentMapper {
             student.getId(), 
             student.getFirstName(), 
             student.getLastName(), 
-            student.getUserType(),
             student.getStudentNum(),
             student.getProgram(),
             student.getEnrollmentYear(),

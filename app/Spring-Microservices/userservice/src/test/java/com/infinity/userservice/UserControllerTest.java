@@ -75,7 +75,7 @@ public class UserControllerTest {
 
         @Test
         void testGetUserById_Success() throws Exception {
-                UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
+                UserDto mockResponse = new UserDto(1L, "John", "Smith", List.of(UserRole.STUDENT));
 
                 when(userService.getUserById(any(), any(), any())).thenReturn(mockResponse);
 
@@ -85,7 +85,8 @@ public class UserControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.firstName").value("John"))
-                                .andExpect(jsonPath("$.role").value("STUDENT"));
+                                .andExpect(jsonPath("$.roles").isArray())
+                                .andExpect(jsonPath("$.roles[0]").value("STUDENT"));
         }
 
         @Test

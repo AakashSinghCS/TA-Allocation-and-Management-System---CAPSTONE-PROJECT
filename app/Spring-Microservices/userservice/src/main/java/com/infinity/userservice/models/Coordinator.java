@@ -16,11 +16,6 @@ import lombok.NoArgsConstructor;
 public class Coordinator extends User {
 
     public Coordinator(String email, String firstName, String lastName, String password) {
-        super(email, firstName, lastName, password, UserRole.COORDINATOR);
-    }
-
-    @Override
-    public String getRole() {
-        return "ROLE_COORDINATOR";
+        super(email, firstName, lastName, password);
     }
 }

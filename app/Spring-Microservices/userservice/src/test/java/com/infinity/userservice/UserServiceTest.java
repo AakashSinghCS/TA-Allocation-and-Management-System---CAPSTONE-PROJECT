@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,8 +35,10 @@ import com.infinity.userservice.exceptions.BadRequestException;
 import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.models.Coordinator;
 import com.infinity.userservice.models.Instructor;
+import com.infinity.userservice.models.Role;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
+import com.infinity.userservice.repositories.RoleRepository;
 import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.services.UserService;
 import com.infinity.userservice.utility.UserMapper;
@@ -51,6 +54,8 @@ public class UserServiceTest {
     @Mock
     private UserMapper userMapper;
     @Mock
+    private RoleRepository roleRepository;
+    @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
     private ObjectMapper objectMapper;
@@ -62,7 +67,7 @@ public class UserServiceTest {
 
     @Test
     void testRegisterFailEmailExists() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT");
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", UserRole.STUDENT, false);
         User user = new Student("john@test.com", "John", "Smith", "password");
 
         when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
@@ -73,54 +78,73 @@ public class UserServiceTest {
 
     @Test
     void testRegisterStudent() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT");
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", UserRole.STUDENT,
+                false);
 
         Student saved = new Student("john@test.com", "John", "Smith", "password");
-        UserDto studentDto = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
+        UserDto studentDto = new UserDto(1L, "John", "Smith", List.of(UserRole.STUDENT));
+        Set<Role> roles = new HashSet<Role>(Set.of(new Role(1L, UserRole.STUDENT)));
+
+        Role studentRole = new Role(1L, UserRole.STUDENT);
+        when(roleRepository.findByName(UserRole.STUDENT)).thenReturn(Optional.of(studentRole));
 
         when(userRepository.save(any(User.class))).thenReturn(saved);
-        when(userMapper.registerToUser(request)).thenReturn(saved);
-        when(userMapper.registerToUser(request)).thenReturn(saved);
+        when(userMapper.registerToUser(request, roles)).thenReturn(saved);
         when(userMapper.toDto(saved)).thenReturn(studentDto);
 
         UserDto dto = userService.register(request);
 
         assertEquals("John", dto.firstName());
-        assertEquals(UserRole.STUDENT, dto.role());
+        assertEquals(List.of(UserRole.STUDENT), dto.roles());
+
     }
 
     @Test
     void testRegisterInstructor() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "INSTRUCTOR");
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", UserRole.INSTRUCTOR,
+                false);
 
         Instructor saved = new Instructor("john@test.com", "John", "Smith", "password");
-        UserDto studentDto = new UserDto(1L, "John", "Smith", UserRole.INSTRUCTOR);
+        UserDto instructorDto = new UserDto(1L, "John", "Smith", List.of(UserRole.INSTRUCTOR));
+        Set<Role> roles = new HashSet<Role>(Set.of(new Role(1L, UserRole.INSTRUCTOR)));
+
+        Role instructorRole = new Role(1L, UserRole.INSTRUCTOR);
+        when(roleRepository.findByName(UserRole.INSTRUCTOR)).thenReturn(Optional.of(instructorRole));
 
         when(userRepository.save(any(User.class))).thenReturn(saved);
-        when(userMapper.registerToUser(request)).thenReturn(saved);
-        when(userMapper.toDto(saved)).thenReturn(studentDto);
+        when(userMapper.registerToUser(request, roles)).thenReturn(saved);
+        when(userMapper.toDto(saved)).thenReturn(instructorDto);
 
         UserDto dto = userService.register(request);
 
         assertEquals("John", dto.firstName());
-        assertEquals(UserRole.INSTRUCTOR, dto.role());
+        assertEquals(List.of(UserRole.INSTRUCTOR), dto.roles());
     }
 
     @Test
     void testRegisterCoordinator() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "COORDINATOR");
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1",
+                UserRole.COORDINATOR,
+                true);
 
-        Coordinator saved = new Coordinator("john@test.com", "John", "Smith", "password");
-        UserDto studentDto = new UserDto(1L, "John", "Smith", UserRole.COORDINATOR);
+        Instructor saved = new Instructor("john@test.com", "John", "Smith", "password");
+        UserDto coordinatorDto = new UserDto(1L, "John", "Smith", List.of(UserRole.ADMIN, UserRole.COORDINATOR));
+        Set<Role> roles = new HashSet<Role>(Set.of(new Role(1L, UserRole.ADMIN), new Role(1L, UserRole.COORDINATOR)
+                ));
+
+        Role coordinatorRole = new Role(1L, UserRole.COORDINATOR);
+        Role adminRole = new Role(2L, UserRole.ADMIN);
+        when(roleRepository.findByName(UserRole.COORDINATOR)).thenReturn(Optional.of(coordinatorRole));
+        when(roleRepository.findByName(UserRole.ADMIN)).thenReturn(Optional.of(adminRole));
 
         when(userRepository.save(any(User.class))).thenReturn(saved);
-        when(userMapper.registerToUser(request)).thenReturn(saved);
-        when(userMapper.toDto(saved)).thenReturn(studentDto);
+        when(userMapper.registerToUser(request, roles)).thenReturn(saved);
+        when(userMapper.toDto(saved)).thenReturn(coordinatorDto);
 
         UserDto dto = userService.register(request);
 
         assertEquals("John", dto.firstName());
-        assertEquals(UserRole.COORDINATOR, dto.role());
+        assertEquals(List.of(UserRole.ADMIN, UserRole.COORDINATOR), dto.roles());
     }
 
     @Test
@@ -149,14 +173,14 @@ public class UserServiceTest {
     @Test
     void testGetUserById_Success() {
         User mockUser = new Coordinator("john@test.com", "John", "Smith", "password");
-        UserDto mockDto = new UserDto(1L, "John", "Smith", UserRole.COORDINATOR);
+        UserDto mockDto = new UserDto(1L, "John", "Smith", List.of(UserRole.COORDINATOR));
 
         when(userRepository.findById(any())).thenReturn(Optional.of(mockUser));
         when(userMapper.toDto(mockUser)).thenReturn(mockDto);
 
         UserDto dto = userService.getUserById(1L, 1L, List.of("ROLE_STUDENT"));
         assertEquals(dto.firstName(), "John");
-        assertEquals(dto.role(), UserRole.COORDINATOR);
+        assertEquals(dto.roles(), List.of(UserRole.COORDINATOR));
     }
 
     @Test
@@ -303,7 +327,7 @@ public class UserServiceTest {
         User mockUser = new Student("john@test.com", "John", "Smith", "password");
         mockUser.setId(2L);
         when(userRepository.existsById(any())).thenReturn(true);
-        userService.deleteUserById(1L, 2L, List.of("ROLE_COORDINATOR"));
+        userService.deleteUserById(1L, 2L, List.of("ROLE_ADMIN"));
         verify(userRepository).deleteById(1L);
     }
 
