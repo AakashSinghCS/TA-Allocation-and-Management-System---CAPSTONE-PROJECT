@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { UserRole } from '../../interfaces/enum/UserRole';
 
 // mock fetch globally
-global.fetch = vi.fn(() =>
+window.fetch = vi.fn(() =>
   Promise.resolve({
     ok: true,
     json: () => Promise.resolve({
