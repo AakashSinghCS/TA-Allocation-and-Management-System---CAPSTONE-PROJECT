@@ -14,7 +14,7 @@ interface AuthContextType {
   userId: number;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function parseJwt<T = any>(token: string): T | null {
   try {

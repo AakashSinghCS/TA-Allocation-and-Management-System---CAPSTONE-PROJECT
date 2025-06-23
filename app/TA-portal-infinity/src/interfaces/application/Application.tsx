@@ -1,5 +1,3 @@
-// src/types/application.ts
-
 export type Day =
   | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY'
   | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
@@ -26,7 +24,7 @@ export interface OfferDto {
 }
 
 export interface ApplicationRequest {
-  preferences: string[];            // List<Subject>
+  preferences: string[];         
   wantRemote: boolean;
   wantWorkingHours: number;
   availabilities: AvailabilityDto[];
@@ -37,7 +35,7 @@ export interface ApplicationDto {
   preferences: string[];
   wantRemote: boolean;
   wantWorkingHours: number;
-  timeSubmitted: string;           // ISO date-time
+  timeSubmitted: string;         
   availabilities: AvailabilityDto[];
 
   // optional—your DTO doesn’t yet send these,

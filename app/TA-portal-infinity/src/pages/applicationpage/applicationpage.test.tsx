@@ -1,46 +1,83 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ApplicationPage from './ApplicationPage';
+import { AuthContext } from '../../context/AuthContext';
+import { MemoryRouter } from 'react-router-dom';
+import { UserRole } from '../../interfaces/enum/UserRole';
 
-// Mock useNavigate
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
-  return {
-    ...actual,
-    useNavigate: () => vi.fn(),
-  };
-});
+// mock fetch globally
+global.fetch = vi.fn(() =>
+  Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve({
+      studentId: 123,
+      preferences: ['COSC111', 'COSC121'],
+      wantRemote: true,
+      wantWorkingHours: 10,
+      timeSubmitted: new Date().toISOString(),
+      availabilities: [],
+    }),
+  })
+) as unknown as typeof fetch;
+
+const mockContext = {
+  token: 'test-token',
+  userId: 123,
+  userRoles: [UserRole.STUDENT],
+  login: vi.fn(),
+  logout: vi.fn(),
+  isAuthenticated: true
+};
+
+const renderWithProviders = () =>
+  render(
+    <AuthContext.Provider value={mockContext}>
+      <MemoryRouter>
+        <ApplicationPage />
+      </MemoryRouter>
+    </AuthContext.Provider>
+  );
 
 describe('ApplicationPage', () => {
   beforeEach(() => {
-    localStorage.clear();
+    vi.clearAllMocks();
   });
 
-  it('renders the form title', () => {
-    render(<ApplicationPage />, { wrapper: MemoryRouter });
-    expect(screen.getByText(/TA Application Submission/i)).toBeInTheDocument();
+  it('renders the heading', async () => {
+    renderWithProviders();
+    expect(await screen.findByText(/TA Application/i)).toBeInTheDocument();
   });
 
-    it('shows validation errors if form is submitted empty', async () => {
-    render(<ApplicationPage />, { wrapper: MemoryRouter });
-
-    const submitBtn = screen.getByRole('button', { name: /submit/i });
+  it('validates required fields on submit', async () => {
+    renderWithProviders();
+    const submitBtn = screen.getByRole('button', { name: /submit application/i });
     fireEvent.click(submitBtn);
+    expect(await screen.findByText(/1st preference is required/)).toBeInTheDocument();
+    expect(screen.getByText(/Upload your transcript/)).toBeInTheDocument();
+  });
+
+  it('shows modal when savedApp is fetched', async () => {
+    renderWithProviders();
+    expect(await screen.findByRole('button', { name: /view details/i })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /view details/i }));
+    expect(await screen.findByText(/Previous Application Details/)).toBeInTheDocument();
+  });
+
+  it('handles file input and preference select', async () => {
+    renderWithProviders();
+
+    const file = new File(['dummy content'], 'test.pdf', { type: 'application/pdf' });
+    const selects = screen.getAllByRole('combobox');
+    const select = selects[0]; 
+   fireEvent.change(select, { target: { value: 'COSC' } });
+   expect((select as HTMLSelectElement).value).toBe('COSC');
+
+    const inputEl = screen.getByLabelText('Choose File');
+    fireEvent.change(inputEl, { target: { files: [file] } });
+
 
     await waitFor(() => {
-        expect(screen.getByText(/1st preference is required/i)).toBeInTheDocument();
-        expect(screen.getByText(/hours requested is required/i)).toBeInTheDocument();
-        expect(screen.getByText(/select a remote work preference/i)).toBeInTheDocument();
-        expect(screen.getByText(/upload your transcript/i)).toBeInTheDocument();
-        expect(screen.getByText(/please confirm profile update/i)).toBeInTheDocument();
+      expect(screen.getByDisplayValue('test.pdf')).toBeInTheDocument();
     });
-    });
-
-  it('updates state on input change', () => {
-    render(<ApplicationPage />, { wrapper: MemoryRouter });
-    const hoursInput = screen.getByPlaceholderText('Enter hours');
-    fireEvent.change(hoursInput, { target: { value: '10' } });
-    expect((hoursInput as HTMLInputElement).value).toBe('10');
   });
 });

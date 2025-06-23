@@ -7,7 +7,6 @@ import interactionPlugin from '@fullcalendar/interaction';
 import mockSubjectList from '../../mocked-objects/mockSubjects';
 import { useAuth } from '../../context/AuthContext';
 import type {
-  AvailabilityDto,
   ApplicationRequest,
   ApplicationDto
 } from '../../interfaces/application/Application';
@@ -102,7 +101,7 @@ useEffect(() => {
     if (resp.ok) {
       const dto: ApplicationDto = await resp.json();
       setSavedApp(dto);
-      // optionally pre-fill your formData & availability from dto here
+      // optional pre-fill 
     }
   }
   if (userId) loadExisting();
@@ -147,11 +146,9 @@ useEffect(() => {
  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
-  // --- 1) client-side validation ---
+  // client-side validation ---
   const newErrors: { [k: string]: string } = {};
   if (!formData.firstPreference)   newErrors.firstPreference   = '1st preference is required.';
-  if (!formData.secondPreference)  newErrors.secondPreference  = '2nd preference is required.';
-  if (!formData.thirdPreference)   newErrors.thirdPreference   = '3rd preference is required.';
   if (!availability.length)        newErrors.availability      = 'Pick at least one availability slot.';
   if (!formData.wantWorkingHours)  newErrors.wantWorkingHours  = 'Hours requested is required.';
   if (!formData.wantRemote)        newErrors.wantRemote        = 'Select a remote work preference.';
@@ -167,7 +164,7 @@ useEffect(() => {
   setErrors({});
   setSubmitted(true);
 
-  // --- 2) assemble your payload ---
+  //assemble our payload
   const payload: ApplicationRequest = {
     preferences: [
       formData.firstPreference,
@@ -183,7 +180,7 @@ useEffect(() => {
     })),
   };
 
-  // --- 3) prepare URLs & headers ---
+  // preparing URLs & headers
   const addUrl    = 'http://localhost:8080/applications/add';
   const updateUrl = `http://localhost:8080/applications/update/${userId}`;
   const rolesHeader = userRoles
@@ -198,14 +195,13 @@ useEffect(() => {
   };
 
   try {
-    // --- 4) try POST first ---
     let resp = await fetch(addUrl, {
       method: 'POST',
       headers: commonHeaders,
       body: JSON.stringify(payload),
     });
 
-    // --- 5) if duplicate‐year error, fall back to PUT update ---
+    // if duplicate‐year error, fall back to PUT update
     if (resp.status === 400) {
       const errTxt = await resp.text();
       console.warn('Add failed:', errTxt);
@@ -220,33 +216,31 @@ useEffect(() => {
         throw new Error(errTxt);
       }
     }
-
-    // --- 6) handle any other non-OK ---
     if (!resp.ok) {
       const errTxt = await resp.text();
       console.error('Final server error:', errTxt);
       throw new Error(`HTTP ${resp.status}: ${errTxt}`);
     }
 
-    // --- 7) success! parse & store DTO ---
+    // success! parse & store DTO
     const dto: ApplicationDto = await resp.json();
     setSavedApp(dto);
 
   } catch (err) {
     console.error(err);
-    // optionally set a top-level form error here for the user
+    setErrors(prev => ({
+      ...prev,
+      form: 'Failed to submit application. Please try again later.'
+    }));
   }
 };
 
   return (
     <div className="min-h-screen px-2 sm:px-6 py-12 bg-[#f4f6fc]">
       <div className="max-w-[1100px] mx-auto">
-        {/* 𝗠𝗢𝗗𝗔𝗟 𝗙𝗢𝗥 𝗦𝗔𝗩𝗘𝗗 𝗔𝗣𝗣 */}
+        {/* Modal for previous application */}
         {isModalOpen && savedApp && (
          <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/20">
-
-
-
             <div className="bg-white rounded-lg w-full max-w-lg p-6 shadow-xl pointer-events-auto">
               <h2 className="text-2xl font-bold mb-4">Previous Application Details</h2>
               <div className="space-y-3 text-gray-800 text-sm">
@@ -276,8 +270,7 @@ useEffect(() => {
           </div>
         )}
 
-
-        {/* 𝗕𝗔𝗡𝗡𝗘𝗥: only when savedApp exists */}
+        {/* only when previous application exists */}
             {savedApp && (
           <div className="mb-6 rounded-lg border-l-4 border-yellow-500 bg-yellow-100 p-3 text-yellow-800 flex items-center justify-between">
             <span>
@@ -292,7 +285,7 @@ useEffect(() => {
           </div>
         )}
 
-      {/* 𝗗𝗬𝗡𝗔𝗠𝗜𝗖 𝗛𝗘𝗔𝗗𝗜𝗡𝗚 */}
+      {/* heading change if exists */}
       <h1 className="text-4xl font-bold text-[#040941] mb-10">
         {savedApp ? 'Update Your TA Application' : 'TA Application Submission'}
       </h1>
@@ -304,27 +297,29 @@ useEffect(() => {
             <section>
               <h2 className="text-xl font-semibold mb-4">Subject Preferences</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {(['firstPreference','secondPreference','thirdPreference'] as const).map(pref => (
-                  <div key={pref}>
-                    <label className="block mb-1 font-medium">
-                      {pref === 'firstPreference' ? '1st Preference*'
-                        : pref === 'secondPreference' ? '2nd Preference*'
-                        : '3rd Preference*'}
-                    </label>
-                    <select
-                      name={pref}
-                      value={(formData as any)[pref]}
-                      onChange={handleChange}
-                      className="w-full border rounded px-3 py-2"
-                    >
-                      <option value="">Select</option>
-                      {mockSubjectList.map(subject => (
-                        <option key={subject} value={subject}>{subject}</option>
-                      ))}
-                    </select>
-                    {errors[pref] && <p className="text-sm text-red-600 mt-1">{errors[pref]}</p>}
-                  </div>
-                ))}
+               {(['firstPreference','secondPreference','thirdPreference'] as const).map(pref => (
+                <div key={pref}>
+                  <label className="block mb-1 font-medium" htmlFor={pref}>
+                    {pref === 'firstPreference' ? '1st Preference*'
+                      : pref === 'secondPreference' ? '2nd Preference*'
+                      : '3rd Preference*'}
+                  </label>
+                  <select
+                    id={pref}
+                    name={pref}
+                    value={(formData as any)[pref]}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                  >
+                    <option value="">Select</option>
+                    {mockSubjectList.map(subject => (
+                      <option key={subject} value={subject}>{subject}</option>
+                    ))}
+                  </select>
+                  {errors[pref] && <p className="text-sm text-red-600 mt-1">{errors[pref]}</p>}
+                </div>
+              ))}
+ 
               </div>
             </section>
 
@@ -361,7 +356,7 @@ useEffect(() => {
                   readOnly
                   value={formData.transcriptFile?.name || ''}
                   placeholder="No file chosen"
-                  className="flex-1 px-3 py-2 text-green-600 bg-white"
+                  className="flex-1 px-3 py-2 text-red-600 bg-white"
                 />
               </div>
               {errors.transcriptFile && <p className="text-sm text-red-600 mt-1">{errors.transcriptFile}</p>}
@@ -445,7 +440,7 @@ useEffect(() => {
               >
                 Cancel
               </button>
-              {/* 𝗗𝗬𝗡𝗔𝗠𝗜𝗖 𝗕𝗨𝗧𝗧𝗢𝗡 */}
+              {/* Change button if prev exists */}
           <button
             type="submit"
             className="px-6 py-2 bg-[#040941] text-white rounded hover:bg-[#030735]"
@@ -499,6 +494,11 @@ useEffect(() => {
                   label: 'Upload Transcript',
                   description: 'Attach a valid transcript file.',
                   done: !!formData.transcriptFile
+                },
+                {
+                  label: 'Remote Preference',
+                  description: 'Select if you want to work remotely.',
+                  done: !!formData.wantRemote
                 },
                 {
                   label: 'Select Availability',
