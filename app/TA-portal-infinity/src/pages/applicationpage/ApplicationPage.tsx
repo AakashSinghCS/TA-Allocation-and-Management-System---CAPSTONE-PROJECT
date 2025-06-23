@@ -356,7 +356,7 @@ useEffect(() => {
                   readOnly
                   value={formData.transcriptFile?.name || ''}
                   placeholder="No file chosen"
-                  className="flex-1 px-3 py-2 text-red-600 bg-white"
+                  className="flex-1 px-3 py-2 text-[#040941] bg-white"
                 />
               </div>
               {errors.transcriptFile && <p className="text-sm text-red-600 mt-1">{errors.transcriptFile}</p>}
@@ -452,7 +452,7 @@ useEffect(() => {
 
           {submitted && savedApp && (
             <div className="mt-12 bg-white p-6 rounded-2xl shadow-md border-t-[6px] border-[#040941]">
-              <h2 className="text-2xl font-bold text-[#040941] mb-6 text-center">Application Submitted!</h2>
+              <h2 className="text-2xl font-bold text-[#040941] mb-6 text-center">Your TA application has been successfully submitted and is now under review by the coordinator</h2>
               <p><strong>Student ID:</strong> {savedApp.studentId}</p>
               <p><strong>Submitted at:</strong> {new Date(savedApp.timeSubmitted).toLocaleString()}</p>
 
