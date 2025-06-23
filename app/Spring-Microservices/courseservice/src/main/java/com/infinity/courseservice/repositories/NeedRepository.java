@@ -3,9 +3,9 @@ package com.infinity.courseservice.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.infinity.courseservice.models.SectionSchedule;
+import com.infinity.courseservice.models.Need;
 
 @Repository
-public interface SectionScheduleRepository extends JpaRepository<SectionSchedule, Long>{
-    
+public interface NeedRepository extends JpaRepository<Need, Long> {
+
 }

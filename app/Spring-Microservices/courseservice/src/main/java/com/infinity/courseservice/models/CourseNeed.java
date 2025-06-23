@@ -35,4 +35,11 @@ public class CourseNeed {
     private Integer year;
 
     private String semester;
+
+    public CourseNeed(Course course, Need need, Integer year, String semester) {
+        this.course = course;
+        this.need = need;
+        this.year = year;
+        this.semester = semester;
+    }
 }

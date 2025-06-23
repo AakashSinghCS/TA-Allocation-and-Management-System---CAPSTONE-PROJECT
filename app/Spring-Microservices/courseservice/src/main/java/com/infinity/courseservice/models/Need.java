@@ -32,4 +32,10 @@ public class Need {
     @OneToMany(mappedBy = "need", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseNeed> courseNeeds;
 
+    public Need(String description, Integer requiredGradingHours, Integer numHoursCurrentlyAllocated) {
+        this.description = description;
+        this.requiredGradingHours = requiredGradingHours;
+        this.numHoursCurrentlyAllocated = numHoursCurrentlyAllocated;
+    }
+
 }
