@@ -1,5 +1,5 @@
 package com.infinity.userservice.enums;
 
 public enum UserRole {
-    STUDENT, INSTRUCTOR, COORDINATOR
+    STUDENT, INSTRUCTOR, COORDINATOR, ADMIN
 }

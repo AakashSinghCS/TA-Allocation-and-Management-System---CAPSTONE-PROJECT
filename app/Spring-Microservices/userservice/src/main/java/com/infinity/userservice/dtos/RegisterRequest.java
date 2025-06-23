@@ -1,7 +1,10 @@
 package com.infinity.userservice.dtos;
 
+import com.infinity.userservice.enums.UserRole;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -22,8 +25,8 @@ public record RegisterRequest(
         @Size(min = 8, message = "Password must be at least 8 characters")
         
         String password,
-        @NotBlank(message = "User type is required") 
-        @Pattern(regexp = "STUDENT|INSTRUCTOR|COORDINATOR", message = "User type must be STUDENT, INSTRUCTOR, or COORDINATOR")
-        
-        String userType) {
+        @NotNull(message = "User type is required")         
+        UserRole userType,
+        boolean isAdmin
+        ) {
 }

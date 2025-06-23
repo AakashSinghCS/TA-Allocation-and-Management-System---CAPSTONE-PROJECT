@@ -1,5 +1,6 @@
 package com.infinity.userservice.services;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,13 +15,16 @@ import com.infinity.userservice.dtos.InstructorUpdateRequest;
 import com.infinity.userservice.dtos.RegisterRequest;
 import com.infinity.userservice.dtos.StudentUpdateRequest;
 import com.infinity.userservice.dtos.UserDto;
+import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.BadRequestException;
 import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.models.Coordinator;
 import com.infinity.userservice.models.Instructor;
+import com.infinity.userservice.models.Role;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
+import com.infinity.userservice.repositories.RoleRepository;
 import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.utility.UserMapper;
 
@@ -35,6 +39,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final ObjectMapper objectMapper;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -44,7 +49,23 @@ public class UserService {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new BadRequestException("An account with this email already exists");
         }
-        User user = userMapper.registerToUser(request);
+
+        if (request.userType() == UserRole.ADMIN) {
+            throw new BadRequestException("Cannot register with ADMIN as primary user type");
+        }
+        
+        Set<Role> roles = new HashSet<>();
+        Role primaryRole = roleRepository.findByName(request.userType())
+            .orElseThrow(() -> new RuntimeException("Role not found"));
+        roles.add(primaryRole);
+
+        if (request.isAdmin()) {
+            Role adminRole = roleRepository.findByName(UserRole.ADMIN)
+                    .orElseThrow(() -> new RuntimeException("ADMIN role not found"));
+            roles.add(adminRole);
+        }
+
+        User user = userMapper.registerToUser(request, roles);
         String hashedPassword = passwordEncoder.encode(request.password());
         user.setPassword(hashedPassword);
         userRepository.save(user);
@@ -65,7 +86,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
+        if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_ADMIN")) {
             throw new AuthorizationException("Not allowed");
         }
 
@@ -80,7 +101,7 @@ public class UserService {
         }
     }
     
-    public void updateStudent(Student student, Map<String, Object> payload) {
+    private void updateStudent(Student student, Map<String, Object> payload) {
         StudentUpdateRequest req = validateAndMap(payload, StudentUpdateRequest.class);
 
         if (req.email() != null)
@@ -103,7 +124,7 @@ public class UserService {
         userRepository.save(student);
     }
     
-    public void updateInstructor(Instructor instructor, Map<String, Object> payload) {
+    private void updateInstructor(Instructor instructor, Map<String, Object> payload) {
         InstructorUpdateRequest req = validateAndMap(payload, InstructorUpdateRequest.class);
 
         if (req.email() != null)
@@ -124,7 +145,7 @@ public class UserService {
         userRepository.save(instructor);
     }
 
-    public void updateCoordinator(Coordinator coordinator, Map<String, Object> payload) {
+    private void updateCoordinator(Coordinator coordinator, Map<String, Object> payload) {
         CoordinatorUpdateRequest req = validateAndMap(payload, CoordinatorUpdateRequest.class);
 
         if (req.email() != null)
@@ -153,7 +174,7 @@ public class UserService {
     }    
 
     public String deleteUserById(Long id, Long userIdFromHeader, List<String> headerRoles) {
-        if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
+        if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_ADMIN")) {
             throw new AuthorizationException("Not allowed");
         }
         if (!userRepository.existsById(id)) {

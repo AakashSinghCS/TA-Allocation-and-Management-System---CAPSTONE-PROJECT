@@ -62,7 +62,6 @@ public class StudentServiceTest {
             mockStudent.getId(), 
             mockStudent.getFirstName(), 
             mockStudent.getLastName(), 
-            mockStudent.getUserType(),
             mockStudent.getStudentNum(),
             mockStudent.getProgram(),
             mockStudent.getEnrollmentYear(),
@@ -75,7 +74,6 @@ public class StudentServiceTest {
 
         StudentDto dto = studentService.getStudentById(1L);
         assertEquals(dto.firstName(), "John");
-        assertEquals(dto.role(), UserRole.STUDENT);
     }
     
 }
