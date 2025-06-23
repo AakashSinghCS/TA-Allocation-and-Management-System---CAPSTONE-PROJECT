@@ -6,10 +6,8 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import mockSubjectList from '../../mocked-objects/mockSubjects';
 import { useAuth } from '../../context/AuthContext';
-import type {
-  ApplicationRequest,
-  ApplicationDto
-} from '../../interfaces/application/Application';
+import type { ApplicationRequest, ApplicationDto} from '../../interfaces/application/Application';
+import { fetchExistingApplication } from '../../api/application/FetchExistingApplication';
 
 type Day =
   | 'MONDAY'
@@ -85,27 +83,14 @@ const [isModalOpen, setIsModalOpen] = useState(false);
 useEffect(() => {
   async function loadExisting() {
     const year = new Date().getFullYear();
-    const rolesHeader = userRoles
-      .map(r => (r.startsWith('ROLE_') ? r : `ROLE_${r}`))
-      .join(',');
-    const resp = await fetch(
-      `http://localhost:8080/applications/get/${userId}/${year}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'X-User-Id':     userId.toString(),
-          'X-User-Roles':  rolesHeader
-        },
-      }
-    );
-    if (resp.ok) {
-      const dto: ApplicationDto = await resp.json();
-      setSavedApp(dto);
-      // optional pre-fill 
+    if (userId !== null && token) {
+      const result = await fetchExistingApplication(Number(userId), year, token, userRoles);
+      if (result) setSavedApp(result);
     }
   }
-  if (userId) loadExisting();
+  if (userId !== null && token) loadExisting();
 }, [userId, token, userRoles]);
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
