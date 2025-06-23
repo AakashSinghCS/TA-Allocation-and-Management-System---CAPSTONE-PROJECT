@@ -81,6 +81,7 @@ const ApplicationPage: React.FC = () => {
   const navigate = useNavigate();
 const calendarRef = useRef<FullCalendar>(null);
 const { token, userId, userRoles } = useAuth();
+const [isModalOpen, setIsModalOpen] = useState(false);
 
 useEffect(() => {
   async function loadExisting() {
@@ -240,12 +241,56 @@ useEffect(() => {
   return (
     <div className="min-h-screen px-2 sm:px-6 py-12 bg-[#f4f6fc]">
       <div className="max-w-[1100px] mx-auto">
+        {/* 𝗠𝗢𝗗𝗔𝗟 𝗙𝗢𝗥 𝗦𝗔𝗩𝗘𝗗 𝗔𝗣𝗣 */}
+        {isModalOpen && savedApp && (
+         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/20">
+
+
+
+            <div className="bg-white rounded-lg w-full max-w-lg p-6 shadow-xl pointer-events-auto">
+              <h2 className="text-2xl font-bold mb-4">Previous Application Details</h2>
+              <div className="space-y-3 text-gray-800 text-sm">
+                <p><strong>Student ID:</strong> {savedApp.studentId}</p>
+                <p><strong>Submitted at:</strong> {new Date(savedApp.timeSubmitted).toLocaleString()}</p>
+                <p><strong>Preferences:</strong> {savedApp.preferences.join(', ')}</p>
+                <p><strong>Remote:</strong> {savedApp.wantRemote ? 'Yes' : 'No'}</p>
+                <p><strong>Requested Hours:</strong> {savedApp.wantWorkingHours}</p>
+                <div>
+                  <strong>Availability:</strong>
+                  <ul className="list-disc list-inside ml-4">
+                    {savedApp.availabilities.map((a, i) => (
+                      <li key={i}>{a.day} {a.startTime}–{a.endTime}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+
         {/* 𝗕𝗔𝗡𝗡𝗘𝗥: only when savedApp exists */}
-      {savedApp && (
-        <div className="mb-6 rounded-lg border-l-4 border-yellow-500 bg-yellow-100 p-4 text-yellow-800">
-          You’ve already submitted an application this year — editing will update your existing one.
-        </div>
-      )}
+            {savedApp && (
+          <div className="mb-6 rounded-lg border-l-4 border-yellow-500 bg-yellow-100 p-3 text-yellow-800 flex items-center justify-between">
+            <span>
+              You’ve already submitted an application this year — editing will update your existing one.
+            </span>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="ml-4 px-4 py-2 bg-[#040941] text-white rounded hover:bg-[#040941]/90 transition-colors"
+            >
+              View Details
+            </button>
+          </div>
+        )}
 
       {/* 𝗗𝗬𝗡𝗔𝗠𝗜𝗖 𝗛𝗘𝗔𝗗𝗜𝗡𝗚 */}
       <h1 className="text-4xl font-bold text-[#040941] mb-10">
@@ -323,31 +368,31 @@ useEffect(() => {
             </section>
 
             {/* Remote Preference */}
-            <section>
-              <label className="block mb-2 font-medium">Remote Work Preference*</label>
-              <div className="flex gap-6">
-                {(['yes','no','no-preference'] as const).map(option => (
-                  <label key={option} className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name="wantRemote"
-                      value={option}
-                      checked={formData.wantRemote === option}
-                      onChange={handleChange}
-                      className="mr-2"
-                    />
-                    {option === 'no-preference' ? 'No Preference'
-                      : option.charAt(0).toUpperCase() + option.slice(1)}
-                  </label>
-                ))}
-              </div>
-              {errors.wantRemote && <p className="text-sm text-red-600 mt-1">{errors.wantRemote}</p>}
-            </section>
+              <section>
+                <label className="block mb-2 font-medium">Remote Work Preference*</label>
+                <div className="flex gap-6">
+                  {(['yes', 'no'] as const).map(option => (
+                    <label key={option} className="inline-flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="wantRemote"
+                        value={option}
+                        checked={formData.wantRemote === option}
+                        onChange={handleChange}
+                        className="form-radio text-indigo-600"
+                      />
+                      <span className="capitalize">{option}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.wantRemote && (
+                  <p className="text-sm text-red-600 mt-1">{errors.wantRemote}</p>
+                )}
+              </section>
 
-            {/* Availability Slider */}
-            <section>
-             
 
+            {/* Availability */}
+            <section>
               <h2 className="text-xl font-semibold mb-2">Availability*</h2>
               <div className="bg-white rounded shadow p-2 h-[400px] overflow-y-auto">
                 <FullCalendar
