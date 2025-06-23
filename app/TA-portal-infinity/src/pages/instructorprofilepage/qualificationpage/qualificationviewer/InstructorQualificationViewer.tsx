@@ -1,5 +1,5 @@
 import { fetchAllInstructorQualifications, type QualificationResponse } from "../../../../api/instructor/fetchAllInstructorQualifications";
-import QualificationCard from "../../../../components/features/qualification/QualificationCard";
+import InstructorQualificationCard from "../../../../components/features/qualification/InstructorQualificationCard.tsx/InstructorQualificationCard";
 import SectionCard from "../../../../components/features/section/sectioncard/SectionCard";
 import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
 
@@ -9,7 +9,7 @@ export default function InstructorQualificationViewer ({instructorId,}:{instruct
       fetchFunction={() => fetchAllInstructorQualifications(instructorId)}
       render={(response) => (
         <div className={"grid gap-3 "}>
-          <div className="hidden lg:grid lg:grid-cols-2 font-medium text-sm text-slate-600">
+          <div className="hidden lg:grid lg:grid-cols-[1fr_2fr] font-medium text-lg text-slate-600">
             <span>Sections Teaching</span>
             <span>Qualifications of Course</span>
           </div>
@@ -21,7 +21,7 @@ export default function InstructorQualificationViewer ({instructorId,}:{instruct
               <SectionCard
                 section={resp.section}
                 className=""/>
-              <QualificationCard course= {{id : resp.section.sectionDetails?.id, deptCode: resp.section.sectionDetails?.deptCode}} 
+              <InstructorQualificationCard course= {{id : resp.section.sectionDetails?.id, deptCode: resp.section.sectionDetails?.deptCode}} 
                 initialQualifications = {resp.qualifications}/>
             </div>
           ))}

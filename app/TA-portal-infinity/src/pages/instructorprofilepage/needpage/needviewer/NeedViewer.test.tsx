@@ -14,7 +14,7 @@ vi.mock('../../../../utility/genericapicontainer/GenericAPIContainer', () => {
 
 const arbitaryId = 10;
 
-const renderComparer = () =>
+const renderer = () =>
   render(
     <MemoryRouter>
       <NeedViewer instructorId={arbitaryId} />
@@ -23,7 +23,7 @@ const renderComparer = () =>
 
 describe('<NeedViewer />', () => {
   it('shows courses, needs, and ta allocations', () => {
-    renderComparer();
+    renderer();
 
     // expect(
     //   screen.getByText(/no courses to display/i)
@@ -36,7 +36,6 @@ describe('<NeedViewer />', () => {
     expect(screen.getAllByText(/cosc\s*121/i).length).toBeGreaterThan(0);
 
     const needCard = screen.getByTestId('need-card');
-    // expect(within(needCard).getByText(/math\s*125/i)).toBeInTheDocument();
     expect(within(needCard).getAllByText(/math\s*125/i).length).toBeGreaterThan(0);
 
     const alloCard = screen.getByTestId('allocation-card');

@@ -38,6 +38,7 @@ export const router = createBrowserRouter([
       { path: "instructorprofile/:instructorId", element: <InstructorProfilePage /> },
       { path: "instructorprofile/:instructorId/need", element: <InstructorNeedPage /> },
       { path: "instructorprofile/:instructorId/compare", element: <InstructorComparerPage /> },
+      { path: "instructorprofile/:instructorId/qualifications", element: <InstructorQualificationPage /> },
       // STUDENT routes
       {
         path: "student",
@@ -64,7 +65,7 @@ export const router = createBrowserRouter([
         ),
         children: [
           { path: "home", element: <InstructorHomePage /> },
-          { path: "qualification", element: <InstructorQualificationPage /> },
+          { path: "qualifications/:instructorId", element: <InstructorQualificationPage /> },
           { path: "error", element: <ErrorPage /> },
         ],
       },

@@ -13,7 +13,7 @@ export default function NeedViewer({ instructorId, className = "",}: { instructo
       fetchFunction={() => fetchAllInstructorTeachesSection(instructorId)}
       render={(sections) => (
         <div className={"grid gap-3 " + className}>
-          <div className="hidden lg:grid lg:grid-cols-3 font-medium text-sm text-slate-600">
+          <div className="hidden lg:grid lg:grid-cols-3 font-medium text-lg text-slate-600">
             <span>Sections Teaching</span>
             <span>Needs of Course</span>
             <span>Students Allocated</span>

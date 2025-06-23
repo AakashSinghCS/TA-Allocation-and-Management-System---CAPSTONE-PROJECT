@@ -1,9 +1,9 @@
-import type Qualification from "../../../interfaces/qualification/Qualification";
+import type Qualification from "../../../../interfaces/qualification/Qualification";
 import { useState } from "react";
-import { fallbackTempId, toObjectWithTempId } from "../../../utility/fallbackTempId/fallbackTempId";
-import type { Course } from "../../../interfaces/course/Course";
-import { fetchCreateQualification } from "../../../api/instructor/fetchCreateQualification";
-import { fetchDeleteQualification } from "../../../api/instructor/fetchDeleteQualification";
+import { fallbackTempId, toObjectWithTempId } from "../../../../utility/fallbackTempId/fallbackTempId";
+import type { Course } from "../../../../interfaces/course/Course";
+import { fetchCreateQualification } from "../../../../api/instructor/fetchCreateQualification";
+import { fetchDeleteQualification } from "../../../../api/instructor/fetchDeleteQualification";
 
 interface QualificationCardProps {
     initialQualifications?: Qualification[];
@@ -16,7 +16,7 @@ interface TempQualification extends Qualification {
 }
 
 
-export default function QualificationCard({ initialQualifications, course, className = "" }: QualificationCardProps) {
+export default function InstructorQualificationCard({ initialQualifications, course, className = "" }: QualificationCardProps) {
     if (!initialQualifications)
         return (
             <div className="p-2 italic text-slate-400 border border-dashed border-slate-200 rounded-lg">
@@ -58,10 +58,10 @@ export default function QualificationCard({ initialQualifications, course, class
     }
     return (
     <div
-      className={`${className} w-full rounded-lg border border-amber-300 bg-amber-50 p-4`}
+      className={`${className} w-full rounded-lg border border-amber-300 bg-amber-50 p-2`}
       data-testid="qualification-card"
     >
-      <h3 className="font-medium mb-2">Qualifications</h3>
+      <h3 className="font-medium mb-2 text-sm">Qualifications</h3>
 
       {qualifications.map((q) => (
         <QualificationRow
@@ -141,7 +141,7 @@ function QualificationRow({ isEdit = false, qualification, onSaved, onRemoved }:
       ) : (
         <>
           <input type="checkbox" checked disabled className="w-4 h-4" />
-          <span className="flex-1">{qualification.description}</span>
+          <span className="flex-1 text-sm">{qualification.description}</span>
           <button onClick={() => onRemoved(qualification)} className="text-red-600 hover:text-red-800" >
             Delete
           </button>
