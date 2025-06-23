@@ -1,0 +1,163 @@
+import type Qualification from "../../../../interfaces/qualification/Qualification";
+import { useState } from "react";
+import { fallbackTempId, toObjectWithTempId } from "../../../../utility/fallbackTempId/fallbackTempId";
+import type { Course } from "../../../../interfaces/course/Course";
+import { fetchCreateQualification } from "../../../../api/instructor/fetchCreateQualification";
+import { fetchDeleteQualification } from "../../../../api/instructor/fetchDeleteQualification";
+
+interface QualificationCardProps {
+    initialQualifications?: Qualification[];
+    course : Course;
+    className?: string;
+}
+
+interface TempQualification extends Qualification {
+    tempId: string;
+}
+
+
+export default function InstructorQualificationCard({ initialQualifications, course, className = "" }: QualificationCardProps) {
+    if (!initialQualifications)
+        return (
+            <div className="p-2 italic text-slate-400 border border-dashed border-slate-200 rounded-lg">
+                No data
+            </div>
+        );
+    const [qualifications, setQualifications] = useState<TempQualification[]>(() =>
+        toObjectWithTempId(initialQualifications)
+    );
+
+    const addEditingRow = () => setQualifications(qua => [...qua, emptyQualification(course.deptCode ?? "")]);
+
+     const onSaved = async (savedTempId : string, description: string) => {
+        //TODO: ensure backend considers -1 and "" value and throw the request if they are empty.
+        const created : Qualification | null= await fetchCreateQualification( description, course.deptCode ?? "", course.id ?? -1);
+        if (created) {
+        setQualifications((q) =>
+            q.map((x) => x.tempId === savedTempId ? { ...created, tempId:savedTempId } : x));}
+    };
+
+    const onRemoved = async (removingq: TempQualification) => {
+        if (removingq.id) {
+            //uncomment below when backend works.
+            // const ok = await fetchDeleteQualification(removingq.id);
+            
+            // if (!ok) return;
+            //do a confirmation before removing
+            // setQualifications(q => q.filter(x => {
+            //     if(x.id) return x.id !== removingq.id
+            //     return x.tempId !== removingq.tempId
+            // }))
+        
+        } //when the qualification in question is still in edit mode and gets cancelled
+            setQualifications(q => q.filter(x => {
+                if(x.id) return x.id !== removingq.id
+                return x.tempId !== removingq.tempId
+            })) 
+        
+    }
+    return (
+    <div
+      className={`${className} w-full rounded-lg border border-amber-300 bg-amber-50 p-2`}
+      data-testid="qualification-card"
+    >
+      <h3 className="font-medium mb-2 text-sm">Qualifications</h3>
+
+      {qualifications.map((q) => (
+        <QualificationRow
+          key={q.tempId}
+          qualification={q}
+          isEdit={!q.id}
+          onSaved={onSaved}
+          onRemoved={onRemoved}
+        />
+      ))}
+
+      <button
+        onClick={addEditingRow}
+        className="mt-2 italic text-slate-400 border border-dashed border-slate-200 p-2 rounded hover:bg-slate-100 w-full"
+      >
+        + Add a qualification
+      </button>
+    </div>
+  );
+
+    //Student view
+    // return (
+    //     <div className={className + " w-full overflow-hidden rounded-lg text-sm border border-amber-300 bg-amber-50 p-2"} data-testid="qualification-card" >
+    //         {
+    //             qualifications.map((currentq) => (
+    //                 <label>
+    //                     <select value="MULTI">
+    //                         <QualificationRow key={currentq.id ?? currentq.tempId} qualification={currentq} isEdit={false}
+    //                             onSaved={savedqual => setQualifications(q =>
+    //                                 q.map(x =>
+    //                                     (x.id ?? x.tempId) === (currentq.id ?? currentq.tempId) ? { ...savedqual, tempId: x.tempId } : x
+    //                                 )
+    //                             )}
+    //                             onRemoved={q => onRemoved(q)}
+    //                         />
+    //                     </select>
+    //                 </label>
+    //             ))
+    //         }
+    //         <button
+    //             className="cursor-hover p-2 italic text-slate-400 border border-slate-400 rounded-lg"
+    //             onClick={addEditingRow}>
+    //             Add a qualification
+    //         </button>
+    //     </div>
+    // );
+}
+
+interface QualificationRowProps {
+    isEdit: boolean;
+    qualification: TempQualification;
+    onSaved: (tempId : string, description : string) => void;
+    onRemoved: (removedq: TempQualification) => void;
+}
+
+function QualificationRow({ isEdit = false, qualification, onSaved, onRemoved }: QualificationRowProps) {
+    const [description, setDescription] = useState<string>(qualification.description ?? "");
+
+    const handleSave = () => {
+        onSaved(qualification.tempId, description.trim());
+    };
+
+    return (
+    <div className="flex items-center space-x-2 mb-2">
+      {isEdit ? (
+        <>
+          <input type="text" value={description} onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter qualification"
+            className="flex-1 border px-2 py-1 rounded"/>
+          <button onClick={handleSave} className="px-3 py-1 bg-amber-300 rounded hover:bg-amber-400">
+            Save
+          </button>
+          <button onClick={() => onRemoved(qualification)} className="text-gray-600 hover:text-gray-800">
+            ✕
+          </button>
+        </>
+      ) : (
+        <>
+          <input type="checkbox" checked disabled className="w-4 h-4" />
+          <span className="flex-1 text-sm">{qualification.description}</span>
+          <button onClick={() => onRemoved(qualification)} className="text-red-600 hover:text-red-800" >
+            Delete
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
+function emptyQualification(deptCode: string): TempQualification {
+    return {
+        id: undefined,
+        tempId: fallbackTempId(),
+        description: "",
+        deptCode: deptCode
+    }
+}
+
+
