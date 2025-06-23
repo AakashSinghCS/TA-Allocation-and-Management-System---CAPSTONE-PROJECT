@@ -3,7 +3,7 @@ import { fetchAllProfileQuestions } from "../../api/question/fetchAllProfileQues
 import type { ProfileQuestion } from "../../interfaces/question/ProfileQuestion";
 import { GenericAPIContainer } from "../../utility/genericapicontainer/GenericAPIContainer";
 import QuestionItem from "../../components/features/questionanswer/questionitem/QuestionItem";
-import { fallbackTempId } from "../../utility/fallbackTempId/fallbackTempId";
+import { fallbackTempId, toObjectWithTempId } from "../../utility/fallbackTempId/fallbackTempId";
 
 
 //TODO: Confirm with the coordinator first when he clicks submit! Explain the consequences of the submit. 
@@ -12,27 +12,15 @@ import { fallbackTempId } from "../../utility/fallbackTempId/fallbackTempId";
 //TODO: CoordinatorQuestionnaire will need a seperate testing file, as it has too much functionality to not get tested.
 function CoordinatorQuestionnaire({ initial }: { initial: ProfileQuestion[] | null }) {
     //TODO: make a toTempProfileQuestion function for decoupling and clearer code.
-    const [questions, setQuestions] = useState<TempProfileQuestion[]>(() =>{
-        if(initial){
-            return initial.map(q => ({ ...q, tempId: fallbackTempId(), }))
-        }else{
-            return []
-        }        
-    }
-
+    const [questions, setQuestions] = useState<TempProfileQuestion[]>(
+        () => toObjectWithTempId(initial) 
     );
 
     const addQuestion = () => setQuestions(qs => [...qs, emptyQuestion()]);
 
-    // const updateQuestion = (idx: number, q: ProfileQuestion) =>
-    //     setQuestions(prev => prev.map((old, i) => (i === idx ? ({ ...old, ...q } as TempProfileQuestion)  : old)));
-
-    // const deleteQuestion = (idx: number) =>
-    //     setQuestions(qs => qs.filter((_, i) => i !== idx));
-
     return (
         <div>
-            {questions.map((currentq, i) => (
+            {questions.map((currentq) => (
                 <div key={currentq.id ?? (currentq as any).tempId} className="relative">
                     <QuestionItem
                         key={currentq.id ?? currentq.tempId}

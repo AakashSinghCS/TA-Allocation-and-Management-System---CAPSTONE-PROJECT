@@ -23,6 +23,7 @@ import { TaQuestionnairePage } from "../pages/taquestionnairepage/TaQuestionnair
 import { CoordinatorQuestionnairePage } from "../pages/coordinatorquestionnairepage/CoordinatorQuestionnairePage";
 import RoleGuard from "../components/features/roleguard/RoleGuard";
 import { UserRole } from "../interfaces/enum/UserRole";
+import InstructorQualificationPage from "../pages/instructorprofilepage/qualificationpage/InstructorQualificationPage";
 
 export const router = createBrowserRouter([
   {
@@ -63,6 +64,7 @@ export const router = createBrowserRouter([
         ),
         children: [
           { path: "home", element: <InstructorHomePage /> },
+          { path: "qualification", element: <InstructorQualificationPage /> },
           { path: "error", element: <ErrorPage /> },
         ],
       },

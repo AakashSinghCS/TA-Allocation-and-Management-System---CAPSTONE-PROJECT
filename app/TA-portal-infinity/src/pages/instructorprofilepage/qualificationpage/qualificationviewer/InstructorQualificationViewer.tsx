@@ -21,7 +21,8 @@ export default function InstructorQualificationViewer ({instructorId,}:{instruct
               <SectionCard
                 section={resp.section}
                 className=""/>
-              <QualificationCard initialQualifications = {resp.qualifications}/>
+              <QualificationCard course= {{id : resp.section.sectionDetails?.id, deptCode: resp.section.sectionDetails?.deptCode}} 
+                initialQualifications = {resp.qualifications}/>
             </div>
           ))}
         </div>
