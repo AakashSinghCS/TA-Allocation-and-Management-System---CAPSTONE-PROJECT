@@ -1,31 +1,47 @@
-import type Transcript from "./Transcript";
-import type Offer from "./Offer";
-export type Day =
-  | "MONDAY"
-  | "TUESDAY"
-  | "WEDNESDAY"
-  | "THURSDAY"
-  | "FRIDAY"
-  | "SATURDAY"
-  | "SUNDAY";
+// src/types/application.ts
 
-export interface Availability {
+export type Day =
+  | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY'
+  | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+
+export interface AvailabilityDto {
   day: Day;
-  startTime: string; // e.g. "09:00"
-  endTime: string;   // e.g. "12:00"
+  startTime: string;  // "HH:mm"
+  endTime: string;    // "HH:mm"
 }
 
-export default interface Application {
+export interface TranscriptDto {
   id: number;
-  studentId: number;
-  isAccepted: boolean;
-  subjectPreferences1: string;
-  subjectPreferences2: string;
-  subjectPreferences3: string;
+  fileName: string;
+  fileUrl: string;
+  uploadedAt: string;
+}
+
+export interface OfferDto {
+  id: number;
+  courseName: string;
+  section: string;
+  status: string;
+  assignedHours: number;
+}
+
+export interface ApplicationRequest {
+  preferences: string[];            // List<Subject>
   wantRemote: boolean;
   wantWorkingHours: number;
-  submittedAt: string; // ISO datetime string
-  transcript: Transcript;
-  offers: Offer[];
-  availability: Availability[]; // inline availability slots
+  availabilities: AvailabilityDto[];
+}
+
+export interface ApplicationDto {
+  studentId: number;
+  preferences: string[];
+  wantRemote: boolean;
+  wantWorkingHours: number;
+  timeSubmitted: string;           // ISO date-time
+  availabilities: AvailabilityDto[];
+
+  // optional—your DTO doesn’t yet send these,
+  // but if/when it does they’ll slot right in:
+  transcript?: TranscriptDto;
+  offers?: OfferDto[];
 }
