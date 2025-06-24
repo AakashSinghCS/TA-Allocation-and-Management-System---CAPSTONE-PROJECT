@@ -10,9 +10,11 @@ export default function InstructorTabNav() {
         { to: `${base}`, label: 'Profile' },
         { to: `${base}/need`, label: 'Need' },
         { to: `${base}/compare`, label: 'Compare' },
+        { to: `${base}/qualifications`, label: 'Qualification' },
     ]:[
         { to: `${base}`, label: 'Profile' },
         { to: `${base}/need`, label: 'Need' },
+        { to: `${base}/qualifications`, label: 'Qualification' },
     ];
 
     return (

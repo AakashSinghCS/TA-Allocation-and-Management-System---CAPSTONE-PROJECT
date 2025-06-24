@@ -11,10 +11,12 @@ export default function StudentTabNav() {
         { to: `${base}/application`, label: 'Application' },
         { to: `${base}/coursesTaken`, label: 'Courses Taken' },
         { to: `${base}/compare`, label: 'Compare' },
+        { to: `${base}/qualifications`, label: 'Qualifications' },
     ]:[
         { to: `${base}`, label: 'Profile' },
         { to: `${base}/application`, label: 'Application' },
         { to: `${base}/coursesTaken`, label: 'Courses Taken' },
+        { to: `${base}/qualifications`, label: 'Qualifications' },
     ];
 
     return (

@@ -18,7 +18,7 @@ public class Student extends User {
 
     //possibly restrict this to 8 numbers?
     @Column(unique = true)
-    private Integer studentNum;
+    private Integer studentNumber;
 
     private String program;
 
@@ -35,12 +35,12 @@ public class Student extends User {
             String firstName,
             String lastName,
             String password,
-            Integer studentNum,
+            Integer studentNumber,
             String program,
             Integer enrollmentYear,
             Integer schoolYear) {
         super(email, firstName, lastName, password);
-        this.studentNum = studentNum;
+        this.studentNumber = studentNumber;
         this.program = program;
         this.enrollmentYear = enrollmentYear;
         this.schoolYear = schoolYear;
