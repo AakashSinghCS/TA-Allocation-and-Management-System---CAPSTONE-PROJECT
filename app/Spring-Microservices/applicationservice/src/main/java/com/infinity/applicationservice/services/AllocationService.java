@@ -6,6 +6,9 @@ import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Allocation;
 import com.infinity.applicationservice.models.Offer;
 import com.infinity.applicationservice.repositories.AllocationRepository;
+import com.infinity.applicationservice.repositories.OfferRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,7 @@ public class AllocationService {
     private final AllocationRepository allocationRepository;
     private final SectionInterface sectionInterface;
     private final UserInterface studentInterface;
+    private final OfferRepository offerRepository;
 
     public List<AllocationHistoryDto> getAllocationsByStudentId(Long studentId) {
         List<Allocation> allocations = allocationRepository.findByStudentId(studentId);
@@ -26,11 +30,12 @@ public class AllocationService {
 
         return allocations.stream().map(allocation -> {
             SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+            OfferDto offerDto = toOfferDto(allocation.getOffer());
 
             return new AllocationHistoryDto(
                 allocation.getId(),
                 student,
-                allocation.getOffer(),
+                offerDto,
                 allocation.isConfirmed(),
                 allocation.getNumberOfHours(),
                 section
@@ -40,9 +45,11 @@ public class AllocationService {
     }
 
     public AllocationHistoryDto allocateStudent(AllocationRequest request) {
+        Offer offer = offerRepository.findById(request.offerId())
+            .orElseThrow(() -> new EntityNotFoundException("Offer not found"));
         Allocation allocation = new Allocation();
         allocation.setStudentId(request.studentId());
-        allocation.setOffer(null);
+        allocation.setOffer(offer);
         allocation.setConfirmed(request.isConfirmed());
         allocation.setNumberOfHours(request.numberOfHours());
         allocation.setSectionId(request.sectionId());
@@ -51,15 +58,20 @@ public class AllocationService {
 
         StudentDto student = studentInterface.getStudentById(request.studentId()).getBody();
         SectionDto section = sectionInterface.getSectionById(request.sectionId());
+        OfferDto offerDto = toOfferDto(allocation.getOffer());
 
         return new AllocationHistoryDto(
             saved.getId(),
             student,
-            saved.getOffer(),
+            offerDto,
             saved.isConfirmed(),
             saved.getNumberOfHours(),
             section
         );
+    }
+
+    public OfferDto toOfferDto(Offer offer){
+        return new OfferDto(offer.getId(), offer.isAccepted(), offer.getDescription());
     }
 
 }

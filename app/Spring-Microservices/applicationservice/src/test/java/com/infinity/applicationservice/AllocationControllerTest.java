@@ -4,12 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.applicationservice.controllers.AllocationController;
 import com.infinity.applicationservice.dtos.*;
 import com.infinity.applicationservice.enums.*;
-import com.infinity.applicationservice.models.Offer;
 import com.infinity.applicationservice.services.AllocationService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -48,7 +45,7 @@ public class AllocationControllerTest {
         sampleDto = new AllocationHistoryDto(
             101L,
             new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4),
-            new Offer(),
+            new OfferDto(1L, true, "I accept the offer"),
             true,
             10,
             new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"))
@@ -65,7 +62,10 @@ public class AllocationControllerTest {
             .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(jsonPath("$[0].id").value(101))
             .andExpect(jsonPath("$[0].student.firstName").value("Test User"))
-            .andExpect(jsonPath("$[0].section.section").value("T01"));
+            .andExpect(jsonPath("$[0].section.section").value("T01"))
+            .andExpect(jsonPath("$[0].offer.id").value(1))
+            .andExpect(jsonPath("$[0].offer.isAccepted").value(true))
+            .andExpect(jsonPath("$[0].offer.description").value("I accept the offer"));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class AllocationControllerTest {
         AllocationHistoryDto responseDto = new AllocationHistoryDto(
             123L,
             new StudentDto(1L, "Test", "test@example.com", 63260442, "BSC", 2022, 4),
-            new Offer(),
+            new OfferDto(1L, true, "I accept the offer"),
             true,
             10,
             new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"))
@@ -96,7 +96,10 @@ public class AllocationControllerTest {
             .andExpect(jsonPath("$.id").value(123))
             .andExpect(jsonPath("$.student.firstName").value("Test"))
             .andExpect(jsonPath("$.numberOfHours").value(10))
-            .andExpect(jsonPath("$.section.section").value("T01"));
+            .andExpect(jsonPath("$.section.section").value("T01"))
+            .andExpect(jsonPath("$.offer.id").value(1))
+            .andExpect(jsonPath("$.offer.isAccepted").value(true))
+            .andExpect(jsonPath("$.offer.description").value("I accept the offer"));
     }
 
 }
