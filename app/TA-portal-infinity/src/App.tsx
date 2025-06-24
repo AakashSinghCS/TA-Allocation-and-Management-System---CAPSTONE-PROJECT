@@ -10,9 +10,9 @@ import SideNavCoordinator from "./components/layout/sidebar_coordinator/SidebarC
 export default function App() {
   const { isAuthenticated, userRoles } = useAuth();
 
-  // if (!isAuthenticated) {
-  //   return <Navigate to="/login" replace />;
-  // }
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
   const role = userRoles[0]; 
 

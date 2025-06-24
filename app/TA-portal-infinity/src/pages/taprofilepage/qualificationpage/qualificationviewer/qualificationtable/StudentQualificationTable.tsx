@@ -57,13 +57,13 @@ export default function StudentQualificationTable({
     <table className="min-w-full table-auto border-collapse border rounded-lg overflow-hidden shadow-sm">
       <thead className="bg-slate-100 text-left text-sm">
         <tr>
-          <th className="w-12 border px-2 py-2 text-center">✓</th>
-          <th className="border px-4 py-2">Qualification</th>
-          <th className="w-28 border px-3 py-2 text-right">Course</th>
+          <th className="w-12 border px-2 py-2 text-center 2xl:text-lg">✓</th>
+          <th className="border px-4 py-2 2xl:text-lg">Qualification</th>
+          <th className="w-28 border px-3 py-2 text-right 2xl:text-lg">Course</th>
         </tr>
       </thead>
 
-      <tbody className="text-sm">
+      <tbody className="text-sm 2xl:text-base">
         {sorted.map(({ qualification, course }, idx) => {
           const id = qualification.id!;
           return (

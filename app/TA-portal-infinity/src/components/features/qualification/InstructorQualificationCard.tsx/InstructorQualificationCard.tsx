@@ -98,13 +98,13 @@ function QualificationRow({ isEdit = false, qualification, onSaved, onRemoved }:
     };
 
     return (
-    <div className="flex items-center space-x-2 mb-2">
+    <div className="flex items-center space-x-2 text-sm 2xl:text-base mb-2">
       {isEdit ? (
         <>
           <input type="text" value={description} onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter qualification"
             className="flex-1 border px-2 py-1 rounded"/>
-          <button onClick={handleSave} className="px-3 py-1 bg-amber-300 rounded hover:bg-amber-400">
+          <button onClick={handleSave} className="px-3 py-1bg-amber-300 rounded hover:bg-amber-400">
             Save
           </button>
           <button onClick={() => onRemoved(qualification)} className="text-gray-600 hover:text-gray-800">
@@ -114,8 +114,8 @@ function QualificationRow({ isEdit = false, qualification, onSaved, onRemoved }:
       ) : (
         <>
           <input type="checkbox" checked disabled className="w-4 h-4" />
-          <span className="flex-1 text-sm">{qualification.description}</span>
-          <button onClick={() => onRemoved(qualification)} className="text-red-600 hover:text-red-800" >
+          <span className="flex-1 ">{qualification.description}</span>
+          <button onClick={() => onRemoved(qualification)} className="text-red-600 text-xs 2xl:text-sm hover:text-red-800" >
             Delete
           </button>
         </>

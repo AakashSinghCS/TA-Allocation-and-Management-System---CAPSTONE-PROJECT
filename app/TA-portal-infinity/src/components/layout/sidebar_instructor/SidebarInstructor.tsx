@@ -13,7 +13,6 @@ export default function SideNavInstructor() {
   { label: "TA Requirements", to: "/user/instructor/requirements", icon: <ClipboardList size={22} /> },
   { label: "TA Allocations", to: "/user/instructor/allocations", icon: <Presentation size={22} /> },
   { label: "Profile", to: `/user/instructorprofile/${useAuth().userId}`, icon: <User size={22} /> },
-  { label: "Qualifications", to: `/user/instructor/qualifications/${useAuth().userId}`, icon: <User size={22} /> },
 ];
   const expanded = hovered;
 
