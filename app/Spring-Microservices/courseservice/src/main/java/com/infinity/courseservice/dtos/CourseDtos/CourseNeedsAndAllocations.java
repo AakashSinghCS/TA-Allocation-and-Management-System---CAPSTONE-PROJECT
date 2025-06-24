@@ -7,6 +7,6 @@ import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 
 public record CourseNeedsAndAllocations(
         CourseDto course,
-        List<NeedDto> need,
-        List<AllocationHistoryDto> allocation
+        List<NeedDto> needs,
+        List<AllocationHistoryDto> allocations
 ) {}

@@ -50,7 +50,7 @@ public class CourseService {
         try {
             courseRepository.save(course);
         } catch (DataIntegrityViolationException ex) {
-            throw new BadRequestException("Course already exists" + ex);
+            throw new BadRequestException("Course already exists " + ex);
         }
         
         return new CourseDto(course.getDeptCode(), course.getName(), course.getCourseNum());
@@ -65,7 +65,7 @@ public class CourseService {
         try {
             sectionRepository.save(section);
         } catch (DataIntegrityViolationException ex) {
-            throw new BadRequestException("Section already exists" + ex);
+            throw new BadRequestException("Section already exists " + ex);
         }
         
         return new SectionDto(section.getId(),section.getTerm(), section.getSection(), section.getType(), new CourseDto(course.getDeptCode(),course.getName(),course.getCourseNum()));
@@ -81,7 +81,7 @@ public class CourseService {
         try {
             sectionScheduleRepository.save(sectionSchedule);
         } catch (DataIntegrityViolationException ex) {
-            throw new BadRequestException("Schedule already exists" + ex);
+            throw new BadRequestException("Schedule already exists " + ex);
         }
         return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(), sectionSchedule.getEndTime(), sectionSchedule.getSection().getId());
     }
