@@ -1,4 +1,3 @@
-// src/components/features/user/EditProfileSection.tsx
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import type User from "../../../../interfaces/user/User";
 
@@ -17,7 +16,7 @@ export default function EditProfileSection<T extends User>({
   onSave,
   onCancel,
 }: Props<T>) {
-  // Initialize form with exactly those keys
+  
   const [form, setForm] = useState<Partial<T>>(
     Object.fromEntries(fields.map((k) => [k, user[k]])) as Partial<T>
   );

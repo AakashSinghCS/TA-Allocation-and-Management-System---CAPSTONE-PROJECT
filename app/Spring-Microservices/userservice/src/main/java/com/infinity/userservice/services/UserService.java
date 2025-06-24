@@ -45,6 +45,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final Validator validator;
 
+
     public UserDto register(RegisterRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new BadRequestException("An account with this email already exists");
@@ -85,7 +86,6 @@ public class UserService {
             Map<String, Object> payload) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
-
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_ADMIN")) {
             throw new AuthorizationException("Not allowed");
         }

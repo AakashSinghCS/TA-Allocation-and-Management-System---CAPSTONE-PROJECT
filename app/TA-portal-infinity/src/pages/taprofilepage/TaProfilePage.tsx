@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import type Section from '../../interfaces/section/Section';
-import ProfileSection from '../../components/features/user/profilesection/ProfileSection';
 import { Link, useParams } from 'react-router-dom';
 
-import { fetchUserDetails } from '../../api/student/fetchUserDetails';
 import { type Student, studentProfileFields, studentFieldLabels } from '../../interfaces/user/Student';
 import { fetchAllStudentSectionsHasCompleted } from '../../api/student/fetchAllStudentSectionsHasCompleted';
 import { type ProfileQuestion } from '../../interfaces/question/ProfileQuestion';
@@ -12,8 +10,6 @@ import SectionsColumn from '../../components/features/section/sectionscolumn/Sec
 import { GenericAPIContainer } from '../../utility/genericapicontainer/GenericAPIContainer';
 import ProfileQuestionsSection from './profilequestionssection/ProfileQuestionsSection';
 import StudentTabNav from '../../components/layout/tabnav/studenttabnav/StudentTabNav';
-
-import { useAuth } from '../../context/AuthContext';
 import ProfileDetailsSection from './profiledetailssection/ProfileDetailsSection';
 import { fetchStudentDetails } from '../../api/student/fetchStudentDetails';
 

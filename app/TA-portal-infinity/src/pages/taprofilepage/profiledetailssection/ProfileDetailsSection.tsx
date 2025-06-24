@@ -4,7 +4,6 @@ import EditProfileSection from "../../../components/features/user/editprofilesec
 import { fetchUpdateUserDetails } from "../../../api/student/fetchUpdateUserDetails";
 import type User from "../../../interfaces/user/User";
 import { useAuth } from "../../../context/AuthContext";
-import { fetchUserDetails } from "../../../api/student/fetchUserDetails";
 
 interface Props<T extends User> {
     user: T;
@@ -33,6 +32,8 @@ export default function ProfileDetailsSection<T extends User>({
         ...filterFields,
     ];
 
+    const isEditable = loggedInUserId === record.id || loggedInUserRoles.includes("COORDINATOR");
+
     return (
         <div className="relative">
             {!isEdit ? (
@@ -43,12 +44,13 @@ export default function ProfileDetailsSection<T extends User>({
                         fieldLabels={labels}
                         big
                     />
-                    <button
+                    {isEditable && (<button
                         className="absolute top-2 right-2 px-3 py-1 bg-blue-600 text-white rounded"
                         onClick={() => setIsEdit(true)}
                     >
                         Update
                     </button>
+                    )}
                 </>
             ) : (
                 <EditProfileSection<T>

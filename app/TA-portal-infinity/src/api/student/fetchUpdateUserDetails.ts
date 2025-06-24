@@ -10,7 +10,9 @@ export async function fetchUpdateUserDetails<T extends User>(
   loggedInUserRoles: UserRole[] // <- fix here: plural + array
 ): Promise<string> {
   const token = localStorage.getItem("token");
-
+  const roles = ['COORDINATOR', 'ADMIN'];
+  // const prefixedRoles = roles.map(role => `ROLE_${role}`);
+  // console.log(prefixedRoles);
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
@@ -19,14 +21,14 @@ export async function fetchUpdateUserDetails<T extends User>(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  if (loggedInUserId) {
-    headers["X-User-Id"] = String(loggedInUserId);
-  }
+  // if (loggedInUserId) {
+  //   headers["X-User-Id"] = String(loggedInUserId);
+  // }
 
-  if (loggedInUserRoles.length > 0) {
-    headers["X-User-Roles"] = loggedInUserRoles.join(","); // comma-separated for Spring
-  }
-  console.log(updates);
+  // if (loggedInUserRoles.length > 0) {
+  //   headers["X-User-Roles"] = roles.join(","); // comma-separated for Spring
+  // }
+
   const res = await fetch(`${BASE}/${id}`, {
     method: "PUT",
     headers,
