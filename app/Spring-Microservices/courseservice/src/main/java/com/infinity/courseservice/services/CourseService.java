@@ -7,15 +7,18 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseNeedsAndAllocations;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
+import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
+import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
@@ -38,6 +41,8 @@ public class CourseService {
     private final SectionRepository sectionRepository;
     private final SectionScheduleRepository sectionScheduleRepository;
     private final UserInterface userInterface;
+    private final NeedService needService;
+    private final ApplicationInterface applicationInterface;
     // private final EnrollmentService enrollmentService;
 
     @Transactional
@@ -113,9 +118,14 @@ public class CourseService {
                         course.getCourseNum()));
     }
 
-    public ResponseEntity<CourseNeedsAndAllocations> getCourseNeedsAndAllocations(Long courseId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCourseNeedsAndAllocations'");
+    public CourseNeedsAndAllocations getCourseNeedsAndAllocations(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+            .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
+        List<NeedDto> needs = needService.getAllNeedsByCourseId(courseId);
+        List<AllocationHistoryDto> allocations = applicationInterface.getStudentAllocationHistory(courseId).getBody();
+        CourseDto courseDto = new CourseDto(course.getDeptCode(), course.getName(), course.getCourseNum());
+        return new CourseNeedsAndAllocations(courseDto, needs, allocations);
+        
     }
 
 

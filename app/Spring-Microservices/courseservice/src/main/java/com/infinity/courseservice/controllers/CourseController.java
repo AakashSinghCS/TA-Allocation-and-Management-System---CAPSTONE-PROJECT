@@ -72,7 +72,7 @@ public class CourseController {
 
     @GetMapping("/needsAndAllocations/{courseId}")
     public ResponseEntity<CourseNeedsAndAllocations> getCourseNeedsAndAllocations(@PathVariable Long courseId) {
-        return courseService.getCourseNeedsAndAllocations(courseId);
+        return ResponseEntity.ok(courseService.getCourseNeedsAndAllocations(courseId));
     }
 
     // @GetMapping("/getEnrolledCourses/{studentId}")
