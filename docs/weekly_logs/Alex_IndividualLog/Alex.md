@@ -1,3 +1,54 @@
+## Monday (June 20-23)
+
+### Timesheet
+Clockify report
+![alt text](./jun20-23.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: CRUD operations for the application objects
+
+### Progress Update (since June 19 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Add availability to application
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Admin role extension
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>CRUD operations needs and submitting
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I added the availability table and allowed it to stored the times there for applications, and that's now also linked with the frontend. I also completed the admin role with an extension to allow numerous roles through a many-to-many relationship with users. I'm now starting to work on the needs of an instructor and the crud operations for that.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Finishing up the needs for this cycle will be great, and if I get that done I'll also look towards another feature for MVP, maybe CSV exporting or qualifications, depending on what other team members are doing.
+
+
 ## Thursday (June 17-19)
 
 ### Timesheet
