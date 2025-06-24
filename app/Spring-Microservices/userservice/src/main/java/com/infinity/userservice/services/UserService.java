@@ -138,8 +138,8 @@ public class UserService {
             String hashedPassword = passwordEncoder.encode(req.password());
             instructor.setPassword(hashedPassword);
         }
-        if (req.employeeNum() != null)
-            instructor.setEmployeeNum(req.employeeNum());
+        if (req.employeeNumber() != null)
+            instructor.setEmployeeNumber(req.employeeNumber());
         if (req.department() != null)
             instructor.setDepartment(req.department());
 

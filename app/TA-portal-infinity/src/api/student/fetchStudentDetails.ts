@@ -1,5 +1,3 @@
-import type User from "../../interfaces/user/User";
-
 const BASE = "http://localhost:8080/students";
 
 export async function fetchStudentDetails<Student>(userId: number): Promise<Student> {
@@ -16,7 +14,6 @@ export async function fetchStudentDetails<Student>(userId: number): Promise<Stud
     });
 
     const data = await res.json();
-    console.log(data);
     return data as Student;
 
   } catch (err) {

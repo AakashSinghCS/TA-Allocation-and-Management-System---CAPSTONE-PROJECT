@@ -26,7 +26,7 @@ export async function fetchUpdateUserDetails<T extends User>(
   if (loggedInUserRoles.length > 0) {
     headers["X-User-Roles"] = loggedInUserRoles.join(","); // comma-separated for Spring
   }
-
+  console.log(updates);
   const res = await fetch(`${BASE}/${id}`, {
     method: "PUT",
     headers,

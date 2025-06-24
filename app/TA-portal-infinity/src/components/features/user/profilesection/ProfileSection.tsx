@@ -23,8 +23,6 @@ export default function ProfileSection<T extends User>({
   if (!user) return null;
   const profileDetails = createProfileDetails<T>(user, profileFields, fieldLabels);
 
-
-  // Header: large title or link based on 'big'
   const header = big ? (
     <h1 className="text-xl font-bold mb-4 break-words">
       {user.firstName} {user.lastName}
@@ -42,17 +40,17 @@ export default function ProfileSection<T extends User>({
   );
 
   const gridChange = big ? "" : "grid";
-  const flexChange = big ? "" : "flex-row";
-     const containerClass = big
+
+  const containerClass = big
     ? "flex flex-col space-y-2"
-   : "grid grid-cols-2 gap-2";
+    : "grid grid-cols-2 gap-2";
 
   return (
     <section
       className={`bg-white border border-slate-200 rounded-2xl shadow-sm p-4 ${className} ${gridChange}`}
     >
       {header}
-      
+
       <div className={containerClass}>
         {profileDetails.map(({ label, value }) => (
           <ProfileRow key={label} label={label} value={value} big={big} />
@@ -73,13 +71,13 @@ export function ProfileRow({
 }) {
   const textSize = big ? "text-md" : "text-xs";
 
-    return(
+  return (
     <div data-testid={`profile-row-${label}`} className={textSize + " flex items-center rounded-lg bg-slate-50 px-3 py-1 text-slate-900"}>
-          <span className="font-medium text-slate-700 break-words">
-            {label}:
-          </span>
-          <span className="ml-2">{value}</span>
-        </div>
+      <span className="font-medium text-slate-700 break-words">
+        {label}:
+      </span>
+      <span className="ml-2">{value}</span>
+    </div>
   );
 }
 
@@ -92,7 +90,12 @@ export function createProfileDetails<T extends User>(
     const val = user[key];
     if (val == null) return acc;
     const formatted =
-      val instanceof Date ? formatDateForDisplay(val) : String(val);
+      val instanceof Date
+        ? formatDateForDisplay(val)
+        // handle ISO strings like "2025-06-24T15:12:01.428504"
+        : (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(val))
+            ? formatDateForDisplay(new Date(val))
+            : String(val);
     acc.push({ label: labels[key], value: formatted });
     return acc;
   }, []);
