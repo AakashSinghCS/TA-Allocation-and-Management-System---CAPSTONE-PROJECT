@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "2e415f36-1085-42ec-865f-e8cd185cdb69",
+		"_postman_id": "64e5d17c-7fe0-4dcd-8d46-fc95cb145aa4",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45690522"
+		"_exporter_id": "36957617"
 	},
 	"item": [
 		{
@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"student@test.com\",\r\n    \"firstName\": \"scoobert\",\r\n    \"lastName\": \"doobert\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": \"STUDENT\"\r\n}",
+							"raw": "{\r\n    \"email\":\"student@test.com\",\r\n    \"firstName\": \"scoobert\",\r\n    \"lastName\": \"doobert\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": \"STUDENT\",\r\n    \"isAdmin\": false\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -44,7 +44,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"coordinator@test.com\",\r\n    \"firstName\": \"ched\",\r\n    \"lastName\": \"devis\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": \"COORDINATOR\"\r\n}",
+							"raw": "{\r\n    \"email\":\"coordinator@test.com\",\r\n    \"firstName\": \"ched\",\r\n    \"lastName\": \"devis\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": \"COORDINATOR\",\r\n    \"isAdmin\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -72,7 +72,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"instructor@test.com\",\r\n    \"firstName\": \"scawt\",\r\n    \"lastName\": \"fawz\",\r\n    \"password\": \"password\",\r\n    \"userType\": \"INSTRUCTOR\"\r\n}",
+							"raw": "{\r\n    \"email\":\"instructor@test.com\",\r\n    \"firstName\": \"scawt\",\r\n    \"lastName\": \"fawz\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": \"INSTRUCTOR\",\r\n    \"isAdmin\": false\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -145,7 +145,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
 									"type": "string"
 								}
 							]
@@ -342,7 +342,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
 									"type": "string"
 								}
 							]
@@ -376,7 +376,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
 									"type": "string"
 								}
 							]
@@ -699,6 +699,43 @@
 								"1",
 								"1",
 								"addSectionSchedule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get needs and allocations",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"studentId\":\"1\",\r\n    \"courseId\":\"1\",\r\n    \"hasCompleted\":false\r\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/courses/needsAndAllocations/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"courses",
+								"needsAndAllocations",
+								"1"
 							]
 						}
 					},
@@ -1203,6 +1240,197 @@
 								"student",
 								"1",
 								"history"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Needs",
+			"item": [
+				{
+					"name": "Add need",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"description\": \"Test need\",\r\n\"requiredGradingHours\":\"20\", \r\n\"numHoursCurrentlyAllocated\":\"0\", \r\n\"year\":\"2025\",\r\n\"semester\":\"winter\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/needs/add/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"needs",
+								"add",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update need",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"description\": \"Updated need\",\r\n\"requiredGradingHours\":\"24\", \r\n\"numHoursCurrentlyAllocated\":\"0\", \r\n\"year\":\"2025\",\r\n\"semester\":\"summer\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/needs/update/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"needs",
+								"update",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get need",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"deptCode\":\"COSC\", \"name\":\"capstone\", \"courseNum\":\"499\"}"
+						},
+						"url": {
+							"raw": "localhost:8080/needs/get/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"needs",
+								"get",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all needs",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"deptCode\":\"COSC\", \"name\":\"capstone\", \"courseNum\":\"499\"}"
+						},
+						"url": {
+							"raw": "localhost:8080/needs/getAllNeeds/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"needs",
+								"getAllNeeds",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete need",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"deptCode\":\"COSC\", \"name\":\"capstone\", \"courseNum\":\"499\"}"
+						},
+						"url": {
+							"raw": "localhost:8080/needs/delete/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"needs",
+								"delete",
+								"1"
 							]
 						}
 					},
