@@ -1303,7 +1303,7 @@ I also discussed with all my teammates today and what i will do the next week ha
 - qualifications page (instructor's and student's skill labs)
 
 
-## Saturday 6/21 (6/18~6/20)
+## Saturday 6/21 (6/21~6/24)
 
 ### Timesheet
 Clockify report
@@ -1348,3 +1348,63 @@ I created the mocks and interfaces. I discussed with allen how the response body
   * Next Cycle, I wiil continue to work on the list I wrote below.
 - User management : search, delete, update, etc.
 - qualifications page (instructor's and student's skill labs)
+
+## Monday 6/23 (6/21~6/24)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June23.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Qualifications page
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#260](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/260)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#268](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/268)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I completed the instructor perspective of the qualifications page. The integration still has to wait, as Allen is still working on it. 
+I discussed with Allen about it and I expect the integration to happen soon.
+I started on the frontend for the student's perspective as well, and I might say that I'm done. But it can't go into review until the first branch #260, first gets merged.
+So tommorrow, I will try working on integratin some other parts of the project like the ta-profile. I will have to try creating the backend registers for students, and retrieving the data.
+I may also try integrating the allocation history. if there is a mapping for courses taken, I will try doing that too.
+I may make a backend work for instructor details as well.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- User management : search, delete, update, etc.
+- qualifications page (instructor's and student's skill labs) integration
