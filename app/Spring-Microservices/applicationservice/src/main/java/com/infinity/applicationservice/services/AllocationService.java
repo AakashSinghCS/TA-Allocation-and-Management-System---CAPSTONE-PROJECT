@@ -1,16 +1,21 @@
 package com.infinity.applicationservice.services;
 
-import com.infinity.applicationservice.dtos.*;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.infinity.applicationservice.dtos.AllocationHistoryDto;
+import com.infinity.applicationservice.dtos.AllocationRequest;
+import com.infinity.applicationservice.dtos.OfferDto;
+import com.infinity.applicationservice.dtos.SectionDto;
+import com.infinity.applicationservice.dtos.StudentDto;
 import com.infinity.applicationservice.feign.SectionInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Allocation;
-import com.infinity.applicationservice.models.Offer;
 import com.infinity.applicationservice.repositories.AllocationRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
