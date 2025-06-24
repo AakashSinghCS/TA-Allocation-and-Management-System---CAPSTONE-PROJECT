@@ -1,6 +1,6 @@
 import type Section from "../section/Section";
 import type { Student } from "../user/Student";
-import type { Offer } from "../application/Offer";
+import type Offer from "../application/Offer";
 
 export interface Allocation{
     id? :number;
