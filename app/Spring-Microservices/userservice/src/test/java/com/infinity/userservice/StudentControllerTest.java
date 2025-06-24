@@ -35,7 +35,7 @@ public class StudentControllerTest {
     @Test
     void testGetStudentByNum_NotFound() throws Exception {
 
-        when(studentService.getStudentByNum(any())).thenThrow(new NotFoundException("User with student number 2 not found"));
+        when(studentService.getStudentByNumber(any())).thenThrow(new NotFoundException("User with student number 2 not found"));
 
         mockMvc.perform(get("/students/num/2")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -50,6 +50,7 @@ public class StudentControllerTest {
             1L,
             "John",
             "Smith",
+            "test@test.com",
             studentNum,
             "Computer Science",
             2023,
@@ -57,7 +58,7 @@ public class StudentControllerTest {
             fixedTime
         );
         //UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
-        when(studentService.getStudentByNum(any())).thenReturn(mockResponse);
+        when(studentService.getStudentByNumber(any())).thenReturn(mockResponse);
         
         mockMvc.perform(get("/students/num/"+studentNum)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -83,6 +84,7 @@ public class StudentControllerTest {
             studentId,
             "John",
             "Smith",
+            "test@test.com",
             12345678,
             "Computer Science",
             2023,

@@ -1,0 +1,44 @@
+import type { UserRole } from "../../interfaces/enum/UserRole";
+import type User from "../../interfaces/user/User";
+
+const BASE = "http://localhost:8080/users/update";
+
+export async function fetchUpdateUserDetails<T extends User>(
+  id: number,
+  updates: Partial<T>,
+  loggedInUserId: number,
+  loggedInUserRoles: UserRole[] // <- fix here: plural + array
+): Promise<string> {
+  const token = localStorage.getItem("token");
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  if (loggedInUserId) {
+    headers["X-User-Id"] = String(loggedInUserId);
+  }
+
+  if (loggedInUserRoles.length > 0) {
+    headers["X-User-Roles"] = loggedInUserRoles.join(","); // comma-separated for Spring
+  }
+
+  const res = await fetch(`${BASE}/${id}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(updates),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("Update failed", res.status, text);
+    throw new Error(`Update failed: ${res.status}`);
+  }
+
+  // return (await res.json()) as T;
+  return await res.text();
+}

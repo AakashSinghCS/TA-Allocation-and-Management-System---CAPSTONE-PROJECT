@@ -3,7 +3,7 @@ import type Section from '../../interfaces/section/Section';
 import ProfileSection from '../../components/features/user/profilesection/ProfileSection';
 import { Link, useParams } from 'react-router-dom';
 
-import { fetchStudentDetails } from '../../api/student/fetchStudentDetails';
+import { fetchUserDetails } from '../../api/student/fetchUserDetails';
 import { type Student, studentProfileFields, studentFieldLabels } from '../../interfaces/user/Student';
 import { fetchAllStudentSectionsHasCompleted } from '../../api/student/fetchAllStudentSectionsHasCompleted';
 import { type ProfileQuestion } from '../../interfaces/question/ProfileQuestion';
@@ -14,6 +14,8 @@ import ProfileQuestionsSection from './profilequestionssection/ProfileQuestionsS
 import StudentTabNav from '../../components/layout/tabnav/studenttabnav/StudentTabNav';
 
 import { useAuth } from '../../context/AuthContext';
+import ProfileDetailsSection from './profiledetailssection/ProfileDetailsSection';
+import { fetchStudentDetails } from '../../api/student/fetchStudentDetails';
 
 function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -41,6 +43,7 @@ function Accordion({ title, children }: { title: string; children: React.ReactNo
 export default function TaProfilePage() {
   const { studentId } = useParams();
   const sId = Number(studentId);
+  
   const filteredFields = studentProfileFields.filter(
     key => key !== 'id' && key !== 'firstName' && key !== 'lastName'
   );
@@ -52,11 +55,12 @@ export default function TaProfilePage() {
         <div className="lg:col-span-1 max-h-[40vh]">
           <GenericAPIContainer<Student>
             fetchFunction={() => fetchStudentDetails(sId)}
-            render={student => (
-              <ProfileSection
-                user={student}
-                profileFields={filteredFields}
-                fieldLabels={studentFieldLabels}
+            render={(stu) => (
+              <ProfileDetailsSection
+                user= {stu}
+                fields={filteredFields}
+                labels={studentFieldLabels}
+                fetchDetailsFunction = {fetchStudentDetails}
               />
             )}
           />

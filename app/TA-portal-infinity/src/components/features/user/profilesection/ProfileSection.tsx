@@ -3,8 +3,8 @@ import type User from '../../../../interfaces/user/User';
 import formatDateForDisplay from "../../../../utility/formatdatefordisplay/formatDateForDisplay";
 import { Link } from 'react-router-dom';
 
-export interface ProfileSectionProps<T extends User> {
-  user: T;
+export interface ProfileSectionProps<T extends User | null> {
+  user: T | null;
   profileFields: (keyof T)[];
   fieldLabels: Record<keyof T, string>;
   className?: string;
@@ -22,6 +22,7 @@ export default function ProfileSection<T extends User>({
 }: ProfileSectionProps<T>) {
   if (!user) return null;
   const profileDetails = createProfileDetails<T>(user, profileFields, fieldLabels);
+
 
   // Header: large title or link based on 'big'
   const header = big ? (
@@ -72,22 +73,6 @@ export function ProfileRow({
 }) {
   const textSize = big ? "text-md" : "text-xs";
 
- 
-    // <div>
-    //   {big ? <div data-testid={`profile-row-${label}`} className={textSize + " flex items-center rounded-lg bg-slate-50 px-3 py-1 text-slate-900"}>
-    //     <span className="font-medium text-slate-700 whitespace-nowrap">
-    //       {label}:
-    //     </span>
-    //     <span className="ml-2">{value}</span>
-    //   </div> :
-    //     <div data-testid={`profile-row-${label}`} className={textSize + " flex items-center rounded-lg bg-slate-50 px-3 py-1 text-slate-900"}>
-    //       <span className="font-medium text-slate-700 whitespace-nowrap">
-    //         {label}:
-    //       </span>
-    //       <span className="ml-2">{value}</span>
-    //     </div>
-    //   }
-    // </div>
     return(
     <div data-testid={`profile-row-${label}`} className={textSize + " flex items-center rounded-lg bg-slate-50 px-3 py-1 text-slate-900"}>
           <span className="font-medium text-slate-700 break-words">
