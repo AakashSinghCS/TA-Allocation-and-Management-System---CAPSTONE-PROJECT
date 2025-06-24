@@ -1,17 +1,45 @@
-import type Transcript from "./Transcript";
-import type Offer from "./Offer";
+export type Day =
+  | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY'
+  | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
 
+export interface AvailabilityDto {
+  day: Day;
+  startTime: string;  // "HH:mm"
+  endTime: string;    // "HH:mm"
+}
 
-export default interface Application {
+export interface TranscriptDto {
   id: number;
-  studentId: number;
-  isAccepted: boolean;
-  subjectPreferences1: string;
-  subjectPreferences2: string;
-  subjectPreferences3: string;
+  fileName: string;
+  fileUrl: string;
+  uploadedAt: string;
+}
+
+export interface OfferDto {
+  id: number;
+  courseName: string;
+  section: string;
+  status: string;
+  assignedHours: number;
+}
+
+export interface ApplicationRequest {
+  preferences: string[];         
   wantRemote: boolean;
   wantWorkingHours: number;
-  submittedAt: string; 
-  transcript: Transcript;
-  offers: Offer[];
+  availabilities: AvailabilityDto[];
+}
+
+export interface ApplicationDto {
+  studentId: number;
+  preferences: string[];
+  wantRemote: boolean;
+  wantWorkingHours: number;
+  timeSubmitted: string;         
+  availabilities: AvailabilityDto[];
+
+  // optional—your DTO doesn’t yet send these,
+  // but if/when it does they’ll slot right in:
+  transcript?: TranscriptDto;
+  offers?: OfferDto[];
 }

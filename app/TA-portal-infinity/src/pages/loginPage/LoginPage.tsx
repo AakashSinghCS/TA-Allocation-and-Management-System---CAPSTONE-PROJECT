@@ -1,4 +1,3 @@
-// src/pages/loginPage/LoginPage.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bgImage from '../../assets/ubc_image.png?url';
@@ -6,11 +5,12 @@ import Navbar from '../../components/layout/login_navbar/Navbar';
 
 import { useAuth, parseJwt } from '../../context/AuthContext';
 import { UserRole } from '../../interfaces/enum/UserRole';
+import { CheckCircle, AlertTriangle } from 'lucide-react';
 
 interface RawJwt {
   sub: string;
   userId: number;
-  roles: string[];  // e.g. ["ROLE_STUDENT"]
+  roles: string[];  // raw roles from JWT
   iat: number;
   exp: number;
 }
@@ -23,7 +23,7 @@ const LoginPage: React.FC = () => {
   const [loginMessage, setLoginMessage] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
-
+  const [formError, setFormError] = useState('');
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -37,7 +37,7 @@ const LoginPage: React.FC = () => {
       if (!response.ok) {
         const error = await response.text();
         console.error("Login failed:", error);
-        alert("Invalid email or password."); 
+        setFormError("Invalid email or password."); 
         return;
       }
 
@@ -68,7 +68,7 @@ const LoginPage: React.FC = () => {
 
     } catch (err) {
       console.error("Login error:", err);
-      alert("Server error. Please try again later.");
+      setFormError("Server error. Please try again later.");
     }
   };
 
@@ -116,7 +116,11 @@ const LoginPage: React.FC = () => {
                   id="email"
                   type="email"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={e => {
+                    setEmail(e.target.value);
+                    setEmailError('');
+                    setFormError('');
+                  }}
                   onInvalid={() =>
                     setEmailError('Please enter a valid email address')
                   }
@@ -144,7 +148,11 @@ const LoginPage: React.FC = () => {
                   id="password"
                   type="password"
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={e => {
+                    setPassword(e.target.value);
+                    setPasswordError('');
+                    setFormError('');
+                  }}
                   onInvalid={() =>
                     setPasswordError(
                       'Password must be at least 8 characters and include uppercase, number, and special character'
@@ -170,11 +178,18 @@ const LoginPage: React.FC = () => {
                   Forgot password?
                 </a>
               </div>
+             {formError && (
+                <div className="flex items-center space-x-2 border-l-4 border-red-500 bg-red-100 p-3 rounded-md mt-2 animate-fadeIn">
+                  <AlertTriangle size={20} className="text-red-500 flex-shrink-0" />
+                  <span className="text-red-700 text-sm">{formError}</span>
+                </div>
+              )}
 
               {loginMessage && (
-                <p className="text-base text-green-700 text-center">
-                  {loginMessage}
-                </p>
+                <div className="flex items-center space-x-2 border-l-4 border-green-500 bg-green-100 p-3 rounded-md mt-2 animate-fadeIn">
+                  <CheckCircle size={20} className="text-green-500 flex-shrink-0" />
+                  <span className="text-green-700 text-sm">{loginMessage}</span>
+                </div>
               )}
 
               <button

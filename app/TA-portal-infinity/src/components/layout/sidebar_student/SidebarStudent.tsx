@@ -52,10 +52,12 @@ export default function SideNavStudent() {
       </div>
 
       {/* Logout */}
-      <div className="border-t border-white/20 w-full px-3 py-4">
+      <div className="border-t border-white/20 w-full px-8 py-4">
         <button
           onClick={logout}
-          className="flex items-center gap-3 text-sm hover:text-red-300 transition"
+         className="flex items-center gap-5 text-sm text-white hover:text-[#a0ffe6] hover:scale-105 hover:drop-shadow-[0_0_10px_#a0ffe6] transition-all duration-300"
+
+
         >
           <LogOut size={22} />
           {expanded && <span>Logout</span>}
