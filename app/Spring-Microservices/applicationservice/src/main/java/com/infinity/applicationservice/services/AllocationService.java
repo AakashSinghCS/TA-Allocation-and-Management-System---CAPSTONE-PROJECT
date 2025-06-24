@@ -26,8 +26,8 @@ public class AllocationService {
 
         return allocations.stream().map(allocation -> {
             SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
-            OfferDto offerDto = new OfferDto(allocation.getOffer().getId(), 
-                    allocation.getOffer().isAccepted(), allocation.getOffer().getDescription());
+            OfferDto offerDto = allocation.getOffer() != null ? new OfferDto(allocation.getOffer().getId(),
+                    allocation.getOffer().isAccepted(), allocation.getOffer().getDescription()) : null;
 
             return new AllocationHistoryDto(
                 allocation.getId(),
@@ -53,8 +53,8 @@ public class AllocationService {
 
         StudentDto student = studentInterface.getStudentById(request.studentId()).getBody();
         SectionDto section = sectionInterface.getSectionById(request.sectionId());
-        OfferDto offerDto = new OfferDto(saved.getOffer().getId(),
-            saved.getOffer().isAccepted(), saved.getOffer().getDescription());
+        OfferDto offerDto = saved.getOffer() != null ? new OfferDto(saved.getOffer().getId(),
+            saved.getOffer().isAccepted(), saved.getOffer().getDescription()) : null;
 
         return new AllocationHistoryDto(
             saved.getId(),

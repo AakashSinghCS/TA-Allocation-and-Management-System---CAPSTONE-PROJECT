@@ -40,7 +40,7 @@ public class NeedController {
         return ResponseEntity.ok(needService.getNeed(needId));
     }
 
-    @GetMapping("/get/{courseId}")
+    @GetMapping("/getAllNeeds/{courseId}")
     public ResponseEntity<List<NeedDto>> getAllNeedsByCourseId(@PathVariable Long courseId) {
         return ResponseEntity.ok(needService.getAllNeedsByCourseId(courseId));
     }

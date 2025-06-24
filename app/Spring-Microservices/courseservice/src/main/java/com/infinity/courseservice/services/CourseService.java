@@ -4,7 +4,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;

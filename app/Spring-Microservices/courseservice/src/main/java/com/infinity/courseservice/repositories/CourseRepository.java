@@ -15,7 +15,7 @@ import com.infinity.courseservice.models.Course;
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("""
-    SELECT DISTINCT new com.infinity.courseservice.dtos.CourseSectionScheduleDto(
+    SELECT DISTINCT new com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto(
         c.deptCode, c.name, c.courseNum, s.section, s.term, s.type, ss.day, ss.startTime, ss.endTime
     )
     FROM Course c
