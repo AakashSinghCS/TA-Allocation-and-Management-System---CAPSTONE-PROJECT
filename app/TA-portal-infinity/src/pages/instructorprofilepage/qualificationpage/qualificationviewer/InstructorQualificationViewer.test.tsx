@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi, describe, it, expect } from 'vitest';
 
 import InstructorQualificationViewer from './InstructorQualificationViewer';
-import { mockQualificationResponse } from '../../../../mocked-objects/qualification/mockQualificationResponse';
+import { mockQualificationResponse } from '../../../../mocked-objects/qualification/mockInstructorQualificationResponse';
 
 vi.mock('../../../../utility/genericapicontainer/GenericAPIContainer', () => {
   return {

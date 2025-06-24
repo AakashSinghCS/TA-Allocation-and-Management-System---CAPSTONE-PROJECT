@@ -3,7 +3,7 @@ import { mockSectionCOSC111 } from "../section/mockSectionCOSC111";
 import { mockSectionMATH125 } from "../section/mockSectionMATH125";
 import { mockQualificationCOSC111, mockQualificationMATH125 } from "./mockQualifications";
 
-export const mockQualificationResponse: QualificationResponse[] = [
+export const mockInstructorQualificationResponse: QualificationResponse[] = [
     {
         section: mockSectionCOSC111, qualifications: mockQualificationCOSC111
     },
