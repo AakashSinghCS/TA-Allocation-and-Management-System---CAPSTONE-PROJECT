@@ -119,7 +119,7 @@ public class CourseService {
 
     public CourseNeedsAndAllocations getCourseNeedsAndAllocations(Long courseId) {
         Course course = courseRepository.findById(courseId)
-            .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
+                .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
         List<NeedDto> needs = needService.getAllNeedsByCourseId(courseId);
         List<AllocationHistoryDto> allocations = applicationInterface.getStudentAllocationHistory(courseId).getBody();
         CourseDto courseDto = new CourseDto(course.getDeptCode(), course.getName(), course.getCourseNum());
