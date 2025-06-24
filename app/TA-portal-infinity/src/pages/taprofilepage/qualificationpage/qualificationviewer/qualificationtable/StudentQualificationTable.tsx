@@ -8,7 +8,7 @@ interface StudentQualificationTableProps {
     studentId: number;
 }
 
-export function StudentQualificationTable({
+export default function StudentQualificationTable({
     qualificationList,
     studentId,
 }: StudentQualificationTableProps) {
@@ -53,44 +53,55 @@ export function StudentQualificationTable({
         });
 
     return (
-        <form onSubmit={onSubmit}>
-            <table className="min-w-full table-auto border-collapse border">
-                <thead>
-                    <tr>
-                        <th className="border px-4 py-2">Select</th>
-                        <th className="border px-4 py-2">Qualification</th>
-                        <th className="border px-4 py-2">Course</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {sorted.map(({ qualification, course }) => {
-                        const id = qualification.id!;
-                        return (
-                            <tr key={id} className="border-t">
-                                <td className="border px-4 py-2 text-center">
-                                    <input
-                                        type="checkbox"
-                                        checked={studentChecked.includes(id)}
-                                        onChange={() => handleCheckboxChange(id)}
-                                    />
-                                </td>
-                                <td className="border px-4 py-2">
-                                    {qualification.description}
-                                </td>
-                                <td className="border px-4 py-2 text-right">
-                                    {course.deptCode} {course.courseNum}
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-            <button
-                type="submit"
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+  <form onSubmit={onSubmit} className="space-y-4">
+    <table className="min-w-full table-auto border-collapse border rounded-lg overflow-hidden shadow-sm">
+      <thead className="bg-slate-100 text-left text-sm">
+        <tr>
+          <th className="w-12 border px-2 py-2 text-center">✓</th>
+          <th className="border px-4 py-2">Qualification</th>
+          <th className="w-28 border px-3 py-2 text-right">Course</th>
+        </tr>
+      </thead>
+
+      <tbody className="text-sm">
+        {sorted.map(({ qualification, course }, idx) => {
+          const id = qualification.id!;
+          return (
+            <tr
+              key={id}
+              className={`
+                border-t
+                ${idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
+              `}
             >
-                Save
-            </button>
-        </form>
-    );
+              <td className="border px-2 py-2 text-center">
+                <input
+                  type="checkbox"
+                  checked={studentChecked.includes(id)}
+                  onChange={() => handleCheckboxChange(id)}
+                  className="h-4 w-4 accent-blue-600"
+                />
+              </td>
+
+              <td className="border px-4 py-2">
+                {qualification.description}
+              </td>
+
+              <td className="border px-3 py-2 text-right font-medium">
+                {course.deptCode} {course.courseNum}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+
+    <button
+      type="submit"
+      className="self-start px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow"
+    >
+      Save
+    </button>
+  </form>
+);
 }

@@ -3,11 +3,11 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi, describe, it, expect } from 'vitest';
 
 import InstructorQualificationViewer from './InstructorQualificationViewer';
-import { mockQualificationResponse } from '../../../../mocked-objects/qualification/mockInstructorQualificationResponse';
+import { mockInstructorQualificationResponse } from '../../../../mocked-objects/qualification/mockInstructorQualificationResponse';
 
 vi.mock('../../../../utility/genericapicontainer/GenericAPIContainer', () => {
   return {
-    GenericAPIContainer: (props: any) => props.render(mockQualificationResponse),
+    GenericAPIContainer: (props: any) => props.render(mockInstructorQualificationResponse),
   };
 });
 
@@ -29,7 +29,7 @@ describe('<InstructorQualificationViewer />', () => {
     expect(screen.getAllByText(/math\s*125/i).length).toBeGreaterThan(0);
 
     const cards = screen.getAllByTestId('qualification-card');
-    expect(cards.length).toBe(mockQualificationResponse.length);
+    expect(cards.length).toBe(mockInstructorQualificationResponse.length);
 
     const firstCard = cards[0];
     expect(within(firstCard).getAllByText(/10\s*somersaults/i).length).toBeGreaterThan(0);

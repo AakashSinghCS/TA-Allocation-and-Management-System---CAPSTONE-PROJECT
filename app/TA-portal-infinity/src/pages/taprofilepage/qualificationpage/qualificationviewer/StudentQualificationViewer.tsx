@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
-import { DeptCodeDropdown } from "./deptcodedropdown/DeptCodeDropdown";
+import  DeptCodeDropdown  from "./deptcodedropdown/DeptCodeDropdown";
 import { fetchAllExistingDeptCodes } from "../../../../api/course/fetchAllExsitingDeptCodes";
-import { StudentQualificationTable } from "./qualificationtable/StudentQualificationTable";
+import  StudentQualificationTable  from "./qualificationtable/StudentQualificationTable";
 import { fetchAllDeptCodeQualifications, type DeptCodeQualificationResponse } from "../../../../api/student/fetchAllDeptCodeQualifications";
 interface ViewerProps {
   studentId: number;

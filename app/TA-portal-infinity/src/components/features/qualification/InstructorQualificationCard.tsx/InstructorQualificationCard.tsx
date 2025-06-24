@@ -81,33 +81,6 @@ export default function InstructorQualificationCard({ initialQualifications, cou
       </button>
     </div>
   );
-
-    //Student view
-    // return (
-    //     <div className={className + " w-full overflow-hidden rounded-lg text-sm border border-amber-300 bg-amber-50 p-2"} data-testid="qualification-card" >
-    //         {
-    //             qualifications.map((currentq) => (
-    //                 <label>
-    //                     <select value="MULTI">
-    //                         <QualificationRow key={currentq.id ?? currentq.tempId} qualification={currentq} isEdit={false}
-    //                             onSaved={savedqual => setQualifications(q =>
-    //                                 q.map(x =>
-    //                                     (x.id ?? x.tempId) === (currentq.id ?? currentq.tempId) ? { ...savedqual, tempId: x.tempId } : x
-    //                                 )
-    //                             )}
-    //                             onRemoved={q => onRemoved(q)}
-    //                         />
-    //                     </select>
-    //                 </label>
-    //             ))
-    //         }
-    //         <button
-    //             className="cursor-hover p-2 italic text-slate-400 border border-slate-400 rounded-lg"
-    //             onClick={addEditingRow}>
-    //             Add a qualification
-    //         </button>
-    //     </div>
-    // );
 }
 
 interface QualificationRowProps {
