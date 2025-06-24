@@ -48,7 +48,7 @@ public class AllocationControllerTest {
         sampleDto = new AllocationHistoryDto(
             101L,
             new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4),
-            new Offer(),
+            new OfferDto(1L, false, ""),
             true,
             10,
             new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"))
@@ -81,7 +81,7 @@ public class AllocationControllerTest {
         AllocationHistoryDto responseDto = new AllocationHistoryDto(
             123L,
             new StudentDto(1L, "Test", "test@example.com", 63260442, "BSC", 2022, 4),
-            new Offer(),
+            new OfferDto(1L, false, ""),
             true,
             10,
             new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"))

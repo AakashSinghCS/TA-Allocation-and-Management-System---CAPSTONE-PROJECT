@@ -1,5 +1,6 @@
-package com.infinity.courseservice.dtos;
+package com.infinity.courseservice.dtos.SectionDtos;
 
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.enums.SectionType;
 
 public record SectionDto(

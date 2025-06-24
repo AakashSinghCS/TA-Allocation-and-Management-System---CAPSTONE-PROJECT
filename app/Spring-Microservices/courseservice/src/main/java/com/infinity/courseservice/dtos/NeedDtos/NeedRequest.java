@@ -1,6 +1,6 @@
-package com.infinity.courseservice.dtos;
+package com.infinity.courseservice.dtos.NeedDtos;
 
-public record NeedDto(String description,
+public record NeedRequest(String description,
         Integer requiredGradingHours,
         Integer numHoursCurrentlyAllocated,
         Integer year,

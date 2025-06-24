@@ -1,4 +1,4 @@
-package com.infinity.courseservice.dtos;
+package com.infinity.courseservice.dtos.CourseDtos;
 
 import com.infinity.courseservice.enums.*;
 import io.micrometer.common.lang.Nullable;

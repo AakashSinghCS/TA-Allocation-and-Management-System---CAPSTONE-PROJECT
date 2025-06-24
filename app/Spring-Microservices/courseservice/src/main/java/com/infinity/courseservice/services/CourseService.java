@@ -4,14 +4,16 @@ import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.infinity.courseservice.dtos.CourseDto;
-import com.infinity.courseservice.dtos.CourseFilterRequest;
-import com.infinity.courseservice.dtos.CourseRequest;
-import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
-import com.infinity.courseservice.dtos.SectionDto;
-import com.infinity.courseservice.dtos.SectionScheduleDto;
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
+import com.infinity.courseservice.dtos.CourseDtos.CourseNeedsAndAllocations;
+import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
+import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.UserInterface;
@@ -94,9 +96,29 @@ public class CourseService {
         return courseRepository.courseFilter(filter.deptCode(), filter.courseNum(), filter.name(), filter.section(), filter.term(), filter.type(), filter.day(), filter.startTime(), filter.endTime());
     }
 
-    public Section getSectionById(Long id) {
-        return sectionRepository.findById(id).orElse(null);
+    public SectionDto getSectionById(Long id) {
+
+        Section section = sectionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No section with id " + id));
+        Course course = section.getCourse();
+
+        return new SectionDto(
+                section.getId(),
+                section.getTerm(),
+                section.getSection(),
+                section.getType(),
+                new CourseDto(
+                        course.getDeptCode(),
+                        course.getName(),
+                        course.getCourseNum()));
     }
+
+    public ResponseEntity<CourseNeedsAndAllocations> getCourseNeedsAndAllocations(Long courseId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCourseNeedsAndAllocations'");
+    }
+
+
 
 
     // public List<CourseDto> getEnrolledCourses(Integer studentId) {

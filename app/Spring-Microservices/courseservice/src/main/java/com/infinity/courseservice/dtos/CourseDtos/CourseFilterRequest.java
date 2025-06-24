@@ -1,15 +1,14 @@
-package com.infinity.courseservice.dtos;
+package com.infinity.courseservice.dtos.CourseDtos;
 
 import java.time.LocalTime;
-import com.infinity.courseservice.enums.*;
 
-public record CourseSectionScheduleDto(
+public record CourseFilterRequest(
         String deptCode,
         String name,
         String courseNum,
         String section,
         String term,
-        SectionType type,
+        String type,
         String day,
         LocalTime startTime,
         LocalTime endTime

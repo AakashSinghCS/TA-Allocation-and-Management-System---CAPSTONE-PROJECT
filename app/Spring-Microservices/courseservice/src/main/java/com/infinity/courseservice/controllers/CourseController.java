@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.infinity.courseservice.dtos.CourseDto;
-import com.infinity.courseservice.dtos.CourseFilterRequest;
-import com.infinity.courseservice.dtos.CourseRequest;
-import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
-import com.infinity.courseservice.dtos.SectionDto;
-import com.infinity.courseservice.dtos.SectionScheduleDto;
-import com.infinity.courseservice.models.Course;
-import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
+import com.infinity.courseservice.dtos.CourseDtos.CourseNeedsAndAllocations;
+import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
+import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.services.CourseService;
 
 import lombok.Data;
@@ -35,61 +34,45 @@ public class CourseController {
 
     @GetMapping("/{courseId}")
     public ResponseEntity<CourseDto> findCourse(@PathVariable Long courseId) {
-        CourseDto courseDto = courseService.findCourse(courseId);
-        return ResponseEntity.ok(courseDto);
+        return ResponseEntity.ok(courseService.findCourse(courseId));
     }
     
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addCourse")
     public ResponseEntity<CourseDto> addCourse(@RequestBody CourseRequest request) {
-        CourseDto courseDto = courseService.addCourse(request);
-        return ResponseEntity.ok(courseDto);
+        return ResponseEntity.ok( courseService.addCourse(request));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("{courseId}/addSection")
-    public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId, @RequestBody CourseRequest request) {       
-        SectionDto sectionDto = courseService.addSection(courseId,request);
-        return ResponseEntity.ok(sectionDto);
+    public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId, @RequestBody CourseRequest request) {      
+        return ResponseEntity.ok(courseService.addSection(courseId,request));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/{courseId}/{sectionId}/addSectionSchedule")
     public ResponseEntity<SectionScheduleDto> addSectionSchedule(@PathVariable Long sectionId, @RequestBody CourseRequest request) {
-        SectionScheduleDto courseScheduleDto = courseService.addSectionSchedule(sectionId, request);
-        return ResponseEntity.ok(courseScheduleDto);
+        return ResponseEntity.ok(courseService.addSectionSchedule(sectionId, request));
     }
     
     @PostMapping("/filterCourses")
     public ResponseEntity<List<CourseSectionScheduleDto>> filterCourses(@RequestBody CourseFilterRequest filter) {
-        List<CourseSectionScheduleDto> CourseSectionScheduleDto = courseService.filterCourses(filter);
-        return ResponseEntity.ok(CourseSectionScheduleDto);
+        return ResponseEntity.ok(courseService.filterCourses(filter));
     }
 
     @GetMapping("/allById")
     public ResponseEntity<List<CourseDto>> getCoursesByIds(@RequestParam List<Long> ids) {
-        List<CourseDto> courseDtos = courseService.findCoursesByIds(ids);
-        return ResponseEntity.ok(courseDtos);
+        return ResponseEntity.ok(courseService.findCoursesByIds(ids));
     }
 
     @GetMapping("/sections/get/{id}")
     public ResponseEntity<SectionDto> getSectionById(@PathVariable Long id) {
-        Section section = courseService.getSectionById(id);
-        Course course = section.getCourse(); 
+        return ResponseEntity.ok(courseService.getSectionById(id));
+    }
 
-        SectionDto dto = new SectionDto(
-            section.getId(),
-            section.getTerm(),
-            section.getSection(),
-            section.getType(),
-            new CourseDto(
-                course.getDeptCode(),
-                course.getName(),
-                course.getCourseNum()
-            )
-        );
-
-        return ResponseEntity.ok(dto);
+    @GetMapping("/needsAndAllocations/{courseId}")
+    public ResponseEntity<CourseNeedsAndAllocations> getCourseNeedsAndAllocations(@PathVariable Long courseId) {
+        return courseService.getCourseNeedsAndAllocations(courseId);
     }
 
     // @GetMapping("/getEnrolledCourses/{studentId}")

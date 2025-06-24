@@ -1,4 +1,4 @@
-package com.infinity.courseservice.dtos;
+package com.infinity.courseservice.dtos.SectionDtos;
 
 import com.infinity.courseservice.enums.SectionType;
 
