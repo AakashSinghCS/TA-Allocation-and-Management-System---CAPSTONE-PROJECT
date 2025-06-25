@@ -1,9 +1,9 @@
-// src/components/ui/searchuserbar/SearchUserBar.tsx
 import React, { useState, useCallback } from "react";
 import { fetchAllSearchedUsers } from "../../../api/user/fetchAllSearchedUsers";
 import type { Student } from "../../../interfaces/user/Student";
 import type { Instructor } from "../../../interfaces/user/Instructor";
 import type User from "../../../interfaces/user/User";
+import { fetchDeleteUser } from "../../../api/user/fetchDeleteUser";
 
 export interface SearchCriteria {
   role: "Student" | "Instructor" | "Coordinator";
@@ -45,9 +45,14 @@ export function useUserSearch<T extends User>() {
     }
   }, []);
 
-  const deleteUser = useCallback((id?: number) => {
+  const deleteUser = useCallback(async (id?: number) => {
     if (!id) return;
-    setSearchedUsers(prev => prev?.filter(u => u.id !== id) ?? []);
+    const success = await fetchDeleteUser(id);
+    if (success) {
+      setSearchedUsers(prev => prev?.filter(u => u.id !== id) ?? []);
+    } else {
+      alert("Failed to delete user");
+    }
   }, []);
 
   return { searchedUsers, loading, error, search, deleteUser, lastCriteria };
@@ -61,6 +66,8 @@ export default function SearchUserBar({ onSearch, loading,allowedRoles }: Search
     e.preventDefault();
     await onSearch(criteria);
   };
+
+  const isUniversityNumberEntered = criteria.universityNumber.length > 0;
 
   return (
     <form className="flex space-x-2" onSubmit={handleSubmit}>
@@ -78,6 +85,7 @@ export default function SearchUserBar({ onSearch, loading,allowedRoles }: Search
         placeholder="Name"
         value={criteria.name}
         onChange={e => setCriteria(c => ({ ...c, name: e.target.value }))}
+        disabled={isUniversityNumberEntered}
         className="border px-2 py-1 rounded"
       />
       <input
@@ -87,8 +95,8 @@ export default function SearchUserBar({ onSearch, loading,allowedRoles }: Search
         placeholder="University Number"
         value={criteria.universityNumber}
         onChange={e => {
-          const digits = e.target.value.replace(/\D/g, "");
-          setCriteria(c => ({ ...c, universityNumber: digits.slice(0, 8) }));
+          const digits = e.target.value.replace(/\D/g, "").slice(0, 8);
+          setCriteria(c => ({ ...c, universityNumber: digits, name: digits.length > 0 ? "" : c.name }));
         }}
         className="border px-2 py-1 rounded w-40"
       />

@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
-import SignUpPage from "./SignUpPage";
+import SignUpPage from "./SignUpPage1";
 import { MemoryRouter } from "react-router-dom";
 
 const renderWithRouter = (ui: React.ReactElement) => {

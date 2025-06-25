@@ -27,6 +27,7 @@ import InstructorQualificationPage from "../pages/instructorprofilepage/qualific
 import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
 import UserBrowsingPage from "../pages/userbrowsingpage/UserBrowsingPage";
 import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
+import SignUpPage1 from "../pages/signupPage/SignUpPage1";
 
 export const router = createBrowserRouter([
   {
@@ -102,7 +103,8 @@ export const router = createBrowserRouter([
     children: [
       { path: "", element: <LoginPage /> },
       { path: "login", element: <LoginPage /> },
-      { path: "signup", element: <SignUpPage /> },
+      // { path: "signup", element: <SignUpPage /> },
+      { path: "signup", element: <SignUpPage1 /> },
       { path: "*", element: <ErrorPage /> },
     ],
   },

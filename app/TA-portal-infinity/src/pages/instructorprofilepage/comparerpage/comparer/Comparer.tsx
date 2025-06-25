@@ -50,7 +50,7 @@ export default function Comparer({ sections = [], className }: ComparerProps) {
                         <button onClick={handleCompareClick} disabled={!selectedStudent}
                             className="bg-green-600 text-white text-sm px-2 py-1 rounded hover:bg-green-700 disabled:bg-slate-300 disabled:cursor-not-allowed">Compare Needs</button>
                         <span className="absolute ml-10 left-full top-1/2 -translate-y-1/2 ml-2 z-10  scale-0 group-hover:scale-100 transition-transform bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-md whitespace-normal break-words min-w-[20vw] max-w-[40vw]">
-                            Each student should have a list of courses taken. Click to see which section on the right the student fulfills prerequisites.
+                            Each student should have a list of courses taken. Click to see which section on the right the student fulfills course prerequisites.
                         </span>
                     </div>
                 </div>

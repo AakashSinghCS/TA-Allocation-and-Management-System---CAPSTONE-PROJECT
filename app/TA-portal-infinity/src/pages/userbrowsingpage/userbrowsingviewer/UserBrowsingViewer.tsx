@@ -35,15 +35,15 @@ export default function UserBrowsingViewer() {
         <div>
             <div className="flex justify-between items-end mb-4">
                 <SearchUserBar onSearch={search} loading={loading} />
-                {/* {userRoles.includes('COORDINATOR') && (
-                    <button onClick={() => navigate('/users/new')} className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600">
+                {userRoles.includes('COORDINATOR') && (
+                    <button onClick={() => navigate('/user/coordinator/browseuser/newuser')} className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600">
                         Add User
                     </button>
-                )} */}
+                )}
                 {/* For development: */}
-                <button onClick={() => navigate('/user/coordinator/browseuser/newuser')} className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600">
+                {/* <button onClick={() => navigate('/user/coordinator/browseuser/newuser')} className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600">
                     Add User
-                </button>
+                </button> */}
 
             </div>
 

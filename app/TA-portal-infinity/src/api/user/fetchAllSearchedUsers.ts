@@ -1,36 +1,39 @@
 import type User from "../../interfaces/user/User";
 import { mockStudentEmmaDoe, mockStudentJohnDoe } from "../../mocked-objects/user/mockStudents";
 
-const BASE = "http://localhost:8080/mock/mock";
+const BASE = "http://localhost:8080/users/search";
 
 interface UserSearchRequest {
-  role : string;
+  role: string;
   name: string;
-  universityNumber : number;
+  universityNumber: number;
 }
 
 export async function fetchAllSearchedUsers<T extends User>(req: UserSearchRequest): Promise<T[] | null> {
   const token = localStorage.getItem("token");
+
+  const params = new URLSearchParams({
+    role: req.role,
+    name: req.name,
+    universityNumber: req.universityNumber.toString(),
+  });
+
   try {
-    const res = await fetch(BASE, {
-      method: "POST",
+    const res = await fetch(`${BASE}?${params.toString()}`, {
+      method: "GET",
       headers: {
-        "Content-Type": "application/json",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: JSON.stringify(req),
-
     });
+
     if (!res.ok) {
       console.error("Request failed with status:", res.status);
-      // return null;
-      return [mockStudentJohnDoe, mockStudentEmmaDoe] as unknown as T[];;
-
+      return [mockStudentJohnDoe, mockStudentEmmaDoe] as unknown as T[];
     }
-    return res.json();
-  } catch {
-    console.log("something went wrong");
-    // return null;
-    return [mockStudentJohnDoe, mockStudentEmmaDoe] as unknown as T[];;
+
+    return await res.json();
+  } catch (err) {
+    console.error("Something went wrong:", err);
+    return [mockStudentJohnDoe, mockStudentEmmaDoe] as unknown as T[];
   }
 }

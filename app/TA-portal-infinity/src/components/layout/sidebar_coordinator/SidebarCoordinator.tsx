@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import {  Home, BookOpen, GraduationCap, Presentation, UserRoundPen, Users, LogOut,} from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const navItems = [
   { label: "Home", to: "/user/coordinator/home", icon: <Home size={22} /> },
