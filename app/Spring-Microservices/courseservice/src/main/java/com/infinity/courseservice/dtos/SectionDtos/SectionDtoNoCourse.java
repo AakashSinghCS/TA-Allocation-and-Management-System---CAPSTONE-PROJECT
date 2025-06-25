@@ -4,7 +4,8 @@ import com.infinity.courseservice.enums.SectionType;
 
 public record SectionDtoNoCourse(
     Long id,
-    String term,
+    Integer year,
+    String semester,
     String section,
     SectionType type
 ) {}

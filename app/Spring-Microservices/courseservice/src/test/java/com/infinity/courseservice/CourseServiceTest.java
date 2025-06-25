@@ -121,14 +121,14 @@ public class CourseServiceTest {
 
     @Test
     void testFilterCourses() {
-        CourseSectionScheduleDto dto1 = new CourseSectionScheduleDto("COSC", "Distributed Systems", "455", "001", "L",
+        CourseSectionScheduleDto dto1 = new CourseSectionScheduleDto("COSC", "Distributed Systems", "455", "001", 2025, "W1",
                 SectionType.LAB, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
-        CourseSectionScheduleDto dto2 = new CourseSectionScheduleDto("COSC", "Operating Systems", "S", "002", "2025W2",
+        CourseSectionScheduleDto dto2 = new CourseSectionScheduleDto("COSC", "Operating Systems", "S", "002", 2025, "W2",
                 SectionType.LAB, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
 
-        CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", null, null, null, "2025W1", null, "Wed",
+        CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", null, null, null, 2025, "W1", null, "Wed",
                 LocalTime.of(14, 00), LocalTime.of(15, 30));
-        when(courseRepository.courseFilter("COSC", null, null, null, "2025W1", null, "Wed", LocalTime.of(14, 00),
+        when(courseRepository.courseFilter("COSC", null, null, null, 2025, "W1", null, "Wed", LocalTime.of(14, 00),
                 LocalTime.of(15, 30)))
                 .thenReturn(List.of(dto1, dto2));
 

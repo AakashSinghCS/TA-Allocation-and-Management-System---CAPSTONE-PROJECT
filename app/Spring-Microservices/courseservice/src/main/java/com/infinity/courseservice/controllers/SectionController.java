@@ -1,7 +1,10 @@
 package com.infinity.courseservice.controllers;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +18,6 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.services.SectionService;
 
-import feign.Response;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -47,5 +49,18 @@ public class SectionController {
     @PostMapping("/assignInstructor")
     public ResponseEntity<String> assignInstructor(@RequestBody AssignInstructorRequest request) {
         return ResponseEntity.ok(sectionService.assignInstructor(request));
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @DeleteMapping("/unassignInstructor/{sectionId}/{instructorId}")
+    public ResponseEntity<String> unassignInstructor(@PathVariable Long sectionId,
+            @PathVariable Long instructorId) {
+        return ResponseEntity.ok(sectionService.unassignInstructor(sectionId, instructorId));
+    }
+
+    @PreAuthorize("hasAnyRole('COORDINATOR','INSTRUCTOR')")
+    @GetMapping("/getInstructorSections/{instructorId}")
+    public ResponseEntity<List<SectionDto>> getInstructorSections(@PathVariable Long instructorId) {
+        return ResponseEntity.ok(sectionService.getInstructorSections(instructorId));
     }
 }

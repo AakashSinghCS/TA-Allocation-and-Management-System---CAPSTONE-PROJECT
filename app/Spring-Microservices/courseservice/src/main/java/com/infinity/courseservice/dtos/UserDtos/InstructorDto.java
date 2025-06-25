@@ -1,4 +1,4 @@
-package com.infinity.userservice.dtos.Instructors;
+package com.infinity.courseservice.dtos.UserDtos;
 
 import java.time.LocalDateTime;
 
