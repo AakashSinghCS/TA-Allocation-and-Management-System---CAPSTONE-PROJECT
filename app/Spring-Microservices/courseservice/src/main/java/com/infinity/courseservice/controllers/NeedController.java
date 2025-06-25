@@ -35,28 +35,24 @@ public class NeedController {
         return ResponseEntity.ok(needService.addNeed(request, courseId));
     }
 
-    @GetMapping("/get/{needId}")
-    public ResponseEntity<NeedDto> getMethodName(@PathVariable Long needId) {
-        return ResponseEntity.ok(needService.getNeed(needId));
-    }
-
-    @GetMapping("/getAllNeeds/{courseId}")
-    public ResponseEntity<List<NeedDto>> getAllNeedsByCourseId(@PathVariable Long courseId) {
-        return ResponseEntity.ok(needService.getAllNeedsByCourseId(courseId));
+    @GetMapping("/get/{courseId}/{year}/{semester}")
+    public ResponseEntity<NeedDto> getNeed(@PathVariable Long courseId,
+            @PathVariable Integer year, @PathVariable String semester) {
+        return ResponseEntity.ok(needService.getNeed(courseId, year, semester));
     }
     
     
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    @PutMapping("/update/{needId}")
+    @PutMapping("/update/{courseId}/{year}/{semester}")
     public ResponseEntity<NeedDto> updateNeed(@RequestBody NeedRequest request,
-            @PathVariable Long needId) {
-
-        return ResponseEntity.ok(needService.updateNeed(request, needId));
+            @PathVariable Long courseId, @PathVariable Integer year, @PathVariable String semester) {
+        return ResponseEntity.ok(needService.updateNeed(request, courseId, year, semester));
     }
     
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    @DeleteMapping("/delete/{needId}")
-    public ResponseEntity<String> deleteNeed(@PathVariable Long needId) {
-        return ResponseEntity.ok(needService.deleteNeed(needId));
+    @DeleteMapping("/delete/{courseId}/{year}/{semester}")
+    public ResponseEntity<String> deleteNeed(@PathVariable Long courseId,
+            @PathVariable Integer year, @PathVariable String semester) {
+        return ResponseEntity.ok(needService.deleteNeed(courseId, year, semester));
     }
 }

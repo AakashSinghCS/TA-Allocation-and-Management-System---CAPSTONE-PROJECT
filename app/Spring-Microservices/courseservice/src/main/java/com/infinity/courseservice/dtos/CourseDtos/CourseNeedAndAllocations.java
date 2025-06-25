@@ -5,8 +5,8 @@ import java.util.List;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 
-public record CourseNeedsAndAllocations(
+public record CourseNeedAndAllocations(
         CourseDto course,
-        List<NeedDto> needs,
+        NeedDto need,
         List<AllocationHistoryDto> allocations
 ) {}

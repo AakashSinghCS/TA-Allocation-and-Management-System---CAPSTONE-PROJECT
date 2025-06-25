@@ -53,7 +53,7 @@ public class NeedServiceTest {
 
     @Test
     void testAddNeed_Success() {
-        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "Fall");
+        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1");
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(mockCourse));
         when(needRepository.save(any(Need.class))).thenReturn(mockNeed);
@@ -67,7 +67,7 @@ public class NeedServiceTest {
 
     @Test
     void testAddNeed_CourseNotFound() {
-        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "Fall");
+        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1");
 
         when(courseRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -82,7 +82,7 @@ public class NeedServiceTest {
     void testGetNeed_Success() {
         when(needRepository.findById(5L)).thenReturn(Optional.of(mockNeed));
 
-        NeedDto result = needService.getNeed(5L);
+        NeedDto result = needService.getNeed(5L, 2025, "W1");
 
         assertEquals("Marking Labs", result.description());
         assertEquals(30, result.requiredGradingHours());
@@ -97,7 +97,7 @@ public class NeedServiceTest {
 
     @Test
     void testUpdateNeed_Success() {
-        NeedRequest update = new NeedRequest("Updated", 40, 20, 2025, "Fall");
+        NeedRequest update = new NeedRequest("Updated", 40, 20, 2025, "W1");
 
         when(needRepository.findById(5L)).thenReturn(Optional.of(mockNeed));
         when(needRepository.save(any())).thenReturn(mockNeed);
@@ -110,7 +110,7 @@ public class NeedServiceTest {
 
     @Test
     void testUpdateNeed_NotFound() {
-        NeedRequest update = new NeedRequest("Updated", 40, 20, 2025, "Fall");
+        NeedRequest update = new NeedRequest("Updated", 40, 20, 2025, "W1");
 
         when(needRepository.findById(5L)).thenReturn(Optional.empty());
 
@@ -136,7 +136,7 @@ public class NeedServiceTest {
 
     @Test
     void testGetAllNeedsByCourseId_Success() {
-        CourseNeed cn = new CourseNeed(mockCourse, mockNeed, 2025, "Fall");
+        CourseNeed cn = new CourseNeed(mockCourse, mockNeed, 2025, "W1");
 
         when(courseRepository.existsById(1L)).thenReturn(true);
         when(courseNeedRepository.findByCourseId(1L)).thenReturn(List.of(cn));

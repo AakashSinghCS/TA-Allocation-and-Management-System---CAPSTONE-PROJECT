@@ -39,8 +39,8 @@ public class NeedControllerTest {
     @Test
     void testAddNeed() throws Exception {
         Long courseId = 1L;
-        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "Fall");
-        NeedDto response = new NeedDto(5L, "Marking Labs", 30, 10);
+        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1");
+        NeedDto response = new NeedDto(5L, 1L,"Marking Labs", 30, 10, 2025, "W1");
 
         when(needService.addNeed(eq(request), eq(courseId))).thenReturn(response);
 
@@ -56,57 +56,47 @@ public class NeedControllerTest {
 
     @Test
     void testGetNeed() throws Exception {
-        Long needId = 5L;
-        NeedDto dto = new NeedDto(5L, "Marking Labs", 30, 10);
+        Long courseId = 1L;
+        Integer year = 2025;
+        String semester = "W1";
+        NeedDto dto = new NeedDto(5L, 1L, "Marking Labs", 30, 10, 2025, "W1");
 
-        when(needService.getNeed(needId)).thenReturn(dto);
+        when(needService.getNeed(courseId, 2025, "W1")).thenReturn(dto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/needs/get/{needId}", needId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/needs/get/{courseId}/{year}/{semester}", courseId, year, semester))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(5L))
                 .andExpect(jsonPath("$.description").value("Marking Labs"));
     }
 
     @Test
-    void testGetAllNeedsByCourseId() throws Exception {
-        Long courseId = 1L;
-        List<NeedDto> mockList = List.of(
-                new NeedDto(1L, "Labs", 20, 5),
-                new NeedDto(2L, "Exams", 40, 10));
-
-        when(needService.getAllNeedsByCourseId(courseId)).thenReturn(mockList);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/needs/getAllNeeds/{courseId}", courseId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].description").value("Labs"))
-                .andExpect(jsonPath("$[1].description").value("Exams"));
-    }
-
-    @Test
     void testUpdateNeed() throws Exception {
-        Long needId = 5L;
-        NeedRequest request = new NeedRequest("Updated", 35, 15, 2025, "Fall");
-        NeedDto updated = new NeedDto(5L, "Updated", 35, 15);
+        Long courseId = 1L;
+        Integer year = 2025;
+        String semester = "W1";
+        NeedRequest request = new NeedRequest("Updated", 30, 10, 2025, "W1");
+        NeedDto updated = new NeedDto(5L, 1L, "Updated", 30, 10, 2025, "W1");
 
-        when(needService.updateNeed(eq(request), eq(needId))).thenReturn(updated);
+        when(needService.updateNeed(eq(request), eq(courseId), eq(2025), eq("W1"))).thenReturn(updated);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/needs/update/{needId}", needId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/needs/update/{courseId}/{year}/{semester}", courseId, year, semester)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.description").value("Updated"))
-                .andExpect(jsonPath("$.requiredGradingHours").value(35))
-                .andExpect(jsonPath("$.numHoursCurrentlyAllocated").value(15));
+                .andExpect(jsonPath("$.requiredGradingHours").value(30))
+                .andExpect(jsonPath("$.numHoursCurrentlyAllocated").value(10));
     }
 
     @Test
     void testDeleteNeed() throws Exception {
-        Long needId = 5L;
+        Long courseId = 1L;
+        Integer year = 2025;
+        String semester = "W1";
 
-        when(needService.deleteNeed(needId)).thenReturn("Need deleted");
+        when(needService.deleteNeed(courseId, 2025, "W1")).thenReturn("Need deleted");
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/needs/delete/{needId}", needId))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/needs/delete/{courseId}/{year}/{semester}", courseId, year, semester))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Need deleted"));
     }

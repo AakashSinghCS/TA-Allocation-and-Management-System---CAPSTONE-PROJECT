@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
-import com.infinity.courseservice.dtos.CourseDtos.CourseNeedsAndAllocations;
+import com.infinity.courseservice.dtos.CourseDtos.CourseNeedAndAllocations;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
@@ -55,36 +55,6 @@ public class CourseService {
         
         return new CourseDto(course.getDeptCode(), course.getName(), course.getCourseNum());
     }
-
-    @Transactional
-    public SectionDto addSection(Long courseId, CourseRequest request) {
-        Course course = courseRepository.findById(courseId)
-                        .orElseThrow(() -> new EntityNotFoundException("Course not found"));
-        
-        Section section = new Section(request.term(), request.section(), request.type(), course);
-        try {
-            sectionRepository.save(section);
-        } catch (DataIntegrityViolationException ex) {
-            throw new BadRequestException("Section already exists " + ex);
-        }
-        
-        return new SectionDto(section.getId(),section.getTerm(), section.getSection(), section.getType(), new CourseDto(course.getDeptCode(),course.getName(),course.getCourseNum()));
-    }
-
-    @Transactional
-    public SectionScheduleDto addSectionSchedule(Long secionId, CourseRequest request) {
-        Section section = sectionRepository.findById(secionId)
-                        .orElseThrow(() -> new EntityNotFoundException("section not found"));
-        LocalTime startTime = request.startTime() != null ? LocalTime.parse(request.startTime()) : null;
-        LocalTime endTime = request.endTime() != null ? LocalTime.parse(request.endTime()) : null;
-        SectionSchedule sectionSchedule = new SectionSchedule(request.day(), startTime, endTime, section);
-        try {
-            sectionScheduleRepository.save(sectionSchedule);
-        } catch (DataIntegrityViolationException ex) {
-            throw new BadRequestException("Schedule already exists " + ex);
-        }
-        return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(), sectionSchedule.getEndTime(), sectionSchedule.getSection().getId());
-    }
     
     public CourseDto findCourse(Long id) {
         Course course = courseRepository.findById(id).orElseThrow(() -> new NotFoundException("Course with ID " + id + " not found"));
@@ -99,32 +69,15 @@ public class CourseService {
     public List<CourseSectionScheduleDto> filterCourses(CourseFilterRequest filter) {
         return courseRepository.courseFilter(filter.deptCode(), filter.courseNum(), filter.name(), filter.section(), filter.term(), filter.type(), filter.day(), filter.startTime(), filter.endTime());
     }
-
-    public SectionDto getSectionById(Long id) {
-
-        Section section = sectionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No section with id " + id));
-        Course course = section.getCourse();
-
-        return new SectionDto(
-                section.getId(),
-                section.getTerm(),
-                section.getSection(),
-                section.getType(),
-                new CourseDto(
-                        course.getDeptCode(),
-                        course.getName(),
-                        course.getCourseNum()));
-    }
-
-    public CourseNeedsAndAllocations getCourseNeedsAndAllocations(Long courseId) {
+    
+    public CourseNeedAndAllocations getCourseNeedAndAllocations(Long courseId, Integer year, String semester) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
-        List<NeedDto> needs = needService.getAllNeedsByCourseId(courseId);
+        NeedDto need = needService.getNeed(courseId, year, semester);
         List<AllocationHistoryDto> allocations = applicationInterface.getStudentAllocationHistory(courseId).getBody();
         CourseDto courseDto = new CourseDto(course.getDeptCode(), course.getName(), course.getCourseNum());
-        return new CourseNeedsAndAllocations(courseDto, needs, allocations);
-        
+        return new CourseNeedAndAllocations(courseDto, need, allocations);
+
     }
 
 
