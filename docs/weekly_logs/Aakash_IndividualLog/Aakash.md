@@ -873,3 +873,111 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin coding of assigning students to courses/labs manually.
 
+## Saturday 6/21 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.21.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allens code modification
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I was able to correctly modify allens code to prevent code breakage. I modified his code to use sectionDto and courseDto accordingly.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. Some members are busy next week due to finals and have notified us in advance.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin coding of assigning students to courses/labs manually.
+
+## Monday 6/23 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.23.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Offer Workflow - Backend
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 20% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I began coding the backend for the offer workflow of allocating students to courses/labs. Initial dtos and mappings created.  
+What didn't go well: I had to go through a lot of files since offer is connected to application which is in turn connected to student. But i was able to figure it out in the end. 
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete the backend offer workflow for allocation and begin next assigned coding task.
+
+## Tuesday 6/24 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.24.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Offer Workflow - Backend
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 80% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Most of the backend for offer workflow is complete. CRUD operations for coordinator are ready. Next, i need to create mappings for accept/deny offer along with the relevant services and integrate that with allocating a student.
+What didn't go well: Everything went well.
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete the backend offer workflow for allocation and begin next assigned coding task.
+
