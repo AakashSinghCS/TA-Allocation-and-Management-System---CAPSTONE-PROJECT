@@ -3,14 +3,9 @@
     "@fullcalendar/interaction": "^6.1.17",
     "@fullcalendar/react": "^6.1.17",
     "@fullcalendar/timegrid": "^6.1.17",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
     "lucide-react": "^0.518.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.2"
-  },
-  "devDependencies": {
-    "@types/react-router-dom": "^5.3.3"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.30.1"
   }
 }
