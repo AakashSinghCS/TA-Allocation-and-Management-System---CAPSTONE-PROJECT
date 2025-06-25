@@ -48,6 +48,7 @@ public class SectionService {
                 section.getSection(),
                 section.getType(),
                 new CourseDto(
+                        course.getId(),
                         course.getDeptCode(),
                         course.getName(),
                         course.getCourseNum()));
@@ -66,7 +67,7 @@ public class SectionService {
         }
 
         return new SectionDto(section.getId(), section.getYear(), section.getSemester(), section.getSection(),
-                section.getType(), new CourseDto(course.getDeptCode(), course.getName(), course.getCourseNum()));
+                section.getType(), new CourseDto(course.getId(),course.getDeptCode(), course.getName(), course.getCourseNum()));
     }
 
     @Transactional
@@ -110,9 +111,11 @@ public class SectionService {
                             sec.getSemester(),
                             sec.getSection(),
                             sec.getType(),
-                            new CourseDto(sec.getCourse().getDeptCode(),
-                                    sec.getCourse().getName(),
-                                    sec.getCourse().getCourseNum())))
+                        new CourseDto(
+                            sec.getCourse().getId(),
+                            sec.getCourse().getDeptCode(),
+                            sec.getCourse().getName(),
+                            sec.getCourse().getCourseNum())))
                 .toList();
     }
 }

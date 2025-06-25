@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -18,10 +19,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
+import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
+import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.models.SectionSchedule;
@@ -44,9 +48,12 @@ public class SectionServiceTest {
     @Mock
     private SectionScheduleRepository sectionScheduleRepository;
 
+    @Mock
+    private UserInterface userInterface;
+
     @InjectMocks
     private SectionService sectionService;
-    
+
     @Test
     void testAddSectionSuccess() {
         Course course = new Course("COSC", "Software Engineering", "310");
@@ -74,7 +81,7 @@ public class SectionServiceTest {
                 SectionType.LECTURE, 2025, "W1", null, null, null);
         assertThrows(EntityNotFoundException.class, () -> sectionService.addSection(99L, request));
     }
-    
+
     @Test
     void testAddSection_Duplicate() {
         CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
@@ -83,7 +90,7 @@ public class SectionServiceTest {
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
         when(sectionRepository.save(any(Section.class)))
                 .thenThrow(new DataIntegrityViolationException("Duplicate entry"));
-        
+
         BadRequestException ex = assertThrows(BadRequestException.class, () -> sectionService.addSection(1L, request));
 
         assertEquals("Section already exists org.springframework.dao.DataIntegrityViolationException: Duplicate entry",
@@ -153,4 +160,77 @@ public class SectionServiceTest {
         when(sectionRepository.findById(99L)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> sectionService.getSectionById(99L));
     }
+
+    @Test
+    void testAssignInstructor_Success() {
+        AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L); // instructorId, sectionId
+
+        InstructorDto instructorDto = new InstructorDto(99L, "Jane", "Doe", 1234, "COSC", null);
+        Course course = new Course("COSC", "AI", "310");
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        section.setId(101L);
+
+        when(userInterface.getInstructorById(99L)).thenReturn(instructorDto);
+        when(sectionRepository.findById(101L)).thenReturn(Optional.of(section));
+        when(sectionRepository.save(any())).thenReturn(section);
+
+        String result = sectionService.assignInstructor(request);
+        assertEquals("Instructor assigned to section 101", result);
+        assertEquals(99L, section.getInstructorId());
+    }
+
+    @Test
+    void testAssignInstructor_SectionNotFound() {
+        AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L);
+        InstructorDto instructorDto = new InstructorDto(99L, "Jane", "Doe", 1234, "COSC", null);
+
+        when(userInterface.getInstructorById(99L)).thenReturn(instructorDto);
+        when(sectionRepository.findById(101L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> sectionService.assignInstructor(request));
+    }
+
+    @Test
+    void testUnassignInstructor_Success() {
+        Course course = new Course("COSC", "AI", "310");
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        section.setId(101L);
+        section.setInstructorId(99L);
+
+        when(sectionRepository.findById(101L)).thenReturn(Optional.of(section));
+        when(sectionRepository.save(any())).thenReturn(section);
+
+        String result = sectionService.unassignInstructor(101L, 99L);
+        assertEquals("Instructor unassigned from 101", result);
+        assertEquals(null, section.getInstructorId());
+    }
+
+    @Test
+    void testUnassignInstructor_SectionNotFound() {
+        when(sectionRepository.findById(101L)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> sectionService.unassignInstructor(101L, 99L));
+    }
+
+    @Test
+    void testGetInstructorSections_Success() {
+        Course course1 = new Course("COSC", "Security", "430");
+        course1.setId(1L);
+        Course course2 = new Course("COSC", "AI", "310");
+        course2.setId(2L);
+
+        Section s1 = new Section(2025, "W1", "001", SectionType.LECTURE, course1);
+        s1.setId(10L);
+        Section s2 = new Section(2025, "W1", "002", SectionType.LAB, course2);
+        s2.setId(11L);
+
+        List<Section> sections = List.of(s1, s2);
+        when(sectionRepository.findAllByInstructorId(99L)).thenReturn(sections);
+
+        var result = sectionService.getInstructorSections(99L);
+
+        assertEquals(2, result.size());
+        assertEquals("Security", result.get(0).course().name());
+        assertEquals("AI", result.get(1).course().name());
+    }
+
 }

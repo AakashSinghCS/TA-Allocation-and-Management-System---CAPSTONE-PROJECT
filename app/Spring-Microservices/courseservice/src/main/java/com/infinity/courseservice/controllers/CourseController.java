@@ -49,10 +49,17 @@ public class CourseController {
         return ResponseEntity.ok(courseService.findCoursesByIds(ids));
     }
 
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
     @GetMapping("/needAndAllocations/{courseId}/{year}/{semester}")
     public ResponseEntity<CourseNeedAndAllocations> getCourseNeedAndAllocations(@PathVariable Long courseId,
             @PathVariable Integer year, @PathVariable String semester) {
         return ResponseEntity.ok(courseService.getCourseNeedAndAllocations(courseId, year, semester));
+    }
+
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
+    @GetMapping("/needAndAllocations/{instructorId}")
+    public ResponseEntity<List<CourseNeedAndAllocations>> getInstructorCourseNeedsAndAllocations(@PathVariable Long instructorId) {
+        return ResponseEntity.ok(courseService.getInstructorCourseNeedsAndAllocations(instructorId));
     }
 
     // @GetMapping("/getEnrolledCourses/{studentId}")
