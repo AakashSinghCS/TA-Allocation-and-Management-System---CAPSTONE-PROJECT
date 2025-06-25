@@ -27,7 +27,7 @@ public class Student extends User {
     private Integer schoolYear;
 
     public Student(String email, String firstName, String lastName, String password) {
-        super(email, firstName, lastName, password, UserRole.STUDENT);
+        super(email, firstName, lastName, password);
     }
 
     public Student(
@@ -39,7 +39,7 @@ public class Student extends User {
             String program,
             Integer enrollmentYear,
             Integer schoolYear) {
-        super(email, firstName, lastName, password, UserRole.STUDENT);
+        super(email, firstName, lastName, password);
         this.studentNum = studentNum;
         this.program = program;
         this.enrollmentYear = enrollmentYear;

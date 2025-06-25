@@ -8,7 +8,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.Registration.LoginRequest;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
 import com.infinity.userservice.enums.UserRole;
+import com.infinity.userservice.models.Role;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
 import com.infinity.userservice.security.JwtUtil;
@@ -51,7 +54,7 @@ public class AuthControllerTest {
 
     @Test
     void whenEmailIsInvalid_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("invalid-email", "John", "Smith", "P@ssword1", "STUDENT");
+        RegisterRequest request = new RegisterRequest("invalid-email", "John", "Smith", "P@ssword1", UserRole.STUDENT, false);
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -62,7 +65,7 @@ public class AuthControllerTest {
     
     @Test
     void whenFirstNameIsMissing_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "", "Smith", "P@ssword1", "STUDENT");
+        RegisterRequest request = new RegisterRequest("john@test.com", "", "Smith", "P@ssword1", UserRole.STUDENT, false);
         
         mockMvc.perform(post("/auth/register")
         .contentType(MediaType.APPLICATION_JSON)
@@ -73,7 +76,7 @@ public class AuthControllerTest {
     
     @Test
     void whenLastNameIsMissing_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "", "P@ssword1", "STUDENT");
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "", "P@ssword1", UserRole.STUDENT, false);
         
         mockMvc.perform(post("/auth/register")
         .contentType(MediaType.APPLICATION_JSON)
@@ -84,7 +87,7 @@ public class AuthControllerTest {
     
     @Test
     void whenPasswordIsWeak_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "123", "STUDENT");
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "123", UserRole.STUDENT, false);
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -95,7 +98,7 @@ public class AuthControllerTest {
 
     @Test
     void whenUserTypeIsMissing_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "");
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", null, false);
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -106,8 +109,8 @@ public class AuthControllerTest {
 
     @Test
     void succesfullyRegisterStudent_thenReturns201() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT");
-        UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", UserRole.STUDENT, false);
+        UserDto mockResponse = new UserDto(1L, "John", "Smith", List.of(UserRole.STUDENT));
 
         when(userService.register(any())).thenReturn(mockResponse);
 
@@ -116,13 +119,15 @@ public class AuthControllerTest {
                 .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.role").value("STUDENT"));
+                .andExpect(jsonPath("$.roles").isArray())
+                .andExpect(jsonPath("$.roles[0]").value("STUDENT"));
+
     }
 
     @Test
-    void whenEmailIsMissing_thenReturns201() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "INSTRUCTOR");
-        UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.INSTRUCTOR);
+    void successfullyRegisterInstructor_thenReturns201() throws Exception {
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", UserRole.INSTRUCTOR, false);
+        UserDto mockResponse = new UserDto(1L, "John", "Smith", List.of(UserRole.INSTRUCTOR));
 
         when(userService.register(any())).thenReturn(mockResponse);
 
@@ -131,13 +136,16 @@ public class AuthControllerTest {
                 .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.role").value("INSTRUCTOR"));
+                .andExpect(jsonPath("$.roles").isArray())
+                .andExpect(jsonPath("$.roles[0]").value("INSTRUCTOR"));
+
     }
 
     @Test
     void succesfullyRegisterCoordinator_thenReturns201() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "COORDINATOR");
-        UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.COORDINATOR);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", 
+                UserRole.COORDINATOR, false);
+        UserDto mockResponse = new UserDto(1L, "John", "Smith", List.of(UserRole.COORDINATOR));
 
         when(userService.register(any())).thenReturn(mockResponse);
 
@@ -146,7 +154,9 @@ public class AuthControllerTest {
                 .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.role").value("COORDINATOR"));
+                .andExpect(jsonPath("$.roles").isArray())
+                .andExpect(jsonPath("$.roles[0]").value("COORDINATOR"));
+
     }
 
     //Login
@@ -181,7 +191,8 @@ public class AuthControllerTest {
         mockUser.setEmail(request.email());
         mockUser.setPassword("hashedPass");
         mockUser.setId(1L);
-        mockUser.setUserType(UserRole.STUDENT);
+        Set<Role> roles = new HashSet<>(Set.of(new Role(1L, UserRole.STUDENT)));
+        mockUser.setRoles(roles);
 
         Authentication mockAuth = mock(Authentication.class);
         when(mockAuth.getPrincipal()).thenReturn(mockUser);
