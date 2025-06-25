@@ -36,8 +36,11 @@ public class Section {
 
     private Long id;
 
-    private String term;
+    private Integer year;
+    private String semester;
     private String section;
+
+    private Long instructorId;
 
     @Enumerated(EnumType.STRING)
     private SectionType type;
@@ -47,8 +50,9 @@ public class Section {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    public Section(String term, String section, SectionType type, Course course) {
-        this.term = term;
+    public Section(Integer year, String semester, String section, SectionType type, Course course) {
+        this.year = year;
+        this.semester = semester;
         this.section = section;
         this.type = type;
         this.course = course;

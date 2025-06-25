@@ -9,7 +9,8 @@ public record CourseRequest(
         @Nullable String courseNum,
         @Nullable String section,
         @Nullable SectionType type,
-        @Nullable String term,
+        @Nullable Integer year,
+        @Nullable String semester,
         @Nullable String day,
         @Nullable String startTime,
         @Nullable String endTime

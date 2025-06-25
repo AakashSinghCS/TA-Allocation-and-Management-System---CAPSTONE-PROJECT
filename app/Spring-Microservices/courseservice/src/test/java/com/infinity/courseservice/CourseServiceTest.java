@@ -59,7 +59,7 @@ public class CourseServiceTest {
 
     @Test
     void testAddCourse_Duplicate() {
-        CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null,
+        CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null, null,
                 null);
 
         when(courseRepository.save(any(Course.class)))
@@ -72,7 +72,7 @@ public class CourseServiceTest {
 
     @Test
     void testAddCourse() {
-        CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null, null);
+        CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null, null, null);
         Course savedCourse = new Course("COSC", "Distributed Systems", "455");
 
         when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);

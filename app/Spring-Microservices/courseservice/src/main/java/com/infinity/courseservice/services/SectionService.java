@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
+import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -43,7 +44,8 @@ public class SectionService {
 
         return new SectionDto(
                 section.getId(),
-                section.getTerm(),
+                section.getYear(),
+                section.getSemester(),
                 section.getSection(),
                 section.getType(),
                 new CourseDto(
@@ -57,14 +59,14 @@ public class SectionService {
         Course course = courseRepository.findById(courseId)
                         .orElseThrow(() -> new EntityNotFoundException("Course not found"));
         
-        Section section = new Section(request.term(), request.section(), request.type(), course);
+        Section section = new Section(request.year(), request.semester(), request.section(), request.type(), course);
         try {
             sectionRepository.save(section);
         } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException("Section already exists " + ex);
         }
         
-        return new SectionDto(section.getId(),section.getTerm(), section.getSection(), section.getType(), new CourseDto(course.getDeptCode(),course.getName(),course.getCourseNum()));
+        return new SectionDto(section.getId(), section.getYear(), section.getSemester(), section.getSection(), section.getType(), new CourseDto(course.getDeptCode(),course.getName(),course.getCourseNum()));
     }
 
     @Transactional
@@ -80,5 +82,10 @@ public class SectionService {
             throw new BadRequestException("Schedule already exists " + ex);
         }
         return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(), sectionSchedule.getEndTime(), sectionSchedule.getSection().getId());
+    }
+
+    public String assignInstructor(AssignInstructorRequest request) {
+        // TODO Auto-generated method stub
+        return "Instructor assigned";
     }
 }

@@ -52,9 +52,9 @@ public class SectionServiceTest {
         Course course = new Course("COSC", "Software Engineering", "310");
         course.setId(1L);
 
-        CourseRequest request = new CourseRequest("COSC", "Software Engineering", "310", "LEC", SectionType.LECTURE, "2025W1", null,
-                null, null);
-        Section section = new Section("2025W1", "001", SectionType.LECTURE, course);
+        CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null, null);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
         section.setId(10L);
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
@@ -62,23 +62,23 @@ public class SectionServiceTest {
 
         var result = sectionService.addSection(1L, request);
 
-        assertEquals("LEC", result.section());
-        assertEquals("2025W1", result.term());
+        assertEquals("001", result.section());
+        assertEquals("W1", result.semester());
     }
 
     @Test
     void testAddSection_CourseNotFound() {
         when(courseRepository.findById(99L)).thenReturn(Optional.empty());
 
-        CourseRequest request = new CourseRequest("COSC", "Test", "123", "2025W1",
-                SectionType.LECTURE, "LEC", null, null, null);
+        CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null, null);
         assertThrows(EntityNotFoundException.class, () -> sectionService.addSection(99L, request));
     }
     
     @Test
     void testAddSection_Duplicate() {
-        CourseRequest request = new CourseRequest("COSC", "Test", "123", "2025W1",
-                SectionType.LECTURE, "LEC", null, null, null);
+        CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null, null);
         Course course = new Course("COSC", "Test", "123");
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
         when(sectionRepository.save(any(Section.class)))
@@ -93,10 +93,10 @@ public class SectionServiceTest {
     @Test
     void testAddSectionScheduleSuccess() {
         Course course = new Course("COSC", "AI", "310");
-        Section section = new Section("2025W1", "001", SectionType.LECTURE, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
         section.setId(20L);
 
-        CourseRequest req = new CourseRequest(null, null, null, null, null, null, "Tue", "10:00", "11:00");
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00");
         SectionSchedule schedule = new SectionSchedule("Tue", LocalTime.of(10, 0), LocalTime.of(11, 0), section);
 
         when(sectionRepository.findById(20L)).thenReturn(Optional.of(section));
@@ -111,7 +111,7 @@ public class SectionServiceTest {
 
     @Test
     void testAddSectionSchedule_SectionNotFound() {
-        CourseRequest req = new CourseRequest(null, null, null, null, null, null, "Tue", "10:00", "11:00");
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00");
 
         when(sectionRepository.findById(100L)).thenReturn(Optional.empty());
 
@@ -121,9 +121,9 @@ public class SectionServiceTest {
     @Test
     void testAddSectionSchedule_Duplicate() {
         Course course = new Course("COSC", "AI", "310");
-        Section section = new Section("2025W1", "001", SectionType.LECTURE, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
 
-        CourseRequest req = new CourseRequest(null, null, null, null, null, null, "Tue", "10:00", "11:00");
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00");
 
         when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
         doThrow(new DataIntegrityViolationException("Duplicate entry"))
@@ -138,7 +138,7 @@ public class SectionServiceTest {
     @Test
     void testGetSectionById_Success() {
         Course course = new Course("COSC", "DB Systems", "304");
-        Section section = new Section("2025W1", "001", SectionType.LECTURE, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
         section.setId(55L);
 
         when(sectionRepository.findById(55L)).thenReturn(Optional.of(section));

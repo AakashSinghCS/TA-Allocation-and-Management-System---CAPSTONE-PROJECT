@@ -43,32 +43,32 @@ public class SectionControllerTest {
     @Test
     void testAddSection() throws Exception {
         Long courseId = 1L;
-        CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, "2025W1", null, null, null);
-        SectionDto response = new SectionDto(1L, "2025W1", "001", SectionType.LECTURE,
+        CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025, "W1", null, null, null);
+        SectionDto response = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE,
                 new CourseDto("COSC", "Security", "430"));
 
         when(sectionService.addSection(eq(courseId), any(CourseRequest.class))).thenReturn(response);
 
-        mockMvc.perform(post("/sections/{courseId}/addSection", courseId)
+        mockMvc.perform(post("/sections/addSection/{courseId}", courseId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.term").value("2025W1"))
+                .andExpect(jsonPath("$.year").value(2025))
+                .andExpect(jsonPath("$.semester").value("W1"))
                 .andExpect(jsonPath("$.section").value("001"))
                 .andExpect(jsonPath("$.course.name").value("Security"));
     }
 
     @Test
     void testAddSectionSchedule() throws Exception {
-        Long courseId = 1L;
         Long sectionId = 200L;
-        CourseRequest request = new CourseRequest(null, null, null, null, null, null, "Mon", "09:00", "10:00");
+        CourseRequest request = new CourseRequest(null, null, null, null, null, null, null, "Mon", "09:00", "10:00");
         SectionScheduleDto response = new SectionScheduleDto("Mon", LocalTime.of(9, 0), LocalTime.of(10, 0), sectionId);
 
         when(sectionService.addSectionSchedule(eq(sectionId), any(CourseRequest.class))).thenReturn(response);
 
-        mockMvc.perform(post("/sections/{courseId}/{sectionId}/addSectionSchedule", courseId, sectionId)
+        mockMvc.perform(post("/sections/addSectionSchedule/{sectionId}", sectionId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -80,7 +80,7 @@ public class SectionControllerTest {
     @Test
     void testGetSectionById() throws Exception {
         Long sectionId = 300L;
-        SectionDto response = new SectionDto(sectionId, "2025W2", "002", SectionType.LECTURE,
+        SectionDto response = new SectionDto(sectionId, 2025, "W2", "002", SectionType.LECTURE,
                 new CourseDto("COSC", "Networks", "329"));
 
         when(sectionService.getSectionById(sectionId)).thenReturn(response);
@@ -88,7 +88,8 @@ public class SectionControllerTest {
         mockMvc.perform(get("/sections/get/{id}", sectionId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(sectionId))
-                .andExpect(jsonPath("$.term").value("2025W2"))
+                .andExpect(jsonPath("$.year").value(2025))
+                .andExpect(jsonPath("$.semester").value("W2"))
                 .andExpect(jsonPath("$.section").value("002"))
                 .andExpect(jsonPath("$.course.name").value("Networks"));
     }
