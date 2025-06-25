@@ -7,3 +7,8 @@ export function fallbackTempId(): string {
     Math.random().toString(36).slice(2, 8)  // e.g. "k3h91q"
   );
 }
+
+export function toObjectWithTempId<T extends object>(items: T[] | null): (T & { tempId: string })[] {
+  if (!Array.isArray(items)) return [];
+  return items.map(item => ({ ...item, tempId: fallbackTempId() }));
+}
