@@ -12,4 +12,4 @@ public record StudentDto(
     Integer enrollmentYear,
     Integer schoolYear,
     LocalDateTime createdAt
-) {}
+) implements BaseUserDto{}

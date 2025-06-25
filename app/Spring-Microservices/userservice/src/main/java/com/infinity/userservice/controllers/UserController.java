@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,10 +14,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.infinity.userservice.dtos.BaseUserDto;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.services.UserService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
 
 
 @RestController
@@ -49,4 +55,18 @@ public class UserController {
         userService.deleteUserById(id, userIdFromHeader, roles);
         return ResponseEntity.ok("User deleted");
     }
+
+    //users/search?role=STUDENT&name=Alice&universityNumber=12345678
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/search")
+    public ResponseEntity<List<BaseUserDto>> searchUsers(
+            @RequestParam("role") String role,
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
+            @RequestParam(value = "universityNumber", required = false, defaultValue = "0") int universityNumber
+    ) {
+        List<BaseUserDto> results = userService.search(role, name, universityNumber);
+        return ResponseEntity.ok(results);
+    }
+
+
 }
