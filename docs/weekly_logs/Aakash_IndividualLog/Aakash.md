@@ -873,6 +873,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin coding of assigning students to courses/labs manually.
 
+<<<<<<< Aakash_IndividualLog
 ## Saturday 6/21 (6/17 - 6/26)
 
 ### Timesheet
@@ -981,3 +982,5 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Complete the backend offer workflow for allocation and begin next assigned coding task.
 
+=======
+>>>>>>> logs
