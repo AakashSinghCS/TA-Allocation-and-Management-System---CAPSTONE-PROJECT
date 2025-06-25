@@ -47,6 +47,11 @@ public class AllocationService {
     public AllocationHistoryDto allocateStudent(AllocationRequest request) {
         Offer offer = offerRepository.findById(request.offerId())
             .orElseThrow(() -> new EntityNotFoundException("Offer not found"));
+        
+        if (!offer.isAccepted()){
+            throw new IllegalStateException("Cannot allocate student: Offer has not been accepted.");
+        }
+        
         Allocation allocation = new Allocation();
         allocation.setStudentId(request.studentId());
         allocation.setOffer(offer);

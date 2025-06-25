@@ -1,5 +1,7 @@
 package com.infinity.applicationservice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -23,7 +25,8 @@ public class Offer {
     private Application application;
 
     @OneToOne
-    @JoinColumn(name = "allocation_id", nullable = false)
+    @JoinColumn(name = "allocation_id")
+    @JsonIgnore
     private Allocation allocation;
 
     private boolean isAccepted;

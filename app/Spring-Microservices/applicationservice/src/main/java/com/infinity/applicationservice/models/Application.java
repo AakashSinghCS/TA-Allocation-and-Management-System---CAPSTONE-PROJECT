@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.infinity.applicationservice.dtos.ApplicationRequest;
 import com.infinity.applicationservice.enums.Subject;
 
@@ -70,6 +71,7 @@ public class Application {
     private Transcript transcript;
 
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("application")
     private Set<Offer> offers;
 
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
