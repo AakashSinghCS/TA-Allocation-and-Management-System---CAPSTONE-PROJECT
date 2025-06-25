@@ -215,58 +215,62 @@ const TAAllocationPage: React.FC = () => {
             </select>
           </div>
 
-          <button className="w-full bg-[#040941] text-white py-2 rounded">Filter</button>
-
+          <div className="flex justify-center">
+            <button className="w-1/2 bg-[#040941] text-white py-2 rounded">
+              Filter
+            </button>
+          </div>
+        
           {/* filtered list */}
           <h3 className="font-semibold text-lg mt-4">Please select a course</h3>
           {/* tile-style course list */}
-  <div className="max-h-48 overflow-auto grid gap-2">
-    {filteredSections.map(s => {
-      const isSelected = selCourse?.details?.sectionId === s.sectionId;
-      return (
-        <button
-          key={s.sectionId}
-          onClick={() => loadCourse(s)}
-          className={`
-            w-full text-left px-3 py-2 rounded
-            transition-colors duration-150
-            ${isSelected
-              ? 'bg-gray-700 text-white'
-              : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}
-          `}
-        >
-          {s.deptCode} {s.courseNum} • {s.section} • {s.term}
-        </button>
-      );
-    })}
-    {filteredSections.length === 0 && (
-      <p className="text-gray-500">No courses</p>
-    )}
-  </div>
+                <div className="max-h-48 overflow-auto grid gap-2">
+                  {filteredSections.map(s => {
+                    const isSelected = selCourse?.details?.sectionId === s.sectionId;
+                    return (
+                      <button
+                        key={s.sectionId}
+                        onClick={() => loadCourse(s)}
+                        className={`
+                          w-full text-left px-3 py-2 rounded
+                          transition-colors duration-150
+                          ${isSelected
+                            ? 'bg-gray-700 text-white'
+                            : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}
+                        `}
+                      >
+                        {s.deptCode} {s.courseNum} • {s.section} • {s.term}
+                      </button>
+                    );
+                  })}
+                  {filteredSections.length === 0 && (
+                    <p className="text-gray-500">No courses</p>
+                  )}
+                </div>
 
-  {/* ── Selected Course “Need” Details ─────────────────────────────── */}
-  {selCourse?.need && (
-    <div className="mt-4 bg-gray-100 p-4 rounded space-y-2">
-      <h4 className="font-semibold">Grading Need</h4>
-      <p>
-        <strong>Description:</strong><br/>
-        {selCourse.need.description}
-      </p>
-      <p>
-        <strong>Allocated Hours:</strong>{' '}
-        {selCourse.need.numOfHoursCurrentlyAllocated}
-      </p>
-      <p>
-        <strong>Required Hours:</strong>{' '}
-        {selCourse.need.requiredGradingHours}
-      </p>
-      <p>
-        <strong>Prerequisites:</strong>{' '}
-        {selCourse.need.courseNeeds?.map(c => `${c.deptCode} ${c.courseNum}`).join(', ')}
-      </p>
-    </div>
-  )}
-</div>
+                {/* ── Selected Course “Need” Details ─────────────────────────────── */}
+                {selCourse?.need && (
+                  <div className="mt-4 bg-gray-100 p-4 rounded space-y-2">
+                    <h4 className="font-semibold">Grading Need</h4>
+                    <p>
+                      <strong>Description:</strong><br/>
+                      {selCourse.need.description}
+                    </p>
+                    <p>
+                      <strong>Allocated Hours:</strong>{' '}
+                      {selCourse.need.numOfHoursCurrentlyAllocated}
+                    </p>
+                    <p>
+                      <strong>Required Hours:</strong>{' '}
+                      {selCourse.need.requiredGradingHours}
+                    </p>
+                    <p>
+                      <strong>Prerequisites:</strong>{' '}
+                      {selCourse.need.courseNeeds?.map(c => `${c.deptCode} ${c.courseNum}`).join(', ')}
+                    </p>
+                  </div>
+                )}
+              </div>
 
         {/* ── CALENDAR & ALLOCATE PANEL ─────────────────────────────────────── */}
         <div className="lg:col-span-6 bg-white p-6 rounded shadow space-y-4">
