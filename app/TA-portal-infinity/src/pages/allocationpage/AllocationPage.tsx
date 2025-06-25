@@ -320,6 +320,7 @@ const TAAllocationPage: React.FC = () => {
         <div className="lg:col-span-3 bg-white p-6 rounded shadow">
           <h2 className="font-semibold">Applicant Filter</h2>
           {/* …your existing TA-filter UI here… */}
+          
         </div>
       </div>
     </div>
