@@ -46,9 +46,4 @@ public class Student extends User {
         this.schoolYear = schoolYear;
     }
 
-    @Override
-    public String getRole() {
-        return "ROLE_STUDENT";
-    }
-
 }

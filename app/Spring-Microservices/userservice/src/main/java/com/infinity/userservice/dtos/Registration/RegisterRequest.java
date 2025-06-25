@@ -1,4 +1,4 @@
-package com.infinity.userservice.dtos;
+package com.infinity.userservice.dtos.Registration;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

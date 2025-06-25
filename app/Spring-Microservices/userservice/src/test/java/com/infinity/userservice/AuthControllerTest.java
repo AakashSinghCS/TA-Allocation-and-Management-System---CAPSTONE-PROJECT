@@ -22,9 +22,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.userservice.controllers.AuthController;
-import com.infinity.userservice.dtos.LoginRequest;
-import com.infinity.userservice.dtos.RegisterRequest;
 import com.infinity.userservice.dtos.UserDto;
+import com.infinity.userservice.dtos.Registration.LoginRequest;
+import com.infinity.userservice.dtos.Registration.RegisterRequest;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;

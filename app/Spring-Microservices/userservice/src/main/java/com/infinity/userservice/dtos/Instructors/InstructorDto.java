@@ -1,9 +1,10 @@
-package com.infinity.userservice.dtos;
+package com.infinity.userservice.dtos.Instructors;
 
 import java.time.LocalDateTime;
+
 import com.infinity.userservice.enums.UserRole;
 
-public record StudentDto(
+public record InstructorDto(
     Long id,
     String firstName,
     String lastName,
@@ -13,4 +14,7 @@ public record StudentDto(
     Integer enrollmentYear,
     Integer schoolYear,
     LocalDateTime createdAt
-) {}
+        
+) {
+
+}

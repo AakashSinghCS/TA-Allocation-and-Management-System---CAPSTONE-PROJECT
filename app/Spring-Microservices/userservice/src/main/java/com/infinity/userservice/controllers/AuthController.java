@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.infinity.userservice.dtos.LoginRequest;
-import com.infinity.userservice.dtos.LoginResponse;
-import com.infinity.userservice.dtos.RegisterRequest;
 import com.infinity.userservice.dtos.UserDto;
+import com.infinity.userservice.dtos.Registration.LoginRequest;
+import com.infinity.userservice.dtos.Registration.LoginResponse;
+import com.infinity.userservice.dtos.Registration.RegisterRequest;
 import com.infinity.userservice.models.User;
 import com.infinity.userservice.security.JwtUtil;
 import com.infinity.userservice.services.UserService;

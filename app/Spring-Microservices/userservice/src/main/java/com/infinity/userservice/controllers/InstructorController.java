@@ -7,28 +7,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.userservice.dtos.Students.StudentDto;
-import com.infinity.userservice.services.StudentService;
 
 import lombok.RequiredArgsConstructor;
 
-
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/students")
-public class StudentController {
-
-    private final StudentService studentService;
-
-    @GetMapping("/num/{studentNum}")
-    public ResponseEntity<StudentDto> getStudentByNum(@PathVariable Integer studentNum) {
-        StudentDto studentDto = studentService.getStudentByNum(studentNum);
-        return ResponseEntity.ok(studentDto);
-    }
+@RequestMapping("/instructors")
+public class InstructorController {
     
-    @GetMapping("/{studentId}")
+    @GetMapping("/{instructorId}")
     public ResponseEntity<StudentDto> getStudentById(@PathVariable Long studentId) {
         StudentDto studentDto = studentService.getStudentById(studentId);
         return ResponseEntity.ok(studentDto);
     }
-    
 }

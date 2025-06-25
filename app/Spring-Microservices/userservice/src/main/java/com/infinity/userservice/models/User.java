@@ -71,6 +71,4 @@ public abstract class User implements UserDetails{
         return this.email;
     }
 
-    public abstract String getRole();
-
 }

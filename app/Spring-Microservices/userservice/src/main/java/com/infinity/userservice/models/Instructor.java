@@ -23,9 +23,5 @@ public class Instructor extends User {
     public Instructor(String email, String firstName, String lastName, String password) {
         super(email, firstName, lastName, password, UserRole.INSTRUCTOR);
     }
-    
-    @Override
-    public String getRole() {
-        return "ROLE_INSTRUCTOR";
-    }
+
 }
