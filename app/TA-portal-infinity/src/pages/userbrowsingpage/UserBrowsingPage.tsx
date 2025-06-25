@@ -1,12 +1,11 @@
 // src/pages/userBrowsing/UserBrowsingPage.tsx
-import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { fetchAllSearchedUsers } from "../../api/user/fetchAllSearchedUsers";
 import formatDateForDisplay from "../../utility/formatdatefordisplay/formatDateForDisplay";
-import type User from "../../interfaces/user/User";
-import { studentFieldLabels, type Student, studentProfileFields } from "../../interfaces/user/Student";
-import { instructorFieldLabels, type Instructor, instructorProfileFields } from "../../interfaces/user/Instructor";
 import { useAuth } from "../../context/AuthContext";
+import SearchUserBar, { useUserSearch } from "../../components/ui/searchuserbar/SearchUserBar";
+import { studentFieldLabels, studentProfileFields } from "../../interfaces/user/Student";
+import type User from "../../interfaces/user/User";
+import { instructorFieldLabels, instructorProfileFields } from "../../interfaces/user/Instructor";
 
 export default function UserBrowsingPage() {
     return (
@@ -19,93 +18,43 @@ export default function UserBrowsingPage() {
 
 function UserBrowsingViewer() {
     const { userRoles } = useAuth();
+    const { searchedUsers = [], loading, error, search, deleteUser, lastCriteria } = useUserSearch();
     const navigate = useNavigate();
-    const [role, setRole] = useState<"Student" | "Instructor" | "Coordinator">("Student");
-    const [name, setName] = useState<string>("");
-    const [universityNumber, setUniversityNumber] = useState<string>("");
-    const [searchedUsers, setSearchedUsers] = useState<User[] | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const onSubmit = async (e: React.FormEvent) => {
-        e.preventDefault(); setLoading(true); setError(null);
-        const uniNum = parseInt(universityNumber, 10) || 0;
-        try {
-            const req = { role, name, universityNumber: uniNum };
-            let users: User[] | null;
-            if (role === "Student") users = await fetchAllSearchedUsers<Student>(req);
-            else if (role === "Instructor") users = await fetchAllSearchedUsers<Instructor>(req);
-            else users = await fetchAllSearchedUsers<User>(req);
-            setSearchedUsers(users ?? []);
-        } catch {
-            setError("Failed to fetch users");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleDelete = async (id?: number) => {
-        if (!id) return;
-        // await deleteMockUser(id);
-        setSearchedUsers(prev => prev?.filter(u => u.id !== id) ?? []);
-    };
 
     // choose columns & labels based on selected role
     let columns: (keyof User | 'name')[] = [];
     let labels: Record<string, string> = {};
-    if (role === "Student") {
-        // replace firstName/lastName with combined 'name'
-        columns = studentProfileFields.filter(f => f !== 'id' &&f !== 'firstName' && f !== 'lastName') as (keyof User)[];
+    if (lastCriteria.role === "Student") {
+        columns = studentProfileFields.filter(f => f !== 'id' && f !== 'firstName' && f !== 'lastName') as (keyof User)[];
         columns.unshift('name');
         labels = { name: 'Name', ...studentFieldLabels };
         delete labels.id;
-    } else if (role === "Instructor") {
+    } else if (lastCriteria.role === "Instructor") {
         columns = instructorProfileFields.filter(f => f !== 'id' && f !== 'firstName' && f !== 'lastName') as (keyof User)[];
         columns.unshift('name');
         labels = { name: 'Name', ...instructorFieldLabels };
         delete labels.id;
     } else {
-        // coordinator: only base User fields
         columns = ['name', 'email', 'createdAt'];
         labels = { name: 'Name', email: 'Email', createdAt: 'Registered' };
     }
 
+    const handleDelete = (id?: number) => deleteUser(id);
+
     return (
         <div>
             <div className="flex justify-between items-end mb-4">
-                <form className="flex space-x-2" onSubmit={onSubmit}>
-                    <select value={role} onChange={e => setRole(e.target.value as any)} className="border px-2 py-1 rounded">
-                        <option value="Student">Student</option>
-                        <option value="Instructor">Instructor</option>
-                        <option value="Coordinator">Coordinator</option>
-                    </select>
-                    <input type="text" placeholder="Name" value={name} onChange={e => setName(e.target.value)} className="border px-2 py-1 rounded" />
-                    <input
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={8}
-                        placeholder="University Number"
-                        value={universityNumber}
-                        onChange={e => {
-                            const val = e.target.value.replace(/\D/g, '');
-                            if (val.length <= 8) setUniversityNumber(val);
-                        }}
-                        className="border px-2 py-1 rounded w-40"
-                    />
-                    <button type="submit" disabled={loading} className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 disabled:opacity-50">
-                        {loading ? 'Searching…' : 'Search'}
-                    </button>
-                </form>
+                <SearchUserBar onSearch={search} loading={loading} />
                 {/* {userRoles.includes('COORDINATOR') && (
                     <button onClick={() => navigate('/users/new')} className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600">
                         Add User
                     </button>
                 )} */}
                 {/* For development: */}
-                    <button onClick={() => navigate('/user/coordinator/browseuser/newuser')} className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600">
-                        Add User
-                    </button>
-                
+                <button onClick={() => navigate('/user/coordinator/browseuser/newuser')} className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600">
+                    Add User
+                </button>
+
             </div>
 
             {error && <div className="text-red-500 mb-2">{error}</div>}
@@ -129,8 +78,8 @@ function UserBrowsingViewer() {
                                         display = formatDateForDisplay(d);
                                     }
                                     // wrap name in link for TA or Instructor
-                                    if (col === 'name' && role !== 'Coordinator' && user.id) {
-                                        const path = role === 'Student' ? `/user/taprofile/${user.id}` : `/user/instructorprofile/${user.id}`;
+                                    if (col === 'name' && lastCriteria.role !== 'Coordinator' && user.id) {
+                                        const path = lastCriteria.role === 'Student' ? `/user/taprofile/${user.id}` : `/user/instructorprofile/${user.id}`;
                                         return <td key={col as string} className="border-b px-3 py-1"><Link to={path} className="hover:underline text-blue-600">{display}</Link></td>;
                                     }
                                     return <td key={col as string} className="border-b px-3 py-1">{display}</td>;
