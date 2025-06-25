@@ -1,3 +1,4 @@
+// src/components/EditProfileSection.tsx
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import type User from "../../../../interfaces/user/User";
 
@@ -16,7 +17,6 @@ export default function EditProfileSection<T extends User>({
   onSave,
   onCancel,
 }: Props<T>) {
-  
   const [form, setForm] = useState<Partial<T>>(
     Object.fromEntries(fields.map((k) => [k, user[k]])) as Partial<T>
   );
@@ -25,7 +25,19 @@ export default function EditProfileSection<T extends User>({
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    setForm((f) => ({ ...f, [name]: value }));
+
+    // If this is studentNumber or employeeNumber, strip non-digits and enforce length
+    if (name === "studentNumber" || name === "employeeNumber") {
+      // maxLen: 8 for studentNumber, 10 for employeeNumber (adjust as desired)
+      const maxLen = name === "studentNumber" ? 8 : 10;
+      const digits = value.replace(/\D/g, "");
+      setForm((f) => ({ 
+        ...f, 
+        [name]: (digits.slice(0, maxLen) as any) 
+      }));
+    } else {
+      setForm((f) => ({ ...f, [name]: value }));
+    }
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -42,20 +54,29 @@ export default function EditProfileSection<T extends User>({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 bg-white p-4 rounded shadow">
-      {fields.map((field) => (
-        <div key={String(field)} className="flex flex-col">
-          <label htmlFor={String(field)} className="font-semibold">
-            {labels[field]}
-          </label>
-          <input
-            id={String(field)}
-            name={String(field)}
-            value={String(form[field] ?? "")}
-            onChange={handleChange}
-            className="border px-2 py-1 rounded"
-          />
-        </div>
-      ))}
+      {fields.map((field) => {
+        const isNumField = field === "studentNumber" || field === "employeeNumber";
+        const maxLen = field === "studentNumber" ? 8 : field === "employeeNumber" ? 10 : undefined;
+
+        return (
+          <div key={String(field)} className="flex flex-col">
+            <label htmlFor={String(field)} className="font-semibold">
+              {labels[field]}
+            </label>
+            <input
+              id={String(field)}
+              name={String(field)}
+              value={String(form[field] ?? "")}
+              onChange={handleChange}
+              // Numeric fields get numeric inputMode & maxLength
+              {...(isNumField
+                ? { inputMode: "numeric", maxLength : 8 }
+                : {})}
+              className="border px-2 py-1 rounded"
+            />
+          </div>
+        );
+      })}
 
       {error && <div className="text-red-500">{error}</div>}
 

@@ -25,6 +25,8 @@ import RoleGuard from "../components/features/roleguard/RoleGuard";
 import { UserRole } from "../interfaces/enum/UserRole";
 import InstructorQualificationPage from "../pages/instructorprofilepage/qualificationpage/InstructorQualificationPage";
 import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
+import UserBrowsingPage from "../pages/userbrowsingpage/UserBrowsingPage";
+import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
 
 export const router = createBrowserRouter([
   {
@@ -67,6 +69,7 @@ export const router = createBrowserRouter([
         ),
         children: [
           { path: "home", element: <InstructorHomePage /> },
+          { path: "browseuser", element: <UserBrowsingPage /> },
           { path: "error", element: <ErrorPage /> },
         ],
       },
@@ -82,6 +85,8 @@ export const router = createBrowserRouter([
         children: [
           { path: "home", element: <CoordinatorHomePage /> },
           { path: "questions", element: < CoordinatorQuestionnairePage/> },
+          { path: "browseuser", element: <UserBrowsingPage /> },
+          { path: "browseuser/newuser", element: < ManualCreateUserPage/> },
           { path: "student/questions/:studentId", element: < TaQuestionnairePage/> }, //TEMPORARY for development
           { path: "error", element: <ErrorPage /> },
         ],
