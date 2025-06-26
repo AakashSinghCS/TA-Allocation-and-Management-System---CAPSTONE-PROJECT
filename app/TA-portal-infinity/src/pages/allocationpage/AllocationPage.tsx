@@ -140,78 +140,86 @@ const TAAllocationPage: React.FC = () => {
   const loadApp = (a: ApplicationDto) => setSelApp(a);
 
   // ── calendar events ────────────────────────────────────────────────────────
-const courseEvents = (selCourse?.schedule || []).map((slot, i) => ({
-  id:            `c${i}`,
-  title:         'Course Slot',
-  daysOfWeek:    [ getDayNumber(slot.day) ],
-  startTime:     slot.startTime,
-  endTime:       slot.endTime,
-  backgroundColor: '#3B82F6CC',
-}));
+const courseEvents = (selCourse?.schedule || []).map((slot, i) => {
+  const dayNum = getDayNumber(slot.day);
 
-const taEvents = (selApplicant?.availability || []).map((day, i) => ({
-  id:            `t${i}`,
-  title:         'TA Avail',
-  daysOfWeek:    [ getDayNumber(day) ],
-  startTime:     '08:00:00',
-  endTime:       '18:00:00',
-  backgroundColor: '#14532DCC',
-}));
-
-// ── Student (Application) Availability Events ──────────────────────────────
-const appEvents = (selApp?.availabilities || []).map((slot, i) => {
-  const dayNum   = getDayNumber(slot.day);
-  const conflict = courseEvents.some(evt =>
-    evt.daysOfWeek[0] === dayNum &&
-    (evt.startTime ?? '') < slot.endTime &&
-    (evt.endTime   ?? '') > slot.startTime
-  );
+  // detect overlap with any selected‐application availability
+  const conflict = selApp?.availabilities.some(av =>
+    dayNum === getDayNumber(av.day) &&
+    slot.endTime !== undefined &&
+    (av.startTime  <  slot.endTime) &&
+    (slot.startTime !== undefined) &&
+    (av.endTime    >  slot.startTime)
+  ) ?? false;
 
   return {
-    id:            `app${i}`,
-    title:         'Student Availability',
-    daysOfWeek:    [ dayNum ],
-    startTime:     slot.startTime,
-    endTime:       slot.endTime,
+    id:             `c${i}`,
+    title:          'Course Slot',
+    daysOfWeek:     [ dayNum ],
+    startTime:      slot.startTime,
+    endTime:        slot.endTime,
     backgroundColor: conflict
-      ? 'rgba(220, 38, 38, 0.8)'   // solid red block
-      : 'rgba(16, 185, 129, 0.8)', // green block
+      ? 'rgba(220, 38, 38, 0.8)'  // red when overlapping
+      : '#3B82F6CC',               // normal blue otherwise
   };
 });
 
-// ── background conflict shading ────────────────────────────────────────────
-const bgConflictEvents = (selApp?.availabilities || [])
-  .flatMap((slot, i) => {
-    const dayNum = getDayNumber(slot.day);
-    return courseEvents
-      .filter(evt =>
-        evt.daysOfWeek[0] === dayNum &&
-        (evt.startTime ?? '') < slot.endTime &&
-        (evt.endTime   ?? '') > slot.startTime
-      )
-      .map((evt, j) => {
-        // exact overlap window:
-        const start = slot.startTime > (evt.startTime ?? '00:00:00') ? slot.startTime : (evt.startTime ?? '00:00:00');
-        const end   = slot.endTime   < (evt.endTime   ?? '23:59:59') ? slot.endTime   : (evt.endTime   ?? '23:59:59');
-        return {
-          id:              `conflict-bg-${i}-${j}`,
-          daysOfWeek:      [ dayNum ],
-          startTime:       start,
-          endTime:         end,
-          display:         'background',
-          backgroundColor: 'rgba(229,62,62,0.3)', // translucent red
-        };
-      });
-  });
+const appEvents = (selApp?.availabilities || []).map((slot, i) => {
+  const dayNum = getDayNumber(slot.day);
+
+  // detect overlap with any course slot
+  const conflict = selCourse?.schedule.some(cs =>
+    dayNum === getDayNumber(cs.day) &&
+    cs.endTime !== undefined &&
+    (slot.startTime <  cs.endTime) &&
+    (cs.startTime !== undefined) &&
+    (slot.endTime   >  cs.startTime)
+  ) ?? false;
+
+  return {
+    id:             `app${i}`,
+    title:          'Student Avail',
+    daysOfWeek:     [ dayNum ],
+    startTime:      slot.startTime,
+    endTime:        slot.endTime,
+    backgroundColor: conflict
+      ? 'rgba(220, 38, 38, 0.8)'  // red when overlapping
+      : 'rgba(16, 185, 129, 0.8)', // normal green otherwise
+  };
+});
+
+// Optional: still render a translucent “background” slice for the exact overlap window
+const bgConflictEvents = (selApp?.availabilities || []).flatMap((slot, i) => {
+  const dayNum = getDayNumber(slot.day);
+  return (selCourse?.schedule || [])
+    .filter(cs =>
+      dayNum === getDayNumber(cs.day) &&
+      cs.startTime !== undefined &&
+      cs.endTime !== undefined &&
+      (slot.startTime <  cs.endTime) &&
+      (slot.endTime   >  cs.startTime)
+    )
+    .map((cs, j) => {
+      if (cs.startTime === undefined || cs.endTime === undefined) return null;
+      const start = slot.startTime  > cs.startTime ? slot.startTime : cs.startTime;
+      const end   = slot.endTime    < cs.endTime   ? slot.endTime   : cs.endTime;
+      return {
+        id:              `conflict-bg-${i}-${j}`,
+        daysOfWeek:      [ dayNum ],
+        startTime:       start,
+        endTime:         end,
+        display:         'background',
+        backgroundColor: 'rgba(220, 38, 38, 0.3)', // translucent red
+      };
+    }).filter(Boolean);
+});
 
 // ── final merged event list ────────────────────────────────────────────────
 const events = [
   ...courseEvents,
-  ...taEvents,
   ...appEvents,
   ...bgConflictEvents,
-];
-
+].filter((e): e is NonNullable<typeof e> => e !== null && e !== undefined);
 
 // ── status flags ───────────────────────────────────────────────────────────
   const hoursNeeded = selCourse?.need?.requiredGradingHours || 0;
@@ -225,7 +233,7 @@ const events = [
 
         {/* ── COURSE FILTER + DETAILS PANEL ─────────────────────────────────── */}
         <div className="lg:col-span-3 bg-white p-6 rounded shadow space-y-4">
-          <h2 className="font-semibold">Course Filter</h2>
+          <h1 className="font-semibold">Course Filter</h1>
           {/* search */}
           <input
             type="text"
@@ -279,7 +287,7 @@ const events = [
           </div>
 
           {/* course tiles */}
-          <h3 className="font-semibold text-lg mt-4">Please select a course*</h3>
+          <h1 className="font-semibold text-lg mt-4">Please select a course*</h1>
           <div className="max-h-48 overflow-auto grid gap-2">
             {filteredSections.map(s => {
               const isSelected = selCourse?.details?.sectionId === s.sectionId;
@@ -290,8 +298,8 @@ const events = [
                   className={`
                     w-full text-left px-3 py-2 rounded transition
                     ${isSelected
-                      ? 'bg-gray-700 text-white'
-                      : 'bg-gray-200 hover:bg-gray-300'}
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-300 hover:bg-gray-600'}
                   `}
                 >
                   {s.deptCode} {s.courseNum} • {s.section} • {s.term}
@@ -317,7 +325,7 @@ const events = [
 
         {/* ── CALENDAR & ALLOCATE PANEL ─────────────────────────────────────── */}
         <div className="lg:col-span-6 bg-white p-6 rounded shadow space-y-4">
-          <h2 className="font-semibold">Weekly Calendar</h2>
+          <h1 className="font-semibold">Weekly Calendar</h1>
           <FullCalendar
             key={selCourse?.details?.sectionId ?? 'none'}
             plugins={[timeGridPlugin]}
@@ -346,7 +354,7 @@ const events = [
 
         {/* ── APPLICATION FILTER PANEL ───────────────────────────────────────── */}
         <div className="lg:col-span-3 bg-white p-6 rounded shadow space-y-4">
-          <h2 className="font-semibold">Application Filter</h2>
+          <h1 className="font-semibold">Application Filter</h1>
           <div className="grid grid-cols-2 gap-2">
             <select
               className="border rounded px-2 py-2"
@@ -395,7 +403,7 @@ const events = [
                 key={`${app.studentId}-${app.timeSubmitted}`}
                 onClick={()=>loadApp(app)}
                 className={`block w-full text-left px-3 py-2 rounded ${
-                  selApp === app ? 'bg-gray-700 text-white' : 'bg-gray-100 hover:bg-gray-200'
+                  selApp === app ? 'bg-gray-900 text-white' : 'bg-gray-300 hover:bg-gray-600'
                 }`}
               >
                 Student #{app.studentId} — {new Date(app.timeSubmitted).toLocaleString()}
@@ -403,7 +411,7 @@ const events = [
             ))}
             {filteredApps.length===0 && <p className="text-gray-500">No applications</p>}
           </div>
-           <h3 className="font-semibold text-lg mt-4">Please select a Applicant*</h3>
+           <h1 className="font-semibold text-lg mt-4">Please select a Applicant*</h1>
           {selApp && (
             <div className="mt-4 bg-gray-50 p-4 rounded space-y-2">
               <h4 className="font-semibold">Application Details</h4>
