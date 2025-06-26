@@ -35,6 +35,12 @@ export default function ManualCreateUserPage() {
         showLoginLink={false}
         successMessage="User Created!"
       />
+      <button
+        type="button"
+        onClick={() => navigate(-1)}
+        className=" w-full mt-2 py-2 rounded hover:bg-red-100 transition-colors">
+        Cancel
+      </button>
     </div>
   );
 }

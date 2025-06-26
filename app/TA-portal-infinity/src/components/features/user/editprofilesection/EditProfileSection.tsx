@@ -1,5 +1,5 @@
 // src/components/EditProfileSection.tsx
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent, type InputHTMLAttributes } from "react";
 import type User from "../../../../interfaces/user/User";
 
 interface Props<T extends User> {
@@ -27,13 +27,13 @@ export default function EditProfileSection<T extends User>({
     const { name, value } = e.target;
 
     // If this is studentNumber or employeeNumber, strip non-digits and enforce length
-    if (name === "studentNumber" || name === "employeeNumber") {
-      // maxLen: 8 for studentNumber, 10 for employeeNumber (adjust as desired)
-      const maxLen = name === "studentNumber" ? 8 : 10;
+    if (name === "studentNumber" || name === "employeeNumber" || name === "schoolYear" || name === "enrollmentYear") {
+  
+      const maxLen = name === "studentNumber" || name ==="employeeNumber" ? 8 : name === "schoolYear" ? 1 : name === "enrollmentYear" ? 4: 8;
       const digits = value.replace(/\D/g, "");
-      setForm((f) => ({ 
-        ...f, 
-        [name]: (digits.slice(0, maxLen) as any) 
+      setForm((f) => ({
+        ...f,
+        [name]: (digits.slice(0, maxLen) as any)
       }));
     } else {
       setForm((f) => ({ ...f, [name]: value }));
@@ -55,8 +55,25 @@ export default function EditProfileSection<T extends User>({
   return (
     <form onSubmit={handleSubmit} className="space-y-2 bg-white p-4 rounded shadow">
       {fields.map((field) => {
-        const isNumField = field === "studentNumber" || field === "employeeNumber";
-        const maxLen = field === "studentNumber" ? 8 : field === "employeeNumber" ? 10 : undefined;
+        let numericProps: Partial<InputHTMLAttributes<HTMLInputElement>> = {};
+
+        switch (field) {
+          case "studentNumber":
+          case "employeeNumber":
+            numericProps = { inputMode: "numeric", maxLength: 8 };
+            break;
+
+          case "enrollmentYear":
+            numericProps = { inputMode: "numeric", maxLength: 4 };
+            break;
+
+          case "schoolYear":
+            numericProps = { inputMode: "numeric", maxLength: 1 };
+            break;
+
+          default:
+
+        }
 
         return (
           <div key={String(field)} className="flex flex-col">
@@ -68,10 +85,7 @@ export default function EditProfileSection<T extends User>({
               name={String(field)}
               value={String(form[field] ?? "")}
               onChange={handleChange}
-              // Numeric fields get numeric inputMode & maxLength
-              {...(isNumField
-                ? { inputMode: "numeric", maxLength : 8 }
-                : {})}
+              {...numericProps}
               className="w-full border border-gray-400 rounded px-3 py-2"
             />
           </div>
@@ -80,7 +94,7 @@ export default function EditProfileSection<T extends User>({
 
       {error && <div className="text-red-500">{error}</div>}
 
-      <div className="flex space-x-2">
+      <div className="grid grid-cols-2 gap-2">
         <button
           type="submit"
           disabled={saving}
@@ -92,11 +106,12 @@ export default function EditProfileSection<T extends User>({
           type="button"
           onClick={onCancel}
           disabled={saving}
-          className="px-4 py-2 bg-gray-200 rounded"
+          className="py-1 px-2 rounded hover:bg-red-100 transition-colors"
         >
           Cancel
         </button>
       </div>
     </form>
+
   );
 }
