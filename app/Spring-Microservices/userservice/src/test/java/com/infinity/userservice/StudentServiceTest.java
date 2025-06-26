@@ -63,7 +63,7 @@ public class StudentServiceTest {
             mockStudent.getFirstName(), 
             mockStudent.getLastName(), 
             mockStudent.getEmail(),
-            mockStudent.getStudentNumber(),
+            mockStudent.getStudentNum(),
             mockStudent.getProgram(),
             mockStudent.getEnrollmentYear(),
             mockStudent.getSchoolYear(),

@@ -66,7 +66,7 @@ public class InstructorServiceTest {
             mockInstructor.getFirstName(), 
             mockInstructor.getLastName(), 
             mockInstructor.getEmail(),
-            mockInstructor.getEmployeeNumber(),
+            mockInstructor.getEmployeeNum(),
             mockInstructor.getDepartment(),
             mockInstructor.getCreatedAt()
         );

@@ -16,9 +16,8 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("STUDENT")
 public class Student extends User {
 
-    //possibly restrict this to 8 numbers?
     @Column(unique = true)
-    private Integer studentNumber;
+    private Integer studentNum;
 
     private String program;
 
@@ -35,12 +34,12 @@ public class Student extends User {
             String firstName,
             String lastName,
             String password,
-            Integer studentNumber,
+            Integer studentNum,
             String program,
             Integer enrollmentYear,
             Integer schoolYear) {
         super(email, firstName, lastName, password);
-        this.studentNumber = studentNumber;
+        this.studentNum = studentNum;
         this.program = program;
         this.enrollmentYear = enrollmentYear;
         this.schoolYear = schoolYear;

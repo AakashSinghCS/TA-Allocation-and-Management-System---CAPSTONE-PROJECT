@@ -16,7 +16,7 @@ public record StudentUpdateRequest(
         String password,
         @Min(10000000)  
         @Max(99999999)
-        Integer studentNumber,
+        Integer studentNum,
         String program,
         Integer enrollmentYear,
         Integer schoolYear) {

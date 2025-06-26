@@ -2,7 +2,7 @@ import type User from "./User";
 
 export interface Instructor extends User{
     department? : string;
-    employeeNumber? : string;
+    employeeNum? : string;
 }
 
 export const instructorProfileFields: (keyof Instructor)[] = [
@@ -11,7 +11,7 @@ export const instructorProfileFields: (keyof Instructor)[] = [
   "lastName",
   "email",
   "department",
-  "employeeNumber",
+  "employeeNum",
   "createdAt"
 ];
 
@@ -21,6 +21,6 @@ export const instructorFieldLabels: Record<keyof Instructor, string> = {
   lastName:        "Last Name",
   email:           "Email",
   department:      "Department",
-  employeeNumber:     "Employee Number",
+  employeeNum:     "Employee Number",
   createdAt:       "Registered",
 };

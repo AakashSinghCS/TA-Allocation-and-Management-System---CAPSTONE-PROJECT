@@ -8,6 +8,6 @@ import com.infinity.userservice.models.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    Optional<Student> findByStudentNumber(Integer studentNumber);
+    Optional<Student> findByStudentNum(Integer studentNum);
     
 }

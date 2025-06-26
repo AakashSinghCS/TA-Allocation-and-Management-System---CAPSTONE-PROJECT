@@ -7,7 +7,7 @@ public record InstructorDto(
     String firstName,
     String lastName,
     String email,
-    Integer employeeNumber,
+    Integer employeeNum,
     String department,
     LocalDateTime createdAt
 ) {}
