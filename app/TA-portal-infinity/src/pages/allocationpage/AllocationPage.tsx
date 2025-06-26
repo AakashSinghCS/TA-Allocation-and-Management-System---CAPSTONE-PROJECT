@@ -1,4 +1,3 @@
-// src/pages/TAAllocationPage.tsx
 import React, { useState, useMemo, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -9,18 +8,10 @@ import type { Need } from '../../interfaces/need/Need';
 import type { Allocation } from '../../interfaces/allocation/Allocation';
 import { useAuth } from '../../context/AuthContext';
 import type { ApplicationDto } from '../../interfaces/application/Application';
-
-// ── Applicant shape ───────────────────────────────────────────────────────────
-type Applicant = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  availability: string[];
-  completedCourses: string[];
-  requestedHours: number;
-};
-
-// ── Mock loader ──────────────────────────────────────────────────────────────
+import type { Applicant } from '../../interfaces/applicant/Applicant';
+import { fetchApplicants } from '../../api/application/FetchApplicants';
+import { fetchApplications } from '../../api/application/FetchApplications';
+// Mock loader 
 import { fetchSection } from '../../api/section/fetchSection';
 import { mockSectionCOSC111 } from '../../mocked-objects/section/mockSectionCOSC111';
 import { mockSectionCOSC121 } from '../../mocked-objects/section/mockSectionCOSC121';
@@ -29,7 +20,7 @@ import { mockSectionMATH125 } from '../../mocked-objects/section/mockSectionMATH
 const TAAllocationPage: React.FC = () => {
   const { token } = useAuth();
 
-  // ── Filter state ────────────────────────────────────────────────────────────
+  //Filter state
   const [courseQ, setCourseQ] = useState({
     search:    '',
     deptCode:  '',
@@ -45,45 +36,39 @@ const TAAllocationPage: React.FC = () => {
     wantHours:  '',
   });
 
-  // ── seed allSections from mocks ─────────────────────────────────────────────
+  //seed allSections from mocks 
   const allSections = useMemo<SectionDetails[]>(() => [
     mockSectionCOSC111.sectionDetails,
     mockSectionCOSC121.sectionDetails,
     mockSectionMATH125.sectionDetails,
   ].filter((s): s is SectionDetails => s !== undefined), []);
 
-  // ── compute dropdown options ────────────────────────────────────────────────
+  //compute dropdown options 
   const deptCodes  = useMemo(() => Array.from(new Set(allSections.map(s=>s.deptCode))),  [allSections]);
   const courseNums = useMemo(() => Array.from(new Set(allSections.map(s=>s.courseNum))), [allSections]);
   const sections   = useMemo(() => Array.from(new Set(allSections.map(s=>s.section))),   [allSections]);
   const terms      = useMemo(() => Array.from(new Set(allSections.map(s=>s.term))),      [allSections]);
   const types      = useMemo(() => Array.from(new Set(allSections.map(s=>s.type!))),    [allSections]);
 
-  // ── fetch all applications on mount ────────────────────────────────────────
+  // fetch all applications on mount 
   const [allApps, setAllApps] = useState<ApplicationDto[]>([]);
   useEffect(() => {
-    (async () => {
-      const res = await fetch('http://localhost:8080/applications/getAll/1', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) setAllApps(await res.json());
-      else console.error('Failed loading applications', res.statusText);
-    })();
+    if (!token) return;
+    fetchApplications(1, token)
+      .then(setAllApps)
+      .catch(err => console.error(err));
   }, [token]);
   
-  // ── fetch real applicants on mount ─────────────────────────────────────────
-  const [allApplicants, setAllApplicants] = useState<Applicant[]>([]);
-  useEffect(() => {
-    (async () => {
-      const res = await fetch('http://localhost:8080/users/applicants', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) setAllApplicants(await res.json());
-      else console.error('Failed loading applicants', res.statusText);
-    })();
-  }, [token]);
+      // fetch real applicants on mount 
+    const [allApplicants, setAllApplicants] = useState<Applicant[]>([]);
+      useEffect(() => {
+        if (!token) return;
+        fetchApplicants(token)
+          .then(setAllApplicants)
+          .catch(err => console.error(err));
+      }, [token]);
 
- // ── selections ─────────────────────────────────────────────────────────────
+ // selections 
   const [selCourse,    setSelCourse]    = useState<{
     details?:     SectionDetails;
     schedule:     SectionSchedule[];
@@ -91,10 +76,10 @@ const TAAllocationPage: React.FC = () => {
     allocations:  Allocation[];
     hasCompleted: boolean;
   } | null>(null);
-  const [selApplicant, setSelApplicant] = useState<Applicant | null>(null);
+
   const [selApp,       setSelApp]       = useState<ApplicationDto | null>(null);
 
-   // ── client‐side filtering ───────────────────────────────────────────────────
+   // client‐side filtering
   const filteredSections = useMemo(() => {
     return allSections.filter(s => {
       const text = `${s.deptCode} ${s.courseNum} ${s.name}`.toLowerCase();
@@ -118,7 +103,7 @@ const TAAllocationPage: React.FC = () => {
     });
   }, [allApps, appQ]);
 
- // ── load a section’s full mock info ────────────────────────────────────────
+ // load a section’s full mock info 
   const loadCourse = async (details: SectionDetails) => {
     if (!details.sectionId) return;
     const full = await fetchSection(details.sectionId);
@@ -133,13 +118,11 @@ const TAAllocationPage: React.FC = () => {
         full.need.numOfHoursCurrentlyAllocated >= full.need.requiredGradingHours
       ),
     });
-    setSelApplicant(null);
+    setSelApp(null);
   };
-  // ── pick an applicant ─────────────────────────────────────────────────────
-  const loadApplicant = (a: Applicant) => setSelApplicant(a);
+  
   const loadApp = (a: ApplicationDto) => setSelApp(a);
-
-  // ── calendar events ────────────────────────────────────────────────────────
+  // calendar events 
 const courseEvents = (selCourse?.schedule || []).map((slot, i) => {
   const dayNum = getDayNumber(slot.day);
 
@@ -159,15 +142,14 @@ const courseEvents = (selCourse?.schedule || []).map((slot, i) => {
     startTime:      slot.startTime,
     endTime:        slot.endTime,
     backgroundColor: conflict
-      ? 'rgba(220, 38, 38, 0.8)'  // red when overlapping
-      : '#3B82F6CC',               // normal blue otherwise
+      ? 'rgba(220, 38, 38, 0.8)'  
+      : '#3B82F6CC',               
   };
 });
 
 const appEvents = (selApp?.availabilities || []).map((slot, i) => {
   const dayNum = getDayNumber(slot.day);
 
-  // detect overlap with any course slot
   const conflict = selCourse?.schedule.some(cs =>
     dayNum === getDayNumber(cs.day) &&
     cs.endTime !== undefined &&
@@ -183,12 +165,11 @@ const appEvents = (selApp?.availabilities || []).map((slot, i) => {
     startTime:      slot.startTime,
     endTime:        slot.endTime,
     backgroundColor: conflict
-      ? 'rgba(220, 38, 38, 0.8)'  // red when overlapping
-      : 'rgba(16, 185, 129, 0.8)', // normal green otherwise
+      ? 'rgba(220, 38, 38, 0.8)'  
+      : 'rgba(16, 185, 129, 0.8)', 
   };
 });
 
-// Optional: still render a translucent “background” slice for the exact overlap window
 const bgConflictEvents = (selApp?.availabilities || []).flatMap((slot, i) => {
   const dayNum = getDayNumber(slot.day);
   return (selCourse?.schedule || [])
@@ -209,31 +190,36 @@ const bgConflictEvents = (selApp?.availabilities || []).flatMap((slot, i) => {
         startTime:       start,
         endTime:         end,
         display:         'background',
-        backgroundColor: 'rgba(220, 38, 38, 0.3)', // translucent red
+        backgroundColor: 'rgba(220, 38, 38, 0.3)', 
       };
     }).filter(Boolean);
 });
 
-// ── final merged event list ────────────────────────────────────────────────
+//final merged event list
 const events = [
   ...courseEvents,
   ...appEvents,
   ...bgConflictEvents,
 ].filter((e): e is NonNullable<typeof e> => e !== null && e !== undefined);
 
-// ── status flags ───────────────────────────────────────────────────────────
+// status flags
   const hoursNeeded = selCourse?.need?.requiredGradingHours || 0;
   const preReqOK    = Boolean(selCourse?.hasCompleted);
-  const hoursOK     = selApplicant ? selApplicant.requestedHours >= hoursNeeded : false;
+  const hoursOK     = selApp ? selApp.wantWorkingHours >= hoursNeeded : false;
+  const required = selCourse?.need?.requiredGradingHours ?? 0
+  const allocated = selCourse?.need?.numOfHoursCurrentlyAllocated ?? 0
+  const remaining = Math.max(required - allocated, 0)
+  const hasConflict = bgConflictEvents.length > 0
+    
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen space-y-8">
-      <h1 className="text-3xl font-bold">TA Allocations</h1>
-      <div className="grid lg:grid-cols-12 gap-6">
+    <div className="p-8 min-h-screen space-y-8">
+      <h1 className="text-4xl font-bold">TA Allocations</h1>
+      <div className="grid lg:grid-cols-24 gap-6">
 
-        {/* ── COURSE FILTER + DETAILS PANEL ─────────────────────────────────── */}
-        <div className="lg:col-span-3 bg-white p-6 rounded shadow space-y-4">
-          <h1 className="font-semibold">Course Filter</h1>
+        {/*  COURSE FILTER + DETAILS PANEL */}
+        <div className="lg:col-span-5 bg-white p-6 rounded shadow space-y-4">
+          <h1 className="font-semibold text-xl">Course Filter</h1>
           {/* search */}
           <input
             type="text"
@@ -287,7 +273,7 @@ const events = [
           </div>
 
           {/* course tiles */}
-          <h1 className="font-semibold text-lg mt-4">Please select a course*</h1>
+          <h1 className="font-semibold text-xl mt-4">Please select a course*</h1>
           <div className="max-h-48 overflow-auto grid gap-2">
             {filteredSections.map(s => {
               const isSelected = selCourse?.details?.sectionId === s.sectionId;
@@ -322,10 +308,36 @@ const events = [
             </div>
           )}
         </div>
+    
 
-        {/* ── CALENDAR & ALLOCATE PANEL ─────────────────────────────────────── */}
-        <div className="lg:col-span-6 bg-white p-6 rounded shadow space-y-4">
-          <h1 className="font-semibold">Weekly Calendar</h1>
+        {/* CALENDAR & ALLOCATE PANEL*/}
+        <div className="lg:col-span-14 bg-white p-6 rounded shadow space-y-4">
+          <h1 className="font-semibold text-xl">Weekly Calendar</h1>
+            {/* Calendar Legend */}
+            <div className="flex items-center space-x-6 mb-2">
+              <div className="flex items-center space-x-1">
+                <span
+                  className="w-8 h-4 block rounded-sm"
+                  style={{ backgroundColor: '#3B82F6CC' }}
+                />
+                <span className="text-sm">Course Slot</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <span
+                  className="w-8 h-4 block rounded-sm"
+                  style={{ backgroundColor: 'rgba(16,185,129,0.8)' }}
+                />
+                <span className="text-sm">Student Availability</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <span
+                  className="w-8 h-4 block rounded-sm"
+                  style={{ backgroundColor: 'rgba(187, 13, 13, 0.3)' }}
+                />
+                <span className="text-sm">Conflict</span>
+              </div>
+            </div>
+          
           <FullCalendar
             key={selCourse?.details?.sectionId ?? 'none'}
             plugins={[timeGridPlugin]}
@@ -340,21 +352,41 @@ const events = [
             events={events}
             height="auto"
           />
+
+
           <div className="bg-gray-100 p-4 rounded space-y-1">
-            <p>Pre-req: <span className={preReqOK?'text-green-600':'text-red-600'}>{preReqOK?'Complete':'Missing'}</span></p>
-            <p>Hours:   <span className={hoursOK   ?'text-green-600':'text-red-600'}>{hoursOK   ?'Met':'Not Met' }</span></p>
+            {/* Remaining-hours */}
+              <p>
+                Remaining Hours:{' '}
+                <span className={hoursOK ? 'text-green-600' : 'text-red-600'}>
+                  {hoursOK
+                    ? `All met (${allocated} of ${required})`
+                    : `${remaining} needed (Allocated: ${allocated}, Required: ${required})`}
+                </span>
+              </p>
+
+              {/* Schedule-conflict line */}
+              <p>
+                Schedule Conflict:{' '}
+                <span className={hasConflict ? 'text-red-600' : 'text-green-600'}>
+                  {hasConflict ? 'Yes' : 'No'}
+                </span>
+              </p>
           </div>
+          <div className="flex justify-end">
           <button
-            disabled={!selCourse || !selApplicant}
+            disabled={!selCourse || !selApp}
             className="px-6 py-2 bg-[#040941] text-white rounded disabled:opacity-50"
           >
-            Allocate TA
+            Send Offer
           </button>
         </div>
 
-        {/* ── APPLICATION FILTER PANEL ───────────────────────────────────────── */}
-        <div className="lg:col-span-3 bg-white p-6 rounded shadow space-y-4">
-          <h1 className="font-semibold">Application Filter</h1>
+        </div>
+
+        {/*  APPLICATION FILTER PANEL */}
+        <div className="lg:col-span-5 bg-white p-6 rounded shadow space-y-4">
+          <h1 className="font-semibold text-xl">Application Filter</h1>
           <div className="grid grid-cols-2 gap-2">
             <select
               className="border rounded px-2 py-2"
@@ -411,7 +443,7 @@ const events = [
             ))}
             {filteredApps.length===0 && <p className="text-gray-500">No applications</p>}
           </div>
-           <h1 className="font-semibold text-lg mt-4">Please select a Applicant*</h1>
+           <h1 className="font-semibold text-xl mt-4">Please select a Applicant*</h1>
           {selApp && (
             <div className="mt-4 bg-gray-50 p-4 rounded space-y-2">
               <h4 className="font-semibold">Application Details</h4>
