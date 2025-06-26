@@ -1485,3 +1485,63 @@ There are only 1 or 2 other people (at most 3) in this team that faithfully does
 - qualifications page (instructor's and student's skill labs) integration
 - integration for comparers
 - visual assignments shown in profile.
+
+
+## Wednesday 6/25 (6/24~6/26)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June25.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: User Management
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#274](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/274)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#279](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/279)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I got the User Management working with backend. You can now search for a user by their name, role, university number. 
+You can now manually create a new user if you are an admin. You can delete. One of the Comparers is partially integrated.
+I had to refactor SignUp page by extracting a component out of it and reusing it in SignUp and ManualCreateUserPage.
+Tommorrow, I'll finish the tests for the searching user mapping and the tests for the usermanagmenet as well.
+Then I will work on the visual assignments for the profiles using Full Calendar.
+I may also consider brushing up on the design.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- visual assignments shown in profile.
