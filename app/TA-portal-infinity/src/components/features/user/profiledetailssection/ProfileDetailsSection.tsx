@@ -65,6 +65,9 @@ export default function ProfileDetailsSection<T extends User>({
                             console.error("Unexpected update response:", updateResult);
                             return;
                         }
+                        if (updateResult === "User updated"){
+                            alert("Profile details updated!");
+                        }
                         const fresh = await fetchDetailsFunction<T>(record.id);
 
                         setRecord(fresh);
