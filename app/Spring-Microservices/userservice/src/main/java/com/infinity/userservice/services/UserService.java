@@ -194,7 +194,6 @@ public class UserService {
     }
 
     public List<BaseUserDto> search(String role, String name, int universityNumber) {
-        String likeName = "%" + name.trim().toLowerCase() + "%";
 
         if ("STUDENT".equalsIgnoreCase(role)) {
             List<Student> students;

@@ -12,9 +12,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,6 +27,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.infinity.userservice.controllers.UserController;
+import com.infinity.userservice.dtos.BaseUserDto;
+import com.infinity.userservice.dtos.InstructorDto;
+import com.infinity.userservice.dtos.StudentDto;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
@@ -64,7 +70,8 @@ public class UserControllerTest {
         @Test
         void testGetUserById_NotFound() throws Exception {
 
-                when(userService.getUserById(any(), any(), any())).thenThrow(new NotFoundException("User with id 2 not found"));
+                when(userService.getUserById(any(), any(), any()))
+                                .thenThrow(new NotFoundException("User with id 2 not found"));
 
                 mockMvc.perform(get("/users/2")
                                 .header("X-User-Id", "2")
@@ -75,7 +82,7 @@ public class UserControllerTest {
 
         @Test
         void testGetUserById_Success() throws Exception {
-                UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com",List.of(UserRole.STUDENT));
+                UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.STUDENT));
 
                 when(userService.getUserById(any(), any(), any())).thenReturn(mockResponse);
 
@@ -191,4 +198,36 @@ public class UserControllerTest {
                                 .andExpect(status().isOk());
         }
 
+        @Test
+        void whenSearchStudentsByNumber_thenReturnsMatchingList() throws Exception {
+                LocalDateTime fixedTime = LocalDateTime.of(2023, 1, 1, 12, 0);
+                BaseUserDto student = new StudentDto(1L, "Alice", "Smith", "alice@example.com", 12345678,
+                                "computer science", 2023, 1, fixedTime);
+                List<BaseUserDto> results = Arrays.asList(student);
+                when(userService.search("STUDENT", "", 12345678)).thenReturn(results);
+
+                mockMvc.perform(get("/users/search")
+                                .param("role", "STUDENT")
+                                .param("universityNumber", "12345678")
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.length()").value(1))
+                                .andExpect(jsonPath("$[0].firstName").value("Alice"));
+        }
+
+        @Test
+        void whenSearchInstructorsByName_thenReturnsMatchingList() throws Exception {
+                LocalDateTime fixedTime = LocalDateTime.of(2023, 1, 1, 12, 0);
+                BaseUserDto instr = new InstructorDto(1L, "Bob", "Jones", "bob@example.com", 12345678,
+                                "computerscience", fixedTime);
+                when(userService.search("INSTRUCTOR", "Bob", 0)).thenReturn(Arrays.asList(instr));
+
+                mockMvc.perform(get("/users/search")
+                                .param("role", "INSTRUCTOR")
+                                .param("name", "Bob")
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.length()").value(1))
+                                .andExpect(jsonPath("$[0].lastName").value("Jones"));
+        }
 }

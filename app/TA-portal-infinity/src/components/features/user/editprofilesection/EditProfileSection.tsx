@@ -55,22 +55,27 @@ export default function EditProfileSection<T extends User>({
   return (
     <form onSubmit={handleSubmit} className="space-y-2 bg-white p-4 rounded shadow">
       {fields.map((field) => {
-        let numericProps: Partial<InputHTMLAttributes<HTMLInputElement>> = {};
+        let props: Partial<InputHTMLAttributes<HTMLInputElement>> = {};
 
         switch (field) {
           case "studentNumber":
           case "employeeNumber":
-            numericProps = { inputMode: "numeric", maxLength: 8 };
+            props = { inputMode: "numeric", maxLength: 8, placeholder: "e.g. 12345678" };
             break;
 
           case "enrollmentYear":
-            numericProps = { inputMode: "numeric", maxLength: 4 };
+            props = { inputMode: "numeric", maxLength: 4, placeholder: "e.g. 2024" };
             break;
 
           case "schoolYear":
-            numericProps = { inputMode: "numeric", maxLength: 1 };
+            props = { inputMode: "numeric", maxLength: 1, placeholder: "e.g. 1" };
             break;
-
+          case "program":
+            props = { inputMode: "text", placeholder: "e.g. B.Sc., Major in ..." };
+            break;
+          case "department":
+            props = { inputMode: "text", placeholder: "e.g. Computer Science, Data Science, Mathematics" };
+            break;
           default:
 
         }
@@ -85,7 +90,7 @@ export default function EditProfileSection<T extends User>({
               name={String(field)}
               value={String(form[field] ?? "")}
               onChange={handleChange}
-              {...numericProps}
+              {...props}
               className="w-full border border-gray-400 rounded px-3 py-2"
             />
           </div>

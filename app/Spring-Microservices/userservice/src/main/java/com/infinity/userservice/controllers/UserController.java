@@ -67,6 +67,6 @@ public class UserController {
         List<BaseUserDto> results = userService.search(role, name, universityNumber);
         return ResponseEntity.ok(results);
     }
-
+    
 
 }

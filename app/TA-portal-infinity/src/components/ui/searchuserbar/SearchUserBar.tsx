@@ -86,7 +86,7 @@ export default function SearchUserBar({ onSearch, loading,allowedRoles }: Search
         value={criteria.name}
         onChange={e => setCriteria(c => ({ ...c, name: e.target.value }))}
         disabled={isUniversityNumberEntered}
-        className="border px-2 py-1 rounded"
+        className="border px-2 py-1 rounded xl:w-100"
       />
       <input
         type="text"
@@ -103,7 +103,7 @@ export default function SearchUserBar({ onSearch, loading,allowedRoles }: Search
       <button
         type="submit"
         disabled={loading}
-        className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 disabled:opacity-50"
+        className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#040491] transition-colors disabled:opacity-50"
       >
         {loading ? "Searching…" : "Search"}
       </button>
