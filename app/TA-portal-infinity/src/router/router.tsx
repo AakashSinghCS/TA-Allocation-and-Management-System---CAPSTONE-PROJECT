@@ -12,7 +12,6 @@ import InstructorComparerPage from "../pages/instructorprofilepage/comparerpage/
 
 
 import LoginPage from "../pages/loginPage/LoginPage";
-import SignUpPage from "../pages/signupPage/SignUpPage";
 import ErrorPage from "../pages/errorpage/ErrorPage";
 import StudentHomePage from "../pages/student_homepage/StudentHomePage";
 import ApplicationPage from "../pages/applicationpage/ApplicationPage";
@@ -27,7 +26,7 @@ import InstructorQualificationPage from "../pages/instructorprofilepage/qualific
 import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
 import UserBrowsingPage from "../pages/userbrowsingpage/UserBrowsingPage";
 import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
-import SignUpPage1 from "../pages/signupPage/SignUpPage1";
+import SignUpPage from "../pages/signupPage/SignUpPage";
 
 export const router = createBrowserRouter([
   {
@@ -104,7 +103,7 @@ export const router = createBrowserRouter([
       { path: "", element: <LoginPage /> },
       { path: "login", element: <LoginPage /> },
       // { path: "signup", element: <SignUpPage /> },
-      { path: "signup", element: <SignUpPage1 /> },
+      { path: "signup", element: <SignUpPage /> },
       { path: "*", element: <ErrorPage /> },
     ],
   },

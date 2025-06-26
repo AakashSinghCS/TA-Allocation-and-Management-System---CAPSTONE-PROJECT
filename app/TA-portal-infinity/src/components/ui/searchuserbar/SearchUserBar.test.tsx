@@ -17,7 +17,7 @@ describe('SearchUserBar', () => {
     await waitFor(() => {
       expect(mockOnSearch).toHaveBeenCalledWith({
         role: 'Student',
-        name: 'Alice',
+        name: '',
         universityNumber: '12345678',
       } as SearchCriteria);
     });

@@ -1,5 +1,3 @@
-// src/pages/userBrowsing/NewUserPage.tsx
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import CreateUserForm, { type UserFormData } from '../../../components/features/user/createuserform/CreateUserForm';
 

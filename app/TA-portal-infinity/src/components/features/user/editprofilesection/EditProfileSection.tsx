@@ -53,14 +53,14 @@ export default function EditProfileSection<T extends User>({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-white p-4 rounded shadow">
+    <form onSubmit={handleSubmit} className="space-y-2 bg-white p-4 rounded shadow">
       {fields.map((field) => {
         const isNumField = field === "studentNumber" || field === "employeeNumber";
         const maxLen = field === "studentNumber" ? 8 : field === "employeeNumber" ? 10 : undefined;
 
         return (
           <div key={String(field)} className="flex flex-col">
-            <label htmlFor={String(field)} className="font-semibold">
+            <label htmlFor={String(field)} className="text-sm block">
               {labels[field]}
             </label>
             <input
@@ -72,7 +72,7 @@ export default function EditProfileSection<T extends User>({
               {...(isNumField
                 ? { inputMode: "numeric", maxLength : 8 }
                 : {})}
-              className="border px-2 py-1 rounded"
+              className="w-full border border-gray-400 rounded px-3 py-2"
             />
           </div>
         );
@@ -84,7 +84,7 @@ export default function EditProfileSection<T extends User>({
         <button
           type="submit"
           disabled={saving}
-          className="px-4 py-2 bg-green-500 text-white rounded"
+          className="bg-[#00C774] text-white px-2 py-1 rounded hover:bg-[#1FE88D] transition-colors"
         >
           {saving ? "Saving..." : "Save"}
         </button>

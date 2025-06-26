@@ -98,7 +98,7 @@ export default function StudentQualificationTable({
 
     <button
       type="submit"
-      className="self-start px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow"
+      className="w-full bg-[#040941] text-white py-2 rounded hover:bg-[#040491] transition-colors"
     >
       Save
     </button>
