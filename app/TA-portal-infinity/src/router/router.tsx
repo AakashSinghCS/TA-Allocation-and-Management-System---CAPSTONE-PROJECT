@@ -26,6 +26,8 @@ import { UserRole } from "../interfaces/enum/UserRole";
 import AllocationPage from "../pages/allocationpage/AllocationPage";
 import InstructorQualificationPage from "../pages/instructorprofilepage/qualificationpage/InstructorQualificationPage";
 import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
+import ForgotPasswordPage from "../pages/forgotpasswordpage/ForgotPasswordPage";
+import ResetPasswordPage from "../pages/resetpasswordpage/ResetPasswordPage";
 
 export const router = createBrowserRouter([
   {
@@ -100,6 +102,8 @@ export const router = createBrowserRouter([
       { path: "", element: <LoginPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignUpPage /> },
+      { path: "forgot-password", element: <ForgotPasswordPage /> },
+      { path: "reset-password", element: <ResetPasswordPage /> },
       { path: "*", element: <ErrorPage /> },
     ],
   },
