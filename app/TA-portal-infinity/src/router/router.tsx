@@ -78,7 +78,7 @@ export const router = createBrowserRouter([
       {
         path: "coordinator",
         element: (
-          <RoleGuard role={UserRole.COORDINATOR}>
+          <RoleGuard role={UserRole.COORDINATOR || UserRole.ADMIN}>
             <Outlet />
           </RoleGuard>
         ),
