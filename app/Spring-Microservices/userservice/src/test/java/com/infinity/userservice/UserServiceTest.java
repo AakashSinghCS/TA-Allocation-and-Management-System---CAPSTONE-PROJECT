@@ -1,23 +1,48 @@
 package com.infinity.userservice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.userservice.dtos.CoordinatorUpdateRequest;
+import com.infinity.userservice.dtos.InstructorUpdateRequest;
 import com.infinity.userservice.dtos.RegisterRequest;
+import com.infinity.userservice.dtos.StudentUpdateRequest;
 import com.infinity.userservice.dtos.UserDto;
-import com.infinity.userservice.dtos.UserRole;
+import com.infinity.userservice.enums.UserRole;
+import com.infinity.userservice.exceptions.AuthorizationException;
+import com.infinity.userservice.exceptions.BadRequestException;
+import com.infinity.userservice.exceptions.NotFoundException;
+import com.infinity.userservice.models.Coordinator;
+import com.infinity.userservice.models.Instructor;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
 import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.services.UserService;
 import com.infinity.userservice.utility.UserMapper;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -26,25 +51,250 @@ public class UserServiceTest {
     private UserRepository userRepository;
     @Mock
     private UserMapper userMapper;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private ObjectMapper objectMapper;
+    @Mock
+    private Validator validator;
 
     @InjectMocks
     private UserService userService;
-    
+
+    @Test
+    void testRegisterFailEmailExists() {
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT");
+        User user = new Student("john@test.com", "John", "Smith", "password");
+
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
+        assertThrows(BadRequestException.class, () -> {
+            userService.register(request);
+        });
+    }
 
     @Test
     void testRegisterStudent() {
-        RegisterRequest request = new RegisterRequest("john@example.com", "John", "Doe", "STUDENT", 42);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "STUDENT");
 
-        Student saved = new Student("john@example.com", "John", "Doe", 42);
-        UserDto studentDto = new UserDto(Long.valueOf(1), "John", "Doe", UserRole.STUDENT);
-        
+        Student saved = new Student("john@test.com", "John", "Smith", "password");
+        UserDto studentDto = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
+
         when(userRepository.save(any(User.class))).thenReturn(saved);
+        when(userMapper.registerToUser(request)).thenReturn(saved);
+        when(userMapper.registerToUser(request)).thenReturn(saved);
         when(userMapper.toDto(saved)).thenReturn(studentDto);
 
         UserDto dto = userService.register(request);
 
         assertEquals("John", dto.firstName());
         assertEquals(UserRole.STUDENT, dto.role());
+    }
+
+    @Test
+    void testRegisterInstructor() {
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "INSTRUCTOR");
+
+        Instructor saved = new Instructor("john@test.com", "John", "Smith", "password");
+        UserDto studentDto = new UserDto(1L, "John", "Smith", UserRole.INSTRUCTOR);
+
+        when(userRepository.save(any(User.class))).thenReturn(saved);
+        when(userMapper.registerToUser(request)).thenReturn(saved);
+        when(userMapper.toDto(saved)).thenReturn(studentDto);
+
+        UserDto dto = userService.register(request);
+
+        assertEquals("John", dto.firstName());
+        assertEquals(UserRole.INSTRUCTOR, dto.role());
+    }
+
+    @Test
+    void testRegisterCoordinator() {
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", "COORDINATOR");
+
+        Coordinator saved = new Coordinator("john@test.com", "John", "Smith", "password");
+        UserDto studentDto = new UserDto(1L, "John", "Smith", UserRole.COORDINATOR);
+
+        when(userRepository.save(any(User.class))).thenReturn(saved);
+        when(userMapper.registerToUser(request)).thenReturn(saved);
+        when(userMapper.toDto(saved)).thenReturn(studentDto);
+
+        UserDto dto = userService.register(request);
+
+        assertEquals("John", dto.firstName());
+        assertEquals(UserRole.COORDINATOR, dto.role());
+    }
+
+    @Test
+    void testGetUserById_NotFound() {
+        Long userId = 1L;
+        when(userRepository.findById(any())).thenReturn(Optional.empty());
+
+        NotFoundException e = assertThrows(NotFoundException.class, () -> {
+            userService.getUserById(userId);
+        });
+
+        assertEquals("User with ID 1 not found", e.getMessage());
+    }
+
+    @Test
+    void testGetUserById_Success() {
+        User mockUser = new Coordinator("john@test.com", "John", "Smith", "password");
+        UserDto mockDto = new UserDto(1L, "John", "Smith", UserRole.COORDINATOR);
+
+        when(userRepository.findById(any())).thenReturn(Optional.of(mockUser));
+        when(userMapper.toDto(mockUser)).thenReturn(mockDto);
+
+        UserDto dto = userService.getUserById(1L);
+        assertEquals(dto.firstName(), "John");
+        assertEquals(dto.role(), UserRole.COORDINATOR);
+    }
+
+    @Test
+    void testUpdateUserById_NotFound() {
+        when(userRepository.findById(any())).thenReturn(Optional.empty());
+        NotFoundException e = assertThrows(NotFoundException.class, () -> {
+            userService.updateUserById(1L, 1L, List.of("ROLE_STUDENT"), Map.of());
+        });
+
+        assertEquals("User not found", e.getMessage());
+    }
+
+    @Test
+    void testUpdateUserById_NotSameIdNotAdmin_Forbidden() {
+        User mockUser = new Student("john@test.com", "John", "Smith", "password");
+        mockUser.setId(1L);
+        when(userRepository.findById(any())).thenReturn(Optional.of(mockUser));
+        AuthorizationException e = assertThrows(AuthorizationException.class, () -> {
+            userService.updateUserById(1L, 2L, List.of("ROLE_STUDENT"), Map.of());
+        });
+        assertEquals("Not allowed", e.getMessage());
+    }
+
+    @Test
+    void testUpdateUserById_ValidationError() {
+        Student student = new Student("john@test.com", "John", "Smith", "password");
+        student.setId(1L);
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("email", "john@te@st.com");
+        StudentUpdateRequest invalidRequest = new StudentUpdateRequest(
+                "john@te@st.com",
+                "John",
+                "Smith",
+                "P@ssword1",
+                12345678,
+                "COSC",
+                2022,
+                3);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(student));
+        when(objectMapper.convertValue(payload, StudentUpdateRequest.class)).thenReturn(invalidRequest);
+
+        ConstraintViolation<StudentUpdateRequest> mockViolation = mock(ConstraintViolation.class);
+        when(mockViolation.getMessage()).thenReturn("Email must be valid");
+        Set<ConstraintViolation<StudentUpdateRequest>> violations = Set.of(mockViolation);
+        when(validator.validate(invalidRequest)).thenReturn(violations);
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> userService.updateUserById(1L, 1L, List.of("ROLE_STUDENT"), payload));
+
+        assertTrue(ex.getMessage().contains("Email must be valid"));
+
+    }
+
+    @Test
+    void testUpdateUserById_StudentSuccess() {
+        Student student = new Student("john@test.com", "John", "Smith", "password");
+        student.setId(1L);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(student));
+        when(objectMapper.convertValue(any(), eq(StudentUpdateRequest.class)))
+                .thenReturn(new StudentUpdateRequest("john@test.com", "John", "Smith", "P@ssword1",
+                        12345678, "COSC", 2022, 3));
+        when(validator.validate(any(StudentUpdateRequest.class))).thenReturn(Set.of());
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("firstName", "John");
+
+        userService.updateUserById(1L, 1L, List.of("ROLE_STUDENT"), payload);
+
+        verify(userRepository).save(student);
+    }
+
+    @Test
+    void testUpdateUserById_InstructorSuccess() {
+        Instructor instructor = new Instructor("john@test.com", "John", "Smith", "password");
+        instructor.setId(1L);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(instructor));
+        when(objectMapper.convertValue(any(), eq(InstructorUpdateRequest.class)))
+                .thenReturn(new InstructorUpdateRequest("john@test.com", "John", "Smith", "P@ssword1",
+                        12345678, "COSC"));
+        when(validator.validate(any(InstructorUpdateRequest.class))).thenReturn(Set.of());
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("firstName", "John");
+
+        userService.updateUserById(1L, 1L, List.of("ROLE_INSTRUCTOR"), payload);
+
+        verify(userRepository).save(instructor);
+    }
+
+    @Test
+    void testUpdateUserById_CoordinatorSuccess() {
+        Coordinator coordinator = new Coordinator("john@test.com", "John", "Smith", "password");
+        coordinator.setId(1L);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(coordinator));
+        when(objectMapper.convertValue(any(), eq(CoordinatorUpdateRequest.class)))
+                .thenReturn(new CoordinatorUpdateRequest("john@test.com", "John", "Smith", "P@ssword1"));
+        when(validator.validate(any(CoordinatorUpdateRequest.class))).thenReturn(Set.of());
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("firstName", "John");
+
+        userService.updateUserById(1L, 1L, List.of("ROLE_COORDINATOR"), payload);
+
+        verify(userRepository).save(coordinator);
+    }
+
+    @Test
+    void testDeleteUserById_NotSameIdNotAdmin_Forbidden() {
+        User mockUser = new Student("john@test.com", "John", "Smith", "password");
+        mockUser.setId(1L);
+        AuthorizationException e = assertThrows(AuthorizationException.class, () -> {
+            userService.deleteUserById(1L, 2L, List.of("ROLE_STUDENT"));
+        });
+        assertEquals("Not allowed", e.getMessage());
+    }
+
+    @Test
+    void testDeleteUserById_SameIdNotAdmin_NotExist() {
+        User mockUser = new Student("john@test.com", "John", "Smith", "password");
+        mockUser.setId(1L);
+        when(userRepository.existsById(any())).thenReturn(false);
+        NotFoundException e = assertThrows(NotFoundException.class, () -> {
+            userService.deleteUserById(1L, 1L, List.of("ROLE_STUDENT"));
+        });
+        assertEquals("User with id 1 doesn't exist", e.getMessage());
+    }
+
+    @Test
+    void testDeleteUserById_SameIdNotAdmin_Success() {
+        User mockUser = new Student("john@test.com", "John", "Smith", "password");
+        mockUser.setId(1L);
+        when(userRepository.existsById(any())).thenReturn(true);
+        userService.deleteUserById(1L, 1L, List.of("ROLE_STUDENT"));
+        verify(userRepository).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteUserById_NotSameIdAdmin_Success() {
+        User mockUser = new Student("john@test.com", "John", "Smith", "password");
+        mockUser.setId(2L);
+        when(userRepository.existsById(any())).thenReturn(true);
+        userService.deleteUserById(1L, 2L, List.of("ROLE_COORDINATOR"));
+        verify(userRepository).deleteById(1L);
     }
 
 }

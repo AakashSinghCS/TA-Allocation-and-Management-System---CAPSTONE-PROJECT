@@ -6,7 +6,7 @@ export default defineConfig({
   test: {
     globals: true,                // use describe/it/expect without imports
     environment: 'jsdom',         // simulate a browser DOM
-    setupFiles: './src/setupTests.ts',
-    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    setupFiles: './setupTests.ts',
+    include: ['src/**/*.{test,spec}.{ts,tsx}','tests/**/*.{test,spec}.{ts,tsx}'],
   },
 })
