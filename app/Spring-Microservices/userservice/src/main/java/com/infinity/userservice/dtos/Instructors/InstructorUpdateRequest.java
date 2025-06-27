@@ -1,0 +1,17 @@
+package com.infinity.userservice.dtos.Instructors;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
+public record InstructorUpdateRequest(
+                @Email(message = "Email must be valid") String email,
+                String firstName,
+                String lastName,
+                @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-\\[\\]{}|;:',.<>?]).{8,}$", 
+                        message = "Password must contain at least one uppercase letter, one number, and one special character") 
+                @Size(min = 8, message = "Password must be at least 8 characters") 
+                String password,
+                @Size(min = 8) Integer employeeNum,
+                String department) {
+}

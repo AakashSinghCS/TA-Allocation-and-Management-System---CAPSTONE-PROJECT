@@ -1,7 +1,8 @@
 package com.infinity.userservice.utility;
 
 import org.springframework.stereotype.Component;
-import com.infinity.userservice.dtos.StudentDto;
+
+import com.infinity.userservice.dtos.Students.StudentDto;
 import com.infinity.userservice.models.Student;
 
 @Component
