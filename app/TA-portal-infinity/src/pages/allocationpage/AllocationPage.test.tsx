@@ -2,91 +2,119 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TAAllocationPage from './AllocationPage';
 import { AuthContext } from '../../context/AuthContext';
-import { MemoryRouter } from 'react-router-dom';
 import { UserRole } from '../../interfaces/enum/UserRole';
+import { mockSectionCOSC111 } from '../../mocked-objects/section/mockSectionCOSC111';
+import { mockSectionMATH125 } from '../../mocked-objects/section/mockSectionMATH125';
 
-// Mocking global fetch function
-window.fetch = vi.fn(() =>
-  Promise.resolve({
-    ok: true,
-    json: () => Promise.resolve({
-      sections: [
-        { sectionId: '1', department: 'COSC', courseNumber: '111', section: '001', term: 'Winter 2023' },
-        { sectionId: '2', department: 'COSC', courseNumber: '121', section: '001', term: '2023W1' },
-        { sectionId: '3', department: 'MATH', courseNumber: '125', section: '001', term: 'Winter 2023' }
-      ],
-      selectedCourseDetails: {
-        gradingNeed: 'Grading Need Details',
-        requiredHours: 10
-      },
-    }),
-  })
-) as unknown as typeof fetch;
+// Mock functions
+const mockFetchApplications = vi.fn();
+const mockFetchSection = vi.fn();
 
-const mockContext = {
-  token: 'test-token',
-  userId: 123,
-  userRoles: [UserRole.STUDENT],
+// Mock data
+const mockApps = [
+  {
+    studentId: 1,
+    preferences: [mockSectionCOSC111.sectionDetails?.deptCode || 'COSC'],
+    wantRemote: true,
+    wantWorkingHours: 6,
+    timeSubmitted: '2025-06-25T12:00:00.000Z',
+    availabilities: [
+      { day: mockSectionCOSC111.sectionSchedule?.[0]?.day || 'MONDAY', startTime: '09:00', endTime: '11:00' },
+    ],
+  },
+  {
+    studentId: 2,
+    preferences: [mockSectionMATH125.sectionDetails?.deptCode || 'MATH'],
+    wantRemote: false,
+    wantWorkingHours: 4,
+    timeSubmitted: '2025-06-25T13:00:00.000Z',
+    availabilities: [],
+  },
+];
+
+const mockAuthContext = {
+  token: 'test-token-123',
+  userId: 1,
+  userRoles: [UserRole.COORDINATOR],
   login: vi.fn(),
   logout: vi.fn(),
-  isAuthenticated: true
+  isAuthenticated: true,
 };
 
-const renderWithProviders = () =>
-  render(
-    <AuthContext.Provider value={mockContext}>
-      <MemoryRouter>
-        <TAAllocationPage />
-      </MemoryRouter>
-    </AuthContext.Provider>
-  );
+// Mock modules
+vi.mock('../../api/application/FetchApplications', () => ({
+  fetchApplications: mockFetchApplications,
+}));
+vi.mock('../../api/section/fetchSection', () => ({
+  fetchSection: mockFetchSection,
+}));
 
 describe('TAAllocationPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockFetchApplications.mockResolvedValue(mockApps);
+    mockFetchSection.mockResolvedValue({
+      sectionDetails: mockSectionCOSC111.sectionDetails,
+      sectionSchedule: mockSectionCOSC111.sectionSchedule,
+      need: mockSectionCOSC111.need,
+      allocations: [],
+      hasCompleted: false,
+    });
   });
 
-  it('renders the course filter panel', () => {
-    renderWithProviders();
-    expect(screen.getByText(/Course Filter/)).toBeInTheDocument();
-  });
+  const renderWithAuth = () =>
+    render(
+      <AuthContext.Provider value={mockAuthContext}>
+        <TAAllocationPage />
+      </AuthContext.Provider>
+    );
 
-  it('displays mock sections correctly', () => {
-    renderWithProviders();
-    const sectionButtons = screen.getAllByText(/Winter 2023/);
-    expect(sectionButtons).toHaveLength(3);
-    expect(sectionButtons[0]).toHaveTextContent('COSC 111 • 001 • Winter 2023');
-    expect(sectionButtons[1]).toHaveTextContent('COSC 121 • 001 • 2023W1');
-    expect(sectionButtons[2]).toHaveTextContent('MATH 125 • 001 • Winter 2023');
+  it('renders the main heading and course list', async () => {
+    renderWithAuth();
+    expect(screen.getByText(/Please select a course/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(mockFetchApplications).toHaveBeenCalledWith(mockAuthContext.userId, mockAuthContext.token);
+      expect(screen.getByText(/COSC 111/i)).toBeInTheDocument();
+      expect(screen.getByText(/MATH 125/i)).toBeInTheDocument();
+    });
   });
 
   it('filters courses based on search input', async () => {
-    renderWithProviders();
+    renderWithAuth();
+    await waitFor(() => expect(mockFetchApplications).toHaveBeenCalled());
+
     const searchInput = screen.getByPlaceholderText('Search…');
-    fireEvent.change(searchInput, { target: { value: 'COSC 111' } });
+    fireEvent.change(searchInput, { target: { value: 'MATH' } });
 
-    const sectionButtons = screen.getAllByText(/Winter 2023/);
-    expect(sectionButtons).toHaveLength(1);  // Only COSC 111 should be visible
-    expect(sectionButtons[0]).toHaveTextContent('COSC 111 • 001 • Winter 2023');
-  });
-
-  it('selecting a course displays its details', async () => {
-    renderWithProviders();
-    fireEvent.click(screen.getByText('COSC 111 • 001 • Winter 2023'));
-    
     await waitFor(() => {
-      expect(screen.getByText('Grading Need')).toBeInTheDocument();
-      expect(screen.getByText('Required Hours:')).toBeInTheDocument();
+      expect(screen.getByText(/MATH 125/i)).toBeInTheDocument();
+      expect(screen.queryByText(/COSC 111/i)).not.toBeInTheDocument();
+    });
+
+    fireEvent.change(searchInput, { target: { value: 'COSC' } });
+    await waitFor(() => {
+      expect(screen.getByText(/COSC 111/i)).toBeInTheDocument();
+      expect(screen.queryByText(/MATH 125/i)).not.toBeInTheDocument();
     });
   });
 
-  it('handles course selection and displays relevant details', async () => {
-    renderWithProviders();
-    fireEvent.click(screen.getByText('COSC 111 • 001 • Winter 2023'));
+  it('loads and displays grading need when a course is selected', async () => {
+    renderWithAuth();
+    await waitFor(() => expect(screen.getByText(/COSC 111/i)).toBeInTheDocument());
 
+    fireEvent.click(screen.getByText(/COSC 111/i));
     await waitFor(() => {
-      expect(screen.getByText('Grading Need Details')).toBeInTheDocument();
-      expect(screen.getByText('Required Hours: 10')).toBeInTheDocument();
+      expect(mockFetchSection).toHaveBeenCalled();
+      expect(screen.getByText(/Grading Need/i)).toBeInTheDocument();
+      expect(screen.getByText(/Description:/i)).toBeInTheDocument();
     });
+  });
+
+  it('renders the calendar panel', async () => {
+    renderWithAuth();
+    expect(screen.getByText(/Weekly Calendar/i)).toBeInTheDocument();
+    // Optionally, check for calendar legend
+    expect(screen.getByText(/Course Slot/i)).toBeInTheDocument();
+    expect(screen.getByText(/Student Availability/i)).toBeInTheDocument();
   });
 });
