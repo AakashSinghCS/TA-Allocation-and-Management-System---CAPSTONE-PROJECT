@@ -56,8 +56,6 @@ export default function SideNavStudent() {
         <button
           onClick={logout}
          className="flex items-center gap-5 text-sm text-white hover:text-[#a0ffe6] hover:scale-105 hover:drop-shadow-[0_0_10px_#a0ffe6] transition-all duration-300"
-
-
         >
           <LogOut size={22} />
           {expanded && <span>Logout</span>}
