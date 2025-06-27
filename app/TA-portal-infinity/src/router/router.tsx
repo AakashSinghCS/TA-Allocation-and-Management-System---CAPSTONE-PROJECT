@@ -1,31 +1,103 @@
-import { createBrowserRouter } from "react-router-dom";
+
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import App from "../App";
-import HomePage from "../pages/homepage/HomePage";
-import AboutPage from "../pages/aboutpage/AboutPage";
-import TaProfilePage from "../pages/taprofilepage/TaProfilePage";
-import TaProfilePageContainer from "../pages/taprofilepage/TaProfilePageContainer";
+
+import PublicLayout from "../components/layout/publicLayout/PublicLayout";
+import CoursesTakenPage from "../pages/taprofilepage/coursestakenpage/CoursesTakenPage";
+import StudentComparerPage from "../pages/taprofilepage/comparerpage/StudentComparerPage";
+
+import InstructorProfilePage from "../pages/instructorprofilepage/InstructorProfilePage";
+import InstructorNeedPage from "../pages/instructorprofilepage/needpage/InstructorNeedPage";
+import InstructorComparerPage from "../pages/instructorprofilepage/comparerpage/InstructorComparerPage";
+
+
+import LoginPage from "../pages/loginPage/LoginPage";
+import SignUpPage from "../pages/signupPage/SignUpPage";
 import ErrorPage from "../pages/errorpage/ErrorPage";
-import { mockTaProfilePageData } from "../mocked-objects/mockTaProfilePageData";
-import CourseListPage from "../pages/coursespage/CourseListPage";
-import AddCoursePage from "../pages/coursespage/AddCoursePage";
+import StudentHomePage from "../pages/student_homepage/StudentHomePage";
+import ApplicationPage from "../pages/applicationpage/ApplicationPage";
+import InstructorHomePage from "../pages/instructor_homepage/InstructorHomePage";
+import CoordinatorHomePage from "../pages/coordinator_homepage/CoordinatorHomePage";
+import TaProfilePage from "../pages/taprofilepage/TaProfilePage";
+import { TaQuestionnairePage } from "../pages/taquestionnairepage/TaQuestionnairePage";
+import { CoordinatorQuestionnairePage } from "../pages/coordinatorquestionnairepage/CoordinatorQuestionnairePage";
+import RoleGuard from "../components/features/roleguard/RoleGuard";
+import { UserRole } from "../interfaces/enum/UserRole";
+import InstructorQualificationPage from "../pages/instructorprofilepage/qualificationpage/InstructorQualificationPage";
+import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
 
 export const router = createBrowserRouter([
   {
-    path: "/",              
+    path: "/user",
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <HomePage /> },               
-      { path: "about", element: <AboutPage /> },            
-      { path: "taprofile", element: <TaProfilePage data={mockTaProfilePageData} /> },
-      { path: "taprofile/:studentId", element: <TaProfilePageContainer /> },
-      // The courses route now points to the list page.
-      { path: "courses", element: <CourseListPage /> },
-      // A new route for adding courses.
-      { path: "courses/add", element: <AddCoursePage /> },
+      { path: "taprofile/:studentId", element: <TaProfilePage /> },
+      { path: "taprofile/:studentId/coursesTaken", element: <CoursesTakenPage /> },
+      { path: "taprofile/:studentId/compare", element: <StudentComparerPage /> },
+      { path: "taprofile/:studentId/qualifications", element: <StudentQualificationPage /> },
 
-      { path: "error", element: <ErrorPage /> },
-      { path: "a_star", element: <ErrorPage /> }, // "a_star" was likely a typo for "*", correcting it.
+      { path: "instructorprofile/:instructorId", element: <InstructorProfilePage /> },
+      { path: "instructorprofile/:instructorId/need", element: <InstructorNeedPage /> },
+      { path: "instructorprofile/:instructorId/compare", element: <InstructorComparerPage /> },
+      { path: "instructorprofile/:instructorId/qualifications", element: <InstructorQualificationPage /> },
+      // STUDENT routes
+      {
+        path: "student",
+        element: (
+          <RoleGuard role={UserRole.STUDENT}>
+            <Outlet />
+          </RoleGuard>
+        ),
+        children: [
+          { path: "home", element: <StudentHomePage /> },
+          { path: "application", element: <ApplicationPage /> },
+          { path: "questions/:studentId", element: < TaQuestionnairePage/> },
+          { path: "error", element: <ErrorPage /> },
+        ],
+      },
+
+      // INSTRUCTOR routes
+      {
+        path: "instructor",
+        element: (
+          <RoleGuard role={UserRole.INSTRUCTOR}>
+            <Outlet />
+          </RoleGuard>
+        ),
+        children: [
+          { path: "home", element: <InstructorHomePage /> },
+          { path: "error", element: <ErrorPage /> },
+        ],
+      },
+
+      // COORDINATOR routes
+      {
+        path: "coordinator",
+        element: (
+          <RoleGuard role={UserRole.COORDINATOR}>
+            <Outlet />
+          </RoleGuard>
+        ),
+        children: [
+          { path: "home", element: <CoordinatorHomePage /> },
+          { path: "questions", element: < CoordinatorQuestionnairePage/> },
+          { path: "student/questions/:studentId", element: < TaQuestionnairePage/> }, //TEMPORARY for development
+          { path: "error", element: <ErrorPage /> },
+        ],
+      },
+      { path: "*", element: <ErrorPage /> },
+    ],
+  },
+
+  // Public (no auth required)
+  {
+    path: "/",
+    element: <PublicLayout />,
+    children: [
+      { path: "", element: <LoginPage /> },
+      { path: "login", element: <LoginPage /> },
+      { path: "signup", element: <SignUpPage /> },
       { path: "*", element: <ErrorPage /> },
     ],
   },

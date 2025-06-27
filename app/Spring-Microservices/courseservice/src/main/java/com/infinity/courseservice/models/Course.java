@@ -2,31 +2,48 @@ package com.infinity.courseservice.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.NoArgsConstructor; 
+
 
 @Entity
 @Data
 @NoArgsConstructor
+@Table(name = "course",
+       uniqueConstraints = {
+           @UniqueConstraint(
+               name = "uk_course_unique_row",
+               columnNames = {"deptCode", "name", "courseNum"})
+       })
 public class Course {
     
     @Id
     @GeneratedValue
     private Long id;
 
-    private String subject;
-    private Integer courseNum;
+    private String deptCode;
+    private String name;
+    private String courseNum;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CourseEnrollment> enrollments;
+    @JsonManagedReference
+    private List<Section> sections;
 
-    public Course(String subject, Integer courseNum) {
-        this.subject = subject;
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseNeed> courseNeeds;
+
+    public Course(String deptCode, String name, String courseNum) {
+        this.deptCode = deptCode;
+        this.name = name;
         this.courseNum = courseNum;
     }
 }

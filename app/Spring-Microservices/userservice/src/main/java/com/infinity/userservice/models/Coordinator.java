@@ -1,5 +1,7 @@
 package com.infinity.userservice.models;
 
+import com.infinity.userservice.enums.UserRole;
+
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Data;
@@ -10,10 +12,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue("C")
+@DiscriminatorValue("COORDINATOR")
 public class Coordinator extends User {
 
-    public Coordinator(String email, String firstName, String lastName) {
-        super(email, firstName, lastName);
+    public Coordinator(String email, String firstName, String lastName, String password) {
+        super(email, firstName, lastName, password);
     }
 }

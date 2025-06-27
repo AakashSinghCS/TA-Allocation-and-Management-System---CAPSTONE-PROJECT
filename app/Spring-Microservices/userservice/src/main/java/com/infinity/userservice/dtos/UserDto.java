@@ -1,4 +1,8 @@
 package com.infinity.userservice.dtos;
 
-public record UserDto(Long id, String firstName, String lastName, UserRole role) {
+import java.util.List;
+
+import com.infinity.userservice.enums.UserRole;
+
+public record UserDto(Long id, String firstName, String lastName, List<UserRole> roles) {
 }

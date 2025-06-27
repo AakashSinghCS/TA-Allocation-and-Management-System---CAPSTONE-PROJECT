@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+      branches: [ develop,main ]
+  pull_request:
+      branches: [ develop,main ]
+
+concurrency:                       
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+##############################################################################
+# 1. FRONT-END  – tests run *inside* the Docker container called “frontend”
+##############################################################################
+jobs:
+  frontend-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      #######################################################################
+      # Put any secrets you need in the container here
+      #######################################################################
+      # - name: Create .env.test
+        # env:
+          # SECRET_TOKEN: ${{ secrets.SECRET_TOKEN }}
+        # run: |
+          # echo "DATABASE_URL=" > .env.test
+          # echo "SECRET_TOKEN=$SECRET_TOKEN" >> .env.test
+
+      #######################################################################
+      # Build & start the compose stack (frontend + mysql)
+      #######################################################################
+      - name: Build and start containers
+        run: docker compose up -d --build          
+
+      #######################################################################
+      # Run the *real* tests inside the already-running container
+      #######################################################################
+
+      - name: Run Jest/Vitest tests in container
+        run: docker exec frontend npm run test -- --coverage
+
+      - name: Tear down containers
+        if: always()
+        run: docker compose down -v
+
+##############################################################################
+# 2. BACK-END  – native Maven, one matrix job per micro-service
+##############################################################################
+  backend-test:
+    needs: frontend-test
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        service: [
+          courseservice,
+          profileservice,
+          userservice,
+          applicationservice       
+        ]
+
+    defaults:
+      run:
+        working-directory: app/Spring-Microservices/${{ matrix.service }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bring up MySQL via Docker Compose
+        working-directory: ${{ github.workspace }}
+        run: |
+          docker compose up -d mysql
+
+      - name: Wait for MySQL to (probably) be ready
+        run: sleep 10
+
+      - name: Set up JDK + cache Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 24
+          cache: maven             
+
+      - name: Run unit/integration tests + JaCoCo
+        run: mvn -B test jacoco:report
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-${{ matrix.service }}
+          path: target/site/jacoco

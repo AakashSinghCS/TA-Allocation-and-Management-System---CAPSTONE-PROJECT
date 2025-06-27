@@ -1,13 +1,13 @@
-package com.infinity.courseservice.repositories;
+// package com.infinity.courseservice.repositories;
 
-import java.util.List;
+// import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+// import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.infinity.courseservice.models.CourseEnrollment;
+// import com.infinity.courseservice.models.Enrollment;
 
-public interface EnrollmentRepository extends JpaRepository<CourseEnrollment, Long> {
+// public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
-    List<CourseEnrollment> findAllByStudentId(Long studentId);
+//     List<Enrollment> findAllByStudentId(Long studentId);
 
-}
+// }

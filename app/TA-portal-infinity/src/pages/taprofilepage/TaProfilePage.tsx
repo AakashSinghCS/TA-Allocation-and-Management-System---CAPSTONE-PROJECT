@@ -1,64 +1,91 @@
-import type TaProfilePageData from '../../interfaces/taprofile/TaProfilePageData';
+import { useState } from 'react';
 import type Section from '../../interfaces/section/Section';
-import formatDateForDisplay from '../../utility/formatdatefordisplay/formatDateForDisplay';
-import ProfileSection from '../../components/features/profile/ProfileSection';
-import SectionCard from '../../components/features/section/SectionCard';
+import ProfileSection from '../../components/features/user/profilesection/ProfileSection';
+import { Link, useParams } from 'react-router-dom';
 
-export default function TaProfilePage({ data} : {data :TaProfilePageData}) {
-  const profileDetails = [
-    { label: "Email", value: data.student.email },
-    { label: "Student #", value: data.student.studentNumber.toString() },
-    { label: "Program", value: data.student.program },
-    { label: "Enrollment Year", value: data.student.enrollmentYear.toString() },
-    { label: "School Year", value: data.student.schoolYear.toString() },
-    { label: "Joined", value: formatDateForDisplay(data.student.createdAt) },
-  ];
-  /*need to do the following:
-    - show the times for each of the courses ex: Wed~Fridya 2:30 etc.
-    - make the card smaller, or make it into more of a list so that the coordinator doesn't have to scroll.
-    - divide Courses into the following: courses currently taking (which is most important), and courses with previous TA-experience
-    - MAYBE have a list of all the courses taken, which will be long, can should not be in the form of cards.
-    
-    - Finally, add the profile questions and answers.
-*/
+import { fetchStudentDetails } from '../../api/student/fetchStudentDetails';
+import { type Student, studentProfileFields, studentFieldLabels } from '../../interfaces/user/Student';
+import { fetchAllStudentSectionsHasCompleted } from '../../api/student/fetchAllStudentSectionsHasCompleted';
+import { type ProfileQuestion } from '../../interfaces/question/ProfileQuestion';
+import { fetchAllStudentQuestions } from '../../api/question/fetchAllStudentQuestion';
+import SectionsColumn from '../../components/features/section/sectionscolumn/SectionsColumn';
+import { GenericAPIContainer } from '../../utility/genericapicontainer/GenericAPIContainer';
+import ProfileQuestionsSection from './profilequestionssection/ProfileQuestionsSection';
+import StudentTabNav from '../../components/layout/tabnav/studenttabnav/StudentTabNav';
+
+import { useAuth } from '../../context/AuthContext';
+
+function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
   return (
-    <div className="max-w-7xl mx-auto mt-8 p-6 bg-white rounded-2xl flex flex-col md:flex-row md:gap-8">
-      <ProfileSection
-        name={`${data.student.firstName} ${data.student.lastName}`}
-        profileDetails={profileDetails}
-        className="max-w-xs space-y-4 order-1 md:order-2 md:w-1/3 md:ml-auto"
-      />
-
-      <SectionSection
-        sections={data.sectionsTaken ? data.sectionsTaken : []}
-        className="space-y-4 order-2 md:order-1 md:w-2/3 mt-6 md:mt-0"
-      />
+    <div className="border border-slate-200 rounded-2xl shadow-sm">
+      <button
+        data-testid={`accordion-toggle-${title.replace(/\s+/g, '-')}`}
+        className="w-full flex justify-between items-center px-4 py-3 bg-slate-50 hover:bg-slate-100 transition"
+        onClick={() => setOpen(o => !o)}
+      >
+        <span className="font-semibold">{title}</span>
+        <svg
+          className={`w-5 h-5 transform transition-transform ${open ? 'rotate-180' : ''}`}
+          fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && <div className="px-4 pb-4 pt-2">{children}</div>}
     </div>
   );
 }
-interface SectionProps {
-  sections?: Section[];      
-  className?: string;
-}
 
-function SectionSection({ sections = [], className = "" }: SectionProps) {
+export default function TaProfilePage() {
+  const { studentId } = useParams();
+  const sId = Number(studentId);
+  const filteredFields = studentProfileFields.filter(
+    key => key !== 'id' && key !== 'firstName' && key !== 'lastName'
+  );
+
   return (
-    <section className={className}>
-      <h2 className="text-xl font-semibold mb-2">Courses</h2>
+    <div className="mx-auto space-y-6 p-4">
+      <StudentTabNav />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+        <div className="lg:col-span-1 max-h-[40vh]">
+          <GenericAPIContainer<Student>
+            fetchFunction={() => fetchStudentDetails(sId)}
+            render={student => (
+              <ProfileSection
+                user={student}
+                profileFields={filteredFields}
+                fieldLabels={studentFieldLabels}
+              />
+            )}
+          />
+        </div>
+        <div className="lg:col-span-2 max-h-[40vh]">
+          <GenericAPIContainer<ProfileQuestion[] | null>
+            fetchFunction={() => fetchAllStudentQuestions(sId)}
+            render={qs => <ProfileQuestionsSection profileQuestions={qs} />}
+          />
+        </div>
+      </div>
 
-      {sections.length ? (
-        <div className="grid gap-3">
-          {sections.map(sec => (
-            <SectionCard key={sectionKey(sec)} section={sec} />
-          ))}
-        </div>
-      ) : (
-        <div className="p-4 text-slate-400 italic border border-dashed border-slate-200 rounded-lg">
-          No courses to display
-        </div>
-      )}
-    </section>
+      <div className="grid grid-cols-1 gap-4 items-start">
+        <Accordion title="Allocation History">
+          <GenericAPIContainer<Section[]>
+            fetchFunction={() => fetchAllStudentSectionsHasCompleted(sId, true)}
+            render={secs => (
+              <div className="space-y-2">
+                <SectionsColumn sections={secs ?? []} />
+                <Link to="/">
+                  <div className="cursor-pointer italic text-slate-500 border border-dashed border-slate-200 rounded-lg p-2">
+                    Add a section
+                  </div>
+                </Link>
+              </div>
+            )}
+          />
+        </Accordion>
+      </div>
+    </div>
   );
 }
-
-const sectionKey = (s: Section) => `${s.sectionDetails.deptCode}-${s.sectionDetails.courseNum}-${s.sectionDetails.section}`;

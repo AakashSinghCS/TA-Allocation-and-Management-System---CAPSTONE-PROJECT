@@ -1,18 +1,20 @@
-import { fetchSectionDetails } from "./fetchSectionDetails";
-import { fetchAllSectionSchedules } from "./fetchAllSectionSchedules";
 import type Section from "../../interfaces/section/Section";
+import { mockSectionCOSC111 } from "../../mocked-objects/section/mockSectionCOSC111";
 
 export async function fetchSection(sectionId: number): Promise<Section> {
 
-    const [sectionDetails, sectionSchedules] = await Promise.all([
-        fetchSectionDetails(sectionId),
-        fetchAllSectionSchedules(sectionId)
-    ]);
+//    const baseUrl = 'mock';
+       
+//     const res = await fetch(`${baseUrl}/mock/mock/mock/${studentId}`,{
+//         headers: {
+//             Accept: 'application/json'
+//         }
+//     })
+    
+//     if (!res.ok) {
+//         throw new Error(`Failed to fetch student details (HTTP ${res.status})`);
+    // }
 
-    const section  :Section= {
-        sectionDetails : sectionDetails,
-        sectionSchedule: sectionSchedules
-    }
-
-    return section;
+    // return res.json() as Promise<Section>;
+    return mockSectionCOSC111; //delete when backend is implemented
 }

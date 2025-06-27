@@ -1,5 +1,7 @@
 package com.infinity.userservice.models;
 
+import com.infinity.userservice.enums.UserRole;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -11,15 +13,37 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue("S")
+@DiscriminatorValue("STUDENT")
 public class Student extends User {
 
+    //possibly restrict this to 8 numbers?
     @Column(unique = true)
-    private Integer studentNumber;
+    private Integer studentNum;
 
-    public Student(String email, String firstName, String lastName, Integer studentNumber) {
-        super(email, firstName, lastName);
-        this.studentNumber = studentNumber;
+    private String program;
+
+    private Integer enrollmentYear;
+
+    private Integer schoolYear;
+
+    public Student(String email, String firstName, String lastName, String password) {
+        super(email, firstName, lastName, password);
+    }
+
+    public Student(
+            String email,
+            String firstName,
+            String lastName,
+            String password,
+            Integer studentNum,
+            String program,
+            Integer enrollmentYear,
+            Integer schoolYear) {
+        super(email, firstName, lastName, password);
+        this.studentNum = studentNum;
+        this.program = program;
+        this.enrollmentYear = enrollmentYear;
+        this.schoolYear = schoolYear;
     }
 
 }
