@@ -10,23 +10,25 @@ const daysOfWeek: string[] = [
   "Sunday"
 ];
 
-export default function DaySelector() {
+export default function DaySelector({mode}:{mode:string}) {
   const [selectedDay, setSelectedDay] = React.useState<string | null>(null);
+  const smallStyle = "mt-1 block w-full rounded border border-gray-400 px-2 py-1"
+  const bigStyle ="mt-1 block w-full rounded border border-gray-400 px-3 py-2"
+  const smallOrBig = `${mode ==='small'?smallStyle:bigStyle}`
 
   return (
-    <div>
-      <label htmlFor="day" className="block text-sm font-medium">Day</label>
+
       <select
         id="day"
         value={selectedDay ?? ""}
         onChange={(e) => setSelectedDay(e.target.value || null)}
-        className="mt-1 block w-full border border-gray-400 rounded px-3 py-2"
+        className={smallOrBig}
       >
-        <option value="">Select a day</option>
+        <option value="">Day</option>
         {daysOfWeek.map((day) => (
           <option key={day} value={day}>{day}</option>
         ))}
       </select>
-    </div>
+
   );
 }

@@ -11,41 +11,42 @@ const timeOptions: string[] = [
   "21:00", "21:30", "22:00", "22:30", "23:00", "23:30"
 ];
 
-export default function TimeSelector() {
+export default function TimeSelector({ mode }: { mode: string }) {
   const [startTime, setStartTime] = React.useState<string | null>(null);
   const [endTime, setEndTime] = React.useState<string | null>(null);
+  const smallStyle = "mt-1 block w-full rounded border border-gray-400 px-2 py-1"
+  const bigStyle = "mt-1 block w-full rounded border border-gray-400 px-3 py-2"
+  const smallOrBig = `${mode === 'small' ? smallStyle : bigStyle}`
 
   return (
-    <div className="space-y-4">
-      <div>
-        <label htmlFor="startTime" className="block text-sm font-medium">Start Time</label>
-        <select
-          id="startTime"
-          value={startTime ?? ""}
-          onChange={(e) => setStartTime(e.target.value || null)}
-          className="mt-1 block w-full border border-gray-400 rounded px-3 py-2"
-        >
-          <option value="">Select a time</option>
-          {timeOptions.map((time) => (
-            <option key={time} value={time}>{time}</option>
-          ))}
-        </select>
-      </div>
+    <>
 
-      <div>
-        <label htmlFor="endTime" className="block text-sm font-medium">End Time</label>
-        <select
-          id="endTime"
-          value={endTime ?? ""}
-          onChange={(e) => setEndTime(e.target.value || null)}
-          className="mt-1 block w-full border border-gray-400 rounded px-3 py-2"
-        >
-          <option value="">Select a time</option>
-          {timeOptions.map((time) => (
-            <option key={time} value={time}>{time}</option>
-          ))}
-        </select>
-      </div>
-    </div>
+      <select
+        id="startTime"
+        value={startTime ?? ""}
+        onChange={(e) => setStartTime(e.target.value || null)}
+        className={smallOrBig}
+      >
+        <option value="">Start time</option>
+        {timeOptions.map((time) => (
+          <option key={time} value={time}>{time}</option>
+        ))}
+      </select>
+
+
+
+      <select
+        id="endTime"
+        value={endTime ?? ""}
+        onChange={(e) => setEndTime(e.target.value || null)}
+        className={smallOrBig}
+      >
+        <option value="">End time</option>
+        {timeOptions.map((time) => (
+          <option key={time} value={time}>{time}</option>
+        ))}
+      </select>
+
+    </>
   );
 }

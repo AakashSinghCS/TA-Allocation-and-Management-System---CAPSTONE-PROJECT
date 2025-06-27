@@ -13,33 +13,22 @@ import { fetchAllExistingYears } from "../../../../api/sectionfilter/fetchAllExi
 import { fetchAllExistingSections } from "../../../../api/sectionfilter/fetchAllExistingSections";
 interface Props {
   allExistingDeptCodes: string[] | null;
+  mode?: string;
 }
 
-export default function DeptCodeCourseNumSectionYearSemesterDropdownContainer({
-  allExistingDeptCodes,
-}: Props) {
-  // Selections
-  const [selectedDeptCode, setSelectedDeptCode] = useState<string | null>(
-    null
-  );
-  const [selectedCourseNum, setSelectedCourseNum] = useState<number | null>(
-    null
-  );
+export default function DeptCodeCourseNumSectionYearSemesterDropdownContainer({ allExistingDeptCodes, mode}: Props) {
+  const [selectedDeptCode, setSelectedDeptCode] = useState<string | null>(null);
+  const [selectedCourseNum, setSelectedCourseNum] = useState<number | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
-  const [selectedSemester, setSelectedSemester] = useState<string | null>(
-    null
-  );
+  const [selectedSemester, setSelectedSemester] = useState<string | null>(null);
 
-  // Option lists
   const [courseNumData, setCourseNumData] = useState<number[] | null>(null);
   const [sectionData, setSectionData] = useState<string[] | null>(null);
   const [yearData, setYearData] = useState<number[] | null>(null);
   const [semesterData, setSemesterData] = useState<string[] | null>(null);
 
-  // 1) Dept → CourseNums
   useEffect(() => {
-    // reset downstream
     setSelectedCourseNum(null);
     setCourseNumData(null);
     setSelectedSection(null);
@@ -55,7 +44,6 @@ export default function DeptCodeCourseNumSectionYearSemesterDropdownContainer({
       .catch(() => setCourseNumData([]));
   }, [selectedDeptCode]);
 
-  // 2) CourseNum → Sections
   useEffect(() => {
     setSelectedSection(null);
     setSectionData(null);
@@ -70,7 +58,6 @@ export default function DeptCodeCourseNumSectionYearSemesterDropdownContainer({
       .catch(() => setSectionData([]));
   }, [selectedDeptCode, selectedCourseNum]);
 
-  // 3) Section → Years
   useEffect(() => {
     setSelectedYear(null);
     setYearData(null);
@@ -87,7 +74,6 @@ export default function DeptCodeCourseNumSectionYearSemesterDropdownContainer({
       .catch(() => setYearData([]));
   }, [selectedDeptCode, selectedCourseNum, selectedSection]);
 
-  // 4) Year → Semesters
   useEffect(() => {
     setSelectedSemester(null);
     setSemesterData(null);
@@ -114,24 +100,40 @@ export default function DeptCodeCourseNumSectionYearSemesterDropdownContainer({
   }
 
   return (
-    <div className="space-y-4">
-      <DeptCodeDropdown deptCodes={allExistingDeptCodes} value={selectedDeptCode} onChange={setSelectedDeptCode} />
+    <div className={mode === 'small'?"grid grid-cols-1 gap-2":"flex gap-5"}>
+      <DeptCodeDropdown 
+      deptCodes={allExistingDeptCodes} 
+      value={selectedDeptCode} 
+      onChange={setSelectedDeptCode} 
+      mode={mode} />
 
-      <CourseNumDropdown courseNums={courseNumData} value={selectedCourseNum} onChange={setSelectedCourseNum}/>
+      <CourseNumDropdown 
+      courseNums={courseNumData} 
+      value={selectedCourseNum} 
+      onChange={setSelectedCourseNum} 
+      disabled={!selectedDeptCode} 
+      mode={mode}/>
 
-      <SectionDropdown sections={sectionData} value={selectedSection} onChange={setSelectedSection} />
+      <SectionDropdown 
+      sections={sectionData} 
+      value={selectedSection} 
+      onChange={setSelectedSection} 
+      disabled={!selectedCourseNum} 
+      mode={mode}/>
 
-      <YearDropdown
-        years={yearData}
-        value={selectedYear !== null ? String(selectedYear) : null}
-        onChange={(v) => setSelectedYear(v !== null ? Number(v) : null)}
-      />
+      <YearDropdown 
+      years={yearData} 
+      value={selectedYear !== null ? String(selectedYear) : null} 
+      onChange={(v) => setSelectedYear(v !== null ? Number(v) : null)} 
+      disabled={!selectedSection} 
+      mode={mode} />
 
-      <SemesterDropdown
-        semesters={semesterData}
-        value={selectedSemester}
-        onChange={setSelectedSemester}
-      />
+      <SemesterDropdown 
+      semesters={semesterData} 
+      value={selectedSemester} 
+      onChange={setSelectedSemester} 
+      disabled={!selectedYear} 
+      mode={mode}/>
     </div>
   );
 }

@@ -1,4 +1,3 @@
-// src/components/coursefilter/CourseFilter.tsx
 import { useState } from 'react';
 import DaySelector from '../../ui/dayselector/DaySelector';
 import TimeSelector from '../../ui/timeselector/TimeSelector';
@@ -7,6 +6,7 @@ import { fetchAllExistingDeptCodes } from '../../../api/sectionfilter/fetchAllEx
 import { sectionTypeOptions } from '../../../interfaces/section/SectionDetails';
 import DeptCodeCourseNumSectionYearSemesterDropdownContainer from './deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
 
+type Mode = 'small' | 'large';
 
 interface CourseFilterProps {
   onFilterChange: (filters: {
@@ -15,63 +15,63 @@ interface CourseFilterProps {
     deptCode: string;
     type: string;
   }) => void;
+  mode?: Mode;
 }
 
-export default function CourseFilter({ onFilterChange }: CourseFilterProps) {
-  const [term, setTerm] = useState('');
+export default function CourseFilter({
+  onFilterChange,
+  mode = 'small',
+}: CourseFilterProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [deptCode, setDeptCode] = useState('');
   const [type, setType] = useState('');
 
   const handleFilter = () => {
-    onFilterChange({ term, searchQuery, deptCode, type });
+    onFilterChange({ term: '', searchQuery, deptCode: '', type });
   };
 
+  const smallStyle = "mt-1 block w-full rounded border border-gray-400 px-2 py-1"
+  const bigStyle ="mt-1 block w-full rounded border border-gray-400 px-3 py-2"
+  const smallOrBig = `${mode ==='small'?smallStyle:bigStyle}`
+
   return (
-    <div className="space-y-4">
-      {/* Row 1: Free-text search */}
+    <div className={mode === 'small' ? "space-y-1 text-sm" : "space-y-4"}>
       <input
         type="text"
-        placeholder="Search by course name..."
+        placeholder="Search... e.g. '2024', '001', '121', 'L01', 'COSC 111 001'"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="border p-2 rounded-md w-full"
+        className={mode === "small" ? "px-2 py-1 border rounded-md w-full" : "px-3 py-2 border rounded-md w-full"}
       />
 
-      {/* Row 2: All dropdowns */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        {/* Dept → Course# → Section → Year → Semester */}
-        <GenericAPIContainer<string[] | null>
-          fetchFunction={fetchAllExistingDeptCodes}
-          render={(allDeptCodes) => (
-            <DeptCodeCourseNumSectionYearSemesterDropdownContainer
-              allExistingDeptCodes={allDeptCodes}
-            />
-          )}
-        />
+      <div className={mode === 'small'?"grid grid-cols-2 gap-2": "grid grid-rows-2 gap-4"}>
+        <div className="">
+          <GenericAPIContainer<string[] | null>
+            fetchFunction={fetchAllExistingDeptCodes}
+            render={(allDeptCodes) => (
+              <DeptCodeCourseNumSectionYearSemesterDropdownContainer
+                allExistingDeptCodes={allDeptCodes}
+                mode={mode}
+              />
+            )}
+          />
+        </div>
 
-        {/* Type */}
-        <select
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          className="border p-2 rounded-md w-full"
-        >
-          <option value="">All Types</option>
-          {sectionTypeOptions.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-
-        {/* Day of week */}
-        <DaySelector />
-
-        {/* Start & end time */}
-        <TimeSelector />
+        <div className={mode === 'small'?"grid grid-cols-1 gap-2":"flex gap-5"}>
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className={smallOrBig}
+          >
+            <option value="">All Types</option>
+            {sectionTypeOptions.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+          <DaySelector mode={mode} />
+          <TimeSelector mode={mode} />
+        </div>
       </div>
 
-      {/* Submit */}
       <button
         onClick={handleFilter}
         className="bg-blue-500 text-white p-2 rounded-md w-full"

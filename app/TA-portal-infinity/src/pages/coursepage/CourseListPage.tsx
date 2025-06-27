@@ -63,9 +63,9 @@ export default function CourseListPage() {
             </Link>
         </div>
         <div className="border p-4 rounded-md shadow-sm mb-4">
-          <CourseFilter onFilterChange={handleFilterChange} />
+          <CourseFilter onFilterChange={handleFilterChange}  mode={'large'}/>
         </div>
-        <CourseList courses={filteredCourses} />
+        <CourseList courses={filteredCourses}/>
       </div>
     </div>
   );
