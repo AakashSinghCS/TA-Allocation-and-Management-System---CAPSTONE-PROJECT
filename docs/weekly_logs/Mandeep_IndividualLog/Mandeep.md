@@ -997,5 +997,5 @@ The bug is not fixed yet , but also testing is still required to verify that the
 
 ## Next Cycle Goals  
 - **#1:** Finalize bug fixes
-- **#2:** Continue with feature testing
+- **#2:** Continue with feature testings
 
