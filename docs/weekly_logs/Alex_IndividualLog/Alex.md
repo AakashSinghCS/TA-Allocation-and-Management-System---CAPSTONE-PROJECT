@@ -2,6 +2,59 @@
 
 ### Timesheet
 Clockify report
+![alt text](./jun24-26.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Patching the needs and teacher controller to return sections rather than only courses
+  * #2: Adding missing methods and endpoints for the applications and courses
+  * #3: Handling student enrollment in the intermediate table for students and courses
+  * #4: Creating a notification service for emailing and having it work with forgot password
+
+### Progress Update (since June 19 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>CRUD operations needs and submitting
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Assign instructors to sections
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Get sections, needs, and allocations for teachers
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I ended up starting with just the needs, and then it became clear there was a lot more that needed to work for it when retrieving it, so the PR also handled assigning instructors, and getting feign working to retrieve the allocation history. Ended up being a fair bit of work and I think it works relatively well.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * There's a lot of things to do for the next cycle and some are quick (like the patches), the enrollment stuff is medium and shouldn't take too long, and the notification mailer is undetermined. I will have to create a new microservice with the java mailer from spring which is probably pretty easy to do, then connect an email to it. The forgot password workflow is simple, it's just unclear exactly how long/hard this will be.
+
+## Monday (June 20-23)
+
+### Timesheet
+Clockify report
 ![alt text](./jun20-23.png)
 
 ### Current Tasks (Provide sufficient detail)
