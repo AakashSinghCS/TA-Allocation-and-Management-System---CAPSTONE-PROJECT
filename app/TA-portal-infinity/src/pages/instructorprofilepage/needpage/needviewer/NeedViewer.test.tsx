@@ -14,7 +14,7 @@ vi.mock('../../../../utility/genericapicontainer/GenericAPIContainer', () => {
 
 const arbitaryId = 10;
 
-const renderComparer = () =>
+const renderer = () =>
   render(
     <MemoryRouter>
       <NeedViewer instructorId={arbitaryId} />
@@ -23,13 +23,14 @@ const renderComparer = () =>
 
 describe('<NeedViewer />', () => {
   it('shows courses, needs, and ta allocations', () => {
-    renderComparer();
+    renderer();
 
     // Check for COSC 111 and COSC 121
     const headings = screen.getAllByText(/cosc\s*111/i);
     expect(headings.length).toBeGreaterThan(0);
     expect(screen.getAllByText(/cosc\s*121/i).length).toBeGreaterThan(0);
 
+<<<<<<< HEAD
     // Check for multiple 'need-card' elements
     const needCards = screen.getAllByTestId('need-card');
     
@@ -37,6 +38,10 @@ describe('<NeedViewer />', () => {
     needCards.forEach((needCard) => {
       expect(within(needCard).getAllByText(/math\s*125/i).length).toBeGreaterThan(0);
     });
+=======
+    const needCard = screen.getByTestId('need-card');
+    expect(within(needCard).getAllByText(/math\s*125/i).length).toBeGreaterThan(0);
+>>>>>>> origin/develop
 
     // Check for 'allocation-card' and find "Emma"
     const alloCard = screen.getByTestId('allocation-card');
