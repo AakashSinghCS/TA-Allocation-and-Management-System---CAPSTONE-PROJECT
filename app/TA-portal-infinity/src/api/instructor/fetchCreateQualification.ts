@@ -1,6 +1,5 @@
 import type Qualification from "../../interfaces/qualification/Qualification";
 import type Section from "../../interfaces/section/Section";
-import { mockQualificationResponse } from "../../mocked-objects/qualification/mockQualificationResponse";
 
 export interface QualificationResponse {
     section: Section;
