@@ -11,7 +11,8 @@ export const mockSectionCOSC111Details : SectionDetails = {
     deptCode : mockCourseCOSC111.deptCode,
     courseNum : mockCourseCOSC111.courseNum,
     section: "001",
-    term : "Winter 2023",
+    semester : "W1",
+    year: 2023,
     type : "Lecture"
 }
 
