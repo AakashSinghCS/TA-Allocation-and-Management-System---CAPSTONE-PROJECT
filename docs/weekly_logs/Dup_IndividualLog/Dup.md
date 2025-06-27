@@ -1545,3 +1545,52 @@ I may also consider brushing up on the design.
 - qualifications page (instructor's and student's skill labs) integration
 - integration for comparers
 - visual assignments shown in profile.
+
+
+## Thursday 6/26 (6/24~6/26)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June26.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: User Management
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#279](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/279)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I worked on the basic aesthetics of the whole application today. I completed writing the tests for the user search backend.
+I reviewed other peoples PRs and did some project discussion. I reviewed #280 and #284 PRs.
+I will probably work on the instructor updating needs and adding them. for the frontend.
+If the backend for the needs get merged, I will integrate as well.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- Instructor updating needs frontend
