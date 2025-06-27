@@ -14,6 +14,7 @@ vi.mock('../api/application/FetchApplicants', () => ({
   fetchApplicants: vi.fn(() => Promise.resolve([])),
 }));
 
+
 // vi.mock('../../../../context/AuthContext', () => ({
 //     useAuth: vi.fn(),
 // }));
