@@ -2,17 +2,15 @@ package com.infinity.userservice.services;
 
 import org.springframework.stereotype.Service;
 
-import com.infinity.userservice.dtos.StudentDto;
+import com.infinity.userservice.dtos.Students.StudentDto;
 import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.repositories.StudentRepository;
 import com.infinity.userservice.utility.StudentMapper;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Data
 @RequiredArgsConstructor
 public class StudentService {
 

@@ -5,8 +5,8 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.infinity.userservice.dtos.RegisterRequest;
 import com.infinity.userservice.dtos.UserDto;
+import com.infinity.userservice.dtos.Registration.RegisterRequest;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.BadRequestException;
 import com.infinity.userservice.models.Coordinator;

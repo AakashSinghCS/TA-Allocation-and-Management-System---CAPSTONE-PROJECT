@@ -10,11 +10,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.infinity.userservice.dtos.CoordinatorUpdateRequest;
-import com.infinity.userservice.dtos.InstructorUpdateRequest;
-import com.infinity.userservice.dtos.RegisterRequest;
-import com.infinity.userservice.dtos.StudentUpdateRequest;
 import com.infinity.userservice.dtos.UserDto;
+import com.infinity.userservice.dtos.Coordinators.CoordinatorUpdateRequest;
+import com.infinity.userservice.dtos.Instructors.InstructorUpdateRequest;
+import com.infinity.userservice.dtos.Registration.RegisterRequest;
+import com.infinity.userservice.dtos.Students.StudentUpdateRequest;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.BadRequestException;
