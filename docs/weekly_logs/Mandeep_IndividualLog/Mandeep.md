@@ -784,3 +784,218 @@ The mini presentation was well-received and helped the team articulate progress 
 
 ## Next Cycle Goals  
 - **#1:** Application and Application status
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 17 June, Tuesday 5:10PM–8:13PM
+
+**Clockify:** ![alt text](image-33.png)
+
+## Current Tasks  
+- **#1:** Application page (frontend completed)
+
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|-----------|  
+| Task 1       | 	    Application page frontend completed                                     | Completed |  
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle focused on finishing the frontend of the application page. The layout and design were successfully implemented.
+
+### Retrospective  
+The frontend was completed without significant issues, but there was a focus on ensuring that components worked together seamlessly.
+
+## Next Cycle Goals  
+- **#1:** Routing documentation review
+- **#2:** Basic routing implementation
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 18 June, Wednesday 12:01AM–1:05AM & 1:16PM–2:16PM
+
+**Clockify:** ![alt text](image-34.png)
+
+## Current Tasks  
+- **#1:** Routing documentation read
+- **#2:** Basic routing
+
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|-----------|  
+| Task 1       | 	    Routing documentation read                                              | Completed |  
+| Task 2       |      Basic routing                                                           | Completed |  
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle was focused on understanding the routing system and implementing the basic routing structure for the application.
+
+### Retrospective  
+The routing was successfully implemented, though it took some time to properly align with the application structure.
+
+## Next Cycle Goals  
+- **#1:** Routing completion
+- **#2:** Test routing functionality
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 19 June, Thursday 11:25AM–3:30PM
+
+**Clockify:** ![alt text](image-35.png)
+
+## Current Tasks  
+- **#1:** Routing completed
+
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|-----------|  
+| Task 1       | 	    Routing completed                                                       | Completed |  
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle focused on finalizing the routing and ensuring everything was linked correctly.  
+
+### Retrospective  
+The routing was completed without issues, but further testing will be needed to ensure it works as expected across all pages.
+
+## Next Cycle Goals  
+- **#1:** Implement and test side navigation bar
+- **#2:** Start with backend integration for routing
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 20 June, Friday 12:06AM–1:54AM & 12:46PM–1:38PM
+
+**Clockify:** ![alt text](image-36.png)
+
+## Current Tasks  
+- **#1:** Application page planning
+- **#2:** Routing and Side Nav bar creation
+
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|-----------|  
+| Task 1       | 	    Planning for the application page                                       | Completed |  
+| Task 2       | 	     Routing and Side Nav bar was created and tested                        | Completed |  
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle was focused on the initial stages of the application page development. The routing setup and navigation components were successfully created and tested.
+
+### Retrospective  
+The tasks were completed efficiently, but we encountered some challenges with aligning the layout to ensure it was responsive.
+
+## Next Cycle Goals  
+- **#1:** Finalize the routing implementation
+- **#2:** Start with the frontend development of the application page
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 22 June, Sunday 1:06PM–3:21PM & 4:02PM–6:53PM
+
+**Clockify:** ![alt text](image-37.png)
+
+## Current Tasks  
+- **#1:** Wrote tests and manual testing
+- **#2:** Integration and improvement in application page
+- **#3:** Added availability with calendar
+
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|-----------|  
+| Task 1       | 	    Wrote tests and manual testing                                           | Completed |  
+| Task 2       |      Integration and improvements in application page                        | Completed |  
+| Task 3       |      Added availability with calendar                                         | Completed |  
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle was focused on finalizing the backend testing and improving the application page by adding the availability calendar.
+
+### Retrospective  
+The tasks were completed successfully, but further testing is required to ensure smooth integration with the backend.
+
+## Next Cycle Goals  
+- **#1:** Debugging and final testing of the allocation page
+- **#2:** Further integration with backend APIs
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 24 June, Tuesday 11:02AM–1:07PM
+
+**Clockify:** ![alt text](image-38.png)
+
+## Current Tasks  
+- **#1:** UI for allocation page
+
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|-----------|  
+| Task 1       | 	    UI for allocation page                                                   | Completed |  
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle focused on the UI design and development for the allocation page, ensuring the interface is clean and functional.
+
+### Retrospective  
+The UI was completed without major issues, though some fine-tuning may be required for responsiveness.
+
+## Next Cycle Goals  
+- **#1:** Integrate backend with allocation page
+- **#2:** Test UI functionality
+
+------------------------------------------------------------------------------------------------------------------------------
+
+## 25 June, Wednesday 11:00AM–2:32AM & 8:24PM–2:32AM
+
+**Clockify:** ![alt text](image-39.png)
+
+## Current Tasks  
+- **#1:** TA allocation page
+
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|-----------|  
+| Task 1       | 	    TA allocation page                                                       | Completed |  
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle was focused on working through the features and bugs related to the TA allocation page, with a lot of time spent ensuring the functionality.
+
+### Retrospective  
+Although the main functionality was completed, there are still some bugs to be resolved.
+
+## Next Cycle Goals  
+- **#1:** Resolve bugs in the allocation page
+- **#2:** Test new features
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 26 June, Thursday 2:01PM–5:30PM
+
+**Clockify:** ![alt text](image-40.png)
+
+## Current Tasks  
+- **#1:** Bug in allocation page
+
+## Progress Update  
+| TASK/ISSUE # | DESCRIPTION                                                                  | STATUS     |  
+|--------------|-------------------------------------------------------------------------------|-----------|  
+| Task 1       | 	    Bug in allocation page                                                   | In progress |  
+
+## Cycle Goal Review  
+
+### Reflection  
+This cycle was focused on identifying and fixing bugs that were preventing the allocation page from functioning correctly.
+
+### Retrospective  
+The bug is not fixed yet , but also testing is still required to verify that the fix works across all scenarios.
+
+## Next Cycle Goals  
+- **#1:** Finalize bug fixes
+- **#2:** Continue with feature testing
+
