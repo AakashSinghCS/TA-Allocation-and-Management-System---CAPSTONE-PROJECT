@@ -1,0 +1,2375 @@
+[33mcommit b0cf3eca0d7fd4bf8d83af165991f7ee8deec03e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32m69-create-ta-allocation-page-for-coordinator---frontend[m[33m, [m[1;31morigin/69-create-ta-allocation-page-for-coordinator---frontend[m[33m)[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Thu Jun 26 02:32:06 2025 -0700
+
+    Test added
+
+[33mcommit 5efe2364689971eb94a5e5f58e2fd3d522d73cd0[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Thu Jun 26 00:24:29 2025 -0700
+
+    fixed conflict area issue in calendar
+
+[33mcommit 1128de0dc287004d224ba85c6eee6c12d3ce8d20[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 25 22:54:16 2025 -0700
+
+    application filter implemented
+
+[33mcommit 8165610b92420414d370dcfa8e9ab3001c6b406d[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 25 19:53:33 2025 -0700
+
+    minor changes
+
+[33mcommit da531bb56e262c152c15e0223934b07d8eb44958[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 25 18:18:16 2025 -0700
+
+    final touch up for versions
+
+[33mcommit a0fc3f322b9ded538c3020e9a20910f5546b046c[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 25 18:08:47 2025 -0700
+
+    Solved issues of dependencies in 2 hours pheeeow
+
+[33mcommit 3670ae4fef9588f946716edf550e3ef021db2cb0[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 25 16:56:15 2025 -0700
+
+    Changed installed version to resolve conflict
+
+[33mcommit ac787ee7c1c34465be387baf752806dc93f7928b[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 25 16:45:12 2025 -0700
+
+    changed files
+
+[33mcommit 2ac9a477feb191d007662248b7b2556e532621ae[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 25 15:53:38 2025 -0700
+
+    changes
+
+[33mcommit 4d8ef2c062b171e7ff6bd6c50afcd05ff13bfb85[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 25 15:39:54 2025 -0700
+
+    Added Course Filter
+
+[33mcommit 708dc66dca07ccb1d81ded07da28eb962df2fcef[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 25 15:17:28 2025 -0700
+
+    Added Course Filter on mock data
+
+[33mcommit f0242c4c6181cf78bdd82b7bb481d517debee2f6[m
+Merge: 4a8e5de bc08931
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 24 12:32:18 2025 -0700
+
+    Resolve merge conflict in SidebarStudent.tsx
+
+[33mcommit 4a8e5de82be7a9fbd1d8a938bced57da06a59b75[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 24 12:30:28 2025 -0700
+
+    WIP: changes to sidebars
+
+[33mcommit bc089316d5698d93f5c36cacbd35c6e59a97c0f3[m[33m ([m[1;32mmaster[m[33m)[m
+Merge: 7b13231 6620b0c
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Tue Jun 24 12:29:03 2025 -0700
+
+    Merge pull request #266 from UBCO-COSC499-S2025/264-add-availability-field-to-application-form-and-integrate-with-backend
+    
+    264 add availability field to application form and integrate with backend
+
+[33mcommit 7b132314c72af85a0026bf509350e3d7838fca8f[m
+Merge: a18c628 d0d1a20
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Mon Jun 23 14:41:51 2025 -0700
+
+    Merge pull request #265 from UBCO-COSC499-S2025/263-admin-role
+    
+    263 admin role
+
+[33mcommit 6620b0ccac5c59a853f743ebde1c54895b46a5d6[m[33m ([m[1;31morigin/264-add-availability-field-to-application-form-and-integrate-with-backend[m[33m, [m[1;32m264-add-availability-field-to-application-form-and-integrate-with-backend[m[33m)[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 23 14:36:34 2025 -0700
+
+    Isolated the fetch existing application logic
+
+[33mcommit 74822e3f512b6def7d154ab35ad44ac35cfe0b02[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 23 02:29:57 2025 -0700
+
+    change in test file
+
+[33mcommit 631b9136665b756a573e55d44d30b563f5156684[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 23 02:26:43 2025 -0700
+
+    minor changes in side nav
+
+[33mcommit 6a7d7b7dfd8abfc8fcd646b21929968f53e7360a[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 23 01:57:41 2025 -0700
+
+    Added Dependencies
+
+[33mcommit ff458440e809d8d128c8fa10a148f2b56a87e474[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 23 01:45:29 2025 -0700
+
+    login improved
+
+[33mcommit f4841071d7df9234c5f0f3e8ea85aa6d6f3a250d[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 23 01:24:32 2025 -0700
+
+    minor changes
+
+[33mcommit 6e903e76a62d9f75920fd393d286ddae5a6931f5[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 23 01:18:21 2025 -0700
+
+    minor changes in tests
+
+[33mcommit 292881fa1e8cccce806f777d51dfa3b87ef09ff2[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 23 00:35:21 2025 -0700
+
+    added modal for previous application
+
+[33mcommit 9b7dfefb0d4ce21cc0cb6c92aacda7c0bfca9cd4[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 23 00:03:23 2025 -0700
+
+    integrated frontend and backend
+
+[33mcommit c080e876bcd1e9fb5370b2bf715ecb19dcdd0ace[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Sun Jun 22 16:05:12 2025 -0700
+
+    Added availibility to frontend form
+
+[33mcommit d0d1a20611d666bf7a55e53e7fd7e263a7f68096[m[33m ([m[1;31morigin/263-admin-role[m[33m)[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sun Jun 22 13:52:20 2025 -0700
+
+    updated postman and weird database restriction
+
+[33mcommit a18c628e2f780379ef2b413da9156fc2e39a5410[m
+Merge: eca396a b358b3f
+Author: Dup <42607535+eeasuper@users.noreply.github.com>
+Date:   Sun Jun 22 13:41:03 2025 -0700
+
+    Merge pull request #262 from UBCO-COSC499-S2025/247-store-availability-with-application
+    
+    Store Availability backend
+
+[33mcommit b7e9373bca8de17d35e56e8aeba12bb797816991[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sun Jun 22 13:34:49 2025 -0700
+
+    updated roles functionality through table and updated tests
+
+[33mcommit b358b3fdda0fb0cc6ecea37bb02ebd88351294f1[m[33m ([m[1;31morigin/247-store-availability-with-application[m[33m)[m
+Merge: f22e4f4 eca396a
+Author: Alex Argatoff <129143300+xelArga@users.noreply.github.com>
+Date:   Sat Jun 21 20:00:50 2025 -0400
+
+    Merge branch 'develop' into 247-store-availability-with-application
+
+[33mcommit f22e4f4bc04e49a394fcef19a70a828355fe0fef[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 21 17:00:09 2025 -0700
+
+    updated postman
+
+[33mcommit eca396abeec0ecaf4c604da458da97e6f954541c[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Sat Jun 21 16:58:10 2025 -0700
+
+    Feat/allocation history refactor (#258)
+    
+    * Added Section in CourseService and controllers, dtos, feign, and models files in allocationservice
+    
+    * Small modifications to make the allocationhistory functionality work
+    
+    * Modified endpoint mapping to return dtos and other minor changes.
+    
+    * Fixed feign client call. The tests were passing as expected but when testing on postman, i was getting a 403 forbidden error in the feign call to USER-SERVICE. This issue has now been fixed along with some minor modifications to ensure consistency.
+    
+    * added methods,dto, mappings, and tests to allocate a student to a section. Also updated postman calls.
+    
+    * Lots of changes made due to merge conflicts.
+    
+    * Updated studentdto: removed userrole and timecreated fields as it is not required. Updated tests accordingly.
+    
+    * Modified sectionDtos to return a course object instead of just courseId as recommended by Dup. Modified Allens courseController and courseService accordingly to prevent code breakage.
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <aakashds@student.ubc.ca>
+
+[33mcommit 092b7a1aa7fdc9e538ef252c336152bf887e3292[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 21 13:10:34 2025 -0700
+
+    updated postman calls
+
+[33mcommit 0851ef817b91986bf2cc3455653d642a86942244[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 21 13:07:53 2025 -0700
+
+    removed uneeded method in application
+
+[33mcommit ccda117b05a0b6131a77bb1be4416e9b54bfabcf[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 21 13:06:09 2025 -0700
+
+    fixed tests
+
+[33mcommit 823aabf3541f6f1267541fb4b093bf39eebe5a7a[m
+Merge: 46d6a91 8b6a9ba
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 21 13:06:00 2025 -0700
+
+    Merge branch 'develop' into 247-store-availability-with-application
+
+[33mcommit 8b6a9ba3489f0173504dfd9d290d3d335fca68fd[m
+Author: Dup <42607535+eeasuper@users.noreply.github.com>
+Date:   Sat Jun 21 13:03:24 2025 -0700
+
+    240 ta profile answer questions createanswer (#252)
+    
+    * added instructorprofilepage with needviewer and basic test
+    
+    * created comparer, cleaned up profile aesthetics
+    
+    * added tests for instructor comparer and needviewer
+    
+    * created allocation card need card tests
+    
+    * improved aesthetics of comparer and made it user-accessible
+    
+    * improved aesthetics of StudentCard and instructorprofile comparer
+    
+    * changed titles and names to be Links
+    
+    * changed aesthetics of sectionCard
+    
+    * added coverage option to the project
+    
+    * aesthetics reform to both instructor and ta profile page
+    
+    * created tabs and pages and coursestakepage for ta
+    
+    * added mockMATH125, fixed comparers and aesthetics
+    
+    * fixed tests
+    
+    * slight fix to NeedCard Additional Comments
+    
+    * fixed hover:blue in allocationCard
+    
+    * single Question questionnaire working
+    
+    * completed tests for questions and answers
+    
+    * created coordinator questionnaire version
+    
+    * applied role authentication
+    
+    * POST create question mapping works
+    
+    * DELETE mapping integrated and tests fixed
+    
+    * ta profile integrated with fetch call
+    
+    * made deletion or updates of questions cascade delete any student answers
+    
+    * questionnaire submission now resets all submissions
+    
+    * fixed backend tests to work.
+    
+    * frontend tests fixed adapted to work with changes
+    
+    * attempt to refactor
+    
+    * completed integration of backend with frontend profileanswers
+    
+    * cleaned up code and made tests work
+    
+    * updated postman, authentication in sidebar, changed routings
+
+[33mcommit 46d6a91575318c203a4a24c47aa505b2f02debb3[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 21 11:53:20 2025 -0700
+
+    added availability functionality
+
+[33mcommit 8b6addc3f8e3b2fb1d801d4133b9947697e5e4c0[m
+Merge: d9a944e be4d5a7
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Fri Jun 20 17:26:16 2025 -0700
+
+    237 implement role based routing for protected views
+    
+    237 implement role based routing for protected views
+
+[33mcommit d9a944e266494efd447c1254e58978e480a958fb[m
+Merge: 7619558 f4dfc1e
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Fri Jun 20 17:23:32 2025 -0700
+
+    105 api create ta application
+    
+    105 api create ta application
+
+[33mcommit be4d5a7958595a7d0cb4597096ca583b1f37fc9d[m[33m ([m[1;31morigin/237-implement-role-based-routing-for-protected-views[m[33m)[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Fri Jun 20 15:07:59 2025 -0700
+
+    added base nav to login
+
+[33mcommit 312743a5443b560473a1fd49325303f2fc5bbbc9[m
+Merge: e1e8be9 7619558
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Fri Jun 20 02:15:31 2025 -0700
+
+    Merge develop into feature: resolved conflicts by keeping feature-branch versions
+
+[33mcommit e1e8be9fdc766a22fa1dc9fad721d94927bf7663[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Fri Jun 20 01:20:13 2025 -0700
+
+     Removed alerts for error, added fancier stuff :)
+
+[33mcommit 4ce62b9669558d7ad9148c76b8a10fc122ac24b1[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Fri Jun 20 01:07:27 2025 -0700
+
+    fixed test for application page as well
+
+[33mcommit a988e64b035ff03e99146bc07c2f41af141dd861[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Fri Jun 20 01:03:25 2025 -0700
+
+    only made 1 preference field compulsory on application page
+
+[33mcommit 5da60363574aa5564c3d45225a7b0745d7879546[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Fri Jun 20 01:00:00 2025 -0700
+
+    user based routing added with mocked pages
+
+[33mcommit f4dfc1ee882f6bf3a2e2a41918c3c48076742e08[m[33m ([m[1;31morigin/105-api-create-ta-application[m[33m)[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Thu Jun 19 15:28:15 2025 -0700
+
+    updated ci to include new application service
+
+[33mcommit b0e851ae4510297f3053bce6014e40898a96f515[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Thu Jun 19 15:27:15 2025 -0700
+
+    added postman calls
+
+[33mcommit b62a62dbcd1593371b4f56d44c9aa2258e78142a[m
+Merge: c94b92b 7619558
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Thu Jun 19 15:25:36 2025 -0700
+
+    Merge branch 'develop' into 105-api-create-ta-application
+
+[33mcommit c94b92bc78aeae3f9667a0e0b76ac80ce7230547[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Thu Jun 19 15:25:23 2025 -0700
+
+    removed uneeded imports
+
+[33mcommit 28d9431fad8a553daa4f7708a6c91f74db5891b6[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Thu Jun 19 15:24:51 2025 -0700
+
+    finished tests
+
+[33mcommit d68953c81c82d0e9826ff7b0d3e726b033c26103[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 18 22:06:02 2025 -0700
+
+    started adding tests
+
+[33mcommit 761955826baf950374c5db07aa055d6aed1c5095[m
+Merge: 757fb84 341ff79
+Author: Dup <42607535+eeasuper@users.noreply.github.com>
+Date:   Wed Jun 18 20:46:56 2025 -0700
+
+    Merge pull request #216 from UBCO-COSC499-S2025/32-browse-available-courses-backend
+    
+    browse available courses backend, added time filter
+
+[33mcommit 2d45a4110384074a7538e37307429c3506e9b666[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 18 14:55:57 2025 -0700
+
+    finished get and delete, now just need to finish update
+
+[33mcommit 24e6af65465e0ff4db35be87f12f64e51bae9598[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 18 14:16:07 2025 -0700
+
+    added extra exception
+
+[33mcommit 341ff79d7f08a4c9788e45225ecf6d236956fc04[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 18 14:06:11 2025 -0700
+
+    changed to create-drop
+
+[33mcommit a2821203cced9f573b6c539954364a0ca65cdba0[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 18 14:03:45 2025 -0700
+
+    fixed a postman call
+
+[33mcommit 6986417bb62f4738de02d7bcfa32824061cfbd5a[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 18 13:59:53 2025 -0700
+
+    added add and delete
+
+[33mcommit de758fa31163cb3a8856658dd1cb8a8f3bdb2a71[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Wed Jun 18 13:58:21 2025 -0700
+
+    postman fix
+
+[33mcommit 7b318770fe47d634e1b2d4b916a020454ce78b1a[m
+Merge: 9dc3712 757fb84
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Wed Jun 18 13:22:39 2025 -0700
+
+    Merge branch 'develop' of https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity into 32-browse-available-courses-backend
+
+[33mcommit 757fb84827706a315a2a57a1961fcfb1a875906d[m
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Wed Jun 18 13:17:16 2025 -0700
+
+    29 student can apply for a ta position (#233)
+    
+    * get the logout button to work and token deletion
+    
+    * Added logout functionality
+    
+    * Added Application page with mock data
+    
+    * Added application page
+
+[33mcommit 9dc37126785c3a63040219cff48d2224a2e08e04[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Wed Jun 18 11:47:27 2025 -0700
+
+    postman fix
+
+[33mcommit 1385125714abe11dd43e0b2c30ec39d6729b4b9c[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Wed Jun 18 11:36:04 2025 -0700
+
+    debug
+
+[33mcommit 1af3519521cc7d656a0c66c636dee938f87b7274[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Wed Jun 18 11:21:01 2025 -0700
+
+    removing frontend
+
+[33mcommit 863a44d04c9c7df255a92d70d8d466f93f538e1b[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Wed Jun 18 10:13:01 2025 -0700
+
+    postman update
+
+[33mcommit 73ad43138dfaa0f2612c6a24ae666cc03b5a6c9e[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Wed Jun 18 10:11:22 2025 -0700
+
+    postman update
+
+[33mcommit 4954a30eac3a6bdc96b04743cf776ec23eb16f1e[m
+Merge: dc40e6a fb51a6f
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Wed Jun 18 10:07:56 2025 -0700
+
+    Merge branch 'develop' of https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity into 32-browse-available-courses-backend
+
+[33mcommit 2402e1f1673e2741dbc2117eb59dd5133239a1aa[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 18 01:04:32 2025 -0700
+
+    Added basic routing
+
+[33mcommit a8c2ac2d2ba60ff6e40be0da56ecdc332bd487b4[m[33m ([m[1;31morigin/29-student-can-apply-for-a-ta-position[m[33m, [m[1;31morigin/220-view-ta-applications-and-their-status-frontend[m[33m)[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 17 19:29:22 2025 -0700
+
+    Added application page
+
+[33mcommit fb51a6f006ab5478d1cdd7d1ecaeac3c7a6ee507[m
+Merge: 40a6c4e c0b5a5a
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Tue Jun 17 19:24:24 2025 -0700
+
+    Merge pull request #224 from UBCO-COSC499-S2025/223-continuous-integration
+    
+    testing ci file
+
+[33mcommit dc40e6a94196cad688560d306033bc136e1ce778[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Tue Jun 17 12:09:13 2025 -0700
+
+    respond with id insteaad of whole entity when addcourse/section
+
+[33mcommit df0d65623d6361dc5f0b6a5d08efaae2b399530e[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Tue Jun 17 11:54:10 2025 -0700
+
+    restrict duplicate insert
+
+[33mcommit 40a6c4ef7fec21252eb1bf4f518bec5aabbad7df[m
+Merge: 38a005b 72b4c0f
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Tue Jun 17 11:42:03 2025 -0700
+
+    192 create new allocationapplication service
+    
+    192 create new allocationapplication service
+
+[33mcommit 067dbfec893ed5c71caf160fc0f6e03932e2197c[m
+Merge: 9b7d0e5 38a005b
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 17 10:16:29 2025 -0700
+
+    Merge branch 'develop' into 220-view-ta-applications-and-their-status-frontend
+
+[33mcommit e593cb0a3bfe29fc414c913ff65215263d5da7cb[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Tue Jun 17 10:04:33 2025 -0700
+
+    correct postman path
+
+[33mcommit 9b7d0e5177e023e4636f98b2fe24b67ce278bab3[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 17 00:07:12 2025 -0700
+
+    Added Application page with mock data
+
+[33mcommit db460bee9353f569020b454e076164422759a2b0[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 16 22:12:53 2025 -0700
+
+    Added logout functionality
+
+[33mcommit 097ebd65570d733762407ed83c0a0dcb792b3106[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Mon Jun 16 22:02:59 2025 -0700
+
+    postman call
+
+[33mcommit 452f9253c1fe3988ffc2b3dec9c986f44f84e850[m
+Merge: 14c1050 1a614d5
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Mon Jun 16 20:14:15 2025 -0700
+
+    Merge branch '32-browse-available-courses-backend' of https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity into 32-browse-available-courses-backend
+
+[33mcommit 14c1050d810127a6fa1bb10b25b4cbf9747fc4c2[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Mon Jun 16 20:11:07 2025 -0700
+
+    addSection&addSectionSchedule method, updated postman calls
+
+[33mcommit 10c1040ea291f9b1ffd4b4ae1a6245b0f0bc5d3b[m
+Merge: 716c970 38a005b
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Mon Jun 16 19:56:32 2025 -0700
+
+    Merge branch 'develop' of https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity into 32-browse-available-courses-backend
+
+[33mcommit 716c9705218d16d8686bd6e5a0b6513cb7b729c0[m
+Merge: e925fe5 8e15979
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Mon Jun 16 19:54:12 2025 -0700
+
+    addSection&addSectionSchedule method, updated postman calls
+
+[33mcommit 38a005bc4a5c638f71e201e6cafe25d75e894c6f[m
+Merge: 8e15979 e66154c
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Mon Jun 16 18:02:29 2025 -0700
+
+    Merge pull request #218 from UBCO-COSC499-S2025/204-ta-profile-answer-questions--frontend
+    
+    204 ta profile answer questions  frontend
+
+[33mcommit 6c8d1cc6452e5a2f9f28032c11f74710cc5683e1[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 16 17:18:40 2025 -0700
+
+    removed uneeded imports
+
+[33mcommit c0b5a5a3c57c4e4203000bd9b55f4ac400293fab[m[33m ([m[1;31morigin/223-continuous-integration[m[33m)[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 16 16:26:10 2025 -0700
+
+    removed unnecessary comments
+
+[33mcommit 1019a375669e9a91d9691f87db44caab335797cd[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 16 16:20:57 2025 -0700
+
+    fixed minor error in profile test
+
+[33mcommit 061435050f81a1e982f74af9f3ace7e65cc57fa0[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 16 16:06:46 2025 -0700
+
+    added sql to the backend-test
+
+[33mcommit 37e30df1851b223d837295cdb5d5a02402467051[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 16 15:53:25 2025 -0700
+
+    changed to jdk 24 and removed applicationservice
+
+[33mcommit 553e896a94e206b3ca741d2d6d7de4bb0717aa91[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 16 15:49:30 2025 -0700
+
+    fixed typo
+
+[33mcommit ca4e12cf9a9dfe0ba8d8f5ff24434704f4dfa6f6[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 16 15:45:25 2025 -0700
+
+    added vitest/coverage-v8 in attempt to make ci work
+
+[33mcommit d376bc216eb4f783613e7742eed74ad89b16960c[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 16 15:39:50 2025 -0700
+
+    added npm ci to ci test
+
+[33mcommit b4b3dc02ebfb9c89a1fe10b26ca0ac6c72d94c5d[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 16 15:29:26 2025 -0700
+
+    testing ci file
+
+[33mcommit cb4ebbe66cf6c85629a394f8a26ab0c96387e722[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 16 15:11:37 2025 -0700
+
+    small fixes to endpoint:
+
+[33mcommit a5e9c881418b4033ddcd6d1e2bac4121c6d82886[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 16 14:44:38 2025 -0700
+
+    started application adding
+
+[33mcommit 1a614d5f98c310568d3bf43869e58860375af81a[m
+Merge: e925fe5 8e15979
+Author: Beichen Gu <77707282+BeichenGu@users.noreply.github.com>
+Date:   Mon Jun 16 13:23:53 2025 -0700
+
+    Merge branch 'develop' into 32-browse-available-courses-backend
+
+[33mcommit e925fe5e7935c61428bd7deff08156018185f028[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Mon Jun 16 13:18:49 2025 -0700
+
+    postman call
+
+[33mcommit 4c60ffefdc7ddc2fb7e6158e2735a2ae5657fae2[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Sun Jun 15 17:57:46 2025 -0700
+
+    get the logout button to work and token deletion
+
+[33mcommit 72b4c0f1d204ed665d60da54d42dec0a1d236ae8[m[33m ([m[1;31morigin/192-create-new-allocationapplication-service[m[33m)[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sun Jun 15 16:23:22 2025 -0700
+
+    just removed the mongo lines and it worked..
+
+[33mcommit 76c68676101fb308d7cb99d08e2fe3648e1e3cf9[m
+Merge: 9cb21fe 8e15979
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sun Jun 15 15:54:32 2025 -0700
+
+    Merge branch 'develop' into 192-create-new-allocationapplication-service
+
+[33mcommit 8e1597956cec5ff4450d107c16dc00fd21999a50[m[33m ([m[1;31morigin/222-sections-taken/taking-for-the-TA-profile[m[33m)[m
+Merge: b2df21d 224e5fe
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Sun Jun 15 13:25:57 2025 -0700
+
+    Merge pull request #203 from UBCO-COSC499-S2025/191-view-the-ta-profile--enhancing-aesthetics
+    
+    191 view the ta profile  enhancing aesthetics
+
+[33mcommit b2df21dabc97c695355c41247d5be89b7cd7580d[m
+Merge: 35e545f 16838c9
+Author: Dup <42607535+eeasuper@users.noreply.github.com>
+Date:   Fri Jun 13 21:57:31 2025 -0700
+
+    Merge pull request #207 from UBCO-COSC499-S2025/206-ta-profile-backend-getstudent-getcourse
+    
+    206-ta-profile-backend-getstudents
+
+[33mcommit b1f5b6a7b6b9ba43a021fcd4b9f079bce43a336f[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Fri Jun 13 20:54:28 2025 -0700
+
+    search with key words
+
+[33mcommit 35e545ff745d3b570f2e99e3df5b774ac948b3a3[m
+Merge: 68cb91f 633e1f0
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Fri Jun 13 20:18:08 2025 -0700
+
+    Merge pull request #217 from UBCO-COSC499-S2025/feat/profileservice
+    
+    Continues work from #188
+
+[33mcommit e66154c308c64357012b63c8caddf7dc0a4000a5[m[33m ([m[1;31morigin/204-ta-profile-answer-questions--frontend[m[33m)[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri Jun 13 18:42:29 2025 -0700
+
+    added Allocation, changed fields to optional, added questionanswer test
+
+[33mcommit b57659f29f950aef3d592604a6597e5372658375[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Fri Jun 13 14:27:26 2025 -0700
+
+    testing
+
+[33mcommit c28f5c43b401b3416b9381eb48609e2db985459b[m
+Merge: 6aa89fe 68cb91f
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Fri Jun 13 11:47:59 2025 -0700
+
+    Merge branch 'develop' into 32-browse-available-courses
+
+[33mcommit 6aa89fee86c65d1300ab6cb173f20b255684515d[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Fri Jun 13 11:41:18 2025 -0700
+
+    adding time filter
+
+[33mcommit 68cb91f92f5eab39a27668eea702f7a39a910740[m
+Merge: 678b66e ef3dd39
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Fri Jun 13 11:25:51 2025 -0700
+
+    Merge pull request #215 from UBCO-COSC499-S2025/211-implement-jwt-based-authentication-and-authorization
+    
+    211 implement jwt based authentication and authorization
+
+[33mcommit 678b66e2ea0c10c43200c54330e129310a5c9b74[m
+Merge: a12d497 cc72db9
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Fri Jun 13 11:13:34 2025 -0700
+
+    Merge pull request #210 from UBCO-COSC499-S2025/200-integration-of-frontend-and-backend-login
+    
+    200 integration of frontend and backend login/ Signup
+
+[33mcommit 633e1f0ead18eabb75e3c8098ca8167d5d432e87[m[33m ([m[1;31morigin/feat/profileservice[m[33m)[m
+Author: Aakash Singh <aakashds@student.ubc.ca>
+Date:   Fri Jun 13 10:53:45 2025 -0700
+
+    changed studentId type from integer to Long
+
+[33mcommit ef3dd39c87e9bb6dfd08e8d57ffa4a0dcaf31c49[m[33m ([m[1;31morigin/211-implement-jwt-based-authentication-and-authorization[m[33m)[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Fri Jun 13 10:38:10 2025 -0700
+
+    Implemented authentication
+
+[33mcommit 43eca639358b751324131bba19ea0967c0651efc[m
+Merge: a43b7db 3553e2d
+Author: Aakash Singh <aakashds@student.ubc.ca>
+Date:   Fri Jun 13 10:15:52 2025 -0700
+
+    attempt to merge
+
+[33mcommit 17a5ad5dc5e742fc650ab132322a6334ce18f068[m
+Merge: 31a8948 8968cbc
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Thu Jun 12 21:24:16 2025 -0700
+
+    Merge branch '32-browse-available-courses' of https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity into 32-browse-available-courses
+
+[33mcommit 31a8948e12b231c9543443f73f0733de6a489f70[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Thu Jun 12 21:16:24 2025 -0700
+
+    integrate
+
+[33mcommit 8968cbcd433884c83014030f64336ae92fc40ac9[m
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Thu Jun 12 21:14:11 2025 -0700
+
+    feat(api): Align course filter request with backend
+
+[33mcommit 0c047f288f806bb92af64057e59067dd12b64bd4[m
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Thu Jun 12 19:09:52 2025 -0700
+
+    fix(routing): Remove route to unimplemented component
+    
+    Resolves an application crash that caused a blank page on startup. The router was attempting to use the 'TaProfilePageContainer' component, which is not implemented.
+
+[33mcommit a43b7dbc052667129957960e6316ee85da1270ec[m
+Author: Aakash Singh <aakashds@student.ubc.ca>
+Date:   Thu Jun 12 15:55:25 2025 -0700
+
+    Updated postman calls
+
+[33mcommit 3a1537212b7f1abed7aa71a955f142a3710a2199[m
+Author: Aakash Singh <aakashds@student.ubc.ca>
+Date:   Thu Jun 12 15:45:05 2025 -0700
+
+    Modifications complete.
+
+[33mcommit daba1abfffd0bbd7b98569918200067525cf6224[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Thu Jun 12 15:24:52 2025 -0700
+
+    Authentication added
+
+[33mcommit 21848ab704abe40acddcfd7ab17a9eba9cba12ba[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 12 14:46:07 2025 -0700
+
+    made secitioncard include need allocated time included tests
+
+[33mcommit af3007af09bbb133ead2d1ed8ecace3c40c69d13[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 12 14:29:47 2025 -0700
+
+    comparer shows missing course needs
+
+[33mcommit 38b47611d35dbee2aa7374a01bce54207293beb6[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 12 14:08:11 2025 -0700
+
+    added itnegration tests and tests for genericapicontainer
+
+[33mcommit cc72db9ef85b0910dc855dd4392db3c8516d189e[m[33m ([m[1;31morigin/200-integration-of-frontend-and-backend-login[m[33m)[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Thu Jun 12 11:33:05 2025 -0700
+
+    minor changes
+
+[33mcommit b4a6a0348ca0cfb0a3b3bed678c1f87621f90c55[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Thu Jun 12 11:26:21 2025 -0700
+
+    minor changes
+
+[33mcommit 8ed63db53adfd1085a3a895a0b1e1562ed9b600a[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 12 10:12:15 2025 -0700
+
+    added questionanswer
+
+[33mcommit 09c52ce253f18437239f31e15cca1d848f21f9a2[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 12 09:37:19 2025 -0700
+
+    refactored TaProfilePage
+
+[33mcommit 638df3e5ecace5ae07b74efbd50e703efb54508b[m
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Wed Jun 11 21:37:51 2025 -0700
+
+    integrating
+
+[33mcommit 21480269813494562058f707303b3b991f315752[m
+Merge: dc7cc6e d626316 36d3882
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Wed Jun 11 21:30:33 2025 -0700
+
+    Merge branch 'feature/course-management', remote-tracking branch 'origin' into 32-browse-available-courses
+
+[33mcommit dc7cc6e74ad674acc8c2ac064f9119aa40b66902[m
+Merge: 7628a12 a12d497
+Author: BeichenGu <allengu@student.ubc.ca>
+Date:   Wed Jun 11 21:15:13 2025 -0700
+
+    Merge branch 'develop' of https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity into 32-browse-available-courses
+
+[33mcommit 7628a12434b9e815f53715a773b39ae7931ecbe1[m
+Merge: 920bf1f d74b892
+Author: unknown <allengu@student.ubc.ca>
+Date:   Wed Jun 11 20:52:29 2025 -0700
+
+    testing course service
+
+[33mcommit 36d38825d870aa69340f5b35b9b988f500da2be8[m
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Wed Jun 11 20:47:23 2025 -0700
+
+    feat(courses): Connect course filter to backend API
+
+[33mcommit f61d54b9f8350fa5e92f724c3c3eae676118a4c2[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Wed Jun 11 20:32:06 2025 -0700
+
+    minor changes
+
+[33mcommit 077748c39a79ab31bec4d37f525bf2eece3acd4a[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Wed Jun 11 18:39:48 2025 -0700
+
+    comparer works with exact Need
+
+[33mcommit eca869fc4aca9d70b77154f7752efde164aa7629[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Wed Jun 11 17:58:47 2025 -0700
+
+    comparer succesfully works with courseNeed
+
+[33mcommit ebba9835a1a55f1f0e054ad25fd903b754611eba[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Wed Jun 11 17:17:38 2025 -0700
+
+    comparer container created and half done
+
+[33mcommit fdececd657828e6d45256e7e787f333ab947927c[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 11 15:29:05 2025 -0700
+
+    minor changes
+
+[33mcommit 9afb1c061cfd6bfd6d67026de968e93c24c76e19[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 11 15:10:47 2025 -0700
+
+    added login logic based on the credentials and redirection
+
+[33mcommit 85f9a265146d5c8824e1a23fe9a48bb690cad7d5[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Wed Jun 11 14:50:37 2025 -0700
+
+    decoupled SectionsColumn and added tests
+
+[33mcommit 9cb21fef369e71e49645e337681d8aee04c38d68[m
+Author: xelArga <alexargatoff@gmail.com>
+Date:   Wed Jun 11 14:48:32 2025 -0700
+
+    changed gateway properites to allow these routes
+
+[33mcommit e2873035fe2463f3d5cd4a08937a8c256899ae22[m
+Author: xelArga <alexargatoff@gmail.com>
+Date:   Wed Jun 11 14:41:55 2025 -0700
+
+    added the rest of the services and controllers
+
+[33mcommit 946999ef3203db0e5b88752cd7aa35d63843c5e7[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Wed Jun 11 14:36:15 2025 -0700
+
+    Validation added for signup itself and other possibilities (eg., email duplication)
+
+[33mcommit a9291bff43e61c1513b6d633092df6756238fdd4[m
+Author: xelArga <alexargatoff@gmail.com>
+Date:   Wed Jun 11 14:28:49 2025 -0700
+
+    got models working
+
+[33mcommit 16838c9603a59fb2db776f857ecb5044ec6808dc[m[33m ([m[1;31morigin/206-ta-profile-backend-getstudent-getcourse[m[33m)[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Wed Jun 11 11:59:22 2025 -0700
+
+    can now fetch student details
+
+[33mcommit 00e84300f6ba82d13f875bd1c3f3b3d075b70ff4[m
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Wed Jun 11 10:53:53 2025 -0700
+
+    feat(courses): Split "Course Management" page into separate "Course list/filter" page and "Add Courses" pages
+    
+    Refactors the Course Management page into two separate, more focused pages:
+    - `CourseListPage` (`/courses`): Displays the list of courses with filtering capabilities.
+    - `AddCoursePage` (`/courses/add`): Provides forms for manually adding a course or uploading via CSV.
+    
+    This improves separation of concerns and clarifies the UI flow.
+    The router and sidebar navigation have been updated to reflect these changes.
+
+[33mcommit fdd39565099d3bccf801f094d56e7d067d0c3b1f[m
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Wed Jun 11 10:38:11 2025 -0700
+
+    feat(courses): Add Back to Home Button
+
+[33mcommit 09345350e88953356f499860169bcb579341c9a1[m
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Wed Jun 11 10:22:52 2025 -0700
+
+    refactor(course-filter): Adjust layout of filter controls
+
+[33mcommit a804d7f8ad303146802ff46c7f13f0f7c6cbabc2[m
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Wed Jun 11 10:18:07 2025 -0700
+
+    feat(courses): Replace course number filter with type filter
+
+[33mcommit 224e5fed1f1837409839f9358442f47643c4b9c5[m[33m ([m[1;31morigin/191-view-the-ta-profile--enhancing-aesthetics[m[33m)[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Wed Jun 11 10:16:13 2025 -0700
+
+    removed expanding
+
+[33mcommit d4aa7bfe9a873034475e658503093a9918d27148[m
+Author: xelArga <alexargatoff@gmail.com>
+Date:   Tue Jun 10 22:54:47 2025 -0700
+
+    removed help file that got added by spring initializr
+
+[33mcommit 887c0680dd61e2a242309f1f66c5dbc494337c61[m
+Author: xelArga <alexargatoff@gmail.com>
+Date:   Tue Jun 10 22:54:12 2025 -0700
+
+    removed vscode folder that got added
+
+[33mcommit 088f1a063d5f638ad63724295ebee6e9364cc90d[m
+Merge: ea8661f 39fa982
+Author: xelArga <alexargatoff@gmail.com>
+Date:   Tue Jun 10 22:52:30 2025 -0700
+
+    Merge branch '200-integration-of-frontend-and-backend-login' into 192-create-new-allocationapplication-service
+
+[33mcommit 39fa9828650bf08861fa4c4349fae14e3558f857[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Tue Jun 10 22:47:17 2025 -0700
+
+    updated get user test for easier auth checking and updated tests
+
+[33mcommit c29f6135c433f110f120f446f0ee03293c8ef219[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Tue Jun 10 22:08:29 2025 -0700
+
+    added cors allowances in gateway
+
+[33mcommit b6ce214d0ed55ed9b5087197e2a2fd53e7f30774[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 10 21:59:30 2025 -0700
+
+    Added basic
+
+[33mcommit ea8661f4d6883f1a5593779e6f0e3975b0ec974a[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Tue Jun 10 21:45:43 2025 -0700
+
+    some added models:
+
+[33mcommit 14fbd6090ee8c7b7f5420a24ba78160912242128[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Tue Jun 10 21:10:30 2025 -0700
+
+    added not null annotation for security
+
+[33mcommit 59ba400acc822425391d3fb3f3a9e497f3dcbdb7[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Tue Jun 10 21:06:00 2025 -0700
+
+    added folders with some shared files
+
+[33mcommit 46feddd53219ae37fd253fc665b6cba7390995ef[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Tue Jun 10 20:57:26 2025 -0700
+
+    got the spring initializr and docker files and properties set up
+
+[33mcommit c2d0dd00d91b86661f50eb2f511d5e9ac9d13c1d[m
+Merge: 3fce761 a12d497
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Tue Jun 10 18:05:03 2025 -0700
+
+    Merge branch 'develop' into 191-view-the-ta-profile--enhancing-aesthetics
+
+[33mcommit 3fce7612162c36e54be04bf6916f70ad228b23ac[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Tue Jun 10 18:04:09 2025 -0700
+
+    added taprofilequestion section
+
+[33mcommit a12d4978d3ff4d1d72969c557bb3bd760d4d28cf[m
+Merge: d74b892 77bb3e7
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Tue Jun 10 17:39:42 2025 -0700
+
+    80 registering frontend
+    
+    80 registering   frontend
+
+[33mcommit 40c8abb58848df298198395472d8c27101684e86[m
+Author: Aakash Singh <aakashds@student.ubc.ca>
+Date:   Tue Jun 10 17:34:19 2025 -0700
+
+    Bug Fix & Slight Modifications
+
+[33mcommit 9b2c14aad809c6a1183ecf2d3ffa583c161b3b49[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Tue Jun 10 17:26:54 2025 -0700
+
+    new question interfaces
+
+[33mcommit 77bb3e788373d6903bd3587a8295b4a63b710254[m[33m ([m[1;31morigin/80-registering---frontend[m[33m)[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 10 16:52:35 2025 -0700
+
+    Simplified the routing of public layout
+
+[33mcommit 597d7089b282f1f286addb6cb2319b2390426964[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 10 16:45:32 2025 -0700
+
+    Modified some of text fields
+
+[33mcommit 920bf1f0401d2765c30d225fd1ba360c3f46faa2[m
+Author: unknown <allengu@student.ubc.ca>
+Date:   Tue Jun 10 16:25:29 2025 -0700
+
+    filter courses
+
+[33mcommit c5ba57654a664f27a2b2660b6c912516a32d4450[m
+Merge: e226fe7 55529fa
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 10 16:05:52 2025 -0700
+
+    Merge branch '80-registering---frontend' of https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity into 80-registering---frontend
+
+[33mcommit e226fe77d686932a4d06d11edd87a4338a61066a[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 10 16:04:35 2025 -0700
+
+    minnor change
+
+[33mcommit 55529fa65ef629ad6cdd62e721f1b953b23fa540[m
+Merge: 3624a8a d74b892
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Tue Jun 10 15:52:01 2025 -0700
+
+    Merge branch 'develop' into 80-registering---frontend
+
+[33mcommit 3624a8a5028a58c6164daccdb45cc04a86761886[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 10 15:46:55 2025 -0700
+
+    Added testing and some changes to login in terms of validation
+
+[33mcommit d74b8927a080bfb92f70ac5529bedd3dfd69670b[m[33m ([m[1;31morigin/docs[m[33m)[m
+Merge: e593fb6 3da12a2
+Author: Dup <42607535+eeasuper@users.noreply.github.com>
+Date:   Tue Jun 10 12:03:00 2025 -0700
+
+    Merge pull request #187 from UBCO-COSC499-S2025/146-user-profile-update-in-database
+    
+    Update and Delete Users
+
+[33mcommit e593fb6432e7c92bfc115f03b87833afdb6ab98b[m
+Merge: e2c5328 8be6956
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Tue Jun 10 11:29:09 2025 -0700
+
+    Merge pull request #196 from UBCO-COSC499-S2025/mandeep_log
+    
+    Added weekly logs
+
+[33mcommit e2c5328cd2234a361e11f6ef181eea387344233a[m
+Merge: 3fecba9 880647c
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Tue Jun 10 11:27:09 2025 -0700
+
+    Merge pull request #190 from UBCO-COSC499-S2025/189-create-nav-bar-as-reusable-feature
+    
+    189 create nav bar as reusable feature
+
+[33mcommit 53d28138cf442a2fd354057384f3aa60db0619e9[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Tue Jun 10 11:23:38 2025 -0700
+
+    minor changes
+
+[33mcommit 3fecba947f63f44e5396d1564ef741b534d3252e[m
+Merge: 830a14e dcda4d3
+Author: Dup <42607535+eeasuper@users.noreply.github.com>
+Date:   Tue Jun 10 11:22:12 2025 -0700
+
+    Merge pull request #182 from UBCO-COSC499-S2025/175-view-the-ta-profile-frontend-enhancing-1
+    
+    175 view the ta profile frontend enhancing structure
+
+[33mcommit 830a14e6261ef55fac7f1a74e8213ce91f8c81d2[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Tue Jun 10 09:20:49 2025 -0700
+
+    Team log - June 6 - June 9 (#195)
+    
+    * team log June 6- June 9
+    
+    * uploaded image.png
+    
+    * Delete docs/weekly_logs/team/week4_images/image.png
+    
+    * updated team log June 6: June 9
+    
+    * updated team log June 6 - June 9
+
+[33mcommit 8be695618367ffe15f0228a63709746ea1927320[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 10 00:27:22 2025 -0700
+
+    Added weekly logs
+
+[33mcommit f0d67ed1af81c4c04d0cb1fd9dced64c221b89ae[m
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Mon Jun 9 23:39:26 2025 -0700
+
+    feat(navigation): add link to courses page in sidebar
+
+[33mcommit 1ef422bded218d5ff789a55846fbbf1c5d847ea9[m
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Mon Jun 9 22:47:04 2025 -0700
+
+    feat: Change DeptCode filter to dropdown
+
+[33mcommit 4ae3b526fe1ef9ff976f74cda27d6aebc5be62d8[m
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Mon Jun 9 21:51:21 2025 -0700
+
+    feat: Add DeptCode and courseNum filters to course management
+
+[33mcommit 356586212b3a5d53276671001cab2d0fdbe6bc80[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 9 21:40:07 2025 -0700
+
+    improved sectioncard UI and fixed tests
+
+[33mcommit 483c5538db9c07bdd3d85a5fb9abcb4283116b5d[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 9 19:00:58 2025 -0700
+
+    added courses taking and allocation history column
+
+[33mcommit 2b55afb76a44553dc7c9857e8b2e3b4885271b3e[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 9 18:42:53 2025 -0700
+
+    made adjustments to sectionCard
+
+[33mcommit e13cceb19460d54852d9a16fc4af68abeb3c7332[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 9 17:58:50 2025 -0700
+
+    fixed profile details aesthetics
+
+[33mcommit dcda4d34419ede49d8067b4d736187f83f21a343[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 9 16:37:57 2025 -0700
+
+    fixed tests
+
+[33mcommit 0c25455ca9f61582d7137d73e58782a4e339d832[m
+Merge: cefcc42 7d07071
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 9 16:27:45 2025 -0700
+
+    Merge branch 'develop' into 175-view-the-ta-profile-frontend-enhancing-1
+
+[33mcommit cefcc4285a7d9d223c56b2fc3650e424f7a78960[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 9 16:25:16 2025 -0700
+
+    made Profile Section very generic
+
+[33mcommit fa8b522623c8782b41b6f3278210aa40b3f6276e[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 9 15:16:34 2025 -0700
+
+    added basic structure
+
+[33mcommit acfc1876c1c40a3d5e3d8bfbb1da1c4b0954831a[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 9 15:14:28 2025 -0700
+
+    updated profile security
+
+[33mcommit 74196b0b40bd74edbc1a51d160eefa8277a7d542[m
+Merge: f9bb71e 3da12a2
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 9 15:11:19 2025 -0700
+
+    Merge branch '146-user-profile-update-in-database' into feat/profileservice
+
+[33mcommit f9bb71ea169e2d1ccad2cd4bc1921d612914f7b7[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 9 15:08:53 2025 -0700
+
+    removed uneeded bin
+
+[33mcommit 3553e2d871f14bd8e4b4d4bfb563c421b12e5d17[m
+Author: Aakash Singh <aakashds@student.ubc.ca>
+Date:   Sun Jun 8 19:45:14 2025 -0700
+
+    add fully-functional profileservice micro-service
+    
+    * Core domain
+      ▸ models: ProfileQuestion, ProfileAnswer, StudentHasProfileAnswer (+ enum QuestionType)
+      ▸ repositories: QuestionRepo, AnswerRepo, StudentAnswerRepo
+      ▸ services:
+          – ProfileService  - builds student profile & saves answers
+          – QuestionService – admin CRUD for questions / answers
+      ▸ controllers:
+          – ProfileController         (/profiles/**, student endpoints)
+          – QuestionAdminController   (/admin/questions/**, coordinator endpoints)
+    
+    * Integration
+      ▸ Feign clients to USER-SERVICE and COURSE-SERVICE
+    
+    * Infrastructure
+      ▸ Dockerfile (port 8083, two-stage build, Spring profile=docker)
+      ▸ docker-compose.yml updated with profile-service block
+      ▸ db/init/init.sql creates profiles_db and grants dev_user
+      ▸ application-*.properties for dev & docker profiles
+    
+    * Tests & coverage
+      ▸ 22 JUnit 5 / Mockito / MockMvc tests covering services & controllers
+      ▸ Jacoco configured (mvn test jacoco:report) – 100 % coverage on core logic
+    
+    * Misc
+      ▸ DTOs duplicated locally for isolation (CourseDto, UserDto, etc.)
+      ▸ GlobalExceptionHandler returns clean JSON for 400 / 404 errors
+
+[33mcommit 880647c94634d50d2a94f3731a2346a026a787dd[m[33m ([m[1;31morigin/189-create-nav-bar-as-reusable-feature[m[33m)[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 9 14:43:39 2025 -0700
+
+    moved tests from login page to nav bar
+
+[33mcommit d0f0ba0fb12a063db690d290c487f9b8136df3a4[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon Jun 9 14:32:23 2025 -0700
+
+    Added nav bar as a separate feature, did some of reformating and also added HTML 5 frontend validation for fields
+
+[33mcommit bf32166e871da528cc481c8ded70f80e26140285[m
+Author: Aakash Singh <aakashds@student.ubc.ca>
+Date:   Mon Jun 9 13:22:50 2025 -0700
+
+    fixed bug:
+    Some dependency (transitive) brought in mongodb-driver-sync.
+    Boot saw the driver and ran MongoAutoConfiguration.
+    That, in turn, registered a MongoHealthIndicator.
+    At runtime the health probe tried to connect to localhost:27017 → connection refused → probe DOWN → overall health DOWN, log full of warnings.
+
+[33mcommit 3da12a27f1bdc87b73245e4bbd5cb5ef83b0bec8[m[33m ([m[1;31morigin/146-user-profile-update-in-database[m[33m)[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 9 13:01:05 2025 -0700
+
+    updated postman calls
+
+[33mcommit 59fd53edbeaf7571508e795c0cf9d1b6e75cdb58[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 9 12:59:21 2025 -0700
+
+    added student controller tests
+
+[33mcommit ff334c11de9a6f4fcac3774507a4b365e2317dcf[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 9 12:54:24 2025 -0700
+
+    fixed weird merge errors
+
+[33mcommit 05244b2c076e213fff17731b5381502606380075[m
+Merge: 25e889b 7d07071
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 9 12:54:16 2025 -0700
+
+    Merge branch 'develop' into 146-user-profile-update-in-database
+
+[33mcommit 7d07071a491f053c2db290bced378f631b51dbdd[m
+Author: Alex Argatoff <129143300+xelArga@users.noreply.github.com>
+Date:   Mon Jun 9 12:33:36 2025 -0700
+
+    Auth login and registration (#183)
+    
+    * start of jwt
+    
+    * added auth manager and fixed deprecated jwt library
+    
+    * passwords are encrypted and jwt is created
+    
+    * updated predicates for gateway to include auth
+    
+    * jwt verification works with gateway and user services
+    
+    * jwt auth and configs
+    
+    * add headers in gateway for checking in service level filters and registration validation
+    
+    * updated postman calls
+    
+    * added a bunch of tests
+    
+    * removed comment
+    
+    * updated readme
+    
+    * updated postman calls
+    
+    * made long be with L instead of longer method
+
+[33mcommit b6187f0d81daeff59026af5960555734d1466206[m
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Mon Jun 9 11:32:21 2025 -0700
+
+    Added login page, header, footer page with testing (#186)
+
+[33mcommit 25e889bbdaba6809e425b93b7245513a513e724f[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 9 11:12:35 2025 -0700
+
+    removed uneeded imports
+
+[33mcommit 4434bfe42057882a3542f2272ef446863e0926f1[m
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Mon Jun 9 11:11:37 2025 -0700
+
+    feat: Implement and verify course management UI with mock data
+
+[33mcommit 01bddbc095b5c414924eac80356cc229802c3878[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 9 10:59:16 2025 -0700
+
+    removed comment
+
+[33mcommit 726def24065766e414177deb51384e8578e44a6d[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 9 10:57:49 2025 -0700
+
+    added last tests for delete
+
+[33mcommit 91fad7119f9634d87c59bd563239a753eddc4896[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sun Jun 8 22:02:23 2025 -0700
+
+    more tests
+
+[33mcommit 6d3f6bfae9bab2cb2c5082b09d9d041b92d5ce19[m
+Author: Aakash Singh <aakashds@student.ubc.ca>
+Date:   Sun Jun 8 19:45:14 2025 -0700
+
+    add fully-functional profileservice micro-service
+    
+    * Core domain
+      ▸ models: ProfileQuestion, ProfileAnswer, StudentHasProfileAnswer (+ enum QuestionType)
+      ▸ repositories: QuestionRepo, AnswerRepo, StudentAnswerRepo
+      ▸ services:
+          – ProfileService  - builds student profile & saves answers
+          – QuestionService – admin CRUD for questions / answers
+      ▸ controllers:
+          – ProfileController         (/profiles/**, student endpoints)
+          – QuestionAdminController   (/admin/questions/**, coordinator endpoints)
+    
+    * Integration
+      ▸ Feign clients to USER-SERVICE and COURSE-SERVICE
+    
+    * Infrastructure
+      ▸ Dockerfile (port 8083, two-stage build, Spring profile=docker)
+      ▸ docker-compose.yml updated with profile-service block
+      ▸ db/init/init.sql creates profiles_db and grants dev_user
+      ▸ application-*.properties for dev & docker profiles
+    
+    * Tests & coverage
+      ▸ 22 JUnit 5 / Mockito / MockMvc tests covering services & controllers
+      ▸ Jacoco configured (mvn test jacoco:report) – 100 % coverage on core logic
+    
+    * Misc
+      ▸ DTOs duplicated locally for isolation (CourseDto, UserDto, etc.)
+      ▸ GlobalExceptionHandler returns clean JSON for 400 / 404 errors
+
+[33mcommit 241ca5b1a9da2c9496fb89548c7ed0fa94c93908[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sun Jun 8 17:17:30 2025 -0700
+
+    deletion and tests done, update working
+
+[33mcommit c9fd70ac34c7dc1f26b178139d71e76d72b4eae4[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sun Jun 8 11:54:35 2025 -0700
+
+    added update requests and modified register requests to exclude student num to make more basic
+
+[33mcommit 5df521358bb452dff1ee6e121332fa5e58b67d05[m[33m ([m[1;31morigin/175-view-the-ta-profile-frontend-enhancing-1[m[33m)[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Sat Jun 7 22:35:18 2025 -0700
+
+    made changes as Alex requested
+
+[33mcommit 970b358319a57229498bd7120a23d3d6fb7f77a3[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Sat Jun 7 21:12:19 2025 -0700
+
+    changed Navigate to useNavigate
+
+[33mcommit 384bbb51a06dab9bf5791ce68cd296434782b7bf[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 7 21:03:33 2025 -0700
+
+    made long be with L instead of longer method
+
+[33mcommit 86a22eaee65f3c95bb4d7d5b02cf200032e47526[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 7 20:55:29 2025 -0700
+
+    updated postman calls
+
+[33mcommit 035bd4fe0fbc58cf8d44975be84d08fb133b47a6[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 7 20:54:06 2025 -0700
+
+    updated readme
+
+[33mcommit ecd17d3b435e63b0dcad5955fe2e0ff275a563af[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 7 20:46:50 2025 -0700
+
+    removed comment
+
+[33mcommit b5bcaa008acf4a4494eba8fc04dee6e8b63e74a7[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 7 18:27:12 2025 -0700
+
+    added a bunch of tests
+
+[33mcommit fe157918dfffd7de73ccb2178f5753478d15b820[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Sat Jun 7 15:12:06 2025 -0700
+
+    removed a log
+
+[33mcommit 89c0fb6356ae90cb96cd15f3ea23a37c03c1db67[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Sat Jun 7 15:07:06 2025 -0700
+
+    slightly modified sectiondetails interface
+
+[33mcommit 13fc6ae5456802be1d03775fbb07872d95329e2d[m
+Merge: 10f6814 07be3cf
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Sat Jun 7 15:02:16 2025 -0700
+
+    Merge branch 'develop' into 175-view-the-ta-profile-frontend-enhancing-1
+
+[33mcommit 07be3cfce6e2f0f90f777a11f44261685b788013[m
+Merge: f64a5ba 6c830a1
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Sat Jun 7 14:53:03 2025 -0700
+
+    168 view the ta profile frontend
+    
+    168 view the ta profile frontend
+
+[33mcommit 10f6814b954bd78c6678fd5a19483cc4c6f07be1[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Sat Jun 7 12:59:05 2025 -0700
+
+    fixed errors
+
+[33mcommit 5a4a29cb388b4ad4367430bee41e8770bd8519db[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Sat Jun 7 12:23:00 2025 -0700
+
+    made further interfaces and api changes
+
+[33mcommit e1b8a6a7db854e197e33835f777588760bbc1cfb[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 7 12:19:37 2025 -0700
+
+    updated postman calls
+
+[33mcommit e23aeb43be3b20dcdc96939b9d1e22fdb73ffd23[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 7 12:18:54 2025 -0700
+
+    add headers in gateway for checking in service level filters and registration validation
+
+[33mcommit 140f478934d4aa03b27d9a1ebc6140fe839712a0[m
+Merge: 1b3f7cb 6c830a1
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Sat Jun 7 10:30:22 2025 -0700
+
+    Merge branch '168-view-the-ta-profile---frontend' into 175-view-the-ta-profile-frontend-enhancing-1
+
+[33mcommit 82924acee2ca6b7b6e9c3f86189d8f6d2cfb33c0[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 7 08:43:43 2025 -0700
+
+    jwt auth and configs
+
+[33mcommit 9592295bd4f51469ab2ede5db54c890d3d1fdddb[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat Jun 7 08:43:23 2025 -0700
+
+    jwt verification works with gateway and user services
+
+[33mcommit 6c830a1d7c8a30a68117059e00f761c2b6dbd14e[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri Jun 6 22:53:17 2025 -0700
+
+    fixed section refactoring
+
+[33mcommit c5db07792034b2207f8b4d5e15992dd2ac753a35[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri Jun 6 22:23:28 2025 -0700
+
+    fixed some comments
+
+[33mcommit bb6c3cd55d09a573eb28ff2b90071edf9845871a[m
+Merge: b905dbd f64a5ba
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri Jun 6 22:20:55 2025 -0700
+
+    Merge branch 'develop' into 168-view-the-ta-profile---frontend
+
+[33mcommit b905dbd3e0db62cb2201629bc41c9225445a3ed3[m
+Merge: 7e25854 c48af39
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri Jun 6 22:20:13 2025 -0700
+
+    Merge branch 'develop' into 168-view-the-ta-profile---frontend
+
+[33mcommit 7e2585479a16b95ab38792769bbcb286d02a2c2b[m
+Merge: 1a33aff 9d89441
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri Jun 6 22:19:33 2025 -0700
+
+    Merge branch '168-view-the-ta-profile---frontend' of https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity into 168-view-the-ta-profile---frontend
+
+[33mcommit 1a33aff4372f5bd79123ef3bbed3346290a8d7a8[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri Jun 6 22:19:29 2025 -0700
+
+    refactored to make components reusable
+
+[33mcommit 1b3f7cb0d43cf1466d7a93347c460e38efdfdc1e[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri Jun 6 21:42:13 2025 -0700
+
+    integration api test
+
+[33mcommit 63d2724a1fb7179cfec66bee28fad4dfa5d86ec5[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri Jun 6 21:06:45 2025 -0700
+
+    added api to TaprofilePage fixed some things
+
+[33mcommit 5422a9e6396bba2b5d330930afdacc44e75a552b[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri Jun 6 20:49:28 2025 -0700
+
+    added api to TaProfilePage
+
+[33mcommit 9d894411b33432ab8ef202f7b972c446097a6986[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Fri Jun 6 17:22:40 2025 -0700
+
+    added dockerignore to frontend
+
+[33mcommit f64a5baf0d26620508d3df66661b2def70eeb04e[m
+Author: Dup <42607535+eeasuper@users.noreply.github.com>
+Date:   Fri Jun 6 15:52:54 2025 -0700
+
+    fixing changed filese (#181)
+
+[33mcommit 3218bed3cf6439062a7b397478858d3e4f9c19a3[m
+Author: unknown <allengu@student.ubc.ca>
+Date:   Fri Jun 6 12:39:04 2025 -0700
+
+    new branch
+
+[33mcommit 584d2a214618f180507e1b9e70b389368ae763ce[m
+Merge: c48af39 c7acef5
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri Jun 6 11:23:39 2025 -0700
+
+    Merge branch '168-view-the-ta-profile---frontend' into 175-view-the-ta-profile-frontend-enhancing-1
+
+[33mcommit cf12b37fbc6c254ed38a357228ef49fd0cf2f935[m
+Merge: c48af39 2c2826e
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Fri Jun 6 11:04:26 2025 -0700
+
+    Merge pull request #174 from UBCO-COSC499-S2025/alex_logs
+    
+    Alex logs
+
+[33mcommit c7acef50880ea63aa1d759abfc34936419ebde58[m[33m ([m[1;31morigin/168-view-the-ta-profile---frontend[m[33m)[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri Jun 6 10:40:40 2025 -0700
+
+    fixed index css
+
+[33mcommit c48af39b80a283a16dd50eb776e40e7d407198c7[m
+Merge: 398de87 7bf0c11
+Author: Dup <42607535+eeasuper@users.noreply.github.com>
+Date:   Fri Jun 6 10:10:19 2025 -0700
+
+    Merge pull request #178 from UBCO-COSC499-S2025/mandeep_log
+    
+    Mandeep and team logs from mandeep_logs
+
+[33mcommit 7bf0c11e4cb7e77e5109e76ab77b85610cac17cd[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Thu Jun 5 23:29:50 2025 -0700
+
+    Merge Mandeep and team logs from mandeep_logs
+
+[33mcommit 0b3b9848e1ba0e35ef42171da2d1f4cbfad4e1f4[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 5 18:08:34 2025 -0700
+
+    deleted personal local files
+
+[33mcommit 270b15daed3883292983f5400536b5300bd51048[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 5 18:06:01 2025 -0700
+
+    updated gitignore
+
+[33mcommit 478509c01a01e1473e845e3f8967be9e8aed9db1[m
+Merge: 9e27463 398de87
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 5 17:59:16 2025 -0700
+
+    Merge branch 'develop' into 168-view-the-ta-profile---frontend
+
+[33mcommit 9e274639fce2f195e62a6320df39e0b0b48db244[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 5 17:51:39 2025 -0700
+
+    fixed some styling, refactored code in TaProfilePage
+
+[33mcommit f456cf9a22e6269b03ff7f6667580d8f21d896c2[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 5 16:37:17 2025 -0700
+
+    changed layout of the taprofile page
+
+[33mcommit b25d2f8c7d2f52b95b8bb1b3081586d23191f591[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 5 16:22:14 2025 -0700
+
+    TA profile course listing testing and working very basic
+
+[33mcommit d08e627d56fdb7d60ef41145a74754210b09968e[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 5 15:51:09 2025 -0700
+
+    taprofilepage ta details testing and interface
+
+[33mcommit 2c2826e5dbde9494368b1b53da6592e6df38133d[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Thu Jun 5 15:16:08 2025 -0700
+
+    logs for june 2 to 5
+
+[33mcommit f8314a66984d7e4a441ce3bdae027da95b2c6b3a[m
+Merge: b5c4c22 984fd89
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Thu Jun 5 15:02:17 2025 -0700
+
+    Merge branch 'develop' into alex_logs
+
+[33mcommit 398de870e0467be117da6402ee01d87bbbb5a894[m
+Author: Dup <42607535+eeasuper@users.noreply.github.com>
+Date:   Thu Jun 5 14:31:23 2025 -0700
+
+    171 basic frontend setup (#172)
+    
+    * installed tailwindcss
+    
+    * added router
+    
+    * added header footer sidenav and tests
+
+[33mcommit f65a05030bf0cef512dfc2d17efdd73f04dde503[m
+Merge: afa6e76 49fd302
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 5 13:28:48 2025 -0700
+
+    Merge branch '171-basic-frontend-setup' into 168-view-the-ta-profile---frontend
+
+[33mcommit afa6e7659ae8eb7489ad2232ebf3d74c60704358[m
+Merge: 892c6a9 0b3531c
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Thu Jun 5 12:39:59 2025 -0700
+
+    Merge pull request #160 from UBCO-COSC499-S2025/57-add-microservices-with-basic-configurations
+    
+    57 add microservices with basic configurations
+
+[33mcommit 49fd30257f8b9c59ce3fa61fa57e2112c271c18d[m[33m ([m[1;31morigin/171-basic-frontend-setup[m[33m)[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 5 12:00:47 2025 -0700
+
+    added header footer sidenav and tests
+
+[33mcommit cac7a1301665073603ef536b6679dd5b809dc4d3[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 5 11:31:28 2025 -0700
+
+    added router
+
+[33mcommit 60e8fdd094ad6e1d729b991d563f9af063853484[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Thu Jun 5 11:00:51 2025 -0700
+
+    installed tailwindcss
+
+[33mcommit 1a95dc0e2d027db80b10b9864389f84d5b4f1e90[m[33m ([m[1;31morigin/161-implement-auth-with-registrationloginlogout[m[33m)[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 4 21:51:31 2025 -0700
+
+    updated predicates for gateway to include auth
+
+[33mcommit 5fcc2740707f7d50f1986266c53869ac707ad989[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 4 21:51:09 2025 -0700
+
+    passwords are encrypted and jwt is created
+
+[33mcommit 99712f95bc652aa42b36d5a0e9ff5a05ae4d4ae3[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 4 17:27:35 2025 -0700
+
+    added auth manager and fixed deprecated jwt library
+
+[33mcommit 0b3531c2416ccc59f1bd6d26c34a7ea50c010c4f[m[33m ([m[1;31morigin/57-add-microservices-with-basic-configurations[m[33m)[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 4 16:45:54 2025 -0700
+
+    fixed suggested changes
+
+[33mcommit 44bd156dfac4e7b17f98ff4b992f897bee786446[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 4 16:43:08 2025 -0700
+
+    start of jwt
+
+[33mcommit 892c6a9932f7675b800b6c08be8ea24d112bb344[m
+Merge: bd1fb94 821f2eb
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed Jun 4 15:29:38 2025 -0700
+
+    Uploaded design presentation slide deck
+    
+    Uploaded design presentation slide deck
+
+[33mcommit 821f2ebc5aa8a489f4c06b4fc3301eae70f26bab[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed Jun 4 15:21:20 2025 -0700
+
+    Uploaded design presentation slide deck
+
+[33mcommit 3f9ad6fc3dc9ceb38abc2238b765db5ebba5ff98[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 4 14:28:01 2025 -0700
+
+    added postman calls
+
+[33mcommit 20c8fbeb93d85e993375008c1be42a690599e731[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 4 12:22:21 2025 -0700
+
+    added jacoco plugin, updated readme, and added basic unit tests
+
+[33mcommit c4f5a99924cc6cd151165d7077e6a1b9c89552e9[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Wed Jun 4 09:44:21 2025 -0700
+
+    got interservice communication working with enrollments
+
+[33mcommit 89febe3e40938c6dc000b258c1065995fc8f5466[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Tue Jun 3 21:46:30 2025 -0700
+
+    new container changes
+
+[33mcommit f67f00ab039c968ca9ad1531b0b850aa70a5e973[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Tue Jun 3 21:45:43 2025 -0700
+
+    added endpoints for registering different users
+
+[33mcommit bd1fb9433f69e4c530fb56303d150b7f751203c5[m
+Merge: 642e3a6 f348c59
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Tue Jun 3 16:35:25 2025 -0700
+
+    design document completed.
+
+[33mcommit f348c59bbf6352c08b23b9f0cb7365c241451390[m[33m ([m[1;31morigin/design_document[m[33m)[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 3 16:28:48 2025 -0700
+
+    Added design document
+
+[33mcommit 642e3a6a0cb1320c6c56c8f996396370a05b3eb5[m
+Merge: fb56911 d61d7e4
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Tue Jun 3 16:27:20 2025 -0700
+
+    fixing last weeks team log
+
+[33mcommit dbfcf62f5963a0abd5a45c1896968c60f7b6cf2a[m
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 3 16:25:14 2025 -0700
+
+    Added Design document
+
+[33mcommit 35425b0b22ca4fe2b44ff466ece16f1940faada1[m
+Merge: a81c022 fb56911
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Tue Jun 3 16:23:24 2025 -0700
+
+    Merge branch 'develop' of https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity
+
+[33mcommit d61d7e446d71e44dbaca406742033a5208442088[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Tue Jun 3 13:53:10 2025 -0700
+
+    updated propject plan
+
+[33mcommit fb569115438261bb4751f260e838e96a1f0049de[m
+Merge: 984fd89 81d3a53
+Author: Seiya Iwama <90356388+sei-wiese@users.noreply.github.com>
+Date:   Tue Jun 3 08:22:26 2025 -0700
+
+    Merge pull request #63 from UBCO-COSC499-S2025/62-create-team-logs-for-may-30-to-june-2
+    
+    Added team logs
+
+[33mcommit 5b4c77a7f7510b927f1f0a717b83b37255299c13[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 2 21:56:24 2025 -0700
+
+    updated project plan
+
+[33mcommit d402049cc3898e6067aa726462fa441a24cde747[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Mon Jun 2 21:48:44 2025 -0700
+
+    fixed last weeks hours
+
+[33mcommit 81d3a534a0bd5ae3fbd24964b51153773ee1b7a0[m[33m ([m[1;31morigin/62-create-team-logs-for-may-30-to-june-2[m[33m)[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 2 21:37:01 2025 -0700
+
+    fixed changed
+
+[33mcommit 6141ffde5ea3e06d0a32467f764f2eb2e4056165[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 2 21:15:26 2025 -0700
+
+    added logs
+
+[33mcommit adaf5376e98d14d9f5add8f596bd4432b99ac363[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 2 16:36:06 2025 -0700
+
+    started adding feign calls
+
+[33mcommit b5c4c22d296c8ecd2c540001fe52d636bea60428[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 2 14:41:12 2025 -0700
+
+    updated logs
+
+[33mcommit ddbf7a7bdeb21a81469b2d58d9b6fae04b679f32[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 2 14:13:19 2025 -0700
+
+    got the gateway working
+
+[33mcommit 18e632ca8148354aec85a8a28e9be1c42a0db8a3[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon Jun 2 09:58:45 2025 -0700
+
+    got different db's in the same mysql container working
+
+[33mcommit 15914d033ad2011041f494cfd75cb0cd40f7a117[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat May 31 20:43:50 2025 -0700
+
+    added some basic exception handling
+
+[33mcommit 14548a00b3413aa13c52ce1a1e6b5dfca40274ec[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat May 31 19:55:07 2025 -0700
+
+    commented out spring security temporarily, and got a basic User object working
+
+[33mcommit 1f08293fadfd625060c1c98a20121009f79e1765[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat May 31 15:59:42 2025 -0700
+
+    now works with docker
+
+[33mcommit 8dab0415ea7f654e0b87eb54d3277a290a9e20b1[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat May 31 15:32:32 2025 -0700
+
+    added a course service and started configuring different schemas
+
+[33mcommit bb34e9d2a3f80fba5f20410a9941656669f27535[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat May 31 11:34:17 2025 -0700
+
+    eureka discovery now works in docker as well as local
+
+[33mcommit 83d9febc8d9359dd17785a20f378cae0c589773f[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sat May 31 11:19:45 2025 -0700
+
+    got eureka discovery service working
+
+[33mcommit 984fd899ebf24b0b49c355d315cfd8d998c4369b[m
+Author: eeasuper <42607535+eeasuper@users.noreply.github.com>
+Date:   Fri May 30 09:18:00 2025 -0700
+
+    week1 team log (#60)
+    
+    * week1 team log
+    
+    * team1 team log fixed error
+
+[33mcommit bc1e52499e65619d5b6c7ae4e1ad5c5326fcf8f1[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Thu May 29 15:10:58 2025 -0700
+
+    fixed up weird pom errors for user service
+
+[33mcommit a81c0222d3697e9c729129a71abe9d73d61a27f9[m
+Merge: db52811 c18ad3d
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Thu May 29 12:31:49 2025 -0700
+
+    Merge branch 'develop' of https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity
+
+[33mcommit bac72f10341bef77bbe8cc7be1a65e168467d2cb[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Thu May 29 12:29:01 2025 -0700
+
+    added controllers
+
+[33mcommit ba3cfe63e0b3ccc19d8f81aaa6c3ce5beccab5f7[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Thu May 29 12:16:43 2025 -0700
+
+    added a gateway service and user service
+
+[33mcommit c18ad3d59dc604be7840817a1c4ed447a3540e3a[m
+Merge: 5b98068 48da5a5
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Tue May 27 16:21:05 2025 -0700
+
+    Merge pull request #53 from UBCO-COSC499-S2025/52-create-dockerized-spring-boot-backend
+    
+    create dockerized spring boot backend
+
+[33mcommit d626316133684fb4ab11f1b96bcf69c54d01ed7c[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 010c2f7 5b98068
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Tue May 27 16:14:38 2025 -0700
+
+    Merge pull request #55 from UBCO-COSC499-S2025/develop
+    
+    Merge document from develop to master
+
+[33mcommit 5b980680483ecea08fadd598f4a49b0da77d69eb[m
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Tue May 27 14:51:54 2025 -0700
+
+    Added team project plan (#54)
+
+[33mcommit 48da5a5673712da64a7a3118f773f50090deb2d8[m[33m ([m[1;31morigin/52-create-dockerized-spring-boot-backend[m[33m)[m
+Author: xelArga <alexargatoff@gmail.com>
+Date:   Mon May 26 21:34:12 2025 -0700
+
+    renamed folder to backend and other build properties
+
+[33mcommit 8b7aff7dda9c3af17d81c589ec72db4ef81a0a72[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon May 26 16:24:51 2025 -0700
+
+    added documentation and two separate compose files for different implementations
+
+[33mcommit 92af593cf05b9d62be94795c12701c0e4cf35498[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon May 26 15:55:43 2025 -0700
+
+    added base project with spring initializr
+
+[33mcommit be79d2736ccf900cf10949c26454f4df4135647b[m
+Merge: 31f72d9 d3d225f
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon May 26 15:54:43 2025 -0700
+
+    Merge branch 'develop' into alex_logs
+
+[33mcommit db5281157c6410c3e3158e525136a1cdc5c2f8c9[m
+Merge: 7bd4978 d3d225f
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon May 26 13:46:14 2025 -0700
+
+    Merge branch 'develop' of https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity
+
+[33mcommit d3d225f6b1e5f41d79aa665a2b1a194649d15d0e[m
+Author: eeasuper <42607535+eeasuper@users.noreply.github.com>
+Date:   Mon May 26 13:25:46 2025 -0700
+
+    14 create GitHub settings files (#15)
+    
+    * added gitignore and Issue markdown files
+    
+    * changed to gherkin
+    
+    * gherkin changes to userstory
+
+[33mcommit af8baadd96b2b85fa668f3da08b3f294cf5bc843[m
+Merge: 9a5b3a6 d0ad9be
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Mon May 26 12:53:28 2025 -0700
+
+    Merge pull request #13 from UBCO-COSC499-S2025/charter-and-logs
+    
+    Changed weekly log folder into weekly_log and make develop catch up to master
+
+[33mcommit 7bd4978a0000e387d843e1d2fd5591e52888ce00[m
+Merge: 010c2f7 9a5b3a6
+Author: Mandeep <meritmandeep35@gmail.com>
+Date:   Mon May 26 12:19:28 2025 -0700
+
+    Merge branch 'develop' of https://github.com/UBCO-COSC498-S2025/team-10-capstone-infinity
+    Merge latest changes from develop branch into current branch
+    :wq
+
+[33mcommit 31f72d9a12282964c1f68fa6fc23f0e6c89031d1[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sun May 25 21:24:55 2025 -0700
+
+    filled in weekly log from may 18-24
+
+[33mcommit 9d971eee18b3b70916861838ff7a9fac3f15eaab[m
+Merge: 010c2f7 9a5b3a6
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Sun May 25 21:24:32 2025 -0700
+
+    Merge branch 'develop' into alex_logs
+
+[33mcommit 9a5b3a6590d090cf1d8453bab2b7343e7693be26[m
+Merge: bddaf97 1bd5ad5
+Author: eeasuper <42607535+eeasuper@users.noreply.github.com>
+Date:   Sat May 24 15:36:05 2025 -0700
+
+    Merge pull request #17 from UBCO-COSC499-S2025/16-create-a-react-app
+    
+    16-create-a-react-app
+
+[33mcommit 1bd5ad52a565ec40fd0c19f5a4d5d052482a13c7[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Sat May 24 14:20:03 2025 -0700
+
+    erased a dockerfile
+
+[33mcommit 41336045af276e037f19e8f37d799bc778536be3[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Sat May 24 12:41:19 2025 -0700
+
+    moved Dockerfile to TA-portal-infinity. Considering scalability for backend microservice
+
+[33mcommit b4b76d28fc45253230a6f405daecf9f697fdc5b9[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Sat May 24 10:44:50 2025 -0700
+
+    changed name of compose yml
+
+[33mcommit 81a68dda06ede159c832d45971631f16ad03b8d6[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Sat May 24 09:57:30 2025 -0700
+
+    changed name of docker-compose to conform to new naming convention
+
+[33mcommit 0566801905d6f4f854995aa544eb8c19088b8cc9[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri May 23 23:15:45 2025 -0700
+
+    removed a few comments
+
+[33mcommit 301bbc00dd1f399a58a68e7c3401435e651d2f5b[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri May 23 22:39:09 2025 -0700
+
+    added commentation to tsconfig.app.json, updated README
+
+[33mcommit c7c3596f7aa80ca15ebd457bc22847177e554664[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri May 23 22:28:12 2025 -0700
+
+    added vitest for testing frontend, modified dockerfile and yml
+
+[33mcommit d0ad9beebaed2c7f1c9c84fa0be046782f7dcf3e[m[33m ([m[1;31morigin/charter-and-logs[m[33m)[m
+Author: eeasuper <eeasuper@gmail.com>
+Date:   Fri May 23 16:15:01 2025 -0700
+
+    renamed weekly logs to have an underscore
+
+[33mcommit 010c2f7517b501299ce0fd0992cb48e66126e36d[m
+Merge: 25f88b6 fcb8bb6
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:49:09 2025 -0700
+
+    Individual Log Folders
+    
+    Created folders for individual logs of each member.
+
+[33mcommit fcb8bb682e5ce958995390b36575d8aeaffd899d[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:43:52 2025 -0700
+
+    Delete docs/weekly logs/seiya.md
+
+[33mcommit 2e75db7d81bd23547936c009dcf3fb3d7777d376[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:43:43 2025 -0700
+
+    Delete docs/weekly logs/mandeep.md
+
+[33mcommit b9991fbd81feb6bc6db60ac8d482c3205f28b6ed[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:43:34 2025 -0700
+
+    Delete docs/weekly logs/eddy.md
+
+[33mcommit f1da6d2f61072a94666bafab8275bff905310d61[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:43:25 2025 -0700
+
+    Delete docs/weekly logs/dup.md
+
+[33mcommit 0218b6c1ce64b48a3585badee95572a2c7834bec[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:43:17 2025 -0700
+
+    Delete docs/weekly logs/allen.md
+
+[33mcommit c1001c9899dd58c4bc96df53e18f2689d6438476[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:43:07 2025 -0700
+
+    Delete docs/weekly logs/alex.md
+
+[33mcommit b3576aa51260f9c530c464b029084b868f1bc29b[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:42:58 2025 -0700
+
+    Delete docs/weekly logs/aakash.md
+
+[33mcommit 94652623ea92153d3349e20de9eac964a972755d[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:35:13 2025 -0700
+
+    Create Seiya.md
+
+[33mcommit a52794b3251376676b643dc9ab2c2c9171a47c26[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:34:47 2025 -0700
+
+    Create Mandeep.md
+
+[33mcommit 9f57263522af6e5dd2407ec26725cda6d56edd9c[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:34:12 2025 -0700
+
+    Create Eddy.md
+
+[33mcommit 236b81d17551d0db3374c22b6f43bf52dcfeb562[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:33:50 2025 -0700
+
+    Create Dup.md
+
+[33mcommit 1ce7e357ac2be14c1aac4a0276fc4197abecf8c1[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:33:12 2025 -0700
+
+    Create Allen.md
+
+[33mcommit fbc4a8b2b39a4e9c16d92290116c04b3f1a83c47[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:32:41 2025 -0700
+
+    Create Alex.md
+
+[33mcommit b384a3f40ce914c29d736674d919d3d374c98f70[m
+Author: AakashSinghCS <ads2004mayads@gmail.com>
+Date:   Wed May 21 13:27:00 2025 -0700
+
+    Create Aakash.md
+
+[33mcommit 25f88b6a8c5be8308d328ed567c8356f8fb0b8ba[m
+Merge: b315b96 bddaf97
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Mon May 19 21:14:29 2025 -0700
+
+    Merge pull request #2 from UBCO-COSC499-S2025/develop
+    
+    Added Team Charter and Weekly log files from develop to master
+
+[33mcommit bddaf973356231a8587c9c8995b45d5a5407e388[m
+Merge: b315b96 5f170c1
+Author: Mandeep Singh <155117344+mandeep3535@users.noreply.github.com>
+Date:   Mon May 19 20:48:31 2025 -0700
+
+    Merge pull request #1 from UBCO-COSC499-S2025/charter-and-logs
+    
+    Charter and Team Logs
+
+[33mcommit 5f170c134f9652eec5ab9de1800f5dd7543e9589[m
+Author: Alex Argatoff <alexargatoff@gmail.com>
+Date:   Mon May 19 15:17:04 2025 -0700
+
+    charter and team log files
+
+[33mcommit b315b96452f41ddc537fb6be3cbc57923432f5b5[m
+Author: github-classroom[bot] <66690702+github-classroom[bot]@users.noreply.github.com>
+Date:   Fri May 16 19:23:30 2025 +0000
+
+    add online IDE url
+
+[33mcommit 2861f7204562cd5366831fad635d5791ad6b851b[m
+Author: github-classroom[bot] <66690702+github-classroom[bot]@users.noreply.github.com>
+Date:   Fri May 16 14:21:21 2025 +0000
+
+    Initial commit

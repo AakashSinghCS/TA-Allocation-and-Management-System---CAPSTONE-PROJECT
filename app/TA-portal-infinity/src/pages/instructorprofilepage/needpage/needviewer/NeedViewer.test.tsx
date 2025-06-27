@@ -25,24 +25,22 @@ describe('<NeedViewer />', () => {
   it('shows courses, needs, and ta allocations', () => {
     renderComparer();
 
-    // expect(
-    //   screen.getByText(/no courses to display/i)
-    // ).toBeInTheDocument();
-
-    // fireEvent.click(screen.getByRole('button', { name: /search/i }));
-
+    // Check for COSC 111 and COSC 121
     const headings = screen.getAllByText(/cosc\s*111/i);
     expect(headings.length).toBeGreaterThan(0);
     expect(screen.getAllByText(/cosc\s*121/i).length).toBeGreaterThan(0);
 
-    const needCard = screen.getByTestId('need-card');
-    // expect(within(needCard).getByText(/math\s*125/i)).toBeInTheDocument();
-    expect(within(needCard).getAllByText(/math\s*125/i).length).toBeGreaterThan(0);
+    // Check for multiple 'need-card' elements
+    const needCards = screen.getAllByTestId('need-card');
+    
+    // Loop over each 'need-card' and check for 'math 125'
+    needCards.forEach((needCard) => {
+      expect(within(needCard).getAllByText(/math\s*125/i).length).toBeGreaterThan(0);
+    });
 
+    // Check for 'allocation-card' and find "Emma"
     const alloCard = screen.getByTestId('allocation-card');
     const emmaElements = within(alloCard).getAllByText(/emma/i);
     expect(emmaElements.length).toBeGreaterThan(0);
   });
-
-
 });
