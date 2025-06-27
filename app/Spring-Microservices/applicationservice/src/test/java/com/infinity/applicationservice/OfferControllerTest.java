@@ -2,6 +2,7 @@ package com.infinity.applicationservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.applicationservice.controllers.OfferController;
+import com.infinity.applicationservice.dtos.OfferDto;
 import com.infinity.applicationservice.dtos.OfferRequest;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.models.Offer;
@@ -38,22 +39,17 @@ public class OfferControllerTest {
     @MockitoBean
     private OfferService offerService;
 
-    private Offer sampleOffer;
+    private OfferDto sampleOfferDto;
 
     @BeforeEach
     void setup() {
-        sampleOffer = new Offer();
-        sampleOffer.setId(1L);
-        sampleOffer.setAccepted(false);
-        sampleOffer.setDescription("Here is your offer");
-        sampleOffer.setApplication(new Application());
-        sampleOffer.setAllocation(null);
+        sampleOfferDto = new OfferDto(1L, false, "Here is your offer");
     }
 
     @Test
     void createOffer_returnsCreatedOffer() throws Exception {
         OfferRequest request = new OfferRequest(2L, "Here is your offer");
-        when(offerService.createOffer(any(OfferRequest.class))).thenReturn(sampleOffer);
+        when(offerService.createOffer(any(OfferRequest.class))).thenReturn(sampleOfferDto);
 
         mvc.perform(post("/offers/create")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -66,7 +62,7 @@ public class OfferControllerTest {
 
     @Test
     void getOffer_returnsOfferById() throws Exception {
-        when(offerService.getOffer(1L)).thenReturn(sampleOffer);
+        when(offerService.getOffer(1L)).thenReturn(sampleOfferDto);
 
         mvc.perform(get("/offers/1"))
             .andExpect(status().isOk())
@@ -77,7 +73,7 @@ public class OfferControllerTest {
 
     @Test
     void getOffersByApplicationId_returnsOffersList() throws Exception {
-        when(offerService.getOffersByApplicationId(2L)).thenReturn(List.of(sampleOffer));
+        when(offerService.getOffersByApplicationId(2L)).thenReturn(List.of(sampleOfferDto));
 
         mvc.perform(get("/offers/application/2"))
             .andExpect(status().isOk())
@@ -89,8 +85,8 @@ public class OfferControllerTest {
 
     @Test
     void updateAcceptanceStatus_updatesAndReturnsOffer() throws Exception {
-        sampleOffer.setAccepted(true);
-        when(offerService.updateAcceptanceStatus(1L, true)).thenReturn(sampleOffer);
+        OfferDto updatedDto = new OfferDto(1L, true, "Here is your offer");
+        when(offerService.updateAcceptanceStatus(1L, true)).thenReturn(updatedDto);
 
         mvc.perform(put("/offers/1/accept")
                 .param("isAccepted", "true"))

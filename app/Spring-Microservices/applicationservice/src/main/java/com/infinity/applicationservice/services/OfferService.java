@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.infinity.applicationservice.dtos.OfferDto;
 import com.infinity.applicationservice.dtos.OfferRequest;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.models.Offer;
@@ -20,7 +21,7 @@ public class OfferService {
     private final OfferRepository offerRepository;
     private final ApplicationRepository applicationRepository;
 
-    public Offer createOffer(OfferRequest request) {
+    public OfferDto createOffer(OfferRequest request) {
         Application application = applicationRepository.findById(request.applicationId())
             .orElseThrow(() -> new EntityNotFoundException("Application not found"));
 
@@ -30,25 +31,34 @@ public class OfferService {
         offer.setAccepted(false);      // default
         offer.setAllocation(null);     // not yet allocated
 
-        return offerRepository.save(offer);
+        Offer saved = offerRepository.save(offer);
+        return toDto(saved);
     }
 
-    public Offer getOffer(Long id) {
-        return offerRepository.findById(id)
+    public OfferDto getOffer(Long id) {
+        Offer offer = offerRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Offer not found"));
+        return toDto(offer);
     }
 
-    public List<Offer> getOffersByApplicationId(Long applicationId) {
-        return offerRepository.findByApplicationId(applicationId);
+    public List<OfferDto> getOffersByApplicationId(Long applicationId) {
+        List<Offer> offers = offerRepository.findByApplicationId(applicationId);
+        return offers.stream().map(this::toDto).toList();
     }
 
-    public Offer updateAcceptanceStatus(Long id, boolean isAccepted) {
-        Offer offer = getOffer(id);
+    public OfferDto updateAcceptanceStatus(Long id, boolean isAccepted) {
+        Offer offer = offerRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Offer not found"));
+
         offer.setAccepted(isAccepted);
-        return offerRepository.save(offer);
+        return toDto(offerRepository.save(offer));
     }
 
     public void deleteOffer(Long id) {
         offerRepository.deleteById(id);
+    }
+
+    private OfferDto toDto(Offer offer) {
+        return new OfferDto(offer.getId(), offer.isAccepted(), offer.getDescription());
     }
 }

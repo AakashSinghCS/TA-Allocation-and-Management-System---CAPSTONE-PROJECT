@@ -21,39 +21,27 @@ public class OfferController {
 
     @PostMapping("/create")
     public ResponseEntity<OfferDto> createOffer(@RequestBody OfferRequest request) {
-        Offer offer = offerService.createOffer(request);
-        OfferDto dto = new OfferDto(offer.getId(), offer.isAccepted(), offer.getDescription());
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(offerService.createOffer(request));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<OfferDto> getOffer(@PathVariable Long id) {
-        Offer offer = offerService.getOffer(id);
-        OfferDto dto = new OfferDto(offer.getId(), offer.isAccepted(), offer.getDescription());
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(offerService.getOffer(id));
     }
 
     @GetMapping("/application/{applicationId}")
     public ResponseEntity<List<OfferDto>> getOffersByApplication(@PathVariable Long applicationId) {
-        List<Offer> offers = offerService.getOffersByApplicationId(applicationId);
-        List<OfferDto> dtoList = offers.stream()
-            .map(offer -> new OfferDto(offer.getId(), offer.isAccepted(), offer.getDescription()))
-            .toList();
-        return ResponseEntity.ok(dtoList);
+        return ResponseEntity.ok(offerService.getOffersByApplicationId(applicationId));
     }
 
     @PutMapping("/{id}/accept")
     public ResponseEntity<OfferDto> acceptOffer(@PathVariable Long id) {
-        Offer updatedOffer = offerService.updateAcceptanceStatus(id, true);
-        OfferDto dto = new OfferDto(updatedOffer.getId(), updatedOffer.isAccepted(), updatedOffer.getDescription());
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(offerService.updateAcceptanceStatus(id, true));
     }
 
     @PutMapping("/{id}/decline")
     public ResponseEntity<OfferDto> declineOffer(@PathVariable Long id) {
-        Offer updatedOffer = offerService.updateAcceptanceStatus(id, false);
-        OfferDto dto = new OfferDto(updatedOffer.getId(), updatedOffer.isAccepted(), updatedOffer.getDescription());
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(offerService.updateAcceptanceStatus(id, false));
     }
 
     @DeleteMapping("/{id}")
