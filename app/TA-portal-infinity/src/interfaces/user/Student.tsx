@@ -24,7 +24,7 @@ export const studentFieldLabels: Record<keyof Student, string> = {
   firstName:       "First Name",
   lastName:        "Last Name",
   email:           "Email",
-  studentNum:   "Student #",
+  studentNum:       "Student #",
   program:         "Program",
   enrollmentYear:  "Enrollment Year",
   schoolYear:      "School Year",
