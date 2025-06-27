@@ -4,9 +4,9 @@ import com.infinity.applicationservice.dtos.*;
 import com.infinity.applicationservice.feign.SectionInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Allocation;
-import com.infinity.applicationservice.models.Offer;
+import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.repositories.AllocationRepository;
-import com.infinity.applicationservice.repositories.OfferRepository;
+import com.infinity.applicationservice.repositories.ApplicationRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +20,10 @@ import java.util.stream.Collectors;
 public class AllocationService {
 
     private final AllocationRepository allocationRepository;
+    private final ApplicationRepository applicationRepository;
     private final SectionInterface sectionInterface;
     private final UserInterface studentInterface;
-    private final OfferRepository offerRepository;
+    
 
     public List<AllocationHistoryDto> getAllocationsByStudentId(Long studentId) {
         List<Allocation> allocations = allocationRepository.findByStudentId(studentId);
@@ -30,12 +31,22 @@ public class AllocationService {
 
         return allocations.stream().map(allocation -> {
             SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
-            OfferDto offerDto = toOfferDto(allocation.getOffer());
-
+            
+            Application application = allocation.getApplication();
+            ApplicationDto applicationDto = new ApplicationDto(
+                application.getStudentId(),
+                application.getSubjectPreferences(),
+                application.isWantRemote(),
+                application.getWantWorkingHours(),
+                application.getSubmittedAt(),
+                application.getAvailabilities().stream()
+                    .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime().toString(), a.getEndTime().toString()))
+                    .collect(Collectors.toSet())
+            );
             return new AllocationHistoryDto(
                 allocation.getId(),
                 student,
-                offerDto,
+                applicationDto,
                 allocation.isConfirmed(),
                 allocation.getNumberOfHours(),
                 section
@@ -45,17 +56,13 @@ public class AllocationService {
     }
 
     public AllocationHistoryDto allocateStudent(AllocationRequest request) {
-        Offer offer = offerRepository.findById(request.offerId())
-            .orElseThrow(() -> new EntityNotFoundException("Offer not found"));
-        
-        if (!offer.isAccepted()){
-            throw new IllegalStateException("Cannot allocate student: Offer has not been accepted.");
-        }
-        
+        Application application = applicationRepository.findById(request.applicationId())
+            .orElseThrow(() -> new EntityNotFoundException("Application not found"));
+
         Allocation allocation = new Allocation();
+        allocation.setApplication(application);
         allocation.setStudentId(request.studentId());
-        allocation.setOffer(offer);
-        allocation.setConfirmed(request.isConfirmed());
+        allocation.setConfirmed(false);
         allocation.setNumberOfHours(request.numberOfHours());
         allocation.setSectionId(request.sectionId());
 
@@ -63,20 +70,34 @@ public class AllocationService {
 
         StudentDto student = studentInterface.getStudentById(request.studentId()).getBody();
         SectionDto section = sectionInterface.getSectionById(request.sectionId());
-        OfferDto offerDto = toOfferDto(allocation.getOffer());
+
+        ApplicationDto applicationDto = new ApplicationDto(
+                application.getStudentId(),
+                application.getSubjectPreferences(),
+                application.isWantRemote(),
+                application.getWantWorkingHours(),
+                application.getSubmittedAt(),
+                application.getAvailabilities().stream()
+                    .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime().toString(), a.getEndTime().toString()))
+                    .collect(Collectors.toSet())
+        );
 
         return new AllocationHistoryDto(
             saved.getId(),
             student,
-            offerDto,
+            applicationDto,
             saved.isConfirmed(),
             saved.getNumberOfHours(),
             section
         );
     }
 
-    public OfferDto toOfferDto(Offer offer){
-        return new OfferDto(offer.getId(), offer.isAccepted(), offer.getDescription());
+    public void updateConfirmationStatus(Long allocationId, boolean status) {
+        Allocation allocation = allocationRepository.findById(allocationId)
+            .orElseThrow(() -> new EntityNotFoundException("Allocation not found"));
+
+        allocation.setConfirmed(status);
+        allocationRepository.save(allocation);
     }
 
 }

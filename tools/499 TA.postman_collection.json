@@ -1133,7 +1133,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzQ5MzE5ODQzfQ.82a0w2lLdGi1JJClzYMI_oM1_-k2gMsdY_oec8Y4Kq8bnBfX6fNGKBZhfyb2twgL",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
 									"type": "string"
 								}
 							]
@@ -1148,7 +1148,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"studentId\": 1,\r\n    \"offerId\": 1,\r\n    \"isConfirmed\": true,\r\n    \"numberOfHours\": 5,\r\n    \"sectionId\": 1\r\n}"
+							"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"isConfirmed\": true,\r\n    \"numberOfHours\": 5,\r\n    \"sectionId\": 1\r\n}"
 						},
 						"url": {
 							"raw": "localhost:8080/allocations/allocate",
@@ -1175,7 +1175,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzQ5MzE5ODQzfQ.82a0w2lLdGi1JJClzYMI_oM1_-k2gMsdY_oec8Y4Kq8bnBfX6fNGKBZhfyb2twgL",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
 									"type": "string"
 								}
 							]
@@ -1209,130 +1209,6 @@
 					"response": []
 				},
 				{
-					"name": "Create Offer",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzQ5MzE5ODQzfQ.82a0w2lLdGi1JJClzYMI_oM1_-k2gMsdY_oec8Y4Kq8bnBfX6fNGKBZhfyb2twgL",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"applicationId\": 1,\r\n    \"description\": \"test offer\"\r\n}"
-						},
-						"url": {
-							"raw": "localhost:8080/offers/create",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"offers",
-								"create"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "View Offer",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzQ5MzE5ODQzfQ.82a0w2lLdGi1JJClzYMI_oM1_-k2gMsdY_oec8Y4Kq8bnBfX6fNGKBZhfyb2twgL",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "localhost:8080/offers/1",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"offers",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "View Offer by ApplicationId",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzQ5MzE5ODQzfQ.82a0w2lLdGi1JJClzYMI_oM1_-k2gMsdY_oec8Y4Kq8bnBfX6fNGKBZhfyb2twgL",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "localhost:8080/offers/application/1",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"offers",
-								"application",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Accept Offer",
 					"request": {
 						"auth": {
@@ -1340,7 +1216,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzQ5MzE5ODQzfQ.82a0w2lLdGi1JJClzYMI_oM1_-k2gMsdY_oec8Y4Kq8bnBfX6fNGKBZhfyb2twgL",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMDU5NDc5LCJleHAiOjE3NTEwNjMwNzl9.8n_KVbzbfStBuf_wXUZudWucuDWA5I2F5KV-lz1e7KzfQ5HJQReg2EHWPSfDkpdd",
 									"type": "string"
 								}
 							]
@@ -1355,32 +1231,32 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"isConfirmed\": true,\r\n    \"numberOfHours\": 5,\r\n    \"sectionId\": 1\r\n}"
 						},
 						"url": {
-							"raw": "localhost:8080/offers/1/accept",
+							"raw": "localhost:8080/allocations/1/acceptOffer",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"offers",
+								"allocations",
 								"1",
-								"accept"
+								"acceptOffer"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Decline Offer",
+					"name": "Deny Offer",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzQ5MzE5ODQzfQ.82a0w2lLdGi1JJClzYMI_oM1_-k2gMsdY_oec8Y4Kq8bnBfX6fNGKBZhfyb2twgL",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMDU5NDc5LCJleHAiOjE3NTEwNjMwNzl9.8n_KVbzbfStBuf_wXUZudWucuDWA5I2F5KV-lz1e7KzfQ5HJQReg2EHWPSfDkpdd",
 									"type": "string"
 								}
 							]
@@ -1395,57 +1271,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"isConfirmed\": true,\r\n    \"numberOfHours\": 5,\r\n    \"sectionId\": 1\r\n}"
 						},
 						"url": {
-							"raw": "localhost:8080/offers/1/decline",
+							"raw": "localhost:8080/allocations/1/denyOffer",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"offers",
+								"allocations",
 								"1",
-								"decline"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Offer",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzQ5MzE5ODQzfQ.82a0w2lLdGi1JJClzYMI_oM1_-k2gMsdY_oec8Y4Kq8bnBfX6fNGKBZhfyb2twgL",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "localhost:8080/offers/1",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"offers",
-								"1"
+								"denyOffer"
 							]
 						}
 					},

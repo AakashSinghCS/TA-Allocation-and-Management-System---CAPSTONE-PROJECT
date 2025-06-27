@@ -2,6 +2,7 @@ package com.infinity.applicationservice.models;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -9,7 +10,6 @@ import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.infinity.applicationservice.dtos.ApplicationRequest;
 import com.infinity.applicationservice.enums.Subject;
 
@@ -70,9 +70,10 @@ public class Application {
     @PrimaryKeyJoinColumn
     private Transcript transcript;
 
-    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("application")
-    private Set<Offer> offers;
+    @OneToMany(mappedBy = "application")
+    private List<Allocation> allocations = new ArrayList<>();
+
+    
 
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Availability> availabilities = new HashSet<>();
