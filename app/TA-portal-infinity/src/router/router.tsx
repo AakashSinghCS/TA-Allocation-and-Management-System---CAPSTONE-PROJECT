@@ -23,6 +23,9 @@ import { TaQuestionnairePage } from "../pages/taquestionnairepage/TaQuestionnair
 import { CoordinatorQuestionnairePage } from "../pages/coordinatorquestionnairepage/CoordinatorQuestionnairePage";
 import RoleGuard from "../components/features/roleguard/RoleGuard";
 import { UserRole } from "../interfaces/enum/UserRole";
+import AllocationPage from "../pages/allocationpage/AllocationPage";
+import InstructorQualificationPage from "../pages/instructorprofilepage/qualificationpage/InstructorQualificationPage";
+import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
 
 export const router = createBrowserRouter([
   {
@@ -33,10 +36,12 @@ export const router = createBrowserRouter([
       { path: "taprofile/:studentId", element: <TaProfilePage /> },
       { path: "taprofile/:studentId/coursesTaken", element: <CoursesTakenPage /> },
       { path: "taprofile/:studentId/compare", element: <StudentComparerPage /> },
+      { path: "taprofile/:studentId/qualifications", element: <StudentQualificationPage /> },
 
       { path: "instructorprofile/:instructorId", element: <InstructorProfilePage /> },
       { path: "instructorprofile/:instructorId/need", element: <InstructorNeedPage /> },
       { path: "instructorprofile/:instructorId/compare", element: <InstructorComparerPage /> },
+      { path: "instructorprofile/:instructorId/qualifications", element: <InstructorQualificationPage /> },
       // STUDENT routes
       {
         path: "student",
@@ -78,6 +83,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "home", element: <CoordinatorHomePage /> },
           { path: "questions", element: < CoordinatorQuestionnairePage/> },
+          {path: "allocation", element: <AllocationPage />},
           { path: "student/questions/:studentId", element: < TaQuestionnairePage/> }, //TEMPORARY for development
           { path: "error", element: <ErrorPage /> },
         ],

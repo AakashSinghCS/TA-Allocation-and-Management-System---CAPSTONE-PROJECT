@@ -1,6 +1,15 @@
 package com.infinity.applicationservice.services;
 
-import com.infinity.applicationservice.dtos.*;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.infinity.applicationservice.dtos.AllocationHistoryDto;
+import com.infinity.applicationservice.dtos.AllocationRequest;
+import com.infinity.applicationservice.dtos.OfferDto;
+import com.infinity.applicationservice.dtos.SectionDto;
+import com.infinity.applicationservice.dtos.StudentDto;
 import com.infinity.applicationservice.feign.SectionInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Allocation;
@@ -12,8 +21,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +79,8 @@ public class AllocationService {
 
         StudentDto student = studentInterface.getStudentById(request.studentId()).getBody();
         SectionDto section = sectionInterface.getSectionById(request.sectionId());
+        OfferDto offerDto = saved.getOffer() != null ? new OfferDto(saved.getOffer().getId(),
+            saved.getOffer().isAccepted(), saved.getOffer().getDescription()) : null;
 
         ApplicationDto applicationDto = new ApplicationDto(
                 application.getStudentId(),

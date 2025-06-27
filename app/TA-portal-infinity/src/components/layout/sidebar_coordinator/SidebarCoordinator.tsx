@@ -7,7 +7,7 @@ const navItems = [
   { label: "Home", to: "/user/coordinator/home", icon: <Home size={22} /> },
   { label: "Courses Management", to: "/user/coordinator/courses", icon: <BookOpen size={22} /> },
   { label: "TA Applications", to: "/user/coordinator/applications", icon: <GraduationCap size={22} /> },
-  { label: "TA Allocations", to: "/user/coordinator/allocations", icon: <Presentation size={22} /> },
+  { label: "TA Allocations", to: "/user/coordinator/allocation", icon: <Presentation size={22} /> },
   { label: "Profile", to: "/user/coordinator/profile", icon: <UserRoundPen size={22} /> },
   { label: "TA Questions", to: "/user/coordinator/questions", icon: <Users size={22} /> }, 
 ];
