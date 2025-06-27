@@ -1,25 +1,31 @@
 package com.infinity.applicationservice;
 
-import com.infinity.applicationservice.dtos.*;
-import com.infinity.applicationservice.enums.*;
-import com.infinity.applicationservice.feign.SectionInterface;
-import com.infinity.applicationservice.feign.UserInterface;
-import com.infinity.applicationservice.models.Allocation;
-import com.infinity.applicationservice.models.Offer;
-import com.infinity.applicationservice.repositories.AllocationRepository;
-import com.infinity.applicationservice.services.AllocationService;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import com.infinity.applicationservice.dtos.AllocationHistoryDto;
+import com.infinity.applicationservice.dtos.AllocationRequest;
+import com.infinity.applicationservice.dtos.CourseDto;
+import com.infinity.applicationservice.dtos.SectionDto;
+import com.infinity.applicationservice.dtos.StudentDto;
+import com.infinity.applicationservice.enums.SectionType;
+import com.infinity.applicationservice.feign.SectionInterface;
+import com.infinity.applicationservice.feign.UserInterface;
+import com.infinity.applicationservice.models.Allocation;
+import com.infinity.applicationservice.models.Offer;
+import com.infinity.applicationservice.repositories.AllocationRepository;
+import com.infinity.applicationservice.services.AllocationService;
 
 class AllocationServiceTest {
 

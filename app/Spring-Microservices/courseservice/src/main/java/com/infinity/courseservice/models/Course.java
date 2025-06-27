@@ -38,6 +38,9 @@ public class Course {
     @JsonManagedReference
     private List<Section> sections;
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseNeed> courseNeeds;
+
     public Course(String deptCode, String name, String courseNum) {
         this.deptCode = deptCode;
         this.name = name;

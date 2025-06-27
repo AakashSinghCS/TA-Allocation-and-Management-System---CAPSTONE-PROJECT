@@ -1,6 +1,6 @@
 import type Qualification from "../../interfaces/qualification/Qualification";
 import type Section from "../../interfaces/section/Section";
-import { mockQualificationResponse } from "../../mocked-objects/qualification/mockQualificationResponse";
+import { mockInstructorQualificationResponse } from "../../mocked-objects/qualification/mockInstructorQualificationResponse";
 
 export interface QualificationResponse {
     section: Section;
@@ -22,13 +22,13 @@ export async function fetchAllInstructorQualifications(instructorId : number): P
         if (!res.ok) {
             console.error("Request failed with status:", res.status);
             // return null;
-            return mockQualificationResponse;
+            return mockInstructorQualificationResponse;
         }
         return res.json();
     } catch {
         console.log("something went wrong");
         //TODO: remove the mock after development is finished.
-        return mockQualificationResponse;
+        return mockInstructorQualificationResponse;
         // return null;
     }
 }
