@@ -17,6 +17,7 @@ import { mockSectionCOSC111 } from '../../mocked-objects/section/mockSectionCOSC
 import { mockSectionCOSC121 } from '../../mocked-objects/section/mockSectionCOSC121';
 import { mockSectionMATH125 } from '../../mocked-objects/section/mockSectionMATH125';
 
+
 const TAAllocationPage: React.FC = () => {
   const { token } = useAuth();
 
