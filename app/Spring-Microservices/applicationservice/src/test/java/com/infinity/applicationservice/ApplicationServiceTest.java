@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +47,11 @@ public class ApplicationServiceTest {
     @BeforeAll
     static void setUp() {
         availabilities = new HashSet<>();
-        availabilities.add(new AvailabilityDto(Day.MONDAY, "09:00", "10:00"));
+        availabilities.add(new AvailabilityDto(
+            Day.MONDAY,
+            LocalDateTime.of(2025, 1, 1, 9, 0),
+            LocalDateTime.of(2025, 1, 1, 10, 0)
+        ));
     }
     
 
@@ -65,7 +70,7 @@ public class ApplicationServiceTest {
     @Test
     void testSubmitApplication_MissingAvailabilityFields_BadRequest() {
         Set<AvailabilityDto> badAvailabilities = new HashSet<>();
-        badAvailabilities.add(new AvailabilityDto(null, "10:00", "9:00"));
+        badAvailabilities.add(new AvailabilityDto(null, LocalDateTime.of(2025, 1, 1, 10, 0),LocalDateTime.of(2025, 1, 1, 9, 0)));
         ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6,
                 badAvailabilities);
 
@@ -80,7 +85,7 @@ public class ApplicationServiceTest {
     @Test
     void testSubmitApplication_BadAvailability_BadRequest() {
         Set<AvailabilityDto> badAvailabilities = new HashSet<>();
-        badAvailabilities.add(new AvailabilityDto(Day.MONDAY, "10:00", "09:00"));
+        badAvailabilities.add(new AvailabilityDto(Day.MONDAY, LocalDateTime.of(2025, 1, 1, 10, 0), LocalDateTime.of(2025, 1, 1, 9, 0)));
         ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6,
                 badAvailabilities);
 

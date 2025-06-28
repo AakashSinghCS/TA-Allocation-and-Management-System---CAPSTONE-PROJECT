@@ -137,7 +137,7 @@ public class ApplicationService {
                 if (a.startTime() == null || a.endTime() == null || a.day() == null) {
                     throw new BadRequestException("Availability entries must include day, startTime, and endTime.");
                 }
-                if (!LocalTime.parse(a.startTime()).isBefore(LocalTime.parse(a.endTime()))) {
+                if (!a.startTime().toLocalTime().isBefore(a.endTime().toLocalTime())) {
                     throw new BadRequestException(
                             "Start time must be before end time for availability on " + a.day());
                 }
@@ -149,8 +149,8 @@ public class ApplicationService {
         return entities.stream()
                 .map(a -> new AvailabilityDto(
                         Day.valueOf(a.getDay().name()),
-                        a.getStartTime().toString(),
-                        a.getEndTime().toString()))
+                        a.getStartTime(),
+                        a.getEndTime()))
                 .collect(Collectors.toSet());
     }
 
@@ -160,8 +160,8 @@ public class ApplicationService {
                     .map(a -> {
                         Availability availability = new Availability();
                         availability.setDay(a.day());
-                        availability.setStartTime(LocalTime.parse(a.startTime()));
-                        availability.setEndTime(LocalTime.parse(a.endTime()));
+                        availability.setStartTime(a.startTime());
+                        availability.setEndTime(a.endTime());
                         availability.setApplication(application);
                         return availability;
                     }).collect(Collectors.toSet());

@@ -49,7 +49,7 @@ public class AllocationService {
                 application.getWantWorkingHours(),
                 application.getSubmittedAt(),
                 application.getAvailabilities().stream()
-                    .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime().toString(), a.getEndTime().toString()))
+                    .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime(), a.getEndTime()))
                     .collect(Collectors.toSet())
             );
             return new AllocationHistoryDto(
@@ -89,7 +89,7 @@ public class AllocationService {
                 application.getWantWorkingHours(),
                 application.getSubmittedAt(),
                 application.getAvailabilities().stream()
-                    .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime().toString(), a.getEndTime().toString()))
+                    .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime(), a.getEndTime()))
                     .collect(Collectors.toSet())
         );
 

@@ -1,9 +1,11 @@
 package com.infinity.applicationservice.dtos;
 
+import java.time.LocalDateTime;
+
 import com.infinity.applicationservice.enums.Day;
 
 public record AvailabilityDto(
         Day day,
-        String startTime,
-        String endTime) {
+        LocalDateTime startTime,
+        LocalDateTime endTime) {
 }
