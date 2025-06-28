@@ -32,13 +32,14 @@ public class CourseController {
     public ResponseEntity<CourseDto> findCourse(@PathVariable Long courseId) {
         return ResponseEntity.ok(courseService.findCourse(courseId));
     }
-    
+
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addCourse")
     public ResponseEntity<CourseDto> addCourse(@RequestBody CourseRequest request) {
         return ResponseEntity.ok( courseService.addCourse(request));
+
     }
-    
+
     @PostMapping("/filterCourses")
     public ResponseEntity<List<CourseSectionScheduleDto>> filterCourses(@RequestBody CourseFilterRequest filter) {
         return ResponseEntity.ok(courseService.filterCourses(filter));
@@ -63,9 +64,10 @@ public class CourseController {
     }
 
     // @GetMapping("/getEnrolledCourses/{studentId}")
-    // public ResponseEntity<List<CourseDto>> getMethodName(@PathVariable Integer studentId) {
-    //     List<CourseDto> courseDtos = courseService.getEnrolledCourses(studentId);
-    //     return ResponseEntity.ok(courseDtos);
+    // public ResponseEntity<List<CourseDto>> getMethodName(@PathVariable Integer
+    // studentId) {
+    // List<CourseDto> courseDtos = courseService.getEnrolledCourses(studentId);
+    // return ResponseEntity.ok(courseDtos);
     // }
-    
+
 }

@@ -23,6 +23,7 @@ import { TaQuestionnairePage } from "../pages/taquestionnairepage/TaQuestionnair
 import { CoordinatorQuestionnairePage } from "../pages/coordinatorquestionnairepage/CoordinatorQuestionnairePage";
 import RoleGuard from "../components/features/roleguard/RoleGuard";
 import { UserRole } from "../interfaces/enum/UserRole";
+import AllocationPage from "../pages/allocationpage/AllocationPage";
 import InstructorQualificationPage from "../pages/instructorprofilepage/qualificationpage/InstructorQualificationPage";
 import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
 import SectionListPage from "../pages/coursepage/SectionListPage";
@@ -86,6 +87,7 @@ export const router = createBrowserRouter([
           { path: "questions", element: < CoordinatorQuestionnairePage/> },
           { path: "sections", element: < SectionListPage/> },
           { path: "sections/add", element: < AddSectionPage/> },
+          {path: "allocation", element: <AllocationPage />},
           { path: "student/questions/:studentId", element: < TaQuestionnairePage/> }, //TEMPORARY for development
           { path: "error", element: <ErrorPage /> },
         ],

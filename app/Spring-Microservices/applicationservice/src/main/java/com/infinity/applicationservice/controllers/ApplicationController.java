@@ -21,9 +21,6 @@ import com.infinity.applicationservice.services.ApplicationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-
-
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/applications")
@@ -50,11 +47,11 @@ public class ApplicationController {
 
     @PutMapping("update/{studentId}")
     public ResponseEntity<ApplicationDto> updateApplication(@RequestBody @Valid ApplicationRequest req,
-            @PathVariable Long studentId, 
+            @PathVariable Long studentId,
             @RequestHeader("X-User-Id") Long requesterId,
-            @RequestHeader("X-User-Roles") List<String> roles) {        
+            @RequestHeader("X-User-Roles") List<String> roles) {
         return ResponseEntity.ok(applicationService.updateApplication(req, studentId, requesterId, roles));
-    }    
+    }
 
     @DeleteMapping("/delete/{studentId}")
     public ResponseEntity<String> deleteApplication(@PathVariable Long studentId,
@@ -69,5 +66,5 @@ public class ApplicationController {
             @RequestHeader("X-User-Roles") List<String> roles) {
         return ResponseEntity.ok(applicationService.getAllApplicationsByStudentId(studentId, requesterId, roles));
     }
-    
+
 }
