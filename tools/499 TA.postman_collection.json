@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "431c3b44-c853-4b24-828a-e27da5a15a0b",
+		"_postman_id": "f9e607f4-ba63-49a8-9658-c08c78d510d3",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "45690522"
@@ -1170,7 +1170,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"preferences\": [\"COSC\", \"MATH\"],\r\n  \"wantRemote\": false,\r\n  \"wantWorkingHours\": 6,\r\n  \"availabilities\": [\r\n    {\r\n      \"day\": \"MONDAY\",\r\n      \"startTime\": \"14:00\",\r\n      \"endTime\": \"16:00\"\r\n    },\r\n    {\r\n      \"day\": \"WEDNESDAY\",\r\n      \"startTime\": \"09:30\",\r\n      \"endTime\": \"11:30\"\r\n    }\r\n  ]\r\n}\r\n",
+							"raw": "{\r\n  \"preferences\": [\"COSC\", \"MATH\"],\r\n  \"wantRemote\": false,\r\n  \"wantWorkingHours\": 6,\r\n  \"availabilities\": [\r\n    {\r\n      \"day\": \"MONDAY\",\r\n      \"startTime\": \"2025-01-01T14:00:00\",\r\n      \"endTime\": \"2025-01-01T16:00:00\"\r\n    },\r\n    {\r\n      \"day\": \"WEDNESDAY\",\r\n      \"startTime\": \"2025-01-01T09:30:00\",\r\n      \"endTime\": \"2025-01-01T11:30:00\"\r\n    }\r\n  ]\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1208,7 +1208,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"preferences\":[\"COSC\", \"MATH\", \"DATA\"],\r\n    \"wantRemote\":true,\r\n    \"wantWorkingHours\":12,\r\n    \"availabilities\": [\r\n    {\r\n      \"day\": \"TUESDAY\",\r\n      \"startTime\": \"09:00\",\r\n      \"endTime\": \"11:30\"\r\n    },\r\n    {\r\n      \"day\": \"FRIDAY\",\r\n      \"startTime\": \"12:30\",\r\n      \"endTime\": \"14:00\"\r\n    }\r\n  ]\r\n}",
+							"raw": "{\r\n    \"preferences\":[\"COSC\", \"MATH\", \"DATA\"],\r\n    \"wantRemote\":true,\r\n    \"wantWorkingHours\":12,\r\n    \"availabilities\": [\r\n    {\r\n      \"day\": \"TUESDAY\",\r\n      \"startTime\": \"2025-01-01T09:00:00\",\r\n      \"endTime\": \"2025-01-01T11:30:00\"\r\n    },\r\n    {\r\n      \"day\": \"FRIDAY\",\r\n      \"startTime\": \"2025-01-01T12:30:00\",\r\n      \"endTime\": \"2025-01-01T14:00:00\"\r\n    }\r\n  ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1445,7 +1445,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMDU5NDc5LCJleHAiOjE3NTEwNjMwNzl9.8n_KVbzbfStBuf_wXUZudWucuDWA5I2F5KV-lz1e7KzfQ5HJQReg2EHWPSfDkpdd",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMTQ1ODMyLCJleHAiOjE3NTExNDk0MzJ9.nTdM-wf_rIsVIMzDGxsTZiLmojWHVBqDfSUDppXHACZ0Xd-dss039YGGGs1MFUiR",
 									"type": "string"
 								}
 							]
@@ -1485,7 +1485,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMDU5NDc5LCJleHAiOjE3NTEwNjMwNzl9.8n_KVbzbfStBuf_wXUZudWucuDWA5I2F5KV-lz1e7KzfQ5HJQReg2EHWPSfDkpdd",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMTQ1ODMyLCJleHAiOjE3NTExNDk0MzJ9.nTdM-wf_rIsVIMzDGxsTZiLmojWHVBqDfSUDppXHACZ0Xd-dss039YGGGs1MFUiR",
 									"type": "string"
 								}
 							]
