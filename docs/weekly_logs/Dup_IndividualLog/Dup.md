@@ -1594,3 +1594,56 @@ If the backend for the needs get merged, I will integrate as well.
 - qualifications page (instructor's and student's skill labs) integration
 - integration for comparers
 - Instructor updating needs frontend
+
+
+## Friday 6/27 (6/27~6/30)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June27.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Course Management
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#82](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/82)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+In the morning we discussed with our teammates.
+We decided that I would take on Seiya's branch. Seiya has not been communicating and has not delivered anything for the past 3 weeks.
+Therefore, I finished the task we was supposed to get done about 3 weeks ago.
+Tommorrow, I will work on the integration of the sections with the backend.
+If I can, I will also work on a course managment page. right now it's just the sections.
+Then maybe on Monday, I will work on the Needs of the instructor page and the allocation history.
+I need to create the updating of the needs and the allocation history.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- Instructor updating needs frontend
+- course/section management
