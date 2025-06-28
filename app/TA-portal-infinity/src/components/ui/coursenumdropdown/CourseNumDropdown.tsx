@@ -1,7 +1,7 @@
 interface Props {
-  courseNums: number[] | null;
-  value: number | null;
-  onChange: (val: number | null) => void;
+  courseNums: string[] | null;
+  value: string | null;
+  onChange: (val: string | null) => void;
   disabled?: boolean;
   mode?:string;
 }
@@ -17,7 +17,7 @@ export default function CourseNumDropdown({ courseNums, value, onChange, disable
       <select
         id="courseNum"
         value={value ?? ""}
-        onChange={(e) => onChange(Number(e.target.value) || null)}
+        onChange={(e) => onChange(e.target.value || null)}
         className={disabled?`${disabledStyle} ${smallOrBig}`:`${smallOrBig}`}
         disabled={disabled}
       >

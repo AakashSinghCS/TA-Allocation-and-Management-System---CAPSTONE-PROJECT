@@ -1,4 +1,4 @@
-export async function fetchAllExistingYears(deptCode:string, courseNum: number, section:string): Promise<number[] | null> {
+export async function fetchAllExistingYears(deptCode:string, courseNum: string, section:string): Promise<number[] | null> {
     const BASE = "http://localhost:8080/mock/mock";
     const token = localStorage.getItem("token");
 

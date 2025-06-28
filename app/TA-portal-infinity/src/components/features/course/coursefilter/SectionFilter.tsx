@@ -1,32 +1,60 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DaySelector from '../../../ui/dayselector/DaySelector';
 import TimeSelector from '../../../ui/timeselector/TimeSelector';
 import { GenericAPIContainer } from '../../../../utility/genericapicontainer/GenericAPIContainer';
 import { fetchAllExistingDeptCodes } from '../../../../api/sectionfilter/fetchAllExsitingDeptCodes';
 import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
 import DeptCodeCourseNumSectionYearSemesterDropdownContainer from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
-
+import { type FilterSectionsProps } from '../../../../api/sectionfilter/fetchFilteredSections';
 type Mode = 'small' | 'large';
 
 interface CourseFilterProps {
-  onFilterChange: (filters: {
-    term: string;
-    searchQuery: string;
-    deptCode: string;
-    type: string;
-  }) => void;
+  onFilterChange: (filters: FilterSectionsProps) => void;
   mode?: Mode;
 }
 
-export default function CourseFilter({
+export interface DeptCodeCourseNumSectionYearSemesterProps {
+  deptCode : string | null;
+  courseNum : string | null;
+  section : string | null;
+  year: number | null;
+  semester : string | null;
+}
+
+export interface SearchTimes{
+  startTime : string | null;
+  endTime : string |null;
+}
+
+export default function SectionFilter({
   onFilterChange,
   mode = 'small',
 }: CourseFilterProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [type, setType] = useState('');
+  const [name, setName] = useState<string | null>(null);
+  const [type, setType] = useState<string | null >(null);
+  const [day, setDay] = useState<string | null>(null);
+  const [times, setTimes] = useState<SearchTimes>({startTime:null, endTime:null});
+  const [dCCNSYS, setdCCNSYS] = useState<DeptCodeCourseNumSectionYearSemesterProps>({
+    deptCode: null,
+    courseNum: null,
+    section: null,
+    year:  null,
+    semester: null,
+  });
 
   const handleFilter = () => {
-    onFilterChange({ term: '', searchQuery, deptCode: '', type });
+    onFilterChange({ 
+      deptCode : dCCNSYS.deptCode,
+      name : name,
+      courseNum : dCCNSYS.courseNum,
+      section : dCCNSYS.section ,
+      year : dCCNSYS.year,
+      semester : dCCNSYS.semester,
+      type : type,
+      day : day,
+      startTime : times.startTime,
+      endTime : times.endTime
+    });
   };
 
   const smallStyle = "mt-1 block w-full rounded border border-gray-400 px-2 py-1"
@@ -38,8 +66,8 @@ export default function CourseFilter({
       <input
         type="text"
         placeholder="Search... e.g. '2024', '001', '121', 'L01', 'COSC 111 001'"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        value={name ?? ""}
+        onChange={(e) => setName(e.target.value)}
         className={mode === "small" ? "px-2 py-1 border rounded-md w-full" : "px-3 py-2 border rounded-md w-full"}
       />
 
@@ -51,6 +79,7 @@ export default function CourseFilter({
               <DeptCodeCourseNumSectionYearSemesterDropdownContainer
                 allExistingDeptCodes={allDeptCodes}
                 mode={mode}
+                onChange={(partial) => setdCCNSYS(prev => ({ ...prev, ...partial }))}
               />
             )}
           />
@@ -58,7 +87,7 @@ export default function CourseFilter({
 
         <div className={mode === 'small'?"grid grid-cols-1 gap-2":"flex gap-5"}>
           <select
-            value={type}
+            value={type ?? ""}
             onChange={(e) => setType(e.target.value)}
             className={smallOrBig}
           >
@@ -67,8 +96,8 @@ export default function CourseFilter({
               <option key={t} value={t}>{t}</option>
             ))}
           </select>
-          <DaySelector mode={mode} />
-          <TimeSelector mode={mode} />
+          <DaySelector mode={mode} onChange={setDay}/>
+          <TimeSelector mode={mode} onChange={setTimes}/>
         </div>
       </div>
 

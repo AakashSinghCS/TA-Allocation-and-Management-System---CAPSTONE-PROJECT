@@ -2,6 +2,11 @@ package com.infinity.courseservice.enums;
 
 public enum SectionType {
     LECTURE,
-    LAB,
-    TUTORIAL
+    LABORATORY,
+    TUTORIAL,
+    DISCUSSION,
+    SEMINAR,
+    WORKSHOP,
+    EXPERENTIAL,
+    INDEPENDENT_STUDY
 }

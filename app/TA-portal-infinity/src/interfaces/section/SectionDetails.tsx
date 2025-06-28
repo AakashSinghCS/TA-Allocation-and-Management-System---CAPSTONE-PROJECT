@@ -1,14 +1,14 @@
 import type { Course } from "../course/Course"
 
 export type SectionType =
-    | "Lecture"
-    | "Tutorial"
-    | "Laboratory"
-    | "Discussion"
-    | "Seminar"
-    | "Workshop"
-    | "Experential"
-    | "Independent Study"
+    | "LECTURE"
+    | "TUTORIAL"
+    | "LABORATORY"
+    | "DISCUSSION"
+    | "SEMINAR"
+    | "WORKSHOP"
+    | "EXPERENTIAL"
+    | "INDEPENDENT_STUDY"
 
 export interface SectionDetails extends Course{
     sectionId?: number,
@@ -19,12 +19,12 @@ export interface SectionDetails extends Course{
 }
 
 export const sectionTypeOptions: SectionType[] = [
-  "Lecture",
-  "Tutorial",
-  "Laboratory",
-  "Discussion",
-  "Seminar",
-  "Workshop",
-  "Experential",
-  "Independent Study"
+  "LECTURE",
+  "TUTORIAL",
+  "LABORATORY",
+  "DISCUSSION",
+  "SEMINAR",
+  "WORKSHOP",
+  "EXPERENTIAL",
+  "INDEPENDENT_STUDY"
 ];

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import CourseFilter from './CourseFilter';
+import SectionFilter from './SectionFilter';
 import { MemoryRouter } from "react-router-dom";
 
 // Mock the dept-code fetch so GenericAPIContainer resolves immediately
@@ -9,7 +9,7 @@ vi.mock('../../../api/sectionfilter/fetchAllExsitingDeptCodes', () => ({
   fetchAllExistingDeptCodes: () => Promise.resolve([]),
 }));
 
-describe('CourseFilter', () => {
+describe('SectionFilter', () => {
   let onFilterChange: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe('CourseFilter', () => {
   });
 
   it('calls onFilterChange with correct values when Filter is clicked', () => {
-    render(<MemoryRouter><CourseFilter onFilterChange={onFilterChange} mode="small" /></MemoryRouter>);
+    render(<MemoryRouter><SectionFilter onFilterChange={onFilterChange} mode="small" /></MemoryRouter>);
 
     // Type into the search input
     const input = screen.getByPlaceholderText(/Search\.\.\./i);

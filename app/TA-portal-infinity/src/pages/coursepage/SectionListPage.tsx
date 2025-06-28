@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import SectionList from '../../components/features/course/sectionlist/SectionList';
-import CourseFilter from '../../components/features/course/coursefilter/CourseFilter';
+import SectionFilter from '../../components/features/course/coursefilter/SectionFilter';
 import type Section from '../../interfaces/section/Section';
-import { fetchFilteredSections, type filterSectionsProps } from '../../api/sectionfilter/fetchFilteredSections';
+import { fetchFilteredSections, type FilterSectionsProps } from '../../api/sectionfilter/fetchFilteredSections';
+
 
 export default function SectionListPage() {
   const navigate = useNavigate();
-  const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
+  const [filteredSections, setFilteredSections] = useState<FilterSectionsProps[] | null>([]);
   const [loading, setLoading] = useState(false);
 
-  const handleFilterChange = async (filters: filterSectionsProps) => {
+  const handleFilterChange = async (filters: FilterSectionsProps) => {
     setLoading(true);
     try {
       const data = await fetchFilteredSections(filters);
+      console.log(data);
       setFilteredSections(data);
     } catch (e) {
       navigate('/error', { replace: true, state: { message: (e as Error).message } });
@@ -50,7 +52,7 @@ export default function SectionListPage() {
         </div>
 
         <div className="border p-4 rounded-md shadow-sm mb-4">
-          <CourseFilter onFilterChange={handleFilterChange} mode="large" />
+          <SectionFilter onFilterChange={handleFilterChange} mode="large" />
         </div>
 
         {loading ? <p>Loading courses…</p> : <SectionList sections={filteredSections} />}

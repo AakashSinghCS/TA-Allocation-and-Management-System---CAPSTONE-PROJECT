@@ -1,4 +1,5 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import { type SearchTimes } from "../../features/course/coursefilter/SectionFilter";
 
 export const timeOptions: string[] = [
   "00:00", "00:30", "01:00", "01:30", "02:00", "02:30",
@@ -11,12 +12,21 @@ export const timeOptions: string[] = [
   "21:00", "21:30", "22:00", "22:30", "23:00", "23:30"
 ];
 
-export default function TimeSelector({ mode }: { mode: string }) {
-  const [startTime, setStartTime] = React.useState<string | null>(null);
-  const [endTime, setEndTime] = React.useState<string | null>(null);
+interface TimeSelectorProps {
+  mode :string;
+  onChange : (val : SearchTimes)=> void;
+}
+
+export default function TimeSelector({ mode, onChange }: TimeSelectorProps) {
+  const [startTime, setStartTime] = useState<string | null>(null);
+  const [endTime, setEndTime] = useState<string | null>(null);
   const smallStyle = "mt-1 block w-full rounded border border-gray-400 px-2 py-1"
   const bigStyle = "mt-1 block w-full rounded border border-gray-400 px-3 py-2"
   const smallOrBig = `${mode === 'small' ? smallStyle : bigStyle}`
+
+  useEffect(()=>{
+    onChange({startTime: startTime ?? "", endTime:endTime ?? ""})
+  },[startTime,endTime])
 
   return (
     <>
