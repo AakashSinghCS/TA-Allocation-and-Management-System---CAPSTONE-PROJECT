@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalTime;
@@ -20,7 +21,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
+import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -233,4 +236,77 @@ public class SectionServiceTest {
         assertEquals("AI", result.get(1).course().name());
     }
 
+
+    @Test
+    void add_WithNewCourseAndSchedule_ReturnsTrue() {
+        // Arrange
+        SectionAddDtoRequest req = new SectionAddDtoRequest(
+            "COSC",                      // deptCode
+            "Intro to CS",              // name
+            "111",                      // courseNum
+            "001",                      // section
+            SectionType.LECTURE,         // type
+            2024,                        // year
+            "W1",                       // semester
+            List.of(new SectionScheduleDto(
+                "Monday",
+                LocalTime.of(8, 0),
+                LocalTime.of(9, 30),
+                null                        // sectionId
+            )),
+            42L                          // instructorId
+        );
+
+        // No existing course
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111"))
+            .thenReturn(Optional.empty());
+        // Saving a new course
+        Course savedCourse = new Course("COSC", "Intro to CS", "111");
+        savedCourse.setId(1L);
+        when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);
+
+        // Saving section
+        Section savedSection = new Section(
+            2024,
+            "W1",
+            "001",
+            SectionType.LECTURE,
+            42L,
+            savedCourse
+        );
+        savedSection.setId(2L);
+        when(sectionRepository.save(any(Section.class))).thenReturn(savedSection);
+
+        // Act
+        boolean result = sectionService.add(req);
+
+        // Assert
+        assertTrue(result);
+        verify(courseRepository).save(any(Course.class));
+        verify(sectionRepository).save(any(Section.class));
+        verify(sectionScheduleRepository).save(any(SectionSchedule.class));
+    }
+
+    @Test
+    void add_WithBlankDeptOrCourseNum_ThrowsBadRequest() {
+        // Arrange: blank deptCode/courseNum
+        SectionAddDtoRequest req = new SectionAddDtoRequest(
+            "   ",    // deptCode blank
+            null,
+            "   ",    // courseNum blank
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        );
+
+        // Act & Assert
+        BadRequestException ex = assertThrows(
+            BadRequestException.class,
+            () -> sectionService.add(req)
+        );
+        assertTrue(ex.getMessage().contains("Both deptCode and courseNum are required"));
+    }
 }
