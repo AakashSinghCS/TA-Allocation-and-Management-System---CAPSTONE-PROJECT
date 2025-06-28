@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import DaySelector from '../../ui/dayselector/DaySelector';
-import TimeSelector from '../../ui/timeselector/TimeSelector';
-import { GenericAPIContainer } from '../../../utility/genericapicontainer/GenericAPIContainer';
-import { fetchAllExistingDeptCodes } from '../../../api/sectionfilter/fetchAllExsitingDeptCodes';
-import { sectionTypeOptions } from '../../../interfaces/section/SectionDetails';
-import DeptCodeCourseNumSectionYearSemesterDropdownContainer from './deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
+import DaySelector from '../../../ui/dayselector/DaySelector';
+import TimeSelector from '../../../ui/timeselector/TimeSelector';
+import { GenericAPIContainer } from '../../../../utility/genericapicontainer/GenericAPIContainer';
+import { fetchAllExistingDeptCodes } from '../../../../api/sectionfilter/fetchAllExsitingDeptCodes';
+import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
+import DeptCodeCourseNumSectionYearSemesterDropdownContainer from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
 
 type Mode = 'small' | 'large';
 
