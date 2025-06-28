@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
 const daysOfWeek: string[] = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday"
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",
+  "Sun"
 ];
 
 interface DaySelectorProps {

@@ -8,13 +8,14 @@ import { fetchFilteredSections, type FilterSectionsProps } from '../../api/secti
 export default function SectionListPage() {
   const navigate = useNavigate();
   const [filteredSections, setFilteredSections] = useState<FilterSectionsProps[] | null>([]);
-  const [loading, setLoading] = useState(false);
+  const [lastFilters, setLastFilters]         = useState<FilterSectionsProps | null>(null);
+  const [loading, setLoading]                 = useState(false);
 
   const handleFilterChange = async (filters: FilterSectionsProps) => {
     setLoading(true);
+    setLastFilters(filters);
     try {
       const data = await fetchFilteredSections(filters);
-      console.log(data);
       setFilteredSections(data);
     } catch (e) {
       navigate('/error', { replace: true, state: { message: (e as Error).message } });
@@ -23,39 +24,35 @@ export default function SectionListPage() {
     }
   };
 
-  useEffect(() => {
-    // handleFilterChange({ term: '', searchQuery: '', deptCode: '', type: '' });
-  }, []);
+  // this will be passed down to <SectionList> and called after delete
+  const handleDeleted = () => {
+    if (lastFilters) {
+      void handleFilterChange(lastFilters);
+    }
+  };
 
   return (
     <div className="container mx-auto p-4">
-      <div className="mb-6">
-        {/* <button
-          onClick={() => navigate('/')}
-          className="text-sm font-semibold text-slate-600 hover:text-slate-800 flex items-center mb-2"
-        >
-          <span aria-hidden="true" className="text-lg mr-1">←</span>
-          <span>Back to Home</span>
-        </button> */}
-      </div>
-
-      <div>
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-xl font-semibold">Search for a Section</h1>
+      <div className="flex justify-between items-center mb-4">
+          <h1 className="text-xl font-semibold">Search for a Section or Course</h1>
           <Link
             to="/user/coordinator/sections/add"
             className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
           >
-            Add New Section
+            Add New Section or Course
           </Link>
         </div>
-
-        <div className="border p-4 rounded-md shadow-sm mb-4">
-          <SectionFilter onFilterChange={handleFilterChange} mode="large" />
-        </div>
-
-        {loading ? <p>Loading courses…</p> : <SectionList sections={filteredSections} />}
+      <div className="border p-4 rounded-md shadow-sm mb-4">
+        <SectionFilter onFilterChange={handleFilterChange} mode="large" />
       </div>
+
+      {loading
+        ? <p>Loading courses…</p>
+        : <SectionList
+            sections={filteredSections}
+            onDeleted={handleDeleted}
+          />
+      }
     </div>
   );
 }

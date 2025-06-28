@@ -65,7 +65,7 @@ export default function SectionFilter({
     <div className={mode === 'small' ? "space-y-1 text-sm" : "space-y-4"}>
       <input
         type="text"
-        placeholder="Search... e.g. '2024', '001', '121', 'L01', 'COSC 111 001'"
+        placeholder="Search course name (e.g. 'Introduction to ...') "
         value={name ?? ""}
         onChange={(e) => setName(e.target.value)}
         className={mode === "small" ? "px-2 py-1 border rounded-md w-full" : "px-3 py-2 border rounded-md w-full"}

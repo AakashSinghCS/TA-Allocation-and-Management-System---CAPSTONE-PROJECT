@@ -110,7 +110,7 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
             }))
           }}
         />
-        <span>Is Course (no section schedule)</span>
+        <span>Create a course</span>
       </label>
 
       {/* always enabled */}
