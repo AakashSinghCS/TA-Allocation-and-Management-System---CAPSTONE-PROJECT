@@ -982,5 +982,111 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Complete the backend offer workflow for allocation and begin next assigned coding task.
 
-=======
->>>>>>> logs
+## Wednesday 6/25 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.25.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Offer Workflow - Backend
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 100% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: mappings for accept/deny offer are complete along with the relevant services. Controllers and services fully complete as well.
+What didn't go well: Everything went well.
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
+## Thursday 6/26 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.26.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Offer Workflow - Backend
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 95% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I ran into a bug when trying to run the microservice. It took me a long time to figure out but i was able to get it done. I have submitted a PR on github and am waiting for my teammates to provide feedback.
+What didn't go well: Everything went well.
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
+## Friday 6/27 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/6.27.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Workflow - Backend
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 50% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met up with the team today morning on discord and we decided not to keep the offer table since it served no additional functionality opposed to what we had planned initially. I will have to go through my pr and modify accordingly. We decided to create an allocation when the allocate student button is clicked setting the isConfirmed field to false and creating additional mappings in the allocation controller itself to change the isCompleted to true upon offer acceptation.
+What didn't go well: I would've appreciated it if my team members had notified me of this change before i submitted a PR. I have to change the entire workflow from scratch now. But it's okay, i should hopefully be done with this by tomorrow. 
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
