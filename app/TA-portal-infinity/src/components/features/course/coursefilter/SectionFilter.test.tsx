@@ -20,18 +20,24 @@ describe('SectionFilter', () => {
     render(<MemoryRouter><SectionFilter onFilterChange={onFilterChange} mode="small" /></MemoryRouter>);
 
     // Type into the search input
-    const input = screen.getByPlaceholderText(/Search\.\.\./i);
-    fireEvent.change(input, { target: { value: 'COSC 111' } });
+    const input = screen.getByPlaceholderText(/Search/i);
+    fireEvent.change(input, { target: { value: 'Intro...' } });
 
     // Click the Filter button
     fireEvent.click(screen.getByRole('button', { name: /filter/i }));
 
     // Expect onFilterChange to have been called with the current searchQuery and defaults
     expect(onFilterChange).toHaveBeenCalledWith({
-      term: '',
-      searchQuery: 'COSC 111',
-      deptCode: '',
-      type: '',
+     "courseNum": null,
+     "day": null,
+     "deptCode": null,
+     "endTime": "",
+     "name": "Intro...",
+     "section": null,
+     "semester": null,
+     "startTime": "",
+     "type": null,
+     "year": null,
     });
   });
 });

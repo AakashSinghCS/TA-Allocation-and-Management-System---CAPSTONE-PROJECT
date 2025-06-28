@@ -4,7 +4,7 @@ import TimeSelector, { timeOptions } from '../timeselector/TimeSelector';
 
 describe('TimeSelector', () => {
   it('renders start and end time selects with options and allows selection', () => {
-    render(<TimeSelector mode="small" />);
+    render(<TimeSelector mode="small" onChange={vi.fn()}/>);
 
     const selects = screen.getAllByRole('combobox');
     expect(selects).toHaveLength(2);
@@ -28,7 +28,7 @@ describe('TimeSelector', () => {
   });
 
   it('applies correct padding for large mode', () => {
-    render(<TimeSelector mode="large" />);
+    render(<TimeSelector mode="large" onChange={vi.fn()}/>);
 
     const selects = screen.getAllByRole('combobox');
     selects.forEach((sel) => {

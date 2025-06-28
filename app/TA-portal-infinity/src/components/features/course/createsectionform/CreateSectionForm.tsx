@@ -115,8 +115,9 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
 
       {/* always enabled */}
       <div>
-        <label>Name</label>
+        <label htmlFor='name'>Name</label>
         <input
+        id="name"
           value={form.name ?? ""}
           onChange={e => handleChange('name', e.target.value)}
           className="w-full border rounded px-2 py-1"
@@ -124,8 +125,9 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
         />
       </div>
       <div>
-        <label>Dept Code</label>
+        <label htmlFor="deptCode">Dept Code</label>
         <input
+        id="deptCode"
           value={form.deptCode}
           onChange={e =>
             handleChange('deptCode', e.target.value)
@@ -135,8 +137,9 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
         />
       </div>
       <div>
-        <label>Course Num</label>
+        <label htmlFor='courseNum'>Course Num</label>
         <input
+        id="courseNum"
           value={form.courseNum}
           onChange={e =>
             handleChange('courseNum', e.target.value)
@@ -149,8 +152,9 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
       {/* everything below is disabled when isCourse===true */}
       <fieldset disabled={disabled} className="space-y-4">
         <div>
-          <label>Section Code</label>
+          <label htmlFor='sectionCode'>Section Code</label>
           <input
+          id="sectionCode"
             value={form.section ?? ""}
             onChange={e =>
               handleChange('section', e.target.value)
@@ -160,8 +164,9 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
           />
         </div>
         <div>
-          <label>Year</label>
+          <label htmlFor='year'>Year</label>
           <input
+          id='year'
             type="number"
             value={form.year ?? ''}
             onChange={e =>
@@ -177,8 +182,9 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
           />
         </div>
         <div>
-          <label>Semester</label>
+          <label htmlFor="semester">Semester</label>
           <select
+            id="semester"
             value={form.semester ?? ""}
             onChange={e =>
               handleChange('semester', e.target.value)
@@ -193,8 +199,9 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
           </select>
         </div>
         <div>
-          <label>Section Type</label>
+          <label htmlFor='type'>Section Type</label>
           <select
+          id="type"
             value={form.type ?? ""}
             onChange={(e) => {
               const val = e.target.value;
@@ -212,8 +219,9 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
           </select>
         </div>
         <div>
-          <label>Instructor ID</label>
+          <label htmlFor='instructorId'>Instructor ID</label>
           <input
+            id="instructorId"
             type="number"
             value={form.instructorId ?? ''}
             onChange={e =>
