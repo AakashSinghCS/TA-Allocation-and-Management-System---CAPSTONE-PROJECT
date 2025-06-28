@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import SectionList from '../../components/features/course/sectionlist/SectionList';
 import SectionFilter from '../../components/features/course/coursefilter/SectionFilter';
-import type Section from '../../interfaces/section/Section';
 import { fetchFilteredSections, type FilterSectionsProps } from '../../api/sectionfilter/fetchFilteredSections';
 
 

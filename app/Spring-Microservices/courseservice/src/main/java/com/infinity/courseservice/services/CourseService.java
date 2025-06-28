@@ -3,6 +3,7 @@ package com.infinity.courseservice.services;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.hc.core5.http.NotImplementedException;
@@ -46,32 +47,40 @@ public class CourseService {
 
     @Transactional
     public CourseDto addCourse(CourseRequest request) {
-        Course course = new Course(request.deptCode(), request.name(), request.courseNum());
+        String deptCode = Optional.ofNullable(request.deptCode()).orElse("").trim();
+        String name = Optional.ofNullable(request.name()).orElse("").trim();
+        String courseNum = Optional.ofNullable(request.courseNum()).orElse("").trim();
+
+        if (deptCode.isEmpty() || courseNum.isEmpty()) {
+            throw new BadRequestException("Department code and course number are required.");
+        }
+        Course course = new Course(deptCode, name, courseNum);
         try {
             courseRepository.save(course);
         } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException("Course already exists " + ex);
         }
-        
+
         return new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum());
     }
-    
+
     public CourseDto findCourse(Long id) {
-        Course course = courseRepository.findById(id).orElseThrow(() -> new NotFoundException("Course with ID " + id + " not found"));
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Course with ID " + id + " not found"));
         return new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum());
     }
 
     public List<CourseDto> findCoursesByIds(List<Long> ids) {
         List<Course> courses = courseRepository.findAllById(ids);
         return courses.stream().map(course -> new CourseDto(
-               course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum())).toList();
+                course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum())).toList();
     }
 
     public List<CourseSectionScheduleDto> filterCourses(CourseFilterRequest filter) {
         return courseRepository.courseFilter(filter.deptCode(), filter.courseNum(), filter.name(), filter.section(),
                 filter.year(), filter.semester(), filter.type(), filter.day(), filter.startTime(), filter.endTime());
     }
-    
+
     public CourseNeedAndAllocations getCourseNeedAndAllocations(Long courseId, Integer year, String semester) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
@@ -82,44 +91,41 @@ public class CourseService {
         return new CourseNeedAndAllocations(courseDto, need, allocations);
 
     }
-    
+
     public List<CourseNeedAndAllocations> getInstructorCourseNeedsAndAllocations(Long instructorId) {
-    List<SectionDto> sections = sectionService.getInstructorSections(instructorId);
+        List<SectionDto> sections = sectionService.getInstructorSections(instructorId);
 
-    Set<String> uniqueKeys = new HashSet<>();
-    List<CourseNeedAndAllocations> result = new ArrayList<>();
+        Set<String> uniqueKeys = new HashSet<>();
+        List<CourseNeedAndAllocations> result = new ArrayList<>();
 
-    for (SectionDto section : sections) {
-        Long courseId = section.course().id();
-        Integer year = section.year();
-        String semester = section.semester();
+        for (SectionDto section : sections) {
+            Long courseId = section.course().id();
+            Integer year = section.year();
+            String semester = section.semester();
 
-        String key = courseId + "-" + year + "-" + semester;
+            String key = courseId + "-" + year + "-" + semester;
 
-        if (!uniqueKeys.contains(key)) {
-            uniqueKeys.add(key);
-            try {
-                CourseNeedAndAllocations entry = getCourseNeedAndAllocations(courseId, year, semester);
-                result.add(entry);
-            } catch (NotFoundException ignored) {
+            if (!uniqueKeys.contains(key)) {
+                uniqueKeys.add(key);
+                try {
+                    CourseNeedAndAllocations entry = getCourseNeedAndAllocations(courseId, year, semester);
+                    result.add(entry);
+                } catch (NotFoundException ignored) {
+                }
             }
         }
+
+        return result;
     }
 
-    return result;
-}
-
-
-
-
-
     // public List<CourseDto> getEnrolledCourses(Integer studentId) {
-    //     UserDto user = userInterface.getStudentById(studentId).getBody();
-    //     if(user == null){
-    //         throw new NotFoundException("User with student number " + studentId + " not found");
-    //     }
-    //     List<Long> courseIds = enrollmentService.getCourseEnrollments(user.id());
-    //     return findCoursesByIds(courseIds);
+    // UserDto user = userInterface.getStudentById(studentId).getBody();
+    // if(user == null){
+    // throw new NotFoundException("User with student number " + studentId + " not
+    // found");
     // }
-    
+    // List<Long> courseIds = enrollmentService.getCourseEnrollments(user.id());
+    // return findCoursesByIds(courseIds);
+    // }
+
 }

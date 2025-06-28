@@ -79,8 +79,8 @@ public class CourseControllerTest {
     void testFilterCourses() throws Exception {
         CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", "systems", null, null, 2024, "W1", null, null,
                 LocalTime.of(14, 00), null);
-        CourseSectionScheduleDto dto = new CourseSectionScheduleDto(1L,"COSC", "Distributed Systems", "455", "001",
-                2024, "W1", SectionType.LAB, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
+        CourseSectionScheduleDto dto = new CourseSectionScheduleDto(1L,1L,"COSC", "Distributed Systems", "455", "001",
+                2024, "W1", SectionType.LABORATORY, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30), false);
 
         when(courseService.filterCourses(any(CourseFilterRequest.class)))
                 .thenReturn(List.of(dto));
@@ -139,7 +139,7 @@ void testGetCourseNeedAndAllocations() throws Exception {
     new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),
                     new OfferDto(101L, true, "Lab marking"),
                     true, 10,
-        new SectionDtoNoCourse(5L, 2025, "W1", "001", SectionType.LAB)
+        new SectionDtoNoCourse(5L, 2025, "W1", "001", SectionType.LABORATORY)
     );
 
     CourseNeedAndAllocations response = new CourseNeedAndAllocations(course, need, List.of(alloc));

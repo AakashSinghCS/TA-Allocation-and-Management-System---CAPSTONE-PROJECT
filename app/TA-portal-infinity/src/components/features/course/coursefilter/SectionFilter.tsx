@@ -3,7 +3,7 @@ import DaySelector from '../../../ui/dayselector/DaySelector';
 import TimeSelector from '../../../ui/timeselector/TimeSelector';
 import { GenericAPIContainer } from '../../../../utility/genericapicontainer/GenericAPIContainer';
 import { fetchAllExistingDeptCodes } from '../../../../api/sectionfilter/fetchAllExsitingDeptCodes';
-import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
+import { sectionTypeOptions, type SectionType } from '../../../../interfaces/section/SectionDetails';
 import DeptCodeCourseNumSectionYearSemesterDropdownContainer from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
 import { type FilterSectionsProps } from '../../../../api/sectionfilter/fetchFilteredSections';
 type Mode = 'small' | 'large';
@@ -14,16 +14,16 @@ interface CourseFilterProps {
 }
 
 export interface DeptCodeCourseNumSectionYearSemesterProps {
-  deptCode : string | null;
-  courseNum : string | null;
-  section : string | null;
+  deptCode: string | null;
+  courseNum: string | null;
+  section: string | null;
   year: number | null;
-  semester : string | null;
+  semester: string | null;
 }
 
-export interface SearchTimes{
-  startTime : string | null;
-  endTime : string |null;
+export interface SearchTimes {
+  startTime: string | null;
+  endTime: string | null;
 }
 
 export default function SectionFilter({
@@ -31,35 +31,35 @@ export default function SectionFilter({
   mode = 'small',
 }: CourseFilterProps) {
   const [name, setName] = useState<string | null>(null);
-  const [type, setType] = useState<string | null >(null);
+  const [type, setType] = useState<SectionType | null>(null);
   const [day, setDay] = useState<string | null>(null);
-  const [times, setTimes] = useState<SearchTimes>({startTime:null, endTime:null});
+  const [times, setTimes] = useState<SearchTimes>({ startTime: null, endTime: null });
   const [dCCNSYS, setdCCNSYS] = useState<DeptCodeCourseNumSectionYearSemesterProps>({
     deptCode: null,
     courseNum: null,
     section: null,
-    year:  null,
+    year: null,
     semester: null,
   });
 
   const handleFilter = () => {
-    onFilterChange({ 
-      deptCode : dCCNSYS.deptCode,
-      name : name,
-      courseNum : dCCNSYS.courseNum,
-      section : dCCNSYS.section ,
-      year : dCCNSYS.year,
-      semester : dCCNSYS.semester,
-      type : type,
-      day : day,
-      startTime : times.startTime,
-      endTime : times.endTime
+    onFilterChange({
+      deptCode: dCCNSYS.deptCode,
+      name: name,
+      courseNum: dCCNSYS.courseNum,
+      section: dCCNSYS.section,
+      year: dCCNSYS.year,
+      semester: dCCNSYS.semester,
+      type: type,
+      day: day,
+      startTime: times.startTime,
+      endTime: times.endTime
     });
   };
 
   const smallStyle = "mt-1 block w-full rounded border border-gray-400 px-2 py-1"
-  const bigStyle ="mt-1 block w-full rounded border border-gray-400 px-3 py-2"
-  const smallOrBig = `${mode ==='small'?smallStyle:bigStyle}`
+  const bigStyle = "mt-1 block w-full rounded border border-gray-400 px-3 py-2"
+  const smallOrBig = `${mode === 'small' ? smallStyle : bigStyle}`
 
   return (
     <div className={mode === 'small' ? "space-y-1 text-sm" : "space-y-4"}>
@@ -71,7 +71,7 @@ export default function SectionFilter({
         className={mode === "small" ? "px-2 py-1 border rounded-md w-full" : "px-3 py-2 border rounded-md w-full"}
       />
 
-      <div className={mode === 'small'?"grid grid-cols-2 gap-2": "grid grid-rows-2 gap-4"}>
+      <div className={mode === 'small' ? "grid grid-cols-2 gap-2" : "grid grid-rows-2 gap-4"}>
         <div className="">
           <GenericAPIContainer<string[] | null>
             fetchFunction={fetchAllExistingDeptCodes}
@@ -85,10 +85,13 @@ export default function SectionFilter({
           />
         </div>
 
-        <div className={mode === 'small'?"grid grid-cols-1 gap-2":"flex gap-5"}>
+        <div className={mode === 'small' ? "grid grid-cols-1 gap-2" : "flex gap-5"}>
           <select
             value={type ?? ""}
-            onChange={(e) => setType(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value;
+              setType(val === "" ? null : val as SectionType);
+            }}
             className={smallOrBig}
           >
             <option value="">All Types</option>
@@ -96,8 +99,8 @@ export default function SectionFilter({
               <option key={t} value={t}>{t}</option>
             ))}
           </select>
-          <DaySelector mode={mode} onChange={setDay}/>
-          <TimeSelector mode={mode} onChange={setTimes}/>
+          <DaySelector mode={mode} onChange={setDay} />
+          <TimeSelector mode={mode} onChange={setTimes} />
         </div>
       </div>
 

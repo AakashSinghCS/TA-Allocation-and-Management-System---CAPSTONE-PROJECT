@@ -133,7 +133,7 @@ public class SectionControllerTest {
                 List<SectionDto> sections = List.of(
                                 new SectionDto(10L, 2025, "W1", "001", SectionType.LECTURE,
                                                 new CourseDto(1L, "COSC", "Security", "430")),
-                                new SectionDto(11L, 2025, "W1", "002", SectionType.LAB,
+                                new SectionDto(11L, 2025, "W1", "002", SectionType.LABORATORY,
                                                 new CourseDto(2L, "COSC", "AI", "310")));
 
                 when(sectionService.getInstructorSections(instructorId)).thenReturn(sections);

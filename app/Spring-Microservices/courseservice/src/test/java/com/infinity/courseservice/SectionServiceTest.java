@@ -220,7 +220,7 @@ public class SectionServiceTest {
 
         Section s1 = new Section(2025, "W1", "001", SectionType.LECTURE, course1);
         s1.setId(10L);
-        Section s2 = new Section(2025, "W1", "002", SectionType.LAB, course2);
+        Section s2 = new Section(2025, "W1", "002", SectionType.LABORATORY, course2);
         s2.setId(11L);
 
         List<Section> sections = List.of(s1, s2);
