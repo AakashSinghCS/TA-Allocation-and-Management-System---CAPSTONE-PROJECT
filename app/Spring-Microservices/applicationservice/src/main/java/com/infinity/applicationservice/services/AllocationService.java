@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.infinity.applicationservice.dtos.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.AllocationRequest;
-import com.infinity.applicationservice.dtos.OfferDto;
+import com.infinity.applicationservice.dtos.ApplicationDto;
+import com.infinity.applicationservice.dtos.AvailabilityDto;
 import com.infinity.applicationservice.dtos.SectionDto;
 import com.infinity.applicationservice.dtos.StudentDto;
 import com.infinity.applicationservice.feign.SectionInterface;
@@ -79,8 +80,7 @@ public class AllocationService {
 
         StudentDto student = studentInterface.getStudentById(request.studentId()).getBody();
         SectionDto section = sectionInterface.getSectionById(request.sectionId());
-        OfferDto offerDto = saved.getOffer() != null ? new OfferDto(saved.getOffer().getId(),
-            saved.getOffer().isAccepted(), saved.getOffer().getDescription()) : null;
+        
 
         ApplicationDto applicationDto = new ApplicationDto(
                 application.getStudentId(),
