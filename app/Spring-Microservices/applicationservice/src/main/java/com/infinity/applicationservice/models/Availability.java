@@ -1,6 +1,5 @@
 package com.infinity.applicationservice.models;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -38,11 +37,11 @@ public class Availability {
 
     @Column(nullable = false)
     @JsonFormat(pattern = "HH:mm")
-    private LocalDateTime startTime;
+    private LocalTime startTime;
 
     @Column(nullable = false)
     @JsonFormat(pattern = "HH:mm")
-    private LocalDateTime endTime;
+    private LocalTime endTime;
 
     @ManyToOne
     @JoinColumn(name = "application_id", nullable = false)

@@ -47,11 +47,7 @@ public class ApplicationServiceTest {
     @BeforeAll
     static void setUp() {
         availabilities = new HashSet<>();
-        availabilities.add(new AvailabilityDto(
-            Day.MONDAY,
-            LocalDateTime.of(2025, 1, 1, 9, 0),
-            LocalDateTime.of(2025, 1, 1, 10, 0)
-        ));
+        availabilities.add(new AvailabilityDto(Day.MONDAY,"09:00","10:00"));
     }
     
 
@@ -70,7 +66,7 @@ public class ApplicationServiceTest {
     @Test
     void testSubmitApplication_MissingAvailabilityFields_BadRequest() {
         Set<AvailabilityDto> badAvailabilities = new HashSet<>();
-        badAvailabilities.add(new AvailabilityDto(null, LocalDateTime.of(2025, 1, 1, 10, 0),LocalDateTime.of(2025, 1, 1, 9, 0)));
+        badAvailabilities.add(new AvailabilityDto(null, "10:00","9:00"));
         ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6,
                 badAvailabilities);
 
@@ -85,7 +81,7 @@ public class ApplicationServiceTest {
     @Test
     void testSubmitApplication_BadAvailability_BadRequest() {
         Set<AvailabilityDto> badAvailabilities = new HashSet<>();
-        badAvailabilities.add(new AvailabilityDto(Day.MONDAY, LocalDateTime.of(2025, 1, 1, 10, 0), LocalDateTime.of(2025, 1, 1, 9, 0)));
+        badAvailabilities.add(new AvailabilityDto(Day.MONDAY, "10:00","09:00"));
         ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6,
                 badAvailabilities);
 
