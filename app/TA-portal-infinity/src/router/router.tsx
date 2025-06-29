@@ -28,6 +28,9 @@ import InstructorQualificationPage from "../pages/instructorprofilepage/qualific
 import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
 import ForgotPasswordPage from "../pages/forgotpasswordpage/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/resetpasswordpage/ResetPasswordPage";
+import SectionListPage from "../pages/coursepage/SectionListPage";
+import AddSectionPage from "../pages/coursepage/AddSectionPage";
+
 
 export const router = createBrowserRouter([
   {
@@ -85,6 +88,8 @@ export const router = createBrowserRouter([
         children: [
           { path: "home", element: <CoordinatorHomePage /> },
           { path: "questions", element: < CoordinatorQuestionnairePage/> },
+          { path: "sections", element: < SectionListPage/> },
+          { path: "sections/add", element: < AddSectionPage/> },
           {path: "allocation", element: <AllocationPage />},
           { path: "student/questions/:studentId", element: < TaQuestionnairePage/> }, //TEMPORARY for development
           { path: "error", element: <ErrorPage /> },

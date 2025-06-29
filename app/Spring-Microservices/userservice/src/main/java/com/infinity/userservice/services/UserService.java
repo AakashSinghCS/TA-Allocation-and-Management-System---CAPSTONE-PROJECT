@@ -45,6 +45,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final Validator validator;
 
+
     public UserDto register(RegisterRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new BadRequestException("An account with this email already exists");
@@ -85,7 +86,6 @@ public class UserService {
             Map<String, Object> payload) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
-
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_ADMIN")) {
             throw new AuthorizationException("Not allowed");
         }
@@ -114,6 +114,7 @@ public class UserService {
             String hashedPassword = passwordEncoder.encode(req.password());
             student.setPassword(hashedPassword);            
         }
+        if (req.studentNum()     != null) student.setStudentNum(req.studentNum());
         if (req.program() != null)
             student.setProgram(req.program());
         if (req.enrollmentYear() != null)

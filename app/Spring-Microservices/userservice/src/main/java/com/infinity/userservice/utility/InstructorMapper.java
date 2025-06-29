@@ -7,14 +7,15 @@ import com.infinity.userservice.models.Instructor;
 
 @Component
 public class InstructorMapper {
-
     public InstructorDto toDto(Instructor instructor) {
         return new InstructorDto(
-                instructor.getId(),
-                instructor.getFirstName(),
-                instructor.getLastName(),
-                instructor.getEmployeeNum(),
-                instructor.getDepartment(),
-                instructor.getCreatedAt());
+            instructor.getId(),
+            instructor.getFirstName(),
+            instructor.getLastName(),
+            instructor.getEmail(),
+            instructor.getEmployeeNum(),
+            instructor.getDepartment(),
+            instructor.getCreatedAt()
+        );
     }
 }

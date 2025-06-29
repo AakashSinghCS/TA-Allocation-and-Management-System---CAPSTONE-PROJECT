@@ -36,7 +36,7 @@ public class InstructorControllerTest {
     void testGetInstructorById() throws Exception {
         Long instructorId = 1L;
         LocalDateTime createdAt = LocalDateTime.of(2023, 1, 1, 10, 0);
-        InstructorDto dto = new InstructorDto(instructorId, "Jane", "Doe", 1234, "Math", createdAt);
+        InstructorDto dto = new InstructorDto(instructorId, "Jane", "Doe", "jane@test.com", 1234, "Math", createdAt);
 
         when(instructorService.getInstructorById(instructorId)).thenReturn(dto);
 

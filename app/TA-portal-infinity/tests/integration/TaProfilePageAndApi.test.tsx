@@ -1,4 +1,3 @@
-// tests/integration/TaProfilePageAndApi.test.tsx
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -8,14 +7,13 @@ import { mockStudentJohnDoe } from '../../src/mocked-objects/user/mockStudents';
 import { mockSectionCOSC111 } from '../../src/mocked-objects/section/mockSectionCOSC111';
 import { mockTaProfileQuestion1 } from '../../src/mocked-objects/profile/mockTaProfileQuestions';
 
-// --- MOCK useAuth so StudentTabNav doesn't blow up ---
 vi.mock('../../src/context/AuthContext', () => ({
   useAuth: () => ({
     token: null,
     login: () => {},
     logout: () => {},
     isAuthenticated: true,
-    userRoles: ['STUDENT'],       // or ['COORDINATOR'] if you need compare tab
+    userRoles: ['STUDENT'],      
     userId: 1,
   }),
 }));
@@ -26,7 +24,7 @@ describe('TaProfilePage — end-to-end integration (with all fetches mocked)', (
   beforeEach(() => {
 
     const profileResponse = new Response(
-      JSON.stringify({ student: mockStudentJohnDoe }),
+      JSON.stringify(mockStudentJohnDoe ),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
 
@@ -45,10 +43,10 @@ describe('TaProfilePage — end-to-end integration (with all fetches mocked)', (
       if (url.includes(`/students/${studentId}`) && url.includes('sections')) { //to be changed later when backend URL is implemented
         return Promise.resolve(sectionResponse);
       }
-      if (url.endsWith(`/students/${studentId}`)) {//to be changed later when backend URL is implemented
+      if (url.endsWith(`/students/${studentId}`)) {
         return Promise.resolve(profileResponse);
       }
-      if (url.endsWith(`/profiles/${studentId}`)) {//to be changed later when backend URL is implemented
+      if (url.endsWith(`/profiles/${studentId}`)) {
         return Promise.resolve(questionResponse);
       }
       return Promise.resolve(new Response('[]', {
