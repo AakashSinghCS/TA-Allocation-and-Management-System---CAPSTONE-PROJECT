@@ -1678,7 +1678,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"isConfirmed\": true,\r\n    \"numberOfHours\": 5,\r\n    \"sectionId\": 1\r\n}"
+							"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"isConfirmed\": false,\r\n    \"numberOfHours\": 5,\r\n    \"sectionId\": 1\r\n}"
 						},
 						"url": {
 							"raw": "localhost:8080/allocations/allocate",
@@ -1746,7 +1746,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMTQ1ODMyLCJleHAiOjE3NTExNDk0MzJ9.nTdM-wf_rIsVIMzDGxsTZiLmojWHVBqDfSUDppXHACZ0Xd-dss039YGGGs1MFUiR",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMjMwODI1LCJleHAiOjE3NTEyMzQ0MjV9.0ddVcfQZvyVUlSMV7ShtTZXwPC1kWM1NDqYdIdG5PgX6W28pCW7MUsJuE05BjoTX",
 									"type": "string"
 								}
 							]
@@ -1761,7 +1761,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"isConfirmed\": true,\r\n    \"numberOfHours\": 5,\r\n    \"sectionId\": 1\r\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "localhost:8080/allocations/1/acceptOffer",
@@ -1786,7 +1786,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMTQ1ODMyLCJleHAiOjE3NTExNDk0MzJ9.nTdM-wf_rIsVIMzDGxsTZiLmojWHVBqDfSUDppXHACZ0Xd-dss039YGGGs1MFUiR",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMjMwODI1LCJleHAiOjE3NTEyMzQ0MjV9.0ddVcfQZvyVUlSMV7ShtTZXwPC1kWM1NDqYdIdG5PgX6W28pCW7MUsJuE05BjoTX",
 									"type": "string"
 								}
 							]
@@ -1801,7 +1801,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"isConfirmed\": true,\r\n    \"numberOfHours\": 5,\r\n    \"sectionId\": 1\r\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "localhost:8080/allocations/1/denyOffer",
