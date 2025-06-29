@@ -57,14 +57,16 @@ public class StudentServiceTest {
                 3);
         mockStudent.setId(1L);
         StudentDto mockDto = new StudentDto(
-                mockStudent.getId(),
-                mockStudent.getFirstName(),
-                mockStudent.getLastName(),
-                mockStudent.getStudentNum(),
-                mockStudent.getProgram(),
-                mockStudent.getEnrollmentYear(),
-                mockStudent.getSchoolYear(),
-                mockStudent.getCreatedAt());
+            mockStudent.getId(), 
+            mockStudent.getFirstName(), 
+            mockStudent.getLastName(), 
+            mockStudent.getEmail(),
+            mockStudent.getStudentNumber(),
+            mockStudent.getProgram(),
+            mockStudent.getEnrollmentYear(),
+            mockStudent.getSchoolYear(),
+            mockStudent.getCreatedAt()
+        );
 
         when(studentRepository.findById(any())).thenReturn(Optional.of(mockStudent));
         when(studentMapper.toDto(mockStudent)).thenReturn(mockDto);

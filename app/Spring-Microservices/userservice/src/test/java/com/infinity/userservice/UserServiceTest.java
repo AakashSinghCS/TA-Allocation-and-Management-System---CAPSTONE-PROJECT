@@ -9,6 +9,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,10 +22,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.userservice.dtos.BaseUserDto;
+import com.infinity.userservice.dtos.CoordinatorDto;
+import com.infinity.userservice.dtos.CoordinatorUpdateRequest;
+import com.infinity.userservice.dtos.InstructorUpdateRequest;
+import com.infinity.userservice.dtos.RegisterRequest;
+import com.infinity.userservice.dtos.StudentDto;
+import com.infinity.userservice.dtos.StudentUpdateRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.Coordinators.CoordinatorUpdateRequest;
 import com.infinity.userservice.dtos.Instructors.InstructorUpdateRequest;
@@ -38,7 +48,9 @@ import com.infinity.userservice.models.Instructor;
 import com.infinity.userservice.models.Role;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
+import com.infinity.userservice.repositories.InstructorRepository;
 import com.infinity.userservice.repositories.RoleRepository;
+import com.infinity.userservice.repositories.StudentRepository;
 import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.services.UserService;
 import com.infinity.userservice.utility.UserMapper;
@@ -51,6 +63,8 @@ public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private StudentRepository studentRepository;
     @Mock
     private UserMapper userMapper;
     @Mock
@@ -82,7 +96,7 @@ public class UserServiceTest {
                 false);
 
         Student saved = new Student("john@test.com", "John", "Smith", "password");
-        UserDto studentDto = new UserDto(1L, "John", "Smith", List.of(UserRole.STUDENT));
+        UserDto studentDto = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.STUDENT));
         Set<Role> roles = new HashSet<Role>(Set.of(new Role(1L, UserRole.STUDENT)));
 
         Role studentRole = new Role(1L, UserRole.STUDENT);
@@ -105,7 +119,7 @@ public class UserServiceTest {
                 false);
 
         Instructor saved = new Instructor("john@test.com", "John", "Smith", "password");
-        UserDto instructorDto = new UserDto(1L, "John", "Smith", List.of(UserRole.INSTRUCTOR));
+        UserDto instructorDto = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.INSTRUCTOR));
         Set<Role> roles = new HashSet<Role>(Set.of(new Role(1L, UserRole.INSTRUCTOR)));
 
         Role instructorRole = new Role(1L, UserRole.INSTRUCTOR);
@@ -128,7 +142,7 @@ public class UserServiceTest {
                 true);
 
         Instructor saved = new Instructor("john@test.com", "John", "Smith", "password");
-        UserDto coordinatorDto = new UserDto(1L, "John", "Smith", List.of(UserRole.ADMIN, UserRole.COORDINATOR));
+        UserDto coordinatorDto = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.ADMIN, UserRole.COORDINATOR));
         Set<Role> roles = new HashSet<Role>(Set.of(new Role(1L, UserRole.ADMIN), new Role(1L, UserRole.COORDINATOR)
                 ));
 
@@ -173,7 +187,7 @@ public class UserServiceTest {
     @Test
     void testGetUserById_Success() {
         User mockUser = new Coordinator("john@test.com", "John", "Smith", "password");
-        UserDto mockDto = new UserDto(1L, "John", "Smith", List.of(UserRole.COORDINATOR));
+        UserDto mockDto = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.COORDINATOR));
 
         when(userRepository.findById(any())).thenReturn(Optional.of(mockUser));
         when(userMapper.toDto(mockUser)).thenReturn(mockDto);
@@ -331,4 +345,36 @@ public class UserServiceTest {
         verify(userRepository).deleteById(1L);
     }
 
+    @Test
+    void givenStudentNumberGreaterThanZero_whenSearchStudent_thenFindByNumber() {
+        Student s = new Student();
+        s.setId(1L);
+        s.setFirstName("Alice");
+        s.setLastName("Smith");
+        s.setEmail("a@example.com");
+        s.setStudentNumber(12345678);
+        when(studentRepository.findAllByStudentNumber(12345678)).thenReturn(Collections.singletonList(s));
+
+        List<BaseUserDto> result = userService.search("STUDENT", "", 12345678);
+
+        assertEquals(1, result.size());
+        StudentDto dto = (StudentDto) result.get(0);
+        assertEquals("Alice", dto.firstName());
+    }
+
+    @Test
+    void givenRoleOther_whenSearchCoordinator_thenReturnsCoordinators() {
+        com.infinity.userservice.models.User u = Mockito.mock(com.infinity.userservice.models.User.class);
+        when(u.getId()).thenReturn(3L);
+        when(u.getFirstName()).thenReturn("Carol");
+        when(u.getLastName()).thenReturn("Johnson");
+        when(u.getEmail()).thenReturn("c@example.com");
+        when(userRepository.findByRoles_Name(UserRole.COORDINATOR)).thenReturn(Collections.singletonList(u));
+
+        List<BaseUserDto> result = userService.search("COORDINATOR", "", 0);
+
+        assertEquals(1, result.size());
+        CoordinatorDto dto = (CoordinatorDto) result.get(0);
+        assertEquals("Carol", dto.firstName());
+    }
 }

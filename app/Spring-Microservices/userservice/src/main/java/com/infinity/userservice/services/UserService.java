@@ -10,6 +10,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.userservice.dtos.BaseUserDto;
+import com.infinity.userservice.dtos.CoordinatorDto;
+import com.infinity.userservice.dtos.CoordinatorUpdateRequest;
+import com.infinity.userservice.dtos.InstructorDto;
+import com.infinity.userservice.dtos.InstructorUpdateRequest;
+import com.infinity.userservice.dtos.RegisterRequest;
+import com.infinity.userservice.dtos.StudentDto;
+import com.infinity.userservice.dtos.StudentUpdateRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.Coordinators.CoordinatorUpdateRequest;
 import com.infinity.userservice.dtos.Instructors.InstructorUpdateRequest;
@@ -24,7 +32,9 @@ import com.infinity.userservice.models.Instructor;
 import com.infinity.userservice.models.Role;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
+import com.infinity.userservice.repositories.InstructorRepository;
 import com.infinity.userservice.repositories.RoleRepository;
+import com.infinity.userservice.repositories.StudentRepository;
 import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.utility.UserMapper;
 
@@ -44,6 +54,8 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final Validator validator;
+    private final StudentRepository studentRepository;
+    private final InstructorRepository instructorRepository;
 
     public UserDto register(RegisterRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
@@ -53,10 +65,10 @@ public class UserService {
         if (request.userType() == UserRole.ADMIN) {
             throw new BadRequestException("Cannot register with ADMIN as primary user type");
         }
-        
+
         Set<Role> roles = new HashSet<>();
         Role primaryRole = roleRepository.findByName(request.userType())
-            .orElseThrow(() -> new RuntimeException("Role not found"));
+                .orElseThrow(() -> new RuntimeException("Role not found"));
         roles.add(primaryRole);
 
         if (request.isAdmin()) {
@@ -71,7 +83,7 @@ public class UserService {
         userRepository.save(user);
         return userMapper.toDto(user);
     }
-    
+
     public UserDto getUserById(Long id, Long userIdFromHeader, List<String> headerRoles) {
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
@@ -85,7 +97,6 @@ public class UserService {
             Map<String, Object> payload) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
-
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_ADMIN")) {
             throw new AuthorizationException("Not allowed");
         }
@@ -100,7 +111,7 @@ public class UserService {
             updateCoordinator(coordinator, payload);
         }
     }
-    
+
     private void updateStudent(Student student, Map<String, Object> payload) {
         StudentUpdateRequest req = validateAndMap(payload, StudentUpdateRequest.class);
 
@@ -112,18 +123,20 @@ public class UserService {
             student.setLastName(req.lastName());
         if (req.password() != null) {
             String hashedPassword = passwordEncoder.encode(req.password());
-            student.setPassword(hashedPassword);            
+            student.setPassword(hashedPassword);
         }
+        if (req.studentNumber() != null)
+            student.setStudentNumber(req.studentNumber());
         if (req.program() != null)
             student.setProgram(req.program());
         if (req.enrollmentYear() != null)
             student.setEnrollmentYear(req.enrollmentYear());
         if (req.schoolYear() != null)
             student.setSchoolYear(req.schoolYear());
-      
+
         userRepository.save(student);
     }
-    
+
     private void updateInstructor(Instructor instructor, Map<String, Object> payload) {
         InstructorUpdateRequest req = validateAndMap(payload, InstructorUpdateRequest.class);
 
@@ -137,8 +150,8 @@ public class UserService {
             String hashedPassword = passwordEncoder.encode(req.password());
             instructor.setPassword(hashedPassword);
         }
-        if (req.employeeNum() != null)
-            instructor.setEmployeeNum(req.employeeNum());
+        if (req.employeeNumber() != null)
+            instructor.setEmployeeNumber(req.employeeNumber());
         if (req.department() != null)
             instructor.setDepartment(req.department());
 
@@ -171,7 +184,7 @@ public class UserService {
             throw new BadRequestException(errorMsg);
         }
         return dto;
-    }    
+    }
 
     public String deleteUserById(Long id, Long userIdFromHeader, List<String> headerRoles) {
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_ADMIN")) {
@@ -183,5 +196,64 @@ public class UserService {
         userRepository.deleteById(id);
         return "User deleted successfully";
     }
-    
+
+    public List<BaseUserDto> search(String role, String name, int universityNumber) {
+
+        if ("STUDENT".equalsIgnoreCase(role)) {
+            List<Student> students;
+            if (universityNumber > 0) {
+                students = studentRepository.findAllByStudentNumber(universityNumber);
+            } else {
+                students = studentRepository
+                    .findByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(name, name);
+            }
+            return students.stream()
+                .map(s -> new StudentDto(
+                    s.getId(),
+                    s.getFirstName(),
+                    s.getLastName(),
+                    s.getEmail(),
+                    s.getStudentNumber(),
+                    s.getProgram(),
+                    s.getEnrollmentYear(),
+                    s.getSchoolYear(),
+                    s.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
+        }
+        else if ("INSTRUCTOR".equalsIgnoreCase(role)) {
+            List<Instructor> instructors;
+
+            if (universityNumber > 0) {
+                instructors = instructorRepository.findAllByEmployeeNumber(universityNumber);
+            } else {
+                instructors = instructorRepository
+                    .findByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(name, name);
+            }
+            return instructors.stream()
+                .map(i -> new InstructorDto(
+                    i.getId(),
+                    i.getFirstName(),
+                    i.getLastName(),
+                    i.getEmail(),
+                    i.getEmployeeNumber(),
+                    i.getDepartment(),
+                    i.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
+        }
+        else {
+            List<User> coords = userRepository.findByRoles_Name(UserRole.COORDINATOR);
+            return coords.stream()
+                .map(u -> new CoordinatorDto(
+                    u.getId(),
+                    u.getFirstName(),
+                    u.getLastName(),
+                    u.getEmail(),
+                    u.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
+        }
+    }
+
 }

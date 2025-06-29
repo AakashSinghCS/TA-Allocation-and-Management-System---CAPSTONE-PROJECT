@@ -17,10 +17,16 @@ import lombok.NoArgsConstructor;
 public class Instructor extends User {
 
     @Column(unique = true)
-    private Integer employeeNum;
+    private Integer employeeNumber;
     private String department;
     
     public Instructor(String email, String firstName, String lastName, String password) {
         super(email, firstName, lastName, password);
+    }
+
+    public Instructor(String email, String firstName, String lastName, String password, Integer employeeNumber, String department) {
+        super(email, firstName, lastName, password);
+        this.employeeNumber = employeeNumber;
+        this.department = department;
     }
 }

@@ -20,7 +20,7 @@ export default function DeptCodeDropdown({
 
       <select
         id="dept-select"
-        className="p-2 border rounded bg-white shadow-sm max-w-[10rem]"
+        className="w-full border border-gray-400 rounded px-3 py-2"
         value={selected}
         onChange={(e) => onChange(e.target.value)}
       >

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { ProfileQuestion } from "../../interfaces/question/ProfileQuestion";
 import type { StudentResponseDto } from "../../components/features/questionanswer/questionitem/QuestionItem";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import QuestionItem from "../../components/features/questionanswer/questionitem/QuestionItem";
 import { GenericAPIContainer } from "../../utility/genericapicontainer/GenericAPIContainer";
 import { fetchAllProfileQuestions } from "../../api/question/fetchAllProfileQuestions";
@@ -13,9 +13,10 @@ type ResponseState = {
 }
 
 function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null }) {
-  const  studentId  = useAuth().userId; 
+  const studentId = useAuth().userId;
   const [responses, setResponses] = useState<ResponseState>({});
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     if (!questions) return;
     const initial: ResponseState = {};
@@ -63,24 +64,26 @@ function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null })
     alert(res
       ? 'All answers submitted successfully.'
       : 'Some answers failed to save. Please try again.');
+    navigate(`/user/taprofile/${studentId}`);
   }
 
   return (
-    <form
-      onSubmit={e => {
-        e.preventDefault();
-        handleSubmit();
-      }}
-      className="space-y-6"
+    <form onSubmit={e => {
+      e.preventDefault();
+      handleSubmit();
+    }}
+      className="space-y-6 max-w-5xl mx-auto grid grid-cols-1 gap-3"
     >
       {questions && questions.map(q => (
         typeof q.id === 'number' ?
-          (<QuestionItem
-            key={q.id}
-            initialQuestion={q}
-            responseValue={responses[q.id]}
-            onChange={update}
-          />
+          (<div className="border-b-solid border-b-2 border-gray-200 py-2">
+            <QuestionItem
+              key={q.id}
+              initialQuestion={q}
+              responseValue={responses[q.id]}
+              onChange={update}
+            />
+          </div>
           ) : null))}
       <button
         type="submit"

@@ -19,9 +19,9 @@ function CoordinatorQuestionnaire({ initial }: { initial: ProfileQuestion[] | nu
     const addQuestion = () => setQuestions(qs => [...qs, emptyQuestion()]);
 
     return (
-        <div>
+        <div className="max-w-5xl mx-auto grid grid-cols-1 gap-3">
             {questions.map((currentq) => (
-                <div key={currentq.id ?? (currentq as any).tempId} className="relative">
+                <div key={currentq.id ?? (currentq as any).tempId} className="relative border-b-solid border-b-2 border-gray-200 py-2">
                     <QuestionItem
                         key={currentq.id ?? currentq.tempId}
                         initialQuestion={currentq}
@@ -39,7 +39,7 @@ function CoordinatorQuestionnaire({ initial }: { initial: ProfileQuestion[] | nu
                 </div>
             ))}
             <div className="flex gap-4">
-                <button type="button" onClick={addQuestion} className="px-4 py-2 bg-green-600 text-white rounded">
+                <button type="button" onClick={addQuestion} className="w-full bg-[#00C774] text-white px-2 py-1 rounded hover:bg-[#1FE88D] transition-colors">
                     + Add question
                 </button>
 

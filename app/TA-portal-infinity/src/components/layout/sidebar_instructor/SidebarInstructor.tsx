@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
-import { Home, BookOpen, ClipboardList, Presentation, User, LogOut,} from "lucide-react";
+import { Home, BookOpen, ClipboardList, Presentation, User, LogOut, Users,} from "lucide-react";
 import { useState } from "react";
 
 export default function SideNavInstructor() {
@@ -13,6 +13,8 @@ export default function SideNavInstructor() {
   { label: "TA Requirements", to: "/user/instructor/requirements", icon: <ClipboardList size={22} /> },
   { label: "TA Allocations", to: "/user/instructor/allocations", icon: <Presentation size={22} /> },
   { label: "Profile", to: `/user/instructorprofile/${useAuth().userId}`, icon: <User size={22} /> },
+  { label: "Users", to: "/user/instructor/browseuser", icon: <Users size={22} /> }, 
+  { label:"Qualifications",to: `instructorprofile/${useAuth().userId}/qualifications`,  icon: <User size={22} /> }
 ];
   const expanded = hovered;
 
