@@ -28,6 +28,7 @@ import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/S
 import UserBrowsingPage from "../pages/userbrowsingpage/UserBrowsingPage";
 import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
 import SignUpPage from "../pages/signupPage/SignUpPage";
+import CourseProfilePage from "../pages/courseprofilepage/CourseProfilePage";
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +45,8 @@ export const router = createBrowserRouter([
       { path: "instructorprofile/:instructorId/need", element: <InstructorNeedPage /> },
       { path: "instructorprofile/:instructorId/compare", element: <InstructorComparerPage /> },
       { path: "instructorprofile/:instructorId/qualifications", element: <InstructorQualificationPage /> },
+
+      { path: "sectionProfile/:sectionId", element: <CourseProfilePage /> },
       // STUDENT routes
       {
         path: "student",

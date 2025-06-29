@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.infinity.userservice.controllers.UserController;
 import com.infinity.userservice.dtos.BaseUserDto;
 import com.infinity.userservice.dtos.InstructorDto;
-import com.infinity.userservice.dtos.StudentDto;
+import com.infinity.userservice.dtos.Students.StudentDto;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;

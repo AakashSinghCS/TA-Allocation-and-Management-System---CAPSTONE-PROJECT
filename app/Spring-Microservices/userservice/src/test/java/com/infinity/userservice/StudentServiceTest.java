@@ -92,28 +92,29 @@ public class StudentServiceTest {
                 mockStudent.getId(),
                 mockStudent.getFirstName(),
                 mockStudent.getLastName(),
-                mockStudent.getStudentNum(),
+                mockStudent.getEmail(),
+                mockStudent.getStudentNumber(),
                 mockStudent.getProgram(),
                 mockStudent.getEnrollmentYear(),
                 mockStudent.getSchoolYear(),
                 mockStudent.getCreatedAt());
 
-        when(studentRepository.findByStudentNum(87654321)).thenReturn(Optional.of(mockStudent));
+        when(studentRepository.findByStudentNumber(87654321)).thenReturn(Optional.of(mockStudent));
         when(studentMapper.toDto(mockStudent)).thenReturn(mockDto);
 
-        StudentDto result = studentService.getStudentByNum(87654321);
+        StudentDto result = studentService.getStudentByNumber(87654321);
 
         assertEquals("Jane", result.firstName());
         assertEquals("Doe", result.lastName());
-        assertEquals(87654321, result.studentNum());
+        assertEquals(87654321, result.studentNumber());
     }
 
     @Test
     void testGetStudentByNumNotFound() {
-        when(studentRepository.findByStudentNum(11111111)).thenReturn(Optional.empty());
+        when(studentRepository.findByStudentNumber(11111111)).thenReturn(Optional.empty());
 
         NotFoundException ex = assertThrows(NotFoundException.class,
-                () -> studentService.getStudentByNum(11111111));
+                () -> studentService.getStudentByNumber(11111111));
 
         assertEquals("User with student number 11111111 not found", ex.getMessage());
     }

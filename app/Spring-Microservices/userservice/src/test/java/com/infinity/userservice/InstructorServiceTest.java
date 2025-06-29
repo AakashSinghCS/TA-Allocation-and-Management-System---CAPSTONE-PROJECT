@@ -36,11 +36,11 @@ public class InstructorServiceTest {
     void testGetInstructorById_Success() {
         Instructor instructor = new Instructor("jane@test.com", "Jane", "Doe", "password123");
         instructor.setId(1L);
-        instructor.setEmployeeNum(1234);
+        instructor.setEmployeeNumber(1234);
         instructor.setDepartment("Math");
         instructor.setCreatedAt(LocalDateTime.of(2023, 1, 1, 10, 0));
 
-        InstructorDto dto = new InstructorDto(1L, "Jane", "Doe", 1234, "Math", instructor.getCreatedAt());
+        InstructorDto dto = new InstructorDto(1L, "Jane", "Doe", "jane@test.com", 1234, "Math", instructor.getCreatedAt());
 
         when(instructorRepository.findById(1L)).thenReturn(Optional.of(instructor));
         when(instructorMapper.toDto(instructor)).thenReturn(dto);

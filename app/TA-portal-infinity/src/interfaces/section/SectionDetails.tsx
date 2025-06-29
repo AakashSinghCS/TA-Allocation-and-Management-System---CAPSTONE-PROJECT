@@ -12,7 +12,8 @@ export type SectionType =
 
 export interface SectionDetails extends Course{
     sectionId?: number,
-    term?: string,
+    semester?: string,
     section?: string,
     type?: SectionType,
+    year? : number
 }

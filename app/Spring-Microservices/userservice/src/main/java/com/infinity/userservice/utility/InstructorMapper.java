@@ -2,7 +2,7 @@ package com.infinity.userservice.utility;
 
 import org.springframework.stereotype.Component;
 
-import com.infinity.userservice.dtos.InstructorDto;
+import com.infinity.userservice.dtos.Instructors.InstructorDto;
 import com.infinity.userservice.models.Instructor;
 
 @Component
