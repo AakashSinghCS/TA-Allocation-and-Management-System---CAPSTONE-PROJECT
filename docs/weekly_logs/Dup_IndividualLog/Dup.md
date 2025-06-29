@@ -1647,3 +1647,71 @@ I need to create the updating of the needs and the allocation history.
 - integration for comparers
 - Instructor updating needs frontend
 - course/section management
+
+
+## Saturday 6/28 (6/27~6/30)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June28.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Course Profile
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#82](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/82)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#93](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/93)
+  * #4: [UBCO-COSC499-S2025/team-10-capstone-infinity#295](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/295)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 4
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I completed the course/section creation and filtering (searching) pages it works with the backend. Now, in order to make updating work, I'm creating a courseProfile page. This is part of UR 2.2 and 1.3. 
+I still have to wait for the Deletion of courses/sections to work in backend. That is not integrated.
+I got done in 2 days a feature we waited to be completed for 3 weeks.
+Moreover, the design has been delayed because I felt like I needed to get the functionality done first.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- Instructor updating needs frontend
+- course/section management
