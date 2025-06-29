@@ -19,10 +19,10 @@ public class Allocation {
 
     @Column(name = "student_id")
     private Long studentId;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "offer_id")
-    private Offer offer;
+    
+    @ManyToOne
+    @JoinColumn(name = "application_id", nullable = false)
+    private Application application;
 
     @Column(name = "section_id")
     private Long sectionId;
