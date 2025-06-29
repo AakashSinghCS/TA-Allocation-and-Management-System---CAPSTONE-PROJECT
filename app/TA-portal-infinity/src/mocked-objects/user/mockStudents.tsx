@@ -1,10 +1,10 @@
-import type {Student} from '../interfaces/user/Student';
+import type {Student} from '../../interfaces/user/Student';
 export const mockStudentJohnDoe : Student = {
     id : 1,
     firstName : "John",
     lastName : "Doe",
     email : "johndoe@test.com",
-    studentNumber : 12345678,
+    studentNum : 12345678,
     program : "Computer Science",
     enrollmentYear : 2021,
     schoolYear: 3,
@@ -18,7 +18,7 @@ export const mockStudentEmmaDoe : Student = {
     firstName : "Emma",
     lastName : "Doe",
     email : "emmadoe@test.com",
-    studentNumber : 12345679,
+    studentNum : 12345679,
     program : "Computer Science",
     enrollmentYear : 2020,
     schoolYear: 3,

@@ -75,7 +75,7 @@ public class UserControllerTest {
 
         @Test
         void testGetUserById_Success() throws Exception {
-                UserDto mockResponse = new UserDto(1L, "John", "Smith", List.of(UserRole.STUDENT));
+                UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com",List.of(UserRole.STUDENT));
 
                 when(userService.getUserById(any(), any(), any())).thenReturn(mockResponse);
 
