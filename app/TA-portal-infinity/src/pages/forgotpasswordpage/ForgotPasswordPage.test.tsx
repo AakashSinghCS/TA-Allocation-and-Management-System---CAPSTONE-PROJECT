@@ -130,7 +130,7 @@ describe('ForgotPasswordPage', () => {
       ).toBeInTheDocument()
     );
 
-    // 3) change input again to clear that error
+    // change input again to clear that error
     fireEvent.change(screen.getByLabelText(/Email/i), {
       target: { value: 'new@example.com' },
     });
