@@ -51,4 +51,43 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         AND TRIM(c.courseNum) = TRIM(:courseNum)
     """)
     Optional<Course> findByDeptCodeAndCourseNum(String deptCode, String courseNum);
+
+    @Query("SELECT DISTINCT c.deptCode FROM Course c")
+    List<String> findAllUniqueDeptCode();
+
+    @Query("SELECT DISTINCT c.courseNum FROM Course c WHERE c.deptCode = :deptCode")
+    List<String> findDistinctCourseNumByDeptCode(@Param("deptCode") String deptCode);
+
+    @Query("""
+                SELECT s.section FROM Section s
+                WHERE s.course.deptCode = :deptCode AND s.course.courseNum = :courseNum
+            """)
+    List<String> findSectionsByDeptCodeAndCourseNum(
+            @Param("deptCode") String deptCode,
+            @Param("courseNum") String courseNum);
+
+    @Query("""
+                SELECT s.year FROM Section s
+                WHERE s.course.deptCode = :deptCode
+                AND s.course.courseNum = :courseNum
+                AND s.section = :section
+            """)
+    List<String> findYearsByDeptCodeAndCourseNumAndSection(
+            @Param("deptCode") String deptCode,
+            @Param("courseNum") String courseNum,
+            @Param("section") String section);
+
+    @Query("""
+                SELECT s.semester FROM Section s
+                WHERE s.course.deptCode = :deptCode
+                AND s.course.courseNum = :courseNum
+                AND s.section = :section
+                AND s.year = :year
+            """)        
+    List<String> findSemestersByDeptCodeAndCourseNumAndSectionAndYear(
+            @Param("deptCode")String deptCode, 
+            @Param("courseNum")String courseNum, 
+            @Param("section")String section,
+            @Param("year")String year);
+
 }

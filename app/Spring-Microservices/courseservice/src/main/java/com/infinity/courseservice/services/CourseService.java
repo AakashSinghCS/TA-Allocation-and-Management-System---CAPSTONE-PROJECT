@@ -118,6 +118,26 @@ public class CourseService {
         return result;
     }
 
+    public List<String> getAllDeptCodes() {
+        return courseRepository.findAllUniqueDeptCode();
+    }
+
+    public List<String> getAllCourseNums(String deptCode) {
+        return courseRepository.findDistinctCourseNumByDeptCode(deptCode);
+    }
+
+    public List<String> getAllSections(String deptCode, String courseNum) {
+        return courseRepository.findSectionsByDeptCodeAndCourseNum(deptCode, courseNum);
+    }
+
+    public List<String> getAllYears(String deptCode, String courseNum, String section) {
+        return courseRepository.findYearsByDeptCodeAndCourseNumAndSection(deptCode, courseNum, section);
+    }
+
+    public List<String> getAllSemester(String deptCode, String courseNum, String section, String year) {
+        return courseRepository.findSemestersByDeptCodeAndCourseNumAndSectionAndYear(deptCode, courseNum, section, year);
+    }
+
     // public List<CourseDto> getEnrolledCourses(Integer studentId) {
     // UserDto user = userInterface.getStudentById(studentId).getBody();
     // if(user == null){

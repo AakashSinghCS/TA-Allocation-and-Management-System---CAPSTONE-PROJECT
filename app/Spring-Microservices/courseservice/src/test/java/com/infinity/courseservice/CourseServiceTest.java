@@ -231,18 +231,64 @@ public class CourseServiceTest {
 
     @Test
     void testGetInstructorCourseNeedsAndAllocations_IgnoresMissingNeed() {
-        Long instructorId = 77L;
+            Long instructorId = 77L;
 
-        SectionDto section1 = new SectionDto(
-                10L, 2025, "W1", "001", SectionType.LECTURE,
-                new CourseDto(1L, "COSC", "Security", "430"));
+            SectionDto section1 = new SectionDto(
+                            10L, 2025, "W1", "001", SectionType.LECTURE,
+                            new CourseDto(1L, "COSC", "Security", "430"));
 
-        when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1));
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(new Course("COSC", "Security", "430")));
-        when(needService.getNeed(1L, 2025, "W1")).thenThrow(new NotFoundException("Need not found"));
+            when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1));
+            when(courseRepository.findById(1L)).thenReturn(Optional.of(new Course("COSC", "Security", "430")));
+            when(needService.getNeed(1L, 2025, "W1")).thenThrow(new NotFoundException("Need not found"));
 
-        List<CourseNeedAndAllocations> result = courseService.getInstructorCourseNeedsAndAllocations(instructorId);
+            List<CourseNeedAndAllocations> result = courseService.getInstructorCourseNeedsAndAllocations(instructorId);
 
-        assertEquals(0, result.size()); // gracefully skipped
+            assertEquals(0, result.size()); // gracefully skipped
+    }
+    
+    @Test
+    void testGetAllDeptCodes() {
+            List<String> mock = List.of("COSC", "MATH");
+            when(courseRepository.findAllUniqueDeptCode()).thenReturn(mock);
+
+            List<String> result = courseService.getAllDeptCodes();
+            assertEquals(mock, result);
+    }
+
+    @Test
+    void testGetAllCourseNums() {
+            List<String> mock = List.of("121", "310");
+            when(courseRepository.findDistinctCourseNumByDeptCode("COSC")).thenReturn(mock);
+
+            List<String> result = courseService.getAllCourseNums("COSC");
+            assertEquals(mock, result);
+    }
+
+    @Test
+    void testGetAllSections() {
+            List<String> mock = List.of("001", "002");
+            when(courseRepository.findSectionsByDeptCodeAndCourseNum("COSC", "310")).thenReturn(mock);
+
+            List<String> result = courseService.getAllSections("COSC", "310");
+            assertEquals(mock, result);
+    }
+
+    @Test
+    void testGetAllYears() {
+            List<String> mock = List.of("2023", "2024");
+            when(courseRepository.findYearsByDeptCodeAndCourseNumAndSection("COSC", "310", "001")).thenReturn(mock);
+
+            List<String> result = courseService.getAllYears("COSC", "310", "001");
+            assertEquals(mock, result);
+    }
+
+    @Test
+    void testGetAllSemesters() {
+            List<String> mock = List.of("W1", "W2");
+            when(courseRepository.findSemestersByDeptCodeAndCourseNumAndSectionAndYear("COSC", "310", "001", "2024"))
+                            .thenReturn(mock);
+
+            List<String> result = courseService.getAllSemester("COSC", "310", "001", "2024");
+            assertEquals(mock, result);
     }
 }
