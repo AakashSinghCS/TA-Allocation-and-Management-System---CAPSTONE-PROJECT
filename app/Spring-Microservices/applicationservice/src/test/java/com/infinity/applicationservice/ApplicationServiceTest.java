@@ -20,15 +20,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 import com.infinity.applicationservice.dtos.ApplicationDto;
 import com.infinity.applicationservice.dtos.ApplicationRequest;
+import com.infinity.applicationservice.dtos.ApplicationWithStudentDto;
 import com.infinity.applicationservice.dtos.AvailabilityDto;
+import com.infinity.applicationservice.dtos.StudentDto;
 import com.infinity.applicationservice.enums.Day;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
+import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.services.ApplicationService;
@@ -38,6 +42,9 @@ public class ApplicationServiceTest {
 
     @Mock
     ApplicationRepository applicationRepository;
+
+    @Mock
+    UserInterface userInterface;
 
     @InjectMocks
     ApplicationService applicationService;
@@ -220,7 +227,7 @@ public class ApplicationServiceTest {
 
     @Test
     void testGetAllApplications_Success() {
-        List<Application> applications = List.of(new Application(1L, List.of(Subject.COSC), false, 6), 
+        List<Application> applications = List.of(new Application(1L, List.of(Subject.COSC), false, 6),
                 new Application(1L, List.of(Subject.DATA), true, 12));
 
         when(applicationRepository.findAllByStudentId(1L)).thenReturn(Optional.of(applications));
@@ -234,5 +241,26 @@ public class ApplicationServiceTest {
         assertEquals(applicationDtos.get(0).wantWorkingHours(), 6);
         assertEquals(applicationDtos.get(1).wantWorkingHours(), 12);
     }
+    
+    @Test
+void testGetAllApplicationsWithStudentData() {
+    Application app = new Application(1L, List.of(Subject.COSC, Subject.MATH), false, 6);
+    app.setSubmittedAt(LocalDateTime.of(2024, 1, 1, 12, 0));
+    StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", 1234567, "COSC", 2022, 3);
+
+    when(applicationRepository.findByFilters(2024, false, 6, Subject.COSC, null, null))
+            .thenReturn(List.of(app));
+    when(userInterface.getStudentById(1L)).thenReturn(ResponseEntity.ok(studentDto));
+
+    List<ApplicationWithStudentDto> result = applicationService.getAllApplications(
+            2024, false, 6, Subject.COSC, null, null);
+    assertEquals(1, result.size());
+
+    ApplicationWithStudentDto dto = result.get(0);
+    assertEquals(studentDto, dto.student());
+    assertEquals(false, dto.wantRemote());
+    assertEquals(6, dto.wantWorkingHours());
+    assertTrue(dto.preferences().contains(Subject.COSC));
+}
     
 }

@@ -17,12 +17,12 @@ describe('StudentCard', () => {
     expect(heading).toBeInTheDocument()
 
     const emailLabel = studentFieldLabels['email']
-    const snLabel    = studentFieldLabels['studentNumber']
+    const snLabel    = studentFieldLabels['studentNum']
 
     expect(screen.getByText(new RegExp(`${emailLabel}:`, 'i'))).toBeInTheDocument()
     expect(screen.getByText(mockStudentJohnDoe.email ??"")).toBeInTheDocument()
 
     expect(screen.getByText(new RegExp(`${snLabel}:`, 'i'))).toBeInTheDocument()
-    expect(screen.getByText(mockStudentJohnDoe.studentNumber ??"")).toBeInTheDocument()
+    expect(screen.getByText(mockStudentJohnDoe.studentNum ??"")).toBeInTheDocument()
   })
 })

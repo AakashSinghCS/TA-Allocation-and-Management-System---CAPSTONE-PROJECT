@@ -16,12 +16,12 @@ describe("Profile Section", () => {
 
       expect(screen.getByText(new RegExp(`^${student.email}$`))).toBeInTheDocument();
       expect(screen.getByRole("heading", { level: 1, name: fullNameRegex })).toBeInTheDocument();
-      expect(screen.getByText(new RegExp(`^${student.studentNumber}$`))).toBeInTheDocument();
+      expect(screen.getByText(new RegExp(`^${student.studentNum}$`))).toBeInTheDocument();
       const row = screen.getByTestId('profile-row-Program');
-      expect(within(row).getByText(student.program)).toBeInTheDocument();
+      expect(within(row).getByText(student.program!)).toBeInTheDocument();
 
       if(student.createdAt){
-         const readableDate = formatDateForDisplay(student.createdAt);
+         const readableDate = formatDateForDisplay(student.createdAt instanceof Date ? student.createdAt : new Date());
          expect(screen.getByText(new RegExp(`^${readableDate}$`))).toBeInTheDocument();
       }
    });

@@ -11,12 +11,14 @@ import org.springframework.stereotype.Service;
 
 import com.infinity.applicationservice.dtos.ApplicationDto;
 import com.infinity.applicationservice.dtos.ApplicationRequest;
+import com.infinity.applicationservice.dtos.ApplicationWithStudentDto;
 import com.infinity.applicationservice.dtos.AvailabilityDto;
 import com.infinity.applicationservice.enums.Day;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
+import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.models.Availability;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
+    private final UserInterface userInterface;
 
     public ApplicationDto submitApplication(ApplicationRequest req, Long userIdFromHeader, List<String> headerRoles) {
         int year = LocalDate.now().getYear();
@@ -170,5 +173,24 @@ public class ApplicationService {
         }
 
     }
+
+    public List<ApplicationWithStudentDto> getAllApplications(Integer year, Boolean wantRemote, Integer hours,
+            Subject preference1, Subject preference2, Subject preference3) {
+
+        List<Application> applications = applicationRepository.findByFilters(year, wantRemote, hours,
+                preference1, preference2, preference3);
+
+
+         return applications.stream()
+            .map(app -> new ApplicationWithStudentDto(
+                    userInterface.getStudentById(app.getStudentId()).getBody(),
+                    filterPreferences(app),
+                    app.isWantRemote(),
+                    app.getWantWorkingHours(),
+                    app.getSubmittedAt(),
+                    toDtoSet(app.getAvailabilities())
+            ))
+            .toList();
+    }   
 
 }

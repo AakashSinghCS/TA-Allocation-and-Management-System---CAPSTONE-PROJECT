@@ -26,6 +26,8 @@ import { UserRole } from "../interfaces/enum/UserRole";
 import AllocationPage from "../pages/allocationpage/AllocationPage";
 import InstructorQualificationPage from "../pages/instructorprofilepage/qualificationpage/InstructorQualificationPage";
 import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
+import SectionListPage from "../pages/coursepage/SectionListPage";
+import AddSectionPage from "../pages/coursepage/AddSectionPage";
 
 export const router = createBrowserRouter([
   {
@@ -83,6 +85,8 @@ export const router = createBrowserRouter([
         children: [
           { path: "home", element: <CoordinatorHomePage /> },
           { path: "questions", element: < CoordinatorQuestionnairePage/> },
+          { path: "sections", element: < SectionListPage/> },
+          { path: "sections/add", element: < AddSectionPage/> },
           {path: "allocation", element: <AllocationPage />},
           { path: "student/questions/:studentId", element: < TaQuestionnairePage/> }, //TEMPORARY for development
           { path: "error", element: <ErrorPage /> },
