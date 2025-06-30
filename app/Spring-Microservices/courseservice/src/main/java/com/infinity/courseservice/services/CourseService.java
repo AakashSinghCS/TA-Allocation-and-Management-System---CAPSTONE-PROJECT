@@ -127,16 +127,5 @@ public class CourseService {
 
         return result;
     }
-
-
-
-    // public List<CourseDto> getEnrolledCourses(Integer studentId) {
-    //     UserDto user = userInterface.getStudentById(studentId).getBody();
-    //     if(user == null){
-    //         throw new NotFoundException("User with student number " + studentId + " not found");
-    //     }
-    //     List<Long> courseIds = enrollmentService.getCourseEnrollments(user.id());
-    //     return findCoursesByIds(courseIds);
-    // }
     
 }

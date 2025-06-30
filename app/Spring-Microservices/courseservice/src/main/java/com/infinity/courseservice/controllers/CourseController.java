@@ -19,6 +19,7 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseNeedAndAllocations;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
+import com.infinity.courseservice.dtos.EnrollmentDtos.EnrollmentRequest;
 import com.infinity.courseservice.services.CourseService;
 
 import feign.Response;
@@ -75,15 +76,9 @@ public class CourseController {
 
     @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
     @GetMapping("/needAndAllocations/{instructorId}")
-    public ResponseEntity<List<CourseNeedAndAllocations>> getInstructorCourseNeedsAndAllocations(@PathVariable Long instructorId) {
+    public ResponseEntity<List<CourseNeedAndAllocations>> getInstructorCourseNeedsAndAllocations(
+            @PathVariable Long instructorId) {
         return ResponseEntity.ok(courseService.getInstructorCourseNeedsAndAllocations(instructorId));
     }
-
-    // @GetMapping("/getEnrolledCourses/{studentId}")
-    // public ResponseEntity<List<CourseDto>> getMethodName(@PathVariable Integer
-    // studentId) {
-    // List<CourseDto> courseDtos = courseService.getEnrolledCourses(studentId);
-    // return ResponseEntity.ok(courseDtos);
-    // }
 
 }
