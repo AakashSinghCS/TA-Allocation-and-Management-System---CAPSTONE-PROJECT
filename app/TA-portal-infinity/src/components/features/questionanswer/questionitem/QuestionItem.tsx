@@ -7,6 +7,7 @@ import type { AnswerType, ProfileAnswer } from "../../../../interfaces/question/
 import { fetchDeleteQuestion } from "../../../../api/question/fetchDeleteQuestion";
 import { fetchCreateQuestion } from "../../../../api/question/fetchCreateQuestion";
 import { fetchUpdateQuestion } from "../../../../api/question/fetchUpdateQuestion";
+import { useAuth } from "../../../../context/AuthContext";
 
 export type QuestionnaireMode = "respond" | "edit";
 
@@ -32,7 +33,7 @@ interface QuestionItemProps {
 }
 
 export default function QuestionItem({ initialQuestion, onRemoved, onSaved, responseValue, onChange }: QuestionItemProps) {
-
+  const isCoordinatorOrAdmin = useAuth().userRoles.includes("COORDINATOR") ||  useAuth().userRoles.includes("ADMIN");
   const [editing, setEditing] = useState(initialQuestion.id == null);
   const [question, setQuestion] = useState<ProfileQuestion>(initialQuestion);
 
@@ -87,14 +88,14 @@ export default function QuestionItem({ initialQuestion, onRemoved, onSaved, resp
 
   if (editing) {
     return (
-      <fieldset className="mb-6 border p-4 rounded-lg">
+      <fieldset className="mb-6 border p-4 rounded-lg border-gray-400">
         <label className="block mb-2">
-          Text
+          Question text
           <input value={question.description} onChange={e => patch({ description: e.target.value })} className="w-full border px-2 py-1 mt-1"/>
         </label>
 
         <label className="block mb-4">
-          Type{" "}
+          Type:{" "}
           <select value={question.type} onChange={e => patch({ type: e.target.value as ProfileQuestion["type"] })}>
             <option value="SINGLE">Single choice</option>
             <option value="MULTI">Multiple choice</option>
@@ -111,7 +112,7 @@ export default function QuestionItem({ initialQuestion, onRemoved, onSaved, resp
         {/* Todo: use useAuth to check if user is coord rather than using onRemoved && */}
         {onRemoved &&
           <div className="mt-4 flex gap-2">
-            <button type="button" onClick={handleSave} className="px-3 py-1 bg-blue-600 text-white rounded">
+            <button type="button" onClick={handleSave} className="bg-[#00C774] text-white px-2 py-1 rounded hover:bg-[#1FE88D] transition-colors">
               Save
             </button>
             <button type="button" onClick={() => {
@@ -124,10 +125,10 @@ export default function QuestionItem({ initialQuestion, onRemoved, onSaved, resp
                   setEditing(false);
                 }
               }}
-              className="px-3 py-1 border rounded" >
+              className="py-1 px-2 rounded hover:bg-red-100 transition-colors" >
               Cancel
             </button>
-            <button type="button" onClick={handleDelete} className="px-3 py-1 text-red-600 border border-red-600 rounded">
+            <button type="button" onClick={handleDelete} className="py-1 px-2 rounded hover:bg-red-100 transition-colors">
               Delete
             </button>
           </div>
@@ -155,12 +156,12 @@ export default function QuestionItem({ initialQuestion, onRemoved, onSaved, resp
         <div>
           <SingleChoice question={question} selectedId={(base.answerIds ?? [])[0] ?? null} 
             onSelect={id => change({ questionId: question.id, answerIds: [id] })}/>
-          <button
+          {isCoordinatorOrAdmin && <button
             onClick={() => setEditing(true)}
             className="text-sm px-2 py-1 border rounded"
           >
             Edit
-          </button>
+          </button>}
         </div>
       );
 
@@ -174,9 +175,9 @@ export default function QuestionItem({ initialQuestion, onRemoved, onSaved, resp
                 : current.filter(x => x !== id);
               change({ questionId: question.id, answerIds: next });
             }}/>
-          <button onClick={() => setEditing(true)} className="text-sm px-2 py-1 border rounded">
+          {isCoordinatorOrAdmin &&<button onClick={() => setEditing(true)} className="text-sm px-2 py-1 border rounded">
             Edit
-          </button>
+          </button>}
         </div>
       );
 
@@ -184,9 +185,9 @@ export default function QuestionItem({ initialQuestion, onRemoved, onSaved, resp
       return (
         <div>
           <FreeText question={question} text={base.answerText ?? ""} onChange={txt => change({ questionId: question.id, answerText: txt })}/>
-          <button onClick={() => setEditing(true)} className="text-sm px-2 py-1 border rounded" >
+          {isCoordinatorOrAdmin && <button onClick={() => setEditing(true)} className="text-sm px-2 py-1 border rounded" >
             Edit
-          </button>
+          </button>}
         </div>
       );
 
@@ -208,7 +209,7 @@ function AnswerListEditor({ answers, onChange, }: { answers: ProfileAnswer[]; on
       {answers.map((a, i) => (
         <div key={a.id ?? i} className="flex gap-2">
           <input
-            className="flex-1 border px-2 py-1"
+            className="flex-1"
             value={a.description ?? ""}
             placeholder={`Option ${i + 1}`}
             onChange={e => updateAnswer(i, { description: e.target.value })}
@@ -225,7 +226,7 @@ function AnswerListEditor({ answers, onChange, }: { answers: ProfileAnswer[]; on
 
       <button
         type="button"
-        className="mt-2 text-blue-600"
+        className="mt-2 text-[#040941] px-2 py-1 rounded hover:text-[#040491] transition-colors"
         onClick={() =>
           onChange([
             ...answers,
