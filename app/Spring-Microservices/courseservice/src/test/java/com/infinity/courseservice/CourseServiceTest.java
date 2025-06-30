@@ -164,7 +164,7 @@ public class CourseServiceTest {
 
         Course course = new Course("COSC", "Networks", "329");
         course.setId(courseId);
-        Section section = new Section(2025, "W1", "001", SectionType.LAB, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LABORATORY, course);
         section.setId(1L);
 
         NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester);

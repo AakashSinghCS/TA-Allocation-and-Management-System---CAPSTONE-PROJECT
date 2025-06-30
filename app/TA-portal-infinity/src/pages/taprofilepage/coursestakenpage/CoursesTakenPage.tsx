@@ -37,7 +37,7 @@ export default function CoursesTakenPage() {
                                             </Link>
                                         </td>
                                         <td className="px-4 py-2">{sec.sectionDetails?.section}</td>
-                                        <td className="px-4 py-2">{sec.sectionDetails?.term}</td>
+                                        <td className="px-4 py-2">{sec.sectionDetails?.semester}</td>
                                     </tr>
                                 ))}
                             </tbody>

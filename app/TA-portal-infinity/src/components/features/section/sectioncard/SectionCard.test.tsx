@@ -15,7 +15,7 @@ describe("SectionCard", () => {
     const courseCodeAndName =
       `${section.sectionDetails?.deptCode} ${section.sectionDetails?.courseNum} ` +
       `${section.sectionDetails?.section} - ${section.sectionDetails?.name}`;
-    const metaInfo = `| ${section.sectionDetails?.type} | ${section.sectionDetails?.term}`;
+    const metaInfo = `| ${section.sectionDetails?.type} | ${section.sectionDetails?.semester}`;
 
     const card = screen.getByTestId(`section-card-${section.sectionDetails?.id}`);
     expect(within(card).getByText(courseCodeAndName)).toBeInTheDocument();
