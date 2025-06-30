@@ -1,17 +1,15 @@
 package com.infinity.applicationservice;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.applicationservice.controllers.AllocationController;
+import com.infinity.applicationservice.dtos.*;
+import com.infinity.applicationservice.enums.*;
+import com.infinity.applicationservice.services.AllocationService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,16 +17,21 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.infinity.applicationservice.controllers.AllocationController;
-import com.infinity.applicationservice.dtos.AllocationHistoryDto;
-import com.infinity.applicationservice.dtos.AllocationRequest;
-import com.infinity.applicationservice.dtos.CourseDto;
-import com.infinity.applicationservice.dtos.OfferDto;
-import com.infinity.applicationservice.dtos.SectionDto;
-import com.infinity.applicationservice.dtos.StudentDto;
-import com.infinity.applicationservice.enums.SectionType;
-import com.infinity.applicationservice.services.AllocationService;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @WebMvcTest(AllocationController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -47,11 +50,19 @@ public class AllocationControllerTest {
 
     @BeforeEach
     void setup() {
+        ApplicationDto application = new ApplicationDto(
+            1L,
+            List.of(),
+            false,
+            10,
+            LocalDateTime.now(),
+            Set.of()
+        );
         sampleDto = new AllocationHistoryDto(
             101L,
             new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4),
-            new OfferDto(1L, false, ""),
-            true,
+            application,
+            false,
             10,
             new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"))
         );
@@ -67,7 +78,8 @@ public class AllocationControllerTest {
             .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(jsonPath("$[0].id").value(101))
             .andExpect(jsonPath("$[0].student.firstName").value("Test User"))
-            .andExpect(jsonPath("$[0].section.section").value("T01"));
+            .andExpect(jsonPath("$[0].section.section").value("T01"))
+            .andExpect(jsonPath("$[0].isConfirmed").value(false));
     }
 
     @Test
@@ -79,12 +91,20 @@ public class AllocationControllerTest {
             10,
             1001L
         );
+        ApplicationDto application = new ApplicationDto(
+            1L,
+            List.of(),
+            false,
+            10,
+            LocalDateTime.now(),
+            Set.of()
+        );
 
         AllocationHistoryDto responseDto = new AllocationHistoryDto(
             123L,
             new StudentDto(1L, "Test", "test@example.com", 63260442, "BSC", 2022, 4),
-            new OfferDto(1L, false, ""),
-            true,
+            application,
+            false,
             10,
             new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"))
         );
@@ -98,7 +118,28 @@ public class AllocationControllerTest {
             .andExpect(jsonPath("$.id").value(123))
             .andExpect(jsonPath("$.student.firstName").value("Test"))
             .andExpect(jsonPath("$.numberOfHours").value(10))
-            .andExpect(jsonPath("$.section.section").value("T01"));
+            .andExpect(jsonPath("$.section.section").value("T01"))
+            .andExpect(jsonPath("$.isConfirmed").value(false));
+    }
+
+    @Test
+    void acceptOffer_updatesConfirmationStatusToTrue() throws Exception {
+        doNothing().when(allocationService).updateConfirmationStatus(123L, true);
+
+        mvc.perform(put("/allocations/123/acceptOffer"))
+            .andExpect(status().isOk());
+
+        verify(allocationService, times(1)).updateConfirmationStatus(123L, true);
+    }
+
+    @Test
+    void denyOffer_updatesConfirmationStatusToFalse() throws Exception {
+        doNothing().when(allocationService).updateConfirmationStatus(123L, false);
+
+        mvc.perform(put("/allocations/123/denyOffer"))
+            .andExpect(status().isOk());
+
+        verify(allocationService, times(1)).updateConfirmationStatus(123L, false);
     }
 
 }

@@ -12,7 +12,19 @@ export type SectionType =
 
 export interface SectionDetails extends Course{
     sectionId?: number,
-    term?: string,
+    semester?: string,
     section?: string,
     type?: SectionType,
+    year?: number
 }
+
+export const sectionTypeOptions: SectionType[] = [
+  "Lecture",
+  "Tutorial",
+  "Laboratory",
+  "Discussion",
+  "Seminar",
+  "Workshop",
+  "Experential",
+  "Independent Study"
+];

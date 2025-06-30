@@ -59,8 +59,45 @@ public class CourseController {
 
     @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
     @GetMapping("/needAndAllocations/{instructorId}")
-    public ResponseEntity<List<CourseNeedAndAllocations>> getInstructorCourseNeedsAndAllocations(@PathVariable Long instructorId) {
+    public ResponseEntity<List<CourseNeedAndAllocations>> getInstructorCourseNeedsAndAllocations(
+            @PathVariable Long instructorId) {
         return ResponseEntity.ok(courseService.getInstructorCourseNeedsAndAllocations(instructorId));
+    }
+    
+    @GetMapping("/allDeptCodes")
+    public ResponseEntity<List<String>> getAllDeptCodes() {
+        return ResponseEntity.ok(courseService.getAllDeptCodes());
+    }
+
+    @GetMapping("/allCourseNums")
+    public ResponseEntity<List<String>> getAllCourseNums(
+        @RequestParam String deptCode
+    ) {
+        return ResponseEntity.ok(courseService.getAllCourseNums(deptCode));
+    }
+
+    @GetMapping("/allSections")
+    public ResponseEntity<List<String>> getAllSections(
+            @RequestParam String deptCode,
+            @RequestParam String courseNum) {
+        return ResponseEntity.ok(courseService.getAllSections(deptCode, courseNum));
+    }
+
+    @GetMapping("/allYears")
+    public ResponseEntity<List<String>> getAllYears(
+            @RequestParam String deptCode,
+            @RequestParam String courseNum,
+            @RequestParam String section) {
+        return ResponseEntity.ok(courseService.getAllYears(deptCode, courseNum, section));
+    }
+
+    @GetMapping("/allSemesters")
+    public ResponseEntity<List<String>> getAllSemesters(
+            @RequestParam String deptCode,
+            @RequestParam String courseNum,
+            @RequestParam String section,
+            @RequestParam String year) {
+        return ResponseEntity.ok(courseService.getAllSemester(deptCode, courseNum, section, year));
     }
 
     // @GetMapping("/getEnrolledCourses/{studentId}")

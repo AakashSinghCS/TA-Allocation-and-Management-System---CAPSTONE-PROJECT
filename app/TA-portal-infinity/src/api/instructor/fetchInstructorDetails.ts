@@ -1,29 +1,28 @@
-import type { Instructor } from "../../interfaces/user/Instructor";
 import { mockInstructorChed } from "../../mocked-objects/user/mockInstructorChed";
 
-export async function fetchInstructorDetails(instructorId: number): Promise<Instructor> {
-  const baseUrl = 'mock'; // temporary value until backend is wired
-  const url = `${baseUrl}/mock/mock/instructors/${instructorId}`;
+const BASE = "http://localhost:8080/instructors";
+
+export async function fetchInstructorDetails<Instructor>(userId: number): Promise<Instructor> {
+  const url = `${BASE}/${userId}`;
+  const token = localStorage.getItem("token");
 
   try {
     const res = await fetch(url, {
+      method: "GET",
       headers: {
-        Accept: 'application/json',
+        "Accept": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     });
 
-    // We expect the test to stub the response here
     const data = await res.json();
 
-    // If this is a test, data will be `{ student: mockStudentJohnDoe }`
-    if (data && data.instructors) {
-      return data.instructors;
-    }
+    return data as Instructor;
+    // return mockInstructorChed;
 
-    // fallback to mock if malformed
-    return mockInstructorChed;
   } catch (err) {
-    // fallback to mock on fetch failure
-    return mockInstructorChed;
+    console.error("Failed to fetch user details:", err);
+    return ({} as Instructor);
+    // return mockInstructorChed;
   }
 }
