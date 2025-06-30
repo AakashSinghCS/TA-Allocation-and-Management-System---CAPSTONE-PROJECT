@@ -224,7 +224,7 @@ public class UserService {
             List<Instructor> instructors;
 
             if (universityNumber > 0) {
-                instructors = instructorRepository.findAllByEmployeeNumber(universityNumber);
+                instructors = instructorRepository.findAllByEmployeeNum(universityNumber);
             } else {
                 instructors = instructorRepository
                     .findByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(name, name);
