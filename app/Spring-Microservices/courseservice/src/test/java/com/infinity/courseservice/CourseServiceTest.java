@@ -35,6 +35,7 @@ import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
+import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
@@ -206,6 +207,8 @@ public class CourseServiceTest {
 
         Course course = new Course("COSC", "Networks", "329");
         course.setId(courseId);
+        Section section = new Section(2025, "W1", "001", SectionType.LAB, course);
+        section.setId(1L);
 
         NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester);
 
@@ -217,14 +220,14 @@ public class CourseServiceTest {
                 12,
                 new SectionDtoNoCourse(5L, year, semester, "001", SectionType.LECTURE));
 
-        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        when(sectionRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)).thenReturn(Optional.of(section));
         when(needService.getNeed(courseId, year, semester)).thenReturn(need);
         when(applicationInterface.getStudentAllocationHistory(courseId))
                 .thenReturn(ResponseEntity.ok(List.of(allocation)));
 
         CourseNeedAndAllocations result = courseService.getCourseNeedAndAllocations(courseId, year, semester);
 
-        assertEquals("Networks", result.course().name());
+        assertEquals("Networks", result.section().course().name());
         assertEquals("Grading", result.need().description());
         assertEquals(1, result.allocations().size());
         assertEquals("John", result.allocations().get(0).student().firstName());
@@ -232,44 +235,42 @@ public class CourseServiceTest {
 
     @Test
     void testGetCourseNeedAndAllocations_CourseNotFound() {
-        when(courseRepository.findById(404L)).thenReturn(Optional.empty());
+        when(sectionRepository.findByCourseIdAndYearAndSemester(404L, 2025, "W1")).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
                 () -> courseService.getCourseNeedAndAllocations(404L, 2025, "W1"));
     }
 
     @Test
     void testGetInstructorCourseNeedsAndAllocations_Success() {
-        Long instructorId = 77L;
+            Long instructorId = 77L;
 
-        SectionDto section1 = new SectionDto(
-                10L, 2025, "W1", "001", SectionType.LECTURE,
-                new CourseDto(1L, "COSC", "Security", "430"));
+            SectionDto section1 = new SectionDto(
+                            10L, 2025, "W1", "001", SectionType.LECTURE,
+                            new CourseDto(1L, "COSC", "Security", "430"));
 
-        SectionDto section2 = new SectionDto(
-                11L, 2025, "W1", "002", SectionType.LAB,
-                new CourseDto(1L, "COSC", "Security", "430") // duplicate course-term
-        );
+            SectionDto section2 = new SectionDto(
+                            11L, 2025, "W1", "002", SectionType.LAB,
+                            new CourseDto(1L, "COSC", "Security", "430"));
 
-        NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1");
-        AllocationHistoryDto alloc = new AllocationHistoryDto(
-                3L,
-                new StudentDto(2L, "Alice", "Wang", 9999, "COSC", 2022, 3),
-                new OfferDto(200L, false, "Lab Marking"),
-                true,
-                8,
-                new SectionDtoNoCourse(10L, 2025, "W1", "001", SectionType.LECTURE));
+            NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1");
+            AllocationHistoryDto alloc = new AllocationHistoryDto(
+                            3L,
+                            new StudentDto(2L, "Alice", "Wang", 9999, "COSC", 2022, 3),
+                            new OfferDto(200L, false, "Lab Marking"),
+                            true,
+                            8,
+                            new SectionDtoNoCourse(10L, 2025, "W1", "001", SectionType.LECTURE));
 
-        when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1, section2));
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(new Course("COSC", "Security", "430")));
-        when(needService.getNeed(1L, 2025, "W1")).thenReturn(need);
-        when(applicationInterface.getStudentAllocationHistory(1L)).thenReturn(ResponseEntity.ok(List.of(alloc)));
+            when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1, section2));
+            when(needService.getNeed(1L, 2025, "W1")).thenReturn(need);
+            when(applicationInterface.getStudentAllocationHistory(1L)).thenReturn(ResponseEntity.ok(List.of(alloc)));
 
-        List<CourseNeedAndAllocations> result = courseService.getInstructorCourseNeedsAndAllocations(instructorId);
+            List<CourseNeedAndAllocations> result = courseService.getInstructorCourseNeedsAndAllocations(instructorId);
 
-        assertEquals(1, result.size());
-        assertEquals("Security", result.get(0).course().name());
-        assertEquals("Labs", result.get(0).need().description());
-        assertEquals("Alice", result.get(0).allocations().get(0).student().firstName());
+            assertEquals(1, result.size());
+            assertEquals("Security", result.get(0).section().course().name());
+            assertEquals("Labs", result.get(0).need().description());
+            assertEquals("Alice", result.get(0).allocations().get(0).student().firstName());
     }
 
     @Test
@@ -281,12 +282,11 @@ public class CourseServiceTest {
                             new CourseDto(1L, "COSC", "Security", "430"));
 
             when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1));
-            when(courseRepository.findById(1L)).thenReturn(Optional.of(new Course("COSC", "Security", "430")));
             when(needService.getNeed(1L, 2025, "W1")).thenThrow(new NotFoundException("Need not found"));
 
             List<CourseNeedAndAllocations> result = courseService.getInstructorCourseNeedsAndAllocations(instructorId);
 
-            assertEquals(0, result.size()); // gracefully skipped
+            assertEquals(0, result.size());
     }
     
     @Test

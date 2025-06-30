@@ -21,6 +21,7 @@ import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
+import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
@@ -91,13 +92,17 @@ public class CourseService {
     }
     
     public CourseNeedAndAllocations getCourseNeedAndAllocations(Long courseId, Integer year, String semester) {
-        Course course = courseRepository.findById(courseId)
+        Section section = sectionRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)
                 .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
         NeedDto need = needService.getNeed(courseId, year, semester);
         List<AllocationHistoryDto> allocations = applicationInterface.getStudentAllocationHistory(courseId).getBody();
-        CourseDto courseDto = new CourseDto(course.getId(), course.getDeptCode(), course.getName(),
-                course.getCourseNum());
-        return new CourseNeedAndAllocations(courseDto, need, allocations);
+        SectionDto sectionDto = new SectionDto(section.getId(), section.getYear(), section.getSemester(),
+                section.getSection(), section.getType(), 
+                new CourseDto(section.getCourse().getId(),
+                        section.getCourse().getDeptCode(), 
+                        section.getCourse().getName(),
+                        section.getCourse().getCourseNum()));
+        return new CourseNeedAndAllocations(sectionDto, need, allocations);
 
     }
     
@@ -117,7 +122,10 @@ public class CourseService {
         if (!uniqueKeys.contains(key)) {
             uniqueKeys.add(key);
             try {
-                CourseNeedAndAllocations entry = getCourseNeedAndAllocations(courseId, year, semester);
+                NeedDto need = needService.getNeed(section.course().id(), section.year(), section.semester());
+                List<AllocationHistoryDto> allocations = applicationInterface
+                        .getStudentAllocationHistory(section.course().id()).getBody();
+                CourseNeedAndAllocations entry = new CourseNeedAndAllocations(section, need, allocations);
                 result.add(entry);
             } catch (NotFoundException ignored) {
             }
