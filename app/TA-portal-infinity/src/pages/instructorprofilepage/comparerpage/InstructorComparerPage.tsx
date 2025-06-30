@@ -13,6 +13,8 @@ export default function InstructorComparerPage (){
         <div className='mx-auto space-y-6 p-4'>
             <InstructorTabNav/>
             <h2 className="text-xl font-semibold mb-4">Compare a TA to a section the instructor teaches</h2>
+            <p className="text-xs text-slate-600">If the instructor has specified the course prerequisites for each section he is teaching,
+              use this application to see which sections the instructor teaches the student fulfills course prerequisites for </p>
             <GenericAPIContainer<Section[]>
                       fetchFunction={() => fetchAllInstructorTeachesSection(iId)}
                       render={sections => (

@@ -2,6 +2,8 @@ package com.infinity.userservice.dtos.Students;
 
 import java.time.LocalDateTime;
 
+import com.infinity.userservice.dtos.BaseUserDto;
+
 public record StudentDto(
     Long id,
     String firstName,
@@ -12,4 +14,4 @@ public record StudentDto(
     Integer enrollmentYear,
     Integer schoolYear,
     LocalDateTime createdAt
-) {}
+) implements BaseUserDto{}
