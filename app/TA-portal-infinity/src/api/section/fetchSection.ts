@@ -1,5 +1,7 @@
 import type Section from "../../interfaces/section/Section";
 import { mockSectionCOSC111 } from "../../mocked-objects/section/mockSectionCOSC111";
+import { mockSectionCOSC121 } from "../../mocked-objects/section/mockSectionCOSC121";
+import { mockSectionMATH125 } from "../../mocked-objects/section/mockSectionMATH125";
 
 export async function fetchSection(sectionId: number): Promise<Section> {
 
@@ -16,5 +18,15 @@ export async function fetchSection(sectionId: number): Promise<Section> {
     // }
 
     // return res.json() as Promise<Section>;
-    return mockSectionCOSC111; //delete when backend is implemented
+   // return the right mock based on sectionId
+  if (sectionId === mockSectionCOSC111.sectionDetails?.sectionId) {
+    return mockSectionCOSC111;
+  }
+  if (sectionId === mockSectionCOSC121.sectionDetails?.sectionId) {
+    return mockSectionCOSC121;
+  }
+  if (sectionId === mockSectionMATH125.sectionDetails?.sectionId) {
+    return mockSectionMATH125;
+  }
+  throw new Error(`No mock defined for sectionId ${sectionId}`);
 }

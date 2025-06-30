@@ -9,9 +9,9 @@ import com.infinity.userservice.models.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    Optional<Student> findByStudentNumber(Integer studentNumber);
+    Optional<Student> findByStudentNum(Integer studentNum);
    
-    List<Student> findAllByStudentNumber(Integer studentNumber);
+    List<Student> findAllByStudentNum(Integer studentNum);
 
     List<Student> findByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(String firstName, String lastName);
     

@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.applicationservice.dtos.ApplicationDto;
 import com.infinity.applicationservice.dtos.ApplicationRequest;
+import com.infinity.applicationservice.dtos.ApplicationWithStudentDto;
+import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.services.ApplicationService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestParam;
-
-
 
 
 @RestController
@@ -51,11 +51,11 @@ public class ApplicationController {
 
     @PutMapping("update/{studentId}")
     public ResponseEntity<ApplicationDto> updateApplication(@RequestBody @Valid ApplicationRequest req,
-            @PathVariable Long studentId, 
+            @PathVariable Long studentId,
             @RequestHeader("X-User-Id") Long requesterId,
-            @RequestHeader("X-User-Roles") List<String> roles) {        
+            @RequestHeader("X-User-Roles") List<String> roles) {
         return ResponseEntity.ok(applicationService.updateApplication(req, studentId, requesterId, roles));
-    }    
+    }
 
     @DeleteMapping("/delete/{studentId}")
     public ResponseEntity<String> deleteApplication(@PathVariable Long studentId,
@@ -70,5 +70,19 @@ public class ApplicationController {
             @RequestHeader("X-User-Roles") List<String> roles) {
         return ResponseEntity.ok(applicationService.getAllApplicationsByStudentId(studentId, requesterId, roles));
     }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/getAll")
+    public ResponseEntity<List<ApplicationWithStudentDto>> getAllApplications(
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Boolean wantRemote,
+            @RequestParam(required = false) Integer hours,
+            @RequestParam(required = false) Subject preference1,
+            @RequestParam(required = false) Subject preference2,
+            @RequestParam(required = false) Subject preference3) {
+        return ResponseEntity.ok(
+                applicationService.getAllApplications(year, wantRemote, hours, preference1, preference2, preference3));
+    }
     
+
 }

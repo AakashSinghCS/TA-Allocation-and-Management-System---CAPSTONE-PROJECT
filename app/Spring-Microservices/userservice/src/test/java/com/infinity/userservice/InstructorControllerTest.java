@@ -1,67 +1,51 @@
 package com.infinity.userservice;
 
-import java.time.LocalDateTime;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.userservice.controllers.InstructorController;
+import com.infinity.userservice.dtos.Instructors.InstructorDto;
+import com.infinity.userservice.services.InstructorService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.infinity.userservice.controllers.InstructorController;
-import com.infinity.userservice.dtos.InstructorDto;
-import com.infinity.userservice.exceptions.NotFoundException;
-import com.infinity.userservice.services.InstructorService;
-
-
-
 @WebMvcTest(InstructorController.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class InstructorControllerTest {
-    
+
     @Autowired
     private MockMvc mockMvc;
 
     @MockitoBean
     private InstructorService instructorService;
 
-  
-    @Test
-    void testGetInstructorById_NotFound() throws Exception {
-
-        when(instructorService.getInstructorById(any())).thenThrow(new NotFoundException("User with instructor id 2 not found"));
-
-        mockMvc.perform(get("/instructors/2")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
-    void testGetInstructorById_Success() throws Exception {
-        LocalDateTime fixedTime = LocalDateTime.of(2023, 1, 1, 12, 0);
+    void testGetInstructorById() throws Exception {
         Long instructorId = 1L;
-        InstructorDto mockResponse = new InstructorDto(
-            instructorId,
-            "John",
-            "Smith",
-            "test@test.com",
-            12345678,
-            "Computer Science",
-            fixedTime
-        );
+        LocalDateTime createdAt = LocalDateTime.of(2023, 1, 1, 10, 0);
+        InstructorDto dto = new InstructorDto(instructorId, "Jane", "Doe", "jane@test.com", 1234, "Math", createdAt);
 
-        when(instructorService.getInstructorById(any())).thenReturn(mockResponse);
-        
-        mockMvc.perform(get("/instructors/"+instructorId)
+        when(instructorService.getInstructorById(instructorId)).thenReturn(dto);
+
+        mockMvc.perform(get("/instructors/{instructorId}", instructorId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("John"));
+                .andExpect(jsonPath("$.id").value(instructorId))
+                .andExpect(jsonPath("$.firstName").value("Jane"))
+                .andExpect(jsonPath("$.employeeNum").value(1234))
+                .andExpect(jsonPath("$.dept").value("Math"));
     }
 }

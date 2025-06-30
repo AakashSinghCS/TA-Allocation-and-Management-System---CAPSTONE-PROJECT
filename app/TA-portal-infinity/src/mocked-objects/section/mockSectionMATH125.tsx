@@ -14,20 +14,21 @@ export const mockSectionMATH125Details : SectionDetails = {
     deptCode : mockCourseMATH125.deptCode,
     courseNum : mockCourseMATH125.courseNum,
     section: "001",
-    term : "Winter 2023",
+    semester : "W2",
+    year: 2023,
     type : "Lecture"
 }
 
 export const mockSectionScheduleMATH125ForTue : SectionSchedule = {
     sectionId: 1,
-    day: "Tue",
+    day: "Mon",
     startTime : "13:00",
     endTime: "15:00"
 }
 
 export const mockSectionScheduleMATH125ForFri : SectionSchedule = {
     sectionId: 1,
-    day: "Fri",
+    day: "Thu",
     startTime : "13:00",
     endTime: "15:00"
 }

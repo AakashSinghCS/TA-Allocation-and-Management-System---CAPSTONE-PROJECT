@@ -16,7 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.infinity.userservice.controllers.StudentController;
-import com.infinity.userservice.dtos.StudentDto;
+import com.infinity.userservice.dtos.Students.StudentDto;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.services.StudentService;
@@ -35,7 +35,7 @@ public class StudentControllerTest {
     @Test
     void testGetStudentByNum_NotFound() throws Exception {
 
-        when(studentService.getStudentByNumber(any())).thenThrow(new NotFoundException("User with student number 2 not found"));
+        when(studentService.getStudentByNum(any())).thenThrow(new NotFoundException("User with student number 2 not found"));
 
         mockMvc.perform(get("/students/num/2")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -58,7 +58,7 @@ public class StudentControllerTest {
             fixedTime
         );
         //UserDto mockResponse = new UserDto(1L, "John", "Smith", UserRole.STUDENT);
-        when(studentService.getStudentByNumber(any())).thenReturn(mockResponse);
+        when(studentService.getStudentByNum(any())).thenReturn(mockResponse);
         
         mockMvc.perform(get("/students/num/"+studentNum)
                 .contentType(MediaType.APPLICATION_JSON))

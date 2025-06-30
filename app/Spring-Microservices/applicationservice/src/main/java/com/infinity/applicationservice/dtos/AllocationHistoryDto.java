@@ -1,11 +1,10 @@
 package com.infinity.applicationservice.dtos;
 
-import com.infinity.applicationservice.models.Offer;
 
 public record AllocationHistoryDto(
     Long id,
     StudentDto student,
-    Offer offer,
+    ApplicationDto applicationDto,
     boolean isConfirmed,
     int numberOfHours,
     SectionDto section) {

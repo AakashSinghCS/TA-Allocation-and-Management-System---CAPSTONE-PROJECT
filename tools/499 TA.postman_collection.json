@@ -517,12 +517,313 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get instructor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/instructors/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"instructors",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
 			"name": "Courses",
 			"item": [
+				{
+					"name": "Filtering",
+					"item": [
+						{
+							"name": "filter courses",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"startTime\": \"14:00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/courses/filterCourses",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"courses",
+										"filterCourses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get dept codes",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "localhost:8080/courses/allDeptCodes",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"courses",
+										"allDeptCodes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get course nums",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "localhost:8080/courses/allCourseNums?deptCode=COSC",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"courses",
+										"allCourseNums"
+									],
+									"query": [
+										{
+											"key": "deptCode",
+											"value": "COSC"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get sections",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "localhost:8080/courses/allSections?deptCode=COSC&courseNum=499",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"courses",
+										"allSections"
+									],
+									"query": [
+										{
+											"key": "deptCode",
+											"value": "COSC"
+										},
+										{
+											"key": "courseNum",
+											"value": "499"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get year",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "localhost:8080/courses/allYears?deptCode=COSC&courseNum=499&section=001",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"courses",
+										"allYears"
+									],
+									"query": [
+										{
+											"key": "deptCode",
+											"value": "COSC"
+										},
+										{
+											"key": "courseNum",
+											"value": "499"
+										},
+										{
+											"key": "section",
+											"value": "001"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get semesters",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "localhost:8080/courses/allSemesters?deptCode=COSC&courseNum=499&section=001&year=2025",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"courses",
+										"allSemesters"
+									],
+									"query": [
+										{
+											"key": "deptCode",
+											"value": "COSC"
+										},
+										{
+											"key": "courseNum",
+											"value": "499"
+										},
+										{
+											"key": "section",
+											"value": "001"
+										},
+										{
+											"key": "year",
+											"value": "2025"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
 				{
 					"name": "Add course not auth",
 					"request": {
@@ -578,7 +879,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"deptCode\":\"COSC\", \"name\":\"capstone\", \"courseNum\":\"499\"}",
+							"raw": "{\"deptCode\":\"Math\", \"name\":\"capstone\", \"courseNum\":\"499\"}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -696,44 +997,86 @@
 					"response": []
 				},
 				{
-					"name": "filter courses",
+					"name": "Get needs and allocations",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
 									"type": "string"
 								}
 							]
 						},
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"startTime\": \"14:00\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\r\n    \"studentId\":\"1\",\r\n    \"courseId\":\"1\",\r\n    \"hasCompleted\":false\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/courses/filterCourses",
-							"protocol": "http",
+							"raw": "localhost:8080/courses/needAndAllocations/1/2025/W1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"courses",
-								"filterCourses"
+								"needAndAllocations",
+								"1",
+								"2025",
+								"W1"
 							]
 						}
 					},
 					"response": []
 				},
+				{
+					"name": "Get all instructors section needs and allocations",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"studentId\":\"1\",\r\n    \"courseId\":\"1\",\r\n    \"hasCompleted\":false\r\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/courses/needAndAllocations/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"courses",
+								"needAndAllocations",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sections",
+			"item": [
 				{
 					"name": "Add section",
 					"request": {
@@ -751,7 +1094,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"section\": \"001\",\r\n    \"term\": \"2025W1\",\r\n    \"type\": \"LAB\"\r\n}",
+							"raw": "{\r\n    \"section\": \"001\",\r\n    \"year\": \"2025\",\r\n    \"semester\": \"W1\",\r\n    \"type\": \"LAB\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -759,16 +1102,16 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/courses/1/addSection",
+							"raw": "http://localhost:8080/sections/addSection/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"courses",
-								"1",
-								"addSection"
+								"sections",
+								"addSection",
+								"1"
 							]
 						}
 					},
@@ -799,17 +1142,136 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/courses/1/1/addSectionSchedule",
+							"raw": "http://localhost:8080/sections/addSectionSchedule/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"courses",
+								"sections",
+								"addSectionSchedule",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Instructor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"sectionId\":\"1\", \"instructorId\":\"3\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/sections/assignInstructor",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sections",
+								"assignInstructor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unassign instructor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"sectionId\":\"1\", \"instructorId\":\"1\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/sections/unassignInstructor/1/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sections",
+								"unassignInstructor",
 								"1",
-								"1",
-								"addSectionSchedule"
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get instructor sections",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"sectionId\":\"1\", \"instructorId\":\"1\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/sections/getInstructorSections/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sections",
+								"getInstructorSections",
+								"3"
 							]
 						}
 					},
@@ -1198,6 +1660,72 @@
 					"response": []
 				},
 				{
+					"name": "Get All Applications By Student Id Copy",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"preferences\":[\"COSC\", \"MATH\", null],\r\n    \"wantRemote\":false,\r\n    \"wantWorkingHours\":6\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/applications/getAll?preference1=COSC&wantRemote=false",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"applications",
+								"getAll"
+							],
+							"query": [
+								{
+									"key": "year",
+									"value": "2025",
+									"disabled": true
+								},
+								{
+									"key": "preference1",
+									"value": "COSC"
+								},
+								{
+									"key": "preference2",
+									"value": "DATA",
+									"disabled": true
+								},
+								{
+									"key": "preference3",
+									"value": "MATH",
+									"disabled": true
+								},
+								{
+									"key": "wantRemote",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Delete Application",
 					"request": {
 						"auth": {
@@ -1244,7 +1772,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzQ5MzE5ODQzfQ.82a0w2lLdGi1JJClzYMI_oM1_-k2gMsdY_oec8Y4Kq8bnBfX6fNGKBZhfyb2twgL",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
 									"type": "string"
 								}
 							]
@@ -1259,7 +1787,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"studentId\": 1,\r\n    \"offerId\": null,\r\n    \"isConfirmed\": true,\r\n    \"numberOfHours\": 5,\r\n    \"sectionId\": 1\r\n}"
+							"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"isConfirmed\": false,\r\n    \"numberOfHours\": 5,\r\n    \"sectionId\": 1\r\n}"
 						},
 						"url": {
 							"raw": "localhost:8080/allocations/allocate",
@@ -1286,7 +1814,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzQ5MzE5ODQzfQ.82a0w2lLdGi1JJClzYMI_oM1_-k2gMsdY_oec8Y4Kq8bnBfX6fNGKBZhfyb2twgL",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
 									"type": "string"
 								}
 							]
@@ -1314,6 +1842,246 @@
 								"student",
 								"1",
 								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept Offer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMjMwODI1LCJleHAiOjE3NTEyMzQ0MjV9.0ddVcfQZvyVUlSMV7ShtTZXwPC1kWM1NDqYdIdG5PgX6W28pCW7MUsJuE05BjoTX",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/allocations/1/acceptOffer",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"allocations",
+								"1",
+								"acceptOffer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deny Offer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMjMwODI1LCJleHAiOjE3NTEyMzQ0MjV9.0ddVcfQZvyVUlSMV7ShtTZXwPC1kWM1NDqYdIdG5PgX6W28pCW7MUsJuE05BjoTX",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/allocations/1/denyOffer",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"allocations",
+								"1",
+								"denyOffer"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Needs",
+			"item": [
+				{
+					"name": "Add need",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"description\": \"Test need\",\r\n\"requiredGradingHours\":\"20\", \r\n\"numHoursCurrentlyAllocated\":\"0\", \r\n\"year\":\"2025\",\r\n\"semester\":\"W1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/needs/add/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"needs",
+								"add",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update need",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"description\": \"Updated need\",\r\n\"requiredGradingHours\":\"24\", \r\n\"numHoursCurrentlyAllocated\":\"0\", \r\n\"year\":\"2025\",\r\n\"semester\":\"W2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/needs/update/1/2025/W1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"needs",
+								"update",
+								"1",
+								"2025",
+								"W1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get need",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"deptCode\":\"COSC\", \"name\":\"capstone\", \"courseNum\":\"499\"}"
+						},
+						"url": {
+							"raw": "localhost:8080/needs/get/1/2025/W1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"needs",
+								"get",
+								"1",
+								"2025",
+								"W1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete need",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"deptCode\":\"COSC\", \"name\":\"capstone\", \"courseNum\":\"499\"}"
+						},
+						"url": {
+							"raw": "localhost:8080/needs/delete/1/2025/W2",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"needs",
+								"delete",
+								"1",
+								"2025",
+								"W2"
 							]
 						}
 					},

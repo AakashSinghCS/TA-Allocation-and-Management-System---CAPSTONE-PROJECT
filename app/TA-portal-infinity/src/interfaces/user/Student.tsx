@@ -1,7 +1,7 @@
 import type User from "./User";
 
 export interface Student extends User{
-  studentNumber?: number;
+  studentNum?: number;
   program?: string;
   enrollmentYear?: number;
   schoolYear?: number;
@@ -12,7 +12,7 @@ export const studentProfileFields: (keyof Student)[] = [
   "firstName",
   "lastName",
   "email",
-  "studentNumber",
+  "studentNum",
   "program",
   "enrollmentYear",
   "schoolYear",
@@ -24,7 +24,7 @@ export const studentFieldLabels: Record<keyof Student, string> = {
   firstName:       "First Name",
   lastName:        "Last Name",
   email:           "Email",
-  studentNumber:   "Student #",
+  studentNum:       "Student #",
   program:         "Program",
   enrollmentYear:  "Enrollment Year",
   schoolYear:      "School Year",

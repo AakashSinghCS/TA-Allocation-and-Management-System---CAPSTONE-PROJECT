@@ -12,13 +12,17 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.userservice.dtos.BaseUserDto;
 import com.infinity.userservice.dtos.CoordinatorDto;
-import com.infinity.userservice.dtos.CoordinatorUpdateRequest;
-import com.infinity.userservice.dtos.InstructorDto;
-import com.infinity.userservice.dtos.InstructorUpdateRequest;
-import com.infinity.userservice.dtos.RegisterRequest;
-import com.infinity.userservice.dtos.StudentDto;
-import com.infinity.userservice.dtos.StudentUpdateRequest;
+// import com.infinity.userservice.dtos.CoordinatorUpdateRequest;
+// import com.infinity.userservice.dtos.InstructorUpdateRequest;
+// import com.infinity.userservice.dtos.RegisterRequest;
+// import com.infinity.userservice.dtos.StudentUpdateRequest;
 import com.infinity.userservice.dtos.UserDto;
+import com.infinity.userservice.dtos.Coordinators.CoordinatorUpdateRequest;
+import com.infinity.userservice.dtos.Instructors.InstructorDto;
+import com.infinity.userservice.dtos.Instructors.InstructorUpdateRequest;
+import com.infinity.userservice.dtos.Registration.RegisterRequest;
+import com.infinity.userservice.dtos.Students.StudentDto;
+import com.infinity.userservice.dtos.Students.StudentUpdateRequest;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.BadRequestException;
@@ -121,8 +125,7 @@ public class UserService {
             String hashedPassword = passwordEncoder.encode(req.password());
             student.setPassword(hashedPassword);
         }
-        if (req.studentNumber() != null)
-            student.setStudentNumber(req.studentNumber());
+        if (req.studentNum()     != null) student.setStudentNum(req.studentNum());
         if (req.program() != null)
             student.setProgram(req.program());
         if (req.enrollmentYear() != null)
@@ -146,8 +149,8 @@ public class UserService {
             String hashedPassword = passwordEncoder.encode(req.password());
             instructor.setPassword(hashedPassword);
         }
-        if (req.employeeNumber() != null)
-            instructor.setEmployeeNumber(req.employeeNumber());
+        if (req.employeeNum() != null)
+            instructor.setEmployeeNum(req.employeeNum());
         if (req.department() != null)
             instructor.setDepartment(req.department());
 
@@ -209,7 +212,7 @@ public class UserService {
                     s.getFirstName(),
                     s.getLastName(),
                     s.getEmail(),
-                    s.getStudentNumber(),
+                    s.getStudentNum(),
                     s.getProgram(),
                     s.getEnrollmentYear(),
                     s.getSchoolYear(),
@@ -232,7 +235,7 @@ public class UserService {
                     i.getFirstName(),
                     i.getLastName(),
                     i.getEmail(),
-                    i.getEmployeeNumber(),
+                    i.getEmployeeNum(),
                     i.getDepartment(),
                     i.getCreatedAt()
                 ))
