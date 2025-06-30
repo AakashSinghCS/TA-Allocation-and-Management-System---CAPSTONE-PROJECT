@@ -11,7 +11,6 @@ import com.infinity.courseservice.dtos.CourseDto;
 import com.infinity.courseservice.dtos.QualificationDto;
 import com.infinity.courseservice.dtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationWithSectionDto;
-import com.infinity.courseservice.dtos.SectionDto;
 import com.infinity.courseservice.dtos.StudentDto;
 import com.infinity.courseservice.dtos.StudentQualiRequest;
 import com.infinity.courseservice.dtos.StudentQualificationResponseDto;
@@ -21,8 +20,11 @@ import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Qualification;
 import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.QualificationRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,6 +34,7 @@ public class QualificationService {
     private final SectionRepository sectionRepository;
     private final UserInterface studentClient;
     private final QualificationRepository qualificationRepository;
+    private final CourseRepository courseRepository;
     private final CourseService courseService;
 
     public QualificationDto findQualification(Long id) {
@@ -41,14 +44,15 @@ public class QualificationService {
         return new QualificationDto(course, qualification.getDescription(), stu);
     }
 
-    public List<QualificationDto> findQualificationsByDeptCode(String deptCode) {
-        List<QualificationDto> qualifications = qualificationRepository.findAllByDeptCode(deptCode);
+    public List<Qualification> findQualificationsByDeptCode(String deptCode) {
+        List<Qualification> qualifications = qualificationRepository.findAllByDeptCode(deptCode);
         return qualifications;
     }
 
     public QualificationDto instructorAddQualification(QualificationRequest request) {
         CourseDto courseDto = courseService.findCourse(request.courseId());
-        Course course = new Course(courseDto.deptCode(), courseDto.name(), courseDto.courseNum());
+        Course course = courseRepository.findById(request.courseId())
+            .orElseThrow(() -> new EntityNotFoundException("Course not found"));
         Qualification qualification = new Qualification(course, null, request.description(), request.deptCode());
         try {
             qualificationRepository.save(qualification);
@@ -64,8 +68,8 @@ public class QualificationService {
             throw new NotFoundException("No qualifications found with description: " + request.description());
         }
         List<Qualification> withStudents = toDelete.stream()
-        .filter(q -> q.getStudentId() != null)
-        .collect(Collectors.toList());
+            .filter(q -> q.getStudentId() != null)
+            .collect(Collectors.toList());
         qualificationRepository.deleteAll(withStudents);
         return "Qualification deleted successfully";
     }
@@ -91,9 +95,9 @@ public class QualificationService {
     }
 
     public List<StudentQualificationResponseDto> findQualificationsByStudentId(Long studentId) {
-        List<QualificationDto> studentQualifications = qualificationRepository.findAllByStudentId(studentId);
+        List<Qualification> studentQualifications = qualificationRepository.findAllByStudentId(studentId);
         List<String> descriptions = studentQualifications.stream()
-            .map(QualificationDto::description)
+            .map(Qualification::getDescription)
             .collect(Collectors.toList());
         List<Qualification> qualifications = qualificationRepository.findAllByDescriptionAndStudentIdIsNull(descriptions);
         List<StudentQualificationResponseDto> dtos = qualifications.stream()
@@ -110,11 +114,11 @@ public class QualificationService {
     public List<QualificationWithSectionDto> findQualificationsByInstructorId(Long instructorId) {
         List<Section> sections = sectionRepository.findByInstructorId(instructorId);
         List<Course> courses = sections.stream().map(Section::getCourse).collect(Collectors.toList());
-        List<QualificationDto> qualiDtos = qualificationRepository.findAllByCourseAndStudentIdIsNull(courses);
+        List<Qualification> qualis = qualificationRepository.findAllByCourseAndStudentIdIsNull(courses);
         List<QualificationWithSectionDto> combinedList = new ArrayList<>();
         for (int i = 0; i < sections.size(); i++) {
             Section section = sections.get(i);
-            QualificationDto qualification = qualiDtos.get(i);
+            Qualification qualification = qualis.get(i);
             combinedList.add(new QualificationWithSectionDto(section, qualification));
         }
         return combinedList;

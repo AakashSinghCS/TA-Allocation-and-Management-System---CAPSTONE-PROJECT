@@ -16,6 +16,7 @@ import com.infinity.courseservice.dtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.StudentQualiRequest;
 import com.infinity.courseservice.dtos.StudentQualificationResponseDto;
+import com.infinity.courseservice.models.Qualification;
 import com.infinity.courseservice.services.QualificationService;
 
 import lombok.Data;
@@ -28,6 +29,10 @@ import lombok.RequiredArgsConstructor;
 public class QualificationController {
     private final QualificationService qualificationService;
 
+    
+    @GetMapping("/ping")
+    public String ping() { return "OK"; }
+
     @GetMapping("/{id}")
     public ResponseEntity<QualificationDto> getQualification(@PathVariable Long id) {
         QualificationDto dto = qualificationService.findQualification(id);
@@ -35,9 +40,9 @@ public class QualificationController {
     }
 
     @GetMapping("/byDepartment/{deptCode}")
-    public ResponseEntity<List<QualificationDto>> getQualificationsByDeptCode(@PathVariable String deptCode) {
-        List<QualificationDto> dtos = qualificationService.findQualificationsByDeptCode(deptCode);
-        return ResponseEntity.ok(dtos);
+    public ResponseEntity<List<Qualification>> getQualificationsByDeptCode(@PathVariable String deptCode) {
+        List<Qualification> qualis = qualificationService.findQualificationsByDeptCode(deptCode);
+        return ResponseEntity.ok(qualis);
     }
 
     @PostMapping("/instructor/addQualification")
@@ -55,7 +60,7 @@ public class QualificationController {
     
 
     @GetMapping("/{studentId}/studentUpdateQualification")
-    public ResponseEntity<List<QualificationDto>> studentAddQualification(@RequestBody StudentQualiRequest request, @PathVariable Long studentId) {
+    public ResponseEntity<List<QualificationDto>> studentUpdateQualification(@RequestBody StudentQualiRequest request, @PathVariable Long studentId) {
         List<QualificationDto> qualifications = qualificationService.studentUpdateQualifications(request, studentId);
         return ResponseEntity.ok(qualifications);
     }
