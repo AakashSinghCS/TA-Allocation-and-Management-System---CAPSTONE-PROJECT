@@ -353,7 +353,7 @@ public class UserServiceTest {
         s.setLastName("Smith");
         s.setEmail("a@example.com");
         s.setStudentNum(12345678);
-        when(studentRepository.findAllByStudentNumber(12345678)).thenReturn(Collections.singletonList(s));
+        when(studentRepository.findAllByStudentNum(12345678)).thenReturn(Collections.singletonList(s));
 
         List<BaseUserDto> result = userService.search("STUDENT", "", 12345678);
 

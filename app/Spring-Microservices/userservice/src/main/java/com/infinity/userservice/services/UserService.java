@@ -201,7 +201,7 @@ public class UserService {
         if ("STUDENT".equalsIgnoreCase(role)) {
             List<Student> students;
             if (universityNumber > 0) {
-                students = studentRepository.findAllByStudentNumber(universityNumber);
+                students = studentRepository.findAllByStudentNum(universityNumber);
             } else {
                 students = studentRepository
                     .findByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(name, name);
