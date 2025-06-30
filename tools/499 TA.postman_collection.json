@@ -1,11 +1,9 @@
 {
 	"info": {
-
-		"_postman_id": "f9e607f4-ba63-49a8-9658-c08c78d510d3",
-
+		"_postman_id": "66e6a24e-92b0-46ec-a39c-c2a6744a0dc2",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45690522"
+		"_exporter_id": "5014489"
 	},
 	"item": [
 		{
@@ -404,6 +402,117 @@
 								"users",
 								"update",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfQ09PUkRJTkFUT1IiXSwiaWF0IjoxNzUwOTcyNjcxLCJleHAiOjE3NTA5NzYyNzF9.IAFw2iQxkTtrhg4DevGVcQD6qdaQAqkwJ-SM8d7NTt7iRNW2U_3EpvuETKjQ5QP4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"studentNum\": 12345678\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/update/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"update",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find student",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfQ09PUkRJTkFUT1IiXSwiaWF0IjoxNzUwOTcyNjcxLCJleHAiOjE3NTA5NzYyNzF9.IAFw2iQxkTtrhg4DevGVcQD6qdaQAqkwJ-SM8d7NTt7iRNW2U_3EpvuETKjQ5QP4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/students/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"students",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfQ09PUkRJTkFUT1IiXSwiaWF0IjoxNzUwOTcyNjcxLCJleHAiOjE3NTA5NzYyNzF9.IAFw2iQxkTtrhg4DevGVcQD6qdaQAqkwJ-SM8d7NTt7iRNW2U_3EpvuETKjQ5QP4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/search?role=Student&name=scoo&universityNumber=12345678",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "Student"
+								},
+								{
+									"key": "name",
+									"value": "scoo"
+								},
+								{
+									"key": "universityNumber",
+									"value": "12345678"
+								}
 							]
 						}
 					},

@@ -10,7 +10,7 @@ import  {
 } from '../../interfaces/user/Instructor';
 
 import InstructorTabNav from '../../components/layout/tabnav/instructortabnav/InstructorTabNav';
-import ProfileDetailsSection from '../taprofilepage/profiledetailssection/ProfileDetailsSection';
+import ProfileDetailsSection from '../../components/features/user/profiledetailssection/ProfileDetailsSection';
 
 export default function InstructorProfilePage() {
   const { instructorId } = useParams();
