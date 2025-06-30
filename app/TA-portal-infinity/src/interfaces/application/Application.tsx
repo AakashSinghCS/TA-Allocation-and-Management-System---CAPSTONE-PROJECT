@@ -16,11 +16,9 @@ export interface TranscriptDto {
 }
 
 export interface OfferDto {
-  id: number;
-  courseName: string;
-  section: string;
-  status: string;
-  assignedHours: number;
+  id:          number;
+  isAccepted:  boolean;
+  description: string;
 }
 
 export interface ApplicationRequest {
@@ -31,6 +29,7 @@ export interface ApplicationRequest {
 }
 
 export interface ApplicationDto {
+  id: number;
   student: {
     id: number;                
     firstName: string;

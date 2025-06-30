@@ -10,6 +10,10 @@ import { useAuth } from '../../context/AuthContext';
 import type { ApplicationDto } from '../../interfaces/application/Application';
 import { fetchApplications } from '../../api/application/FetchApplications';
 import ApplicationFilterPanel from '../../components/features/application/ApplicationFilterPanel';
+import { sendOffer } from '../../api/allocation/sendOffer';
+import type { CreateOfferRequest } from '../../api/allocation/sendOffer';
+import { ToastContainer, toast } from 'react-toastify';
+
 // Mock loader 
 import { fetchSection } from '../../api/section/fetchSection';
 import { mockSectionCOSC111 } from '../../mocked-objects/section/mockSectionCOSC111';
@@ -104,7 +108,109 @@ const TAAllocationPage: React.FC = () => {
     });
     setSelApp(null);
   };
-  
+      const handleSendOffer = async () => {
+  if (!selApp || !selCourse?.details?.sectionId || !selCourse.need) return;
+
+  //  Compute remaining hours
+  const requiredHours   = selCourse.need.requiredGradingHours  ?? 0;
+  const allocatedSoFar  = selCourse.need.numOfHoursCurrentlyAllocated ?? 0;
+  const remainingHours  = Math.max(requiredHours - allocatedSoFar, 0);
+
+  //  Guards
+  if (remainingHours <= 0) {
+    toast.error(" No grading hours left on this section.", {
+      position: "top-right",
+      autoClose: 8000,
+    });
+    return;
+  }
+  if (selApp.wantWorkingHours > remainingHours) {
+    toast.error(
+      ` ${selApp.student.firstName} requested ${selApp.wantWorkingHours}h, but only ${remainingHours}h are available.`,
+      { position: "top-right", autoClose: 8000 }
+    );
+    return;
+  }
+  if (hasConflict) {
+    toast.error(" Schedule conflict: availability overlaps course slots.", {
+      position:  "top-right",
+      autoClose: 8000,
+    });
+    return;
+  }
+
+  // Build payload & fire off request
+  const payload: CreateOfferRequest = {
+    studentId:     selApp.student.id,
+    applicationId: selApp.id,
+    isConfirmed:   false,
+    numberOfHours: selApp.wantWorkingHours,
+    sectionId:     selCourse.details.sectionId,
+  };
+  const offerPromise = sendOffer(payload);
+
+  // Update our local UI state when it succeeds
+  offerPromise.then(newOffer => {
+    setSelCourse(prev => {
+      if (!prev) return prev;
+      const updatedAllocated = allocatedSoFar + payload.numberOfHours;
+      return {
+        ...prev,
+        need: {
+          ...prev.need!,
+          numOfHoursCurrentlyAllocated: updatedAllocated,
+        },
+        hasCompleted: updatedAllocated >= requiredHours,
+      };
+    });
+  }).catch(() => {
+    /* swallow: toast.promise will show the error */
+  });
+
+  // show toast for pending / success / error
+  toast.promise(
+    offerPromise,
+    {
+      pending: `Sending offer to ${selApp.student.firstName}…`,
+      success: {
+        render() {
+          const left = remainingHours - payload.numberOfHours;
+          return (
+            <div>
+              <strong>
+                {selApp.student.firstName} {selApp.student.lastName}
+              </strong>{" "}
+              assigned <strong>{payload.numberOfHours}h</strong> to{" "}
+              <strong>
+                {selCourse.details?.deptCode}
+                {selCourse.details?.courseNum} section{" "}
+                {selCourse.details?.section}
+              </strong>.
+              <br/>
+              <small>{left}h remaining on this course.</small>
+            </div>
+          );
+        }
+      },
+      error: {
+        render({ data: err }) {
+          return ` Failed to send offer: ${(err as any)?.message || "Unknown error"}`;
+        }
+      }
+    },
+    {
+      position:  "top-right",
+      autoClose: 5000,
+    }
+  );
+
+  // ensure no uncaught rejection
+  try {
+    await offerPromise;
+  } catch {}
+};
+
+
   const loadApp = (a: ApplicationDto) => setSelApp(a);
   // calendar events 
 const courseEvents = (selCourse?.schedule || []).map((slot, i) => {
@@ -358,7 +464,8 @@ const events = [
               </p>
           </div>
           <div className="flex justify-end">
-          <button
+           <button
+            onClick={handleSendOffer}
             disabled={!selCourse || !selApp}
             className="px-6 py-2 bg-[#040941] text-white rounded disabled:opacity-50"
           >
@@ -379,6 +486,7 @@ const events = [
       
         
       </div>
+      <ToastContainer />
     </div>
   );
 };
