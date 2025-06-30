@@ -108,7 +108,7 @@ const TAAllocationPage: React.FC = () => {
     });
     setSelApp(null);
   };
-      const handleSendOffer = async () => {
+     const handleSendOffer = async () => {
   if (!selApp || !selCourse?.details?.sectionId || !selCourse.need) return;
 
   //  Compute remaining hours
@@ -133,7 +133,7 @@ const TAAllocationPage: React.FC = () => {
   }
   if (hasConflict) {
     toast.error(" Schedule conflict: availability overlaps course slots.", {
-      position:  "top-right",
+      position: "top-right",
       autoClose: 8000,
     });
     return;
@@ -149,7 +149,7 @@ const TAAllocationPage: React.FC = () => {
   };
   const offerPromise = sendOffer(payload);
 
-  // Update our local UI state when it succeeds
+  // Update our local UI state on success
   offerPromise.then(newOffer => {
     setSelCourse(prev => {
       if (!prev) return prev;
@@ -174,20 +174,16 @@ const TAAllocationPage: React.FC = () => {
       pending: `Sending offer to ${selApp.student.firstName}…`,
       success: {
         render() {
-          const left = remainingHours - payload.numberOfHours;
           return (
             <div>
-              <strong>
+              Offer sent to <strong>
                 {selApp.student.firstName} {selApp.student.lastName}
-              </strong>{" "}
-              assigned <strong>{payload.numberOfHours}h</strong> to{" "}
-              <strong>
-                {selCourse.details?.deptCode}
-                {selCourse.details?.courseNum} section{" "}
-                {selCourse.details?.section}
-              </strong>.
-              <br/>
-              <small>{left}h remaining on this course.</small>
+              </strong>. His offer entails <strong>
+                {payload.numberOfHours}h
+              </strong> for <strong>
+                {selCourse.details?.deptCode}{selCourse.details?.courseNum} section {selCourse.details?.section}
+              </strong>.<br/>
+              To know more about the offer status, please go to the <strong>Applications</strong> page.
             </div>
           );
         }
@@ -199,7 +195,7 @@ const TAAllocationPage: React.FC = () => {
       }
     },
     {
-      position:  "top-right",
+      position: "top-right",
       autoClose: 5000,
     }
   );
