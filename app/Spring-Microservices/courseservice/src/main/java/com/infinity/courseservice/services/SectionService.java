@@ -22,7 +22,6 @@ import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -57,7 +56,7 @@ public class SectionService {
     @Transactional
     public SectionDto addSection(Long courseId, CourseRequest request) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+                .orElseThrow(() -> new NotFoundException("Course not found"));
 
         Section section = new Section(request.year(), request.semester(), request.section(), request.type(), course);
         try {
@@ -102,7 +101,7 @@ public class SectionService {
     @Transactional
     public SectionScheduleDto addSectionSchedule(Long sectionId, CourseRequest request) {
         Section section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new EntityNotFoundException("section not found"));
+                .orElseThrow(() -> new NotFoundException("section not found"));
         LocalTime startTime = request.startTime() != null ? LocalTime.parse(request.startTime()) : null;
         LocalTime endTime = request.endTime() != null ? LocalTime.parse(request.endTime()) : null;
         SectionSchedule sectionSchedule = new SectionSchedule(request.day(), startTime, endTime, section);
@@ -117,7 +116,7 @@ public class SectionService {
 
     public List<SectionScheduleDto> getSectionSchedules(Long sectionId) {
         Section section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new EntityNotFoundException("section not found"));
+                .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
         return section.getSectionSchedules().stream()
                 .map(sec -> new SectionScheduleDto(sec.getDay(),
                         sec.getStartTime(),

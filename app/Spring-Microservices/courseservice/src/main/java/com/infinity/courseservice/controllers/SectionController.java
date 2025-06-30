@@ -39,7 +39,7 @@ public class SectionController {
          return ResponseEntity.ok(sectionService.addSection(courseId, request));
      }
     
-     @PreAuthorize("hasRole('COORDIANTOR')")
+     @PreAuthorize("hasRole('COORDINATOR')")
      @PutMapping("/updateSection/{sectionId}")
      public ResponseEntity<SectionDto> updateSection(@PathVariable Long sectionId, @RequestBody CourseRequest request) {
          return ResponseEntity.ok(sectionService.updateSection(sectionId, request));
@@ -47,7 +47,7 @@ public class SectionController {
 
      @PreAuthorize("hasRole('COORDINATOR')")
      @DeleteMapping("/deleteSection/{sectionId}")
-     public ResponseEntity<String> deleteSection(@PathVariable Long sectionId, @RequestBody CourseRequest request) {
+     public ResponseEntity<String> deleteSection(@PathVariable Long sectionId) {
          return ResponseEntity.ok(sectionService.deleteSection(sectionId));
      }
 

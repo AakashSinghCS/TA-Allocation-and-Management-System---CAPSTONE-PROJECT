@@ -101,14 +101,57 @@ public class CourseServiceTest {
 
     @Test
     void testFindCourseSuccess() {
-        Course course = new Course("COSC", "Distributed Systems", "455");
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+            Course course = new Course("COSC", "Distributed Systems", "455");
+            when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
 
-        CourseDto dto = courseService.findCourse(1L);
+            CourseDto dto = courseService.findCourse(1L);
 
-        assertEquals("COSC", dto.deptCode());
-        assertEquals("Distributed Systems", dto.name());
-        assertEquals("455", dto.courseNum());
+            assertEquals("COSC", dto.deptCode());
+            assertEquals("Distributed Systems", dto.name());
+            assertEquals("455", dto.courseNum());
+    }
+    
+    @Test
+    void testUpdateCourseNotFound() {
+            CourseRequest request = new CourseRequest("COSC", "Capstone", "499", null, null, null, null,
+                            null,
+                            null, null);
+            when(courseRepository.findById(1L)).thenReturn(Optional.empty());
+
+            NotFoundException ex = assertThrows(NotFoundException.class, () -> courseService.updateCourse(request, 1L));
+
+            assertEquals("No course with id 1", ex.getMessage());
+    }
+
+    @Test
+    void testUpdateCourseSuccess() {
+            Course course = new Course("COSC", "Distributed Systems", "455");
+            when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+            CourseRequest request = new CourseRequest("DATA", "Capstone", "499", null, null, null, null,
+                            null,
+                            null, null);
+            CourseDto dto = courseService.updateCourse(request, 1L);
+
+            assertEquals("DATA", dto.deptCode());
+            assertEquals("Capstone", dto.name());
+            assertEquals("499", dto.courseNum());
+    }
+
+    @Test
+    void testDeleteCourseNotFound() {
+            when(courseRepository.existsById(1L)).thenReturn(false);
+
+            NotFoundException ex = assertThrows(NotFoundException.class, () -> courseService.deleteCourse(1L));
+
+            assertEquals("No course with id 1", ex.getMessage());
+    }
+
+    @Test
+    void testDeleteCourseSuccess() {
+            when(courseRepository.existsById(1L)).thenReturn(true);
+            String response = courseService.deleteCourse(1L);
+
+            assertEquals("Course deleted", response);
     }
 
     @Test
