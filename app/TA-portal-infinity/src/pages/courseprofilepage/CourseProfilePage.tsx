@@ -3,32 +3,38 @@ import SectionProfileDetailsSection from "../../components/features/section/sect
 import { sectionFieldLabels, sectionProfileFields } from "../../interfaces/section/Section";
 import { mockSectionCOSC111, mockSectionCOSC111Profile } from "../../mocked-objects/section/mockSectionCOSC111";
 import { useEffect } from "react";
+import { GenericAPIContainer } from "../../utility/genericapicontainer/GenericAPIContainer";
+import { fetchSection } from "../../api/section/fetchSection";
+import type Section from "../../interfaces/section/Section";
 
 
-export default function CourseProfilePage (){
+export default function CourseProfilePage() {
     const { sectionId } = useParams<{ sectionId: string }>();
     const { courseId } = useParams<{ courseId: string }>();
-    const isCourse = courseId?true:false;
+    const isCourse = courseId ? true : false;
 
     // useEffect(()=>{
     //     console.log(sectionId);
     //     console.log(courseId);
     // },[])
 
-    if(!isCourse){
-        return(
+    if (!isCourse) {
+        return (
             <div>
-                <SectionProfileDetailsSection 
-                    section={mockSectionCOSC111}
-                    fields = {sectionProfileFields}
-                    labels = {sectionFieldLabels}
+                <GenericAPIContainer<Section | null>
+                    fetchFunction={() => fetchSection(Number(sectionId))}
+                    render={section => <SectionProfileDetailsSection
+                        section={section}
+                        fields={sectionProfileFields}
+                        labels={sectionFieldLabels}
+                    />}
                 />
             </div>
         );
-    }else{
-        return(
+    } else {
+        return (
             <div>
-
+                
             </div>
         );
     }

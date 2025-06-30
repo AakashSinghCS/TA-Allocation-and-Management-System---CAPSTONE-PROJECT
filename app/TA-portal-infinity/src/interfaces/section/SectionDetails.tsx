@@ -1,7 +1,7 @@
 import type { Course } from "../course/Course"
 
 export type SectionType =
-    | "Lecture"
+    | "LECTURE"
     | "Tutorial"
     | "Laboratory"
     | "Discussion"

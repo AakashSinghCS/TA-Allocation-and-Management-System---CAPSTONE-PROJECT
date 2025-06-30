@@ -62,15 +62,14 @@ export default function SearchUserBar({ onSearch, loading,allowedRoles }: Search
     const roles = allowedRoles ?? ["Student", "Instructor", "Coordinator"];
   const [criteria, setCriteria] = useState<SearchCriteria>({ role: roles[0], name: "", universityNumber: "" });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+   const handleSearch = async () => {
     await onSearch(criteria);
   };
 
   const isUniversityNumberEntered = criteria.universityNumber.length > 0;
 
   return (
-    <form className="flex space-x-2" onSubmit={handleSubmit}>
+    <div className="flex space-x-2">
       <select
         value={criteria.role}
         onChange={e => setCriteria(c => ({ ...c, role: e.target.value as SearchCriteria['role'] }))}
@@ -101,12 +100,13 @@ export default function SearchUserBar({ onSearch, loading,allowedRoles }: Search
         className="border px-2 py-1 rounded w-40"
       />
       <button
-        type="submit"
+        type="button"
+        onClick={handleSearch}
         disabled={loading}
         className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#040491] transition-colors disabled:opacity-50"
       >
         {loading ? "Searching…" : "Search"}
       </button>
-    </form>
+    </div>
   );
 }

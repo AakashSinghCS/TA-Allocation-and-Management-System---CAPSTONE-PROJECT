@@ -1,32 +1,42 @@
+// src/api/section/fetchSection.ts
+
+import { fetchGetSectionSchedules } from "./sectionschedule/fetchGetSectionSchedule";
+import { fetchInstructorDetails } from "../instructor/fetchInstructorDetails";
+
+import type { Instructor } from "../../interfaces/user/Instructor";
+import { mapDtoToSection, type SectionDtoWithInstructorId } from "../../utility/convertdtotosection/mapDtoToSection";
 import type Section from "../../interfaces/section/Section";
-import { mockSectionCOSC111 } from "../../mocked-objects/section/mockSectionCOSC111";
-import { mockSectionCOSC121 } from "../../mocked-objects/section/mockSectionCOSC121";
-import { mockSectionMATH125 } from "../../mocked-objects/section/mockSectionMATH125";
+import type SectionSchedule from "../../interfaces/section/SectionSchedule";
 
-export async function fetchSection(sectionId: number): Promise<Section> {
+export async function fetchSection(
+  sectionId: number
+): Promise<Section | null> {
+  const BASE = `http://localhost:8080/sections/getIncludeInstructorId/${sectionId}`;
+  const token = localStorage.getItem("token");
 
-//    const baseUrl = 'mock';
-       
-//     const res = await fetch(`${baseUrl}/mock/mock/mock/${studentId}`,{
-//         headers: {
-//             Accept: 'application/json'
-//         }
-//     })
-    
-//     if (!res.ok) {
-//         throw new Error(`Failed to fetch student details (HTTP ${res.status})`);
-    // }
+  try {
+    const res = await fetch(BASE, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+    if (!res.ok) {
+      console.error("Section fetch failed:", res.status);
+      return null;
+    }
+    const dto: SectionDtoWithInstructorId = await res.json();
+    const schedules: SectionSchedule[] | null = await fetchGetSectionSchedules( sectionId);
 
-    // return res.json() as Promise<Section>;
-   // return the right mock based on sectionId
-  if (sectionId === mockSectionCOSC111.sectionDetails?.sectionId) {
-    return mockSectionCOSC111;
+    let instructor: Instructor | null = null;
+    if (dto.instructorId != null) {
+      instructor = await fetchInstructorDetails(dto.instructorId);
+    }
+
+    return mapDtoToSection(dto, schedules ?? [], instructor);
+  } catch (err) {
+    console.error("Error in fetchSection:", err);
+    return null;
   }
-  if (sectionId === mockSectionCOSC121.sectionDetails?.sectionId) {
-    return mockSectionCOSC121;
-  }
-  if (sectionId === mockSectionMATH125.sectionDetails?.sectionId) {
-    return mockSectionMATH125;
-  }
-  throw new Error(`No mock defined for sectionId ${sectionId}`);
 }

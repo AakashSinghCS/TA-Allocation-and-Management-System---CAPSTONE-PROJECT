@@ -2,8 +2,13 @@ import { useState, type ChangeEvent, type FormEvent, type InputHTMLAttributes } 
 import type { SectionProfile } from '../../../../interfaces/section/Section';
 import type { SectionType } from "../../../../interfaces/section/SectionDetails";
 import EditSectionSchedule from "../editsectionschedule/EditSectionSchedule";
+import type User from "../../../../interfaces/user/User";
+import type { Instructor } from "../../../../interfaces/user/Instructor";
+import UserBrowsingViewer from "../../../../pages/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer";
+import { fetchAddSectionSchedule } from "../../../../api/section/sectionschedule/fetchAddSectionSchedule";
 
 export interface EditSectionProfileSectionProps {
+  sectionId : number;
   section: SectionProfile;
   fields: (keyof SectionProfile)[];
   labels: Record<keyof SectionProfile, string>;
@@ -13,8 +18,8 @@ export interface EditSectionProfileSectionProps {
 
 // Semester and SectionType options
 const SEMESTER_OPTIONS = ["W1", "W2", "S1", "S2"];
-export const SECTION_TYPE_OPTIONS :SectionType[] = [
-  "Lecture",
+export const SECTION_TYPE_OPTIONS: SectionType[] = [
+  "LECTURE",
   "Tutorial",
   "Laboratory",
   "Discussion",
@@ -26,6 +31,7 @@ export const SECTION_TYPE_OPTIONS :SectionType[] = [
 
 // type SectionTypea = typeof SECTION_TYPE_OPTIONS[number];
 export default function EditSectionProfileSection({
+  sectionId,
   section,
   fields,
   labels,
@@ -34,6 +40,7 @@ export default function EditSectionProfileSection({
 }: EditSectionProfileSectionProps) {
   const [form, setForm] = useState<Partial<SectionProfile>>(Object.fromEntries(fields.map(k => [k, section[k]])) as Partial<SectionProfile>);
   const [showScheduleEdit, setShowScheduleEdit] = useState(false);
+  const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
 
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target;
@@ -42,7 +49,11 @@ export default function EditSectionProfileSection({
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    await onSave(form);
+    const payload = {
+      ...form,
+      instructorId: selectedInstructor?.id
+    };
+    await onSave(payload);
   }
 
   return (
@@ -58,7 +69,7 @@ export default function EditSectionProfileSection({
               {field === 'semester' ? (
                 <select id={id} name={id} value={String(value)} onChange={handleChange} className="w-full border rounded px-3 py-2">
                   <option value="">Select semester</option>
-                  {['W1','W2','S1','S2'].map(sem => <option key={sem} value={sem}>{sem}</option>)}
+                  {SEMESTER_OPTIONS.map(sem => <option key={sem} value={sem}>{sem}</option>)}
                 </select>
               ) : field === 'type' ? (
                 <select id={id} name={id} value={String(value)} onChange={handleChange} className="w-full border rounded px-3 py-2">
@@ -71,6 +82,33 @@ export default function EditSectionProfileSection({
             </div>
           );
         })}
+        <div className="space-y-1">
+          <label className="text-sm font-medium">Instructor</label>
+          {selectedInstructor ? (
+            <div className="flex items-center justify-between bg-slate-50 px-3 py-2 rounded">
+              <span>
+                {selectedInstructor.firstName} {selectedInstructor.lastName}
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedInstructor(null)}
+                className="text-red-600 hover:underline text-sm"
+              >
+                Clear
+              </button>
+            </div>
+          ) : (
+            <div>
+              <p className="text-sm text-gray-400">Search for an Instructor and click on SELECT in the far right column. Don't select any Instructor, if you wish not to change instructors.</p>
+              <UserBrowsingViewer
+                mode="select"
+                onSelect={u => setSelectedInstructor(u)}
+                allowedRoles={["Instructor"]}
+              />
+              <div className="h-4" />
+            </div>
+          )}
+        </div>
         <div className="flex space-x-2">
           <button type="submit" className="bg-[#00C774] text-white px-2 py-1 rounded hover:bg-[#1FE88D]">Save</button>
           <button type="button" onClick={onCancel} className="py-1 px-2 rounded hover:bg-red-100">Cancel</button>
@@ -87,7 +125,7 @@ export default function EditSectionProfileSection({
       {showScheduleEdit && (
         <EditSectionSchedule
           onSave={sched => {
-            /* handled in parent */
+            return fetchAddSectionSchedule(sectionId ,sched);
           }}
           onCancel={() => setShowScheduleEdit(false)}
         />

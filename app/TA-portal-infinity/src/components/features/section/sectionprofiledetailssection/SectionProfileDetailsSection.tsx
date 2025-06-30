@@ -1,26 +1,23 @@
 import { useEffect, useState } from "react";
 import EditSectionProfileSection from "../edtionsectionprofilesection/EditSectionProfileSection";
 import type { SectionProfile } from "../../../../interfaces/section/Section";
-import { fetchUpdateUserDetails } from "../../../../api/student/fetchUpdateUserDetails";
 import { useAuth } from "../../../../context/AuthContext";
 import SectionProfileSection from "../sectionprofilesection/SectionProfileSection";
 import type Section from "../../../../interfaces/section/Section";
 import type SectionSchedule from "../../../../interfaces/section/SectionSchedule";
 import { fetchUpdateSectionSchedule } from "../../../../api/section/sectionschedule/fetchUpdateSectionSchedule";
 import { fetchAddSectionSchedule } from "../../../../api/section/sectionschedule/fetchAddSectionSchedule";
-import EditSectionSchedule from "../editsectionschedule/EditSectionSchedule";
+import { fetchSection } from "../../../../api/section/fetchSection";
 interface Props {
-  section: Section;
+  section: Section | null;
   fields: (keyof SectionProfile)[];
   labels: Record<keyof SectionProfile, string>;
-  fetchDetailsFunction: (sectionId: number) => Promise<Section>;
 }
 
 export default function SectionProfileDetailsSection({
   section: initial,
   fields,
   labels,
-  fetchDetailsFunction,
 }: Props) {
 // const  isCoordinator = true;
   const { userRoles } = useAuth();
@@ -35,14 +32,15 @@ export default function SectionProfileDetailsSection({
 
   // Save schedule and refresh
   const handleSaveSchedule = async (sched: SectionSchedule) => {
+    if(!section)return;
     const id = section.sectionDetails!.sectionId!;
     if (sched.day) {
       await fetchUpdateSectionSchedule(id, sched);
     } else {
       await fetchAddSectionSchedule(id, sched);
     }
-    const updated = await fetchDetailsFunction(id);
-    setSection(updated);
+    const updated = await fetchSection(id);
+    setSection(updated ??{});
   };
 
   // Toggle into profile edit
@@ -51,8 +49,9 @@ export default function SectionProfileDetailsSection({
 
   return (
     <div className="relative">
-      {isEditingProfile ? (
+      {section && isEditingProfile ? (
         <EditSectionProfileSection
+          sectionId={section.sectionDetails?.id ?? -1}
           section={section.sectionDetails!}
           fields={fields}
           labels={labels}

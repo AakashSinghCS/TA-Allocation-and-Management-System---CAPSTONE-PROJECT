@@ -58,6 +58,18 @@ export default function SectionProfileSection({
               <span className="ml-2 break-words">{value}</span>
             </div>
           ))}
+          <div
+              key={"instructor"}
+              data-testid={`profile-row-instructor`}
+              className={`${big ? 'text-md' : 'text-xs'} flex items-center rounded-lg bg-slate-50 px-3 py-1 text-slate-900`}
+            >
+              <span className="font-medium text-slate-700 break-words">Instructor:</span>
+              <span className="ml-2 break-words">
+                <Link to={`/user/instructorprofile/${section.instructor?.id}`} className="hover:text-blue-600">
+                  {section.instructor?.firstName} {section.instructor?.lastName}
+                </Link>
+              </span>
+            </div>
         </div>
 
         {/* Schedule List */}
