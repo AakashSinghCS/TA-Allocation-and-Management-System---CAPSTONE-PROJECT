@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import SectionProfileDetailsSection from "../../components/features/section/sectionprofiledetailssection/SectionProfileDetailsSection";
 import { sectionFieldLabels, sectionProfileFields } from "../../interfaces/section/Section";
-import { mockSectionCOSC111Profile } from "../../mocked-objects/section/mockSectionCOSC111";
+import { mockSectionCOSC111, mockSectionCOSC111Profile } from "../../mocked-objects/section/mockSectionCOSC111";
 import { useEffect } from "react";
 
 
@@ -19,7 +19,7 @@ export default function CourseProfilePage (){
         return(
             <div>
                 <SectionProfileDetailsSection 
-                    section={mockSectionCOSC111Profile}
+                    section={mockSectionCOSC111}
                     fields = {sectionProfileFields}
                     labels = {sectionFieldLabels}
                 />

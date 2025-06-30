@@ -46,7 +46,7 @@ export const router = createBrowserRouter([
       { path: "instructorprofile/:instructorId/compare", element: <InstructorComparerPage /> },
       { path: "instructorprofile/:instructorId/qualifications", element: <InstructorQualificationPage /> },
 
-      { path: "sectionProfile/:sectionId", element: <CourseProfilePage /> },
+      { path: "sectionprofile/:sectionId", element: <CourseProfilePage /> },
       // STUDENT routes
       {
         path: "student",

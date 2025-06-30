@@ -14,7 +14,7 @@ export default interface Section {
     instructor?: Instructor;
 }
 
-export interface SectionProfile extends Course{
+export interface SectionProfile{
     semester?: string,
     section?: string,
     type?: SectionType,
@@ -22,10 +22,6 @@ export interface SectionProfile extends Course{
 }
 
 export const sectionProfileFields: (keyof SectionProfile)[] = [
-    "id",
-    "name",
-    "deptCode",
-    "courseNum",
     "section",
     "year",
     "semester",
@@ -33,10 +29,6 @@ export const sectionProfileFields: (keyof SectionProfile)[] = [
 ];
 
 export const sectionFieldLabels: Record<keyof SectionProfile, string> = {
-    id: "Course Id",
-    name: "Course Name",
-    deptCode: "Department Code",
-    courseNum: "Course Number",
     section: "Section Code",
     year: "Year",
     semester: "Semester",
