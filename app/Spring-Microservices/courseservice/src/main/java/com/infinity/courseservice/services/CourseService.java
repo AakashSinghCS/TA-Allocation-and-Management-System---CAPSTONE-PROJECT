@@ -55,7 +55,7 @@ public class CourseService {
         Course course = courseRepository.findById(courseId)
                         .orElseThrow(() -> new EntityNotFoundException("Course not found"));
         
-        Section section = new Section(request.term(), request.section(), request.type(), course);
+        Section section = new Section(request.term(), request.section(), request.type(), course, request.instructorId());
         try {
             sectionRepository.save(section);
         } catch (DataIntegrityViolationException ex) {
@@ -83,6 +83,14 @@ public class CourseService {
     public CourseDto findCourse(Long id) {
         Course course = courseRepository.findById(id).orElseThrow(() -> new NotFoundException("Course with ID " + id + " not found"));
         return new CourseDto(course.getDeptCode(), course.getName(), course.getCourseNum());
+    }
+
+    public List<CourseDto> findCourseByDeptCode(String deptCode) {
+        return courseRepository.findAllByDeptCode(deptCode);
+    }
+
+    public List<String> findAllDeptCode() {
+        return courseRepository.findDistinctDeptCode();
     }
 
     public List<CourseDto> findCoursesByIds(List<Long> ids) {

@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-// @Table(name = "course_enrollment")
 public class Enrollment {
 
     @Id
@@ -24,11 +23,11 @@ public class Enrollment {
     @JoinColumn(name = "section_id", nullable = false)
     private Section section; 
 
-    private boolean hasCompleted;
+    private Integer grade;
 
-    public Enrollment(Long studentId, Section section, boolean hasCompleted) {
+    public Enrollment(Long studentId, Section section, Integer grade) {
         this.studentId = studentId;
         this.section = section;
-        this.hasCompleted = hasCompleted;
+        this.grade = grade;
     }
 }

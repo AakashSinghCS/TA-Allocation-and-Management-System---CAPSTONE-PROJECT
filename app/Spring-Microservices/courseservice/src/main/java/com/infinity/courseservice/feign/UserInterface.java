@@ -4,12 +4,12 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.infinity.courseservice.dtos.UserDto;
+import com.infinity.courseservice.dtos.StudentDto;
 
 @FeignClient("USER-SERVICE")
 public interface UserInterface {
 
     @GetMapping("/students/{studentId}")
-    UserDto getStudentById(@PathVariable("studentId") Integer studentId);
+    StudentDto getStudentById(@PathVariable("studentId") Long studentId);
 
 }

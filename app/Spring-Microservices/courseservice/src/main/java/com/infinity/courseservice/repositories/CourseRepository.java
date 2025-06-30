@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.infinity.courseservice.dtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.models.Course;
 
@@ -40,4 +41,10 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         @Param("endTime") LocalTime endTime
 
     );
+
+    @Query("SELECT DISTINCT c.deptCode FROM Course c")
+    List<String> findDistinctDeptCode();
+
+
+    List<CourseDto> findAllByDeptCode(String deptCode);
 }

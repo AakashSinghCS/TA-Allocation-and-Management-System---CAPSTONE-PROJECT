@@ -35,6 +35,7 @@ public class Section {
     private String term;
     private String section;
     private String type;
+    private Long instructorId;
 
     @ManyToOne
     @JsonBackReference
@@ -44,11 +45,12 @@ public class Section {
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SectionSchedule> sectionSchedules;
 
-    public Section(String term, String section, String type, Course course) {
+    public Section(String term, String section, String type, Course course, Long instructorId) {
         this.term = term;
         this.section = section;
         this.type = type;
         this.course = course;
+        this.instructorId = instructorId;
     }
 
     // @ElementCollection
