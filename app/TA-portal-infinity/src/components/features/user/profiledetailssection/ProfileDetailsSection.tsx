@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import ProfileSection from "../../../components/features/user/profilesection/ProfileSection";
-import EditProfileSection from "../../../components/features/user/editprofilesection/EditProfileSection";
-import { fetchUpdateUserDetails } from "../../../api/student/fetchUpdateUserDetails";
-import type User from "../../../interfaces/user/User";
-import { useAuth } from "../../../context/AuthContext";
+import ProfileSection from "../profilesection/ProfileSection";
+import EditProfileSection from "../editprofilesection/EditProfileSection";
+import { fetchUpdateUserDetails } from "../../../../api/student/fetchUpdateUserDetails";
+import type User from "../../../../interfaces/user/User";
+import { useAuth } from "../../../../context/AuthContext";
 
 interface Props<T extends User> {
     user: T;
@@ -45,7 +45,7 @@ export default function ProfileDetailsSection<T extends User>({
                         big
                     />
                     {isEditable && (<button
-                        className="absolute top-2 right-2 px-3 py-1 bg-blue-600 text-white rounded"
+                        className="absolute top-2 right-2 bg-[#040941] text-white px-2 py-1 rounded hover:bg-[#040491] transition-colors"
                         onClick={() => setIsEdit(true)}
                     >
                         Update
@@ -64,6 +64,9 @@ export default function ProfileDetailsSection<T extends User>({
                         if (updateResult !== "User updated") {
                             console.error("Unexpected update response:", updateResult);
                             return;
+                        }
+                        if (updateResult === "User updated"){
+                            alert("Profile details updated!");
                         }
                         const fresh = await fetchDetailsFunction<T>(record.id);
 

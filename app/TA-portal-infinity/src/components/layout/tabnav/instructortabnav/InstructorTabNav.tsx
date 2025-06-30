@@ -9,8 +9,8 @@ export default function InstructorTabNav() {
     const tabs = isCoordinator? [
         { to: `${base}`, label: 'Profile' },
         { to: `${base}/need`, label: 'Need' },
-        { to: `${base}/compare`, label: 'Compare' },
         { to: `${base}/qualifications`, label: 'Qualification' },
+        { to: `${base}/compare`, label: 'Compare' },
     ]:[
         { to: `${base}`, label: 'Profile' },
         { to: `${base}/need`, label: 'Need' },
