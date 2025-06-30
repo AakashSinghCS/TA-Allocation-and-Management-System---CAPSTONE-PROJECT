@@ -8,9 +8,8 @@ import type { Need } from '../../interfaces/need/Need';
 import type { Allocation } from '../../interfaces/allocation/Allocation';
 import { useAuth } from '../../context/AuthContext';
 import type { ApplicationDto } from '../../interfaces/application/Application';
-import type { Applicant } from '../../interfaces/applicant/Applicant';
-import { fetchApplicants } from '../../api/application/FetchApplicants';
 import { fetchApplications } from '../../api/application/FetchApplications';
+import ApplicationFilterPanel from '../../components/features/application/ApplicationFilterPanel';
 // Mock loader 
 import { fetchSection } from '../../api/section/fetchSection';
 import { mockSectionCOSC111 } from '../../mocked-objects/section/mockSectionCOSC111';
@@ -22,22 +21,22 @@ const TAAllocationPage: React.FC = () => {
   const { token } = useAuth();
 
   //Filter state
-  const [courseQ, setCourseQ] = useState({
-    search:    '',
-    deptCode:  '',
-    courseNum: '',
-    section:   '',
-    term:      '',
-    type:      '',
-  });
-  const [appQ, setAppQ] = useState({
-  pref1: '',
-  pref2: '',
-  wantRemote: '',
-  wantHours: '',
-  studentName: '',
-  studentNum: '',
- });
+      const [courseQ, setCourseQ] = useState({
+        search:    '',
+        deptCode:  '',
+        courseNum: '',
+        section:   '',
+        term:      '',
+        type:      '',
+      });
+      const [appQ, setAppQ] = useState({
+      pref1: '',
+      pref2: '',
+      wantRemote: '',
+      wantHours: '',
+      studentName: '',
+      studentNum: '',
+    });
 
 
   //seed allSections from mocks 
@@ -62,24 +61,15 @@ const TAAllocationPage: React.FC = () => {
       .then(setAllApps)
       .catch(err => console.error(err));
   }, [token]);
-  
-      // fetch real applicants on mount 
-    const [allApplicants, setAllApplicants] = useState<Applicant[]>([]);
-      useEffect(() => {
-        if (!token) return;
-        fetchApplicants(token)
-          .then(setAllApplicants)
-          .catch(err => console.error(err));
-      }, [token]);
 
- // selections 
-  const [selCourse,    setSelCourse]    = useState<{
-    details?:     SectionDetails;
-    schedule:     SectionSchedule[];
-    need?:        Need;
-    allocations:  Allocation[];
-    hasCompleted: boolean;
-  } | null>(null);
+    // selections 
+      const [selCourse,    setSelCourse]    = useState<{
+        details?:     SectionDetails;
+        schedule:     SectionSchedule[];
+        need?:        Need;
+        allocations:  Allocation[];
+        hasCompleted: boolean;
+      } | null>(null);
 
   const [selApp,       setSelApp]       = useState<ApplicationDto | null>(null);
 
@@ -96,22 +86,6 @@ const TAAllocationPage: React.FC = () => {
       return true;
     });
   }, [allSections, courseQ]);
-
-  const filteredApps = useMemo(() => {
-  return allApps.filter(a => {
-    if (appQ.pref1 && !a.preferences.includes(appQ.pref1)) return false;
-    if (appQ.pref2 && !a.preferences.includes(appQ.pref2)) return false;
-    if (appQ.wantRemote && String(a.wantRemote) !== appQ.wantRemote) return false;
-    if (appQ.wantHours && String(a.wantWorkingHours) !== appQ.wantHours) return false;
-    if (appQ.studentName) {
-      const fullName = `${a.student.firstName} ${a.student.lastName}`.toLowerCase();
-      if (!fullName.includes(appQ.studentName.toLowerCase())) return false;
-    }
-    if (appQ.studentNum && a.student.studentNum !== appQ.studentNum) return false;
-    return true;
-  });
-  }, [allApps, appQ]);
-
 
  // load a section’s full mock info 
   const loadCourse = async (details: SectionDetails) => {
@@ -375,7 +349,7 @@ const events = [
                 </span>
               </p>
 
-              {/* Schedule-conflict line */}
+          {/* Schedule-conflict line */}
               <p>
                 Schedule Conflict:{' '}
                 <span className={hasConflict ? 'text-red-600' : 'text-green-600'}>
@@ -391,126 +365,18 @@ const events = [
             Send Offer
           </button>
         </div>
-
         </div>
-        {/* APPLICATIONS PANEL */}
-       {/* APPLICATIONS PANEL */}
-<div className="lg:col-span-5 bg-white p-6 rounded shadow space-y-4">
-  <h1 className="font-semibold text-xl">Application Filter</h1>
 
-  <div className="grid grid-cols-2 gap-2">
-    <select
-      className="border rounded px-2 py-2"
-      value={appQ.pref1}
-      onChange={e => setAppQ(q => ({ ...q, pref1: e.target.value }))}
-    >
-      <option value="">1st Pref</option>
-      {Array.from(new Set(allApps.flatMap(a => a.preferences)))
-        .sort()
-        .map(d => (
-          <option key={d} value={d}>{d}</option>
-        ))}
-    </select>
-    <select
-      className="border rounded px-2 py-2"
-      value={appQ.pref2}
-      onChange={e => setAppQ(q => ({ ...q, pref2: e.target.value }))}
-    >
-      <option value="">2nd Pref</option>
-      {Array.from(new Set(allApps.flatMap(a => a.preferences)))
-        .sort()
-        .map(d => (
-          <option key={d} value={d}>{d}</option>
-        ))}
-    </select>
-    <select
-      className="border rounded px-2 py-2"
-      value={appQ.wantRemote}
-      onChange={e => setAppQ(q => ({ ...q, wantRemote: e.target.value }))}
-    >
-      <option value="">Remote?</option>
-      <option value="true">Yes</option>
-      <option value="false">No</option>
-    </select>
-    <select
-      className="border rounded px-2 py-2"
-      value={appQ.wantHours}
-      onChange={e => setAppQ(q => ({ ...q, wantHours: e.target.value }))}
-    >
-      <option value="">Hours</option>
-      {Array.from(new Set(allApps.map(a => a.wantWorkingHours.toString())))
-        .sort((a, b) => +a - +b)
-        .map(h => <option key={h} value={h}>{h}</option>)}
-    </select>
-  </div>
-
-  {/* New text filters */}
-  <input
-    type="text"
-    placeholder="Student Name"
-    className="border rounded px-2 py-2 w-full "
-    value={appQ.studentName || ''}
-    onChange={e => setAppQ(q => ({ ...q, studentName: e.target.value }))}
-  />
-  <input
-    type="text"
-    placeholder="Student Number"
-    className="border rounded px-2 py-2 w-full"
-    value={appQ.studentNum || ''}
-    onChange={e => setAppQ(q => ({ ...q, studentNum: e.target.value }))}
-  />
-
-  <div className="max-h-48 overflow-auto space-y-1 mt-2">
-    <h1 className="font-semibold text-xl mt-4">Please select an Application*</h1>
-    {filteredApps.map((app) => (
-      <button
-        key={`${app.student.id}-${app.timeSubmitted}`}
-        onClick={() => loadApp(app)}
-        className={`block w-full text-left px-3 py-2 rounded ${
-          selApp === app ? 'bg-gray-900 text-white' : 'bg-gray-200 hover:bg-gray-300'
-        }`}
-      >
-        {app.student.firstName} {app.student.lastName} — {new Date(app.timeSubmitted).toLocaleString()}
-      </button>
-    ))}
-    {filteredApps.length === 0 && <p className="text-gray-500">No applications</p>}
-  </div>
-
-  {selApp && (
-    <div className="mt-4 space-y-6">
-      <h2 className="font-bold text-xl text-gray-800">Application Details</h2>
-
-      {/* Applicant Info */}
-      <div className="space-y-1">
-        <p className="text-lg font-medium">{selApp.student.firstName} {selApp.student.lastName}</p>
-        <p className="text-sm text-gray-500">User ID: {selApp.student.id}</p>
-        <p className="text-sm text-gray-500">Student Number: {selApp.student.studentNum || 'N/A'}</p>
-        <p className="text-sm text-gray-500">Program: {selApp.student.program || 'N/A'}</p>
-        <p className="text-sm text-gray-500">Enrollment Year: {selApp.student.enrollmentYear || 'N/A'}</p>
-        <p className="text-sm text-gray-500">School Year: {selApp.student.schoolYear || 'N/A'}</p>
-      </div>
-
-      {/* Preferences */}
-      <div className="space-y-1">
-        <p><strong>Preferences:</strong> <span className="text-gray-700">{selApp.preferences.join(', ')}</span></p>
-        <p><strong>Remote:</strong> <span className="text-gray-700">{selApp.wantRemote ? 'Yes' : 'No'}</span></p>
-        <p><strong>Desired Hours:</strong> <span className="text-gray-700">{selApp.wantWorkingHours}</span></p>
-        <p><strong>Submitted:</strong> <span className="text-gray-700">{new Date(selApp.timeSubmitted).toLocaleString()}</span></p>
-      </div>
-
-      {/* Availabilities */}
-      <div>
-        <p className="font-semibold">Availabilities:</p>
-        <ul className="list-disc pl-5 text-gray-700">
-          {selApp.availabilities.map((a, i) => (
-            <li key={i}>{a.day}: {a.startTime} - {a.endTime}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  )}
-</div>
-
+        {/* APPLICATION FILTER + DETAILS PANEL */}
+        <ApplicationFilterPanel
+          appQ={appQ}
+          setAppQ={setAppQ}
+          allApps={allApps}
+          selApp={selApp}
+          loadApp={loadApp}
+          colSpanClass="lg:col-span-5"
+        />
+      
         
       </div>
     </div>
