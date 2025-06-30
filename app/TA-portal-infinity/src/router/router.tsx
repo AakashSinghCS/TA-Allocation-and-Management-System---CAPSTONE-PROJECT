@@ -5,12 +5,9 @@ import App from "../App";
 import PublicLayout from "../components/layout/publicLayout/PublicLayout";
 import CoursesTakenPage from "../pages/taprofilepage/coursestakenpage/CoursesTakenPage";
 import StudentComparerPage from "../pages/taprofilepage/comparerpage/StudentComparerPage";
-
 import InstructorProfilePage from "../pages/instructorprofilepage/InstructorProfilePage";
 import InstructorNeedPage from "../pages/instructorprofilepage/needpage/InstructorNeedPage";
 import InstructorComparerPage from "../pages/instructorprofilepage/comparerpage/InstructorComparerPage";
-
-
 import LoginPage from "../pages/loginPage/LoginPage";
 import ErrorPage from "../pages/errorpage/ErrorPage";
 import StudentHomePage from "../pages/student_homepage/StudentHomePage";
@@ -25,17 +22,13 @@ import { UserRole } from "../interfaces/enum/UserRole";
 import AllocationPage from "../pages/allocationpage/AllocationPage";
 import InstructorQualificationPage from "../pages/instructorprofilepage/qualificationpage/InstructorQualificationPage";
 import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
-<<<<<<< HEAD
 import ForgotPasswordPage from "../pages/forgotpasswordpage/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/resetpasswordpage/ResetPasswordPage";
-=======
 import UserBrowsingPage from "../pages/userbrowsingpage/UserBrowsingPage";
 import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
 import SignUpPage from "../pages/signupPage/SignUpPage";
->>>>>>> origin/develop
 import SectionListPage from "../pages/coursepage/SectionListPage";
 import AddSectionPage from "../pages/coursepage/AddSectionPage";
-
 
 export const router = createBrowserRouter([
   {
