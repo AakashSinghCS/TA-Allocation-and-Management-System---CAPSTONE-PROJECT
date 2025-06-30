@@ -85,6 +85,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/application_db
       SPRING_DATASOURCE_USERNAME: dev_user
       SPRING_DATASOURCE_PASSWORD: secret
+  notification-service:
+    build: 
+      context: ./app/Spring-Microservices/notificationservice
+      dockerfile: Dockerfile
+    container_name: notification-service
+    ports: 
+      - 8085:8085
   profile-service:
     build:
       context: ./app/Spring-Microservices/profileservice
