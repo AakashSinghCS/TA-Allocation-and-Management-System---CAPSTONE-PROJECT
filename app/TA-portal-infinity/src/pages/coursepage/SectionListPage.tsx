@@ -3,11 +3,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import SectionList from '../../components/features/course/sectionlist/SectionList';
 import SectionFilter from '../../components/features/course/coursefilter/SectionFilter';
 import { fetchFilteredSections, type FilterSectionsProps } from '../../api/sectionfilter/fetchFilteredSections';
+import type Section from '../../interfaces/section/Section';
+import { convertFilterSectionsToSections } from '../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
 
 
 export default function SectionListPage() {
   const navigate = useNavigate();
-  const [filteredSections, setFilteredSections] = useState<FilterSectionsProps[] | null>([]);
+  const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
   const [lastFilters, setLastFilters]         = useState<FilterSectionsProps | null>(null);
   const [loading, setLoading]                 = useState(false);
 
@@ -15,8 +17,9 @@ export default function SectionListPage() {
     setLoading(true);
     setLastFilters(filters);
     try {
-      const data = await fetchFilteredSections(filters);
-      setFilteredSections(data);
+      const raw = await fetchFilteredSections(filters);
+      const sections = convertFilterSectionsToSections(raw || []);
+      setFilteredSections(sections);
     } catch (e) {
       navigate('/error', { replace: true, state: { message: (e as Error).message } });
     } finally {

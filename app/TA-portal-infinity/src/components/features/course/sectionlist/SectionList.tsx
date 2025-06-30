@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import type { FilterSectionsProps } from '../../../../api/sectionfilter/fetchFilteredSections';
 import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
 import React from 'react';
+import type Section from '../../../../interfaces/section/Section';
+
 interface Props {
-  sections: FilterSectionsProps[] | null;
+  sections: Section[] | null;
   onDeleted?: () => void;
 }
 
@@ -11,36 +12,47 @@ export default function SectionList({ sections, onDeleted }: Props) {
   if (!sections || sections.length === 0) {
     return <p className="p-4 text-center text-gray-500">No section found.</p>;
   }
-  const groups = sections.reduce<Record<number, FilterSectionsProps[]>>((acc, sec) => {
-    const cid = sec.courseId ?? 0;
+
+  // Group sections by course ID
+  const groups = sections.reduce<Record<number, Section[]>>((acc, sec) => {
+    const cid = sec.sectionDetails?.id ?? 0;
     if (!acc[cid]) acc[cid] = [];
     acc[cid].push(sec);
     return acc;
   }, {});
 
+  // Sort course IDs by their numeric courseNum
   const sortedCourseIds = Object.keys(groups)
-    .map(id => Number(id))
+    .map((id) => Number(id))
     .sort((a, b) => {
-      const numA = Number(groups[a][0].courseNum);
-      const numB = Number(groups[b][0].courseNum);
+      const numA = Number(groups[a][0].sectionDetails?.courseNum);
+      const numB = Number(groups[b][0].sectionDetails?.courseNum);
       return numA - numB;
     });
 
-  const abbreviateDay = (day: string | null | undefined) => {
-    if (!day) return;
+  const abbreviateDay = (day?: string | null) => {
+    if (!day) return undefined;
     const abbr = day.length > 3 ? day.slice(0, 3) : day;
     return abbr.charAt(0).toUpperCase() + abbr.slice(1).toLowerCase();
   };
 
   const handleDeleteCourse = async (courseId: number) => {
-    if (!window.confirm('Really delete entire course? This deletes all associated sections. WAITING FOR BACKEND TO BE IMPLEMENTED')) return;
-    // await mockDeleteApi('course', courseId);
+    if (
+      !window.confirm(
+        'Really delete entire course? This deletes all associated sections. WAITING FOR BACKEND TO BE IMPLEMENTED'
+      )
+    )
+      return;
     onDeleted?.();
   };
 
   const handleDeleteSection = async (sectionId: number) => {
-    if (!window.confirm('Really delete this section? WAITING FOR BACKEND TO BE IMPLEMENTED')) return;
-    // await mockDeleteApi('section', sectionId);
+    if (
+      !window.confirm(
+        'Really delete this section? WAITING FOR BACKEND TO BE IMPLEMENTED'
+      )
+    )
+      return;
     onDeleted?.();
   };
 
@@ -59,75 +71,99 @@ export default function SectionList({ sections, onDeleted }: Props) {
       <tbody>
         {sortedCourseIds.map((courseId) => {
           const group = groups[courseId];
-          // sort this group by type order
+
+          // Sort this group's sections by type order
           const sortedSections = [...group].sort((a, b) => {
-            const indexA = a.type ? sectionTypeOptions.indexOf(a.type) : Infinity;
-            const indexB = b.type ? sectionTypeOptions.indexOf(b.type) : Infinity;
+            const indexA = a.sectionDetails?.type
+              ? sectionTypeOptions.indexOf(a.sectionDetails.type)
+              : Infinity;
+            const indexB = b.sectionDetails?.type
+              ? sectionTypeOptions.indexOf(b.sectionDetails.type)
+              : Infinity;
             return indexA - indexB;
           });
 
-          // render a header row for the course
-          const { deptCode, courseNum, name } = group[0];
+          // Course header info
+          const { deptCode, courseNum, name } = group[0].sectionDetails || {};
+
           return (
             <React.Fragment key={courseId}>
               <tr className="bg-gray-100">
                 <td
-                  className="border px-3 py-2 font-semiboldflex justify-between items-center"
                   colSpan={5}
+                  className="border px-3 py-2 font-semibold "
                 >
-                    {courseId ? (
-                      <Link
-                        to={`/courses/${courseId}`}
-                        className="text-blue-600 hover:underline block truncate"
-                      >
-                        {deptCode} {courseNum} — {name}
-                      </Link>
-                    ) : (
-                      <span className="block truncate">
-                        {deptCode} {courseNum} — {name}
-                      </span>
-                    )}
-                    
-                </td>
-                <td className="border px-3 py-2">
-                  <button
-                      onClick={() => handleDeleteCourse(courseId)}
-                      className="text-red-600 hover:underline text-sm"
+                  {/* Left: course link */}
+                  {courseId ? (
+                    <Link
+                      to={`/courses/${courseId}`}
+                      className="text-blue-600 hover:underline block truncate"
                     >
-                      Delete Course
-                    </button>
+                      {deptCode} {courseNum} — {name}
+                    </Link>
+                  ) : (
+                    <span className="block truncate">
+                      {deptCode} {courseNum} — {name}
+                    </span>
+                  )}
                 </td>
+                <td colSpan={1} className="border px-3 py-2 text-right">
+                  <button
+                    onClick={() => handleDeleteCourse(courseId)}
+                    className="text-red-600 hover:underline text-sm whitespace-nowrap"
+                  >
+                    Delete Course
+                  </button>
+                </td>
+
               </tr>
-              {sortedSections.map((c) => {
-                if (c.isCourse) return null;
-                const times = (c.day && c.startTime && c.endTime)?`${abbreviateDay(c.day)}-${c.startTime}-${c.endTime}`:"";
+
+              {sortedSections.map((sec) => {
+                // Format all schedule entries
+                const times = (sec.sectionSchedule ?? [])
+                  .map((s) =>
+                    s.day && s.startTime && s.endTime
+                      ? `${abbreviateDay(s.day)}-${s.startTime}-${s.endTime}`
+                      : ''
+                  )
+                  .filter((t) => t)
+                  .join(', ');
+
+                const sid = sec.sectionDetails?.sectionId;
+
                 return (
-                  <tr key={`${c.sectionId}-${c.day}`}>
+                  <tr key={`${sid}-${times}`}>
                     <td className="border px-3 py-2 max-w-xs truncate">
-                      {c.sectionId ? (
+                      {sid ? (
                         <Link
-                          to={`/sections/${c.sectionId}`}
+                          to={`/sections/${sid}`}
                           className="text-blue-600 hover:underline block truncate"
                         >
-                          {c.deptCode} {c.courseNum} {c.section} – {c.name}
+                          {sec.sectionDetails?.deptCode} {sec.sectionDetails?.courseNum}{' '}
+                          {sec.sectionDetails?.section} – {sec.sectionDetails?.name}
                         </Link>
                       ) : (
                         <span className="block truncate">
-                          {c.deptCode} {c.courseNum} {c.section} – {c.name}
+                          {sec.sectionDetails?.deptCode} {sec.sectionDetails?.courseNum}{' '}
+                          {sec.sectionDetails?.section} – {sec.sectionDetails?.name}
                         </span>
                       )}
                     </td>
-                    <td className="border px-3 py-2">{c.year}</td>
-                    <td className="border px-3 py-2">{c.semester}</td>
+                    <td className="border px-3 py-2">
+                      {sec.sectionDetails?.year}
+                    </td>
+                    <td className="border px-3 py-2">
+                      {sec.sectionDetails?.semester}
+                    </td>
                     <td className="border px-3 py-2 max-w-xs truncate">
-                      {c.type}
+                      {sec.sectionDetails?.type}
                     </td>
                     <td className="border px-3 py-2">{times}</td>
-                    <td className="border px-3 py-2">
-                      {c.sectionId && (
+                    <td className="border px-3 py-2 text-right">
+                      {sid && (
                         <button
-                          onClick={() => handleDeleteSection(c.sectionId!)}
-                          className="text-red-600 hover:underline text-sm"
+                          onClick={() => handleDeleteSection(sid)}
+                          className="text-red-600 hover:underline text-sm "
                         >
                           Delete Section
                         </button>
