@@ -36,6 +36,8 @@ import com.infinity.userservice.repositories.InstructorRepository;
 import com.infinity.userservice.repositories.RoleRepository;
 import com.infinity.userservice.repositories.StudentRepository;
 import com.infinity.userservice.repositories.UserRepository;
+import com.infinity.userservice.utility.InstructorMapper;
+import com.infinity.userservice.utility.StudentMapper;
 import com.infinity.userservice.utility.UserMapper;
 
 import jakarta.validation.ConstraintViolation;
@@ -56,6 +58,8 @@ public class UserService {
     private final Validator validator;
     private final StudentRepository studentRepository;
     private final InstructorRepository instructorRepository;
+    private final StudentMapper studentMapper;
+    private final InstructorMapper instructorMapper;
 
     public UserDto register(RegisterRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
@@ -207,17 +211,9 @@ public class UserService {
                     .findByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(name, name);
             }
             return students.stream()
-                .map(s -> new StudentDto(
-                    s.getId(),
-                    s.getFirstName(),
-                    s.getLastName(),
-                    s.getEmail(),
-                    s.getStudentNum(),
-                    s.getProgram(),
-                    s.getEnrollmentYear(),
-                    s.getSchoolYear(),
-                    s.getCreatedAt()
-                ))
+                .map(s -> {
+                    return studentMapper.toDto(s);
+                })
                 .collect(Collectors.toList());
         }
         else if ("INSTRUCTOR".equalsIgnoreCase(role)) {
@@ -230,16 +226,11 @@ public class UserService {
                     .findByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(name, name);
             }
             return instructors.stream()
-                .map(i -> new InstructorDto(
-                    i.getId(),
-                    i.getFirstName(),
-                    i.getLastName(),
-                    i.getEmail(),
-                    i.getEmployeeNum(),
-                    i.getDepartment(),
-                    i.getCreatedAt()
-                ))
+                .map(i -> {
+                    return instructorMapper.toDto(i);
+                })
                 .collect(Collectors.toList());
+  
         }
         else {
             List<User> coords = userRepository.findByRoles_Name(UserRole.COORDINATOR);
