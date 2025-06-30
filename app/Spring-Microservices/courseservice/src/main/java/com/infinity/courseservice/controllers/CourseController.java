@@ -19,10 +19,8 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseNeedAndAllocations;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
-import com.infinity.courseservice.dtos.EnrollmentDtos.EnrollmentRequest;
 import com.infinity.courseservice.services.CourseService;
 
-import feign.Response;
 import lombok.RequiredArgsConstructor;
 
 @RestController
