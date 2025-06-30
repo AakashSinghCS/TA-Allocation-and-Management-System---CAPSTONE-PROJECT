@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
+import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.services.SectionService;
@@ -93,5 +94,11 @@ public class SectionController {
     @GetMapping("/getInstructorSections/{instructorId}")
     public ResponseEntity<List<SectionDto>> getInstructorSections(@PathVariable Long instructorId) {
         return ResponseEntity.ok(sectionService.getInstructorSections(instructorId));
+    }
+
+     @PreAuthorize("hasRole('COORDINATOR')")
+    @PostMapping("/add")
+    public ResponseEntity<Boolean> add( @RequestBody SectionAddDtoRequest request) {      
+        return ResponseEntity.ok(sectionService.add(request));
     }
 }

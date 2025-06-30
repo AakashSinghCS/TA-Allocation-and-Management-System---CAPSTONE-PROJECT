@@ -180,12 +180,12 @@ public class CourseServiceTest {
 
     @Test
     void testFilterCourses() {
-        CourseSectionScheduleDto dto1 = new CourseSectionScheduleDto("COSC", "Distributed Systems", "455", "001", 2025,
+        CourseSectionScheduleDto dto1 = new CourseSectionScheduleDto(1L,3L,"COSC", "Distributed Systems", "455", "001", 2025,
                 "W1",
-                SectionType.LAB, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
-        CourseSectionScheduleDto dto2 = new CourseSectionScheduleDto("COSC", "Operating Systems", "S", "002", 2025,
+                SectionType.LABORATORY, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30), false);
+        CourseSectionScheduleDto dto2 = new CourseSectionScheduleDto(2L,4L,"COSC", "Operating Systems", "S", "002", 2025,
                 "W2",
-                SectionType.LAB, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
+                SectionType.LABORATORY, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30), false);
 
         CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", null, null, null, 2025, "W1", null, "Wed",
                 LocalTime.of(14, 00), LocalTime.of(15, 30));
@@ -207,7 +207,7 @@ public class CourseServiceTest {
 
         Course course = new Course("COSC", "Networks", "329");
         course.setId(courseId);
-        Section section = new Section(2025, "W1", "001", SectionType.LAB, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LABORATORY, course);
         section.setId(1L);
 
         NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester);
@@ -248,9 +248,10 @@ public class CourseServiceTest {
                             10L, 2025, "W1", "001", SectionType.LECTURE,
                             new CourseDto(1L, "COSC", "Security", "430"));
 
-            SectionDto section2 = new SectionDto(
-                            11L, 2025, "W1", "002", SectionType.LAB,
-                            new CourseDto(1L, "COSC", "Security", "430"));
+        SectionDto section2 = new SectionDto(
+                11L, 2025, "W1", "002", SectionType.LABORATORY,
+                new CourseDto(1L, "COSC", "Security", "430") // duplicate course-term
+        );
 
             NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1");
             AllocationHistoryDto alloc = new AllocationHistoryDto(

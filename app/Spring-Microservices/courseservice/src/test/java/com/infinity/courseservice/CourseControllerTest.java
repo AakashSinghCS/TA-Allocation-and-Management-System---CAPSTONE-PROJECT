@@ -109,13 +109,12 @@ public class CourseControllerTest {
                             .andExpect(status().isOk());
     }
 
-        @Test
-        void testFilterCourses() throws Exception {
-                CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", "systems", null, null, 2024, "W1",
-                                null, null,
-                                LocalTime.of(14, 00), null);
-                CourseSectionScheduleDto dto = new CourseSectionScheduleDto("COSC", "Distributed Systems", "455", "001",
-                                2024, "W1", SectionType.LAB, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30));
+    @Test
+    void testFilterCourses() throws Exception {
+        CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", "systems", null, null, 2024, "W1", null, null,
+                LocalTime.of(14, 00), null);
+        CourseSectionScheduleDto dto = new CourseSectionScheduleDto(1L,1L,"COSC", "Distributed Systems", "455", "001",
+                2024, "W1", SectionType.LABORATORY, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30), false);
 
                 when(courseService.filterCourses(any(CourseFilterRequest.class)))
                                 .thenReturn(List.of(dto));
@@ -147,14 +146,15 @@ public class CourseControllerTest {
                 Integer year = 2025;
                 String semester = "W1";
 
-                NeedDto need = new NeedDto(10L, courseId, "Marking", 30, 10, year, semester);
-                CourseDto course = new CourseDto(courseId, "COSC", "Security", "430");
-                SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LAB, course);
-                AllocationHistoryDto alloc = new AllocationHistoryDto(1L,
-                                new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),
-                                new OfferDto(101L, true, "Lab marking"),
-                                true, 10,
-                                new SectionDtoNoCourse(5L, 2025, "W1", "001", SectionType.LAB));
+    NeedDto need = new NeedDto(10L, courseId, "Marking", 30, 10, year, semester);
+    CourseDto course = new CourseDto(courseId, "COSC", "Security", "430");
+        SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
+    AllocationHistoryDto alloc = new AllocationHistoryDto(1L,
+    new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),
+                    new OfferDto(101L, true, "Lab marking"),
+                    true, 10,
+        new SectionDtoNoCourse(5L, 2025, "W1", "001", SectionType.LABORATORY)
+    );
 
                 CourseNeedAndAllocations response = new CourseNeedAndAllocations(sectionDto, need, List.of(alloc));
                 when(courseService.getCourseNeedAndAllocations(courseId, year, semester)).thenReturn(response);
@@ -174,7 +174,7 @@ public class CourseControllerTest {
 
                 CourseDto course = new CourseDto(1L, "COSC", "Networks", "329");
                 NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2");
-                SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LAB, course);
+                SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
                 AllocationHistoryDto alloc = new AllocationHistoryDto(2L,
                                 new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),
                                 new OfferDto(101L, true, "Lab marking"),
@@ -193,5 +193,65 @@ public class CourseControllerTest {
                                 .andExpect(jsonPath("$[0].section.course.name").value("Networks"))
                                 .andExpect(jsonPath("$[0].need.description").value("Grading"))
                                 .andExpect(jsonPath("$[0].allocations[0].student.firstName").value("Alice"));
+        }
+
+        
+        @Test
+        void testGetAllDeptCodes() throws Exception {
+                when(courseService.getAllDeptCodes()).thenReturn(List.of("COSC", "EECE"));
+
+                mockMvc.perform(get("/courses/allDeptCodes"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0]").value("COSC"))
+                                .andExpect(jsonPath("$[1]").value("EECE"));
+        }
+
+        @Test
+        void testGetAllCourseNums() throws Exception {
+                when(courseService.getAllCourseNums("COSC")).thenReturn(List.of("121", "310"));
+
+                mockMvc.perform(get("/courses/allCourseNums").param("deptCode", "COSC"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0]").value("121"))
+                                .andExpect(jsonPath("$[1]").value("310"));
+        }
+
+        @Test
+        void testGetAllSections() throws Exception {
+                when(courseService.getAllSections("COSC", "310")).thenReturn(List.of("001", "002"));
+
+                mockMvc.perform(get("/courses/allSections")
+                                .param("deptCode", "COSC")
+                                .param("courseNum", "310"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0]").value("001"))
+                                .andExpect(jsonPath("$[1]").value("002"));
+        }
+
+        @Test
+        void testGetAllYears() throws Exception {
+                when(courseService.getAllYears("COSC", "310", "001")).thenReturn(List.of("2023", "2024"));
+
+                mockMvc.perform(get("/courses/allYears")
+                                .param("deptCode", "COSC")
+                                .param("courseNum", "310")
+                                .param("section", "001"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0]").value("2023"))
+                                .andExpect(jsonPath("$[1]").value("2024"));
+        }
+
+        @Test
+        void testGetAllSemesters() throws Exception {
+                when(courseService.getAllSemester("COSC", "310", "001", "2024")).thenReturn(List.of("W1", "W2"));
+
+                mockMvc.perform(get("/courses/allSemesters")
+                                .param("deptCode", "COSC")
+                                .param("courseNum", "310")
+                                .param("section", "001")
+                                .param("year", "2024"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0]").value("W1"))
+                                .andExpect(jsonPath("$[1]").value("W2"));
         }
 }
