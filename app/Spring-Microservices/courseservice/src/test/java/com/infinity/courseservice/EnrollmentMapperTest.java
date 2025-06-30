@@ -91,7 +91,7 @@ public class EnrollmentMapperTest {
         section.setYear(2024);
         section.setSemester("Winter");
         section.setSection("001");
-        section.setType(SectionType.LAB);
+        section.setType(SectionType.LABORATORY);
 
         StudentCourse studentCourse = new StudentCourse();
         studentCourse.setCourse(course);
