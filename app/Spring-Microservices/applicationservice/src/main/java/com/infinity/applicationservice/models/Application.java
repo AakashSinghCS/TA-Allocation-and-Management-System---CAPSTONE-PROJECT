@@ -2,6 +2,7 @@ package com.infinity.applicationservice.models;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -69,8 +70,10 @@ public class Application {
     @PrimaryKeyJoinColumn
     private Transcript transcript;
 
-    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Offer> offers;
+    @OneToMany(mappedBy = "application")
+    private List<Allocation> allocations = new ArrayList<>();
+
+    
 
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Availability> availabilities = new HashSet<>();

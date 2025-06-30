@@ -4,7 +4,7 @@ import DaySelector from '../dayselector/DaySelector';
 
 describe('DaySelector', () => {
   it('renders all days as options and allows selection', () => {
-    render(<DaySelector mode="small" />);
+    render(<DaySelector mode="small" onChange={vi.fn()}/>);
 
     const select = screen.getByRole('combobox');
     expect(select).toBeEnabled();
@@ -13,18 +13,18 @@ describe('DaySelector', () => {
     expect(screen.getByText('Day')).toBeInTheDocument();
 
     // all days
-    ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+    ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
       .forEach(day => {
         expect(screen.getByText(day)).toBeInTheDocument();
       });
 
     // select a day
-    fireEvent.change(select, { target: { value: 'Thursday' } });
-    expect((select as HTMLSelectElement).value).toBe('Thursday');
+    fireEvent.change(select, { target: { value: 'Thu' } });
+    expect((select as HTMLSelectElement).value).toBe('Thu');
   });
 
   it('applies correct size classes for large mode', () => {
-    render(<DaySelector mode="large" />);
+    render(<DaySelector mode="large" onChange={vi.fn()}/>);
     const select = screen.getByRole('combobox');
 
     // bigStyle = px-3 py-2

@@ -1,22 +1,46 @@
 import { useNavigate } from 'react-router-dom';
 import CreateSectionForm, { type CreateSectionData } from '../../components/features/course/createsectionform/CreateSectionForm';
 import CsvUpload from '../../components/features/course/CsvUpload'; // stub
+import { fetchCreateSection, type SectionAddDtoRequest } from '../../api/section/fetchCreateSection';
+import { fetchCreateCourse, type CourseAddDtoRequest } from '../../api/course/fetchCreateCourse';
 
 export default function AddSectionPage() {
   const navigate = useNavigate();
 
   const handleCreateSection = async (data: CreateSectionData) => {
-    try {
-      const res = await fetch('/api/sections', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error('Failed to create section');
-      navigate('/courses', { replace: true });
-    } catch (err: any) {
-      console.error(err);
-      alert(err.message);
+    if(data.isCourse){
+      const courseAddDtoRequest : CourseAddDtoRequest = {
+                  deptCode: data.deptCode,
+        name: data.name,
+        courseNum : data.courseNum,
+      }
+      const ok = await fetchCreateCourse(courseAddDtoRequest);
+      if(ok){
+        alert("Course is created!");
+        navigate('/user/coordinator/sections', { replace: true });
+      }else{
+        alert("Failed to create course")
+      }
+    }else if(!data.isCourse){
+      const sectionAddDtoRequest : SectionAddDtoRequest = {
+        deptCode: data.deptCode,
+        name: data.name,
+        courseNum : data.courseNum,
+        section : data.section,
+        type : data.type,
+        year : data.year,
+        semester : data.semester,
+        sectionSchedules : data.sectionSchedules,
+        instructorId : data.instructorId
+      }
+
+      const ok = await fetchCreateSection(sectionAddDtoRequest);
+      if(ok){
+        alert("Section is created!");
+        navigate('/user/coordinator/sections', { replace: true });
+      }else{
+        alert("Failed to create section")
+      }
     }
   };
 
@@ -27,10 +51,10 @@ export default function AddSectionPage() {
 
   return (
     <div className="container mx-auto p-4 w-full max-w-2xl">
-      <h1 className="text-2xl font-bold mb-4">Add Section</h1>
+      <h1 className="text-2xl font-bold mb-4">Add Section or Course</h1>
       <div className="space-y-8">
         <div className="border p-4 rounded-md shadow-sm">
-          <h2 className="text-xl font-semibold mb-2">Add Section Manually</h2>
+          <h2 className="text-xl font-semibold mb-2">Add Section or Course Manually</h2>
           <CreateSectionForm onCreateSection={handleCreateSection} />
         </div>
         <div className="border p-4 rounded-md shadow-sm">

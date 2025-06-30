@@ -4,6 +4,8 @@ import java.time.LocalTime;
 import com.infinity.courseservice.enums.*;
 
 public record CourseSectionScheduleDto(
+        Long sectionId,
+        Long courseId,
         String deptCode,
         String name,
         String courseNum,
@@ -13,5 +15,6 @@ public record CourseSectionScheduleDto(
         SectionType type,
         String day,
         LocalTime startTime,
-        LocalTime endTime
+        LocalTime endTime,
+        boolean isCourse
         ) {}

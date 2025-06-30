@@ -2,6 +2,7 @@ package com.infinity.courseservice.services;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
+import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
@@ -67,7 +69,8 @@ public class SectionService {
         }
 
         return new SectionDto(section.getId(), section.getYear(), section.getSemester(), section.getSection(),
-                section.getType(), new CourseDto(course.getId(),course.getDeptCode(), course.getName(), course.getCourseNum()));
+                section.getType(),
+                new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum()));
     }
 
     @Transactional
@@ -107,15 +110,66 @@ public class SectionService {
         List<Section> sections = sectionRepository.findAllByInstructorId(instructorId);
         return sections.stream()
                 .map(sec -> new SectionDto(sec.getId(),
-                            sec.getYear(),
-                            sec.getSemester(),
-                            sec.getSection(),
-                            sec.getType(),
+                        sec.getYear(),
+                        sec.getSemester(),
+                        sec.getSection(),
+                        sec.getType(),
                         new CourseDto(
-                            sec.getCourse().getId(),
-                            sec.getCourse().getDeptCode(),
-                            sec.getCourse().getName(),
-                            sec.getCourse().getCourseNum())))
+                                sec.getCourse().getId(),
+                                sec.getCourse().getDeptCode(),
+                                sec.getCourse().getName(),
+                                sec.getCourse().getCourseNum())))
                 .toList();
     }
+
+    @Transactional
+    public Boolean add(SectionAddDtoRequest request) {
+        String deptCode = Optional.ofNullable(request.deptCode()).orElse("").trim();
+        String courseNum = Optional.ofNullable(request.courseNum()).orElse("").trim();
+
+        if (deptCode.isEmpty() || courseNum.isEmpty()) {
+            throw new BadRequestException("Both deptCode and courseNum are required and cannot be blank.");
+        }
+
+        Course course = courseRepository
+                .findByDeptCodeAndCourseNum(deptCode, courseNum)
+                .orElseGet(() -> {
+                    Course newCourse = new Course(
+                            deptCode,
+                            Optional.ofNullable(request.name()).orElse(""),
+                            courseNum);
+                    return courseRepository.save(newCourse);
+                });
+
+        Section section = new Section(
+                request.year(),
+                request.semester(),
+                request.section(),
+                request.type(),
+                request.instructorId(),
+                course);
+        try {
+            section = sectionRepository.save(section);
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("Section already exists");
+        }
+
+        if (request.sectionSchedules() != null) {
+            try {
+                for (SectionScheduleDto schedDto : request.sectionSchedules()) {
+                    SectionSchedule sched = new SectionSchedule();
+                    sched.setDay(schedDto.day());
+                    sched.setStartTime(schedDto.startTime());
+                    sched.setEndTime(schedDto.endTime());
+                    sched.setSection(section);
+                    sectionScheduleRepository.save(sched);
+                }
+            } catch (DataIntegrityViolationException ex) {
+                throw new BadRequestException("Section schedule saving went wrong");
+            }
+        }
+
+        return true;
+    }
+
 }

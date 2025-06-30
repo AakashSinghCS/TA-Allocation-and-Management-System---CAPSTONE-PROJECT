@@ -1,35 +1,48 @@
 import type Section from "../../interfaces/section/Section";
+import type { SectionType } from "../../interfaces/section/SectionDetails";
 import { mockSectionCOSC111 } from "../../mocked-objects/section/mockSectionCOSC111";
 
-export interface filterSectionsProps{
-    term: string;
-    searchQuery: string;
-    deptCode: string;
-    type: string;
+export interface FilterSectionsProps{
+sectionId? : number | null;
+courseId? : number | null;
+   deptCode? : string | null;
+   name? : string | null ;
+   courseNum? : string | null;
+   section? : string | null;
+   year? : number | null;
+   semester? : string | null;
+   type? : SectionType | null;
+   day ?: string | null;
+   startTime ?: string | null; //14:00. LocalTime type in backend.
+   endTime? : string | null;
+   isCourse? : boolean | null;
 }
 
-export async function fetchFilteredSections(filters: filterSectionsProps): Promise<Section[] | null> {
-    const BASE = "http://localhost:8080/mock/mock";
+export async function fetchFilteredSections(filters: FilterSectionsProps): Promise<FilterSectionsProps[] | null> {
+    const BASE = "http://localhost:8080/courses/filterCourses";
     const token = localStorage.getItem("token");
 
+    console.log(filters);
     try {
         const res = await fetch(BASE, {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 ...(token ? { Authorization: `Bearer ${token}` } : {}),
             },
+            body: JSON.stringify(filters),
         });
         if (!res.ok) {
             console.error("Request failed with status:", res.status);
-            // return null;
-            return [mockSectionCOSC111]
+            return null;
+            // return [mockSectionCOSC111]
         }
+
         return res.json();
     } catch {
         console.log("something went wrong");
         //TODO: remove the mock after development is finished.
-        return [mockSectionCOSC111]
-        // return null;
+        // return [mockSectionCOSC111]
+        return null;
     }
 }

@@ -12,7 +12,6 @@ import InstructorComparerPage from "../pages/instructorprofilepage/comparerpage/
 
 
 import LoginPage from "../pages/loginPage/LoginPage";
-import SignUpPage from "../pages/signupPage/SignUpPage";
 import ErrorPage from "../pages/errorpage/ErrorPage";
 import StudentHomePage from "../pages/student_homepage/StudentHomePage";
 import ApplicationPage from "../pages/applicationpage/ApplicationPage";
@@ -26,8 +25,14 @@ import { UserRole } from "../interfaces/enum/UserRole";
 import AllocationPage from "../pages/allocationpage/AllocationPage";
 import InstructorQualificationPage from "../pages/instructorprofilepage/qualificationpage/InstructorQualificationPage";
 import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
+<<<<<<< HEAD
 import ForgotPasswordPage from "../pages/forgotpasswordpage/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/resetpasswordpage/ResetPasswordPage";
+=======
+import UserBrowsingPage from "../pages/userbrowsingpage/UserBrowsingPage";
+import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
+import SignUpPage from "../pages/signupPage/SignUpPage";
+>>>>>>> origin/develop
 import SectionListPage from "../pages/coursepage/SectionListPage";
 import AddSectionPage from "../pages/coursepage/AddSectionPage";
 
@@ -73,6 +78,7 @@ export const router = createBrowserRouter([
         ),
         children: [
           { path: "home", element: <InstructorHomePage /> },
+          { path: "browseuser", element: <UserBrowsingPage /> },
           { path: "error", element: <ErrorPage /> },
         ],
       },
@@ -88,6 +94,8 @@ export const router = createBrowserRouter([
         children: [
           { path: "home", element: <CoordinatorHomePage /> },
           { path: "questions", element: < CoordinatorQuestionnairePage/> },
+          { path: "browseuser", element: <UserBrowsingPage /> },
+          { path: "browseuser/newuser", element: < ManualCreateUserPage/> },
           { path: "sections", element: < SectionListPage/> },
           { path: "sections/add", element: < AddSectionPage/> },
           {path: "allocation", element: <AllocationPage />},
@@ -106,6 +114,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "", element: <LoginPage /> },
       { path: "login", element: <LoginPage /> },
+      // { path: "signup", element: <SignUpPage /> },
       { path: "signup", element: <SignUpPage /> },
       { path: "forgot-password", element: <ForgotPasswordPage /> },
       { path: "reset-password", element: <ResetPasswordPage /> },

@@ -9,6 +9,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,14 +23,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.userservice.dtos.BaseUserDto;
+import com.infinity.userservice.dtos.CoordinatorDto;
+// import com.infinity.userservice.dtos.CoordinatorUpdateRequest;
+// import com.infinity.userservice.dtos.InstructorUpdateRequest;
+// import com.infinity.userservice.dtos.RegisterRequest;
+// import com.infinity.userservice.dtos.StudentUpdateRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.Coordinators.CoordinatorUpdateRequest;
 import com.infinity.userservice.dtos.Instructors.InstructorUpdateRequest;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
+import com.infinity.userservice.dtos.Students.StudentDto;
 import com.infinity.userservice.dtos.Students.StudentUpdateRequest;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
@@ -38,9 +49,13 @@ import com.infinity.userservice.models.Instructor;
 import com.infinity.userservice.models.Role;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
+import com.infinity.userservice.repositories.InstructorRepository;
 import com.infinity.userservice.repositories.RoleRepository;
+import com.infinity.userservice.repositories.StudentRepository;
 import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.services.UserService;
+import com.infinity.userservice.utility.InstructorMapper;
+import com.infinity.userservice.utility.StudentMapper;
 import com.infinity.userservice.utility.UserMapper;
 
 import jakarta.validation.ConstraintViolation;
@@ -52,6 +67,8 @@ public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private StudentRepository studentRepository;
+    @Mock
     private UserMapper userMapper;
     @Mock
     private RoleRepository roleRepository;
@@ -61,6 +78,10 @@ public class UserServiceTest {
     private ObjectMapper objectMapper;
     @Mock
     private Validator validator;
+    @Mock
+    private StudentMapper studentMapper;
+    @Mock
+    private InstructorMapper instructorMapper;
 
     @InjectMocks
     private UserService userService;
@@ -331,4 +352,39 @@ public class UserServiceTest {
         verify(userRepository).deleteById(1L);
     }
 
+    @Test
+    void givenStudentNumberGreaterThanZero_whenSearchStudent_thenFindByNumber() {
+        Student s = new Student();
+        s.setId(1L);
+        s.setFirstName("Alice");
+        s.setLastName("Smith");
+        s.setEmail("a@example.com");
+        s.setStudentNum(12345678);
+        LocalDateTime fixedTime = LocalDateTime.of(2023, 1, 1, 12, 0);
+        StudentDto studentDto = new StudentDto(1L, "Alice", "Smith", "a@example.com", 12345678,"Computer",2024,1,fixedTime);
+
+        when(studentRepository.findAllByStudentNum(12345678)).thenReturn(Collections.singletonList(s));
+        when(studentMapper.toDto(s)).thenReturn(studentDto);
+        List<BaseUserDto> result = userService.search("STUDENT", "", 12345678);
+
+        assertEquals(1, result.size());
+        StudentDto dto = (StudentDto) result.get(0);
+        assertEquals("Alice", dto.firstName());
+    }
+
+    @Test
+    void givenRoleOther_whenSearchCoordinator_thenReturnsCoordinators() {
+        com.infinity.userservice.models.User u = Mockito.mock(com.infinity.userservice.models.User.class);
+        when(u.getId()).thenReturn(3L);
+        when(u.getFirstName()).thenReturn("Carol");
+        when(u.getLastName()).thenReturn("Johnson");
+        when(u.getEmail()).thenReturn("c@example.com");
+        when(userRepository.findByRoles_Name(UserRole.COORDINATOR)).thenReturn(Collections.singletonList(u));
+
+        List<BaseUserDto> result = userService.search("COORDINATOR", "", 0);
+
+        assertEquals(1, result.size());
+        CoordinatorDto dto = (CoordinatorDto) result.get(0);
+        assertEquals("Carol", dto.firstName());
+    }
 }

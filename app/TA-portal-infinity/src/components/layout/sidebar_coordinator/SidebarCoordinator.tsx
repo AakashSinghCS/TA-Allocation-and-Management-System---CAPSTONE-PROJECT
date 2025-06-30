@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import {  Home, BookOpen, GraduationCap, Presentation, UserRoundPen, Users, LogOut,} from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const navItems = [
   { label: "Home", to: "/user/coordinator/home", icon: <Home size={22} /> },
@@ -9,7 +9,11 @@ const navItems = [
   { label: "TA Applications", to: "/user/coordinator/applications", icon: <GraduationCap size={22} /> },
   { label: "TA Allocations", to: "/user/coordinator/allocation", icon: <Presentation size={22} /> },
   { label: "Profile", to: "/user/coordinator/profile", icon: <UserRoundPen size={22} /> },
-  { label: "TA Questions", to: "/user/coordinator/questions", icon: <Users size={22} /> } 
+  { label: "TA Questions", to: "/user/coordinator/questions", icon: <Users size={22} /> }, 
+
+  { label: "Courses", to: "/user/coordinator/sections", icon: <Users size={22} /> }, 
+
+  { label: "Users", to: "/user/coordinator/browseuser", icon: <Users size={22} /> }, 
 ];
 
 export default function SideNavCoordinator() {
