@@ -22,7 +22,7 @@ vi.mock('../../../../api/sectionfilter/fetchAllExistingSemesters', () => ({
 describe('DeptCodeCourseNumSectionYearSemesterDropdownContainer', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (apiCourseNums.fetchAllExistingCourseNums as any).mockResolvedValue([101, 102]);
+    (apiCourseNums.fetchAllExistingCourseNums as any).mockResolvedValue(['101', '102']);
     (apiSections.fetchAllExistingSections as any).mockResolvedValue(['A', 'B']);
     (apiYears.fetchAllExistingYears as any).mockResolvedValue([2024, 2025]);
     (apiSemesters.fetchAllExistingSemesters as any).mockResolvedValue(['W1', 'S1']);
@@ -33,25 +33,22 @@ describe('DeptCodeCourseNumSectionYearSemesterDropdownContainer', () => {
       <DeptCodeCourseNumSectionYearSemesterDropdownContainer
         allExistingDeptCodes={['COSC', 'MATH']}
         mode="small"
+        onChange={vi.fn()}
       />
     );
 
-    // grab the 5 <select> elements
-    const selects = screen.getAllByRole('combobox');
-    const [deptSelect, courseNumSelect, sectionSelect, yearSelect, semesterSelect] = selects;
+    const [deptSelect, courseNumSelect, sectionSelect, yearSelect, semesterSelect] =
+      screen.getAllByRole('combobox');
 
-    // initially only dept is enabled
     expect(deptSelect).toBeEnabled();
     expect(courseNumSelect).toBeDisabled();
     expect(sectionSelect).toBeDisabled();
     expect(yearSelect).toBeDisabled();
     expect(semesterSelect).toBeDisabled();
 
-    // select a department
     fireEvent.change(deptSelect, { target: { value: 'COSC' } });
     expect(apiCourseNums.fetchAllExistingCourseNums).toHaveBeenCalledWith('COSC');
 
-    // wait for course numbers to populate and enable
     await waitFor(() => {
       expect(courseNumSelect).toBeEnabled();
       expect(screen.getByRole('option', { name: '101' })).toBeInTheDocument();

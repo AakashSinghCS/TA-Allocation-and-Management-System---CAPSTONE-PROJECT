@@ -1,5 +1,5 @@
-export async function fetchAllExistingCourseNums(deptCode: string): Promise<number[] | null> {
-    const BASE = "http://localhost:8080/mock/mock";
+export async function fetchAllExistingCourseNums(deptCode: string): Promise<string[] | null> {
+    const BASE = `http://localhost:8080/courses/allCourseNums?deptCode=${deptCode}`;
     const token = localStorage.getItem("token");
 
     try {
@@ -12,14 +12,14 @@ export async function fetchAllExistingCourseNums(deptCode: string): Promise<numb
         });
         if (!res.ok) {
             console.error("Request failed with status:", res.status);
-            // return null;
-            return [111];
+            return null;
+            // return ["111"];
         }
         return res.json();
     } catch {
         console.log("something went wrong");
         //TODO: remove the mock after development is finished.
-        return [111];
-        // return null;
+        // return ["111"];
+        return null;
     }
 }
