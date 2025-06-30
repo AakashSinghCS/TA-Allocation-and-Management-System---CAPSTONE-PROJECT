@@ -23,7 +23,7 @@ public class UserMapper {
                 .map(Role::getName)
                 .toList();
 
-        return new UserDto(user.getId(), user.getFirstName(), user.getLastName(), roles);
+        return new UserDto(user.getId(), user.getFirstName(),user.getLastName(),  user.getEmail(),roles);
     }
 
     public User registerToUser(RegisterRequest request, Set<Role> roles) {

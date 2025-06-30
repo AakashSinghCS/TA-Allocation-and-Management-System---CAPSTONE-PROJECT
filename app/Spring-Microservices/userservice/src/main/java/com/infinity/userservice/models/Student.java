@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("STUDENT")
 public class Student extends User {
 
-    //possibly restrict this to 8 numbers?
     @Column(unique = true)
     private Integer studentNum;
 

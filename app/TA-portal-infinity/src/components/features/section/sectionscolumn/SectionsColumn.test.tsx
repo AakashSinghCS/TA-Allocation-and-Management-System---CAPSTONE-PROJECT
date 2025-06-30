@@ -21,11 +21,6 @@ describe("SectionsColumn", () => {
     expect(link).toHaveLength(mockSections.length);
     expect(screen.getByText(fullHeadingText)).toBeInTheDocument();
     
-// expect(screen.getByText((_, node) => node?.textContent?.trim() === mockSections[0].sectionDetails?.term)).toBeInTheDocument();
-    expect( screen.getByText(new RegExp(`${mockSections[0].sectionDetails?.term?.replace(/\s+/g, "\\s*")}`, "i"))).toBeInTheDocument();
-
-
-    
     expect(screen.queryByText("No courses to display")).toBeNull();
   });
 

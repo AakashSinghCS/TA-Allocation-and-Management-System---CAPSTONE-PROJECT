@@ -1,36 +1,36 @@
 package com.infinity.applicationservice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.infinity.applicationservice.dtos.*;
+import com.infinity.applicationservice.enums.*;
+import com.infinity.applicationservice.feign.SectionInterface;
+import com.infinity.applicationservice.feign.UserInterface;
+import com.infinity.applicationservice.models.Allocation;
+import com.infinity.applicationservice.models.Application;
+import com.infinity.applicationservice.repositories.AllocationRepository;
+import com.infinity.applicationservice.repositories.ApplicationRepository;
+import com.infinity.applicationservice.services.AllocationService;
 
-import java.util.List;
+
+import jakarta.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 
-import com.infinity.applicationservice.dtos.AllocationHistoryDto;
-import com.infinity.applicationservice.dtos.AllocationRequest;
-import com.infinity.applicationservice.dtos.CourseDto;
-import com.infinity.applicationservice.dtos.SectionDto;
-import com.infinity.applicationservice.dtos.StudentDto;
-import com.infinity.applicationservice.enums.SectionType;
-import com.infinity.applicationservice.feign.SectionInterface;
-import com.infinity.applicationservice.feign.UserInterface;
-import com.infinity.applicationservice.models.Allocation;
-import com.infinity.applicationservice.models.Offer;
-import com.infinity.applicationservice.repositories.AllocationRepository;
-import com.infinity.applicationservice.services.AllocationService;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 
 class AllocationServiceTest {
 
     private AllocationService allocationService;
     private AllocationRepository allocationRepository;
+    private ApplicationRepository applicationRepository;
     private SectionInterface sectionInterface;
     private UserInterface userInterface;
 
@@ -39,20 +39,23 @@ class AllocationServiceTest {
         allocationRepository = Mockito.mock(AllocationRepository.class);
         sectionInterface = Mockito.mock(SectionInterface.class);
         userInterface = Mockito.mock(UserInterface.class);
-        allocationService = new AllocationService(allocationRepository, sectionInterface, userInterface);
+        applicationRepository = Mockito.mock(ApplicationRepository.class);
+        allocationService = new AllocationService(allocationRepository, applicationRepository, sectionInterface, userInterface);
     }
 
     @Test
     void getAllocationsByStudentId_returnsMappedDtoList() {
         Long studentId = 1L;
 
+        Application application = new Application();
+        application.setStudentId(studentId);
         Allocation allocation = new Allocation();
         allocation.setId(101L);
         allocation.setStudentId(studentId);
-        allocation.setOffer(new Offer());
         allocation.setConfirmed(true);
         allocation.setNumberOfHours(10);
         allocation.setSectionId(1001L);
+        allocation.setApplication(application);
 
         when(allocationRepository.findByStudentId(studentId))
             .thenReturn(List.of(allocation));
@@ -69,6 +72,8 @@ class AllocationServiceTest {
         assertEquals(10, dto.numberOfHours());
         assertTrue(dto.isConfirmed());
         assertEquals("Test User", dto.student().firstName());
+        assertEquals("T01", dto.section().section());
+
 
         verify(allocationRepository).findByStudentId(studentId);
         verify(userInterface).getStudentById(1L);
@@ -79,23 +84,30 @@ class AllocationServiceTest {
     void allocateStudent_returnsExpectedDto() {
         Long studentId = 1L;
         Long sectionId = 1001L;
-        Long offerId = 1L;
+        Long applicationId = 1L;
+
 
         AllocationRequest request = new AllocationRequest(
             studentId,
-            offerId,
+            applicationId,
             true,
             5,
             sectionId
         );
+        
+        Application application = new Application();
+        application.setId(applicationId);
+
+        when(applicationRepository.findById(applicationId)).thenReturn(Optional.of(application));
+        
 
         Allocation savedAllocation = new Allocation();
         savedAllocation.setId(500L);
         savedAllocation.setStudentId(studentId);
-        savedAllocation.setOffer(new Offer());
         savedAllocation.setConfirmed(true);
         savedAllocation.setNumberOfHours(5);
         savedAllocation.setSectionId(sectionId);
+        savedAllocation.setApplication(application);
 
         StudentDto studentDto = new StudentDto(studentId, "Test", "User", 63260442, "BSC", 2022, 4);
         SectionDto sectionDto = new SectionDto(
@@ -119,10 +131,79 @@ class AllocationServiceTest {
         assertEquals("T01", result.section().section());
         assertTrue(result.isConfirmed());
         assertEquals(5, result.numberOfHours());
+        
+
 
         verify(allocationRepository).save(any(Allocation.class));
+        verify(applicationRepository).findById(applicationId);
         verify(userInterface).getStudentById(studentId);
         verify(sectionInterface).getSectionById(sectionId);
+    }
+
+    @Test
+    void acceptOffer_setsConfirmedTrue() {
+        Long allocationId = 99L;
+        Allocation allocation = new Allocation();
+        allocation.setId(allocationId);
+        allocation.setConfirmed(false);
+
+        when(allocationRepository.findById(allocationId)).thenReturn(Optional.of(allocation));
+
+        allocationService.updateConfirmationStatus(allocationId, true);
+
+        assertTrue(allocation.isConfirmed());
+        verify(allocationRepository).save(allocation);
+    }
+
+    @Test
+    void denyOffer_setsConfirmedFalse() {
+        Long allocationId = 100L;
+        Allocation allocation = new Allocation();
+        allocation.setId(allocationId);
+        allocation.setConfirmed(true);
+
+        when(allocationRepository.findById(allocationId)).thenReturn(Optional.of(allocation));
+
+        allocationService.updateConfirmationStatus(allocationId, false);
+
+        assertFalse(allocation.isConfirmed());
+        verify(allocationRepository).save(allocation);
+    }
+
+    @Test
+    void acceptOffer_throwsIfNotFound() {
+        when(allocationRepository.findById(123L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> allocationService.updateConfirmationStatus(123L,true));
+    }
+
+    @Test
+    void denyOffer_throwsIfNotFound() {
+        when(allocationRepository.findById(123L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> allocationService.updateConfirmationStatus(123L,false));
+    }
+
+    @Test
+    void allocateStudent_throwsIfApplicationNotFound() {
+        Long studentId = 1L;
+        Long sectionId = 1001L;
+        Long applicationId = 99L;
+
+        AllocationRequest request = new AllocationRequest(
+            studentId,
+            applicationId,
+            true,
+            5,
+            sectionId
+        );
+
+        when(applicationRepository.findById(applicationId)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            allocationService.allocateStudent(request);
+        });
+
+        verify(applicationRepository).findById(applicationId);
+        verifyNoInteractions(allocationRepository, userInterface, sectionInterface);
     }
 
 }
