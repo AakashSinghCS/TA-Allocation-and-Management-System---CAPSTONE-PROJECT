@@ -24,22 +24,27 @@ export interface OfferDto {
 }
 
 export interface ApplicationRequest {
-  preferences: string[];         
+  preferences: string[];
   wantRemote: boolean;
   wantWorkingHours: number;
   availabilities: AvailabilityDto[];
 }
 
 export interface ApplicationDto {
-  studentId: number;
+  student: {
+    id: number;                
+    firstName: string;
+    lastName: string;
+    studentNum: string | null;
+    program: string | null;
+    enrollmentYear: number | null;
+    schoolYear: string | null;
+  };
   preferences: string[];
   wantRemote: boolean;
   wantWorkingHours: number;
-  timeSubmitted: string;         
+  timeSubmitted: string;
   availabilities: AvailabilityDto[];
-
-  // optional—your DTO doesn’t yet send these,
-  // but if/when it does they’ll slot right in:
   transcript?: TranscriptDto;
   offers?: OfferDto[];
 }

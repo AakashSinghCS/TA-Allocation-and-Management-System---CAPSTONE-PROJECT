@@ -4,7 +4,7 @@ export async function fetchApplications(
   userId: number,
   token: string
 ): Promise<ApplicationDto[]> {
-  const res = await fetch(`http://localhost:8080/applications/getAll/${userId}`, {
+  const res = await fetch(`http://localhost:8080/applications/getAll`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) {
