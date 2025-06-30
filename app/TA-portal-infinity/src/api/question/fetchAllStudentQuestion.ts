@@ -1,25 +1,32 @@
-import { mockTaProfileQuestions } from '../../mocked-objects/mockTaProfileQuestions';
 import type { ProfileQuestion } from '../../interfaces/question/ProfileQuestion';
 
-export async function fetchAllStudentQuestions(studentId: number): Promise<ProfileQuestion[]> {
-  const baseUrl = 'mock'; // to be replaced when backend is ready
-  const url = `${baseUrl}/mock/questions/students/${studentId}`;
+const BASE = "http://localhost:8080/profiles";
+
+interface Response {
+  profileAnswers: ProfileQuestion[];
+}
+
+export async function fetchAllStudentQuestions(id: number): Promise<ProfileQuestion[] | null> {
+  const url = `${BASE}/${id}`;
+  const token = localStorage.getItem("token");
 
   try {
     const res = await fetch(url, {
+      method: "GET",
       headers: {
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     });
-
-    const data = await res.json();
-
-    if (Array.isArray(data)) return data;
-
-    // Fallback if data is malformed
-    return [mockTaProfileQuestions, mockTaProfileQuestions];
+    if (!res.ok) {
+      console.error("Request failed with status:", res.status);
+      return null;
+    }
+    const response : Response = await res.json();
+    return response.profileAnswers;
   } catch (err) {
-    // Fallback on error
-    return [mockTaProfileQuestions, mockTaProfileQuestions];
+    console.error("Something went wrong:", err);
+    return null;
   }
 }
+

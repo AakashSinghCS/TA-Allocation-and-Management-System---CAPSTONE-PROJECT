@@ -21,11 +21,12 @@ public class Instructor extends User {
     private String department;
     
     public Instructor(String email, String firstName, String lastName, String password) {
-        super(email, firstName, lastName, password, UserRole.INSTRUCTOR);
+        super(email, firstName, lastName, password);
     }
-    
-    @Override
-    public String getRole() {
-        return "ROLE_INSTRUCTOR";
+
+    public Instructor(String email, String firstName, String lastName, String password, Integer employeeNum, String department) {
+        super(email, firstName, lastName, password);
+        this.employeeNum = employeeNum;
+        this.department = department;
     }
 }

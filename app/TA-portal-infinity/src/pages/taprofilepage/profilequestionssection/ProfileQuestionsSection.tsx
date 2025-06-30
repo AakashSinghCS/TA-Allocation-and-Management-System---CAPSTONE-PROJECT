@@ -1,18 +1,25 @@
-import { QuestionAnswer } from "../../../components/features/questionanswer/QuestionAnswer";
+import { ProfileQuestionAnswer } from "../../../components/features/questionanswer/profilequestionanswer/ProfileQuestionAnswer";
 import type { ProfileQuestion } from "../../../interfaces/question/ProfileQuestion";
 
 interface ProfileQuestionsProps {
-  profileQuestions?: ProfileQuestion[];
-  className: string;
+  profileQuestions?: ProfileQuestion[] | null;
+  className?: string;
 }
 
-export default function ProfileQuestionsSection({ profileQuestions = [], className = "" }: ProfileQuestionsProps) {
+export default function ProfileQuestionsSection({
+  profileQuestions = [],
+  className = "",
+}: ProfileQuestionsProps) {
   return (
-    <section className={className}>
-      {profileQuestions.length ? (
-        <div className="grid max-h-[50vh] overflow-y-auto gap-1">
-          {profileQuestions.map(que => (
-            <QuestionAnswer key={que.id} profileQuestion={que} className="" />
+    <section
+      className={`bg-white border border-slate-200 rounded-2xl shadow-sm p-4 flex flex-col h-full min-h-0 ${className}`}
+    >
+      <h2 className="text-lg font-bold mb-4">Answers to Profile Questions</h2>
+
+      {profileQuestions && profileQuestions.length ? (
+        <div className="flex-1 overflow-y-auto space-y-2">
+          {profileQuestions.map((que) => (
+            <ProfileQuestionAnswer key={que.id} profileQuestion={que} />
           ))}
         </div>
       ) : (

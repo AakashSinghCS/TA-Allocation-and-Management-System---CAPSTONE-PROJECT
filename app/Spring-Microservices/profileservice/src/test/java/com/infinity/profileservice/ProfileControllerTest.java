@@ -1,71 +1,64 @@
 package com.infinity.profileservice;
 
 import static org.hamcrest.Matchers.hasSize;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.profileservice.controllers.ProfileController;
 import com.infinity.profileservice.dtos.*;
+import com.infinity.profileservice.dtos.profile.FreeTextRequest;
+import com.infinity.profileservice.dtos.profile.ProfileAnswerRequest;
 import com.infinity.profileservice.enums.QuestionType;
-
-import com.infinity.profileservice.repositories.AnswerRepo;
-import com.infinity.profileservice.repositories.QuestionRepo;
-import com.infinity.profileservice.repositories.StudentAnswerRepo;
 import com.infinity.profileservice.services.ProfileService;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProfileController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class ProfileControllerTest {
 
-    @Autowired 
-    private MockMvc mvc;
-    @Autowired 
-    private ObjectMapper mapper;
+    @Autowired private MockMvc mvc;
+    @Autowired private ObjectMapper mapper;
 
-    @MockitoBean 
-    private ProfileService service;
-    @Mock
-    private StudentAnswerRepo studentAnsRepo;
-    @Mock
-    private QuestionRepo questionRepo;
-    @Mock
-    private AnswerRepo answerRepo;
-    
+    @TestConfiguration
+    static class MockConfig {
+        @Bean
+        ProfileService myService() {
+            return Mockito.mock(ProfileService.class);
+        }
+    }
+
+    @Autowired ProfileService service; 
 
     @Test
     void getProfile_returnsGroupedAnswers() throws Exception {
         Long sid = 101L;
-        // prepare two AnswerDto entries
-        AnswerDto a1 = new AnswerDto(42, "Java");
-        AnswerDto a2 = new AnswerDto(43, "Python");
-        // bundle them into one question‐answer DTO
-        ProfileQuestionAnswerDto qa =
-            new ProfileQuestionAnswerDto(
-                10,
-                QuestionType.SINGLE,
-                "Fav Lang",
-                List.of(a1, a2)
-            );
+
+        AnswerDto a1 = new AnswerDto(42L, "Java");
+        AnswerDto a2 = new AnswerDto(43L, "Python");
+        ProfileQuestionAnswerDto qa = new ProfileQuestionAnswerDto(
+                10L, QuestionType.SINGLE, "Fav Lang", List.of(a1, a2));
+
 
         when(service.buildProfile(sid))
-            .thenReturn(new ProfileResponseDto(List.of(qa)));
+                .thenReturn(new ProfileResponseDto(List.of(qa)));
 
-        mvc.perform(get("/profiles/{id}", sid))
+        mvc.perform(get("/profiles/{studentId}", sid))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$.profileAnswers", hasSize(1)))
            .andExpect(jsonPath("$.profileAnswers[0].id").value(10))
@@ -81,34 +74,21 @@ class ProfileControllerTest {
     @Test
     void saveAnswers_returnsOkAndDelegates() throws Exception {
         Long sid = 101L;
-        List<Integer> answerIds = List.of(3, 4, 5);
 
-        doNothing().when(service).saveAnswers(sid, answerIds);
+        ProfileAnswerRequest body = new ProfileAnswerRequest(
+                List.of(3L, 4L, 5L),                                   
+                List.of(new FreeTextRequest(10L, "Some free text"))     
+        );
 
-        mvc.perform(post("/profiles/{id}/answers", sid)
-               .contentType(MediaType.APPLICATION_JSON)
-               .content(mapper.writeValueAsString(answerIds)))
+        mvc.perform(post("/profiles/{studentId}/answers", sid)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(body)))
            .andExpect(status().isOk());
 
-        // verify that the controller delegated correctly
-        org.mockito.Mockito.verify(service).saveAnswers(sid, answerIds);
+        ArgumentCaptor<ProfileAnswerRequest> captor =
+                ArgumentCaptor.forClass(ProfileAnswerRequest.class);
+
+        verify(service).saveAnswers(eq(sid), captor.capture());
+        assert body.equals(captor.getValue());
     }
-
-    @Test
-    void saveFreeText_returnsOkAndDelegates() throws Exception {
-        Long sid = 101L;
-        Integer qid = 10;
-        TextRequestDto req = new TextRequestDto("Some text");
-
-        doNothing().when(service).saveFreeTextAnswer(sid, qid, req.description());
-
-        mvc.perform(post("/profiles/{studentId}/questions/{questionId}/answer/text", sid, qid)
-                .contentType(APPLICATION_JSON)
-                .content(mapper.writeValueAsString(req)))
-           .andExpect(status().isOk());
-
-        verify(service).saveFreeTextAnswer(sid, qid, req.description());
-    }
-
 }
-

@@ -6,16 +6,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.infinity.userservice.dtos.StudentDto;
+import com.infinity.userservice.dtos.Students.StudentDto;
 import com.infinity.userservice.services.StudentService;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 
 @RestController
 @RequiredArgsConstructor
-@Data
 @RequestMapping("/students")
 public class StudentController {
 

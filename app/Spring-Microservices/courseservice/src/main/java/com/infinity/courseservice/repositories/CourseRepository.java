@@ -6,16 +6,19 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.dtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.models.Course;
 
+@Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("""
-    SELECT DISTINCT new com.infinity.courseservice.dtos.CourseSectionScheduleDto(
-        c.deptCode, c.name, c.courseNum, s.section, s.term, s.type, ss.day, ss.startTime, ss.endTime
+    SELECT DISTINCT new com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto(
+        c.deptCode, c.name, c.courseNum, s.section, s.year, s.semester, s.type, ss.day, ss.startTime, ss.endTime
     )
     FROM Course c
     LEFT JOIN c.sections s
@@ -24,7 +27,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
       AND (:courseNum IS NULL OR c.courseNum = :courseNum)
       AND (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
       AND (:type IS NULL OR s.type = :type)
-      AND (:term IS NULL OR s.term = :term)
+      AND (:year IS NULL OR s.year = :year)
+      AND (:semester IS NULL OR s.semester = :semester)
       AND (:day IS NULL OR ss.day = :day)
       AND (:startTime IS NULL OR ss.startTime >= :startTime)
       AND (:endTime IS NULL OR ss.endTime <= :endTime)
@@ -34,13 +38,53 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         @Param("courseNum") String courseNum,
         @Param("name") String name,
         @Param("section") String section,
-        @Param("term") String term,
+        @Param("year") Integer year,
+        @Param("semester") String semester,
         @Param("type") String type,
         @Param("day") String day,
         @Param("startTime") LocalTime startTime,
         @Param("endTime") LocalTime endTime
 
     );
+
+    @Query("SELECT DISTINCT c.deptCode FROM Course c")
+    List<String> findAllUniqueDeptCode();
+
+    @Query("SELECT DISTINCT c.courseNum FROM Course c WHERE c.deptCode = :deptCode")
+    List<String> findDistinctCourseNumByDeptCode(@Param("deptCode") String deptCode);
+
+    @Query("""
+                SELECT s.section FROM Section s
+                WHERE s.course.deptCode = :deptCode AND s.course.courseNum = :courseNum
+            """)
+    List<String> findSectionsByDeptCodeAndCourseNum(
+            @Param("deptCode") String deptCode,
+            @Param("courseNum") String courseNum);
+
+    @Query("""
+                SELECT s.year FROM Section s
+                WHERE s.course.deptCode = :deptCode
+                AND s.course.courseNum = :courseNum
+                AND s.section = :section
+            """)
+    List<String> findYearsByDeptCodeAndCourseNumAndSection(
+            @Param("deptCode") String deptCode,
+            @Param("courseNum") String courseNum,
+            @Param("section") String section);
+
+    @Query("""
+                SELECT s.semester FROM Section s
+                WHERE s.course.deptCode = :deptCode
+                AND s.course.courseNum = :courseNum
+                AND s.section = :section
+                AND s.year = :year
+            """)        
+    List<String> findSemestersByDeptCodeAndCourseNumAndSectionAndYear(
+            @Param("deptCode")String deptCode, 
+            @Param("courseNum")String courseNum, 
+            @Param("section")String section,
+            @Param("year")String year);
+
 
     @Query("SELECT DISTINCT c.deptCode FROM Course c")
     List<String> findDistinctDeptCode();

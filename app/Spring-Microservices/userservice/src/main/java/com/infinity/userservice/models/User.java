@@ -2,22 +2,24 @@ package com.infinity.userservice.models;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.infinity.userservice.enums.UserRole;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -44,26 +46,23 @@ public abstract class User implements UserDetails{
     @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "user_type", insertable = false, updatable = false)
-    private UserRole userType;
-
     @Column(nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
 
-    public User(String email, String firstName, String lastName, String password, UserRole userType) {
+    public User(String email, String firstName, String lastName, String password) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
-        this.userType = userType;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(() -> this.userType.name());
+        return roles.stream()
+                .map(role -> (GrantedAuthority) () -> "ROLE_" + role.getName().name())
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -71,6 +70,12 @@ public abstract class User implements UserDetails{
         return this.email;
     }
 
-    public abstract String getRole();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles", 
+            joinColumns = @JoinColumn(name = "user_id"), 
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
 }

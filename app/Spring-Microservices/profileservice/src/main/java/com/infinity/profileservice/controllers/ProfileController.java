@@ -1,11 +1,10 @@
 package com.infinity.profileservice.controllers;
 
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import com.infinity.profileservice.dtos.TextRequestDto;
+import com.infinity.profileservice.dtos.profile.ProfileAnswerRequest;
 import com.infinity.profileservice.dtos.ProfileResponseDto;
 import com.infinity.profileservice.services.ProfileService;
 
@@ -18,26 +17,18 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAnyRole('STUDENT', 'COORDINATOR','INSTRUCTOR')")
     @GetMapping("/{studentId}")
     public ResponseEntity<ProfileResponseDto> getProfile(@PathVariable Long studentId) {
         return ResponseEntity.ok(profileService.buildProfile(studentId));
     }
 
-    @PreAuthorize("hasRole('STUDENT')")
+    //TODO: ensure that when a student saves an answer, the student is saving the answers for his own studentId!
+    @PreAuthorize("hasAnyRole('STUDENT','COORDINATOR')")
     @PostMapping("/{studentId}/answers")
     public ResponseEntity<Void> saveAnswers(@PathVariable Long studentId,
-                                            @RequestBody List<Integer> answerIds) {
-        profileService.saveAnswers(studentId, answerIds);
-        return ResponseEntity.ok().build();
-    }
-
-    @PreAuthorize("hasRole('STUDENT')")
-    @PostMapping("/{studentId}/questions/{questionId}/answer/text")
-    public ResponseEntity<Void> saveFreeText(@PathVariable Long studentId,
-                                             @PathVariable Integer questionId,
-                                             @RequestBody TextRequestDto req) {
-        profileService.saveFreeTextAnswer(studentId, questionId, req.description());
+                                            @RequestBody ProfileAnswerRequest answers) {
+        profileService.saveAnswers(studentId, answers);
         return ResponseEntity.ok().build();
     }
 

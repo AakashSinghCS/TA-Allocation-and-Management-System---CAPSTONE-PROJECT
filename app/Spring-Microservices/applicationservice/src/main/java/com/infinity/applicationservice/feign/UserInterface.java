@@ -1,16 +1,25 @@
 package com.infinity.applicationservice.feign;
 
+import java.util.List;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.infinity.applicationservice.dtos.UserDto;
+import com.infinity.applicationservice.config.FeignClientInterceptor;
+import com.infinity.applicationservice.dtos.StudentDto;
 
-@FeignClient("USER-SERVICE")
+@FeignClient(name = "USER-SERVICE", configuration = FeignClientInterceptor.class)
 public interface UserInterface {
 
     @GetMapping("/students/{studentId}")
-    public ResponseEntity<UserDto> getStudentById(@PathVariable Integer studentId);
+    public ResponseEntity<StudentDto> getStudentById(@PathVariable Long studentId);
+    
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id,  @RequestHeader("X-User-Id") Long requesterId,
+            @RequestHeader("X-User-Roles") List<String> roles);
 
 }

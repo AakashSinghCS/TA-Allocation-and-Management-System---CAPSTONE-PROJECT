@@ -21,7 +21,6 @@ public class QuestionAdminController {
 
     private final QuestionService qs;
 
-    //Question CRUD
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping
     public ResponseEntity<ProfileQuestion> create(@RequestBody QuestionRequest req) {
@@ -30,14 +29,14 @@ public class QuestionAdminController {
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PutMapping("/{id}")
-    public ResponseEntity<ProfileQuestion> update(@PathVariable Integer id,
+    public ResponseEntity<ProfileQuestion> update(@PathVariable Long id,
                                                   @RequestBody QuestionRequest req) {
         return ResponseEntity.ok(qs.updateQuestion(id, req));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         qs.deleteQuestion(id);
         return ResponseEntity.noContent().build();
     }
@@ -48,19 +47,19 @@ public class QuestionAdminController {
         return ResponseEntity.ok(qs.listAll());
     }
 
-    //Answer CRUD
-
+    //TODO: this mapping is not getting used in the system.
     @PreAuthorize("hasRole('COORDINATOR')")
-    @PostMapping("/{id}/answers")
-    public ResponseEntity<ProfileAnswer> addAnswer(@PathVariable Integer id,
+    @PostMapping("/{id}/answer")
+    public ResponseEntity<ProfileAnswer> addAnswer(@PathVariable Long id,
                                                    @RequestBody AnswerRequest req) {
         return ResponseEntity.ok(qs.addAnswer(id, req));
     }
 
+    //TODO: this mapping is not getting used in the system.
     @PreAuthorize("hasRole('COORDINATOR')")
     @PutMapping("/{questionId}/answers/{answerId}")
-    public ResponseEntity<AnswerDto> updateAnswer(@PathVariable Integer questionId,
-                                                      @PathVariable Integer answerId,
+    public ResponseEntity<AnswerDto> updateAnswer(@PathVariable Long questionId,
+                                                      @PathVariable Long answerId,
                                                       @RequestBody AnswerRequest req) {
                                                         
         ProfileAnswer updated = qs.updateAnswer(answerId, req);
@@ -68,9 +67,10 @@ public class QuestionAdminController {
         return ResponseEntity.ok(dto);
     }
 
+    //TODO: this mapping is not getting used in the system.
     @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("/answers/{answerId}")
-    public ResponseEntity<Void> deleteAnswer(@PathVariable Integer answerId) {
+    public ResponseEntity<Void> deleteAnswer(@PathVariable Long answerId) {
         qs.deleteAnswer(answerId);
         return ResponseEntity.noContent().build();
     }

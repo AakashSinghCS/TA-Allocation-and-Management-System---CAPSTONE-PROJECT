@@ -16,7 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.infinity.userservice.controllers.StudentController;
-import com.infinity.userservice.dtos.StudentDto;
+import com.infinity.userservice.dtos.Students.StudentDto;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.services.StudentService;
@@ -50,7 +50,7 @@ public class StudentControllerTest {
             1L,
             "John",
             "Smith",
-            UserRole.STUDENT,
+            "test@test.com",
             studentNum,
             "Computer Science",
             2023,
@@ -63,8 +63,7 @@ public class StudentControllerTest {
         mockMvc.perform(get("/students/num/"+studentNum)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.role").value("STUDENT"));
+                .andExpect(jsonPath("$.firstName").value("John"));
     }
   
     @Test
@@ -85,7 +84,7 @@ public class StudentControllerTest {
             studentId,
             "John",
             "Smith",
-            UserRole.STUDENT,
+            "test@test.com",
             12345678,
             "Computer Science",
             2023,
@@ -98,7 +97,6 @@ public class StudentControllerTest {
         mockMvc.perform(get("/students/"+studentId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.role").value("STUDENT"));
+                .andExpect(jsonPath("$.firstName").value("John"));
     }
 }

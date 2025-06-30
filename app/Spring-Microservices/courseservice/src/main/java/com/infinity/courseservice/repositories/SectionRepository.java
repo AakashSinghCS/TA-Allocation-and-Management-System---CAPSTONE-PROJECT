@@ -3,10 +3,13 @@ package com.infinity.courseservice.repositories;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.infinity.courseservice.models.Section;
 
+@Repository
+public interface SectionRepository extends JpaRepository<Section, Long> {
+    List<Section> findByCourseId(Long courseId);
 
-public interface SectionRepository extends JpaRepository<Section, Long>{
-    List<Section> findByInstructorId(Long instructorId);
+    List<Section> findAllByInstructorId(Long instructorId);
 }
