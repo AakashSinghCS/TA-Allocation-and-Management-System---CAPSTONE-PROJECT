@@ -82,7 +82,7 @@ public class UserServiceTest {
                 false);
 
         Student saved = new Student("john@test.com", "John", "Smith", "password");
-        UserDto studentDto = new UserDto(1L, "John", "Smith", List.of(UserRole.STUDENT));
+        UserDto studentDto = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.STUDENT));
         Set<Role> roles = new HashSet<Role>(Set.of(new Role(1L, UserRole.STUDENT)));
 
         Role studentRole = new Role(1L, UserRole.STUDENT);
@@ -105,7 +105,7 @@ public class UserServiceTest {
                 false);
 
         Instructor saved = new Instructor("john@test.com", "John", "Smith", "password");
-        UserDto instructorDto = new UserDto(1L, "John", "Smith", List.of(UserRole.INSTRUCTOR));
+        UserDto instructorDto = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.INSTRUCTOR));
         Set<Role> roles = new HashSet<Role>(Set.of(new Role(1L, UserRole.INSTRUCTOR)));
 
         Role instructorRole = new Role(1L, UserRole.INSTRUCTOR);
@@ -128,7 +128,7 @@ public class UserServiceTest {
                 true);
 
         Instructor saved = new Instructor("john@test.com", "John", "Smith", "password");
-        UserDto coordinatorDto = new UserDto(1L, "John", "Smith", List.of(UserRole.ADMIN, UserRole.COORDINATOR));
+        UserDto coordinatorDto = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.ADMIN, UserRole.COORDINATOR));
         Set<Role> roles = new HashSet<Role>(Set.of(new Role(1L, UserRole.ADMIN), new Role(1L, UserRole.COORDINATOR)
                 ));
 
@@ -173,7 +173,7 @@ public class UserServiceTest {
     @Test
     void testGetUserById_Success() {
         User mockUser = new Coordinator("john@test.com", "John", "Smith", "password");
-        UserDto mockDto = new UserDto(1L, "John", "Smith", List.of(UserRole.COORDINATOR));
+        UserDto mockDto = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.COORDINATOR));
 
         when(userRepository.findById(any())).thenReturn(Optional.of(mockUser));
         when(userMapper.toDto(mockUser)).thenReturn(mockDto);

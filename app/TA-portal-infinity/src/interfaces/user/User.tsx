@@ -3,5 +3,5 @@ export default interface User {
   firstName?: string;
   lastName?: string;
   email?: string;
-  createdAt?: Date;
+  createdAt?:  string | Date;
 }

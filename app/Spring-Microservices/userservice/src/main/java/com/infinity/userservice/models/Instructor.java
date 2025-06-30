@@ -23,4 +23,10 @@ public class Instructor extends User {
     public Instructor(String email, String firstName, String lastName, String password) {
         super(email, firstName, lastName, password);
     }
+
+    public Instructor(String email, String firstName, String lastName, String password, Integer employeeNum, String department) {
+        super(email, firstName, lastName, password);
+        this.employeeNum = employeeNum;
+        this.department = department;
+    }
 }

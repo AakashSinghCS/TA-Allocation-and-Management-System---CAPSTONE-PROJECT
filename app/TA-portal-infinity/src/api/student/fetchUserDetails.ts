@@ -1,8 +1,9 @@
-import { mockInstructorChed } from "../../mocked-objects/user/mockInstructorChed";
+import type { Student } from "../../interfaces/user/Student";
+import type User from "../../interfaces/user/User";
 
-const BASE = "http://localhost:8080/instructors";
+const BASE = "http://localhost:8080/users";
 
-export async function fetchInstructorDetails<Instructor>(userId: number): Promise<Instructor> {
+export async function fetchUserDetails<T extends User>(userId: number): Promise<T> {
   const url = `${BASE}/${userId}`;
   const token = localStorage.getItem("token");
 
@@ -16,13 +17,10 @@ export async function fetchInstructorDetails<Instructor>(userId: number): Promis
     });
 
     const data = await res.json();
-
-    return data as Instructor;
-    // return mockInstructorChed;
+    return data as T;
 
   } catch (err) {
     console.error("Failed to fetch user details:", err);
-    return ({} as Instructor);
-    // return mockInstructorChed;
+    return ({} as T);
   }
 }

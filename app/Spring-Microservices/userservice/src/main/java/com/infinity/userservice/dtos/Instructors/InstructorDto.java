@@ -6,6 +6,7 @@ public record InstructorDto(
     Long id,
     String firstName,
     String lastName,
+    String email,
     Integer employeeNum,
     String dept,
     LocalDateTime createdAt

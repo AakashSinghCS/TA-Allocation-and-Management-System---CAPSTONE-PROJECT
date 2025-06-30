@@ -22,6 +22,9 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>{
 
     Optional<List<Application>> findAllByStudentId(Long studentId);
 
+
+    Optional<Application> findById(Long id);
+
     @Query("""
                 SELECT a FROM Application a
                 WHERE (:year IS NULL OR a.year = :year)
@@ -38,6 +41,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>{
             @Param("preference1") Subject preference1,
             @Param("preference2") Subject preference2,
             @Param("preference3") Subject preference3);
+
 
     
 }
