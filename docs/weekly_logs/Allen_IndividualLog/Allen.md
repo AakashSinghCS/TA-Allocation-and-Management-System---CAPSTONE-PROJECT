@@ -316,3 +316,46 @@ finished the backend of course filter, enrollment table building with feign to r
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * building enrollment table to enable frontend comparer
   * building qualification table and corresponding services
+
+
+## June 19 - 30
+
+### Timesheet
+Clockify report
+![alt text](./clockify/6.30.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: the whole qualification service backend
+  * #2: testing and integrating
+
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>the whole qualification service backend
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>testing and integrating
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+finished the backend of qualification service, had a final at 25th, didn't really contributed at that week.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * building enrollment table to enable frontend comparer
