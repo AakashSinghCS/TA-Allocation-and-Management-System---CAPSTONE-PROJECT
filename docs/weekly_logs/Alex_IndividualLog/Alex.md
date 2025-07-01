@@ -1,4 +1,62 @@
-## Monday (June 20-23)
+## Monday (June 27-30)
+
+### Timesheet
+Clockify report
+![alt text](./jun27-30.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Creating a notification service for emailing and having it work with forgot password
+
+### Progress Update (since June 26 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Patching the needs and teacher controller to return sections rather than only courses
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Adding missing methods and endpoints for the applications and courses
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Handling student enrollment in the intermediate table for students and courses
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Creating a notification service for emailing and having it work with forgot password
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I accomplished a number of things this weekend, some small some large. I patched the way teacher allocations worked, and then added course filter functions for Dup's frontend that he requested. Then I also added missing CRUD operations for courses, sections, and section schedules. This was part of the same PR that I handled student enrollment through the intermediate StudentCourse to help determine what courses student's have taken before or whether they are currently enrolled or not. Then after that I built the new notification microservice and with the java mail sender library connected an SMTP gmail account I made for sending out emails. This was used in conjunction with the resetting password workflow which was accomplished in the same PR.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Since it wasn't clear if I would get these 4 things done this weekend, I don't have a next task lined up yet. We have a meeting on Tuesday where we'll go over the last things needed to finish for the MVP on Friday, and I will get whatever tasks are needed to be finished.
+
+## Thursday (June 24-26)
 
 ### Timesheet
 Clockify report
@@ -10,7 +68,7 @@ Clockify report
   * #3: Handling student enrollment in the intermediate table for students and courses
   * #4: Creating a notification service for emailing and having it work with forgot password
 
-### Progress Update (since June 19 2025) 
+### Progress Update (since June 23 2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
