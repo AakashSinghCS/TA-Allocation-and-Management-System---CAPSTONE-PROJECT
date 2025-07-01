@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.infinity.userservice.enums.UserRole;
@@ -12,6 +13,7 @@ import com.infinity.userservice.repositories.RoleRepository;
 
 import lombok.RequiredArgsConstructor;
 
+@Order(1)
 @Component
 @RequiredArgsConstructor
 public class RoleSeeder {
