@@ -66,8 +66,8 @@ public class QualificationController {
     }
 
     @GetMapping("findByStudentId/{studentId}")
-    public ResponseEntity<List<StudentQualificationResponseDto>> findByStudentId(@PathVariable Long stuId) {
-        List<StudentQualificationResponseDto> qualifications = qualificationService.findQualificationsByStudentId(stuId);
+    public ResponseEntity<List<StudentQualificationResponseDto>> findByStudentId(@PathVariable Long studentId) {
+        List<StudentQualificationResponseDto> qualifications = qualificationService.findQualificationsByStudentId(studentId);
         return ResponseEntity.ok(qualifications);
     }
     

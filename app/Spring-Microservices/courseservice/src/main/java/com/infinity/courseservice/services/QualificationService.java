@@ -39,9 +39,12 @@ public class QualificationService {
 
     public QualificationDto findQualification(Long id) {
         Qualification qualification = qualificationRepository.findById(id).orElseThrow(() -> new NotFoundException("qualification with ID " + id + " not found"));
-        UserDto stu = studentClient.getStudentById(qualification.getStudentId());
         CourseDto course = courseService.findCourse(qualification.getCourse().getId());
-        return new QualificationDto(course, qualification.getDescription(), stu);
+        if (qualification.getStudentId()!=null) {
+            UserDto stu = studentClient.getStudentById(qualification.getStudentId());
+            return new QualificationDto(course, qualification.getDescription(), stu);
+        }
+        return new QualificationDto(course, qualification.getDescription(), null);
     }
 
     public List<Qualification> findQualificationsByDeptCode(String deptCode) {
@@ -67,10 +70,10 @@ public class QualificationService {
         if (toDelete.isEmpty()) {
             throw new NotFoundException("No qualifications found with description: " + request.description());
         }
-        List<Qualification> withStudents = toDelete.stream()
-            .filter(q -> q.getStudentId() != null)
-            .collect(Collectors.toList());
-        qualificationRepository.deleteAll(withStudents);
+        // List<Qualification> withStudents = toDelete.stream()
+        //     .filter(q -> q.getStudentId() != null)
+        //     .collect(Collectors.toList());
+        qualificationRepository.deleteAll(toDelete);
         return "Qualification deleted successfully";
     }
 

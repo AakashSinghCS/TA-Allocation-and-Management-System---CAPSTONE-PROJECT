@@ -19,10 +19,10 @@ public interface QualificationRepository extends JpaRepository<Qualification, Lo
     @Query("SELECT q FROM Qualification q WHERE q.id IN :ids AND q.studentId IS NULL")
     List<Qualification> findAllByIdAndStudentIdIsNull(@Param("ids") List<Long> ids);
 
-    @Query("SELECT q FROM Qualification q WHERE q.course IN :ids AND q.studentId IS NULL")
+    @Query("SELECT q FROM Qualification q WHERE q.course IN :courses AND q.studentId IS NULL")
     List<Qualification> findAllByCourseAndStudentIdIsNull(@Param("courses") List<Course> courses);
 
-    @Query("SELECT q FROM Qualification q WHERE q.course IN :ids AND q.studentId IS NOT NULL")
+    @Query("SELECT q FROM Qualification q WHERE q.course IN :courses AND q.studentId IS NOT NULL")
     List<Qualification> findAllByCourseAndStudentIdIsNotNull(@Param("courses") List<Course> courses);
 
     @Query("SELECT q FROM Qualification q WHERE q.description IN :descriptions AND q.studentId IS NULL")

@@ -59,7 +59,7 @@ public class SectionService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
-        Section section = new Section(request.year(), request.semester(), request.section(), request.type(), course, null);
+        Section section = new Section(request.year(), request.semester(), request.section(), request.type(), course, request.instructorId());
         try {
             sectionRepository.save(section);
         } catch (DataIntegrityViolationException ex) {
