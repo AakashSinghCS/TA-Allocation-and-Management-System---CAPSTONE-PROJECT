@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,15 +42,45 @@ public class SectionController {
     
      @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addSection/{courseId}")
-    public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId, @RequestBody CourseRequest request) {      
-        return ResponseEntity.ok(sectionService.addSection(courseId,request));
-    }
+     public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId, @RequestBody CourseRequest request) {
+         return ResponseEntity.ok(sectionService.addSection(courseId, request));
+     }
+    
+     @PreAuthorize("hasRole('COORDINATOR')")
+     @PutMapping("/updateSection/{sectionId}")
+     public ResponseEntity<SectionDto> updateSection(@PathVariable Long sectionId, @RequestBody CourseRequest request) {
+         return ResponseEntity.ok(sectionService.updateSection(sectionId, request));
+     }
+
+     @PreAuthorize("hasRole('COORDINATOR')")
+     @DeleteMapping("/deleteSection/{sectionId}")
+     public ResponseEntity<String> deleteSection(@PathVariable Long sectionId) {
+         return ResponseEntity.ok(sectionService.deleteSection(sectionId));
+     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addSectionSchedule/{sectionId}")
     public ResponseEntity<SectionScheduleDto> addSectionSchedule(@PathVariable Long sectionId,
             @RequestBody CourseRequest request) {
         return ResponseEntity.ok(sectionService.addSectionSchedule(sectionId, request));
+    }
+
+    @GetMapping("getSectionSchedules/{sectionId}")
+    public ResponseEntity<List<SectionScheduleDto>> getSectionSchedules(@PathVariable Long sectionId) {
+        return ResponseEntity.ok(sectionService.getSectionSchedules(sectionId));
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @PutMapping("/updateSectionSchedule/{sectionScheduleId}")
+    public ResponseEntity<SectionScheduleDto> updateSectionSchedule(@PathVariable Long sectionScheduleId,
+            @RequestBody CourseRequest request) {
+        return ResponseEntity.ok(sectionService.updateSectionSchedule(sectionScheduleId, request));
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @DeleteMapping("deleteSectionSchedule/{sectionScheduleId}")
+    public ResponseEntity<String> deleteSectionSchedule(@PathVariable Long sectionScheduleId) {
+        return ResponseEntity.ok(sectionService.deleteSectionSchedule(sectionScheduleId));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
