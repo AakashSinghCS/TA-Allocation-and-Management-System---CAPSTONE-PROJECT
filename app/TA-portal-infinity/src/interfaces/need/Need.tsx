@@ -1,9 +1,12 @@
 import type {Course} from '../course/Course';
 
 export interface Need {
-    sectionId?: number;
     description?: string;
-    numOfHoursCurrentlyAllocated? : number;
+    numHoursCurrentlyAllocated? : number;
     requiredGradingHours? : number;
     courseNeeds?: Course[];
+    year? :number;
+    semester? : number;
+    courseId? : number;
+    id? : number;
 }

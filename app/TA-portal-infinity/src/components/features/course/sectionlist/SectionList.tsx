@@ -122,11 +122,12 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                     type="button"
                     onClick={() => {
                       if (!onSelectCourse) return;
+                      if(groups[courseId].length<1) return;
                       return onSelectCourse(
                         courseId,
-                        group[courseId].sectionDetails?.deptCode ?? "",
-                        group[courseId].sectionDetails?.courseNum ?? "",
-                        group[courseId].sectionDetails?.name ?? "",
+                        groups[courseId][0].sectionDetails?.deptCode ?? "",
+                        groups[courseId][0].sectionDetails?.courseNum ?? "",
+                        groups[courseId][0].sectionDetails?.name ?? "",
                       )
                     }}
                     className="text-red-600 hover:underline text-sm whitespace-nowrap"

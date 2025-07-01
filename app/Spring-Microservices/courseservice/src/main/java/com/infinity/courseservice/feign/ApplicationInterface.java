@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.infinity.courseservice.config.FeignClientInterceptor;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 
 @FeignClient(name = "APPLICATION-SERVICE", configuration = FeignClientInterceptor.class)
@@ -15,4 +16,7 @@ public interface ApplicationInterface {
 
     @GetMapping("/allocations/student/{studentId}/history")
     public ResponseEntity<List<AllocationHistoryDto>> getStudentAllocationHistory(@PathVariable Long studentId);
+
+    @GetMapping("/allocations/section/{sectionId}")
+    ResponseEntity<List<AllocationDto>> getAllocationsBySectionId(@PathVariable Long sectionId);
 }

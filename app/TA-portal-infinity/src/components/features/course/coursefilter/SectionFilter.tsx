@@ -105,6 +105,7 @@ export default function SectionFilter({
       </div>
 
       <button
+      type="button"
         onClick={handleFilter}
         className="bg-blue-500 text-white p-2 rounded-md w-full"
       >

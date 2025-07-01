@@ -1,5 +1,4 @@
 package com.infinity.courseservice.services;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.Set;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
@@ -30,6 +30,7 @@ import com.infinity.courseservice.repositories.SectionScheduleRepository;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;  import org.slf4j.LoggerFactory;
 
 @Service
 @Data
@@ -44,7 +45,7 @@ public class CourseService {
     private final ApplicationInterface applicationInterface;
     private final SectionService sectionService;
     // private final EnrollmentService enrollmentService;
-
+    private static final Logger log = LoggerFactory.getLogger(CourseService.class);
     @Transactional
     public CourseDto addCourse(CourseRequest request) {
         String deptCode = Optional.ofNullable(request.deptCode()).orElse("").trim();
@@ -103,7 +104,7 @@ public class CourseService {
         Section section = sectionRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)
                 .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
         NeedDto need = needService.getNeed(courseId, year, semester);
-        List<AllocationHistoryDto> allocations = applicationInterface.getStudentAllocationHistory(courseId).getBody();
+        List<AllocationDto> allocations = applicationInterface.getAllocationsBySectionId(section.getId()).getBody();
         SectionDto sectionDto = new SectionDto(section.getId(), section.getYear(), section.getSemester(),
                 section.getSection(), section.getType(), 
                 new CourseDto(section.getCourse().getId(),
@@ -114,34 +115,46 @@ public class CourseService {
 
     }
 
-    public List<CourseNeedAndAllocations> getInstructorCourseNeedsAndAllocations(Long instructorId) {
-        List<SectionDto> sections = sectionService.getInstructorSections(instructorId);
+  public List<CourseNeedAndAllocations> getInstructorCourseNeedsAndAllocations(Long instructorId) {
+    List<SectionDto> sections = sectionService.getInstructorSections(instructorId);
+    Set<String> uniqueKeys = new HashSet<>();
+    List<CourseNeedAndAllocations> result = new ArrayList<>();
 
-        Set<String> uniqueKeys = new HashSet<>();
-        List<CourseNeedAndAllocations> result = new ArrayList<>();
+    for (SectionDto section : sections) {
+        Long courseId = section.course().id();
+        Integer year = section.year();
+        String semester = section.semester();
 
-        for (SectionDto section : sections) {
-            Long courseId = section.course().id();
-            Integer year = section.year();
-            String semester = section.semester();
+        String key = courseId + "-" + year + "-" + semester;
+        if (!uniqueKeys.contains(key)) {
+            uniqueKeys.add(key);
 
-            String key = courseId + "-" + year + "-" + semester;
+            NeedDto need = null;
+            List<AllocationDto> allocations = new ArrayList<>();
 
-            if (!uniqueKeys.contains(key)) {
-                uniqueKeys.add(key);
-                try {
-                NeedDto need = needService.getNeed(section.course().id(), section.year(), section.semester());
-                List<AllocationHistoryDto> allocations = applicationInterface
-                        .getStudentAllocationHistory(section.course().id()).getBody();
-                    CourseNeedAndAllocations entry = new CourseNeedAndAllocations(section, need, allocations);
-                    result.add(entry);
-                } catch (NotFoundException ignored) {
-                }
+            try {
+                need = needService.getNeed(courseId, year, semester);
+            } catch (NotFoundException e) {
+                log.debug("Need not found for courseId={}, year={}, semester={}", courseId, year, semester);
             }
-        }
+            try {
+                List<AllocationDto> fetched = applicationInterface.getAllocationsBySectionId(section.id()).getBody();
+                if (fetched != null) {
+                    allocations = fetched;
+                }
+            } catch (NotFoundException e) {
+                log.debug("Allocations not found for courseId={}", courseId);
+            }
 
-        return result;
+            CourseNeedAndAllocations entry = new CourseNeedAndAllocations(section, need, allocations);
+            result.add(entry);
+        }
     }
+
+    log.debug("courseneed result = {}", result);
+    return result;
+}
+
 
     public List<String> getAllDeptCodes() {
         return courseRepository.findAllUniqueDeptCode();

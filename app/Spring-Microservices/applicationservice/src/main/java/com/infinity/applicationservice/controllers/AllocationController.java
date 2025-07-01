@@ -1,5 +1,6 @@
 package com.infinity.applicationservice.controllers;
 
+import com.infinity.applicationservice.dtos.AllocationDto;
 import com.infinity.applicationservice.dtos.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.AllocationRequest;
 import com.infinity.applicationservice.services.AllocationService;
@@ -45,6 +46,13 @@ public class AllocationController {
     public ResponseEntity<Void> denyOffer(@PathVariable Long id) {
         allocationService.updateConfirmationStatus(id, false);
         return ResponseEntity.ok().build();
+    }
+
+    //  @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/section/{sectionId}")
+    public ResponseEntity<List<AllocationDto>> getBySectionId(@PathVariable Long sectionId) {
+        List<AllocationDto> allocations = allocationService.getAllocationsBySectionId(sectionId);
+        return ResponseEntity.ok(allocations);
     }
     
 }

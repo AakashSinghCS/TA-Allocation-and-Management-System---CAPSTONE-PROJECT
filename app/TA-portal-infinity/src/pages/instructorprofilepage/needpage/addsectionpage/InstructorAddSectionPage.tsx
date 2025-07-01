@@ -49,7 +49,7 @@ export default function InstructorAddSectionPage() {
                 : <SectionList
                     sections={filteredSections}
                     onSelect={onSelect }
-                    mode='instructor'
+                    mode='instructorAddSection'
                 />
             }
         </div>
