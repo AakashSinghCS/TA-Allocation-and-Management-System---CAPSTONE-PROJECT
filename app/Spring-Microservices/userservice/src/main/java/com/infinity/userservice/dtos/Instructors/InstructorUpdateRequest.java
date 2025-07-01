@@ -16,6 +16,6 @@ public record InstructorUpdateRequest(
                 String password,
                 @Min(10000000)  
                 @Max(99999999)
-                Integer employeeNumber,
+                Integer employeeNum,
                 String department) {
 }

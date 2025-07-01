@@ -48,7 +48,7 @@ const TAAllocationPage: React.FC = () => {
   const deptCodes  = useMemo(() => Array.from(new Set(allSections.map(s=>s.deptCode))),  [allSections]);
   const courseNums = useMemo(() => Array.from(new Set(allSections.map(s=>s.courseNum))), [allSections]);
   const sections   = useMemo(() => Array.from(new Set(allSections.map(s=>s.section))),   [allSections]);
-  const terms      = useMemo(() => Array.from(new Set(allSections.map(s=>s.term))),      [allSections]);
+  const terms      = useMemo(() => Array.from(new Set(allSections.map(s=>s.semester))),      [allSections]);
   const types      = useMemo(() => Array.from(new Set(allSections.map(s=>s.type!))),    [allSections]);
 
   // fetch all applications on mount 
@@ -88,7 +88,7 @@ const TAAllocationPage: React.FC = () => {
       if (courseQ.deptCode  && s.deptCode  !== courseQ.deptCode)   return false;
       if (courseQ.courseNum && s.courseNum !== courseQ.courseNum)  return false;
       if (courseQ.section   && s.section   !== courseQ.section)    return false;
-      if (courseQ.term      && s.term      !== courseQ.term)       return false;
+      if (courseQ.term      && s.semester      !== courseQ.term)       return false; //TODO: THIS LINE MAY HAVE TO BE EDITED!!
       if (courseQ.type      && s.type      !== courseQ.type)       return false;
       return true;
     });
@@ -289,7 +289,7 @@ const events = [
                       : 'bg-gray-300 hover:bg-gray-600'}
                   `}
                 >
-                  {s.deptCode} {s.courseNum} • {s.section} • {s.term}
+                  {s.deptCode} {s.courseNum} • {s.section} • {s.semester}
                 </button>
               );
             })}

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,10 +36,6 @@ import com.infinity.userservice.dtos.Registration.RegisterRequest;
 import com.infinity.userservice.dtos.Students.StudentDto;
 import com.infinity.userservice.dtos.Students.StudentUpdateRequest;
 import com.infinity.userservice.dtos.UserDto;
-import com.infinity.userservice.dtos.Coordinators.CoordinatorUpdateRequest;
-import com.infinity.userservice.dtos.Instructors.InstructorUpdateRequest;
-import com.infinity.userservice.dtos.Registration.RegisterRequest;
-import com.infinity.userservice.dtos.Students.StudentUpdateRequest;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.BadRequestException;
@@ -53,6 +50,8 @@ import com.infinity.userservice.repositories.RoleRepository;
 import com.infinity.userservice.repositories.StudentRepository;
 import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.services.UserService;
+import com.infinity.userservice.utility.InstructorMapper;
+import com.infinity.userservice.utility.StudentMapper;
 import com.infinity.userservice.utility.UserMapper;
 
 import jakarta.validation.ConstraintViolation;
@@ -75,6 +74,10 @@ public class UserServiceTest {
     private ObjectMapper objectMapper;
     @Mock
     private Validator validator;
+    @Mock
+    private StudentMapper studentMapper;
+    @Mock
+    private InstructorMapper instructorMapper;
 
     @InjectMocks
     private UserService userService;
@@ -352,9 +355,12 @@ public class UserServiceTest {
         s.setFirstName("Alice");
         s.setLastName("Smith");
         s.setEmail("a@example.com");
-        s.setStudentNumber(12345678);
-        when(studentRepository.findAllByStudentNumber(12345678)).thenReturn(Collections.singletonList(s));
+        s.setStudentNum(12345678);
+        LocalDateTime fixedTime = LocalDateTime.of(2023, 1, 1, 12, 0);
+        StudentDto studentDto = new StudentDto(1L, "Alice", "Smith", "a@example.com", 12345678,"Computer",2024,1,fixedTime);
 
+        when(studentRepository.findAllByStudentNum(12345678)).thenReturn(Collections.singletonList(s));
+        when(studentMapper.toDto(s)).thenReturn(studentDto);
         List<BaseUserDto> result = userService.search("STUDENT", "", 12345678);
 
         assertEquals(1, result.size());

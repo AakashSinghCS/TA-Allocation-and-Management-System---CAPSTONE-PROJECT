@@ -11,5 +11,5 @@ import com.infinity.userservice.models.Instructor;
 public interface InstructorRepository extends JpaRepository<Instructor, Long>  {
     List<Instructor> findByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(String firstName, String lastName);
 
-    List<Instructor> findAllByEmployeeNumber(Integer employeeNumber);
+    List<Instructor> findAllByEmployeeNum(Integer employeeNum);
 }

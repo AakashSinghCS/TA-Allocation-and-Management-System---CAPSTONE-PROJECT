@@ -1,0 +1,23 @@
+import { render, screen, fireEvent } from '@testing-library/react'
+import { vi } from 'vitest'
+import CreateSectionForm, { type CreateSectionData } from './CreateSectionForm'
+import { MemoryRouter } from 'react-router-dom'
+
+describe('CreateSectionForm', () => {
+  it('allows changing semester dropdown and submits updated state', () => {
+    const onCreate = vi.fn<(data: CreateSectionData) => void>()
+    render(<MemoryRouter><CreateSectionForm onCreateSection={onCreate} /></MemoryRouter>)
+
+    // Change the semester dropdown
+    const semesterSelect = screen.getByLabelText(/Semester/i)
+    fireEvent.change(semesterSelect, { target: { value: 'S1' } })
+
+    // Submit the form
+    const submitButton = screen.getByRole('button', { name: /create section/i })
+    fireEvent.click(submitButton)
+
+    expect(onCreate).toHaveBeenCalledTimes(1)
+    const submitted = onCreate.mock.calls[0][0]
+    expect(submitted.semester).toBe('S1')
+  })
+})

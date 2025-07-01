@@ -12,13 +12,11 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.userservice.dtos.BaseUserDto;
 import com.infinity.userservice.dtos.CoordinatorDto;
+import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.Coordinators.CoordinatorUpdateRequest;
-import com.infinity.userservice.dtos.InstructorDto;
 import com.infinity.userservice.dtos.Instructors.InstructorUpdateRequest;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
-import com.infinity.userservice.dtos.Students.StudentDto;
 import com.infinity.userservice.dtos.Students.StudentUpdateRequest;
-import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.BadRequestException;
@@ -32,6 +30,8 @@ import com.infinity.userservice.repositories.InstructorRepository;
 import com.infinity.userservice.repositories.RoleRepository;
 import com.infinity.userservice.repositories.StudentRepository;
 import com.infinity.userservice.repositories.UserRepository;
+import com.infinity.userservice.utility.InstructorMapper;
+import com.infinity.userservice.utility.StudentMapper;
 import com.infinity.userservice.utility.UserMapper;
 
 import jakarta.validation.ConstraintViolation;
@@ -52,6 +52,8 @@ public class UserService {
     private final Validator validator;
     private final StudentRepository studentRepository;
     private final InstructorRepository instructorRepository;
+    private final StudentMapper studentMapper;
+    private final InstructorMapper instructorMapper;
 
     public UserDto register(RegisterRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
@@ -121,8 +123,7 @@ public class UserService {
             String hashedPassword = passwordEncoder.encode(req.password());
             student.setPassword(hashedPassword);
         }
-        if (req.studentNumber() != null)
-            student.setStudentNumber(req.studentNumber());
+        if (req.studentNum()     != null) student.setStudentNum(req.studentNum());
         if (req.program() != null)
             student.setProgram(req.program());
         if (req.enrollmentYear() != null)
@@ -146,8 +147,8 @@ public class UserService {
             String hashedPassword = passwordEncoder.encode(req.password());
             instructor.setPassword(hashedPassword);
         }
-        if (req.employeeNumber() != null)
-            instructor.setEmployeeNumber(req.employeeNumber());
+        if (req.employeeNum() != null)
+            instructor.setEmployeeNum(req.employeeNum());
         if (req.department() != null)
             instructor.setDepartment(req.department());
 
@@ -198,45 +199,32 @@ public class UserService {
         if ("STUDENT".equalsIgnoreCase(role)) {
             List<Student> students;
             if (universityNumber > 0) {
-                students = studentRepository.findAllByStudentNumber(universityNumber);
+                students = studentRepository.findAllByStudentNum(universityNumber);
             } else {
                 students = studentRepository
                     .findByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(name, name);
             }
             return students.stream()
-                .map(s -> new StudentDto(
-                    s.getId(),
-                    s.getFirstName(),
-                    s.getLastName(),
-                    s.getEmail(),
-                    s.getStudentNumber(),
-                    s.getProgram(),
-                    s.getEnrollmentYear(),
-                    s.getSchoolYear(),
-                    s.getCreatedAt()
-                ))
+                .map(s -> {
+                    return studentMapper.toDto(s);
+                })
                 .collect(Collectors.toList());
         }
         else if ("INSTRUCTOR".equalsIgnoreCase(role)) {
             List<Instructor> instructors;
 
             if (universityNumber > 0) {
-                instructors = instructorRepository.findAllByEmployeeNumber(universityNumber);
+                instructors = instructorRepository.findAllByEmployeeNum(universityNumber);
             } else {
                 instructors = instructorRepository
                     .findByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(name, name);
             }
             return instructors.stream()
-                .map(i -> new InstructorDto(
-                    i.getId(),
-                    i.getFirstName(),
-                    i.getLastName(),
-                    i.getEmail(),
-                    i.getEmployeeNumber(),
-                    i.getDepartment(),
-                    i.getCreatedAt()
-                ))
+                .map(i -> {
+                    return instructorMapper.toDto(i);
+                })
                 .collect(Collectors.toList());
+  
         }
         else {
             List<User> coords = userRepository.findByRoles_Name(UserRole.COORDINATOR);

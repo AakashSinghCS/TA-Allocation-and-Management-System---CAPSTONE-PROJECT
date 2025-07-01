@@ -9,7 +9,7 @@ public record StudentDto(
     String firstName,
     String lastName,
     String email,
-    Integer studentNumber,
+    Integer studentNum,
     String program,
     Integer enrollmentYear,
     Integer schoolYear,

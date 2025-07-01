@@ -13,7 +13,7 @@ public class InstructorMapper {
             instructor.getFirstName(),
             instructor.getLastName(),
             instructor.getEmail(),
-            instructor.getEmployeeNumber(),
+            instructor.getEmployeeNum(),
             instructor.getDepartment(),
             instructor.getCreatedAt()
         );

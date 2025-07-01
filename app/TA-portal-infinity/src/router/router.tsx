@@ -25,10 +25,15 @@ import { UserRole } from "../interfaces/enum/UserRole";
 import AllocationPage from "../pages/allocationpage/AllocationPage";
 import InstructorQualificationPage from "../pages/instructorprofilepage/qualificationpage/InstructorQualificationPage";
 import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
+import ForgotPasswordPage from "../pages/forgotpasswordpage/ForgotPasswordPage";
+import ResetPasswordPage from "../pages/resetpasswordpage/ResetPasswordPage";
 import UserBrowsingPage from "../pages/userbrowsingpage/UserBrowsingPage";
 import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
 import SignUpPage from "../pages/signupPage/SignUpPage";
 import CourseProfilePage from "../pages/courseprofilepage/CourseProfilePage";
+import SectionListPage from "../pages/coursepage/SectionListPage";
+import AddSectionPage from "../pages/coursepage/AddSectionPage";
+
 
 export const router = createBrowserRouter([
   {
@@ -83,16 +88,18 @@ export const router = createBrowserRouter([
       {
         path: "coordinator",
         element: (
-          <RoleGuard role={UserRole.COORDINATOR}>
+          <RoleGuard role={UserRole.COORDINATOR || UserRole.ADMIN}>
             <Outlet />
           </RoleGuard>
         ),
         children: [
           { path: "home", element: <CoordinatorHomePage /> },
           { path: "questions", element: < CoordinatorQuestionnairePage/> },
-          {path: "allocation", element: <AllocationPage />},
           { path: "browseuser", element: <UserBrowsingPage /> },
           { path: "browseuser/newuser", element: < ManualCreateUserPage/> },
+          { path: "sections", element: < SectionListPage/> },
+          { path: "sections/add", element: < AddSectionPage/> },
+          {path: "allocation", element: <AllocationPage />},
           { path: "student/questions/:studentId", element: < TaQuestionnairePage/> }, //TEMPORARY for development
           { path: "error", element: <ErrorPage /> },
         ],
@@ -110,6 +117,8 @@ export const router = createBrowserRouter([
       { path: "login", element: <LoginPage /> },
       // { path: "signup", element: <SignUpPage /> },
       { path: "signup", element: <SignUpPage /> },
+      { path: "forgot-password", element: <ForgotPasswordPage /> },
+      { path: "reset-password", element: <ResetPasswordPage /> },
       { path: "*", element: <ErrorPage /> },
     ],
   },

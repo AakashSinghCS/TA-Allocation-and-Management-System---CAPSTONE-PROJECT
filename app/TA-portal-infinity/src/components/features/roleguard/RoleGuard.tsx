@@ -11,7 +11,7 @@ interface RoleGuardProps {
 
 export default function RoleGuard({ role, children }: RoleGuardProps) {
   const { userRoles, isAuthenticated } = useAuth();
-
+   console.log(userRoles);
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
