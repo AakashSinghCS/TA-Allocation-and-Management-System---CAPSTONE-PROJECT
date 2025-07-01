@@ -171,7 +171,7 @@ const LoginPage: React.FC = () => {
 
              <div className="text-right">
                 <a
-                  href="#"
+                  href="/forgot-password"
                   className="text-base text-[#040941] hover:opacity-70 transition-opacity"
                   style={{ color: "#040941" }}
                 >

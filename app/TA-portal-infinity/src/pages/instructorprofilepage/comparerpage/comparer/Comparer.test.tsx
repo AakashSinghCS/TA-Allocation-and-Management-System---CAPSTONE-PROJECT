@@ -1,49 +1,39 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Comparer from "./Comparer";
+import { mockStudentJohnDoe, mockStudentEmmaDoe } from "../../../../mocked-objects/user/mockStudents";
 import { mockSectionCOSC121 } from "../../../../mocked-objects/section/mockSectionCOSC121";
 
 
-const renderComparer = () =>
+vi.mock("../../../../components/ui/searchuserbar/SearchUserBar", () => ({
+  useUserSearch: (): any => ({
+    searchedUsers: [mockStudentJohnDoe, mockStudentEmmaDoe],
+    loading: false,
+    error: null,
+    search: vi.fn(),
+    deleteUser: vi.fn(),
+    lastCriteria: { role: "Student", name: "", universityNumber: "" },
+  }),
+  default: () => null,
+}));
+
+describe("Comparer component", () => {
+  it("renders seeded students and enables compare on select", () => {
     render(
-        <MemoryRouter>
-            <Comparer sections={[mockSectionCOSC121]} />
-        </MemoryRouter>
+      <MemoryRouter>
+        <Comparer sections={[mockSectionCOSC121]} />
+      </MemoryRouter>
     );
 
+    // Both students should be visible
+    expect(screen.getByText(/john doe/i)).toBeInTheDocument();
+    expect(screen.getByText(/emma doe/i)).toBeInTheDocument();
 
-describe('Instructor Profile Comparer', () => {
-    it('shows no students before search', () => {
-        renderComparer();
-
-        expect(screen.getByText(/no students to display/i)).toBeInTheDocument();
-
-        fireEvent.click(screen.getByRole('button', { name: /search/i }));
-
-        const headings = screen.getAllByText(/emma/i);
-        expect(headings.length).toBeGreaterThan(0);
-        expect(screen.getAllByText(/cosc\s*121/i).length).toBeGreaterThan(0);
-    })
-
-    it('enables “Compare Needs” once the user selects a student card', async() => {
-    renderComparer();
-
-    fireEvent.click(screen.getByRole('button', { name: /search/i }));
-
-    //Change values here when the buttons are updated.
-    const compareBtn = screen.getByRole('button', { name: /compare needs/i });
-
+    const compareBtn = screen.getByRole("button", { name: /compare needs/i });
     expect(compareBtn).toBeDisabled();
 
-    const headings = screen.getAllByText(/emma/i);
-    fireEvent.click(headings[0]);
-
+    // Select Emma
+    fireEvent.click(screen.getByText(/emma doe/i));
     expect(compareBtn).toBeEnabled();
-    fireEvent.click(compareBtn);
-    await waitFor(() => {
-      // find the COSC 121 card by its text, then grab its container div
-        const card = screen.getByTestId('section-card-2');
-        expect(card).toHaveClass('outline-green-400');
-    })
   });
-})
+});

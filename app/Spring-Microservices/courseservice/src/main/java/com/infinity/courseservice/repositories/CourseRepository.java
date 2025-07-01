@@ -2,6 +2,7 @@ package com.infinity.courseservice.repositories;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +17,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("""
     SELECT DISTINCT new com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto(
-        c.deptCode, c.name, c.courseNum, s.section, s.year, s.semester, s.type, ss.day, ss.startTime, ss.endTime
+        s.id, c.id, c.deptCode, c.name, c.courseNum, s.section, s.year, s.semester, s.type, ss.day, ss.startTime, ss.endTime,CASE WHEN s.id IS NULL THEN true ELSE false END
     )
     FROM Course c
     LEFT JOIN c.sections s
@@ -44,6 +45,12 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         @Param("endTime") LocalTime endTime
 
     );
+    @Query("""
+    SELECT c FROM Course c
+    WHERE TRIM(c.deptCode) = TRIM(:deptCode)
+        AND TRIM(c.courseNum) = TRIM(:courseNum)
+    """)
+    Optional<Course> findByDeptCodeAndCourseNum(String deptCode, String courseNum);
 
     @Query("SELECT DISTINCT c.deptCode FROM Course c")
     List<String> findAllUniqueDeptCode();

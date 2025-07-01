@@ -24,6 +24,8 @@ export default function App() {
         return <SideNavInstructor />;
       case UserRole.COORDINATOR:
         return <SideNavCoordinator />;
+      case UserRole.ADMIN:
+        return <SideNavCoordinator />;
       default:
         return null;
     }

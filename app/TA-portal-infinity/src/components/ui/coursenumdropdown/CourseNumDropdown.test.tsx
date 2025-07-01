@@ -7,7 +7,7 @@ describe('CourseNumDropdown', () => {
     const handleChange = vi.fn();
     render(
       <CourseNumDropdown
-        courseNums={[10, 20]}
+        courseNums={["10", "20"]}
         value={null}
         onChange={handleChange}
         mode="small"
@@ -24,14 +24,14 @@ describe('CourseNumDropdown', () => {
 
     // Simulate selecting "10"
     fireEvent.change(select, { target: { value: '10' } });
-    expect(handleChange).toHaveBeenCalledWith(10);
+    expect(handleChange).toHaveBeenCalledWith("10");
   });
 
   it('renders disabled state and applies disabled styles', () => {
     const handleChange = vi.fn();
     render(
       <CourseNumDropdown
-        courseNums={[5, 6]}
+        courseNums={["5", "6"]}
         value={null}
         onChange={handleChange}
         mode="small"

@@ -10,7 +10,7 @@ import SectionsColumn from '../../components/features/section/sectionscolumn/Sec
 import { GenericAPIContainer } from '../../utility/genericapicontainer/GenericAPIContainer';
 import ProfileQuestionsSection from './profilequestionssection/ProfileQuestionsSection';
 import StudentTabNav from '../../components/layout/tabnav/studenttabnav/StudentTabNav';
-import ProfileDetailsSection from './profiledetailssection/ProfileDetailsSection';
+import ProfileDetailsSection from '../../components/features/user/profiledetailssection/ProfileDetailsSection';
 import { fetchStudentDetails } from '../../api/student/fetchStudentDetails';
 
 function Accordion({ title, children }: { title: string; children: React.ReactNode }) {

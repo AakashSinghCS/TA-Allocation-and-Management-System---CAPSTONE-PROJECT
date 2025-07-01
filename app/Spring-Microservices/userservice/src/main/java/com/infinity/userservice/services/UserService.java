@@ -14,10 +14,18 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.userservice.dtos.EmailRequest;
+import com.infinity.userservice.dtos.BaseUserDto;
+import com.infinity.userservice.dtos.CoordinatorDto;
+// import com.infinity.userservice.dtos.CoordinatorUpdateRequest;
+// import com.infinity.userservice.dtos.InstructorUpdateRequest;
+// import com.infinity.userservice.dtos.RegisterRequest;
+// import com.infinity.userservice.dtos.StudentUpdateRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.Coordinators.CoordinatorUpdateRequest;
+import com.infinity.userservice.dtos.Instructors.InstructorDto;
 import com.infinity.userservice.dtos.Instructors.InstructorUpdateRequest;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
+import com.infinity.userservice.dtos.Students.StudentDto;
 import com.infinity.userservice.dtos.Students.StudentUpdateRequest;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
@@ -31,8 +39,12 @@ import com.infinity.userservice.models.Role;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
 import com.infinity.userservice.repositories.PasswordResetTokenRepository;
+import com.infinity.userservice.repositories.InstructorRepository;
 import com.infinity.userservice.repositories.RoleRepository;
+import com.infinity.userservice.repositories.StudentRepository;
 import com.infinity.userservice.repositories.UserRepository;
+import com.infinity.userservice.utility.InstructorMapper;
+import com.infinity.userservice.utility.StudentMapper;
 import com.infinity.userservice.utility.UserMapper;
 
 import jakarta.validation.ConstraintViolation;
@@ -52,7 +64,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final Validator validator;
     private final PasswordResetTokenRepository tokenRepository;
-    private final NotificationClient notificationClient;
+    private final NotificationClient notificationClient;    private final StudentRepository studentRepository;
+    private final InstructorRepository instructorRepository;
+    private final StudentMapper studentMapper;
+    private final InstructorMapper instructorMapper;
 
     public UserDto register(RegisterRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
@@ -236,6 +251,53 @@ public class UserService {
         tokenRepository.delete(resetToken);
 
         return "Password has been reset successfully.";
+    }
+
+
+    public List<BaseUserDto> search(String role, String name, int universityNumber) {
+
+        if ("STUDENT".equalsIgnoreCase(role)) {
+            List<Student> students;
+            if (universityNumber > 0) {
+                students = studentRepository.findAllByStudentNum(universityNumber);
+            } else {
+                students = studentRepository
+                    .findByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(name, name);
+            }
+            return students.stream()
+                .map(s -> {
+                    return studentMapper.toDto(s);
+                })
+                .collect(Collectors.toList());
+        }
+        else if ("INSTRUCTOR".equalsIgnoreCase(role)) {
+            List<Instructor> instructors;
+
+            if (universityNumber > 0) {
+                instructors = instructorRepository.findAllByEmployeeNum(universityNumber);
+            } else {
+                instructors = instructorRepository
+                    .findByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(name, name);
+            }
+            return instructors.stream()
+                .map(i -> {
+                    return instructorMapper.toDto(i);
+                })
+                .collect(Collectors.toList());
+  
+        }
+        else {
+            List<User> coords = userRepository.findByRoles_Name(UserRole.COORDINATOR);
+            return coords.stream()
+                .map(u -> new CoordinatorDto(
+                    u.getId(),
+                    u.getFirstName(),
+                    u.getLastName(),
+                    u.getEmail(),
+                    u.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
+        }
     }
 
 }

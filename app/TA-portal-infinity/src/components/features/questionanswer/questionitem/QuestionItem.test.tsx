@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useState } from 'react';
-
+import { useAuth } from '../../../../context/AuthContext';
 import QuestionItem, {
   type StudentResponseDto
 } from './QuestionItem';
@@ -12,13 +12,26 @@ import {
   mockTaProfileQuestion3
 } from '../../../../mocked-objects/profile/mockTaProfileQuestions';
 
-/* ------------------------------------------------------------------ *
- *  R E S P O N D   M O D E  (editing = false)
- * ------------------------------------------------------------------ */
+
+vi.mock('../../../../context/AuthContext', () => ({
+    useAuth: vi.fn(),
+}));
+
+
 describe('<QuestionItem /> — respond-mode', () => {
+ 
+      beforeEach(() => {
+          vi.clearAllMocks();
+      });
+  
+      function setupAuth(userId: number, userRoles: string[]) {
+          // @ts-ignore
+          (useAuth as vi.Mock).mockReturnValue({ userId, userRoles });
+      }
+
   it('handles SINGLE-choice questions', () => {
     const onChange = vi.fn();
-
+    setupAuth(1, ['STUDENT']);
     render(
       <QuestionItem
         initialQuestion={mockTaProfileQuestion1}
@@ -55,6 +68,7 @@ describe('<QuestionItem /> — respond-mode', () => {
   }
 
   it('handles MULTI-choice questions', () => {
+    setupAuth(1, ['STUDENT']);
     render(<MultiChoiceWrapper />);
 
     const [a, b] = mockTaProfileQuestion2.answers!;
@@ -70,7 +84,7 @@ describe('<QuestionItem /> — respond-mode', () => {
 
   it('handles FREE-TEXT questions', () => {
     const onChange = vi.fn();
-
+    setupAuth(1, ['STUDENT']);
     render(
       <QuestionItem
         initialQuestion={mockTaProfileQuestion3}
@@ -96,6 +110,15 @@ describe('<QuestionItem /> — respond-mode', () => {
 
 
 describe('<QuestionItem /> — edit-mode', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    function setupAuth(userId: number, userRoles: string[]) {
+        // @ts-ignore
+        (useAuth as vi.Mock).mockReturnValue({ userId, userRoles });
+    }
+
   function EditWrapper() {
     const [editing, setEditing] = useState(true); 
     const [q, setQ] = useState(mockTaProfileQuestion1);
@@ -113,6 +136,7 @@ describe('<QuestionItem /> — edit-mode', () => {
   }
 
   it('lets a coordinator update description, type, and answers', () => {
+    setupAuth(1, ['COORDINATOR']);
     render(<EditWrapper />);
 
     const descInput = screen.getByLabelText(/text/i) as HTMLInputElement;
