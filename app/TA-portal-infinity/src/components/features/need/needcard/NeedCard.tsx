@@ -1,5 +1,5 @@
-import type { Need } from "../../../interfaces/need/Need";
-import type { Course } from "../../../interfaces/course/Course";
+import type { Need } from "../../../../interfaces/need/Need";
+import type { Course } from "../../../../interfaces/course/Course";
 import { Link } from "react-router-dom";
 
 interface NeedCardProps {

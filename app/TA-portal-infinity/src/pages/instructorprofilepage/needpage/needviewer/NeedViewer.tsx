@@ -1,5 +1,5 @@
 import AllocationCard from "../../../../components/features/allocation/AllocationCard";
-import NeedCard       from "../../../../components/features/need/NeedCard";
+import NeedCard       from "../../../../components/features/need/needcard/NeedCard";
 import SectionCard    from "../../../../components/features/section/sectioncard/SectionCard";
 import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
 import { fetchAllInstructorTeachesSection } from "../../../../api/instructor/fetchAllInstructorTeachesSection";
@@ -28,21 +28,28 @@ export default function NeedViewer({ instructorId, className = "",}: { instructo
                 section={sec}
                 className=""
               />
-              <NeedCard
+              { sec.need ? <NeedCard
                 need={sec.need}
                 className=""
-              />
+              />: <div className={" w-full overflow-hidden rounded-lg text-sm border border-amber-300 bg-amber-50 p-2"}  >
+                <Link to={`/user/instructor/addneed/${sec.sectionDetails?.id}`}>
+                    Add a need
+                </Link>
+            </div>
+              }
               <AllocationCard
                 allocations={sec.allocations}
                 className=""
               />
             </div>
           ))}
-          <Link to="/">
-            <div className="cursor-pointer p-2 italic text-slate-400 border border-dashed border-slate-200 rounded-lg">
-              Add a section
-            </div>
-          </Link>
+          <div className="flex w-full">
+            <Link to="/user/instructor/addsection">
+              <div className="cursor-pointer p-2 italic text-slate-500 border border-dashed border-slate-400 rounded-lg ">
+                Add a section
+              </div>
+            </Link>
+          </div>
         </div>
       )}
     />

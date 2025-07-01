@@ -83,7 +83,8 @@ public class SectionController {
         return ResponseEntity.ok(sectionService.deleteSectionSchedule(sectionScheduleId));
     }
 
-    @PreAuthorize("hasRole('COORDINATOR')")
+    // @PreAuthorize("hasRole('COORDINATOR')")
+    @PreAuthorize("hasAnyRole('COORDINATOR','INSTRUCTOR')")
     @PostMapping("/assignInstructor")
     public ResponseEntity<String> assignInstructor(@RequestBody AssignInstructorRequest request) {
         return ResponseEntity.ok(sectionService.assignInstructor(request));

@@ -33,6 +33,8 @@ import SignUpPage from "../pages/signupPage/SignUpPage";
 import CourseProfilePage from "../pages/courseprofilepage/CourseProfilePage";
 import SectionListPage from "../pages/coursepage/SectionListPage";
 import AddSectionPage from "../pages/coursepage/AddSectionPage";
+import InstructorAddSectionPage from "../pages/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage";
+import InstructorAddNeedPage from "../pages/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage";
 
 
 export const router = createBrowserRouter([
@@ -80,6 +82,8 @@ export const router = createBrowserRouter([
         children: [
           { path: "home", element: <InstructorHomePage /> },
           { path: "browseuser", element: <UserBrowsingPage /> },
+          { path: "addsection", element: <InstructorAddSectionPage /> },
+          { path: "addneed/:sectionId", element: <InstructorAddNeedPage /> },
           { path: "error", element: <ErrorPage /> },
         ],
       },

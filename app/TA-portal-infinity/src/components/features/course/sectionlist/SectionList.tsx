@@ -2,13 +2,17 @@ import { Link } from 'react-router-dom';
 import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
 import React from 'react';
 import type Section from '../../../../interfaces/section/Section';
+import type { Course } from '../../../../interfaces/course/Course';
 
 interface Props {
   sections: Section[] | null;
-  onDeleted?: (id: number, isCourse:boolean) => void;
+  onDeleted?: (id: number, isCourse: boolean) => void;
+  onSelect?: (u: Section) => void;
+  onSelectCourse?: (cId: number, deptCode: string, courseNum: string, name: string) => void;
+  mode?: 'coordinator' | 'instructorAddSection' | 'instructorAddPrereqCourse';
 }
 
-export default function SectionList({ sections, onDeleted }: Props) {
+export default function SectionList({ sections, onDeleted, onSelect, onSelectCourse, mode = 'coordinator' }: Props) {
   if (!sections || sections.length === 0) {
     return <p className="p-4 text-center text-gray-500">No section found.</p>;
   }
@@ -65,7 +69,7 @@ export default function SectionList({ sections, onDeleted }: Props) {
           <th className="border px-3 py-2 text-left">Semester</th>
           <th className="border px-3 py-2 text-left">Type</th>
           <th className="border px-3 py-2 text-left">Times</th>
-          <th className="border px-3 py-2 text-left">Delete</th>
+          <th className="border px-3 py-2 text-left">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -108,18 +112,34 @@ export default function SectionList({ sections, onDeleted }: Props) {
                   )}
                 </td>
                 <td colSpan={1} className="border px-3 py-2 text-right">
-                  <button
+                  {mode == 'coordinator' ? (<button
+                    type="button"
                     onClick={() => handleDeleteCourse(courseId)}
                     className="text-red-600 hover:underline text-sm whitespace-nowrap"
                   >
                     Delete Course
-                  </button>
+                  </button>) : mode == 'instructorAddPrereqCourse' ? <button
+                    type="button"
+                    onClick={() => {
+                      if (!onSelectCourse) return;
+                      return onSelectCourse(
+                        courseId,
+                        group[courseId].sectionDetails?.deptCode ?? "",
+                        group[courseId].sectionDetails?.courseNum ?? "",
+                        group[courseId].sectionDetails?.name ?? "",
+                      )
+                    }}
+                    className="text-red-600 hover:underline text-sm whitespace-nowrap"
+                  >
+                    Select
+                  </button> : <></>
+                  }
                 </td>
 
               </tr>
 
-              {sortedSections.map((sec) => {
-                if(!sec.sectionDetails?.sectionId) return;
+              {mode !== 'instructorAddPrereqCourse' && sortedSections.map((sec) => {
+                if (!sec.sectionDetails?.sectionId) return;
 
                 const times = (sec.sectionSchedule ?? [])
                   .map((s) =>
@@ -162,12 +182,25 @@ export default function SectionList({ sections, onDeleted }: Props) {
                     <td className="border px-3 py-2">{times}</td>
                     <td className="border px-3 py-2 text-right">
                       {sid && (
-                        <button
-                          onClick={() => handleDeleteSection(sid)}
-                          className="text-red-600 hover:underline text-sm "
-                        >
-                          Delete Section
-                        </button>
+                        <>
+                          {mode === 'instructorAddSection' ? (
+                            <button
+                              type="button"
+                              onClick={() => onSelect?.(sec)}
+                              className="text-blue-600 hover:underline"
+                            >
+                              Select
+                            </button>
+                          ) : mode === 'coordinator' ? (
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteSection(sid)}
+                              className="text-red-600 hover:underline text-sm "
+                            >
+                              Delete Section
+                            </button>
+                          ) : <></>}
+                        </>
                       )}
                     </td>
                   </tr>

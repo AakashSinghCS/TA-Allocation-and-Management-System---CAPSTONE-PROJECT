@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 import NeedCard from './NeedCard'
-import { mockSectionNeedCOSC121 } from '../../../mocked-objects/section/mockSectionCOSC121'
+import { mockSectionNeedCOSC121 } from '../../../../mocked-objects/section/mockSectionCOSC121'
 import { MemoryRouter } from 'react-router-dom'
 describe('NeedCard', () => {
   it('shows placeholder when no need is passed', () => {
