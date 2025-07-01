@@ -17,6 +17,7 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.services.SectionService;
 
@@ -32,6 +33,11 @@ public class SectionController {
      @GetMapping("/get/{id}")
      public ResponseEntity<SectionDto> getSectionById(@PathVariable Long id) {
          return ResponseEntity.ok(sectionService.getSectionById(id));
+     }
+
+     @GetMapping("/getIncludeInstructorId/{id}")
+     public ResponseEntity<SectionDtoWithInstructorId> getSectionWithInstructorIdById(@PathVariable Long id) {
+         return ResponseEntity.ok(sectionService.getSectionWithInstructorIdById(id));
      }
     
      @PreAuthorize("hasRole('COORDINATOR')")

@@ -2,6 +2,8 @@ import { useState, type FormEvent } from 'react';
 import { sectionTypeOptions, type SectionType } from '../../../../interfaces/section/SectionDetails';
 import { timeOptions } from '../../../ui/timeselector/TimeSelector';
 import { useNavigate } from 'react-router-dom';
+import UserBrowsingViewer from '../../../../pages/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer';
+import type { Instructor } from '../../../../interfaces/user/Instructor';
 export interface SectionScheduleInput {
   day: string
   startTime: string
@@ -18,15 +20,15 @@ export interface CreateSectionData {
   type?: SectionType | null
   instructorId?: number | null
   sectionSchedules?: SectionScheduleInput[] | null
-  isCourse: boolean 
+  isCourse: boolean
 }
 interface Props {
   onCreateSection: (data: CreateSectionData) => void;
 }
 
-export default function CreateSectionForm({ onCreateSection}: { onCreateSection: (data: CreateSectionData) => void}) {
+export default function CreateSectionForm({ onCreateSection }: { onCreateSection: (data: CreateSectionData) => void }) {
   const navigate = useNavigate()
-
+  const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
   // form state
   const [form, setForm] = useState<CreateSectionData>({
     name: null,
@@ -56,7 +58,7 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
     setForm(f => {
       const schedules = f.sectionSchedules ? f.sectionSchedules.map((s, i) =>
         i === idx ? { ...s, ...partial } : s
-      ):[];
+      ) : [];
       return { ...f, sectionSchedules: schedules }
     })
   }
@@ -65,8 +67,8 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
     setForm(f => ({
       ...f,
       sectionSchedules: [
-        ...(f.sectionSchedules??[]),
-        { day: '', startTime: '', endTime: ''}
+        ...(f.sectionSchedules ?? []),
+        { day: '', startTime: '', endTime: '' }
       ]
     }))
   }
@@ -80,7 +82,7 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault()
-    onCreateSection(form)
+    onCreateSection({ ...form, instructorId: selectedInstructor?.id })
   }
 
   // disable flag
@@ -99,13 +101,13 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
               isCourse,
               ...(isCourse
                 ? {
-                    section: null,
-                    year: null,
-                    semester: null,
-                    type: null,
-                    instructorId: null,
-                    sectionSchedules: null
-                  }
+                  section: null,
+                  year: null,
+                  semester: null,
+                  type: null,
+                  instructorId: null,
+                  sectionSchedules: null
+                }
                 : {})
             }))
           }}
@@ -117,7 +119,7 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
       <div>
         <label htmlFor='name'>Name</label>
         <input
-        id="name"
+          id="name"
           value={form.name ?? ""}
           onChange={e => handleChange('name', e.target.value)}
           className="w-full border rounded px-2 py-1"
@@ -127,19 +129,19 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
       <div>
         <label htmlFor="deptCode">Dept Code</label>
         <input
-        id="deptCode"
+          id="deptCode"
           value={form.deptCode}
           onChange={e =>
             handleChange('deptCode', e.target.value)
           }
           className="w-full border rounded px-2 py-1"
-          placeholder = " e.g. COSC"
+          placeholder=" e.g. COSC"
         />
       </div>
       <div>
         <label htmlFor='courseNum'>Course Num</label>
         <input
-        id="courseNum"
+          id="courseNum"
           value={form.courseNum}
           onChange={e =>
             handleChange('courseNum', e.target.value)
@@ -154,7 +156,7 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
         <div>
           <label htmlFor='sectionCode'>Section Code</label>
           <input
-          id="sectionCode"
+            id="sectionCode"
             value={form.section ?? ""}
             onChange={e =>
               handleChange('section', e.target.value)
@@ -166,7 +168,7 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
         <div>
           <label htmlFor='year'>Year</label>
           <input
-          id='year'
+            id='year'
             type="number"
             value={form.year ?? ''}
             onChange={e =>
@@ -201,11 +203,11 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
         <div>
           <label htmlFor='type'>Section Type</label>
           <select
-          id="type"
+            id="type"
             value={form.type ?? ""}
             onChange={(e) => {
               const val = e.target.value;
-              handleChange("type",val === "" ? null : val as SectionType);
+              handleChange("type", val === "" ? null : val as SectionType);
             }
             }
             className="w-full border rounded px-2 py-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
@@ -220,18 +222,30 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
         </div>
         <div>
           <label htmlFor='instructorId'>Instructor ID</label>
-          <input
-            id="instructorId"
-            type="number"
-            value={form.instructorId ?? ''}
-            onChange={e =>
-              handleChange(
-                'instructorId',
-                e.target.valueAsNumber || null
-              )
-            }
-            className="w-full border rounded px-2 py-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
-          />
+          {selectedInstructor ? (
+            <div className="flex items-center justify-between bg-slate-50 px-3 py-2 rounded">
+              <span>
+                {selectedInstructor.firstName} {selectedInstructor.lastName}
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedInstructor(null)}
+                className="text-red-600 hover:underline text-sm"
+              >
+                Clear
+              </button>
+            </div>
+          ) : (
+            <div>
+              <p className="text-sm text-gray-400">Search for an Instructor and click on SELECT in the far right column. Don't select any Instructor, if you wish not to change instructors.</p>
+              <UserBrowsingViewer
+                mode="select"
+                onSelect={u => setSelectedInstructor(u)}
+                allowedRoles={["Instructor"]}
+              />
+              <div className="h-4" />
+            </div>
+          )}
         </div>
 
         {/* schedules */}
@@ -252,7 +266,7 @@ export default function CreateSectionForm({ onCreateSection}: { onCreateSection:
                   className="w-full border rounded px-2 py-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 >
                   <option value="">—</option>
-                  {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(
                     d => (
                       <option key={d} value={d}>
                         {d}

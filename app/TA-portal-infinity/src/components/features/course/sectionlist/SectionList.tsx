@@ -5,7 +5,7 @@ import type Section from '../../../../interfaces/section/Section';
 
 interface Props {
   sections: Section[] | null;
-  onDeleted?: () => void;
+  onDeleted?: (id: number, isCourse:boolean) => void;
 }
 
 export default function SectionList({ sections, onDeleted }: Props) {
@@ -39,21 +39,21 @@ export default function SectionList({ sections, onDeleted }: Props) {
   const handleDeleteCourse = async (courseId: number) => {
     if (
       !window.confirm(
-        'Really delete entire course? This deletes all associated sections. WAITING FOR BACKEND TO BE IMPLEMENTED'
+        'Really delete entire course? This deletes all associated sections.'
       )
     )
       return;
-    onDeleted?.();
+    onDeleted?.(courseId, true);
   };
 
   const handleDeleteSection = async (sectionId: number) => {
     if (
       !window.confirm(
-        'Really delete this section? WAITING FOR BACKEND TO BE IMPLEMENTED'
+        'Really delete this section?'
       )
     )
       return;
-    onDeleted?.();
+    onDeleted?.(sectionId, false);
   };
 
   return (
@@ -96,7 +96,7 @@ export default function SectionList({ sections, onDeleted }: Props) {
                   {/* Left: course link */}
                   {courseId ? (
                     <Link
-                      to={`/courses/${courseId}`}
+                      to={`/user/courseprofile/${courseId}`}
                       className="text-blue-600 hover:underline block truncate"
                     >
                       {deptCode} {courseNum} — {name}
@@ -119,7 +119,8 @@ export default function SectionList({ sections, onDeleted }: Props) {
               </tr>
 
               {sortedSections.map((sec) => {
-                // Format all schedule entries
+                if(!sec.sectionDetails?.sectionId) return;
+
                 const times = (sec.sectionSchedule ?? [])
                   .map((s) =>
                     s.day && s.startTime && s.endTime
@@ -136,7 +137,7 @@ export default function SectionList({ sections, onDeleted }: Props) {
                     <td className="border px-3 py-2 max-w-xs truncate">
                       {sid ? (
                         <Link
-                          to={`/sections/${sid}`}
+                          to={`/user/sectionprofile/${sid}`}
                           className="text-blue-600 hover:underline block truncate"
                         >
                           {sec.sectionDetails?.deptCode} {sec.sectionDetails?.courseNum}{' '}

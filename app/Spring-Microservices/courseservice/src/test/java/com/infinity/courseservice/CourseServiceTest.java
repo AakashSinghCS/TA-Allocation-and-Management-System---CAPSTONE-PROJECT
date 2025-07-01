@@ -74,7 +74,7 @@ public class CourseServiceTest {
     void testAddCourse_Duplicate() {
         CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null,
                 null,
-                null);
+                null,null);
 
         when(courseRepository.save(any(Course.class)))
                 .thenThrow(new DataIntegrityViolationException("Duplicate entry"));
@@ -88,7 +88,7 @@ public class CourseServiceTest {
     @Test
     void testAddCourse() {
         CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null,
-                null, null);
+                null, null,null);
         Course savedCourse = new Course("COSC", "Distributed Systems", "455");
 
         when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);
@@ -116,7 +116,7 @@ public class CourseServiceTest {
     void testUpdateCourseNotFound() {
             CourseRequest request = new CourseRequest("COSC", "Capstone", "499", null, null, null, null,
                             null,
-                            null, null);
+                            null, null,null);
             when(courseRepository.findById(1L)).thenReturn(Optional.empty());
 
             NotFoundException ex = assertThrows(NotFoundException.class, () -> courseService.updateCourse(request, 1L));
@@ -130,7 +130,7 @@ public class CourseServiceTest {
             when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
             CourseRequest request = new CourseRequest("DATA", "Capstone", "499", null, null, null, null,
                             null,
-                            null, null);
+                            null, null,null);
             CourseDto dto = courseService.updateCourse(request, 1L);
 
             assertEquals("DATA", dto.deptCode());

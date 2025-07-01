@@ -30,6 +30,7 @@ import ResetPasswordPage from "../pages/resetpasswordpage/ResetPasswordPage";
 import UserBrowsingPage from "../pages/userbrowsingpage/UserBrowsingPage";
 import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
 import SignUpPage from "../pages/signupPage/SignUpPage";
+import CourseProfilePage from "../pages/courseprofilepage/CourseProfilePage";
 import SectionListPage from "../pages/coursepage/SectionListPage";
 import AddSectionPage from "../pages/coursepage/AddSectionPage";
 
@@ -49,6 +50,9 @@ export const router = createBrowserRouter([
       { path: "instructorprofile/:instructorId/need", element: <InstructorNeedPage /> },
       { path: "instructorprofile/:instructorId/compare", element: <InstructorComparerPage /> },
       { path: "instructorprofile/:instructorId/qualifications", element: <InstructorQualificationPage /> },
+
+      { path: "sectionprofile/:sectionId", element: <CourseProfilePage /> },
+      { path: "courseprofile/:courseId", element: <CourseProfilePage /> },
       // STUDENT routes
       {
         path: "student",
