@@ -40,8 +40,8 @@ public class QualificationController {
     }
 
     @GetMapping("/byDepartment/{deptCode}")
-    public ResponseEntity<List<Qualification>> getQualificationsByDeptCode(@PathVariable String deptCode) {
-        List<Qualification> qualis = qualificationService.findQualificationsByDeptCode(deptCode);
+    public ResponseEntity<List<QualificationDto>> getQualificationsByDeptCode(@PathVariable String deptCode) {
+        List<QualificationDto> qualis = qualificationService.findQualificationsByDeptCode(deptCode);
         return ResponseEntity.ok(qualis);
     }
 

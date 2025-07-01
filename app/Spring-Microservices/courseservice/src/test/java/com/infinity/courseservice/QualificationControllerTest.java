@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.courseservice.controllers.QualificationController;
 import com.infinity.courseservice.dtos.*;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.courseservice.dtos.UserDtos.StudentDto;
 import com.infinity.courseservice.models.Qualification;
 import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.services.QualificationService;
@@ -55,7 +56,9 @@ class QualificationControllerTest {
 
     @Test
     void getQualificationsByDeptCode_shouldReturnList() throws Exception {
-        Qualification q = new Qualification();
+        CourseDto courseDto = new CourseDto(1L, "COSC", "Intro", "101");
+        StudentDto studentDto = new StudentDto(2L, "Alice","Sun",10001,"BA",  2020, 3);
+        QualificationDto q = new QualificationDto(courseDto, "read 10 books", studentDto);
         when(qualificationService.findQualificationsByDeptCode("COSC")).thenReturn(List.of(q));
 
         mockMvc.perform(get("/qualifications/byDepartment/COSC"))

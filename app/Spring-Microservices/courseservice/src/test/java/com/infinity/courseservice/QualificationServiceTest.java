@@ -1,6 +1,8 @@
 package com.infinity.courseservice;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 import java.util.*;
@@ -13,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.QualificationDto;
 import com.infinity.courseservice.dtos.QualificationRequest;
+import com.infinity.courseservice.dtos.UserDtos.StudentDto;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.dtos.StudentQualiRequest;
@@ -57,17 +60,16 @@ class QualificationServiceTest {
         qualification.setId(1L);
 
         CourseDto courseDto = new CourseDto(1L, "COSC", "Intro to CS", "101");
-        UserDto userDto = new UserDto(1L, "John Doe", "john@example.com", UserRole.STUDENT);
-
+        StudentDto studentDto = new StudentDto(2L, "Alice","Sun",10001,"BA",  2020, 3);
         when(qualificationRepository.findById(1L)).thenReturn(Optional.of(qualification));
         when(courseService.findCourse(any())).thenReturn(courseDto);
-        when(studentClient.getStudentById(1L)).thenReturn(userDto);
+        when(studentClient.getStudentById(1L)).thenReturn(studentDto);
 
         QualificationDto result = qualificationService.findQualification(1L);
 
         assertNotNull(result);
         assertEquals("Description", result.description());
-        assertEquals(userDto, result.student());
+        assertEquals(studentDto, result.student());
     }
 
     @Test
@@ -137,7 +139,7 @@ class QualificationServiceTest {
         when(qualificationRepository.findAllByIdAndStudentIdIsNull(List.of(1L)))
             .thenReturn(List.of(oldQualification));
         when(studentClient.getStudentById(2L))
-            .thenReturn(new UserDto(2L, "Alice", "alice@example.com", UserRole.STUDENT));
+            .thenReturn(new StudentDto(2L, "Alice","Sun",10001,"BA",  2020, 3));
         when(courseService.findCourse(any()))
             .thenReturn(new CourseDto(1L, "CS", "Intro", "101"));
 
@@ -151,10 +153,19 @@ class QualificationServiceTest {
 
     @Test
     void findQualificationsByDeptCode_shouldReturnList() {
+        Course course = new Course();
+        course.setId(1L);
+        course.setDeptCode("COSC");
+        course.setName("Intro to Programming");
+        course.setCourseNum("101");
         Qualification q = new Qualification();
-        when(qualificationRepository.findAllByDeptCode("CS")).thenReturn(List.of(q));
+        q.setCourse(course);
+        q.setDescription("Sample Qualification");
+        q.setDeptCode("COSC");
 
-        List<Qualification> result = qualificationService.findQualificationsByDeptCode("CS");
+        when(qualificationRepository.findAllByDeptCode("COSC")).thenReturn(List.of(q));
+
+        List<QualificationDto> result = qualificationService.findQualificationsByDeptCode("COSC");
 
         assertEquals(1, result.size());
     }
