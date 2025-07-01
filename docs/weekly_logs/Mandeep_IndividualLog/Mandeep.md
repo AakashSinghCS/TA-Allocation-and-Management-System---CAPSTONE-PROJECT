@@ -999,3 +999,163 @@ The bug is not fixed yet , but also testing is still required to verify that the
 - **#1:** Finalize bug fixes
 - **#2:** Continue with feature testings
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 26 June, Thursday 
+## Time Slots
+- **6:32PM–7:44PM:** PR for allocation page and logs
+- **9:27PM–10:29PM:** Team meeting about allocation
+
+**Clockify:** ![alt text](image-41.png)
+
+
+## Current Tasks
+- Finalize and submit PR for the allocation page, along with updating team logs.
+- Attend team meeting to discuss allocation logic, upcoming adjustments, and task distribution.
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                               | STATUS    |
+|---------------|-----------------------------------------------------------|-----------|
+| Task 1        | Created and submitted allocation page PR and updated logs | Completed |
+| Task 2        | Team discussion on allocation plan, clarified task ownership, and reviewed logic improvements | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+The evening focused on completing the critical pull request to keep the frontend allocation page aligned with backend logic and new requirements. During the team meeting, discussed real-world challenges and finalized how to divide allocation-related tasks.
+
+### Retrospective
+The team achieved strong alignment on priorities and cleared any ambiguity regarding upcoming development. The logs are now detailed and ready for future retrospectives.
+
+## Next Cycle Goals
+- Incorporate feedback from the allocation PR review.
+- Begin implementing improvements to the allocation logic based on the meeting decisions.
+- Enhance testing coverage for allocation features.
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 27 June, Friday 2025
+
+## Time Slots
+- **9:31AM–10:48AM:** Team meeting for task assignment
+- **12:31PM–1:51PM:** Forgot and reset password page implementation
+- **11:33PM–12:00AM (+1):** Team logs update
+
+**Clockify:** ![alt text](image-42.png)
+
+## Current Tasks
+- Assign upcoming sprint tasks and clarify individual responsibilities.
+- Develop and integrate forgot/reset password page, connect to backend API, and handle error flows.
+- Update and finalize detailed team logs for transparent tracking.
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                 | STATUS    |
+|---------------|---------------------------------------------|-----------|
+| Task 1        | Sprint planning meeting and task breakdown  | Completed |
+| Task 2        | Implemented forgot/reset password functionality (frontend + backend integration) | Completed |
+| Task 3        | Compiled and finalized team logs            | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Morning started with a productive planning meeting to align on deliverables and assign priorities clearly. Later, focused on security-sensitive work for the forgot/reset flow — including token validation, error feedback, and UI polish. Finished the day updating logs, which helped consolidate learnings and maintain transparency.
+
+### Retrospective
+The day significantly improved overall project clarity. The forgot/reset feature is fully functional and nearly ready for staging. Logs are now up-to-date and prepared for team review.
+
+## Next Cycle Goals
+- Perform thorough testing on the forgot/reset password feature.
+- Merge logs into main documentation and distribute to the team.
+- Start next sprint tasks as per the morning assignment breakdown.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 29 June, Sunday 2025
+**Clockify:** ![alt text](image-43.png)
+
+## Time Slots
+- **1:32PM–6:18PM:** Forgot/reset page PR with frontend tests
+- **7:49PM–9:57PM:** Application search reusable component
+
+## Current Tasks
+- Finalize and push PR for forgot/reset password feature, include comprehensive frontend tests (edge cases, token flows, UI/UX feedback).
+- Develop reusable search component for application module to standardize code and improve maintainability.
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                         | STATUS    |
+|---------------|-----------------------------------------------------|-----------|
+| Task 1        | Forgot/reset password PR and frontend test coverage | Completed |
+| Task 2        | Refactored and implemented reusable search component for applications | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Spent the afternoon polishing tests and wrapping up the forgot/reset PR. Validated all possible user scenarios and error handling cases. Later, focused on creating a modular search component — reducing code repetition and improving maintainability across different application views.
+
+### Retrospective
+Tests passed successfully, the PR is now in good shape for merging. The reusable search component simplifies future feature updates and promotes consistent UI.
+
+## Next Cycle Goals
+- Merge forgot/reset PR after final review.
+- Integrate reusable search component into related pages (student view, coordinator view).
+- Collect feedback from initial user testing sessions.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 30 June, Monday 2025
+
+**Clockify:** ![alt text](image-44.png)
+
+## Time Slots
+- **12:00AM–2:13AM:** Send offer integration completion
+- **11:41AM–3:37PM:** Allocation module refactoring
+
+## Current Tasks
+- Finalize "send offer" feature, integrating frontend success feedback, backend communication, and error handling.
+- Refactor allocation module to improve modularity, simplify logic, and enhance maintainability.
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                       | STATUS    |
+|---------------|-----------------------------------|-----------|
+| Task 1        | Integrated send offer functionality fully | Completed |
+| Task 2        | Refactored allocation logic and improved structure | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Worked through the night to finalize the offer sending workflow — included detailed user feedback with loading states and error cases. During the day, focused on a deep refactor of allocation logic to prepare for future scalability and cleaner code.
+
+### Retrospective
+Both critical backend integrations and frontend user experience have improved. Allocation logic is now easier to test and maintain, setting a strong foundation for upcoming MVP milestones.
+
+## Next Cycle Goals
+- Test allocation refactor thoroughly with realistic data.
+- Deploy "send offer" feature to staging and verify in real-world flows.
+- Start new MVP-related tasks per the updated roadmap.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 1 July, Tuesday 2025
+
+**Clockify:** ![alt text](image-45.png)
+
+## Time Slot
+- **9:30AM–10:44AM:** Team meeting about MVP
+
+## Current Tasks
+- Conduct MVP strategy meeting to finalize scope, discuss milestones, assign owners, and define success criteria.
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                     | STATUS    |
+|---------------|---------------------------------|-----------|
+| Task 1        | Planned MVP scope and assigned tasks | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Strategic planning discussion to align on MVP features, set high-level goals, and map concrete next actions. Defined timelines and reviewed risk areas.
+
+### Retrospective
+The team is aligned and clear on responsibilities, reducing blockers for the upcoming sprint.
+
+## Next Cycle Goals
+- Start implementation of MVP tasks immediately.
+- Monitor progress and adjust scope in upcoming sync-ups.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
