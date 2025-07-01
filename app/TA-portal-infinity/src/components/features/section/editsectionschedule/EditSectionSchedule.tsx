@@ -3,7 +3,7 @@ import type SectionSchedule from "../../../../interfaces/section/SectionSchedule
 
 interface EditSectionScheduleProps {
   initial?: SectionSchedule;
-  onSave: (sched: SectionSchedule) => Promise<void>;
+  onSave: (sched: SectionSchedule) => Promise<boolean>;
   onCancel: () => void;
 }
 

@@ -47,6 +47,7 @@ export const router = createBrowserRouter([
       { path: "instructorprofile/:instructorId/qualifications", element: <InstructorQualificationPage /> },
 
       { path: "sectionprofile/:sectionId", element: <CourseProfilePage /> },
+      { path: "courseprofile/:courseId", element: <CourseProfilePage /> },
       // STUDENT routes
       {
         path: "student",

@@ -10,10 +10,9 @@ export interface ProfileSectionProps {
   profileFields: (keyof SectionProfile)[];
   fieldLabels: Record<keyof SectionProfile, string>;
   className?: string;
-  big?: boolean;
   isCourse?: boolean;
   isCoordinator: boolean;
-  onSaveSchedule: (sched: SectionSchedule) => Promise<void>;
+  onSaveSchedule: (sched: SectionSchedule, isUpdate: boolean) => Promise<boolean>;
 }
 
 type ProfileDetail = { label: string; value: ReactNode };
@@ -23,7 +22,6 @@ export default function SectionProfileSection({
   profileFields,
   fieldLabels,
   className = '',
-  big = true,
   isCourse = false,
   isCoordinator,
   onSaveSchedule,
@@ -34,42 +32,42 @@ export default function SectionProfileSection({
   const profileDetails: ProfileDetail[] = createProfileDetails(section, profileFields, fieldLabels);
   const [editingSchedule, setEditingSchedule] = useState<SectionSchedule | null>(null);
   const [addingSchedule, setAddingSchedule] = useState(false);
-  
-  const layoutClass = big ? 'flex flex-col space-y-2' : 'grid grid-cols-2 gap-2';
+
+  const layoutClass = 'flex flex-col space-y-2';
 
   return (
     <>
       <section className={`bg-white border border-slate-200 rounded-2xl shadow-sm p-4 ${className}`}>
-        {big && (
           <h1 className="text-xl font-bold mb-4 break-words">
+            <Link to={`/user/courseprofile/${dto.id}`} className="hover:text-blue-600">
             {dto.deptCode} {dto.courseNum}{' '}
             {!isCourse && dto.section}{' '}
             — {dto.name}
+            </Link>
           </h1>
-        )}
         <div className={layoutClass}>
           {profileDetails.map(({ label, value }) => (
             <div
               key={label}
               data-testid={`profile-row-${label}`}
-              className={`${big ? 'text-md' : 'text-xs'} flex items-center rounded-lg bg-slate-50 px-3 py-1 text-slate-900`}
+              className={`test-md flex items-center rounded-lg bg-slate-50 px-3 py-1 text-slate-900`}
             >
               <span className="font-medium text-slate-700 break-words">{label}:</span>
               <span className="ml-2 break-words">{value}</span>
             </div>
           ))}
           <div
-              key={"instructor"}
-              data-testid={`profile-row-instructor`}
-              className={`${big ? 'text-md' : 'text-xs'} flex items-center rounded-lg bg-slate-50 px-3 py-1 text-slate-900`}
-            >
-              <span className="font-medium text-slate-700 break-words">Instructor:</span>
-              <span className="ml-2 break-words">
-                <Link to={`/user/instructorprofile/${section.instructor?.id}`} className="hover:text-blue-600">
-                  {section.instructor?.firstName} {section.instructor?.lastName}
-                </Link>
-              </span>
-            </div>
+            key={"instructor"}
+            data-testid={`profile-row-instructor`}
+            className={`test-md flex items-center rounded-lg bg-slate-50 px-3 py-1 text-slate-900`}
+          >
+            <span className="font-medium text-slate-700 break-words">Instructor:</span>
+            <span className="ml-2 break-words">
+              <Link to={`/user/instructorprofile/${section.instructor?.id}`} className="hover:text-blue-600">
+                {section.instructor?.firstName} {section.instructor?.lastName}
+              </Link>
+            </span>
+          </div>
         </div>
 
         {/* Schedule List */}
@@ -84,7 +82,7 @@ export default function SectionProfileSection({
                 <span>{s.day} {s.startTime}–{s.endTime}</span>
                 {isCoordinator && (
                   <button
-                    onClick={() => { setEditingSchedule(s); setAddingSchedule(false); }}
+                    onClick={() => { setEditingSchedule(null); setEditingSchedule(s); setAddingSchedule(false); }}
                     className="text-sm text-blue-600 hover:underline"
                   >
                     Update Schedule
@@ -92,8 +90,8 @@ export default function SectionProfileSection({
                 )}
               </li>
             )) || (
-              <li className="text-sm text-slate-500">No schedule yet.</li>
-            )}
+                <li className="text-sm text-slate-500">No schedule yet.</li>
+              )}
           </ul>
           {isCoordinator && (
             <button
@@ -106,14 +104,13 @@ export default function SectionProfileSection({
         </div>
       </section>
 
-      {/* Edit/Add Schedule Form */}
       {(editingSchedule !== null || addingSchedule) && (
         <EditSectionSchedule
           initial={editingSchedule || undefined}
           onSave={async sched => {
-            await onSaveSchedule(sched);
             setEditingSchedule(null);
             setAddingSchedule(false);
+            return onSaveSchedule(sched, editingSchedule !== null);
           }}
           onCancel={() => { setEditingSchedule(null); setAddingSchedule(false); }}
         />
