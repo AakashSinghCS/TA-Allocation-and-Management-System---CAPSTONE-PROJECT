@@ -24,7 +24,6 @@ import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -59,7 +58,7 @@ public class SectionService {
     @Transactional
     public SectionDto addSection(Long courseId, CourseRequest request) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+                .orElseThrow(() -> new NotFoundException("Course not found"));
 
         Section section = new Section(request.year(), request.semester(), request.section(), request.type(), course);
         try {
@@ -73,10 +72,38 @@ public class SectionService {
                 new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum()));
     }
 
+    public SectionDto updateSection(Long sectionId, CourseRequest request) {
+        Section section = sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
+        section.setYear(request.year());
+        section.setSection(request.section());
+        section.setType(request.type());
+        section.setSemester(request.semester());
+        sectionRepository.save(section);
+        return new SectionDto(section.getId(),
+                section.getYear(),
+                section.getSemester(),
+                section.getSection(),
+                section.getType(),
+                new CourseDto(
+                        section.getCourse().getId(),
+                        section.getCourse().getDeptCode(),
+                        section.getCourse().getName(),
+                        section.getCourse().getCourseNum()));
+    }
+
+    public String deleteSection(Long sectionId) {
+        if (!sectionRepository.existsById(sectionId)) {
+            throw new NotFoundException("No section with id " + sectionId);
+        }
+        sectionRepository.deleteById(sectionId);
+        return "Section deleted";
+    }
+
     @Transactional
-    public SectionScheduleDto addSectionSchedule(Long secionId, CourseRequest request) {
-        Section section = sectionRepository.findById(secionId)
-                .orElseThrow(() -> new EntityNotFoundException("section not found"));
+    public SectionScheduleDto addSectionSchedule(Long sectionId, CourseRequest request) {
+        Section section = sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new NotFoundException("section not found"));
         LocalTime startTime = request.startTime() != null ? LocalTime.parse(request.startTime()) : null;
         LocalTime endTime = request.endTime() != null ? LocalTime.parse(request.endTime()) : null;
         SectionSchedule sectionSchedule = new SectionSchedule(request.day(), startTime, endTime, section);
@@ -87,6 +114,38 @@ public class SectionService {
         }
         return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(),
                 sectionSchedule.getEndTime(), sectionSchedule.getSection().getId());
+    }
+
+    public List<SectionScheduleDto> getSectionSchedules(Long sectionId) {
+        Section section = sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
+        return section.getSectionSchedules().stream()
+                .map(sec -> new SectionScheduleDto(sec.getDay(),
+                        sec.getStartTime(),
+                        sec.getEndTime(),
+                        sec.getId()))
+                .toList();
+    }
+    
+    public SectionScheduleDto updateSectionSchedule(Long sectionScheduleId, CourseRequest request) {
+        SectionSchedule schedule = sectionScheduleRepository.findById(sectionScheduleId)
+                .orElseThrow(() -> new NotFoundException("No schedule with id " + sectionScheduleId));
+        schedule.setDay(request.day());
+        schedule.setStartTime(LocalTime.parse(request.startTime()));
+        schedule.setEndTime(LocalTime.parse(request.endTime()));
+        sectionScheduleRepository.save(schedule);
+        return new SectionScheduleDto(schedule.getDay(),
+                    schedule.getStartTime(),
+                    schedule.getEndTime(),
+                    schedule.getId());
+    }
+
+    public String deleteSectionSchedule(Long sectionScheduleId) {
+        if (!sectionScheduleRepository.existsById(sectionScheduleId)) {
+            throw new NotFoundException("No schedule with id " + sectionScheduleId);
+        }
+        sectionScheduleRepository.deleteById(sectionScheduleId);
+        return "Section schedule deleted";
     }
 
     public String assignInstructor(AssignInstructorRequest request) {

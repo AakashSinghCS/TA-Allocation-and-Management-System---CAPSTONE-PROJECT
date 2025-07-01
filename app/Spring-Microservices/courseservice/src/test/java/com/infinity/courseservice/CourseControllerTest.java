@@ -4,6 +4,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -59,23 +61,53 @@ public class CourseControllerTest {
                                 .andExpect(jsonPath("$.courseNum").value(455));
         }
 
-        @Test
-        void testAddCourse() throws Exception {
-                CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null,
-                                null, null,
-                                null);
-                CourseDto response = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+    @Test
+    void testAddCourse() throws Exception {
+            CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null,
+                            null, null,
+                            null);
+            CourseDto response = new CourseDto(1L, "COSC", "Distributed Systems", "455");
 
-                when(courseService.addCourse(any(CourseRequest.class))).thenReturn(response);
+            when(courseService.addCourse(any(CourseRequest.class))).thenReturn(response);
 
-                mockMvc.perform(post("/courses/addCourse")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.deptCode").value("COSC"))
-                                .andExpect(jsonPath("$.name").value("Distributed Systems"))
-                                .andExpect(jsonPath("$.courseNum").value(455));
-        }
+            mockMvc.perform(post("/courses/addCourse")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                            .andExpect(status().isOk())
+                            .andExpect(jsonPath("$.deptCode").value("COSC"))
+                            .andExpect(jsonPath("$.name").value("Distributed Systems"))
+                            .andExpect(jsonPath("$.courseNum").value(455));
+    }
+    
+    @Test
+    void testUpdateCourse() throws Exception {
+            CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null,
+                            null, null,
+                            null);
+            CourseDto response = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+
+            when(courseService.updateCourse(any(CourseRequest.class), any())).thenReturn(response);
+
+            mockMvc.perform(put("/courses/updateCourse/1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                            .andExpect(status().isOk())
+                            .andExpect(jsonPath("$.deptCode").value("COSC"))
+                            .andExpect(jsonPath("$.name").value("Distributed Systems"))
+                            .andExpect(jsonPath("$.courseNum").value(455));
+    }
+
+    @Test
+    void testDeleteCourse() throws Exception {
+
+            String response = "Course deleted";
+
+            when(courseService.deleteCourse(any())).thenReturn(response);
+
+            mockMvc.perform(delete("/courses/deleteCourse/1")
+                            .contentType(MediaType.APPLICATION_JSON))
+                            .andExpect(status().isOk());
+    }
 
     @Test
     void testFilterCourses() throws Exception {
