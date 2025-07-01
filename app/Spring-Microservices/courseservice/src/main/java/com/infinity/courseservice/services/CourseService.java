@@ -69,6 +69,24 @@ public class CourseService {
                 .orElseThrow(() -> new NotFoundException("Course with ID " + id + " not found"));
         return new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum());
     }
+    
+    public CourseDto updateCourse(CourseRequest request, Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
+        course.setDeptCode(request.deptCode());
+        course.setName(request.name());
+        course.setCourseNum(request.courseNum());
+        courseRepository.save(course);
+        return new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum());
+    }
+
+    public String deleteCourse(Long courseId) {
+        if (!courseRepository.existsById(courseId)) {
+            throw new NotFoundException("No course with id " + courseId);
+        }
+        courseRepository.deleteById(courseId);
+        return "Course deleted";
+    }
 
     public List<CourseDto> findCoursesByIds(List<Long> ids) {
         List<Course> courses = courseRepository.findAllById(ids);
