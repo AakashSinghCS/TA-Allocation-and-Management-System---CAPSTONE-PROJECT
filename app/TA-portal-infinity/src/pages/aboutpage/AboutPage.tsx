@@ -8,6 +8,7 @@ export default function AboutPage() {
         This app is built with React + Vite, Tailwind CSS, and Spring-Boot
         micro-services on the back end.
       </p>
+      <h2>This is an example page. The interface will be changed later.</h2>
     </section>
   );
 }
