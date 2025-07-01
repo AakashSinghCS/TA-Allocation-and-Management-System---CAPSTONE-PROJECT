@@ -24,7 +24,7 @@ export default function SectionCard({ section, className = "" }: { section: Sect
             {section.sectionDetails?.deptCode} {section.sectionDetails?.courseNum} {section.sectionDetails?.section} - {section.sectionDetails?.name}
           </Link>
         </div>
-        <p className="ml-1 whitespace-nowrap text-xs 2xl:text-sm text-slate-600 ">| {section.sectionDetails?.type} | {section.sectionDetails?.term}</p>
+        <p className="ml-1 whitespace-nowrap text-xs 2xl:text-sm text-slate-600 ">| {section.sectionDetails?.type} | {section.sectionDetails?.semester}</p>
       </div>
       <div className="flex flex-row gap-1 flex-wrap mt-1 items-center">
         <div className="flex items-center">

@@ -11,7 +11,7 @@ import com.infinity.courseservice.dtos.UserDtos.StudentDto;
 public interface UserInterface {
 
     @GetMapping("/students/{studentId}")
-    StudentDto getStudentById(@PathVariable("studentId") Long studentId);
+    StudentDto getStudentById(@PathVariable Long studentId);
 
     @GetMapping("/instructors/{instructorId}")
     InstructorDto getInstructorById(@PathVariable Long instructorId);

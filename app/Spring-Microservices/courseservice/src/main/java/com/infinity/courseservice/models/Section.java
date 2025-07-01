@@ -62,4 +62,12 @@ public class Section {
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SectionSchedule> sectionSchedules;
 
+    public Section(Integer year, String semester, String section, SectionType type, Long instructorId, Course course) {
+        this.year = year;
+        this.semester = semester;
+        this.section = section;
+        this.type = type;
+        this.instructorId = instructorId;
+        this.course = course;
+    }
 }

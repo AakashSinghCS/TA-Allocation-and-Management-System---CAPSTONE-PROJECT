@@ -1,5 +1,13 @@
 package com.infinity.courseservice;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +27,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
+import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -32,8 +42,6 @@ import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
 import com.infinity.courseservice.services.SectionService;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 public class SectionServiceTest {
@@ -77,8 +85,8 @@ public class SectionServiceTest {
         when(courseRepository.findById(99L)).thenReturn(Optional.empty());
 
         CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
-                SectionType.LECTURE, 2025, "W1", null, null, null, null);
-        assertThrows(EntityNotFoundException.class, () -> sectionService.addSection(99L, request));
+                SectionType.LECTURE, 2025, "W1", null, null, null);
+        assertThrows(NotFoundException.class, () -> sectionService.addSection(99L, request));
     }
 
     @Test
@@ -94,6 +102,49 @@ public class SectionServiceTest {
 
         assertEquals("Section already exists org.springframework.dao.DataIntegrityViolationException: Duplicate entry",
                 ex.getMessage());
+    }
+
+    @Test
+    void testUpdateSectionNotFound() {
+        CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null, null);
+        when(sectionRepository.findById(1L)).thenReturn(Optional.empty());
+
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> sectionService.updateSection(1L, request));
+
+        assertEquals("No section with id 1", ex.getMessage());
+    }
+
+    @Test
+    void testUpdateSectionSuccess() {
+        Course course = new Course("COSC", "Software Engineering", "310");
+        course.setId(1L);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
+        CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null, null);
+        SectionDto dto = sectionService.updateSection(1L, request);
+
+        assertEquals(SectionType.LECTURE, dto.type());
+        assertEquals(2025, dto.year());
+        assertEquals("W1", dto.semester());
+    }
+
+    @Test
+    void testDeleteSectionNotFound() {
+        when(sectionRepository.existsById(1L)).thenReturn(false);
+
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> sectionService.deleteSection(1L));
+
+        assertEquals("No section with id 1", ex.getMessage());
+    }
+
+    @Test
+    void testDeleteSectionSuccess() {
+        when(sectionRepository.existsById(1L)).thenReturn(true);
+        String response = sectionService.deleteSection(1L);
+
+        assertEquals("Section deleted", response);
     }
 
     @Test
@@ -121,7 +172,7 @@ public class SectionServiceTest {
 
         when(sectionRepository.findById(100L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> sectionService.addSectionSchedule(100L, req));
+        assertThrows(NotFoundException.class, () -> sectionService.addSectionSchedule(100L, req));
     }
 
     @Test
@@ -139,6 +190,49 @@ public class SectionServiceTest {
                 () -> sectionService.addSectionSchedule(1L, req));
 
         assertTrue(ex.getMessage().startsWith("Schedule already exists"));
+    }
+
+    @Test
+    void testUpdateSectionScheduleNotFound() {
+
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00");
+        when(sectionScheduleRepository.findById(1L)).thenReturn(Optional.empty());
+
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> sectionService.updateSectionSchedule(1L, req));
+
+        assertEquals("No schedule with id 1", ex.getMessage());
+    }
+
+    @Test
+    void testUpdateSectionScheduleSuccess() {
+        Course course = new Course("COSC", "AI", "310");
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        SectionSchedule schedule = new SectionSchedule("Tue", LocalTime.of(10, 0), LocalTime.of(11, 0), section);
+
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00");
+        when(sectionScheduleRepository.findById(1L)).thenReturn(Optional.of(schedule));
+        SectionScheduleDto dto = sectionService.updateSectionSchedule(1L, req);
+
+        assertEquals("Tue", dto.day());
+        assertEquals(LocalTime.parse("10:00"), dto.startTime());
+        assertEquals(LocalTime.parse("11:00"), dto.endTime());
+    }
+
+    @Test
+    void testDeleteSectionScheduleNotFound() {
+        when(sectionScheduleRepository.existsById(1L)).thenReturn(false);
+
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> sectionService.deleteSectionSchedule(1L));
+
+        assertEquals("No schedule with id 1", ex.getMessage());
+    }
+
+    @Test
+    void testDeleteSectionScheduleSuccess() {
+        when(sectionScheduleRepository.existsById(1L)).thenReturn(true);
+        String response = sectionService.deleteSectionSchedule(1L);
+
+        assertEquals("Section schedule deleted", response);
     }
 
     @Test
@@ -161,8 +255,27 @@ public class SectionServiceTest {
     }
 
     @Test
+    void testGetSectionSchedules_NotFound() {
+        when(sectionRepository.findById(any())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> sectionService.getSectionSchedules(99L));
+    }
+
+    @Test
+    void testGetSectionSchedules_Success() {
+        Course course = new Course("COSC", "AI", "310");
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        SectionSchedule schedule = new SectionSchedule("Tue", LocalTime.of(10, 0), LocalTime.of(11, 0), section);
+        section.setSectionSchedules(List.of(schedule));
+        when(sectionRepository.findById(any())).thenReturn(Optional.of(section));
+        List<SectionScheduleDto> scheduleDtos = sectionService.getSectionSchedules(1L);
+        assertEquals("Tue", scheduleDtos.get(0).day());
+        assertEquals(LocalTime.parse("10:00"), scheduleDtos.get(0).startTime());
+        assertEquals(LocalTime.parse("11:00"), scheduleDtos.get(0).endTime());
+    }
+
+    @Test
     void testAssignInstructor_Success() {
-        AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L); // instructorId, sectionId
+        AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L);
 
         InstructorDto instructorDto = new InstructorDto(99L, "Jane", "Doe", 1234, "COSC", null);
         Course course = new Course("COSC", "AI", "310");
@@ -219,7 +332,7 @@ public class SectionServiceTest {
 
         Section s1 = new Section(2025, "W1", "001", SectionType.LECTURE, course1,null);
         s1.setId(10L);
-        Section s2 = new Section(2025, "W1", "002", SectionType.LAB, course2,null);
+        Section s2 = new Section(2025, "W1", "002", SectionType.LABORATORY, course2);
         s2.setId(11L);
 
         List<Section> sections = List.of(s1, s2);
@@ -232,4 +345,77 @@ public class SectionServiceTest {
         assertEquals("AI", result.get(1).course().name());
     }
 
+
+    @Test
+    void add_WithNewCourseAndSchedule_ReturnsTrue() {
+        // Arrange
+        SectionAddDtoRequest req = new SectionAddDtoRequest(
+            "COSC",                      // deptCode
+            "Intro to CS",              // name
+            "111",                      // courseNum
+            "001",                      // section
+            SectionType.LECTURE,         // type
+            2024,                        // year
+            "W1",                       // semester
+            List.of(new SectionScheduleDto(
+                "Monday",
+                LocalTime.of(8, 0),
+                LocalTime.of(9, 30),
+                null                        // sectionId
+            )),
+            42L                          // instructorId
+        );
+
+        // No existing course
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111"))
+            .thenReturn(Optional.empty());
+        // Saving a new course
+        Course savedCourse = new Course("COSC", "Intro to CS", "111");
+        savedCourse.setId(1L);
+        when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);
+
+        // Saving section
+        Section savedSection = new Section(
+            2024,
+            "W1",
+            "001",
+            SectionType.LECTURE,
+            42L,
+            savedCourse
+        );
+        savedSection.setId(2L);
+        when(sectionRepository.save(any(Section.class))).thenReturn(savedSection);
+
+        // Act
+        boolean result = sectionService.add(req);
+
+        // Assert
+        assertTrue(result);
+        verify(courseRepository).save(any(Course.class));
+        verify(sectionRepository).save(any(Section.class));
+        verify(sectionScheduleRepository).save(any(SectionSchedule.class));
+    }
+
+    @Test
+    void add_WithBlankDeptOrCourseNum_ThrowsBadRequest() {
+        // Arrange: blank deptCode/courseNum
+        SectionAddDtoRequest req = new SectionAddDtoRequest(
+            "   ",    // deptCode blank
+            null,
+            "   ",    // courseNum blank
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        );
+
+        // Act & Assert
+        BadRequestException ex = assertThrows(
+            BadRequestException.class,
+            () -> sectionService.add(req)
+        );
+        assertTrue(ex.getMessage().contains("Both deptCode and courseNum are required"));
+    }
 }
