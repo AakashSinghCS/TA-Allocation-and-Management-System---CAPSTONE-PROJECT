@@ -44,6 +44,7 @@ export default function EditSectionProfileSection({
       ...form,
       instructorId: selectedInstructor?.id
     };
+
     await onSave(payload);
   }
 
@@ -115,8 +116,11 @@ export default function EditSectionProfileSection({
 
       {showScheduleEdit && (
         <EditSectionSchedule
-          onSave={sched => {
-            return fetchAddSectionSchedule(sectionId ,sched);
+          onSave={async (sched) => {
+            const ok = await fetchAddSectionSchedule(sectionId ,sched);
+            if(ok) alert("Section Schedule added!");
+            if(!ok) alert("Failed to add the section schedule!");
+            return ok;
           }}
           onCancel={() => setShowScheduleEdit(false)}
         />

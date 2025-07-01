@@ -80,6 +80,7 @@ public class SectionService {
         section.setSection(request.section());
         section.setType(request.type());
         section.setSemester(request.semester());
+        section.setInstructorId(request.instructorId());
         sectionRepository.save(section);
         return new SectionDto(section.getId(),
                 section.getYear(),
@@ -114,7 +115,7 @@ public class SectionService {
             throw new BadRequestException("Schedule already exists " + ex);
         }
         return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(),
-                sectionSchedule.getEndTime(), sectionSchedule.getSection().getId());
+                sectionSchedule.getEndTime(), sectionSchedule.getSection().getId(), sectionSchedule.getId());
     }
 
     public List<SectionScheduleDto> getSectionSchedules(Long sectionId) {
@@ -123,7 +124,7 @@ public class SectionService {
         return section.getSectionSchedules().stream()
                 .map(sec -> new SectionScheduleDto(sec.getDay(),
                         sec.getStartTime(),
-                        sec.getEndTime(),
+                        sec.getEndTime(),sec.getSection().getId(),
                         sec.getId()))
                 .toList();
     }
@@ -137,7 +138,7 @@ public class SectionService {
         sectionScheduleRepository.save(schedule);
         return new SectionScheduleDto(schedule.getDay(),
                     schedule.getStartTime(),
-                    schedule.getEndTime(),
+                    schedule.getEndTime(),schedule.getSection().getId(),
                     schedule.getId());
     }
 

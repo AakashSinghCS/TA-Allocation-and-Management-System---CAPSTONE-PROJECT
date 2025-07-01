@@ -43,7 +43,7 @@ export default function EditSectionSchedule({ initial, onSave, onCancel }: EditS
         </div>
       </div>
       <div className="mt-4 flex space-x-2">
-        <button onClick={() => onSave({ day, startTime, endTime })} className="px-4 py-1 bg-[#040941] text-white rounded hover:bg-[#040491]">Save</button>
+        <button onClick={() => onSave({ ...(initial ?? {}),day, startTime, endTime })} className="px-4 py-1 bg-[#040941] text-white rounded hover:bg-[#040491]">Save</button>
         <button onClick={onCancel} className="px-4 py-1 border rounded">Cancel</button>
       </div>
     </div>

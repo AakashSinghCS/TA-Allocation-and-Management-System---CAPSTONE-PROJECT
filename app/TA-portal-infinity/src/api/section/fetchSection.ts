@@ -33,7 +33,7 @@ export async function fetchSection(
     if (dto.instructorId != null) {
       instructor = await fetchInstructorDetails(dto.instructorId);
     }
-
+    console.log(schedules);
     return mapDtoToSection(dto, schedules ?? [], instructor);
   } catch (err) {
     console.error("Error in fetchSection:", err);

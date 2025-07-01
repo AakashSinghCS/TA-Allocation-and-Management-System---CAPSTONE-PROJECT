@@ -51,7 +51,7 @@ public class SectionControllerTest {
         void testAddSection() throws Exception {
                 Long courseId = 1L;
                 CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025,
-                                "W1", null, null, null);
+                                "W1", null, null, null,null);
                 SectionDto response = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE,
                                 new CourseDto(1L, "COSC", "Security", "430"));
 
@@ -72,9 +72,9 @@ public class SectionControllerTest {
         void testAddSectionSchedule() throws Exception {
                 Long sectionId = 200L;
                 CourseRequest request = new CourseRequest(null, null, null, null, null, null, null, "Mon", "09:00",
-                                "10:00");
+                                "10:00",null);
                 SectionScheduleDto response = new SectionScheduleDto("Mon", LocalTime.of(9, 0), LocalTime.of(10, 0),
-                                sectionId);
+                                sectionId, 2L);
 
                 when(sectionService.addSectionSchedule(eq(sectionId), any(CourseRequest.class))).thenReturn(response);
 
@@ -107,7 +107,7 @@ public class SectionControllerTest {
         @Test
         void testUpdateSection() throws Exception {
                 CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025,
-                                "W1", null, null, null);
+                                "W1", null, null, null,null);
                 SectionDto response = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE,
                                    new CourseDto(1L, "COSC", "Security", "430"));
 
@@ -138,9 +138,9 @@ public class SectionControllerTest {
         @Test
         void testGetSectionSchedules() throws Exception {
                 SectionScheduleDto schedule1 = new SectionScheduleDto("Tue", LocalTime.of(10, 0),
-                                LocalTime.parse("11:00"), 1L);
+                                LocalTime.parse("11:00"), 1L, 3L);
                 SectionScheduleDto schedule2 = new SectionScheduleDto("Fri", LocalTime.of(12, 0),
-                                LocalTime.parse("13:30"), 2L);
+                                LocalTime.parse("13:30"), 2L, 4L);
                 List<SectionScheduleDto> response = List.of(schedule1, schedule2);
 
                 when(sectionService.getSectionSchedules(any())).thenReturn(response);
@@ -156,9 +156,9 @@ public class SectionControllerTest {
         @Test
         void testUpdateSectionSchedule() throws Exception {
                 CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025,
-                                "W1", null, null, null);
+                                "W1", null, null, null,null);
                 SectionScheduleDto response = new SectionScheduleDto("Tue", LocalTime.parse("10:00"), 
-                                LocalTime.parse("11:00"), 1L);
+                                LocalTime.parse("11:00"), 1L, 2L);
 
                 when(sectionService.updateSectionSchedule(any(), any(CourseRequest.class))).thenReturn(response);
 
