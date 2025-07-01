@@ -1,11 +1,11 @@
 package com.infinity.courseservice.services;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.hc.core5.http.NotImplementedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +17,15 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
-import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
-import com.infinity.courseservice.models.Section;
-import com.infinity.courseservice.models.SectionSchedule;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -59,48 +55,10 @@ public class CourseService {
         
         return new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum());
     }
-
-    @Transactional
-    public SectionDto addSection(Long courseId, CourseRequest request) {
-        Course course = courseRepository.findById(courseId)
-                        .orElseThrow(() -> new EntityNotFoundException("Course not found"));
-        
-        Section section = new Section(request.year(), request.semester(), request.section(), request.type(), course, request.instructorId());
-        try {
-            sectionRepository.save(section);
-        } catch (DataIntegrityViolationException ex) {
-            throw new BadRequestException("Section already exists" + ex);
-        }
-        
-        return new SectionDto(section.getId(), section.getYear(), section.getSemester(), section.getSection(), section.getType(), section.getCourse());
-    }
-
-    @Transactional
-    public SectionScheduleDto addSectionSchedule(Long secionId, CourseRequest request) {
-        Section section = sectionRepository.findById(secionId)
-                        .orElseThrow(() -> new EntityNotFoundException("section not found"));
-        LocalTime startTime = request.startTime() != null ? LocalTime.parse(request.startTime()) : null;
-        LocalTime endTime = request.endTime() != null ? LocalTime.parse(request.endTime()) : null;
-        SectionSchedule sectionSchedule = new SectionSchedule(request.day(), startTime, endTime, section);
-        try {
-            sectionScheduleRepository.save(sectionSchedule);
-        } catch (DataIntegrityViolationException ex) {
-            throw new BadRequestException("Schedule already exists" + ex);
-        }
-        return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(), sectionSchedule.getEndTime(), sectionSchedule.getSection().getId());
-    }
     
     public CourseDto findCourse(Long id) {
         Course course = courseRepository.findById(id).orElseThrow(() -> new NotFoundException("Course with ID " + id + " not found"));
         return new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum());
-    }
-
-    public List<Course> findCourseByDeptCode(String deptCode) {
-        return courseRepository.findAllByDeptCode(deptCode);
-    }
-
-    public List<String> findAllDeptCode() {
-        return courseRepository.findDistinctDeptCode();
     }
 
     public List<CourseDto> findCoursesByIds(List<Long> ids) {
@@ -132,7 +90,7 @@ public class CourseService {
     List<CourseNeedAndAllocations> result = new ArrayList<>();
 
     for (SectionDto section : sections) {
-        Long courseId = section.course().getId();
+        Long courseId = section.course().id();
         Integer year = section.year();
         String semester = section.semester();
 
