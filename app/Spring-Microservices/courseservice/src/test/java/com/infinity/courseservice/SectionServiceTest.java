@@ -23,6 +23,7 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.enums.SectionType;
@@ -412,5 +413,24 @@ public class SectionServiceTest {
             () -> sectionService.add(req)
         );
         assertTrue(ex.getMessage().contains("Both deptCode and courseNum are required"));
+    }
+
+    @Test
+    void testGetSectionWithInstructorIdById_Success() {
+        Course course = new Course("COSC", "DB Systems", "304");
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, 1L,course);
+        section.setId(55L);
+
+        when(sectionRepository.findById(55L)).thenReturn(Optional.of(section));
+
+        SectionDtoWithInstructorId result = sectionService.getSectionWithInstructorIdById(55L);
+        assertEquals("COSC", result.course().deptCode());
+         assertEquals(1L, result.instructorId());
+    }
+
+    @Test
+    void testGetSectionWithInstructorIdById_NotFound() {
+        when(sectionRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> sectionService.getSectionWithInstructorIdById(99L));
     }
 }
