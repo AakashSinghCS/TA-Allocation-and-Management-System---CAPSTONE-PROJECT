@@ -36,7 +36,7 @@ public class InstructorServiceTest {
     void testGetInstructorById_Success() {
         Instructor instructor = new Instructor("jane@test.com", "Jane", "Doe", "password123");
         instructor.setId(1L);
-        instructor.setEmployeeNumber(1234);
+        instructor.setEmployeeNum(1234);
         instructor.setDepartment("Math");
         instructor.setCreatedAt(LocalDateTime.of(2023, 1, 1, 10, 0));
 

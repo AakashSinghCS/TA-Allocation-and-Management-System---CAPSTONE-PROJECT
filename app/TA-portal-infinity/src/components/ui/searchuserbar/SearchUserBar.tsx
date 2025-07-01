@@ -85,7 +85,7 @@ export default function SearchUserBar({ onSearch, loading,allowedRoles }: Search
         value={criteria.name}
         onChange={e => setCriteria(c => ({ ...c, name: e.target.value }))}
         disabled={isUniversityNumberEntered}
-        className="border px-2 py-1 rounded xl:w-100"
+        className="border px-2 py-1 rounded"
       />
       <input
         type="text"

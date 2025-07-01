@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent, type InputHTMLAttributes } from "react";
 import type { SectionProfile } from '../../../../interfaces/section/Section';
-import type { SectionType } from "../../../../interfaces/section/SectionDetails";
+import { sectionTypeOptions, type SectionType } from "../../../../interfaces/section/SectionDetails";
 import EditSectionSchedule from "../editsectionschedule/EditSectionSchedule";
 import type User from "../../../../interfaces/user/User";
 import type { Instructor } from "../../../../interfaces/user/Instructor";
@@ -18,16 +18,7 @@ export interface EditSectionProfileSectionProps {
 
 // Semester and SectionType options
 const SEMESTER_OPTIONS = ["W1", "W2", "S1", "S2"];
-export const SECTION_TYPE_OPTIONS: SectionType[] = [
-  "LECTURE",
-  "Tutorial",
-  "Laboratory",
-  "Discussion",
-  "Seminar",
-  "Workshop",
-  "Experential",
-  "Independent Study",
-] as const;
+export const SECTION_TYPE_OPTIONS: SectionType[] = sectionTypeOptions;
 
 // type SectionTypea = typeof SECTION_TYPE_OPTIONS[number];
 export default function EditSectionProfileSection({

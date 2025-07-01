@@ -87,6 +87,7 @@ export default function UserBrowsingViewer({
                                 <td className="border-b px-3 py-1">
                                     {mode === 'select' ? (
                                         <button
+                                            type="button"
                                             onClick={() => onSelect?.(user)}
                                             className="text-blue-600 hover:underline"
                                         >

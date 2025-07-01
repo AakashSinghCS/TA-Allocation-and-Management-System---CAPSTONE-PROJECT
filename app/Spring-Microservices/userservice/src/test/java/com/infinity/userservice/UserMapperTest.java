@@ -126,7 +126,7 @@ public class UserMapperTest {
     void mapStudentToStudentDto() {
         Student student = new Student("alice@test.com", "Alice", "Lee", "StrongP@ss123");
         student.setId(10L);
-        student.setStudentNumber(12345678);
+        student.setStudentNum(12345678);
         student.setProgram("COSC");
         student.setEnrollmentYear(2022);
         student.setSchoolYear(3);
@@ -137,7 +137,7 @@ public class UserMapperTest {
 
         assertEquals(student.getId(), dto.id());
         assertEquals(student.getFirstName(), dto.firstName());
-        assertEquals(student.getStudentNumber(), dto.studentNumber());
+        assertEquals(student.getStudentNum(), dto.studentNum());
         assertEquals(student.getProgram(), dto.program());
         assertEquals(student.getEnrollmentYear(), dto.enrollmentYear());
         assertEquals(student.getSchoolYear(), dto.schoolYear());
@@ -148,7 +148,7 @@ public class UserMapperTest {
     void mapInstructorToInstructorDto() {
         Instructor instructor = new Instructor("bob@test.com", "Bob", "Brown", "P@ssword123");
         instructor.setId(20L);
-        instructor.setEmployeeNumber(9999);
+        instructor.setEmployeeNum(9999);
         instructor.setDepartment("CS");
         instructor.setCreatedAt(LocalDateTime.of(2023, 8, 15, 12, 30));
 
@@ -158,8 +158,8 @@ public class UserMapperTest {
         assertEquals(instructor.getId(), dto.id());
         assertEquals(instructor.getFirstName(), dto.firstName());
         assertEquals(instructor.getLastName(), dto.lastName());
-        assertEquals(instructor.getEmployeeNumber(), dto.employeeNumber());
-        assertEquals(instructor.getDepartment(), dto.department());
+        assertEquals(instructor.getEmployeeNum(), dto.employeeNum());
+        assertEquals(instructor.getDepartment(), dto.dept());
         assertEquals(instructor.getCreatedAt(), dto.createdAt());
     }
 
