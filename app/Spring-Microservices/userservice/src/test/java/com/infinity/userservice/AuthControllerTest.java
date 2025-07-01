@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,21 +18,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.userservice.controllers.AuthController;
+import com.infinity.userservice.dtos.EmailRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.Registration.LoginRequest;
+import com.infinity.userservice.dtos.Registration.LoginResponse;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
+import com.infinity.userservice.dtos.Registration.ResetRequest;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.models.Role;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
-import com.infinity.userservice.security.JwtUtil;
+import com.infinity.userservice.services.AuthService;
 import com.infinity.userservice.services.UserService;
 
 @WebMvcTest(AuthController.class)
@@ -41,14 +44,14 @@ public class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockitoBean
     private UserService userService;
 
     @MockitoBean
-    private JwtUtil jwtUtil;
-
-    @MockitoBean
-    private AuthenticationManager authenticationManager;
+    private AuthService authService;
 
     //Registration
 
@@ -197,14 +200,41 @@ public class AuthControllerTest {
         Authentication mockAuth = mock(Authentication.class);
         when(mockAuth.getPrincipal()).thenReturn(mockUser);
 
-        when(authenticationManager.authenticate(any())).thenReturn(mockAuth);
-        when(jwtUtil.generateToken(eq(request.email()), eq(1L), eq(List.of("ROLE_STUDENT"))))
-                .thenReturn("mock-jwt-token");
+        when(authService.login(eq(request)))
+                .thenReturn(new LoginResponse("mock-jwt-token"));
 
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value("mock-jwt-token"));
+    }
+
+    @Test
+    void testForgotPassword_success() throws Exception {
+        EmailRequest request = new EmailRequest("user@example.com", "subject", "body");
+
+        when(authService.forgotPassword(any(EmailRequest.class)))
+                .thenReturn("Reset link sent to your email.");
+
+        mockMvc.perform(post("/auth/forgot-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Reset link sent to your email."));
+    }
+
+    @Test
+    void testResetPassword_success() throws Exception {
+        ResetRequest request = new ResetRequest("token123", "newSecurePassword");
+
+        when(authService.resetPassword(any(ResetRequest.class)))
+                .thenReturn("Password has been reset successfully.");
+
+        mockMvc.perform(post("/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Password has been reset successfully."));
     }
 }

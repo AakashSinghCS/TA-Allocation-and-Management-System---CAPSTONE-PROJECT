@@ -15,13 +15,13 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.infinity.notificationservice.controllers.NotificationController;
+import com.infinity.notificationservice.controllers.PublicNotificationController;
 import com.infinity.notificationservice.dtos.EmailRequest;
 import com.infinity.notificationservice.services.EmailService;
 
-@WebMvcTest(NotificationController.class)
+@WebMvcTest(PublicNotificationController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class NotificationControllerTest {
+public class PublicNotificationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,7 +39,7 @@ public class NotificationControllerTest {
                 "Test Subject",
                 "Test message body");
 
-        mockMvc.perform(post("/notifications/email")
+        mockMvc.perform(post("/public/email")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())

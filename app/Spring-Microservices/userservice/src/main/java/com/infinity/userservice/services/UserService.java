@@ -53,7 +53,6 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Data
 @RequiredArgsConstructor
 public class UserService {
 
@@ -207,50 +206,6 @@ public class UserService {
         }
         userRepository.deleteById(id);
         return "User deleted successfully";
-    }
-
-    public String forgotPassword(EmailRequest request) {
-        Optional<User> optionalUser = userRepository.findByEmail(request.email());
-
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-
-            tokenRepository.deleteByUser(user);
-
-            String token = UUID.randomUUID().toString();
-            LocalDateTime expiry = LocalDateTime.now().plusMinutes(15);
-
-            PasswordResetToken resetToken = new PasswordResetToken(token, user, expiry);
-            tokenRepository.save(resetToken);
-
-            String resetLink = "http://localhost:5173/reset-password?token=" + token;
-
-            notificationClient.sendEmail(new EmailRequest(
-                    user.getEmail(),
-                    "Reset your password",
-                    "Click the following link to reset your password: " + resetLink));
-
-            return "Reset link sent to your email.";
-        }
-        return "If that email exists, a reset link has been sent.";
-    }
-
-    public String resetPassword(String token, String newPassword) {
-        PasswordResetToken resetToken = tokenRepository.findByToken(token)
-                .orElseThrow(() -> new BadRequestException("Invalid or expired token"));
-
-        if (resetToken.isExpired()) {
-            tokenRepository.delete(resetToken);
-            throw new BadRequestException("Token has expired");
-        }
-
-        User user = resetToken.getUser();
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-
-        tokenRepository.delete(resetToken);
-
-        return "Password has been reset successfully.";
     }
 
 
