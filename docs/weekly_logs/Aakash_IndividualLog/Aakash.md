@@ -594,7 +594,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
 
-### Progress Update (since 08/6/2025) 
+### Progress Update (since 09/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -630,7 +630,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
 
-### Progress Update (since 08/6/2025) 
+### Progress Update (since 10/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -666,7 +666,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
 
-### Progress Update (since 08/6/2025) 
+### Progress Update (since 11/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -702,7 +702,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Allocation History - Backend: I have to create the backend to view the allocation history of a TA.
 
-### Progress Update (since 08/6/2025) 
+### Progress Update (since 12/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -738,7 +738,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Allocation History - Backend: I have to create the backend to view the allocation history of a TA.
 
-### Progress Update (since 08/6/2025) 
+### Progress Update (since 15/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -774,7 +774,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Allocation History - Backend: I have to create the backend to view the allocation history of a TA.
 
-### Progress Update (since 08/6/2025) 
+### Progress Update (since 17/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -810,7 +810,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Allocation History - Backend: I have to create the backend to view the allocation history of a TA.
 
-### Progress Update (since 08/6/2025) 
+### Progress Update (since 18/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -846,7 +846,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Allocation History - Merge Conflict Fix
 
-### Progress Update (since 08/6/2025) 
+### Progress Update (since 19/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -883,7 +883,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Allens code modification
 
-### Progress Update (since 08/6/2025) 
+### Progress Update (since 20/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -919,7 +919,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Allocation Offer Workflow - Backend
 
-### Progress Update (since 08/6/2025) 
+### Progress Update (since 21/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -955,7 +955,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Current Tasks (Provide sufficient detail)
   * #1: Allocation Offer Workflow - Backend
 
-### Progress Update (since 08/6/2025) 
+### Progress Update (since 23/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -982,5 +982,228 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Complete the backend offer workflow for allocation and begin next assigned coding task.
 
-=======
->>>>>>> logs
+## Wednesday 6/25 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.25.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Offer Workflow - Backend
+
+### Progress Update (since 24/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 100% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: mappings for accept/deny offer are complete along with the relevant services. Controllers and services fully complete as well.
+What didn't go well: Everything went well.
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
+## Thursday 6/26 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.26.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Offer Workflow - Backend
+
+### Progress Update (since 25/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 95% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I ran into a bug when trying to run the microservice. It took me a long time to figure out but i was able to get it done. I have submitted a PR on github and am waiting for my teammates to provide feedback.
+What didn't go well: Everything went well.
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
+## Friday 6/27 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/6.27.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Workflow - Backend
+
+### Progress Update (since 26/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 50% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met up with the team today morning on discord and we decided not to keep the offer table since it served no additional functionality opposed to what we had planned initially. I will have to go through my pr and modify accordingly. We decided to create an allocation when the allocate student button is clicked setting the isConfirmed field to false and creating additional mappings in the allocation controller itself to change the isCompleted to true upon offer acceptation.
+What didn't go well: I would've appreciated it if my team members had notified me of this change before i submitted a PR. I have to change the entire workflow from scratch now. But it's okay, i should hopefully be done with this by tomorrow. 
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
+## Saturday 6/28 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/6.28.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Workflow - Backend
+
+### Progress Update (since 27/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Deleted the offer table since it served no additional functionality opposed to what we had planned initially. Created an allocation so that when the allocate student button is clicked, the isConfirmed field is set to false. Created additional mappings in the allocation controller itself to change the isCompleted to true upon offer acceptation.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * I am assigned to finish the studentTaughtCourse feature. I will finish coding this and begin the next assigned coding task.
+
+## Sunday 6/29 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/6.29.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Taught Course - Backend : stores details of previously taught courses by the student.
+
+### Progress Update (since 28/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 40% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Designed how I will implement the workflow for student-taught courses. Created initial dtos, and a couple of methods in course service. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete studentTaughtCourse feature and begin next assigned coding task.
+
+## Monday 6/30 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/6.30.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Taught Course - Backend : stores details of previously taught courses by the student.
+  * #2: Allocation - Additional mappings and service methods
+
+### Progress Update (since 29/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress. 20% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Implemented the workflow for student-taught courses. All endpoint mappings, dtos, and service methods have been created and work as expected. Waiting on reviews on the PR should any modifications be required. Also, Mandeep requested for a couple of additional endpoint mappings and service methods for allocations. I will hopefully get that done by tomorrow or day after. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Most team members are working hard to get their parts completed. I don't know what Allen and Seiya are doing, they have not submitted any PR in a while and are also not replying to our messages. 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additional endpoint mappings and service methods requested by Mandeep and begin next assigned coding task. 
+
