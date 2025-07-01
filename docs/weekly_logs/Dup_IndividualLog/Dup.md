@@ -1715,3 +1715,61 @@ Moreover, the design has been delayed because I felt like I needed to get the fu
 - integration for comparers
 - Instructor updating needs frontend
 - course/section management
+
+
+## Saturday 6/28 (6/27~6/30)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June30.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Course Profile
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#93](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/93)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#295](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/295)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I completed the functionality and tests for the course profiles and section profiles. you can now edit them and view them and update them and delete them. you can now search an instructor and assign them to a section using a searchbar.
+I spent time today merging and creating pull requests, which also took some time.
+Tommorrow, I hope I will get the qualifications done and review Allen's and Aakash's PRs.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- Instructor updating needs frontend
