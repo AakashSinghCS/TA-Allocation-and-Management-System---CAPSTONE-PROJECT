@@ -1,15 +1,19 @@
 package com.infinity.userservice.services;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.userservice.dtos.EmailRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.Coordinators.CoordinatorUpdateRequest;
 import com.infinity.userservice.dtos.Instructors.InstructorUpdateRequest;
@@ -19,11 +23,14 @@ import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.BadRequestException;
 import com.infinity.userservice.exceptions.NotFoundException;
+import com.infinity.userservice.feign.NotificationClient;
 import com.infinity.userservice.models.Coordinator;
 import com.infinity.userservice.models.Instructor;
+import com.infinity.userservice.models.PasswordResetToken;
 import com.infinity.userservice.models.Role;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
+import com.infinity.userservice.repositories.PasswordResetTokenRepository;
 import com.infinity.userservice.repositories.RoleRepository;
 import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.utility.UserMapper;
@@ -44,7 +51,8 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final Validator validator;
-
+    private final PasswordResetTokenRepository tokenRepository;
+    private final NotificationClient notificationClient;
 
     public UserDto register(RegisterRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
@@ -54,10 +62,10 @@ public class UserService {
         if (request.userType() == UserRole.ADMIN) {
             throw new BadRequestException("Cannot register with ADMIN as primary user type");
         }
-        
+
         Set<Role> roles = new HashSet<>();
         Role primaryRole = roleRepository.findByName(request.userType())
-            .orElseThrow(() -> new RuntimeException("Role not found"));
+                .orElseThrow(() -> new RuntimeException("Role not found"));
         roles.add(primaryRole);
 
         if (request.isAdmin()) {
@@ -72,7 +80,7 @@ public class UserService {
         userRepository.save(user);
         return userMapper.toDto(user);
     }
-    
+
     public UserDto getUserById(Long id, Long userIdFromHeader, List<String> headerRoles) {
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
@@ -100,7 +108,7 @@ public class UserService {
             updateCoordinator(coordinator, payload);
         }
     }
-    
+
     private void updateStudent(Student student, Map<String, Object> payload) {
         StudentUpdateRequest req = validateAndMap(payload, StudentUpdateRequest.class);
 
@@ -112,19 +120,20 @@ public class UserService {
             student.setLastName(req.lastName());
         if (req.password() != null) {
             String hashedPassword = passwordEncoder.encode(req.password());
-            student.setPassword(hashedPassword);            
+            student.setPassword(hashedPassword);
         }
-        if (req.studentNum()     != null) student.setStudentNum(req.studentNum());
+        if (req.studentNum() != null)
+            student.setStudentNum(req.studentNum());
         if (req.program() != null)
             student.setProgram(req.program());
         if (req.enrollmentYear() != null)
             student.setEnrollmentYear(req.enrollmentYear());
         if (req.schoolYear() != null)
             student.setSchoolYear(req.schoolYear());
-      
+
         userRepository.save(student);
     }
-    
+
     private void updateInstructor(Instructor instructor, Map<String, Object> payload) {
         InstructorUpdateRequest req = validateAndMap(payload, InstructorUpdateRequest.class);
 
@@ -172,7 +181,7 @@ public class UserService {
             throw new BadRequestException(errorMsg);
         }
         return dto;
-    }    
+    }
 
     public String deleteUserById(Long id, Long userIdFromHeader, List<String> headerRoles) {
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_ADMIN")) {
@@ -184,5 +193,49 @@ public class UserService {
         userRepository.deleteById(id);
         return "User deleted successfully";
     }
-    
+
+    public String forgotPassword(EmailRequest request) {
+        Optional<User> optionalUser = userRepository.findByEmail(request.email());
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            tokenRepository.deleteByUser(user);
+
+            String token = UUID.randomUUID().toString();
+            LocalDateTime expiry = LocalDateTime.now().plusMinutes(15);
+
+            PasswordResetToken resetToken = new PasswordResetToken(token, user, expiry);
+            tokenRepository.save(resetToken);
+
+            String resetLink = "http://localhost:5173/reset-password?token=" + token;
+
+            notificationClient.sendEmail(new EmailRequest(
+                    user.getEmail(),
+                    "Reset your password",
+                    "Click the following link to reset your password: " + resetLink));
+
+            return "Reset link sent to your email.";
+        }
+        return "If that email exists, a reset link has been sent.";
+    }
+
+    public String resetPassword(String token, String newPassword) {
+        PasswordResetToken resetToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new BadRequestException("Invalid or expired token"));
+
+        if (resetToken.isExpired()) {
+            tokenRepository.delete(resetToken);
+            throw new BadRequestException("Token has expired");
+        }
+
+        User user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        tokenRepository.delete(resetToken);
+
+        return "Password has been reset successfully.";
+    }
+
 }

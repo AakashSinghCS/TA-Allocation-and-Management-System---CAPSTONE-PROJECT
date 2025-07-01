@@ -8,6 +8,6 @@ import com.infinity.userservice.dtos.EmailRequest;
 
 @FeignClient(name = "NOTIFICATION-SERVICE")
 public interface NotificationClient {
-    @PostMapping("/api/notifications/email")
+    @PostMapping("/notifications/email")
     void sendEmail(@RequestBody EmailRequest request);
 }

@@ -12,8 +12,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.infinity.userservice.dtos.EmailRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.Registration.LoginRequest;
 import com.infinity.userservice.dtos.Registration.LoginResponse;
@@ -49,9 +51,19 @@ public class AuthController {
     }
 
      @PostMapping("/register")
-    public ResponseEntity<UserDto> addUser(@RequestBody @Valid RegisterRequest request) {
-        UserDto userDto = userService.register(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
-    }
+     public ResponseEntity<UserDto> addUser(@RequestBody @Valid RegisterRequest request) {
+         UserDto userDto = userService.register(request);
+         return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
+     }
+    
+     @PostMapping("/forgot-password")
+     public ResponseEntity<String> forgotPassword(EmailRequest request) {
+         return ResponseEntity.ok(userService.forgotPassword(request));
+     }
+
+     @PostMapping("/reset-password")
+     public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestBody String newPassword) {
+         return ResponseEntity.ok(userService.resetPassword(token, newPassword));
+     }
 
 }
