@@ -9,8 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
-import com.infinity.courseservice.dtos.CourseDto;
-import com.infinity.courseservice.dtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.models.Course;
 
 @Repository
@@ -90,5 +88,5 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     List<String> findDistinctDeptCode();
 
 
-    List<CourseDto> findAllByDeptCode(String deptCode);
+    List<Course> findAllByDeptCode(String deptCode);
 }

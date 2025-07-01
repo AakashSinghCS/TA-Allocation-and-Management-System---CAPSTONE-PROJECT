@@ -1,10 +1,8 @@
 package com.infinity.courseservice.services;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
-import com.infinity.courseservice.dtos.EnrollmentRequest;
+import com.infinity.courseservice.dtos.EnrollmentDtos.EnrollmentRequest;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.models.Enrollment;
 import com.infinity.courseservice.models.Section;

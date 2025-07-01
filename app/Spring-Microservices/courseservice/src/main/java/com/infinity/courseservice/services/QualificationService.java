@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import com.infinity.courseservice.dtos.CourseDto;
+import com.infinity.courseservice.dtos.CourseDtos.*;
 import com.infinity.courseservice.dtos.QualificationDto;
 import com.infinity.courseservice.dtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationWithSectionDto;
-import com.infinity.courseservice.dtos.StudentDto;
+import com.infinity.courseservice.dtos.UserDtos.*;
 import com.infinity.courseservice.dtos.StudentQualiRequest;
 import com.infinity.courseservice.dtos.StudentQualificationResponseDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -39,7 +39,7 @@ public class QualificationService {
 
     public QualificationDto findQualification(Long id) {
         Qualification qualification = qualificationRepository.findById(id).orElseThrow(() -> new NotFoundException("qualification with ID " + id + " not found"));
-        StudentDto stu = studentClient.getStudentById(qualification.getStudentId());
+        UserDto stu = studentClient.getStudentById(qualification.getStudentId());
         CourseDto course = courseService.findCourse(qualification.getCourse().getId());
         return new QualificationDto(course, qualification.getDescription(), stu);
     }
@@ -78,7 +78,7 @@ public class QualificationService {
         qualificationRepository.deleteAllByStudentId(stuId);
         List<Qualification> qualifications = qualificationRepository.findAllByIdAndStudentIdIsNull(request.qualificationIds());
         List<QualificationDto> qualificationDtos = new ArrayList<QualificationDto>();
-        StudentDto studentDto = studentClient.getStudentById(stuId);
+        UserDto studentDto = studentClient.getStudentById(stuId);
         for (Qualification qualification : qualifications) {
             CourseDto courseDto = courseService.findCourse(qualification.getCourse().getId());
             Course course = qualification.getCourse();
@@ -103,7 +103,7 @@ public class QualificationService {
         List<StudentQualificationResponseDto> dtos = qualifications.stream()
             .map(q -> new StudentQualificationResponseDto(
                 q.getId(),
-                new CourseDto(q.getDeptCode(), q.getCourse().getName(), q.getCourse().getCourseNum()), 
+                new CourseDto(q.getCourse().getId(), q.getDeptCode(), q.getCourse().getName(), q.getCourse().getCourseNum()), 
                 q.getDescription(),
                 null
             ))
@@ -112,7 +112,7 @@ public class QualificationService {
     }
 
     public List<QualificationWithSectionDto> findQualificationsByInstructorId(Long instructorId) {
-        List<Section> sections = sectionRepository.findByInstructorId(instructorId);
+        List<Section> sections = sectionRepository.findAllByInstructorId(instructorId);
         List<Course> courses = sections.stream().map(Section::getCourse).collect(Collectors.toList());
         List<Qualification> qualis = qualificationRepository.findAllByCourseAndStudentIdIsNull(courses);
         List<QualificationWithSectionDto> combinedList = new ArrayList<>();

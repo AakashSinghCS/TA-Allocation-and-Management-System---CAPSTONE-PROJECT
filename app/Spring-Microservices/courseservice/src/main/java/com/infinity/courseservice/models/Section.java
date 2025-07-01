@@ -50,12 +50,13 @@ public class Section {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    public Section(Integer year, String semester, String section, SectionType type, Course course) {
+    public Section(Integer year, String semester, String section, SectionType type, Course course, Long instructorId) {
         this.year = year;
         this.semester = semester;
         this.section = section;
         this.type = type;
         this.course = course;
+        this.instructorId = instructorId;
     }
 
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
