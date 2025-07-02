@@ -3,7 +3,6 @@ import { fetchWithAuth } from '../Auth/fetchWithAuth';
 
 export interface CreateOfferRequest {
   studentId:     number;
-  applicationId: number;
   isConfirmed:   boolean;
   numberOfHours: number;
   sectionId:     number;

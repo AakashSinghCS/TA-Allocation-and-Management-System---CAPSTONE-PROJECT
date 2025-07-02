@@ -43,7 +43,7 @@ export function useSendOffer() {
       toast.error(error, { position: 'top-right', autoClose: 8000 });
       return;
     }
-
+  console.log('Selected application object:', app);
     const payload: CreateOfferRequest = {
       studentId:     app.student.id,
       applicationId: app.id,
@@ -51,7 +51,7 @@ export function useSendOffer() {
       numberOfHours: app.wantWorkingHours,
       sectionId,
     };
-
+    console.log(' sendOffer payload:', payload);
     setLoading(true);
     const promise = apiSendOffer(payload);
 

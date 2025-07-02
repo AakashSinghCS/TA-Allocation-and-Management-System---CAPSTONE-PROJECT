@@ -1,52 +1,48 @@
-// src/pages/TAAllocationPage.tsx
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { getDayNumber } from '../../utility/calendar/calendarUtils';
 import type { SectionDetails } from '../../interfaces/section/SectionDetails';
 import type SectionSchedule from '../../interfaces/section/SectionSchedule';
 import type { Need } from '../../interfaces/need/Need';
+import type Section from '../../interfaces/section/Section';
 import type { Allocation } from '../../interfaces/allocation/Allocation';
 import { useAuth } from '../../context/AuthContext';
 import type { ApplicationDto } from '../../interfaces/application/Application';
 import { fetchApplications } from '../../api/application/FetchApplications';
 import ApplicationFilterPanel from '../../components/features/application/ApplicationFilterPanel';
-import { fetchSection } from '../../api/section/fetchSection';
-import { mockSectionCOSC111 } from '../../mocked-objects/section/mockSectionCOSC111';
-import { mockSectionCOSC121 } from '../../mocked-objects/section/mockSectionCOSC121';
-import { mockSectionMATH125 } from '../../mocked-objects/section/mockSectionMATH125';
 import { ToastContainer } from 'react-toastify';
 import { useSendOffer } from '../../hooks/sendoffer/useSendOffer';
 import OfferBanner from '../../components/ui/offerbanner/OfferBanner';
+import SectionFilter from '../../components/features/course/coursefilter/SectionFilter';
+import { fetchFilteredSections, type FilterSectionsProps } from '../../api/sectionfilter/fetchFilteredSections';
+import { convertFilterSectionsToSections } from '../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
+import { fetchSectionInfo } from '../../api/section/fetchSectionInfo';
 
 const TAAllocationPage: React.FC = () => {
   const { token } = useAuth();
   const { sendOffer, loading } = useSendOffer();
   const [showBanner, setShowBanner] = useState(false);
 
-  // Filter state
-  const [courseQ, setCourseQ] = useState({
-    search: '', deptCode: '', courseNum: '', section: '', term: '', type: '',
-  });
   const [appQ, setAppQ] = useState({
     pref1: '', pref2: '', wantRemote: '', wantHours: '', studentName: '', studentNum: '',
   });
 
-  // seed allSections from mocks
-  const allSections = useMemo<SectionDetails[]>(() => [
-    mockSectionCOSC111.sectionDetails,
-    mockSectionCOSC121.sectionDetails,
-    mockSectionMATH125.sectionDetails,
-  ].filter((s): s is SectionDetails => s !== undefined), []);
+  const [filteredSections, setFilteredSections] = useState<Section[]>([]);
+  const [loadingSections, setLoadingSections] = useState(false);
 
-  // compute dropdown options
-  const deptCodes  = useMemo(() => Array.from(new Set(allSections.map(s => s.deptCode))),  [allSections]);
-  const courseNums = useMemo(() => Array.from(new Set(allSections.map(s => s.courseNum))), [allSections]);
-  const sections   = useMemo(() => Array.from(new Set(allSections.map(s => s.section))),   [allSections]);
-  const terms      = useMemo(() => Array.from(new Set(allSections.map(s => s.year))),      [allSections]);
-  const types      = useMemo(() => Array.from(new Set(allSections.map(s => s.type!))),    [allSections]);
+  const handleSectionFilter = async (filters: FilterSectionsProps) => {
+    setLoadingSections(true);
+    try {
+      const raw = await fetchFilteredSections(filters);
+      setFilteredSections(convertFilterSectionsToSections(raw || []));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingSections(false);
+    }
+  };
 
-  // fetch all applications on mount
   const [allApps, setAllApps] = useState<ApplicationDto[]>([]);
   useEffect(() => {
     if (!token) return;
@@ -55,40 +51,15 @@ const TAAllocationPage: React.FC = () => {
       .catch(err => console.error(err));
   }, [token]);
 
-  // selections
-  const [selCourse, setSelCourse] = useState<{
-    details?: SectionDetails;
-    schedule: SectionSchedule[];
-    need?: Need;
-    allocations: Allocation[];
-    hasCompleted: boolean;
-  } | null>(null);
-
+  const [selCourse, setSelCourse] = useState<Section | null>(null);
   const [selApp, setSelApp] = useState<ApplicationDto | null>(null);
 
-  // client‐side filtering
-  const filteredSections = useMemo(() => {
-    return allSections.filter(s => {
-      const text = `${s.deptCode} ${s.courseNum} ${s.name}`.toLowerCase();
-      if (courseQ.search    && !text.includes(courseQ.search.toLowerCase())) return false;
-      if (courseQ.deptCode  && s.deptCode  !== courseQ.deptCode)   return false;
-      if (courseQ.courseNum && s.courseNum !== courseQ.courseNum)  return false;
-      if (courseQ.section   && s.section   !== courseQ.section)    return false;
-      if (courseQ.term      && String(s.year) !== courseQ.term)    return false;
-      if (courseQ.type      && s.type      !== courseQ.type)       return false;
-      return true;
-    });
-  }, [allSections, courseQ]);
-
-  // load a section’s full mock info
   const loadCourse = async (details: SectionDetails) => {
-    if (!details.sectionId) return;
-    const full = await fetchSection(details.sectionId);
+  if (!details.sectionId) return;
+  try {
+    const full = await fetchSectionInfo(details.sectionId, token!);
     setSelCourse({
-      details: full.sectionDetails,
-      schedule: full.sectionSchedule || [],
-      need: full.need,
-      allocations: [],
+      ...full,
       hasCompleted: !!(
         full.need?.numOfHoursCurrentlyAllocated != null &&
         full.need?.requiredGradingHours != null &&
@@ -96,48 +67,34 @@ const TAAllocationPage: React.FC = () => {
       ),
     });
     setSelApp(null);
-  };
-
-// handle send offer
-const onSend = () => {
-  if (!selApp || !selCourse?.details?.sectionId || !selCourse.need) return;
-  sendOffer(
-    selApp,
-    selCourse.details.sectionId,
-    selCourse.need,
-    hasConflict,
-    () => {
-      // update the allocated hours
-      setSelCourse(prev => {
-        if (!prev) return prev;
-        const updated = (prev.need?.numOfHoursCurrentlyAllocated ?? 0)
-                        + selApp.wantWorkingHours;
-        return {
-          ...prev,
-          need: {
-            ...prev.need!,
-            numOfHoursCurrentlyAllocated: updated,
-          },
-          hasCompleted: updated >= (prev.need?.requiredGradingHours ?? 0),
-        };
-      });
-      setShowBanner(true);
-    }
-  );
+  } catch (err) {
+    console.error("Failed to load section:", err);
+  }
 };
-
+  const onSend = () => {
+    if (!selApp || !selCourse?.sectionDetails?.sectionId || !selCourse.need) return;
+    sendOffer(
+      selApp,
+      selCourse.sectionDetails.sectionId,
+      selCourse.need,
+      hasConflict,
+      async () => {
+        await loadCourse(selCourse.sectionDetails!);
+        setShowBanner(true);
+      }
+    );
+  };
 
   const loadApp = (a: ApplicationDto) => setSelApp(a);
 
-  // build calendar events
-  const courseEvents = (selCourse?.schedule || []).map((slot, i) => {
+  const courseEvents = (selCourse?.sectionSchedule || []).map((slot, i) => {
     const dayNum = getDayNumber(slot.day);
     const conflict = selApp?.availabilities.some(av =>
       dayNum === getDayNumber(av.day) &&
       slot.endTime !== undefined &&
-      av.startTime <  slot.endTime &&
+      av.startTime < slot.endTime &&
       slot.startTime !== undefined &&
-      av.endTime   >  slot.startTime
+      av.endTime > slot.startTime
     ) ?? false;
 
     return {
@@ -152,12 +109,12 @@ const onSend = () => {
 
   const appEvents = (selApp?.availabilities || []).map((slot, i) => {
     const dayNum = getDayNumber(slot.day);
-    const conflict = selCourse?.schedule.some(cs =>
+    const conflict = selCourse?.sectionSchedule?.some(cs =>
       dayNum === getDayNumber(cs.day) &&
       cs.endTime !== undefined &&
-      slot.startTime <  cs.endTime &&
+      slot.startTime < cs.endTime &&
       cs.startTime !== undefined &&
-      slot.endTime   >  cs.startTime
+      slot.endTime > cs.startTime
     ) ?? false;
 
     return {
@@ -172,18 +129,20 @@ const onSend = () => {
 
   const bgConflictEvents = (selApp?.availabilities || []).flatMap((slot, i) => {
     const dayNum = getDayNumber(slot.day);
-    return (selCourse?.schedule || [])
+    return (selCourse?.sectionSchedule || [])
       .filter(cs =>
         dayNum === getDayNumber(cs.day) &&
         cs.startTime !== undefined &&
         cs.endTime !== undefined &&
-        slot.startTime <  cs.endTime &&
-        slot.endTime   >  cs.startTime
+        slot.startTime < cs.endTime &&
+        slot.endTime > cs.startTime
       )
       .map((cs, j) => {
-        if (cs.startTime === undefined || cs.endTime === undefined) return null;
+        if (!cs.startTime || !cs.endTime) return null;
+
         const start = slot.startTime > cs.startTime ? slot.startTime : cs.startTime;
-        const end   = slot.endTime   < cs.endTime   ? slot.endTime   : cs.endTime;
+        const end = slot.endTime < cs.endTime ? slot.endTime : cs.endTime;
+              
         return {
           id: `conflict-bg-${i}-${j}`,
           daysOfWeek: [dayNum],
@@ -202,100 +161,89 @@ const onSend = () => {
     ...bgConflictEvents,
   ].filter((e): e is NonNullable<typeof e> => e !== null);
 
-  const required    = selCourse?.need?.requiredGradingHours ?? 0;
-  const allocated   = selCourse?.need?.numOfHoursCurrentlyAllocated ?? 0;
-  const remaining   = Math.max(required - allocated, 0);
-  const hoursOK     = allocated >= required;           
+  const required = selCourse?.need?.requiredGradingHours ?? 0;
+  const allocated = selCourse?.need?.numOfHoursCurrentlyAllocated ?? 0;
+  const remaining = Math.max(required - allocated, 0);
+  const hoursOK = allocated >= required;
   const hasConflict = bgConflictEvents.length > 0;
 
   return (
     <div className="p-8 min-h-screen space-y-8">
       <h1 className="text-4xl font-bold">TA Allocations</h1>
       <div className="grid lg:grid-cols-24 gap-6">
-
-        {/* COURSE FILTER + DETAILS PANEL */}
         <div className="lg:col-span-5 bg-white p-6 rounded shadow space-y-4">
           <h1 className="font-semibold text-xl">Course Filter</h1>
-          <input
-            type="text"
-            placeholder="Search…"
-            value={courseQ.search}
-            onChange={e => setCourseQ(q => ({ ...q, search: e.target.value }))}
-            className="w-full border rounded px-3 py-2"
+          <SectionFilter
+            mode="small"
+            onFilterChange={handleSectionFilter}
           />
-          <div className="grid grid-cols-3 gap-2">
-            <select
-              className="border rounded px-2 py-2"
-              value={courseQ.deptCode}
-              onChange={e => setCourseQ(q => ({ ...q, deptCode: e.target.value }))}
-            >
-              <option value="">Dept</option>
-              {deptCodes.map(dc => <option key={dc} value={dc}>{dc}</option>)}
-            </select>
-            <select
-              className="border rounded px-2 py-2"
-              value={courseQ.courseNum}
-              onChange={e => setCourseQ(q => ({ ...q, courseNum: e.target.value }))}
-            >
-              <option value="">Course #</option>
-              {courseNums.map(cn => <option key={cn} value={cn}>{cn}</option>)}
-            </select>
-            <select
-              className="border rounded px-2 py-2"
-              value={courseQ.section}
-              onChange={e => setCourseQ(q => ({ ...q, section: e.target.value }))}
-            >
-              <option value="">Section</option>
-              {sections.map(sec => <option key={sec} value={sec}>{sec}</option>)}
-            </select>
-            <select
-              className="border rounded px-2 py-2"
-              value={courseQ.term}
-              onChange={e => setCourseQ(q => ({ ...q, term: e.target.value }))}
-            >
-              <option value="">Term</option>
-              {terms.map(t => <option key={t} value={t}>{t}</option>)}
-            </select>
-            <select
-              className="border rounded px-2 py-2"
-              value={courseQ.type}
-              onChange={e => setCourseQ(q => ({ ...q, type: e.target.value }))}
-            >
-              <option value="">Type</option>
-              {types.map(tp => <option key={tp} value={tp}>{tp}</option>)}
-            </select>
-          </div>
-          <h1 className="font-semibold text-xl mt-2">Please select a course*</h1>
-          <div className="max-h-48 overflow-auto grid gap-2">
-            {filteredSections.map(s => {
-              const isSelected = selCourse?.details?.sectionId === s.sectionId;
-              return (
-                <button
-                  key={s.sectionId}
-                  onClick={() => loadCourse(s)}
-                  className={`
-                    w-full text-left px-3 py-2 rounded transition
-                    ${isSelected ? 'bg-gray-900 text-white' : 'bg-gray-300 hover:bg-gray-600'}
-                  `}
-                >
-                  {s.deptCode} {s.courseNum} • {s.section} • {s.year}
-                </button>
-              );
-            })}
-            {filteredSections.length === 0 && <p className="text-gray-500">No courses</p>}
-          </div>
-          {selCourse?.need && (
-            <div className="mt-4 bg-gray-100 p-4 rounded space-y-2">
-              <h4 className="font-semibold">Grading Need</h4>
-              <p><strong>Description:</strong><br />{selCourse.need.description}</p>
-              <p><strong>Allocated Hours:</strong> {selCourse.need.numOfHoursCurrentlyAllocated}</p>
-              <p><strong>Required Hours:</strong> {selCourse.need.requiredGradingHours}</p>
-              <p><strong>Prerequisites:</strong> {selCourse.need.courseNeeds?.map(c => `${c.deptCode} ${c.courseNum}`).join(', ')}</p>
-            </div>
+          {loadingSections ? (
+            <p>Loading courses…</p>
+          ) : (
+            <>
+              <h1 className="font-semibold text-xl mt-2">Please select a course*</h1>
+              <div className="max-h-48 overflow-auto grid gap-2">
+                {filteredSections.map(s => {
+                  const isSelected = selCourse?.sectionDetails?.sectionId === s.sectionDetails?.sectionId;
+                  return (
+                    <button
+                      key={s.sectionDetails?.sectionId}
+                      onClick={() => loadCourse(s.sectionDetails!)}
+                      className={`w-full text-left px-3 py-2 rounded transition ${
+                        isSelected ? 'bg-gray-900 text-white' : 'bg-gray-300 hover:bg-gray-600'
+                      }`}
+                    >
+                      {s.sectionDetails?.deptCode} {s.sectionDetails?.courseNum} • {s.sectionDetails?.section} • {s.sectionDetails?.semester} {s.sectionDetails?.year}
+                    </button>
+                  );
+                })}
+                {filteredSections.length === 0 && (
+                  <p className="text-gray-500">No courses found</p>
+                )}
+              </div>
+            </>
           )}
-        </div>
+         
+                  {selCourse?.need && selCourse.sectionDetails && (
+              <div className="mt-6 border-t pt-6 space-y-6">
+                {/* SECTION DETAILS */}
+                <section>
+                  <h2 className="font-bold text-lg">Section Details</h2>
+                  <div className="space-y-1 pl-2 text-sm">
+                    <p><strong>Year &amp; Semester:</strong> {selCourse.sectionDetails.semester} {selCourse.sectionDetails.year}</p>
+                    <p><strong>Section:</strong> {selCourse.sectionDetails.section}</p>
+                    <p><strong>Type:</strong> {selCourse.sectionDetails.type}</p>
+                  </div>
+                </section>
 
-        {/* CALENDAR & ALLOCATE PANEL */}
+                {/* COURSE NEED */}
+                <section>
+                  <h2 className="font-bold text-lg">Course Need</h2>
+                  <div className="space-y-1 pl-2 text-sm">
+                    <p><strong>Description:</strong> {selCourse.need.description}</p>
+                    <p><strong>Allocated Hours:</strong> {selCourse.need.numOfHoursCurrentlyAllocated}</p>
+                    <p><strong>Required Hours:</strong> {selCourse.need.requiredGradingHours}</p>
+                  </div>
+                </section>
+
+                {/* PREREQUISITES */}
+                <section>
+                  <h2 className="font-bold text-lg">Prerequisites</h2>
+                  <div className="pl-2 text-sm">
+                    {(selCourse.need.courseNeeds ?? []).length > 0
+                      ? <ul className="list-disc pl-4 space-y-1">
+                          {selCourse.need.courseNeeds!.map((c, i) => (
+                            <li key={i}>{c.deptCode} {c.courseNum}</li>
+                          ))}
+                        </ul>
+                      : <p>None</p>
+                    }
+                  </div>
+                </section>
+              </div>
+            )}
+
+        </div>
         <div className="lg:col-span-14 bg-white p-6 rounded shadow space-y-4">
           <h1 className="font-semibold text-xl">Weekly Calendar</h1>
           <div className="flex items-center space-x-6 mb-2">
@@ -313,7 +261,7 @@ const onSend = () => {
             </div>
           </div>
           <FullCalendar
-            key={selCourse?.details?.sectionId ?? 'none'}
+            key={selCourse?.sectionDetails?.sectionId ?? 'none'}
             plugins={[timeGridPlugin]}
             initialView="timeGridWeek"
             headerToolbar={false}
@@ -326,23 +274,22 @@ const onSend = () => {
             events={events}
             height="auto"
           />
-            <div className="bg-gray-100 p-4 rounded space-y-1">
-              <p>
-                Remaining Hours:{' '}
-                <span className={hoursOK ? 'text-green-600' : 'text-red-600'}>
-                  {hoursOK
-                    ? `All met (${allocated} of ${required})`
-                    : `${remaining} needed (Allocated: ${allocated}, Required: ${required})`}
-                </span>
-              </p>
-              <p>
-                Schedule Conflict:{' '}
-                <span className={hasConflict ? 'text-red-600' : 'text-green-600'}>
-                  {hasConflict ? 'Yes' : 'No'}
-                </span>
-              </p>
-            </div>
-
+          <div className="bg-gray-100 p-4 rounded space-y-1">
+            <p>
+              Remaining Hours:{' '}
+              <span className={hoursOK ? 'text-green-600' : 'text-red-600'}>
+                {hoursOK
+                  ? `All met (${allocated} of ${required})`
+                  : `${remaining} needed (Allocated: ${allocated}, Required: ${required})`}
+              </span>
+            </p>
+            <p>
+              Schedule Conflict:{' '}
+              <span className={hasConflict ? 'text-red-600' : 'text-green-600'}>
+                {hasConflict ? 'Yes' : 'No'}
+              </span>
+            </p>
+          </div>
           <div className="flex justify-end">
             <button
               onClick={onSend}
@@ -353,8 +300,6 @@ const onSend = () => {
             </button>
           </div>
         </div>
-
-        {/* APPLICATION FILTER + DETAILS PANEL */}
         <ApplicationFilterPanel
           appQ={appQ}
           setAppQ={setAppQ}
@@ -364,16 +309,13 @@ const onSend = () => {
           colSpanClass="lg:col-span-5"
         />
       </div>
-
-      {/* INLINE OFFER BANNER */}
       <OfferBanner
         visible={showBanner}
         student={selApp?.student!}
-        section={selCourse?.details!}
+        section={selCourse?.sectionDetails!}
         hours={selApp?.wantWorkingHours!}
         onClose={() => setShowBanner(false)}
       />
-
       <ToastContainer />
     </div>
   );
