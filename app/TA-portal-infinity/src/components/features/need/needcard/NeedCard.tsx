@@ -121,7 +121,7 @@ export default function NeedCard({ need, className = "", onUpdate, onDelete }: N
             />
           </div>
           <div className="flex space-x-2">
-            <div>
+            {/* <div>
               <label className="block text-slate-600">Allocated hours:</label>
               <input
                 type="number"
@@ -129,7 +129,7 @@ export default function NeedCard({ need, className = "", onUpdate, onDelete }: N
                 onChange={(e) => setForm({ ...form, numHoursCurrentlyAllocated: Number(e.target.value) })}
                 className="w-24 border border-gray-300 rounded p-1"
               />
-            </div>
+            </div> */}
             <div>
               <label className="block text-slate-600">Required hours:</label>
               <input

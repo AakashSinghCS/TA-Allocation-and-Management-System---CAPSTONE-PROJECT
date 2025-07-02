@@ -1,22 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import SectionFilter from "../../../../components/features/course/coursefilter/SectionFilter";
-import SectionList from "../../../../components/features/course/sectionlist/SectionList";
-import { useNavigate, useParams } from "react-router-dom";
-import type Section from "../../../../interfaces/section/Section";
-import type { Course } from "../../../../interfaces/course/Course";
-import { fetchFilteredSections, type FilterSectionsProps } from "../../../../api/sectionfilter/fetchFilteredSections";
-import { convertFilterSectionsToSections } from "../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections";
-import { fetchAssignInstructor } from "../../../../api/section/instructor/fetchAssignInstructor";
-import { useAuth } from "../../../../context/AuthContext";
-import { fetchGetNeed } from "../../../../api/need/fetchGetNeed";
-import { fetchUpdateNeed } from "../../../../api/need/fetchUpdateNeed";
 
 type Mode = "update" | "add";
 
-export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode }) {
+export default function AddAllocationHistory({ mode = 'add' }: { mode?: Mode }) {
   const { userId: instructorId } = useAuth();
   const navigate = useNavigate();
 
+  // extract params
   const { courseId: courseIdParam, year: yearParam, semester } = useParams<{
     courseId: string;
     year: string;
@@ -24,21 +14,19 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
   }>();
   const courseId = Number(courseIdParam);
   const year = Number(yearParam);
-  const [description, setDescription] = useState("");
-  const [requiredHours, setRequiredHours] = useState(0);
+
   const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedPrereqs, setSelectedPrereqs] = useState<Course[]>([]);
 
+  // track selected prerequisite sections
+  const [selectedPrereqs, setSelectedPrereqs] = useState<Section[]>([]);
+
+  // load existing prerequisites in update mode
   useEffect(() => {
     if (mode === 'update' && courseId && year && semester) {
-      fetchGetNeed(courseId,year,semester)
-      .then((need) => {
-        setSelectedPrereqs(need?.courseNeeds ?? [])
-        setDescription(need?.description ?? "");
-        setRequiredHours(need?.requiredGradingHours ?? -1);
-      })
-      .catch((err) => navigate('/error', { replace: true, state: { message: err.message } }));
+    //   fetchGetPrereqCourses(courseId, year, semester)
+    //     .then((sections) => setSelectedPrereqs(sections || []))
+    //     .catch((err) => navigate('/error', { replace: true, state: { message: err.message } }));
     }
   }, [mode, courseId, year, semester, navigate]);
 
@@ -64,35 +52,30 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
   // course‐level toggle (in “update” mode)
   const onSelectCourseForPrereq = useCallback(( cid: number, _dept: string, _num: string, _name: string) => {
     const group = filteredSections?.filter(sec => sec.sectionDetails?.id === cid) || [];
-    const existingIds = new Set(selectedPrereqs.map(c => c?.id));
-    const allSelected = group.every(s => existingIds.has(s.sectionDetails?.id));
+    const existingIds = new Set(selectedPrereqs.map(s => s.sectionDetails?.sectionId));
+    const allSelected = group.every(s => existingIds.has(s.sectionDetails?.sectionId));
 
     if (allSelected) {
       setSelectedPrereqs(prev =>
-        prev.filter(cou => cou?.id !== cid)
+        prev.filter(s => s.sectionDetails?.id !== cid)
       );
     } else {
-      const toAdd = group
-        .filter(s => !existingIds.has(s.sectionDetails?.id))
-        .map(s => s.sectionDetails as Course); 
+      const toAdd = group.filter(s =>
+        !existingIds.has(s.sectionDetails?.sectionId)
+      );
       setSelectedPrereqs(prev => [...prev, ...toAdd]);
     }
   }, [filteredSections, selectedPrereqs]);
 
-  const onRemovePrereq = (courseIdToRemove: number) => {
+  const onRemovePrereq = (sectionIdToRemove: number) => {
     setSelectedPrereqs(prev =>
-      prev.filter(c => c?.id !== courseIdToRemove)
+      prev.filter(s => s.sectionDetails?.sectionId !== sectionIdToRemove)
     );
   };
 
   const handleSavePrereqs = async () => {
-    // const ids = selectedPrereqs.map(c => c?.id ?? -1);
-    const ok = await fetchUpdateNeed({
-      courseId: courseId, 
-      year: year, 
-      semester: semester,
-      courseNeeds:selectedPrereqs
-    });
+    const ids = selectedPrereqs.map(s => s.sectionDetails?.sectionId ?? -1);
+    const ok = await fetchUpdatePrereqCourses(courseId, year, semester ?? '', ids);
     alert(ok ? 'Prerequisites updated!' : 'Failed to update prerequisites.');
     navigate(`/user/instructorprofile/${instructorId}/need`);
   };
@@ -110,47 +93,21 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
         </p>
       </div>
 
-      {mode === 'update'  && (
+      {mode === 'update' && selectedPrereqs.length > 0 && (
         <div className="mb-6">
-           <div>
-          <label htmlFor="description" className="block text-sm font-medium">
-            Additional Comments
-          </label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={3}
-            className="mt-1 block w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="requiredHours" className="block text-sm font-medium">
-            Required Grading Hours
-          </label>
-          <input
-            id="requiredHours"
-            type="number"
-            min={0}
-            value={requiredHours}
-            onChange={(e) => setRequiredHours(parseInt(e.target.value, 10) || 0)}
-            className="mt-1 block w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
           <h3 className="text-lg font-semibold mb-2">Selected Prerequisite Sections</h3>
           <div className="space-y-2">
-            {selectedPrereqs.map(cou => (
+            {selectedPrereqs.map(sec => (
               <div
-                key={cou?.id}
+                key={sec.sectionDetails?.sectionId}
                 className="flex items-center justify-between bg-slate-50 px-3 py-2 rounded"
               >
                 <span>
-                  {cou?.deptCode} {cou?.courseNum} – {cou?.name}
+                  {sec.sectionDetails?.deptCode} {sec.sectionDetails?.courseNum} – {sec.sectionDetails?.name}
                 </span>
                 <button
                   type="button"
-                  onClick={() => onRemovePrereq(cou.id ?? -1)}
+                  onClick={() => onRemovePrereq(sec.sectionDetails?.sectionId ?? -1)}
                   className="text-red-600 hover:underline text-sm"
                 >
                   Remove
