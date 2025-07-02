@@ -11,6 +11,7 @@ import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.infinity.applicationservice.dtos.ApplicationRequest;
+import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.Subject;
 
 import jakarta.persistence.CascadeType;
@@ -52,6 +53,9 @@ public class Application {
 
     @Enumerated(EnumType.STRING)
     private Subject subjectPreference3;
+
+    @Enumerated(EnumType.STRING)
+    private ApplicationType applicationType;
 
     @Column(nullable = false)
     private boolean wantRemote;
