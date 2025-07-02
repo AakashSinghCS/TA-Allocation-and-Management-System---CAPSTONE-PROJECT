@@ -1717,7 +1717,7 @@ Moreover, the design has been delayed because I felt like I needed to get the fu
 - course/section management
 
 
-## Saturday 6/28 (6/27~6/30)
+## Monday 6/30 (6/27~6/30)
 
 ### Timesheet
 Clockify report
@@ -1767,6 +1767,62 @@ I completed the functionality and tests for the course profiles and section prof
 I spent time today merging and creating pull requests, which also took some time.
 Tommorrow, I hope I will get the qualifications done and review Allen's and Aakash's PRs.
 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- Instructor updating needs frontend
+
+
+## Tuesday 7/01 (7/01~7/04)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July01.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Instructor Needs profile
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#119](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/119)
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I made the instructor needs profile work, somewhat with the backend. I'm missing some mappings so it doesn't not completely work yet.
+I'm afraid of seeing some bugs and problems in the future, because I've been creating things in a hurry.
+I started a new branch [UBCO-COSC499-S2025/team-10-capstone-infinity#315](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/315), which I will work on tommorrow and hopefully finish tommorrow after using the backend Aakash created.
+The qualifications will still have to be deferred, but I hope it's no later than tommorrw midday.
+This cycle, I still have to work on:
+- qualifications (integration with backend),
+- allocation history
+- CSV export
+- design improvements
+- and some other miscelleneous integration I may have forgotten.
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
