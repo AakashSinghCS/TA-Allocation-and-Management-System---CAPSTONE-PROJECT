@@ -6,7 +6,9 @@ import java.util.Set;
 
 import com.infinity.applicationservice.enums.Subject;
 
-public record ApplicationDto(Long studentId,
+public record ApplicationDto(
+                Long applicationId,
+                Long studentId,
                 List<Subject> preferences,
                 boolean wantRemote,
                 Integer wantWorkingHours,

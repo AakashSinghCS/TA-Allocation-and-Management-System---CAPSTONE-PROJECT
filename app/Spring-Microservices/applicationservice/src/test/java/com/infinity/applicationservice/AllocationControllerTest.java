@@ -52,6 +52,7 @@ public class AllocationControllerTest {
     void setup() {
         ApplicationDto application = new ApplicationDto(
             1L,
+            1L,
             List.of(),
             false,
             10,
@@ -92,6 +93,7 @@ public class AllocationControllerTest {
             1001L
         );
         ApplicationDto application = new ApplicationDto(
+            1L,
             1L,
             List.of(),
             false,

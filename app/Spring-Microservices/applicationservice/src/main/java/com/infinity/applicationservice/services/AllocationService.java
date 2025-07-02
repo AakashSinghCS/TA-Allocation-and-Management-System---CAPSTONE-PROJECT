@@ -44,6 +44,7 @@ public class AllocationService {
             
             Application application = allocation.getApplication();
             ApplicationDto applicationDto = new ApplicationDto(
+                application.getId(),
                 application.getStudentId(),
                 application.getSubjectPreferences(),
                 application.isWantRemote(),
@@ -83,6 +84,7 @@ public class AllocationService {
         
 
         ApplicationDto applicationDto = new ApplicationDto(
+                application.getId(),
                 application.getStudentId(),
                 application.getSubjectPreferences(),
                 application.isWantRemote(),
