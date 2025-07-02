@@ -162,6 +162,7 @@ public class ApplicationControllerTest {
         void testGetAllApplicationsWithStudentDto() throws Exception {
                 StudentDto studentDto = new StudentDto(1L, "Alex", "Wargo", 1234567, "COSC", 2022, 3);
                 ApplicationWithStudentDto dto = new ApplicationWithStudentDto(
+                                1L,
                                 studentDto,
                                 List.of(Subject.COSC, Subject.MATH),
                                 false,

@@ -10,5 +10,8 @@ export async function fetchApplications(
   if (!res.ok) {
     throw new Error(`Failed fetching applications: ${res.status} ${res.statusText}`);
   }
-  return res.json();
+  const applications = await res.json();
+  console.log('Fetched applications:', applications);
+  return applications;
+  
 }
