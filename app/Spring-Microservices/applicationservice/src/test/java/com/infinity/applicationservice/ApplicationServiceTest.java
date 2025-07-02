@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +37,7 @@ import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.services.ApplicationService;
+import com.infinity.applicationservice.utility.ApplicationMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class ApplicationServiceTest {
@@ -45,6 +47,9 @@ public class ApplicationServiceTest {
 
     @Mock
     UserInterface userInterface;
+
+    @Mock
+    ApplicationMapper applicationMapper;
 
     @InjectMocks
     ApplicationService applicationService;
@@ -106,12 +111,33 @@ public class ApplicationServiceTest {
 
         when(applicationRepository.existsByStudentIdAndYear(1L, 2025)).thenReturn(false);
         when(applicationRepository.save(Mockito.any(Application.class)))
-            .thenAnswer(invocation -> invocation.getArgument(0));
+            .thenAnswer(invocation -> {
+                Application saved = invocation.getArgument(0);
+                saved.setSubjectPreference1(Subject.COSC);
+                saved.setWantRemote(false);
+                saved.setWantWorkingHours(6);
+                saved.setSubmittedAt(LocalDate.now().atStartOfDay());
+                return saved;
+            });
 
-        ApplicationDto applicationDto = applicationService.submitApplication(applicationRequest, 1L,
-                List.of("ROLE_STUDENT"));
-        assertEquals(applicationDto.studentId(), 1L);
+        ApplicationDto mockedDto = new ApplicationDto(
+            1L,
+            List.of(Subject.COSC),
+            false,
+            6,
+            LocalDate.now().atStartOfDay(),
+            Set.of()
+        );
+
+        when(applicationMapper.toDto(Mockito.any(Application.class))).thenReturn(mockedDto);
+
+        ApplicationDto applicationDto = applicationService.submitApplication(applicationRequest, 1L, List.of("ROLE_STUDENT"));
+
+        assertEquals(1L, applicationDto.studentId());
         assertFalse(applicationDto.wantRemote());
+
+        verify(applicationRepository).save(Mockito.any(Application.class));
+        verify(applicationMapper).toDto(Mockito.any(Application.class));
     }
     
     @Test
@@ -140,9 +166,21 @@ public class ApplicationServiceTest {
 
         when(applicationRepository.findByStudentIdAndYear(1L, 2025)).thenReturn(Optional.of(application));
 
+        ApplicationDto mockedDto = new ApplicationDto(
+            1L,
+            List.of(Subject.COSC),
+            false,
+            6,
+            application.getSubmittedAt(),
+            Set.of()
+        );
+
+        when(applicationMapper.toDto(application)).thenReturn(mockedDto);
+
         ApplicationDto applicationDto = applicationService.getApplication(1L, 2025, 1L,
                 List.of("ROLE_STUDENT"));
-        assertEquals(applicationDto.studentId(), 1L);
+
+        assertEquals(1L, applicationDto.studentId());
         assertFalse(applicationDto.wantRemote());
     }
 
@@ -195,14 +233,32 @@ public class ApplicationServiceTest {
     
     @Test
     void testUpdateApplication_Success() {
-        ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC), false, 6, availabilities);
+        ApplicationRequest applicationRequest = new ApplicationRequest(
+            List.of(Subject.COSC), false, 6, availabilities
+        );
+
         Application application = new Application(1L, List.of(Subject.DATA, Subject.MATH, Subject.PHYS), true, 12);
         when(applicationRepository.findByStudentIdAndYear(1L, 2025)).thenReturn(Optional.of(application));
-        ApplicationDto applicationDto = applicationService.updateApplication(applicationRequest, 1L, 1L,
-                List.of("ROLE_STUDENT"));
+
+        ApplicationDto mockedDto = new ApplicationDto(
+            1L,
+            List.of(Subject.COSC),
+            false,
+            6,
+            application.getSubmittedAt(),
+            Set.of()
+        );
+
+        when(applicationMapper.toDto(application)).thenReturn(mockedDto);
+        when(applicationRepository.save(application)).thenReturn(application);
+
+        ApplicationDto applicationDto = applicationService.updateApplication(
+            applicationRequest, 1L, 1L, List.of("ROLE_STUDENT")
+        );
+
         verify(applicationRepository).save(application);
         assertFalse(applicationDto.wantRemote());
-        assertEquals(applicationDto.preferences().get(0), application.getSubjectPreferences().get(0));
+        assertEquals(Subject.COSC, applicationDto.preferences().get(0));
     }
     
     @Test
@@ -227,40 +283,77 @@ public class ApplicationServiceTest {
 
     @Test
     void testGetAllApplications_Success() {
-        List<Application> applications = List.of(new Application(1L, List.of(Subject.COSC), false, 6),
-                new Application(1L, List.of(Subject.DATA), true, 12));
+        Application app1 = new Application(1L, List.of(Subject.COSC), false, 6);
+        Application app2 = new Application(1L, List.of(Subject.DATA), true, 12);
+
+        List<Application> applications = List.of(app1, app2);
 
         when(applicationRepository.findAllByStudentId(1L)).thenReturn(Optional.of(applications));
 
+        ApplicationDto dto1 = new ApplicationDto(
+            1L,
+            List.of(Subject.COSC),
+            false,
+            6,
+            app1.getSubmittedAt(),
+            Set.of()
+        );
+
+        ApplicationDto dto2 = new ApplicationDto(
+            1L,
+            List.of(Subject.DATA),
+            true,
+            12,
+            app2.getSubmittedAt(),
+            Set.of()
+        );
+
+        when(applicationMapper.toDto(app1)).thenReturn(dto1);
+        when(applicationMapper.toDto(app2)).thenReturn(dto2);
+
         List<ApplicationDto> applicationDtos = applicationService.getAllApplicationsByStudentId(1L, 1L,
                 List.of("ROLE_STUDENT"));
-        assertEquals(applicationDtos.get(0).studentId(), 1L);
-        assertEquals(applicationDtos.get(1).studentId(), 1L);
+
+        assertEquals(1L, applicationDtos.get(0).studentId());
+        assertEquals(1L, applicationDtos.get(1).studentId());
         assertFalse(applicationDtos.get(0).wantRemote());
         assertTrue(applicationDtos.get(1).wantRemote());
-        assertEquals(applicationDtos.get(0).wantWorkingHours(), 6);
-        assertEquals(applicationDtos.get(1).wantWorkingHours(), 12);
+        assertEquals(6, applicationDtos.get(0).wantWorkingHours());
+        assertEquals(12, applicationDtos.get(1).wantWorkingHours());
     }
     
     @Test
-void testGetAllApplicationsWithStudentData() {
-    Application app = new Application(1L, List.of(Subject.COSC, Subject.MATH), false, 6);
-    app.setSubmittedAt(LocalDateTime.of(2024, 1, 1, 12, 0));
-    StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", 1234567, "COSC", 2022, 3);
+    void testGetAllApplicationsWithStudentData() {
+        Application app = new Application(1L, List.of(Subject.COSC, Subject.MATH), false, 6);
+        app.setSubmittedAt(LocalDateTime.of(2024, 1, 1, 12, 0));
 
-    when(applicationRepository.findByFilters(2024, false, 6, Subject.COSC, null, null))
-            .thenReturn(List.of(app));
-    when(userInterface.getStudentById(1L)).thenReturn(ResponseEntity.ok(studentDto));
+        StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", 1234567, "COSC", 2022, 3);
 
-    List<ApplicationWithStudentDto> result = applicationService.getAllApplications(
-            2024, false, 6, Subject.COSC, null, null);
-    assertEquals(1, result.size());
+        ApplicationWithStudentDto expectedDto = new ApplicationWithStudentDto(
+            studentDto,
+            List.of(Subject.COSC, Subject.MATH),
+            false,
+            6,
+            LocalDateTime.of(2024, 1, 1, 12, 0),
+            Set.of()
+        );
 
-    ApplicationWithStudentDto dto = result.get(0);
-    assertEquals(studentDto, dto.student());
-    assertEquals(false, dto.wantRemote());
-    assertEquals(6, dto.wantWorkingHours());
-    assertTrue(dto.preferences().contains(Subject.COSC));
-}
+        when(applicationRepository.findByFilters(2024, false, 6, Subject.COSC, null, null))
+                .thenReturn(List.of(app));
+        when(userInterface.getStudentById(1L)).thenReturn(ResponseEntity.ok(studentDto));
+        when(applicationMapper.toDtoWithStudent(app, studentDto)).thenReturn(expectedDto);
+
+        List<ApplicationWithStudentDto> result = applicationService.getAllApplications(
+                2024, false, 6, Subject.COSC, null, null);
+
+        assertEquals(1, result.size());
+        ApplicationWithStudentDto dto = result.get(0);
+
+        assertEquals(studentDto, dto.student());
+        assertEquals(false, dto.wantRemote());
+        assertEquals(6, dto.wantWorkingHours());
+        assertTrue(dto.preferences().contains(Subject.COSC));
+    }
+
     
 }
