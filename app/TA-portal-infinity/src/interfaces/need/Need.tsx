@@ -6,7 +6,7 @@ export interface Need {
     requiredGradingHours? : number;
     courseNeeds?: Course[];
     year? :number;
-    semester? : number;
+    semester? : string;
     courseId? : number;
     id? : number;
 }

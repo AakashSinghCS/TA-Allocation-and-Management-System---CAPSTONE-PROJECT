@@ -11,7 +11,7 @@ import type { SectionProfile } from "../../interfaces/section/Section";
 export async function fetchUpdateNeed(need : Need): Promise<boolean | null> {
   const token = localStorage.getItem("token");
   const BASE = `http://localhost:8080/needs/update/${need.courseId}/${need.year}/${need.semester}`;
-
+// const ids = selectedPrereqs.map(c => c?.id ?? -1);
   try {
     const res = await fetch(BASE, {
       method: "PUT",
