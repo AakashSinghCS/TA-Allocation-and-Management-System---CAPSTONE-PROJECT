@@ -62,7 +62,7 @@ class AllocationServiceTest {
         when(userInterface.getStudentById(1L))
             .thenReturn(ResponseEntity.ok(new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4)));
         when(sectionInterface.getSectionById(1001L))
-            .thenReturn(new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499")));
+            .thenReturn(new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L, "COSC","Capstone","499")));
 
         List<AllocationHistoryDto> result = allocationService.getAllocationsByStudentId(studentId);
 
@@ -111,11 +111,12 @@ class AllocationServiceTest {
 
         StudentDto studentDto = new StudentDto(studentId, "Test", "User", 63260442, "BSC", 2022, 4);
         SectionDto sectionDto = new SectionDto(
-            sectionId,
+                sectionId,
+            2025,
             "Fall",
             "T01",
             SectionType.TUTORIAL,
-            new CourseDto("COSC","Capstone","499")
+            new CourseDto(1L, "COSC","Capstone","499")
         );
 
         when(allocationRepository.save(any(Allocation.class))).thenReturn(savedAllocation);

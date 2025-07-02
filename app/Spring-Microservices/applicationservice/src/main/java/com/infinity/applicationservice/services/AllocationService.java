@@ -68,7 +68,7 @@ public class AllocationService {
 
     public AllocationHistoryDto allocateStudent(AllocationRequest request) {
         Application application = applicationRepository.findById(request.applicationId())
-            .orElseThrow(() -> new EntityNotFoundException("Application not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Application not found"));
 
         Allocation allocation = new Allocation();
         allocation.setApplication(application);
@@ -78,10 +78,8 @@ public class AllocationService {
         allocation.setSectionId(request.sectionId());
 
         Allocation saved = allocationRepository.save(allocation);
-
         StudentDto student = studentInterface.getStudentById(request.studentId()).getBody();
         SectionDto section = sectionInterface.getSectionById(request.sectionId());
-        
 
         ApplicationDto applicationDto = new ApplicationDto(
                 application.getId(),
@@ -94,7 +92,7 @@ public class AllocationService {
                     .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime().toString(), a.getEndTime().toString()))
                     .collect(Collectors.toSet())
         );
-
+        System.out.println("after creating application dto");
         return new AllocationHistoryDto(
             saved.getId(),
             student,
