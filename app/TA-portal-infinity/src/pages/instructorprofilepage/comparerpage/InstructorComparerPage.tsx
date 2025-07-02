@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import Comparer from "./comparer/Comparer";
 import InstructorTabNav from "../../../components/layout/tabnav/instructortabnav/InstructorTabNav";
 import { GenericAPIContainer } from "../../../utility/genericapicontainer/GenericAPIContainer";
-import { fetchAllInstructorTeachesSection } from "../../../api/instructor/fetchAllInstructorTeachesSection";
+import { fetchAllSectionsAndNeedAndAllocations } from "../../../api/instructor/fetchAllSectionsAndNeedAndAllocations";
 import type Section from "../../../interfaces/section/Section";
 
 
@@ -15,8 +15,8 @@ export default function InstructorComparerPage (){
             <h2 className="text-xl font-semibold mb-4">Compare a TA to a section the instructor teaches</h2>
             <p className="text-xs text-slate-600">If the instructor has specified the course prerequisites for each section he is teaching,
               use this application to see which sections the instructor teaches the student fulfills course prerequisites for </p>
-            <GenericAPIContainer<Section[]>
-                      fetchFunction={() => fetchAllInstructorTeachesSection(iId)}
+            <GenericAPIContainer<Section[] | null>
+                      fetchFunction={() => fetchAllSectionsAndNeedAndAllocations(iId)}
                       render={sections => (
                         <Comparer
                           sections={sections ?? []}

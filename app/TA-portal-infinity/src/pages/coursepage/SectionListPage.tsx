@@ -5,6 +5,8 @@ import SectionFilter from '../../components/features/course/coursefilter/Section
 import { fetchFilteredSections, type FilterSectionsProps } from '../../api/sectionfilter/fetchFilteredSections';
 import type Section from '../../interfaces/section/Section';
 import { convertFilterSectionsToSections } from '../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
+import { fetchDeleteSection } from '../../api/section/fetchDeleteSection';
+import { fetchDeleteCourse } from '../../api/course/fetchDeleteCourse';
 
 
 export default function SectionListPage() {
@@ -28,7 +30,13 @@ export default function SectionListPage() {
   };
 
   // this will be passed down to <SectionList> and called after delete
-  const handleDeleted = () => {
+  const handleDeleted = async(id : number, isCourse : boolean) => {
+
+    if(isCourse){
+      await fetchDeleteCourse(id);
+    }else{
+      await fetchDeleteSection(id);
+    }
     if (lastFilters) {
       void handleFilterChange(lastFilters);
     }

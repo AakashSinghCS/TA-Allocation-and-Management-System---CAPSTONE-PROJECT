@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.infinity.applicationservice.dtos.AllocationDto;
 import com.infinity.applicationservice.dtos.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.AllocationRequest;
 import com.infinity.applicationservice.dtos.ApplicationDto;
@@ -111,4 +112,22 @@ public class AllocationService {
         allocationRepository.save(allocation);
     }
 
+    public List<AllocationDto> getAllocationsBySectionId(Long sectionId) {
+        List<Allocation> allocations = allocationRepository.findBySectionId(sectionId);
+
+        return allocations.stream()
+            .map(allocation -> {
+                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();;
+                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+
+                return new AllocationDto(
+                    allocation.getId(),
+                    student,
+                    allocation.isConfirmed(),
+                    allocation.getNumberOfHours(),
+                    section
+                );
+            })
+            .toList();
+    }
 }

@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.courseservice.controllers.CourseController;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 import com.infinity.courseservice.dtos.AllocationDtos.OfferDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
@@ -68,7 +69,7 @@ public class CourseControllerTest {
     void testAddCourse() throws Exception {
             CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null,
                             null, null,
-                            null);
+                            null,null);
             CourseDto response = new CourseDto(1L, "COSC", "Distributed Systems", "455");
 
             when(courseService.addCourse(any(CourseRequest.class))).thenReturn(response);
@@ -86,7 +87,7 @@ public class CourseControllerTest {
     void testUpdateCourse() throws Exception {
             CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null,
                             null, null,
-                            null);
+                            null,null);
             CourseDto response = new CourseDto(1L, "COSC", "Distributed Systems", "455");
 
             when(courseService.updateCourse(any(CourseRequest.class), any())).thenReturn(response);
@@ -153,11 +154,10 @@ public class CourseControllerTest {
     NeedDto need = new NeedDto(10L, courseId, "Marking", 30, 10, year, semester);
     CourseDto course = new CourseDto(courseId, "COSC", "Security", "430");
         SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
-    AllocationHistoryDto alloc = new AllocationHistoryDto(1L,
+    AllocationDto alloc = new AllocationDto(1L,
     new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),
-                    new OfferDto(101L, true, "Lab marking"),
                     true, 10,
-        new SectionDtoNoCourse(5L, 2025, "W1", "001", SectionType.LABORATORY)
+        new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
     );
 
                 CourseNeedAndAllocations response = new CourseNeedAndAllocations(sectionDto, need, List.of(alloc));
@@ -179,11 +179,11 @@ public class CourseControllerTest {
                 CourseDto course = new CourseDto(1L, "COSC", "Networks", "329");
                 NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2");
                 SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
-                AllocationHistoryDto alloc = new AllocationHistoryDto(2L,
-                                new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),
-                                new OfferDto(101L, true, "Lab marking"),
-                                true, 12,
-                                new SectionDtoNoCourse(6L, 2024, "W2", "002", SectionType.LECTURE));
+                AllocationDto alloc = new AllocationDto(1L,
+    new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),
+                    true, 10,
+        new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
+    );
 
                 CourseNeedAndAllocations entry = new CourseNeedAndAllocations(sectionDto, need, List.of(alloc));
 
