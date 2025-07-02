@@ -1,9 +1,10 @@
 type Applicant = {
- studentId: number;
+  id: number;                
   firstName: string;
   lastName: string;
-  availability: string[];
-  completedCourses: string[];
-  requestedHours: number;
+  studentNum: string | null;
+  program: string | null;
+  enrollmentYear: number | null;
+  schoolYear: string | null;
 };
 export type { Applicant };

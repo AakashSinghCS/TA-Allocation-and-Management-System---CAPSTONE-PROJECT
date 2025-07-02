@@ -6,11 +6,11 @@ import java.util.Set;
 
 import com.infinity.applicationservice.enums.Subject;
 
-public record ApplicationWithStudentDto(
-        StudentDto student,
-        List<Subject> preferences,
-        boolean wantRemote,
-        Integer wantWorkingHours,
-        LocalDateTime timeSubmitted,
-        Set<AvailabilityDto> availabilities) {
+public record ApplicationWithStudentDto(Long applicationId,
+                StudentDto student,
+                List<Subject> preferences,
+                boolean wantRemote,
+                Integer wantWorkingHours,
+                LocalDateTime timeSubmitted,
+                Set<AvailabilityDto> availabilities) {
 }

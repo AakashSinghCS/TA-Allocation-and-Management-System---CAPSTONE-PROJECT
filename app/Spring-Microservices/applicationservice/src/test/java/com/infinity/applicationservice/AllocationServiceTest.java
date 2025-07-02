@@ -122,6 +122,7 @@ class AllocationServiceTest {
         ApplicationDto applicationDto = new ApplicationDto(studentId, null, false, null, LocalDateTime.now(), Set.of());
         AllocationHistoryDto expectedDto = new AllocationHistoryDto(500L, studentDto, applicationDto, false, 5, sectionDto);
 
+
         when(applicationRepository.findById(applicationId)).thenReturn(Optional.of(application));
         when(allocationRepository.save(any(Allocation.class))).thenReturn(savedAllocation);
         when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
