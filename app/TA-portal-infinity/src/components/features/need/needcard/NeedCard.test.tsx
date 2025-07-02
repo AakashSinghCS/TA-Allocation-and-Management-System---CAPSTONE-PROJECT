@@ -1,25 +1,43 @@
-import { render, screen, within } from '@testing-library/react'
-import NeedCard from './NeedCard'
-import { mockSectionNeedCOSC121 } from '../../../../mocked-objects/section/mockSectionCOSC121'
-import { MemoryRouter } from 'react-router-dom'
+import { render, screen, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import NeedCard from './NeedCard';
+import { mockSectionCOSC121 } from '../../../../mocked-objects/section/mockSectionCOSC121';
+import type { Need } from '../../../../interfaces/need/Need';
+
 describe('NeedCard', () => {
   it('shows placeholder when no need is passed', () => {
-    render(<MemoryRouter><NeedCard /></MemoryRouter>)
-    expect(screen.getByText(/no data/i)).toBeInTheDocument()
-  })
+    render(
+      <MemoryRouter>
+        <NeedCard />
+      </MemoryRouter>
+    );
+    expect(screen.getByText(/no data/i)).toBeInTheDocument();
+  });
 
-  it('renders description, hours and course list when need is provided', () => {
+  it('renders description, hours and prerequisites when need is provided', () => {
+    // grab the Need object out of the mock section
+    const need : Need = mockSectionCOSC121.need!;
+    
+    render(
+      <MemoryRouter>
+        <NeedCard need={need} />
+      </MemoryRouter>
+    );
 
-    render(<MemoryRouter><NeedCard need={mockSectionNeedCOSC121}  /></MemoryRouter>)
+    // description
+    expect(screen.getByText(need.description!)).toBeInTheDocument();
 
-    expect(screen.getByText('I need smart people')).toBeInTheDocument()
+    const card = screen.getByTestId('need-card');
 
+    // allocated / required hours
+    expect(card).toHaveTextContent(
+      `Allocated hours: ${need.numHoursCurrentlyAllocated} / Required hours: ${need.requiredGradingHours}`
+    );
 
-    const card = screen.getByTestId('need-card')
-    expect(card).toHaveTextContent('Allocated hours: 12 / Required hours: 12')
-
-
-    expect(within(card).getAllByText(/cosc\s*111/i).length).toBeGreaterThan(0);
-    expect(within(card).getAllByText(/math\s*125/i).length).toBeGreaterThan(0);
-  })
-})
+    // each prereq course link
+    need.courseNeeds!.forEach((course) => {
+      const regex = new RegExp(`${course.deptCode}\\s*${course.courseNum}`, 'i');
+      expect(within(card).getByText(regex)).toBeInTheDocument();
+    });
+  });
+});

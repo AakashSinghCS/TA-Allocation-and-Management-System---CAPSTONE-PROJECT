@@ -148,17 +148,10 @@ export default function NeedCard({ need, className = "", onUpdate, onDelete }: N
             <span className="text-slate-600">Additional Comments: </span>
             <span className="font-medium">{need?.description}</span>
           </p>
-          <div className="flex mb-1">
-            <span className="text-slate-600">Allocated hours: </span>
-            <span className="font-medium">{need?.numHoursCurrentlyAllocated ?? "-"}</span>
-            <span>&nbsp;/&nbsp;</span>
-            <span className="text-slate-600">Required hours: </span>
-            <span className="font-medium">{need?.requiredGradingHours ?? "-"}</span>
-            {need?.numHoursCurrentlyAllocated && need.requiredGradingHours &&
-              need.numHoursCurrentlyAllocated / need.requiredGradingHours > 1 && (
-                <span className="text-red-600 ml-2">This section is overbooked!</span>
-              )}
-          </div>
+          <NeedHoursDisplay
+            allocated={need?.numHoursCurrentlyAllocated}
+            required={need?.requiredGradingHours}
+          />
           <div className="flex">
             <span className="text-slate-600">Course Prerequisites: </span>
             {need?.courseNeeds?.length ? (
@@ -177,6 +170,27 @@ export default function NeedCard({ need, className = "", onUpdate, onDelete }: N
             )}
           </div>
         </>
+      )}
+    </div>
+  );
+}
+
+function NeedHoursDisplay({ allocated, required }: { allocated?: number | null; required?: number | null }) {
+  const isOverbooked =
+    typeof allocated === "number" &&
+    typeof required === "number" &&
+    required > 0 &&
+    allocated / required > 1;
+
+  return (
+    <div className="flex mb-1">
+      <span className="text-slate-600">Allocated hours: </span>
+      <span className="font-medium">{allocated ?? "-"}</span>
+      <span>&nbsp;/&nbsp;</span>
+      <span className="text-slate-600">Required hours: </span>
+      <span className="font-medium">{required ?? "-"}</span>
+      {isOverbooked && (
+        <span className="text-red-600 ml-2">This section is overbooked!</span>
       )}
     </div>
   );

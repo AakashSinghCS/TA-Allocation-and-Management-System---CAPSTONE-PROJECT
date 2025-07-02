@@ -7,6 +7,7 @@ import type { Need } from "../../../../interfaces/need/Need";
 import { fetchUpdateNeed } from "../../../../api/need/fetchUpdateNeed";
 import { useEffect, useState } from "react";
 import { fetchDeleteNeed } from "../../../../api/need/fetchDeleteNeed";
+import { fetchUnassignInstructor } from "../../../../api/section/instructor/fetchUnassignInstructor";
 
 interface NeedViewerProps {
   instructorId: number;
@@ -50,6 +51,20 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
     }
   };
 
+  const onDeleteSection = async (s: Section) => {
+    const confirm = window.confirm(
+      "Do you really wish to unassign yourself from this section?"
+    );
+    if (confirm) {
+      const ok = await fetchUnassignInstructor(s.sectionDetails?.sectionId ?? -1, instructorId);
+      if (ok) {
+        setSections((prev) =>
+          prev.filter((sec) => sec.sectionDetails?.sectionId !== s.sectionDetails?.sectionId)
+        );
+      }
+    }
+  }
+
   return (
     <div className={"grid gap-3 " + className}>
       {/* Header row for large screens */}
@@ -62,7 +77,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
       {/* Section rows */}
       {sections.map((sec) => (
         <div key={sec.sectionDetails?.id} className="grid gap-2 sm:grid-cols-1 lg:grid-cols-3">
-          <SectionCard section={sec} className="" />
+          <SectionCard section={sec} className="" onDelete={onDeleteSection} />
 
           {/* Need column */}
           {sec.need ? (

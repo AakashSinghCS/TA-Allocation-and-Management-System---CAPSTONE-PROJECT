@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 import com.infinity.courseservice.dtos.AllocationDtos.OfferDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
@@ -212,25 +214,24 @@ public class CourseServiceTest {
 
         NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester);
 
-        AllocationHistoryDto allocation = new AllocationHistoryDto(
-                1L,
-                new StudentDto(10L, "John", "Smith", 1234, "COSC", 2021, 4),
-                new OfferDto(100L, true, "Lab marking"),
-                true,
-                12,
-                new SectionDtoNoCourse(5L, year, semester, "001", SectionType.LECTURE));
+        AllocationDto dto = new AllocationDto(
+            42L,
+            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),
+            true,
+            10,
+            new SectionDto(99L, 2024,"W1","001",SectionType.LECTURE, new CourseDto(1L,"COSC", "CS", "112"))
+        );
 
         when(sectionRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)).thenReturn(Optional.of(section));
         when(needService.getNeed(courseId, year, semester)).thenReturn(need);
-        when(applicationInterface.getStudentAllocationHistory(courseId))
-                .thenReturn(ResponseEntity.ok(List.of(allocation)));
+        when(applicationInterface.getAllocationsBySectionId(section.getId())).thenReturn(ResponseEntity.ok(List.of(dto)));
 
         CourseNeedAndAllocations result = courseService.getCourseNeedAndAllocations(courseId, year, semester);
 
         assertEquals("Networks", result.section().course().name());
         assertEquals("Grading", result.need().description());
         assertEquals(1, result.allocations().size());
-        assertEquals("John", result.allocations().get(0).student().firstName());
+        assertEquals("Jane", result.allocations().get(0).student().firstName());
     }
 
     @Test
@@ -254,28 +255,28 @@ public class CourseServiceTest {
         );
 
             NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1");
-            AllocationHistoryDto alloc = new AllocationHistoryDto(
-                            3L,
-                            new StudentDto(2L, "Alice", "Wang", 9999, "COSC", 2022, 3),
-                            new OfferDto(200L, false, "Lab Marking"),
-                            true,
-                            8,
-                            new SectionDtoNoCourse(10L, 2025, "W1", "001", SectionType.LECTURE));
+            AllocationDto dto = new AllocationDto(
+            42L,
+            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),
+            true,
+            10,
+            new SectionDto(99L, 2024,"W1","001",SectionType.LECTURE, new CourseDto(1L,"COSC", "CS", "112"))
+        );
 
             when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1, section2));
             when(needService.getNeed(1L, 2025, "W1")).thenReturn(need);
-            when(applicationInterface.getStudentAllocationHistory(1L)).thenReturn(ResponseEntity.ok(List.of(alloc)));
+                when(applicationInterface.getAllocationsBySectionId(10L)).thenReturn(ResponseEntity.ok(List.of(dto)));
 
             List<CourseNeedAndAllocations> result = courseService.getInstructorCourseNeedsAndAllocations(instructorId);
 
             assertEquals(1, result.size());
             assertEquals("Security", result.get(0).section().course().name());
             assertEquals("Labs", result.get(0).need().description());
-            assertEquals("Alice", result.get(0).allocations().get(0).student().firstName());
+            assertEquals("Jane", result.get(0).allocations().get(0).student().firstName());
     }
 
     @Test
-    void testGetInstructorCourseNeedsAndAllocations_IgnoresMissingNeed() {
+    void testGetInstructorCourseNeedsAndAllocations_DoesNotIgnorenWhenMissingNeed() {
             Long instructorId = 77L;
 
             SectionDto section1 = new SectionDto(
@@ -284,10 +285,10 @@ public class CourseServiceTest {
 
             when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1));
             when(needService.getNeed(1L, 2025, "W1")).thenThrow(new NotFoundException("Need not found"));
-
+                when(applicationInterface.getAllocationsBySectionId(10L)).thenReturn(ResponseEntity.ok(Collections.emptyList()));
             List<CourseNeedAndAllocations> result = courseService.getInstructorCourseNeedsAndAllocations(instructorId);
 
-            assertEquals(0, result.size());
+            assertEquals(1, result.size());
     }
     
     @Test

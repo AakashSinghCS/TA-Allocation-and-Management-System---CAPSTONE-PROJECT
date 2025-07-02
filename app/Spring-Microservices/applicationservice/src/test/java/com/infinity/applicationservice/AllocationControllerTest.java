@@ -142,4 +142,26 @@ public class AllocationControllerTest {
         verify(allocationService, times(1)).updateConfirmationStatus(123L, false);
     }
 
+    @Test
+    public void getBySectionId_ReturnsOkAndListOfAllocationDto() throws Exception {
+        // given
+        AllocationDto dto = new AllocationDto(
+            42L,
+            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),
+            true,
+            10,
+            new SectionDto(99L, "term","section",SectionType.LECTURE, new CourseDto("COSC", "CS", "112"))
+        );
+        when(allocationService.getAllocationsBySectionId(99L)).thenReturn(List.of(dto));
+
+        // when / then
+        mvc.perform(get("/allocations/section/99"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].id").value(42))
+            .andExpect(jsonPath("$[0].student.id").value(7))
+            .andExpect(jsonPath("$[0].isConfirmed").value(true))
+            .andExpect(jsonPath("$[0].numberOfHours").value(10))
+            .andExpect(jsonPath("$[0].section.id").value(99));
+    }
 }

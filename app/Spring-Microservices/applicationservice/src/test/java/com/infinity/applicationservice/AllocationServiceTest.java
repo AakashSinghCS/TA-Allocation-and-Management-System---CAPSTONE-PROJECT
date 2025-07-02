@@ -10,7 +10,6 @@ import com.infinity.applicationservice.repositories.AllocationRepository;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.services.AllocationService;
 
-
 import jakarta.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,13 +17,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
 
 class AllocationServiceTest {
 
@@ -40,7 +39,8 @@ class AllocationServiceTest {
         sectionInterface = Mockito.mock(SectionInterface.class);
         userInterface = Mockito.mock(UserInterface.class);
         applicationRepository = Mockito.mock(ApplicationRepository.class);
-        allocationService = new AllocationService(allocationRepository, applicationRepository, sectionInterface, userInterface);
+        allocationService = new AllocationService(allocationRepository, applicationRepository, sectionInterface,
+                userInterface);
     }
 
     @Test
@@ -58,11 +58,13 @@ class AllocationServiceTest {
         allocation.setApplication(application);
 
         when(allocationRepository.findByStudentId(studentId))
-            .thenReturn(List.of(allocation));
+                .thenReturn(List.of(allocation));
         when(userInterface.getStudentById(1L))
-            .thenReturn(ResponseEntity.ok(new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4)));
+                .thenReturn(ResponseEntity
+                        .ok(new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4)));
         when(sectionInterface.getSectionById(1001L))
-            .thenReturn(new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499")));
+                .thenReturn(new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL,
+                        new CourseDto("COSC", "Capstone", "499")));
 
         List<AllocationHistoryDto> result = allocationService.getAllocationsByStudentId(studentId);
 
@@ -73,7 +75,6 @@ class AllocationServiceTest {
         assertTrue(dto.isConfirmed());
         assertEquals("Test User", dto.student().firstName());
         assertEquals("T01", dto.section().section());
-
 
         verify(allocationRepository).findByStudentId(studentId);
         verify(userInterface).getStudentById(1L);
@@ -86,20 +87,17 @@ class AllocationServiceTest {
         Long sectionId = 1001L;
         Long applicationId = 1L;
 
-
         AllocationRequest request = new AllocationRequest(
-            studentId,
-            applicationId,
-            true,
-            5,
-            sectionId
-        );
-        
+                studentId,
+                applicationId,
+                true,
+                5,
+                sectionId);
+
         Application application = new Application();
         application.setId(applicationId);
 
         when(applicationRepository.findById(applicationId)).thenReturn(Optional.of(application));
-        
 
         Allocation savedAllocation = new Allocation();
         savedAllocation.setId(500L);
@@ -111,12 +109,11 @@ class AllocationServiceTest {
 
         StudentDto studentDto = new StudentDto(studentId, "Test", "User", 63260442, "BSC", 2022, 4);
         SectionDto sectionDto = new SectionDto(
-            sectionId,
-            "Fall",
-            "T01",
-            SectionType.TUTORIAL,
-            new CourseDto("COSC","Capstone","499")
-        );
+                sectionId,
+                "Fall",
+                "T01",
+                SectionType.TUTORIAL,
+                new CourseDto("COSC", "Capstone", "499"));
 
         when(allocationRepository.save(any(Allocation.class))).thenReturn(savedAllocation);
         when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
@@ -131,8 +128,6 @@ class AllocationServiceTest {
         assertEquals("T01", result.section().section());
         assertTrue(result.isConfirmed());
         assertEquals(5, result.numberOfHours());
-        
-
 
         verify(allocationRepository).save(any(Allocation.class));
         verify(applicationRepository).findById(applicationId);
@@ -173,13 +168,13 @@ class AllocationServiceTest {
     @Test
     void acceptOffer_throwsIfNotFound() {
         when(allocationRepository.findById(123L)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> allocationService.updateConfirmationStatus(123L,true));
+        assertThrows(EntityNotFoundException.class, () -> allocationService.updateConfirmationStatus(123L, true));
     }
 
     @Test
     void denyOffer_throwsIfNotFound() {
         when(allocationRepository.findById(123L)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> allocationService.updateConfirmationStatus(123L,false));
+        assertThrows(EntityNotFoundException.class, () -> allocationService.updateConfirmationStatus(123L, false));
     }
 
     @Test
@@ -189,12 +184,11 @@ class AllocationServiceTest {
         Long applicationId = 99L;
 
         AllocationRequest request = new AllocationRequest(
-            studentId,
-            applicationId,
-            true,
-            5,
-            sectionId
-        );
+                studentId,
+                applicationId,
+                true,
+                5,
+                sectionId);
 
         when(applicationRepository.findById(applicationId)).thenReturn(Optional.empty());
 
@@ -206,4 +200,33 @@ class AllocationServiceTest {
         verifyNoInteractions(allocationRepository, userInterface, sectionInterface);
     }
 
+    @Test
+    public void getAllocationsBySectionId_MapsEntitiesToDtos() {
+        // given
+        Allocation alloc = new Allocation();
+        alloc.setId(42L);
+        alloc.setStudentId(7L);
+        alloc.setConfirmed(true);
+        alloc.setNumberOfHours(10);
+        alloc.setSectionId(99L);
+        when(allocationRepository.findBySectionId(99L)).thenReturn(List.of(alloc));
+
+        StudentDto studentDto = new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4);
+        when(userInterface.getStudentById(7L)).thenReturn(ResponseEntity.ok(studentDto));
+
+        SectionDto sectionDto = new SectionDto(99L, "term","section",SectionType.LECTURE, new CourseDto("COSC", "CS", "112"));
+        when(sectionInterface.getSectionById(99L)).thenReturn(sectionDto);
+
+        // when
+        List<AllocationDto> result = allocationService.getAllocationsBySectionId(99L);
+
+        // then
+        assertEquals(1, result.size());
+        AllocationDto dto = result.get(0);
+        assertEquals(42L, dto.id());
+        assertEquals(studentDto, dto.student());
+        assertTrue(dto.isConfirmed());
+        assertEquals(10, dto.numberOfHours());
+        assertEquals(sectionDto, dto.section());
+    }
 }

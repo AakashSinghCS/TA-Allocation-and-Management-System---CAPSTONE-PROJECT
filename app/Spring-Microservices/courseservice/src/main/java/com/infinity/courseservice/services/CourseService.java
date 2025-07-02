@@ -30,7 +30,7 @@ import com.infinity.courseservice.repositories.SectionScheduleRepository;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;  import org.slf4j.LoggerFactory;
+
 
 @Service
 @Data
@@ -45,7 +45,7 @@ public class CourseService {
     private final ApplicationInterface applicationInterface;
     private final SectionService sectionService;
     // private final EnrollmentService enrollmentService;
-    private static final Logger log = LoggerFactory.getLogger(CourseService.class);
+
     @Transactional
     public CourseDto addCourse(CourseRequest request) {
         String deptCode = Optional.ofNullable(request.deptCode()).orElse("").trim();
@@ -135,7 +135,6 @@ public class CourseService {
             try {
                 need = needService.getNeed(courseId, year, semester);
             } catch (NotFoundException e) {
-                log.debug("Need not found for courseId={}, year={}, semester={}", courseId, year, semester);
             }
             try {
                 List<AllocationDto> fetched = applicationInterface.getAllocationsBySectionId(section.id()).getBody();
@@ -143,15 +142,12 @@ public class CourseService {
                     allocations = fetched;
                 }
             } catch (NotFoundException e) {
-                log.debug("Allocations not found for courseId={}", courseId);
             }
 
             CourseNeedAndAllocations entry = new CourseNeedAndAllocations(section, need, allocations);
             result.add(entry);
         }
     }
-
-    log.debug("courseneed result = {}", result);
     return result;
 }
 

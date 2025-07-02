@@ -16,7 +16,7 @@ export const mockSectionCOSC121Details : SectionDetails = {
     courseNum : mockCourseCOSC121.courseNum,
     section: "001",
     semester : "W1",
-    type : "Lecture",
+    type : "LECTURE",
     year: 2025
 }
 
@@ -35,11 +35,10 @@ export const mockSectionScheduleCOSC121ForThu : SectionSchedule = {
 }
 
 export const mockSectionNeedCOSC121 :Need = {
-    sectionId: mockSectionCOSC121Details.id,
     description: "I need smart people",
-    numOfHoursCurrentlyAllocated: 12,
+    numHoursCurrentlyAllocated: 12,
     requiredGradingHours: 12,
-    courseNeeds: [mockCourseCOSC111, mockCourseMATH125, mockCourseMATH125, mockCourseMATH125, mockCourseMATH125]
+    courseNeeds: [mockCourseCOSC111, mockCourseMATH125]
 }
 
 
