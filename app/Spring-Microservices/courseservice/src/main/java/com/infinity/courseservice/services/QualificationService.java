@@ -22,9 +22,11 @@ import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Qualification;
 import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.StudentQualification;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.QualificationRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
+import com.infinity.courseservice.repositories.StudentQualificationRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -36,32 +38,33 @@ public class QualificationService {
     private final SectionRepository sectionRepository;
     private final UserInterface studentClient;
     private final QualificationRepository qualificationRepository;
+    private final StudentQualificationRepository studentQualificationRepository;
     private final CourseRepository courseRepository;
     private final CourseService courseService;
 
     public QualificationDto findQualification(Long id) {
         Qualification qualification = qualificationRepository.findById(id).orElseThrow(() -> new NotFoundException("qualification with ID " + id + " not found"));
         CourseDto course = courseService.findCourse(qualification.getCourse().getId());
-        if (qualification.getStudentId()!=null) {
-            StudentDto stu = studentClient.getStudentById(qualification.getStudentId());
-            return new QualificationDto(course, qualification.getDescription(), stu);
-        }
+        // if (qualification.getStudentId()!=null) {
+        //     StudentDto stu = studentClient.getStudentById(qualification.getStudentId());
+        //     return new QualificationDto(course, qualification.getDescription(), stu);
+        // }
         return new QualificationDto(course, qualification.getDescription(), null);
     }
 
-    public List<QualificationDto> findQualificationsByDeptCode(String deptCode) {
+    public List<Qualification> findQualificationsByDeptCode(String deptCode) {
         List<Qualification> qualifications = qualificationRepository.findAllByDeptCode(deptCode);
-        List<QualificationDto> dtos = qualifications.stream()
-            .map(q -> new QualificationDto(new CourseDto(q.getCourse().getId(), q.getCourse().getDeptCode(), q.getCourse().getName(), q.getCourse().getCourseNum()),q.getDescription(),null))
-            .collect(Collectors.toList());
-        return dtos;
+        // List<QualificationDto> dtos = qualifications.stream()
+        //     .map(q -> new QualificationDto(new CourseDto(q.getCourse().getId(), q.getCourse().getDeptCode(), q.getCourse().getName(), q.getCourse().getCourseNum()),q.getDescription(),null))
+        //     .collect(Collectors.toList());
+        return qualifications;
     }
 
     public QualificationDto instructorAddQualification(QualificationRequest request) {
         CourseDto courseDto = courseService.findCourse(request.courseId());
         Course course = courseRepository.findById(request.courseId())
             .orElseThrow(() -> new EntityNotFoundException("Course not found"));
-        Qualification qualification = new Qualification(course, null, request.description(), request.deptCode());
+        Qualification qualification = new Qualification(course, request.description(), request.deptCode());
         try {
             qualificationRepository.save(qualification);
         } catch (DataIntegrityViolationException ex) {
@@ -70,53 +73,53 @@ public class QualificationService {
         return new QualificationDto(courseDto, qualification.getDescription(), null);
     }
 
-    public String instructorDeleteQualification(QualificationRequest request) {
-        List<Qualification> toDelete = qualificationRepository.findAllByDescription(request.description());
+    public List<Long> instructorDeleteQualification(QualificationRequest request) {
+        List<Qualification> toDelete = qualificationRepository.findByDescription(request.description());
         if (toDelete.isEmpty()) {
             throw new NotFoundException("No qualifications found with description: " + request.description());
         }
-        // List<Qualification> withStudents = toDelete.stream()
-        //     .filter(q -> q.getStudentId() != null)
-        //     .collect(Collectors.toList());
         qualificationRepository.deleteAll(toDelete);
-        return "Qualification deleted successfully";
+        List<Long> deleteIds = toDelete.stream().map(Qualification::getId).collect(Collectors.toList());
+        List<StudentQualification> toDeleteSq = studentQualificationRepository.findAllByQualifications(toDelete);
+        studentQualificationRepository.deleteAll(toDeleteSq);
+        return deleteIds;
     }
 
     public List<QualificationDto> studentUpdateQualifications(StudentQualiRequest request, Long stuId) {
-        qualificationRepository.deleteAllByStudentId(stuId);
-        List<Qualification> qualifications = qualificationRepository.findAllByIdAndStudentIdIsNull(request.qualificationIds());
+        studentQualificationRepository.deleteAllByStudentId(stuId);
+        List<Qualification> qualifications = qualificationRepository.findAllByIds(request.qualificationIds());
         List<QualificationDto> qualificationDtos = new ArrayList<QualificationDto>();
         StudentDto studentDto = studentClient.getStudentById(stuId);
         for (Qualification qualification : qualifications) {
             CourseDto courseDto = courseService.findCourse(qualification.getCourse().getId());
-            Course course = qualification.getCourse();
-            Qualification newQualification = new Qualification(course, stuId, qualification.getDescription(), qualification.getDeptCode());
+            StudentQualification studentQualification = new StudentQualification(qualification, stuId);
             try {
-                qualificationRepository.save(newQualification);
+                studentQualificationRepository.save(studentQualification);
             } catch (DataIntegrityViolationException ex) {
                 throw new BadRequestException("Qualification already exists" + ex);
             }
-            qualificationDtos.add(new QualificationDto(courseDto, newQualification.getDescription(), studentDto));
+            qualificationDtos.add(new QualificationDto(courseDto, qualification.getDescription(), studentDto));
         }
         
         return qualificationDtos;
     }
 
-    public List<StudentQualificationResponseDto> findQualificationsByStudentId(Long studentId) {
-        List<Qualification> studentQualifications = qualificationRepository.findAllByStudentId(studentId);
+    public List<Long> findQualificationsByStudentId(Long studentId) {
+        List<StudentQualification> studentQualifications = studentQualificationRepository.findAllByStudentId(studentId);
+        List<Long> qualificationIds = studentQualifications.stream().map(sq -> sq.getQualification().getId()).collect(Collectors.toList());
         // List<String> descriptions = studentQualifications.stream()
         //     .map(Qualification::getDescription)
         //     .collect(Collectors.toList());
         // List<Qualification> qualifications = qualificationRepository.findAllByDescriptionAndStudentIdIsNull(descriptions);
-        List<StudentQualificationResponseDto> dtos = studentQualifications.stream()
-            .map(q -> new StudentQualificationResponseDto(
-                q.getId(),
-                new CourseDto(q.getCourse().getId(), q.getDeptCode(), q.getCourse().getName(), q.getCourse().getCourseNum()), 
-                q.getDescription(),
-                studentClient.getStudentById(studentId)
-            ))
-            .collect(Collectors.toList());
-        return dtos;
+        // List<StudentQualificationResponseDto> dtos = qualifications.stream()
+        //     .map(q -> new StudentQualificationResponseDto(
+        //         q.getId(),
+        //         new CourseDto(q.getCourse().getId(), q.getDeptCode(), q.getCourse().getName(), q.getCourse().getCourseNum()), 
+        //         q.getDescription(),
+        //         studentClient.getStudentById(studentId)
+        //     ))
+        //     .collect(Collectors.toList());
+        return qualificationIds;
     }
 
     public List<QualificationWithSectionDto> findQualificationsByInstructorId(Long instructorId) {
@@ -124,7 +127,7 @@ public class QualificationService {
         List<QualificationWithSectionDto> combinedList = new ArrayList<>();
         for (Section section : sections) {
             Course course = section.getCourse();
-            Qualification qualification = qualificationRepository.findByCourseAndStudentIdIsNull(course);
+            Qualification qualification = qualificationRepository.findByCourse(course);
             combinedList.add(new QualificationWithSectionDto(section, qualification));
         }
         return combinedList;

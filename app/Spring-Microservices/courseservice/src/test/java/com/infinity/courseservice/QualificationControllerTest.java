@@ -7,10 +7,12 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.UserDtos.StudentDto;
 import com.infinity.courseservice.models.Qualification;
 import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.StudentQualification;
 import com.infinity.courseservice.services.QualificationService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -56,9 +58,9 @@ class QualificationControllerTest {
 
     @Test
     void getQualificationsByDeptCode_shouldReturnList() throws Exception {
-        CourseDto courseDto = new CourseDto(1L, "COSC", "Intro", "101");
-        StudentDto studentDto = new StudentDto(2L, "Alice","Sun",10001,"BA",  2020, 3);
-        QualificationDto q = new QualificationDto(courseDto, "read 10 books", studentDto);
+        // CourseDto courseDto = new CourseDto(1L, "COSC", "Intro", "101");
+        // StudentDto studentDto = new StudentDto(2L, "Alice","Sun",10001,"BA",  2020, 3);
+        Qualification q = new Qualification();
         when(qualificationService.findQualificationsByDeptCode("COSC")).thenReturn(List.of(q));
 
         mockMvc.perform(get("/qualifications/byDepartment/COSC"))
@@ -85,15 +87,22 @@ class QualificationControllerTest {
 
     @Test
     void instructorDeleteQualification_shouldReturnConfirmation() throws Exception {
-        QualificationRequest request = new QualificationRequest(1L, null, null, "desc", "COSC");
+        // Arrange
+        String requestJson = """
+                {
+                  "description": "Test Description"
+                }
+                """;
 
-        when(qualificationService.instructorDeleteQualification(any())).thenReturn("Deleted");
+        when(qualificationService.instructorDeleteQualification(any()))
+                .thenReturn(List.of(10L, 20L));
 
+        // Act + Assert
         mockMvc.perform(delete("/qualifications/instructor/deleteQualification")
-               .contentType(MediaType.APPLICATION_JSON)
-               .content(objectMapper.writeValueAsString(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
                .andExpect(status().isOk())
-               .andExpect(content().string("Deleted"));
+               .andExpect(content().json("[10,20]"));
     }
 
     @Test
@@ -116,19 +125,16 @@ class QualificationControllerTest {
     }
 
     @Test
-    void findByStudentId_shouldReturnStudentQualifications() throws Exception {
-        StudentQualificationResponseDto dto = new StudentQualificationResponseDto(
-                1L,
-                new CourseDto(1L, "COSC", "Intro", "101"),
-                "desc",
-                null
-        );
+    void findByStudentId_shouldReturnStudentQualificationIds() throws Exception {
+        Long studentId = 42L;
+        when(qualificationService.findQualificationsByStudentId(studentId))
+                .thenReturn(List.of(100L, 200L, 300L));
 
-        when(qualificationService.findQualificationsByStudentId(3L)).thenReturn(List.of(dto));
-
-        mockMvc.perform(get("/qualifications/findByStudentId/3"))
+        // Act + Assert
+        mockMvc.perform(get("/findByStudentId/{studentId}", studentId)
+                        .accept(MediaType.APPLICATION_JSON))
                .andExpect(status().isOk())
-               .andExpect(jsonPath("$[0].description").value("desc"));
+               .andExpect(content().json("[100,200,300]"));
     }
 
     @Test

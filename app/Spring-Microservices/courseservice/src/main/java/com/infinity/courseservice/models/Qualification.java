@@ -20,13 +20,13 @@ public class Qualification {
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
-    private Long studentId;
+    // private Long studentId;
     private String description;
     private String deptCode;
 
-    public Qualification(Course course, Long studentId, String description, String deptCode){
+    public Qualification(Course course, String description, String deptCode){
         this.course = course;
-        this.studentId = studentId;
+        // this.studentId = studentId;
         this.description = description;
         this.deptCode = deptCode;
     }

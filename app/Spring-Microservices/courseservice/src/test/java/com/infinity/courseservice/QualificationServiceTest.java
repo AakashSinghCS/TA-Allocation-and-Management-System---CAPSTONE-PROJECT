@@ -25,6 +25,7 @@ import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Qualification;
 import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.StudentQualification;
 import com.infinity.courseservice.repositories.*;
 import com.infinity.courseservice.services.CourseService;
 import com.infinity.courseservice.services.QualificationService;
@@ -41,6 +42,9 @@ class QualificationServiceTest {
     private QualificationRepository qualificationRepository;
 
     @Mock
+    private StudentQualificationRepository studentQualificationRepository;
+
+    @Mock
     private CourseRepository courseRepository;
 
     @Mock
@@ -55,21 +59,18 @@ class QualificationServiceTest {
     }
 
     @Test
-    void findQualification_whenQualificationExistsAndHasStudent_shouldReturnDtoWithStudent() {
-        Qualification qualification = new Qualification(new Course(), 1L, "Description", "CS");
+    void findQualification() {
+        Qualification qualification = new Qualification(new Course(), "Description", "CS");
         qualification.setId(1L);
 
         CourseDto courseDto = new CourseDto(1L, "COSC", "Intro to CS", "101");
-        StudentDto studentDto = new StudentDto(2L, "Alice","Sun",10001,"BA",  2020, 3);
         when(qualificationRepository.findById(1L)).thenReturn(Optional.of(qualification));
         when(courseService.findCourse(any())).thenReturn(courseDto);
-        when(studentClient.getStudentById(1L)).thenReturn(studentDto);
 
         QualificationDto result = qualificationService.findQualification(1L);
 
         assertNotNull(result);
         assertEquals("Description", result.description());
-        assertEquals(studentDto, result.student());
     }
 
     @Test
@@ -109,21 +110,69 @@ class QualificationServiceTest {
     }
 
     @Test
-    void instructorDeleteQualification_shouldDeleteAndReturnMessage() {
-        Qualification q = new Qualification();
-        q.setId(1L);
+    void instructorDeleteQualification_shouldDeleteAndReturnIds() {
+        // Arrange
+        String description = "Some Description";
+        QualificationRequest request = mock(QualificationRequest.class);
+        when(request.description()).thenReturn(description);
 
-        when(qualificationRepository.findAllByDescription("desc")).thenReturn(List.of(q));
+        Qualification q1 = new Qualification();
+        q1.setId(10L);
 
-        String result = qualificationService.instructorDeleteQualification(new QualificationRequest(null, null, null, "desc", null));
+        Qualification q2 = new Qualification();
+        q2.setId(20L);
 
-        assertEquals("Qualification deleted successfully", result);
-        verify(qualificationRepository).deleteAll(anyList());
+        List<Qualification> qualifications = List.of(q1, q2);
+
+        when(qualificationRepository.findByDescription(description))
+                .thenReturn(qualifications);
+
+        StudentQualification sq1 = new StudentQualification();
+        sq1.setQualification(q1);
+
+        StudentQualification sq2 = new StudentQualification();
+        sq2.setQualification(q2);
+
+        List<StudentQualification> studentQualifications = List.of(sq1, sq2);
+
+        when(studentQualificationRepository.findAllByQualifications(qualifications))
+                .thenReturn(studentQualifications);
+
+        // Act
+        List<Long> result = qualificationService.instructorDeleteQualification(request);
+
+        // Assert
+        assertEquals(List.of(10L, 20L), result);
+
+        verify(qualificationRepository).deleteAll(qualifications);
+        verify(studentQualificationRepository).deleteAll(studentQualifications);
+    }
+
+    @Test
+    void instructorDeleteQualification_shouldThrowNotFoundException_whenNoQualificationsFound() {
+        // Arrange
+        String description = "Missing Description";
+        QualificationRequest request = mock(QualificationRequest.class);
+        when(request.description()).thenReturn(description);
+
+        when(qualificationRepository.findByDescription(description))
+                .thenReturn(List.of());
+
+        // Act + Assert
+        NotFoundException ex = assertThrows(NotFoundException.class, () ->
+            qualificationService.instructorDeleteQualification(request)
+        );
+
+        assertTrue(ex.getMessage().contains("No qualifications found with description: " + description));
+
+        // Verify no deletes happen
+        verify(qualificationRepository, never()).deleteAll(any());
+        verify(studentQualificationRepository, never()).deleteAll(any());
     }
 
     @Test
     void instructorDeleteQualification_whenNotFound_shouldThrow() {
-        when(qualificationRepository.findAllByDescription("desc")).thenReturn(Collections.emptyList());
+        when(qualificationRepository.findAllByDescription(List.of("desc"))).thenReturn(Collections.emptyList());
 
         assertThrows(NotFoundException.class, () ->
             qualificationService.instructorDeleteQualification(new QualificationRequest(null, null, null, "desc", null))
@@ -132,23 +181,66 @@ class QualificationServiceTest {
 
     @Test
     void studentUpdateQualifications_shouldUpdateAndReturnDtos() {
-        StudentQualiRequest request = new StudentQualiRequest(List.of(1L));
-        Qualification oldQualification = new Qualification(new Course("COSC", "Intro", "101"), null, "Description", "CS");
-        oldQualification.setId(1L);
+        Long studentId = 5L;
+        List<Long> qualificationIds = List.of(100L, 200L);
 
-        when(qualificationRepository.findAllByIdAndStudentIdIsNull(List.of(1L)))
-            .thenReturn(List.of(oldQualification));
-        when(studentClient.getStudentById(2L))
-            .thenReturn(new StudentDto(2L, "Alice","Sun",10001,"BA",  2020, 3));
-        when(courseService.findCourse(any()))
-            .thenReturn(new CourseDto(1L, "CS", "Intro", "101"));
+        StudentQualiRequest request = mock(StudentQualiRequest.class);
+        when(request.qualificationIds()).thenReturn(qualificationIds);
 
-        List<QualificationDto> dtos = qualificationService.studentUpdateQualifications(request, 2L);
+        Qualification qualification1 = new Qualification();
+        qualification1.setId(100L);
+        qualification1.setDescription("Qualification 1");
 
-        assertEquals(1, dtos.size());
-        assertEquals("Description", dtos.get(0).description());
-        verify(qualificationRepository).deleteAllByStudentId(2L);
-        verify(qualificationRepository).save(any());
+        Course course1 = new Course();
+        course1.setId(10L);
+        qualification1.setCourse(course1);
+
+        Qualification qualification2 = new Qualification();
+        qualification2.setId(200L);
+        qualification2.setDescription("Qualification 2");
+
+        Course course2 = new Course();
+        course2.setId(20L);
+        qualification2.setCourse(course2);
+
+        when(qualificationRepository.findAllByIds(qualificationIds))
+                .thenReturn(List.of(qualification1, qualification2));
+
+        // Mock CourseDtos
+        CourseDto courseDto1 = new CourseDto(10L, "COSC", "Intro", "101");
+        CourseDto courseDto2 = new CourseDto(20L, "MATH", "Algebra", "201");
+
+        when(courseService.findCourse(10L)).thenReturn(courseDto1);
+        when(courseService.findCourse(20L)).thenReturn(courseDto2);
+
+        StudentDto studentDto = new StudentDto(
+            studentId,
+            "John",
+            "Doe",
+            123456,
+            "Computer Science",
+            2020,
+            4
+        );
+        when(studentClient.getStudentById(studentId)).thenReturn(studentDto);
+
+        // Act
+        List<QualificationDto> result = qualificationService.studentUpdateQualifications(request, studentId);
+
+        // Assert
+        assertEquals(2, result.size());
+        assertEquals("Qualification 1", result.get(0).description());
+        assertEquals("Qualification 2", result.get(1).description());
+
+        // Verify deletes
+        verify(studentQualificationRepository).deleteAllByStudentId(studentId);
+
+        // Verify saves
+        ArgumentCaptor<StudentQualification> captor = ArgumentCaptor.forClass(StudentQualification.class);
+        verify(studentQualificationRepository, times(2)).save(captor.capture());
+        List<StudentQualification> saved = captor.getAllValues();
+        assertEquals(100L, saved.get(0).getQualification().getId());
+        assertEquals(200L, saved.get(1).getQualification().getId());
     }
 
     @Test
@@ -165,7 +257,7 @@ class QualificationServiceTest {
 
         when(qualificationRepository.findAllByDeptCode("COSC")).thenReturn(List.of(q));
 
-        List<QualificationDto> result = qualificationService.findQualificationsByDeptCode("COSC");
+        List<Qualification> result = qualificationService.findQualificationsByDeptCode("COSC");
 
         assertEquals(1, result.size());
     }

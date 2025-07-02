@@ -40,8 +40,8 @@ public class QualificationController {
     }
 
     @GetMapping("/byDepartment/{deptCode}")
-    public ResponseEntity<List<QualificationDto>> getQualificationsByDeptCode(@PathVariable String deptCode) {
-        List<QualificationDto> qualis = qualificationService.findQualificationsByDeptCode(deptCode);
+    public ResponseEntity<List<Qualification>> getQualificationsByDeptCode(@PathVariable String deptCode) {
+        List<Qualification> qualis = qualificationService.findQualificationsByDeptCode(deptCode);
         return ResponseEntity.ok(qualis);
     }
 
@@ -52,8 +52,8 @@ public class QualificationController {
     }
 
     @DeleteMapping("/instructor/deleteQualification")
-    public ResponseEntity<String> instructorDeleteQualification(@RequestBody QualificationRequest request) {
-        String result = qualificationService.instructorDeleteQualification(request);
+    public ResponseEntity<List<Long>> instructorDeleteQualification(@RequestBody QualificationRequest request) {
+        List<Long> result = qualificationService.instructorDeleteQualification(request);
         return ResponseEntity.ok(result);
     }
 
@@ -66,8 +66,8 @@ public class QualificationController {
     }
 
     @GetMapping("findByStudentId/{studentId}")
-    public ResponseEntity<List<StudentQualificationResponseDto>> findByStudentId(@PathVariable Long studentId) {
-        List<StudentQualificationResponseDto> qualifications = qualificationService.findQualificationsByStudentId(studentId);
+    public ResponseEntity<List<Long>> findByStudentId(@PathVariable Long studentId) {
+        List<Long> qualifications = qualificationService.findQualificationsByStudentId(studentId);
         return ResponseEntity.ok(qualifications);
     }
     
