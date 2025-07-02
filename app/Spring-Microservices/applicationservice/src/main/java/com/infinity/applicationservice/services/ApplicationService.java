@@ -100,14 +100,7 @@ public class ApplicationService {
         return applicationMapper.toDto(application);
     }
 
-    private List<Subject> filterPreferences(Application application) {
-        return Arrays.asList(
-                application.getSubjectPreference1(),
-                application.getSubjectPreference2(),
-                application.getSubjectPreference3()).stream()
-                .filter(s -> s != null)
-                .toList();
-    }
+    
 
     public List<ApplicationDto> getAllApplicationsByStudentId(Long studentId, Long userIdFromHeader,
             List<String> headerRoles) {
@@ -134,15 +127,8 @@ public class ApplicationService {
             }
         }
     }
-
-    private Set<AvailabilityDto> toDtoSet(Set<Availability> entities) {
-        return entities.stream()
-                .map(a -> new AvailabilityDto(
-                        Day.valueOf(a.getDay().name()),
-                        a.getStartTime().toString(),
-                        a.getEndTime().toString()))
-                .collect(Collectors.toSet());
-    }
+  
+    
 
     private void mapAvailability(ApplicationRequest req, Application application) {
         if (req.availabilities() != null) {
