@@ -92,6 +92,9 @@ services:
     container_name: notification-service
     ports: 
       - 8085:8085
+    depends_on:
+      service-registry:
+          condition: service_healthy
   profile-service:
     build:
       context: ./app/Spring-Microservices/profileservice

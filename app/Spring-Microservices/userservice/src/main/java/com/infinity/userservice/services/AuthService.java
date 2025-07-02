@@ -25,6 +25,7 @@ import com.infinity.userservice.repositories.PasswordResetTokenRepository;
 import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.security.JwtUtil;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -50,6 +51,7 @@ public class AuthService {
         return new LoginResponse(jwtUtil.generateToken(request.email(), user.getId(), roles));
     }
 
+    @Transactional
     public String forgotPassword(EmailRequest request) {
         Optional<User> optionalUser = userRepository.findByEmail(request.email());
 
@@ -76,6 +78,7 @@ public class AuthService {
         return "If that email exists, a reset link has been sent.";
     }
 
+    @Transactional
     public String resetPassword(ResetRequest request) {
         PasswordResetToken resetToken = tokenRepository.findByToken(
                 request.token())

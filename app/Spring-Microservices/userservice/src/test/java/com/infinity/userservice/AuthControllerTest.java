@@ -226,7 +226,7 @@ public class AuthControllerTest {
 
     @Test
     void testResetPassword_success() throws Exception {
-        ResetRequest request = new ResetRequest("token123", "newSecurePassword");
+        ResetRequest request = new ResetRequest("token123", "newSecureP@ssword1");
 
         when(authService.resetPassword(any(ResetRequest.class)))
                 .thenReturn("Password has been reset successfully.");
