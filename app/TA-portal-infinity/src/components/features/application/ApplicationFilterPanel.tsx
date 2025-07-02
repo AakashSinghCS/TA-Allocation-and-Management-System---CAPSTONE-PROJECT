@@ -1,5 +1,9 @@
 import React, { useMemo } from 'react';
 import type { ApplicationDto } from '../../../interfaces/application/Application';
+import type { Allocation } from '../../../interfaces/allocation/Allocation';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../../context/AuthContext';
+import { fetchAllocationsByStudent } from '../../../api/allocation/fetchAllocationByStudent';
 
 interface ApplicationFilterPanelProps {
   appQ: {
@@ -25,9 +29,13 @@ const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
   loadApp,
   colSpanClass = 'lg:col-span-5',
 }) => {
+  const { token } = useAuth();
+  const [history, setHistory] = useState<Allocation[]>([]);
+  const [filteredApps, setFilteredApps] = useState<ApplicationDto[]>([]);
+  const [filtering, setFiltering] = useState(false);
   // Internal filtering logic
-  const filteredApps = useMemo(() =>
-    allApps.filter(a => {
+  const filterApplications = () => {
+    const filtered = allApps.filter(a => {
       if (appQ.pref1 && !a.preferences.includes(appQ.pref1)) return false;
       if (appQ.pref2 && !a.preferences.includes(appQ.pref2)) return false;
       if (appQ.wantRemote && String(a.wantRemote) !== appQ.wantRemote) return false;
@@ -38,11 +46,27 @@ const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
       }
       if (appQ.studentNum && a.student.studentNum !== appQ.studentNum) return false;
       return true;
-    }), [allApps, appQ]
-  );
+    });
+    setFilteredApps(filtered);
+    setFiltering(true);
+  };
+   
+  // Whenever the selected application changes, fetch its allocation history
+      useEffect(() => {
+        if (!selApp || !token) {
+          setHistory([]);
+          return;
+        }
+        fetchAllocationsByStudent(selApp.student.id, token)
+          .then(setHistory)
+          .catch(err => {
+            console.error('Failed to load allocation history', err);
+            setHistory([]);
+          });
+      }, [selApp, token]);
 
   return (
-    <div className={`${colSpanClass} bg-white p-6 rounded shadow space-y-4`}>
+    <div className={`${colSpanClass} bg-white p-6 rounded shadow space-y-4 text-sm`}>
       <h1 className="font-semibold text-xl">Application Filter</h1>
 
       {/* Filter controls */}
@@ -105,6 +129,15 @@ const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
         value={appQ.studentNum}
         onChange={e => setAppQ(q => ({ ...q, studentNum: e.target.value }))}
       />
+      {/* Filter Button */}
+      <div className="flex justify-end">
+        <button
+          onClick={filterApplications}  
+          className="px-6 py-2 bg-[#040941] text-white rounded w-full"
+        >
+          Filter
+        </button>
+      </div>
 
       {/* Application list */}
       <div className="max-h-48 overflow-auto space-y-1 mt-2">
@@ -157,6 +190,31 @@ const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
               ))}
             </ul>
           </section>
+
+          {/* Allocation History */}
+            <section>
+          <h2 className="font-bold text-lg">Allocation History</h2>
+          {history.length > 0 ? (
+            <ul className="list-disc pl-4 space-y-1 text-sm">
+              {history.map(h => (
+                <li key={h.id}>
+                  <strong>
+                  {h.application?.timeSubmitted
+                    ? new Date(h.application.timeSubmitted).toLocaleString()
+                    : 'N/A'}
+                  </strong>{' '}
+                  — {h.section?.sectionDetails?.deptCode || 'N/A'}{' '}
+                  {h.section?.sectionDetails?.courseNum || ''} Section{' '}
+                  {h.section?.sectionDetails?.section || ''} — {h.numberOfHours ?? 'N/A'}h{' '}
+                  {h.isConfirmed ? '(Confirmed)' : '(Pending)'}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-500 text-sm">No previous allocations</p>
+          )}
+        </section>
+
         </div>
       )}
     </div>

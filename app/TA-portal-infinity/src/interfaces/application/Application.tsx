@@ -29,7 +29,8 @@ export interface ApplicationRequest {
 }
 
 export interface ApplicationDto {
-  id: number;
+   id?:             number;
+  applicationId?:  number;
   student: {
     id: number;                
     firstName: string;

@@ -13,7 +13,7 @@ function getRemainingHours(need: Need): number {
 }
 
 /** Validate all preconditions; return an error string or null. */
-function validate(app: ApplicationDto, need: Need, hasConflict: boolean): string | null {
+function validate(app: ApplicationDto, need: Need, hasAvailabilityMatch: boolean): string | null {
   const remaining = getRemainingHours(need);
   if (remaining <= 0) {
     return 'No grading hours left on this section.';
@@ -21,13 +21,12 @@ function validate(app: ApplicationDto, need: Need, hasConflict: boolean): string
   if (app.wantWorkingHours > remaining) {
     return `${app.student.firstName} requested ${app.wantWorkingHours}h, but only ${remaining}h available.`;
   }
-  if (hasConflict) {
-    return 'Schedule conflict: availability overlaps course slots.';
+ if (!hasAvailabilityMatch) {
+    return 'No availability match: student’s availability does not align with course slots.';
   }
   return null;
 }
 
-/** Hook that sends offers with built-in validation & toast feedback */
 export function useSendOffer() {
   const [loading, setLoading] = useState(false);
 
@@ -35,26 +34,33 @@ export function useSendOffer() {
     app: ApplicationDto,
     sectionId: number,
     need: Need,
-    hasConflict: boolean,
+    hasAvailabilityMatch: boolean,
     onSuccess: () => void
   ) {
-    const error = validate(app, need, hasConflict);
+    const error = validate(app, need, hasAvailabilityMatch);
     if (error) {
       toast.error(error, { position: 'top-right', autoClose: 8000 });
       return;
     }
-  console.log('Selected application object:', app);
+
+    const applicationId = app.applicationId ?? app.id;
+    if (applicationId == null) {
+      console.error("Neither app.applicationId nor app.id is set!", app);
+      return;
+    }
+
     const payload: CreateOfferRequest = {
       studentId:     app.student.id,
-      applicationId: app.id,
+      applicationId,                        
       isConfirmed:   false,
       numberOfHours: app.wantWorkingHours,
       sectionId,
     };
-    console.log(' sendOffer payload:', payload);
-    setLoading(true);
-    const promise = apiSendOffer(payload);
 
+    console.log('sendOffer payload:', payload);
+    setLoading(true);
+
+    const promise = apiSendOffer(payload);
     toast.promise(
       promise,
       {

@@ -1,23 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useMemo } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { getDayNumber } from '../../utility/calendar/calendarUtils';
 import type { SectionDetails } from '../../interfaces/section/SectionDetails';
-import type SectionSchedule from '../../interfaces/section/SectionSchedule';
-import type { Need } from '../../interfaces/need/Need';
 import type Section from '../../interfaces/section/Section';
-import type { Allocation } from '../../interfaces/allocation/Allocation';
 import { useAuth } from '../../context/AuthContext';
 import type { ApplicationDto } from '../../interfaces/application/Application';
 import { fetchApplications } from '../../api/application/FetchApplications';
 import ApplicationFilterPanel from '../../components/features/application/ApplicationFilterPanel';
 import { ToastContainer } from 'react-toastify';
 import { useSendOffer } from '../../hooks/sendoffer/useSendOffer';
-import OfferBanner from '../../components/ui/offerbanner/OfferBanner';
 import SectionFilter from '../../components/features/course/coursefilter/SectionFilter';
 import { fetchFilteredSections, type FilterSectionsProps } from '../../api/sectionfilter/fetchFilteredSections';
 import { convertFilterSectionsToSections } from '../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
 import { fetchSectionInfo } from '../../api/section/fetchSectionInfo';
+import { Link } from 'react-router-dom';
+import type { Allocation } from '../../interfaces/allocation/Allocation';
+import { fetchAllocationsByStudent } from '../../api/allocation/fetchAllocationByStudent';
 
 const TAAllocationPage: React.FC = () => {
   const { token } = useAuth();
@@ -66,18 +65,18 @@ const TAAllocationPage: React.FC = () => {
         full.need.numOfHoursCurrentlyAllocated >= full.need.requiredGradingHours
       ),
     });
-    setSelApp(null);
   } catch (err) {
     console.error("Failed to load section:", err);
   }
 };
   const onSend = () => {
     if (!selApp || !selCourse?.sectionDetails?.sectionId || !selCourse.need) return;
+    
     sendOffer(
       selApp,
       selCourse.sectionDetails.sectionId,
       selCourse.need,
-      hasConflict,
+      hasAvailabilityMatch,
       async () => {
         await loadCourse(selCourse.sectionDetails!);
         setShowBanner(true);
@@ -89,83 +88,97 @@ const TAAllocationPage: React.FC = () => {
 
   const courseEvents = (selCourse?.sectionSchedule || []).map((slot, i) => {
     const dayNum = getDayNumber(slot.day);
-    const conflict = selApp?.availabilities.some(av =>
+    const isMatched = selApp?.availabilities.every(av =>
       dayNum === getDayNumber(av.day) &&
-      slot.endTime !== undefined &&
-      av.startTime < slot.endTime &&
-      slot.startTime !== undefined &&
-      av.endTime > slot.startTime
+      slot.endTime !== undefined && slot.startTime !== undefined &&
+      av.startTime < slot.endTime && av.endTime > slot.startTime
     ) ?? false;
-
     return {
       id: `c${i}`,
       title: 'Course Slot',
       daysOfWeek: [dayNum],
       startTime: slot.startTime,
       endTime: slot.endTime,
-      backgroundColor: conflict ? 'rgba(220, 38, 38, 0.8)' : '#3B82F6CC',
+      backgroundColor: isMatched ? 'rgba(16,185,129,0.8)' : '#3B82F6CC',
     };
   });
 
-  const appEvents = (selApp?.availabilities || []).map((slot, i) => {
-    const dayNum = getDayNumber(slot.day);
-    const conflict = selCourse?.sectionSchedule?.some(cs =>
-      dayNum === getDayNumber(cs.day) &&
-      cs.endTime !== undefined &&
-      slot.startTime < cs.endTime &&
-      cs.startTime !== undefined &&
-      slot.endTime > cs.startTime
-    ) ?? false;
+  const appEvents = (selApp?.availabilities || []).map((slot, i) => ({
+    id: `app${i}`,
+    title: 'Student Availability',
+    daysOfWeek: [getDayNumber(slot.day)],
+    startTime: slot.startTime,
+    endTime: slot.endTime,
+    backgroundColor: 'rgba(35, 38, 39, 0.3)',
+  }));
 
-    return {
-      id: `app${i}`,
-      title: 'Student Avail',
-      daysOfWeek: [dayNum],
-      startTime: slot.startTime,
-      endTime: slot.endTime,
-      backgroundColor: conflict ? 'rgba(220, 38, 38, 0.8)' : 'rgba(16, 185, 129, 0.8)',
-    };
-  });
+// Compute only the segments of student availability that overlap with course slots
+function getIntersectionSegments(
+  slot: { day: string; startTime: string; endTime: string },
+  avails: { day: string; startTime: string; endTime: string }[]
+) {
+  const dayNum = getDayNumber(slot.day);
+  return avails
+    .filter(a => getDayNumber(a.day) === dayNum)
+    .map(a => {
+      const start = a.startTime > slot.startTime ? a.startTime : slot.startTime;
+      const end = a.endTime < slot.endTime ? a.endTime : slot.endTime;
+      return start < end ? { start, end } : null;
+    })
+    .filter((x): x is { start: string; end: string } => x !== null); 
+}
 
-  const bgConflictEvents = (selApp?.availabilities || []).flatMap((slot, i) => {
-    const dayNum = getDayNumber(slot.day);
-    return (selCourse?.sectionSchedule || [])
-      .filter(cs =>
-        dayNum === getDayNumber(cs.day) &&
-        cs.startTime !== undefined &&
-        cs.endTime !== undefined &&
-        slot.startTime < cs.endTime &&
-        slot.endTime > cs.startTime
-      )
-      .map((cs, j) => {
-        if (!cs.startTime || !cs.endTime) return null;
+// Compute segments of student availability that match course slots
+const bgMatchedEvents = useMemo(() => {
+   return (selCourse?.sectionSchedule || []).flatMap((slot, i) => {
+     if (!slot.day || !slot.startTime || !slot.endTime) return [];
+     return getIntersectionSegments(
+       { day: slot.day, startTime: slot.startTime, endTime: slot.endTime },
+       selApp?.availabilities || []
+     ).map((seg, j) => ({
+       id: `matched-${i}-${j}`,
+       daysOfWeek: [getDayNumber(slot.day)],
+       startTime: seg.start,
+       endTime: seg.end,
+       title: 'Matched Avail',
+       backgroundColor: 'rgb(5, 168, 81)',
+     }));
+   });
+}, [selCourse, selApp?.availabilities]);
 
-        const start = slot.startTime > cs.startTime ? slot.startTime : cs.startTime;
-        const end = slot.endTime < cs.endTime ? slot.endTime : cs.endTime;
-              
-        return {
-          id: `conflict-bg-${i}-${j}`,
-          daysOfWeek: [dayNum],
-          startTime: start,
-          endTime: end,
-          display: 'background',
-          backgroundColor: 'rgba(220, 38, 38, 0.3)',
-        };
-      })
-      .filter(Boolean);
-  });
+// Combine all events into a single list
+const events = [
+  ...courseEvents,
+  ...appEvents,
+  ...bgMatchedEvents,
+].filter((e): e is NonNullable<typeof e> => e !== null);
 
-  const events = [
-    ...courseEvents,
-    ...appEvents,
-    ...bgConflictEvents,
-  ].filter((e): e is NonNullable<typeof e> => e !== null);
 
   const required = selCourse?.need?.requiredGradingHours ?? 0;
   const allocated = selCourse?.need?.numOfHoursCurrentlyAllocated ?? 0;
   const remaining = Math.max(required - allocated, 0);
   const hoursOK = allocated >= required;
-  const hasConflict = bgConflictEvents.length > 0;
+  const hasAvailabilityMatch = bgMatchedEvents.length > 0;
+
+  // Check if we have a selected application and course before fetching history
+  const [history, setHistory] = useState<Allocation[]>([]);
+    useEffect(() => {
+      if (!selApp || !token) {
+        setHistory([]);
+        return;
+      }
+      fetchAllocationsByStudent(selApp.student.id, token)
+        .then(setHistory)
+        .catch(() => setHistory([]));
+    }, [selApp, token]);
+      
+      const hasOffer = useMemo(() => {
+        if (!selApp || !selCourse) return false;
+        return history.some(h =>
+          h.application?.applicationId === selApp.applicationId &&
+          h.section?.sectionDetails?.sectionId === selCourse.sectionDetails?.sectionId
+        );
+      }, [history, selApp, selCourse]);
 
   return (
     <div className="p-8 min-h-screen space-y-8">
@@ -204,9 +217,9 @@ const TAAllocationPage: React.FC = () => {
             </>
           )}
          
-                  {selCourse?.need && selCourse.sectionDetails && (
+          {selCourse?.need && selCourse.sectionDetails && (
               <div className="mt-6 border-t pt-6 space-y-6">
-                {/* SECTION DETAILS */}
+                {/* section details */}
                 <section>
                   <h2 className="font-bold text-lg">Section Details</h2>
                   <div className="space-y-1 pl-2 text-sm">
@@ -216,7 +229,7 @@ const TAAllocationPage: React.FC = () => {
                   </div>
                 </section>
 
-                {/* COURSE NEED */}
+                {/* course need */}
                 <section>
                   <h2 className="font-bold text-lg">Course Need</h2>
                   <div className="space-y-1 pl-2 text-sm">
@@ -226,7 +239,7 @@ const TAAllocationPage: React.FC = () => {
                   </div>
                 </section>
 
-                {/* PREREQUISITES */}
+                {/* prerequisites */}
                 <section>
                   <h2 className="font-bold text-lg">Prerequisites</h2>
                   <div className="pl-2 text-sm">
@@ -253,12 +266,13 @@ const TAAllocationPage: React.FC = () => {
             </div>
             <div className="flex items-center space-x-1">
               <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(16,185,129,0.8)' }} />
-              <span className="text-sm">Student Availability</span>
+              <span className="text-sm">Matched Slot</span>
             </div>
             <div className="flex items-center space-x-1">
-              <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(187, 13, 13, 0.3)' }} />
-              <span className="text-sm">Conflict</span>
+              <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(35, 38, 39, 0.3)' }} />
+              <span className="text-sm">Student Availability</span>
             </div>
+
           </div>
           <FullCalendar
             key={selCourse?.sectionDetails?.sectionId ?? 'none'}
@@ -266,9 +280,9 @@ const TAAllocationPage: React.FC = () => {
             initialView="timeGridWeek"
             headerToolbar={false}
             allDaySlot={false}
-            slotMinTime="08:00:00"
+            slotMinTime="06:00:00"
             slotMaxTime="20:00:00"
-            slotEventOverlap={false}
+            slotEventOverlap={true}
             dayHeaderFormat={{ weekday: 'short' }}
             slotLabelFormat={{ hour: 'numeric', minute: '2-digit' }}
             events={events}
@@ -284,9 +298,9 @@ const TAAllocationPage: React.FC = () => {
               </span>
             </p>
             <p>
-              Schedule Conflict:{' '}
-              <span className={hasConflict ? 'text-red-600' : 'text-green-600'}>
-                {hasConflict ? 'Yes' : 'No'}
+             Availability Match:{' '}
+              <span className={hasAvailabilityMatch ? 'text-green-600' : 'text-red-600'}>
+                {hasAvailabilityMatch ? 'Yes' : 'No'}
               </span>
             </p>
           </div>
@@ -299,6 +313,71 @@ const TAAllocationPage: React.FC = () => {
               {loading ? 'Sending…' : 'Send Offer'}
             </button>
           </div>
+        {/* Offer Banner */}      
+        {(hasOffer || showBanner) && selApp && selCourse && (
+        <div
+          className="
+            mt-4
+            bg-[#e8f1ff]
+            border-l-4 border-[#040941]
+            rounded-md
+            p-4
+            flex flex-col md:flex-row md:items-center md:justify-between
+            shadow
+          "
+          role="status"
+          aria-live="polite"
+        >
+          <div>
+            {/* header changes */}
+            <p className="font-semibold text-[#040941]">
+              {showBanner
+                ? 'Offer Sent'
+                : 'Existing Offer'}
+            </p>
+
+            {/* message changes */}
+            <p className="text-sm text-gray-700">
+              {showBanner
+                ? `You’ve just sent an offer to `
+                : `An offer was already sent to `}
+              <strong>
+                {selApp.student.firstName} {selApp.student.lastName}
+              </strong>{' '}
+              for{' '}
+              <strong>
+                {selCourse.sectionDetails?.deptCode}{' '}
+                {selCourse.sectionDetails?.courseNum}{' '}
+                Section {selCourse.sectionDetails?.section}
+              </strong>
+              .{' '}
+              {showBanner
+                ? `They’ve been offered ${selApp.wantWorkingHours} hours.`
+                : `They were offered ${selApp.wantWorkingHours} hours earlier.`}
+            </p>
+          </div>
+
+          {/* actions */}
+          <div className="mt-2 md:mt-0 flex items-center space-x-3">
+            <Link
+              to="/applications"
+              className="text-sm bg-[#040941] text-white px-3 py-1 rounded hover:bg-[#03072a] transition"
+            >
+              View
+            </Link>
+            <button
+              onClick={() => {
+                setSelApp(null);
+                setShowBanner(false);
+              }}
+              className="text-sm bg-[#040941] text-white px-3 py-1 rounded hover:bg-[#03072a] transition"
+            >
+              Revoke  {/* Will be implement when we got delete allocation ready */}
+            </button>
+          </div>
+        </div>
+      )}
+
         </div>
         <ApplicationFilterPanel
           appQ={appQ}
@@ -309,13 +388,6 @@ const TAAllocationPage: React.FC = () => {
           colSpanClass="lg:col-span-5"
         />
       </div>
-      <OfferBanner
-        visible={showBanner}
-        student={selApp?.student!}
-        section={selCourse?.sectionDetails!}
-        hours={selApp?.wantWorkingHours!}
-        onClose={() => setShowBanner(false)}
-      />
       <ToastContainer />
     </div>
   );

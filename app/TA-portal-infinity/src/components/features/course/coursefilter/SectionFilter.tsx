@@ -106,7 +106,7 @@ export default function SectionFilter({
 
       <button
         onClick={handleFilter}
-        className="bg-blue-500 text-white p-2 rounded-md w-full"
+        className="px-6 py-2 bg-[#040941] text-white rounded w-full"
       >
         Filter
       </button>
