@@ -1,5 +1,6 @@
 package com.infinity.applicationservice;
 
+import com.infinity.applicationservice.Utility.ApplicationMapper;
 import com.infinity.applicationservice.dtos.*;
 import com.infinity.applicationservice.enums.*;
 import com.infinity.applicationservice.feign.SectionInterface;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +37,7 @@ class AllocationServiceTest {
     private ApplicationRepository applicationRepository;
     private SectionInterface sectionInterface;
     private UserInterface userInterface;
+    private ApplicationMapper applicationMapper;
 
     @BeforeEach
     void setup() {
@@ -42,7 +45,8 @@ class AllocationServiceTest {
         sectionInterface = Mockito.mock(SectionInterface.class);
         userInterface = Mockito.mock(UserInterface.class);
         applicationRepository = Mockito.mock(ApplicationRepository.class);
-        allocationService = new AllocationService(allocationRepository, applicationRepository, sectionInterface, userInterface);
+        applicationMapper = Mockito.mock(ApplicationMapper.class);
+        allocationService = new AllocationService(allocationRepository, applicationRepository, sectionInterface, userInterface, applicationMapper);
     }
 
     @Test
@@ -220,6 +224,17 @@ class AllocationServiceTest {
         when(allocationRepository.findAll()).thenReturn(List.of(a1, a2));
         when(userInterface.getStudentById(1L)).thenReturn(ResponseEntity.ok(new StudentDto(1L, "Scoobert", "Doobert", null, null, null, null)));
         when(sectionInterface.getSectionById(1L)).thenReturn(new SectionDto(1L, "Winter", "001", SectionType.LABORATORY, new CourseDto("COSC", "capstone", "499")));
+        when(applicationMapper.toDto(a1)).thenReturn(
+            new AllocationHistoryDto(
+                1L,
+                new StudentDto(1L, "Scoobert", "Doobert", null,null,null,null),
+                new ApplicationDto(1L, List.of(), false, 6, LocalDateTime.now(), Set.of()),
+                true,
+                10,
+                new SectionDto(1L, "Winter", "001", SectionType.LABORATORY, new CourseDto("COSC", "capstone", "499"))
+            )
+        );
+
 
         List<AllocationHistoryDto> result = allocationService.getAllocationsByConfirmationStatus(true);
 
@@ -239,6 +254,16 @@ class AllocationServiceTest {
         when(allocationRepository.findAll()).thenReturn(List.of(a1, a2));
         when(userInterface.getStudentById(1L)).thenReturn(ResponseEntity.ok(new StudentDto(1L, "Scoobert", "Doobert", null, null, null, null)));
         when(sectionInterface.getSectionById(anyLong())).thenReturn(new SectionDto(100L, "Winter", "001", SectionType.LABORATORY, new CourseDto("COSC", "capstone", "499")));
+        when(applicationMapper.toDto(a1)).thenReturn(
+            new AllocationHistoryDto(
+                1L,
+                new StudentDto(1L, "Scoobert", "Doobert", null,null,null,null),
+                new ApplicationDto(1L, List.of(), false, 6, LocalDateTime.now(), Set.of()),
+                true,
+                10,
+                new SectionDto(100L, "Winter", "001", SectionType.LABORATORY, new CourseDto("COSC", "capstone", "499"))
+            )
+        );
 
         List<AllocationHistoryDto> result = allocationService.getAllocationsBySectionId(100L);
 
@@ -257,6 +282,16 @@ class AllocationServiceTest {
         when(allocationRepository.findAll()).thenReturn(List.of(a1, a2));
         when(userInterface.getStudentById(1L)).thenReturn(ResponseEntity.ok(new StudentDto(1L, "Scoobert", "Doobert", null, null, null, null)));
         when(sectionInterface.getSectionById(1L)).thenReturn(new SectionDto(1L, "Winter", "001", SectionType.LABORATORY, new CourseDto("COSC", "capstone", "499")));
+        when(applicationMapper.toDto(a1)).thenReturn(
+            new AllocationHistoryDto(
+                1L,
+                new StudentDto(1L, "Scoobert", "Doobert", null,null,null,null),
+                new ApplicationDto(1L, List.of(), false, 6, LocalDateTime.now(), Set.of()),
+                true,
+                10,
+                new SectionDto(1L, "Winter", "001", SectionType.LABORATORY, new CourseDto("COSC", "capstone", "499"))
+            )
+        );
 
         List<AllocationHistoryDto> result = allocationService.getAllocationsByApplicationId(1L);
 
@@ -277,6 +312,16 @@ class AllocationServiceTest {
         when(allocationRepository.findAll()).thenReturn(List.of(a1, a2));
         when(userInterface.getStudentById(1L)).thenReturn(ResponseEntity.ok(new StudentDto(1L, "Scoobert", "Doobert", null, null, null, null)));
         when(sectionInterface.getSectionById(1L)).thenReturn(new SectionDto(1L, "Winter", "001", SectionType.LABORATORY, new CourseDto("COSC", "capstone", "499")));
+        when(applicationMapper.toDto(a1)).thenReturn(
+            new AllocationHistoryDto(
+                1L,
+                new StudentDto(1L, "Scoobert", "Doobert", null,null,null,null),
+                new ApplicationDto(1L, List.of(), false, 6, LocalDateTime.now(), Set.of()),
+                true,
+                10,
+                new SectionDto(1L, "Winter", "001", SectionType.LABORATORY, new CourseDto("COSC", "capstone", "499"))
+            )
+        );
 
         List<AllocationHistoryDto> result = allocationService.getAllocationsByApplicationYear(2025);
 
