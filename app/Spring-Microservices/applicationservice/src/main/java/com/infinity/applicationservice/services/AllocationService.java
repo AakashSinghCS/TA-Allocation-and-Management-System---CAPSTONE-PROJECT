@@ -111,4 +111,130 @@ public class AllocationService {
         allocationRepository.save(allocation);
     }
 
+    public List<AllocationHistoryDto> getAllocationsByConfirmationStatus(boolean status) {
+        return allocationRepository.findAll().stream()
+            .filter(a -> a.isConfirmed() == status)
+            .map(allocation -> {
+                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+
+                Application application = allocation.getApplication();
+                ApplicationDto applicationDto = new ApplicationDto(
+                    application.getStudentId(),
+                    application.getSubjectPreferences(),
+                    application.isWantRemote(),
+                    application.getWantWorkingHours(),
+                    application.getSubmittedAt(),
+                    application.getAvailabilities().stream()
+                        .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime().toString(), a.getEndTime().toString()))
+                        .collect(Collectors.toSet())
+                );
+
+                return new AllocationHistoryDto(
+                    allocation.getId(),
+                    student,
+                    applicationDto,
+                    allocation.isConfirmed(),
+                    allocation.getNumberOfHours(),
+                    section
+                );
+            })
+            .collect(Collectors.toList());
+}
+
+    public List<AllocationHistoryDto> getAllocationsBySectionId(Long sectionId) {
+        return allocationRepository.findAll().stream()
+            .filter(a -> a.getSectionId().equals(sectionId))
+            .map(allocation -> {
+                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+
+                Application application = allocation.getApplication();
+                ApplicationDto applicationDto = new ApplicationDto(
+                    application.getStudentId(),
+                    application.getSubjectPreferences(),
+                    application.isWantRemote(),
+                    application.getWantWorkingHours(),
+                    application.getSubmittedAt(),
+                    application.getAvailabilities().stream()
+                        .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime().toString(), a.getEndTime().toString()))
+                        .collect(Collectors.toSet())
+                );
+
+                return new AllocationHistoryDto(
+                    allocation.getId(),
+                    student,
+                    applicationDto,
+                    allocation.isConfirmed(),
+                    allocation.getNumberOfHours(),
+                    section
+                );
+            })
+            .collect(Collectors.toList());
+    }
+
+    public List<AllocationHistoryDto> getAllocationsByApplicationId(Long appId) {
+        return allocationRepository.findAll().stream()
+            .filter(a -> a.getApplication() != null && a.getApplication().getId().equals(appId))
+            .map(allocation -> {
+                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+
+                Application application = allocation.getApplication();
+                ApplicationDto applicationDto = new ApplicationDto(
+                    application.getStudentId(),
+                    application.getSubjectPreferences(),
+                    application.isWantRemote(),
+                    application.getWantWorkingHours(),
+                    application.getSubmittedAt(),
+                    application.getAvailabilities().stream()
+                        .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime().toString(), a.getEndTime().toString()))
+                        .collect(Collectors.toSet())
+                );
+
+                return new AllocationHistoryDto(
+                    allocation.getId(),
+                    student,
+                    applicationDto,
+                    allocation.isConfirmed(),
+                    allocation.getNumberOfHours(),
+                    section
+                );
+            })
+            .collect(Collectors.toList());
+        }
+
+    public List<AllocationHistoryDto> getAllocationsByApplicationYear(int year) {
+        return allocationRepository.findAll().stream()
+            .filter(a -> a.getApplication() != null &&
+                        a.getApplication().getSubmittedAt().getYear() == year)
+            .map(allocation -> {
+                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+
+                Application application = allocation.getApplication();
+                ApplicationDto applicationDto = new ApplicationDto(
+                    application.getStudentId(),
+                    application.getSubjectPreferences(),
+                    application.isWantRemote(),
+                    application.getWantWorkingHours(),
+                    application.getSubmittedAt(),
+                    application.getAvailabilities().stream()
+                        .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime().toString(), a.getEndTime().toString()))
+                        .collect(Collectors.toSet())
+                );
+
+                return new AllocationHistoryDto(
+                    allocation.getId(),
+                    student,
+                    applicationDto,
+                    allocation.isConfirmed(),
+                    allocation.getNumberOfHours(),
+                    section
+                );
+            })
+            .collect(Collectors.toList());
+    }
+
+
 }
