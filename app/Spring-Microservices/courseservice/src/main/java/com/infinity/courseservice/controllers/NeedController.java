@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.infinity.courseservice.dtos.CourseDtos.PrereqRequest;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedRequest;
 import com.infinity.courseservice.services.NeedService;
+import com.infinity.courseservice.services.PrereqService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class NeedController {
 
     private final NeedService needService;
+    private final PrereqService prereqService;
 
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PostMapping("/add/{courseId}")
@@ -52,5 +55,10 @@ public class NeedController {
     public ResponseEntity<String> deleteNeed(@PathVariable Long courseId,
             @PathVariable Integer year, @PathVariable String semester) {
         return ResponseEntity.ok(needService.deleteNeed(courseId, year, semester));
+    }
+
+    @PostMapping("/addPrereq")
+    public ResponseEntity<String> addPrereqs(PrereqRequest request) {
+        return ResponseEntity.ok(prereqService.addPrereqs(request));
     }
 }
