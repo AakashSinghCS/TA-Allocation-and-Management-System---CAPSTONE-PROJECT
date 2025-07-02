@@ -36,6 +36,7 @@ import AddSectionPage from "../pages/coursepage/AddSectionPage";
 import InstructorAddSectionPage from "../pages/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage";
 import InstructorAddNeedPage from "../pages/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage";
 import AddAllocationHistory from "../pages/taprofilepage/addallocationhistory/AddAllocationHistory";
+import AddEnrolledCourse from "../pages/taprofilepage/coursestakenpage/addenrolledcourse/AddEnrolledCourse";
 
 
 export const router = createBrowserRouter([
@@ -69,6 +70,7 @@ export const router = createBrowserRouter([
           { path: "application", element: <ApplicationPage /> },
           { path: "questions/:studentId", element: < TaQuestionnairePage/> },
           { path: "addallocation", element: <AddAllocationHistory/>},
+          { path: "addenrollment", element: <AddEnrolledCourse/>},
           { path: "error", element: <ErrorPage /> },
         ],
       },

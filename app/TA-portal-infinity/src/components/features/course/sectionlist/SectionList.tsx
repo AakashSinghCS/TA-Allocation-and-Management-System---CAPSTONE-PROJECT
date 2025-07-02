@@ -2,14 +2,13 @@ import { Link } from 'react-router-dom';
 import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
 import React from 'react';
 import type Section from '../../../../interfaces/section/Section';
-import type { Course } from '../../../../interfaces/course/Course';
 
 interface Props {
   sections: Section[] | null;
   onDeleted?: (id: number, isCourse: boolean) => void;
   onSelect?: (u: Section) => void;
   onSelectCourse?: (cId: number, deptCode: string, courseNum: string, name: string) => void;
-  mode?: 'coordinator' | 'instructorAddSection' | 'instructorPrereqCourse' | 'studentAddHistory';
+  mode?: 'coordinator' | 'instructorAddSection' | 'instructorPrereqCourse' | 'studentAddHistory' | 'studentAddEnrollment';
 }
 
 export default function SectionList({ sections, onDeleted, onSelect, onSelectCourse, mode = 'coordinator' }: Props) {
@@ -118,7 +117,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                     className="text-red-600 hover:underline text-sm whitespace-nowrap"
                   >
                     Delete Course
-                  </button>) : (mode == 'instructorPrereqCourse') ? <button
+                  </button>) : (mode == 'instructorPrereqCourse' || 'studentAddEnrollment') ? <button
                     type="button"
                     onClick={() => {
                       if (!onSelectCourse) return;
@@ -184,7 +183,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                     <td className="border px-3 py-2 text-right">
                       {sid && (
                         <>
-                          {(mode === 'instructorAddSection' ||'studentAddHistory') ? (
+                          {(mode === 'instructorAddSection' ||'studentAddHistory' || 'studentAddEnrollment') ? (
                             <button
                               type="button"
                               onClick={() => onSelect?.(sec)}
