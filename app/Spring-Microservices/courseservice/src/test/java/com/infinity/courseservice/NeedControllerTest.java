@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.courseservice.controllers.NeedController;
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedRequest;
 import com.infinity.courseservice.services.NeedService;
@@ -37,8 +40,8 @@ public class NeedControllerTest {
     @Test
     void testAddNeed() throws Exception {
         Long courseId = 1L;
-        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1");
-        NeedDto response = new NeedDto(5L, 1L,"Marking Labs", 30, 10, 2025, "W1");
+        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1", null);
+        NeedDto response = new NeedDto(5L, 1L,"Marking Labs", 30, 10, 2025, "W1", null);
 
         when(needService.addNeed(eq(request), eq(courseId))).thenReturn(response);
 
@@ -57,7 +60,7 @@ public class NeedControllerTest {
         Long courseId = 1L;
         Integer year = 2025;
         String semester = "W1";
-        NeedDto dto = new NeedDto(5L, 1L, "Marking Labs", 30, 10, 2025, "W1");
+        NeedDto dto = new NeedDto(5L, 1L, "Marking Labs", 30, 10, 2025, "W1", null);
 
         when(needService.getNeed(courseId, 2025, "W1")).thenReturn(dto);
 
@@ -72,8 +75,8 @@ public class NeedControllerTest {
         Long courseId = 1L;
         Integer year = 2025;
         String semester = "W1";
-        NeedRequest request = new NeedRequest("Updated", 30, 10, 2025, "W1");
-        NeedDto updated = new NeedDto(5L, 1L, "Updated", 30, 10, 2025, "W1");
+        NeedRequest request = new NeedRequest("Updated", 30, 10, 2025, "W1", List.of(1L));
+        NeedDto updated = new NeedDto(5L, 1L, "Updated", 30, 10, 2025, "W1", List.of(new CourseDto(1L, "COSC", "Security", "430")));
 
         when(needService.updateNeed(eq(request), eq(courseId), eq(2025), eq("W1"))).thenReturn(updated);
 
@@ -83,7 +86,8 @@ public class NeedControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.description").value("Updated"))
                 .andExpect(jsonPath("$.requiredGradingHours").value(30))
-                .andExpect(jsonPath("$.numHoursCurrentlyAllocated").value(10));
+                .andExpect(jsonPath("$.numHoursCurrentlyAllocated").value(10))
+                .andExpect(jsonPath("$.prerequisites[0].deptCode").value("COSC"));
     }
 
     @Test

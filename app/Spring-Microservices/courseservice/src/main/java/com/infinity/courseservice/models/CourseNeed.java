@@ -1,10 +1,15 @@
 package com.infinity.courseservice.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -35,6 +40,10 @@ public class CourseNeed {
     private Integer year;
 
     private String semester;
+
+    @OneToMany(mappedBy = "courseNeed", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Prereq> prerequisites = new ArrayList<>();
+
 
     public CourseNeed(Course course, Need need, Integer year, String semester) {
         this.course = course;

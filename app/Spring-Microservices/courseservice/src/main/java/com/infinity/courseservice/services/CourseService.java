@@ -26,6 +26,7 @@ import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
+import com.infinity.courseservice.utility.CourseMapper;
 
 import jakarta.transaction.Transactional;
 import lombok.Data;
@@ -43,6 +44,7 @@ public class CourseService {
     private final NeedService needService;
     private final ApplicationInterface applicationInterface;
     private final SectionService sectionService;
+    private final CourseMapper courseMapper;
     // private final EnrollmentService enrollmentService;
 
     @Transactional
@@ -61,13 +63,13 @@ public class CourseService {
             throw new BadRequestException("Course already exists " + ex);
         }
 
-        return new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum());
+        return courseMapper.courseToDto(course);
     }
 
     public CourseDto findCourse(Long id) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Course with ID " + id + " not found"));
-        return new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum());
+        return courseMapper.courseToDto(course);
     }
     
     public CourseDto updateCourse(CourseRequest request, Long courseId) {
@@ -77,7 +79,7 @@ public class CourseService {
         course.setName(request.name());
         course.setCourseNum(request.courseNum());
         courseRepository.save(course);
-        return new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum());
+        return courseMapper.courseToDto(course);
     }
 
     public String deleteCourse(Long courseId) {
@@ -90,8 +92,7 @@ public class CourseService {
 
     public List<CourseDto> findCoursesByIds(List<Long> ids) {
         List<Course> courses = courseRepository.findAllById(ids);
-        return courses.stream().map(course -> new CourseDto(
-                course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum())).toList();
+        return courses.stream().map(course -> courseMapper.courseToDto(course)).toList();
     }
 
     public List<CourseSectionScheduleDto> filterCourses(CourseFilterRequest filter) {
