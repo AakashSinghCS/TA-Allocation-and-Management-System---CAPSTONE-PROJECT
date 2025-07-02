@@ -20,7 +20,7 @@ export async function fetchAddNeed({section, description, requiredGradingHours, 
         year: section.sectionDetails?.year,
         semester : section.sectionDetails?.semester
     }
-
+    console.log(needRequest);
     try {
         const res = await fetch(BASE, {
             method: "POST",

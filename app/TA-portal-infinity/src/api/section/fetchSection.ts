@@ -28,12 +28,12 @@ export async function fetchSection(
     }
     const dto: SectionDtoWithInstructorId = await res.json();
     const schedules: SectionSchedule[] | null = await fetchGetSectionSchedules( sectionId);
-
+    console.log(dto);
     let instructor: Instructor | null = null;
     if (dto.instructorId != null) {
       instructor = await fetchInstructorDetails(dto.instructorId);
     }
-    console.log(schedules);
+    // console.log(schedules);
     return mapDtoToSection(dto, schedules ?? [], instructor);
   } catch (err) {
     console.error("Error in fetchSection:", err);

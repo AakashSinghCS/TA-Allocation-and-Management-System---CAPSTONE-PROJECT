@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import type Section from "../../../../interfaces/section/Section";
 
 export default function SectionCard({ section, className = "" }: { section: Section; className?: string }) {
-  const alloc = section?.need?.numOfHoursCurrentlyAllocated;
+  const alloc = section?.need?.numHoursCurrentlyAllocated;
   const req = section?.need?.requiredGradingHours;
   const allocTxt = typeof alloc === "number" ? alloc : "-";
   const reqTxt = typeof req === "number" ? req : "-";
@@ -16,7 +16,7 @@ export default function SectionCard({ section, className = "" }: { section: Sect
       <div className="flex flex-wrap items-center">
         <div className="truncate max-w-full">
           <Link
-            to="/"
+            to={`/user/sectionprofile/${section.sectionDetails?.sectionId}`}
             data-testid={`section-link-${section.sectionDetails?.id}`}
             title="Go to course profile page"
             className="font-medium whitespace-nowrap text-sm 2xl:text-base hover:text-blue-600"

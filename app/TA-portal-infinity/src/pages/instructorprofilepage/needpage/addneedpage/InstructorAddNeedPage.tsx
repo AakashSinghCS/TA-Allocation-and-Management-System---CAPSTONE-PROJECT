@@ -156,7 +156,7 @@ export default function InstructorAddNeedPage() {
           {loading ? (
             <p>Loading courses…</p>
           ) : (
-            <SectionList sections={filteredSections} onSelectCourse={onSelectCourse} mode='instructorAddPrereqCourse'/>
+            <SectionList sections={filteredSections} onSelectCourse={onSelectCourse} mode='instructorPrereqCourse'/>
           )}
         </div>
 

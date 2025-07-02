@@ -83,6 +83,7 @@ export const router = createBrowserRouter([
           { path: "home", element: <InstructorHomePage /> },
           { path: "browseuser", element: <UserBrowsingPage /> },
           { path: "addsection", element: <InstructorAddSectionPage /> },
+          { path: "updateprereqcourses/:courseId/:year/:semester", element: <InstructorAddSectionPage mode="update"/> },
           { path: "addneed/:sectionId", element: <InstructorAddNeedPage /> },
           { path: "error", element: <ErrorPage /> },
         ],

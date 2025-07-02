@@ -9,7 +9,7 @@ interface Props {
   onDeleted?: (id: number, isCourse: boolean) => void;
   onSelect?: (u: Section) => void;
   onSelectCourse?: (cId: number, deptCode: string, courseNum: string, name: string) => void;
-  mode?: 'coordinator' | 'instructorAddSection' | 'instructorAddPrereqCourse';
+  mode?: 'coordinator' | 'instructorAddSection' | 'instructorPrereqCourse';
 }
 
 export default function SectionList({ sections, onDeleted, onSelect, onSelectCourse, mode = 'coordinator' }: Props) {
@@ -118,7 +118,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                     className="text-red-600 hover:underline text-sm whitespace-nowrap"
                   >
                     Delete Course
-                  </button>) : mode == 'instructorAddPrereqCourse' ? <button
+                  </button>) : mode == 'instructorPrereqCourse' ? <button
                     type="button"
                     onClick={() => {
                       if (!onSelectCourse) return;
@@ -139,7 +139,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
 
               </tr>
 
-              {mode !== 'instructorAddPrereqCourse' && sortedSections.map((sec) => {
+              {mode !== 'instructorPrereqCourse' && sortedSections.map((sec) => {
                 if (!sec.sectionDetails?.sectionId) return;
 
                 const times = (sec.sectionSchedule ?? [])
