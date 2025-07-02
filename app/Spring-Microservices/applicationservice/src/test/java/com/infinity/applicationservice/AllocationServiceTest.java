@@ -68,8 +68,8 @@ class AllocationServiceTest {
         allocation.setApplication(application);
 
         StudentDto studentDto = new StudentDto(1L, "Test", "User", 123456, "BSC", 2022, 4);
-        SectionDto sectionDto = new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"));
-        ApplicationDto applicationDto = new ApplicationDto(studentId, null, false, null, null, Set.of());
+        SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L,"COSC","Capstone","499"));
+        ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, false, null, null, Set.of());
         AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, applicationDto, true, 10, sectionDto);
 
         when(allocationRepository.findByStudentId(studentId)).thenReturn(List.of(allocation));
@@ -118,8 +118,8 @@ class AllocationServiceTest {
         savedAllocation.setApplication(application);
 
         StudentDto studentDto = new StudentDto(studentId, "Test", "User", 63260442, "BSC", 2022, 4);
-        SectionDto sectionDto = new SectionDto(sectionId, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC", "Capstone", "499"));
-        ApplicationDto applicationDto = new ApplicationDto(studentId, null, false, null, LocalDateTime.now(), Set.of());
+        SectionDto sectionDto = new SectionDto(sectionId, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L,"COSC", "Capstone", "499"));
+        ApplicationDto applicationDto = new ApplicationDto(1L,studentId, null, false, null, LocalDateTime.now(), Set.of());
         AllocationHistoryDto expectedDto = new AllocationHistoryDto(500L, studentDto, applicationDto, false, 5, sectionDto);
 
 
@@ -228,8 +228,8 @@ class AllocationServiceTest {
         a2.setApplication(application);
 
         StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", null, null, null, null);
-        SectionDto sectionDto = new SectionDto(1L, "Winter", "001", SectionType.LABORATORY, new CourseDto("COSC", "capstone", "499"));
-        ApplicationDto applicationDto = new ApplicationDto(1L, List.of(), false, 6, LocalDateTime.now(), Set.of());
+        SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY, new CourseDto(1L,"COSC", "capstone", "499"));
+        ApplicationDto applicationDto = new ApplicationDto(1l,1L, List.of(), false, 6, LocalDateTime.now(), Set.of());
 
         AllocationHistoryDto expectedDto = new AllocationHistoryDto(1L, studentDto, applicationDto, true, 10, sectionDto);
 
@@ -268,8 +268,8 @@ class AllocationServiceTest {
         a2.setApplication(application);
 
         StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", null, null, null, null);
-        SectionDto sectionDto = new SectionDto(100L, "Winter", "001", SectionType.LABORATORY, new CourseDto("COSC", "capstone", "499"));
-        ApplicationDto applicationDto = new ApplicationDto(1L, List.of(), false, 6, LocalDateTime.now(), Set.of());
+        SectionDto sectionDto = new SectionDto(100L, 2025, "Winter", "001", SectionType.LABORATORY, new CourseDto(1L,"COSC", "capstone", "499"));
+        ApplicationDto applicationDto = new ApplicationDto(1L,1L, List.of(), false, 6, LocalDateTime.now(), Set.of());
 
         AllocationHistoryDto expectedDto = new AllocationHistoryDto(
             1L,
@@ -324,8 +324,8 @@ class AllocationServiceTest {
         a2.setSectionId(1L);
 
         StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", null, null, null, null);
-        SectionDto sectionDto = new SectionDto(1L, "Winter", "001", SectionType.LABORATORY, new CourseDto("COSC", "capstone", "499"));
-        ApplicationDto applicationDto = new ApplicationDto(1L, List.of(), false, 6, app1.getSubmittedAt(), Set.of());
+        SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY, new CourseDto(1L, "COSC", "capstone", "499"));
+        ApplicationDto applicationDto = new ApplicationDto(1L, 1L, List.of(), false, 6, app1.getSubmittedAt(), Set.of());
         AllocationHistoryDto historyDto = new AllocationHistoryDto(1L, studentDto, applicationDto, true, 10, sectionDto);
 
         when(allocationRepository.findAll()).thenReturn(List.of(a1, a2));
@@ -366,8 +366,8 @@ class AllocationServiceTest {
         a2.setSectionId(1L);
 
         StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", null, null, null, null);
-        SectionDto sectionDto= new SectionDto(1L, "Winter", "001", SectionType.LABORATORY, new CourseDto("COSC", "capstone", "499"));
-        ApplicationDto applicationDto = new ApplicationDto(1L, List.of(), false, 6, now, Set.of());
+        SectionDto sectionDto= new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY, new CourseDto(1L, "COSC", "capstone", "499"));
+        ApplicationDto applicationDto = new ApplicationDto(1L,1L, List.of(), false, 6, now, Set.of());
         AllocationHistoryDto historyDto = new AllocationHistoryDto(1L, studentDto, applicationDto, true, 10, sectionDto);
 
         when(allocationRepository.findAll()).thenReturn(List.of(a1, a2));

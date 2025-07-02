@@ -12,6 +12,7 @@ public class ApplicationMapper {
 
     public ApplicationDto toDto(Application application) {
         return new ApplicationDto(
+            application.getId(),
             application.getStudentId(),
             application.getSubjectPreferences(),
             application.isWantRemote(),
@@ -28,6 +29,7 @@ public class ApplicationMapper {
 
     public ApplicationWithStudentDto toDtoWithStudent(Application app, StudentDto student) {
         return new ApplicationWithStudentDto(
+            app.getId(),
             student,
             Arrays.asList(app.getSubjectPreference1(), app.getSubjectPreference2(), app.getSubjectPreference3())
                   .stream().filter(s -> s != null).toList(),

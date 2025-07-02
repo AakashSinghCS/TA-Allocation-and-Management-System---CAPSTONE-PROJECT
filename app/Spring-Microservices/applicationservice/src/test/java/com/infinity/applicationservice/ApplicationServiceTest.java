@@ -122,6 +122,7 @@ public class ApplicationServiceTest {
 
         ApplicationDto mockedDto = new ApplicationDto(
             1L,
+            1L,
             List.of(Subject.COSC),
             false,
             6,
@@ -167,6 +168,7 @@ public class ApplicationServiceTest {
         when(applicationRepository.findByStudentIdAndYear(1L, 2025)).thenReturn(Optional.of(application));
 
         ApplicationDto mockedDto = new ApplicationDto(
+            1L,
             1L,
             List.of(Subject.COSC),
             false,
@@ -242,6 +244,7 @@ public class ApplicationServiceTest {
 
         ApplicationDto mockedDto = new ApplicationDto(
             1L,
+            1L,
             List.of(Subject.COSC),
             false,
             6,
@@ -292,6 +295,7 @@ public class ApplicationServiceTest {
 
         ApplicationDto dto1 = new ApplicationDto(
             1L,
+            1L,
             List.of(Subject.COSC),
             false,
             6,
@@ -300,6 +304,7 @@ public class ApplicationServiceTest {
         );
 
         ApplicationDto dto2 = new ApplicationDto(
+            1L,
             1L,
             List.of(Subject.DATA),
             true,
@@ -330,6 +335,7 @@ public class ApplicationServiceTest {
         StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", 1234567, "COSC", 2022, 3);
 
         ApplicationWithStudentDto expectedDto = new ApplicationWithStudentDto(
+            1L,
             studentDto,
             List.of(Subject.COSC, Subject.MATH),
             false,
