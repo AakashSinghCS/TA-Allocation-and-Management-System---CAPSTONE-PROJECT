@@ -5,6 +5,7 @@ import com.infinity.courseservice.controllers.QualificationController;
 import com.infinity.courseservice.dtos.*;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.models.Qualification;
 import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.models.StudentQualification;
@@ -22,6 +23,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -35,7 +37,7 @@ class QualificationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private QualificationService qualificationService;
 
     @Autowired
@@ -130,21 +132,46 @@ class QualificationControllerTest {
         when(qualificationService.findQualificationsByStudentId(studentId))
                 .thenReturn(List.of(100L, 200L, 300L));
 
-        // Act + Assert
-        mockMvc.perform(get("/findByStudentId/{studentId}", studentId)
+        mockMvc.perform(get("/qualifications/findByStudentId/{studentId}", studentId)
                         .accept(MediaType.APPLICATION_JSON))
                .andExpect(status().isOk())
                .andExpect(content().json("[100,200,300]"));
     }
 
     @Test
-    void getQualificationsByInstructorId_shouldReturnList() throws Exception {
-        Section mockSection = new Section();
-        Qualification mockQualification = new Qualification();
-        QualificationWithSectionDto dto = new QualificationWithSectionDto(mockSection, mockQualification);
-        when(qualificationService.findQualificationsByInstructorId(4L)).thenReturn(List.of(dto));
+    void getQualificationsByInstructorId_shouldReturnOk() throws Exception {
+        Long instructorId = 5L;
 
-        mockMvc.perform(get("/qualifications/instructor/4"))
-               .andExpect(status().isOk());
+        QualificationWithSectionDto dto = new QualificationWithSectionDto(
+            10L,
+            2024,
+            "W1",
+            "001",
+            SectionType.LECTURE,
+            100L,
+            "COSC",
+            "Test Qualification"
+        );
+
+        when(qualificationService.findQualificationsByInstructorId(instructorId))
+                .thenReturn(List.of(dto));
+
+        mockMvc.perform(get("/qualifications/instructor/{instructorId}", instructorId)
+                .accept(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk())
+               .andExpect(content().json("""
+                   [
+                       {
+                           "sectionId":10,
+                           "year":2024,
+                           "semester":"W1",
+                           "sectionName":"001",
+                           "sectionType":"LECTURE",
+                           "qualificationId":100,
+                           "courseDeptCode":"COSC",
+                           "qualificationDescription":"Test Qualification"
+                       }
+                   ]
+               """));
     }
 }

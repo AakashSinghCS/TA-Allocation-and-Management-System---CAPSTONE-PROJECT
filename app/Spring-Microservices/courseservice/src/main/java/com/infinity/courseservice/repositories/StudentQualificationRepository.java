@@ -11,6 +11,6 @@ public interface StudentQualificationRepository extends JpaRepository<StudentQua
 
     List<StudentQualification> findAllByStudentId(Long studentId);
     void deleteAllByStudentId(Long studentId);
-    List<StudentQualification> findAllByQualifications(List<Qualification> qualifications);
+    List<StudentQualification> findAllByQualificationIn(List<Qualification> qualifications);
 
 }

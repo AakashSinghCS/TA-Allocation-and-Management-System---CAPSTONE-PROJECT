@@ -15,8 +15,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.QualificationDto;
 import com.infinity.courseservice.dtos.QualificationRequest;
+import com.infinity.courseservice.dtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.UserDtos.StudentDto;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.dtos.StudentQualiRequest;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -135,7 +137,7 @@ class QualificationServiceTest {
 
         List<StudentQualification> studentQualifications = List.of(sq1, sq2);
 
-        when(studentQualificationRepository.findAllByQualifications(qualifications))
+        when(studentQualificationRepository.findAllByQualificationIn(qualifications))
                 .thenReturn(studentQualifications);
 
         // Act
@@ -260,5 +262,49 @@ class QualificationServiceTest {
         List<Qualification> result = qualificationService.findQualificationsByDeptCode("COSC");
 
         assertEquals(1, result.size());
+    }
+
+    @Test
+    void findQualificationsByInstructorId_shouldReturnDtos() {
+        // Arrange
+        Long instructorId = 5L;
+
+        Course course = new Course();
+        course.setId(1L);
+        course.setDeptCode("COSC");
+
+        Section section = new Section();
+        section.setId(10L);
+        section.setYear(2024);
+        section.setSemester("W1");
+        section.setSection("001");
+        section.setType(SectionType.LECTURE);
+        section.setCourse(course);
+
+        Qualification qualification = new Qualification();
+        qualification.setId(100L);
+        qualification.setCourse(course);
+        qualification.setDescription("Test Qualification");
+
+        when(sectionRepository.findAllByInstructorId(instructorId))
+                .thenReturn(List.of(section));
+
+        when(qualificationRepository.findByCourse(course))
+                .thenReturn(qualification);
+
+        // Act
+        List<QualificationWithSectionDto> result = qualificationService.findQualificationsByInstructorId(instructorId);
+
+        // Assert
+        assertEquals(1, result.size());
+        QualificationWithSectionDto dto = result.get(0);
+        assertEquals(section.getId(), dto.sectionId());
+        assertEquals(section.getYear(), dto.year());
+        assertEquals(section.getSemester(), dto.semester());
+        assertEquals(section.getSection(), dto.sectionName());
+        assertEquals(section.getType(), dto.sectionType());
+        assertEquals(qualification.getId(), dto.qualificationId());
+        assertEquals(course.getDeptCode(), dto.courseDeptCode());
+        assertEquals(qualification.getDescription(), dto.qualificationDescription());
     }
 }

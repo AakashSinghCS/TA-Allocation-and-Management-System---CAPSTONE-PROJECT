@@ -54,9 +54,12 @@ public class QualificationService {
 
     public List<Qualification> findQualificationsByDeptCode(String deptCode) {
         List<Qualification> qualifications = qualificationRepository.findAllByDeptCode(deptCode);
-        // List<QualificationDto> dtos = qualifications.stream()
-        //     .map(q -> new QualificationDto(new CourseDto(q.getCourse().getId(), q.getCourse().getDeptCode(), q.getCourse().getName(), q.getCourse().getCourseNum()),q.getDescription(),null))
-        //     .collect(Collectors.toList());
+        for (Qualification qualification : qualifications) {
+            Course course = qualification.getCourse();
+            if (course != null) {
+                course.setSections(null);
+            }
+        }
         return qualifications;
     }
 
@@ -80,7 +83,7 @@ public class QualificationService {
         }
         qualificationRepository.deleteAll(toDelete);
         List<Long> deleteIds = toDelete.stream().map(Qualification::getId).collect(Collectors.toList());
-        List<StudentQualification> toDeleteSq = studentQualificationRepository.findAllByQualifications(toDelete);
+        List<StudentQualification> toDeleteSq = studentQualificationRepository.findAllByQualificationIn(toDelete);
         studentQualificationRepository.deleteAll(toDeleteSq);
         return deleteIds;
     }
@@ -107,30 +110,29 @@ public class QualificationService {
     public List<Long> findQualificationsByStudentId(Long studentId) {
         List<StudentQualification> studentQualifications = studentQualificationRepository.findAllByStudentId(studentId);
         List<Long> qualificationIds = studentQualifications.stream().map(sq -> sq.getQualification().getId()).collect(Collectors.toList());
-        // List<String> descriptions = studentQualifications.stream()
-        //     .map(Qualification::getDescription)
-        //     .collect(Collectors.toList());
-        // List<Qualification> qualifications = qualificationRepository.findAllByDescriptionAndStudentIdIsNull(descriptions);
-        // List<StudentQualificationResponseDto> dtos = qualifications.stream()
-        //     .map(q -> new StudentQualificationResponseDto(
-        //         q.getId(),
-        //         new CourseDto(q.getCourse().getId(), q.getDeptCode(), q.getCourse().getName(), q.getCourse().getCourseNum()), 
-        //         q.getDescription(),
-        //         studentClient.getStudentById(studentId)
-        //     ))
-        //     .collect(Collectors.toList());
         return qualificationIds;
     }
 
     public List<QualificationWithSectionDto> findQualificationsByInstructorId(Long instructorId) {
         List<Section> sections = sectionRepository.findAllByInstructorId(instructorId);
-        List<QualificationWithSectionDto> combinedList = new ArrayList<>();
+        List<QualificationWithSectionDto> result = new ArrayList<>();
         for (Section section : sections) {
             Course course = section.getCourse();
             Qualification qualification = qualificationRepository.findByCourse(course);
-            combinedList.add(new QualificationWithSectionDto(section, qualification));
+            result.add(new QualificationWithSectionDto(
+            // Section fields
+            section.getId(),
+            section.getYear(),
+            section.getSemester(),
+            section.getSection(),
+            section.getType(),
+            // Qualification fields
+            qualification.getId(),
+            course.getDeptCode(),
+            qualification.getDescription()
+        ));
         }
-        return combinedList;
+        return result;
     }
 }
 
