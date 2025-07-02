@@ -42,7 +42,7 @@ public class SectionController {
     
      @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addSection/{courseId}")
-     public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId, @RequestBody CourseRequest request) {
+     public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId, @RequestBody SectionAddDtoRequest request) {
          return ResponseEntity.ok(sectionService.addSection(courseId, request));
      }
     

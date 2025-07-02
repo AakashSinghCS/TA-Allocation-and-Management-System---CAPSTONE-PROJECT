@@ -90,4 +90,10 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
             @Param("section")String section,
             @Param("year")String year);
 
+
+    @Query("SELECT DISTINCT c.deptCode FROM Course c")
+    List<String> findDistinctDeptCode();
+
+
+    List<Course> findAllByDeptCode(String deptCode);
 }
