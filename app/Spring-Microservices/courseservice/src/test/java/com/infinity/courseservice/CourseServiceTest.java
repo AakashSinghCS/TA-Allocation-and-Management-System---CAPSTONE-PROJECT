@@ -3,6 +3,7 @@ package com.infinity.courseservice;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalTime;
@@ -42,6 +43,12 @@ import com.infinity.courseservice.repositories.SectionScheduleRepository;
 import com.infinity.courseservice.services.CourseService;
 import com.infinity.courseservice.services.NeedService;
 import com.infinity.courseservice.services.SectionService;
+import com.infinity.courseservice.models.StudentTaughtCourse;
+import com.infinity.courseservice.repositories.StudentTaughtCourseRepository;
+import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
+import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
+import com.infinity.courseservice.enums.Semester;
+
 
 @ExtendWith(MockitoExtension.class)
 public class CourseServiceTest {
@@ -66,6 +73,9 @@ public class CourseServiceTest {
 
     @Mock
     private SectionService sectionService;
+
+    @Mock
+    private StudentTaughtCourseRepository studentTaughtCourseRepository;
 
     @InjectMocks
     private CourseService courseService;
@@ -335,4 +345,58 @@ public class CourseServiceTest {
             List<String> result = courseService.getAllSemester("COSC", "310", "001", "2024");
             assertEquals(mock, result);
     }
+
+    @Test
+    void testAddStudentTaughtCourse_Success() {
+        Long courseId = 1L;
+        Long studentId = 1001L;
+        Course course = new Course("COSC", "Software Engineering", "310");
+        course.setId(courseId);
+
+        StudentTaughtCourseRequest request = new StudentTaughtCourseRequest(studentId, 2024, Semester.W1);
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+
+        courseService.addStudentTaughtCourse(courseId, request);
+
+        verify(studentTaughtCourseRepository).save(any(StudentTaughtCourse.class));
+    }
+
+    @Test
+    void testDeleteStudentTaughtCourse_Success() {
+        Long studentId = 1001L;
+        Long courseId = 1L;
+
+        courseService.deleteStudentTaughtCourse(studentId, courseId);
+
+        verify(studentTaughtCourseRepository).deleteByStudentIdAndCourseId(studentId, courseId);
+    }
+    
+    @Test
+    void testGetCoursesTaughtByStudent_Success() {
+        Long studentId = 1001L;
+
+        Course course = new Course("COSC", "Operating Systems", "315");
+        course.setId(1L);
+
+        StudentTaughtCourse record = StudentTaughtCourse.builder()
+                .id(10L)
+                .studentId(studentId)
+                .course(course)
+                .semester(Semester.S2)
+                .year(2023)
+                .build();
+
+        when(studentTaughtCourseRepository.findByStudentId(studentId)).thenReturn(List.of(record));
+        when(userInterface.getStudentById(studentId)).thenReturn(new StudentDto(studentId, "Ava", "Taylor", null,null,null, null));
+
+        List<StudentTaughtCourseDto> result = courseService.getCoursesTaughtByStudent(studentId);
+
+        assertEquals(1, result.size());
+        assertEquals("Ava", result.get(0).student().firstName());
+        assertEquals("Operating Systems", result.get(0).course().name());
+        assertEquals(Semester.S2, result.get(0).semester());
+        assertEquals(2023, result.get(0).year());
+    }
+
 }

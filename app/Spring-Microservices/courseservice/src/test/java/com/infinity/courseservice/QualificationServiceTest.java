@@ -114,71 +114,49 @@ class QualificationServiceTest {
     @Test
     void instructorDeleteQualification_shouldDeleteAndReturnIds() {
         // Arrange
-        String description = "Some Description";
-        QualificationRequest request = mock(QualificationRequest.class);
-        when(request.description()).thenReturn(description);
+        Long qualificationId = 1L;
+        Qualification qualification = new Qualification();
+        qualification.setId(qualificationId);
 
-        Qualification q1 = new Qualification();
-        q1.setId(10L);
+        StudentQualification studentQualification = new StudentQualification();
+        studentQualification.setQualification(qualification);
 
-        Qualification q2 = new Qualification();
-        q2.setId(20L);
+        List<Qualification> qualifications = List.of(qualification);
+        List<StudentQualification> studentQualifications = List.of(studentQualification);
 
-        List<Qualification> qualifications = List.of(q1, q2);
-
-        when(qualificationRepository.findByDescription(description))
+        when(qualificationRepository.findAllByIds(List.of(qualificationId)))
                 .thenReturn(qualifications);
-
-        StudentQualification sq1 = new StudentQualification();
-        sq1.setQualification(q1);
-
-        StudentQualification sq2 = new StudentQualification();
-        sq2.setQualification(q2);
-
-        List<StudentQualification> studentQualifications = List.of(sq1, sq2);
-
         when(studentQualificationRepository.findAllByQualificationIn(qualifications))
                 .thenReturn(studentQualifications);
 
         // Act
-        List<Long> result = qualificationService.instructorDeleteQualification(request);
+        List<Long> result = qualificationService.instructorDeleteQualification(qualificationId);
 
         // Assert
-        assertEquals(List.of(10L, 20L), result);
+        assertEquals(List.of(qualificationId), result);
 
         verify(qualificationRepository).deleteAll(qualifications);
         verify(studentQualificationRepository).deleteAll(studentQualifications);
     }
 
     @Test
-    void instructorDeleteQualification_shouldThrowNotFoundException_whenNoQualificationsFound() {
+    void instructorDeleteQualification_shouldThrowNotFound_whenNoQualifications() {
         // Arrange
-        String description = "Missing Description";
-        QualificationRequest request = mock(QualificationRequest.class);
-        when(request.description()).thenReturn(description);
+        Long qualificationId = 1L;
 
-        when(qualificationRepository.findByDescription(description))
+        when(qualificationRepository.findAllByIds(List.of(qualificationId)))
                 .thenReturn(List.of());
 
-        // Act + Assert
-        NotFoundException ex = assertThrows(NotFoundException.class, () ->
-            qualificationService.instructorDeleteQualification(request)
+        // Act & Assert
+        NotFoundException ex = assertThrows(
+                NotFoundException.class,
+                () -> qualificationService.instructorDeleteQualification(qualificationId)
         );
 
-        assertTrue(ex.getMessage().contains("No qualifications found with description: " + description));
+        assertEquals("No qualifications found with id: " + qualificationId, ex.getMessage());
 
-        // Verify no deletes happen
         verify(qualificationRepository, never()).deleteAll(any());
         verify(studentQualificationRepository, never()).deleteAll(any());
-    }
-
-    @Test
-    void instructorDeleteQualification_whenNotFound_shouldThrow() {
-        when(qualificationRepository.findAllByDescription(List.of("desc"))).thenReturn(Collections.emptyList());
-
-        assertThrows(NotFoundException.class, () ->
-            qualificationService.instructorDeleteQualification(new QualificationRequest(null, null, null, "desc", null))
-        );
     }
 
     @Test

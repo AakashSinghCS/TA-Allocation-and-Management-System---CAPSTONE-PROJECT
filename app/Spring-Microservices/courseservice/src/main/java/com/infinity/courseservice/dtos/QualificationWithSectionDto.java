@@ -3,6 +3,7 @@ package com.infinity.courseservice.dtos;
 import com.infinity.courseservice.enums.SectionType;
 
 public record QualificationWithSectionDto(
+    Long courseId,
     Long sectionId,
     Integer year,
     String semester,

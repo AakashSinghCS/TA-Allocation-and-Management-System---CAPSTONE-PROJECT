@@ -53,9 +53,9 @@ public class QualificationController {
     }
 
     @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
-    @DeleteMapping("/instructor/deleteQualification")
-    public ResponseEntity<List<Long>> instructorDeleteQualification(@RequestBody QualificationRequest request) {
-        List<Long> result = qualificationService.instructorDeleteQualification(request);
+    @DeleteMapping("/instructor/deleteQualification/{id}")
+    public ResponseEntity<List<Long>> instructorDeleteQualification(@PathVariable Long id) {
+        List<Long> result = qualificationService.instructorDeleteQualification(id);
         return ResponseEntity.ok(result);
     }
 

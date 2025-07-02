@@ -76,10 +76,10 @@ public class QualificationService {
         return new QualificationDto(courseDto, qualification.getDescription(), null);
     }
 
-    public List<Long> instructorDeleteQualification(QualificationRequest request) {
-        List<Qualification> toDelete = qualificationRepository.findByDescription(request.description());
+    public List<Long> instructorDeleteQualification(Long id) {
+        List<Qualification> toDelete = qualificationRepository.findAllByIds(List.of(id));
         if (toDelete.isEmpty()) {
-            throw new NotFoundException("No qualifications found with description: " + request.description());
+            throw new NotFoundException("No qualifications found with id: " + id);
         }
         qualificationRepository.deleteAll(toDelete);
         List<Long> deleteIds = toDelete.stream().map(Qualification::getId).collect(Collectors.toList());
@@ -120,16 +120,17 @@ public class QualificationService {
             Course course = section.getCourse();
             Qualification qualification = qualificationRepository.findByCourse(course);
             result.add(new QualificationWithSectionDto(
-            // Section fields
-            section.getId(),
-            section.getYear(),
-            section.getSemester(),
-            section.getSection(),
-            section.getType(),
-            // Qualification fields
-            qualification.getId(),
-            course.getDeptCode(),
-            qualification.getDescription()
+                section.getCourse().getId(),
+                // Section fields
+                section.getId(),
+                section.getYear(),
+                section.getSemester(),
+                section.getSection(),
+                section.getType(),
+                // Qualification fields
+                qualification.getId(),
+                course.getDeptCode(),
+                qualification.getDescription()
         ));
         }
         return result;

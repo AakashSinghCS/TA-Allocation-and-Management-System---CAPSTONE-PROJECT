@@ -88,23 +88,15 @@ class QualificationControllerTest {
     }
 
     @Test
-    void instructorDeleteQualification_shouldReturnConfirmation() throws Exception {
+    void instructorDeleteQualification_shouldReturnDeletedIds() throws Exception {
         // Arrange
-        String requestJson = """
-                {
-                  "description": "Test Description"
-                }
-                """;
-
-        when(qualificationService.instructorDeleteQualification(any()))
+        when(qualificationService.instructorDeleteQualification(42L))
                 .thenReturn(List.of(10L, 20L));
 
         // Act + Assert
-        mockMvc.perform(delete("/qualifications/instructor/deleteQualification")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-               .andExpect(status().isOk())
-               .andExpect(content().json("[10,20]"));
+        mockMvc.perform(delete("/qualifications/instructor/deleteQualification/42"))
+            .andExpect(status().isOk())
+            .andExpect(content().json("[10,20]"));
     }
 
     @Test
@@ -119,7 +111,7 @@ class QualificationControllerTest {
         when(qualificationService.studentUpdateQualifications(any(), eq(2L)))
                 .thenReturn(List.of(dto));
 
-        mockMvc.perform(get("/qualifications/2/studentUpdateQualification")
+        mockMvc.perform(post("/qualifications/2/studentUpdateQualification")
                .contentType(MediaType.APPLICATION_JSON)
                .content(objectMapper.writeValueAsString(request)))
                .andExpect(status().isOk())
@@ -143,6 +135,7 @@ class QualificationControllerTest {
         Long instructorId = 5L;
 
         QualificationWithSectionDto dto = new QualificationWithSectionDto(
+            1L,
             10L,
             2024,
             "W1",
