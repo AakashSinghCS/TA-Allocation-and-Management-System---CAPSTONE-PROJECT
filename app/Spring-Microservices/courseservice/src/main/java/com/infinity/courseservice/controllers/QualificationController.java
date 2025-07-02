@@ -3,6 +3,7 @@ package com.infinity.courseservice.controllers;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@Data
 @RequestMapping("/qualifications")
 public class QualificationController {
     private final QualificationService qualificationService;
@@ -45,12 +45,14 @@ public class QualificationController {
         return ResponseEntity.ok(qualis);
     }
 
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
     @PostMapping("/instructor/addQualification")
     public ResponseEntity<QualificationDto> instructorAddQualification(@RequestBody QualificationRequest request) {
         QualificationDto dto = qualificationService.instructorAddQualification(request);
         return ResponseEntity.ok(dto);
     }
 
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
     @DeleteMapping("/instructor/deleteQualification")
     public ResponseEntity<List<Long>> instructorDeleteQualification(@RequestBody QualificationRequest request) {
         List<Long> result = qualificationService.instructorDeleteQualification(request);
@@ -59,7 +61,7 @@ public class QualificationController {
 
     
 
-    @GetMapping("/{studentId}/studentUpdateQualification")
+    @PostMapping("/{studentId}/studentUpdateQualification")
     public ResponseEntity<List<QualificationDto>> studentUpdateQualification(@RequestBody StudentQualiRequest request, @PathVariable Long studentId) {
         List<QualificationDto> qualifications = qualificationService.studentUpdateQualifications(request, studentId);
         return ResponseEntity.ok(qualifications);
@@ -71,6 +73,8 @@ public class QualificationController {
         return ResponseEntity.ok(qualifications);
     }
     
+
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
     @GetMapping("/instructor/{instructorId}")
     public ResponseEntity<List<QualificationWithSectionDto>> getQualificationsByInstructorId(@PathVariable Long instructorId) {
         List<QualificationWithSectionDto> dtos = qualificationService.findQualificationsByInstructorId(instructorId);
