@@ -159,6 +159,37 @@ public class CourseService {
 }
 
 
+    public void addStudentTaughtCourse(Long courseId, StudentTaughtCourseRequest request) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new NotFoundException("Course not found"));
+
+        StudentTaughtCourse record = StudentTaughtCourse.builder()
+                .course(course)
+                .studentId(request.studentId())
+                .semester(request.semester())
+                .year(request.year())
+                .build();
+
+        stcRepository.save(record);
+    }
+
+    public void deleteStudentTaughtCourse(Long studentId, Long courseId) {
+        stcRepository.deleteByStudentIdAndCourseId(studentId, courseId);
+    }
+
+    public List<StudentTaughtCourseDto> getCoursesTaughtByStudent(Long studentId) {
+        StudentDto student = userInterface.getStudentById(studentId);
+
+        return stcRepository.findByStudentId(studentId).stream()
+                .map(record -> new StudentTaughtCourseDto(
+                        student,
+                        new CourseDto(record.getCourse().getId(), record.getCourse().getDeptCode(),
+                                record.getCourse().getName(), record.getCourse().getCourseNum()),
+                        record.getSemester(),
+                        record.getYear()))
+                .toList();
+    }
+
     public List<String> getAllDeptCodes() {
         return courseRepository.findAllUniqueDeptCode();
     }

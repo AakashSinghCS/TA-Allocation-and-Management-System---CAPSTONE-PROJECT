@@ -9,7 +9,7 @@ interface Props {
   onDeleted?: (id: number, isCourse: boolean) => void;
   onSelect?: (u: Section) => void;
   onSelectCourse?: (cId: number, deptCode: string, courseNum: string, name: string) => void;
-  mode?: 'coordinator' | 'instructorAddSection' | 'instructorPrereqCourse';
+  mode?: 'coordinator' | 'instructorAddSection' | 'instructorPrereqCourse' | 'studentAddHistory';
 }
 
 export default function SectionList({ sections, onDeleted, onSelect, onSelectCourse, mode = 'coordinator' }: Props) {
@@ -118,7 +118,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                     className="text-red-600 hover:underline text-sm whitespace-nowrap"
                   >
                     Delete Course
-                  </button>) : mode == 'instructorPrereqCourse' ? <button
+                  </button>) : (mode == 'instructorPrereqCourse') ? <button
                     type="button"
                     onClick={() => {
                       if (!onSelectCourse) return;
@@ -184,7 +184,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                     <td className="border px-3 py-2 text-right">
                       {sid && (
                         <>
-                          {mode === 'instructorAddSection' ? (
+                          {(mode === 'instructorAddSection' ||'studentAddHistory') ? (
                             <button
                               type="button"
                               onClick={() => onSelect?.(sec)}
