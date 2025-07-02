@@ -74,7 +74,7 @@ public class CourseServiceTest {
     void testAddCourse_Duplicate() {
         CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null,
                 null, null
-                , null);
+                );
 
         when(courseRepository.save(any(Course.class)))
                 .thenThrow(new DataIntegrityViolationException("Duplicate entry"));
@@ -88,7 +88,7 @@ public class CourseServiceTest {
     @Test
     void testAddCourse() {
         CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null,
-                null, null, null);
+                null, null);
         Course savedCourse = new Course("COSC", "Distributed Systems", "455");
 
         when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);
@@ -207,7 +207,7 @@ public class CourseServiceTest {
 
         Course course = new Course("COSC", "Networks", "329");
         course.setId(courseId);
-        Section section = new Section(2025, "W1", "001", SectionType.LABORATORY, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LABORATORY, course,null);
         section.setId(1L);
 
         NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester);

@@ -15,9 +15,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,12 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.courseservice.controllers.SectionController;
@@ -60,11 +51,11 @@ public class SectionControllerTest {
         void testAddSection() throws Exception {
                 Long courseId = 1L;
                 CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025,
-                                "W1", null, null, null, null);
+                                "W1", null, null, null);
                 SectionDto response = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE,
                                 new CourseDto(1L, "COSC", "Security", "430"));
 
-                when(sectionService.addSection(eq(courseId), any(CourseRequest.class))).thenReturn(response);
+                when(sectionService.addSection(eq(courseId), any(SectionAddDtoRequest.class))).thenReturn(response);
 
                 mockMvc.perform(post("/sections/addSection/{courseId}", courseId)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -81,7 +72,7 @@ public class SectionControllerTest {
         void testAddSectionSchedule() throws Exception {
                 Long sectionId = 200L;
                 CourseRequest request = new CourseRequest(null, null, null, null, null, null, null, "Mon", "09:00",
-                                "10:00",null);
+                                "10:00");
                 SectionScheduleDto response = new SectionScheduleDto("Mon", LocalTime.of(9, 0), LocalTime.of(10, 0),
                                 sectionId);
 

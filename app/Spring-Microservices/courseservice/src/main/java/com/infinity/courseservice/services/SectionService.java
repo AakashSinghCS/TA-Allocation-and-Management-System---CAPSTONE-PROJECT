@@ -56,7 +56,7 @@ public class SectionService {
     }
 
     @Transactional
-    public SectionDto addSection(Long courseId, CourseRequest request) {
+    public SectionDto addSection(Long courseId, SectionAddDtoRequest request) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("Course not found"));
 

@@ -1,6 +1,7 @@
 package com.infinity.courseservice.dtos.CourseDtos;
 
-import com.infinity.courseservice.enums.*;
+import com.infinity.courseservice.enums.SectionType;
+
 import io.micrometer.common.lang.Nullable;
 
 public record CourseRequest(
@@ -13,6 +14,5 @@ public record CourseRequest(
         @Nullable String semester,
         @Nullable String day,
         @Nullable String startTime,
-        @Nullable String endTime,
-        @Nullable Long instructorId
+        @Nullable String endTime
         ) {}
