@@ -52,6 +52,7 @@ public class AllocationControllerTest {
     void setup() {
         ApplicationDto application = new ApplicationDto(
             1L,
+            1L,
             List.of(),
             false,
             10,
@@ -64,7 +65,7 @@ public class AllocationControllerTest {
             application,
             false,
             10,
-            new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"))
+            new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L, "COSC","Capstone","499"))
         );
     }
 
@@ -93,6 +94,7 @@ public class AllocationControllerTest {
         );
         ApplicationDto application = new ApplicationDto(
             1L,
+            1L,
             List.of(),
             false,
             10,
@@ -106,7 +108,7 @@ public class AllocationControllerTest {
             application,
             false,
             10,
-            new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"))
+            new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L, "COSC","Capstone","499"))
         );
 
         when(allocationService.allocateStudent(any(AllocationRequest.class))).thenReturn(responseDto);

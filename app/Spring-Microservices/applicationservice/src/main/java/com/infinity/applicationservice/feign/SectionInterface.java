@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "COURSE-SERVICE", path = "/sections")
 public interface SectionInterface {
     @GetMapping("/get/{id}")
-    SectionDto getSectionById(@PathVariable("id") Long id);
+    SectionDto getSectionById(@PathVariable Long id);
 }

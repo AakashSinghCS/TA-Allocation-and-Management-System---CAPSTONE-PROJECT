@@ -5,12 +5,9 @@ import App from "../App";
 import PublicLayout from "../components/layout/publicLayout/PublicLayout";
 import CoursesTakenPage from "../pages/taprofilepage/coursestakenpage/CoursesTakenPage";
 import StudentComparerPage from "../pages/taprofilepage/comparerpage/StudentComparerPage";
-
 import InstructorProfilePage from "../pages/instructorprofilepage/InstructorProfilePage";
 import InstructorNeedPage from "../pages/instructorprofilepage/needpage/InstructorNeedPage";
 import InstructorComparerPage from "../pages/instructorprofilepage/comparerpage/InstructorComparerPage";
-
-
 import LoginPage from "../pages/loginPage/LoginPage";
 import ErrorPage from "../pages/errorpage/ErrorPage";
 import StudentHomePage from "../pages/student_homepage/StudentHomePage";
@@ -32,7 +29,6 @@ import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage
 import SignUpPage from "../pages/signupPage/SignUpPage";
 import SectionListPage from "../pages/coursepage/SectionListPage";
 import AddSectionPage from "../pages/coursepage/AddSectionPage";
-
 
 export const router = createBrowserRouter([
   {

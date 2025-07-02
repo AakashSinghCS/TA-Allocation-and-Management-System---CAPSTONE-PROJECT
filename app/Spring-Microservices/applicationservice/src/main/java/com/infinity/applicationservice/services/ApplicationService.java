@@ -48,8 +48,10 @@ public class ApplicationService {
         applicationRepository.save(application);
 
         List<Subject> preferences = filterPreferences(application);
-        return new ApplicationDto(application.getStudentId(), preferences, application.isWantRemote(),
-                application.getWantWorkingHours(), application.getSubmittedAt(), toDtoSet(application.getAvailabilities()));
+        return new ApplicationDto(application.getId(), application.getStudentId(), preferences,
+                application.isWantRemote(),
+                application.getWantWorkingHours(), application.getSubmittedAt(),
+                toDtoSet(application.getAvailabilities()));
     }
 
     public ApplicationDto getApplication(Long studentId, Integer year, Long userIdFromHeader,
@@ -60,8 +62,9 @@ public class ApplicationService {
         Application application = applicationRepository.findByStudentIdAndYear(studentId, year)
                 .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
         List<Subject> preferences = filterPreferences(application);
-        return new ApplicationDto(application.getStudentId(), preferences, application.isWantRemote(),
-                application.getWantWorkingHours(), application.getSubmittedAt(), 
+        return new ApplicationDto(application.getId(), application.getStudentId(), preferences,
+                application.isWantRemote(),
+                application.getWantWorkingHours(), application.getSubmittedAt(),
                 toDtoSet(application.getAvailabilities()));
     }
 
@@ -99,8 +102,9 @@ public class ApplicationService {
 
         applicationRepository.save(application);
         List<Subject> preferences = filterPreferences(application);
-        return new ApplicationDto(application.getStudentId(), preferences, application.isWantRemote(),
-                application.getWantWorkingHours(), application.getSubmittedAt(), 
+        return new ApplicationDto(application.getId(), application.getStudentId(), preferences,
+                application.isWantRemote(),
+                application.getWantWorkingHours(), application.getSubmittedAt(),
                 toDtoSet(application.getAvailabilities()));
     }
 
@@ -124,6 +128,7 @@ public class ApplicationService {
                 .map(app -> {
                     List<Subject> preferences = filterPreferences(app);
                     return new ApplicationDto(
+                            app.getId(),
                             app.getStudentId(),
                             preferences,
                             app.isWantRemote(),
@@ -147,7 +152,7 @@ public class ApplicationService {
             }
         }
     }
-  
+
     private Set<AvailabilityDto> toDtoSet(Set<Availability> entities) {
         return entities.stream()
                 .map(a -> new AvailabilityDto(
@@ -180,17 +185,16 @@ public class ApplicationService {
         List<Application> applications = applicationRepository.findByFilters(year, wantRemote, hours,
                 preference1, preference2, preference3);
 
-
-         return applications.stream()
-            .map(app -> new ApplicationWithStudentDto(
-                    userInterface.getStudentById(app.getStudentId()).getBody(),
-                    filterPreferences(app),
-                    app.isWantRemote(),
-                    app.getWantWorkingHours(),
-                    app.getSubmittedAt(),
-                    toDtoSet(app.getAvailabilities())
-            ))
-            .toList();
-    }   
+        return applications.stream()
+                .map(app -> new ApplicationWithStudentDto(
+                        app.getId(),
+                        userInterface.getStudentById(app.getStudentId()).getBody(),
+                        filterPreferences(app),
+                        app.isWantRemote(),
+                        app.getWantWorkingHours(),
+                        app.getSubmittedAt(),
+                        toDtoSet(app.getAvailabilities())))
+                .toList();
+    }
 
 }
