@@ -6,12 +6,16 @@ import { useAuth } from "../../../context/AuthContext";
 import type { ApplicationDto } from "../../../interfaces/application/Application";
 import { fetchUserDetails } from "../../../api/user/fetchUserDetails";
 import type { Student } from "../../../interfaces/user/Student";
+import { fetchAllocationByApplicationId } from "../../../api/allocation/fetchAllocationByApplicationId";
+import type { Allocation } from "../../../interfaces/allocation/Allocation";
 import { decodeToken } from "../../../utility/decodeToken";
 
 
+type ApplicationWithAllocation = ApplicationDto & { allocation?: Allocation };
+
 const ViewApplicationPage = () => {
   const { userId, token } = useAuth();
-  const [applications, setApplications] = useState<ApplicationDto[]>([]);
+  const [applications, setApplications] = useState<ApplicationWithAllocation[]>([]);
   const [yearSubmitted, setYearSubmitted] = useState("");
   const [prefContains, setPrefContains] = useState("");
   const [remotePref, setRemotePref] = useState("");
@@ -27,6 +31,15 @@ const ViewApplicationPage = () => {
       return;
     }
 
+    // Debug: Log the token and its decoded payload
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      console.log('Decoded JWT payload:', payload);
+    } catch (e) {
+      console.warn('Could not decode JWT:', e);
+    }
+    console.log('Token used for allocation fetch:', token);
+
     const decoded = decodeToken(token);
     const userIdFromToken = decoded?.userId;
     if (!userIdFromToken) {
@@ -38,29 +51,36 @@ const ViewApplicationPage = () => {
     fetchApplicationsByStudent(userIdFromToken, token)
       .then(async (data: ApplicationDto[]) => {
         console.log("Fetched applications:", data);
-        // For each application, if student info is missing, fetch it from /users/{id}
-        const appsWithStudent = await Promise.all(
+        // For each application, fetch allocation and student info if needed
+        const appsWithDetails = await Promise.all(
           data.map(async (app) => {
+            let allocation: Allocation | null = null;
+            try {
+              // Log the headers for this fetch
+              console.log('Fetching allocation for app', app.id ?? app.applicationId, 'with token:', token);
+              const allocations = await fetchAllocationByApplicationId(app.id ?? app.applicationId ?? 0, token);
+              allocation = allocations && allocations.length > 0 ? allocations[0] : null;
+            } catch (err) {
+              console.error('Allocation fetch error:', err);
+              allocation = null;
+            }
             // If student info is missing or incomplete, try to fetch it using student.id
             if (!app.student || !app.student.firstName) {
-              // Try to get studentId from either app.student?.id or app.studentId
               const studentId = app.student?.id ?? (app as any).studentId;
-              console.log("Trying to fetch student info for app:", app, "studentId:", studentId);
               if (studentId) {
                 try {
                   const student = await fetchUserDetails<Student>(studentId);
-                  console.log("Fetched student info:", student);
-                  return { ...app, student };
-                } catch (err) {
-                  console.error("Failed to fetch student info for id", studentId, err);
-                  return app;
+                  return { ...app, student, allocation };
+                } catch {
+                  return { ...app, allocation };
                 }
               }
+              return { ...app, allocation };
             }
-            return app;
+            return { ...app, allocation };
           })
         );
-        setApplications(appsWithStudent as ApplicationDto[]);
+        setApplications(appsWithDetails as ApplicationWithAllocation[]);
       })
       .catch((e: Error) => setError(e.message))
       .finally((): void => setLoading(false));
@@ -153,7 +173,7 @@ const ViewApplicationPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredApps.length > 0 ? (
                 filteredApps.map((app, idx) => (
-                  <div key={app.id ?? idx} className="bg-white rounded-2xl shadow-lg border border-blue-100 p-6 flex flex-col gap-4 min-h-[340px] relative overflow-hidden">
+                  <div key={app.id ?? idx} className="bg-white rounded-2xl shadow-lg border border-blue-100 p-6 flex flex-col gap-4 min-h-[440px] relative overflow-hidden">
                     {/* Decorative background */}
                     <div className="absolute right-0 top-0 opacity-10 pointer-events-none select-none">
                       <svg width="120" height="120" viewBox="0 0 120 120" fill="none"><circle cx="60" cy="60" r="60" fill="#2563eb" /></svg>
@@ -179,38 +199,77 @@ const ViewApplicationPage = () => {
                       <span><strong>Hours Requested:</strong> {app.wantWorkingHours}</span>
                       <span><strong>Submitted:</strong> {new Date(app.timeSubmitted).toLocaleString()}</span>
                     </div>
-                    {/* Offer Info */}
-                    {app.offers && app.offers.length > 0 ? (
+                    {/* Offer/Allocation Info */}
+                    {app.allocation ? (
                       <div className="mt-2 z-10">
                         <strong>Offer Status:</strong>
-                        {app.offers.map((offer, idx) => (
-                          <div key={offer.id || idx} className="mt-1 flex items-center gap-2">
-                            <span>{offer.description}</span>
-                            {offer.isAccepted === true && <span className="text-green-600 font-semibold">Accepted</span>}
-                            {offer.isAccepted === false && <span className="text-red-500 font-semibold">Declined</span>}
-                            {offer.isAccepted === null && (
-                              <>
-                                <button
-                                  onClick={() => handleAccept(offer.id)}
-                                  disabled={actionLoading === offer.id}
-                                  className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
-                                >
-                                  {actionLoading === offer.id ? 'Accepting...' : 'Accept Offer'}
-                                </button>
-                                <button
-                                  onClick={() => handleDeny(offer.id)}
-                                  disabled={actionLoading === offer.id}
-                                  className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition"
-                                >
-                                  {actionLoading === offer.id ? 'Declining...' : 'Decline Offer'}
-                                </button>
-                              </>
-                            )}
+                        {app.allocation.isConfirmed === true && (
+                          <div className="mt-1 flex flex-col gap-2 p-2 bg-green-50 border border-green-200 rounded-lg">
+                            <span className="text-green-700 font-semibold">Allocation Confirmed</span>
+                            <span>Section: {app.allocation.section?.sectionDetails?.name || 'N/A'}</span>
+                            <span>Hours: {app.allocation.numberOfHours ?? 'N/A'}</span>
                           </div>
-                        ))}
+                        )}
+                        {app.allocation.isConfirmed === false && (
+                          <div className="mt-1 flex flex-col gap-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                            <span className="text-red-700 font-semibold">Allocation Declined</span>
+                          </div>
+                        )}
+                        {app.allocation.isConfirmed == null && (
+                          <div className="mt-1 flex items-center gap-2">
+                            <span>Offer pending confirmation</span>
+                            <button
+                              onClick={() => app.allocation && handleAccept(app.allocation.id!)}
+                              disabled={app.allocation ? actionLoading === app.allocation.id : true}
+                              className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
+                            >
+                              {actionLoading === app.allocation?.id ? 'Accepting...' : 'Accept Offer'}
+                            </button>
+                            <button
+                              onClick={() => app.allocation && handleDeny(app.allocation.id!)}
+                              disabled={app.allocation ? actionLoading === app.allocation.id : true}
+                              className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition"
+                            >
+                              {actionLoading === app.allocation.id ? 'Declining...' : 'Decline Offer'}
+                            </button>
+                          </div>
+                        )}
                       </div>
                     ) : (
-                      <div className="mt-2 text-xs text-gray-500 z-10">No offer for this application.</div>
+                      <>
+                        {app.offers && app.offers.length > 0 ? (
+                          <div className="mt-2 z-10">
+                            <strong>Offer Status:</strong>
+                            {app.offers.map((offer, idx) => (
+                              <div key={offer.id || idx} className="mt-1 flex items-center gap-2">
+                                <span>{offer.description}</span>
+                                {offer.isAccepted === true && <span className="text-green-600 font-semibold">Accepted</span>}
+                                {offer.isAccepted === false && <span className="text-red-500 font-semibold">Declined</span>}
+                                {offer.isAccepted === null && (
+                                  <>
+                                    <button
+                                      onClick={() => handleAccept(offer.id)}
+                                      disabled={actionLoading === offer.id}
+                                      className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
+                                    >
+                                      {actionLoading === offer.id ? 'Accepting...' : 'Accept Offer'}
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeny(offer.id)}
+                                      disabled={actionLoading === offer.id}
+                                      className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition"
+                                    >
+                                      {actionLoading === offer.id ? 'Declining...' : 'Decline Offer'}
+                                    </button>
+                                  </>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="mt-2 text-xs text-gray-500 z-10">No offer for this application.</div>
+                        )}
+                      </>
                     )}
                     {/* Creative: Progress bar and fun fact */}
                     <div className="mt-4 z-10">
