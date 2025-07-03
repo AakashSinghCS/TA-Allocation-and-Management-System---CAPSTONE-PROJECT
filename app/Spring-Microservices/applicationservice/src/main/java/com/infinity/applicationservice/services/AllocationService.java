@@ -115,7 +115,7 @@ public class AllocationService {
 
     public List<AllocationHistoryDto> getAllocationsByApplicationId(Long appId, Long userIdFromHeader,
             List<String> headerRoles) {
-        if (!allocationRepository.existsByStudentId(userIdFromHeader) || !headerRoles.contains("ROLE_COORDINATOR")) {
+        if (!allocationRepository.existsByStudentIdAndApplicationId(userIdFromHeader, appId) || !headerRoles.contains("ROLE_COORDINATOR")) {
                     throw new AuthorizationException("You don't have permission to access this application");
                 }
         return allocationRepository.findAll().stream()

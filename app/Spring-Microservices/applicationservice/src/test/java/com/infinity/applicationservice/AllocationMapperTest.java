@@ -1,6 +1,10 @@
 package com.infinity.applicationservice;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,15 +15,12 @@ import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.SectionType;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.models.Allocation;
 import com.infinity.applicationservice.utility.AllocationMapper;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 public class AllocationMapperTest {
@@ -30,7 +31,7 @@ public class AllocationMapperTest {
     void testToDto() {
         Allocation allocation = new Allocation();
         allocation.setId(1L);
-        allocation.setConfirmed(true);
+        allocation.setStatus(ApplicationStatus.CONFIRMED);
         allocation.setNumberOfHours(8);
 
         StudentDto student = new StudentDto(2L, "Alice", "Smith", 12345, "MATH", 2020, 4);
@@ -51,7 +52,7 @@ public class AllocationMapperTest {
         assertEquals(1L, dto.id());
         assertEquals(student, dto.student());
         assertEquals(applicationDto, dto.applicationDto());
-        assertTrue(dto.isConfirmed());
+        assertEquals(dto.status(), ApplicationStatus.CONFIRMED);
         assertEquals(8, dto.numberOfHours());
         assertEquals(section, dto.section());
     }

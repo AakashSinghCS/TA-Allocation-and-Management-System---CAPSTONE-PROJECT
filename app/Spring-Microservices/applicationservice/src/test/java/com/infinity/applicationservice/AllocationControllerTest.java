@@ -1,7 +1,6 @@
 package com.infinity.applicationservice;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -25,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -37,6 +35,7 @@ import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.SectionType;
 import com.infinity.applicationservice.services.AllocationService;
@@ -73,7 +72,7 @@ public class AllocationControllerTest {
             101L,
             new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4),
             application,
-            false,
+            ApplicationStatus.SENT,
             10,
             new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L, "COSC","Capstone","499"))
         );
@@ -90,7 +89,7 @@ public class AllocationControllerTest {
             .andExpect(jsonPath("$[0].id").value(101))
             .andExpect(jsonPath("$[0].student.firstName").value("Test User"))
             .andExpect(jsonPath("$[0].section.section").value("T01"))
-            .andExpect(jsonPath("$[0].isConfirmed").value(false));
+            .andExpect(jsonPath("$[0].status").value("SENT"));
     }
 
     @Test
@@ -98,7 +97,7 @@ public class AllocationControllerTest {
         AllocationRequest request = new AllocationRequest(
                 1L,
                 1L,
-                true,
+                ApplicationStatus.SENT,
                 10,
                 1001L);
         ApplicationDto application = new ApplicationDto(
@@ -115,7 +114,7 @@ public class AllocationControllerTest {
                 123L,
                 new StudentDto(1L, "Test", "test@example.com", 63260442, "BSC", 2022, 4),
                 application,
-                false,
+                ApplicationStatus.SENT,
                 10,
                 new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
                         new CourseDto(1L, "COSC", "Capstone", "499")));
@@ -130,7 +129,7 @@ public class AllocationControllerTest {
                 .andExpect(jsonPath("$.student.firstName").value("Test"))
                 .andExpect(jsonPath("$.numberOfHours").value(10))
                 .andExpect(jsonPath("$.section.section").value("T01"))
-                .andExpect(jsonPath("$.isConfirmed").value(false));
+                .andExpect(jsonPath("$.status").value("SENT"));
     }
 
     @Test
@@ -149,22 +148,22 @@ public class AllocationControllerTest {
 
     @Test
     void acceptOffer_updatesConfirmationStatusToTrue() throws Exception {
-        doNothing().when(allocationService).updateConfirmationStatus(123L, true);
+        doNothing().when(allocationService).updateConfirmationStatus(123L, ApplicationStatus.CONFIRMED);
 
         mvc.perform(put("/allocations/123/acceptOffer"))
             .andExpect(status().isOk());
 
-        verify(allocationService, times(1)).updateConfirmationStatus(123L, true);
+        verify(allocationService, times(1)).updateConfirmationStatus(123L, ApplicationStatus.CONFIRMED);
     }
 
     @Test
     void denyOffer_updatesConfirmationStatusToFalse() throws Exception {
-        doNothing().when(allocationService).updateConfirmationStatus(123L, false);
+        doNothing().when(allocationService).updateConfirmationStatus(123L, ApplicationStatus.REJECTED);
 
         mvc.perform(put("/allocations/123/denyOffer"))
             .andExpect(status().isOk());
 
-        verify(allocationService, times(1)).updateConfirmationStatus(123L, false);
+        verify(allocationService, times(1)).updateConfirmationStatus(123L, ApplicationStatus.REJECTED);
     }
 
     @Test
@@ -173,19 +172,19 @@ public class AllocationControllerTest {
         sampleDto.id(),
         sampleDto.student(),
         sampleDto.applicationDto(),
-        true,
+        ApplicationStatus.CONFIRMED,
         sampleDto.numberOfHours(),
         sampleDto.section()
     );
-        when(allocationService.getAllocationsByConfirmationStatus(true)).thenReturn(List.of(sampleDto));
+        when(allocationService.getAllocationsByConfirmationStatus(ApplicationStatus.CONFIRMED)).thenReturn(List.of(sampleDto));
 
-        mvc.perform(get("/allocations/filter/confirmed/true"))
+        mvc.perform(get("/allocations/filter/status/CONFIRMED"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(jsonPath("$[0].id").value(sampleDto.id()))
-            .andExpect(jsonPath("$[0].isConfirmed").value(true));
+            .andExpect(jsonPath("$[0].status").value("CONFIRMED"));
 
-        verify(allocationService, times(1)).getAllocationsByConfirmationStatus(true);
+        verify(allocationService, times(1)).getAllocationsByConfirmationStatus(ApplicationStatus.CONFIRMED);
     }
 
     @Test
@@ -204,8 +203,11 @@ public class AllocationControllerTest {
     void getAllocationsByApplicationId_returnsFilteredResults() throws Exception {
         when(allocationService.getAllocationsByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR"))).thenReturn(List.of(sampleDto));
 
-        mvc.perform(get("/allocations/filter/application/55"))
-            .andExpect(status().isOk())
+        mvc.perform(get("/allocations/filter/application/55")
+                .header("X-User-Id", "1")
+                .header("X-User-Roles", "ROLE_COORDINATOR")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(jsonPath("$[0].applicationDto").exists());
 

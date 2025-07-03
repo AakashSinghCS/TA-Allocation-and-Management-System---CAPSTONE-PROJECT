@@ -55,7 +55,7 @@ public class AllocationController {
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
-    @GetMapping("/filter/confirmed/{status}")
+    @GetMapping("/filter/status/{status}")
     public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByConfirmationStatus(@PathVariable ApplicationStatus status) {
         return ResponseEntity.ok(allocationService.getAllocationsByConfirmationStatus(status));
     }

@@ -14,5 +14,5 @@ public interface AllocationRepository extends JpaRepository<Allocation, Long>{
 
     boolean existsByApplicationIdAndSectionIdAndStudentId(Long applicationId, Long sectionId, Long studentId);
 
-    boolean existsByStudentId(Long studentId);
+    boolean existsByStudentIdAndApplicationId(Long userIdFromHeader, Long appId);
 }
