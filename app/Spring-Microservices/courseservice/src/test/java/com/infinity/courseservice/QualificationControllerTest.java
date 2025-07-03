@@ -72,7 +72,8 @@ class QualificationControllerTest {
     @Test
     void instructorAddQualification_shouldReturnDto() throws Exception {
         QualificationRequest request = new QualificationRequest(1L, null ,null, "desc", "COSC");
-        QualificationDto dto = new QualificationDto(
+        QualificationDtoWithId dto = new QualificationDtoWithId(
+                1L,
                 new CourseDto(1L, "COSC", "Intro", "101"),
                 "desc",
                 null

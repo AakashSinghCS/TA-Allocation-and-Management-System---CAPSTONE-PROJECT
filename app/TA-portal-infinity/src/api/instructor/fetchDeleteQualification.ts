@@ -1,11 +1,11 @@
-const BASE = "http://localhost:8080/admin/mock/mock";
+
 
 export async function fetchDeleteQualification(qualificationId: number): Promise<boolean> {
-  const url = `${BASE}/${qualificationId}`;
+  const BASE = `http://localhost:8080/qualifications/instructor/deleteQualification/${qualificationId}`;
   const token = localStorage.getItem("token");
 
   try {
-    const res = await fetch(url, {
+    const res = await fetch(BASE, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

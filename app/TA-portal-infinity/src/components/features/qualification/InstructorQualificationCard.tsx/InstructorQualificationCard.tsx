@@ -39,17 +39,18 @@ export default function InstructorQualificationCard({ initialQualifications, cou
 
     const onRemoved = async (removingq: TempQualification) => {
         if (removingq.id) {
-            //uncomment below when backend works.
-            // const ok = await fetchDeleteQualification(removingq.id);
-            
-            // if (!ok) return;
-            //do a confirmation before removing
-            // setQualifications(q => q.filter(x => {
-            //     if(x.id) return x.id !== removingq.id
-            //     return x.tempId !== removingq.tempId
-            // }))
+            const confirmed = window.confirm("Really delete?")
+            if(!confirmed) return;
+            const ok = await fetchDeleteQualification(removingq.id);
+    
+            if (!ok) return;
+
+            setQualifications(q => q.filter(x => {
+                if(x.id) return x.id !== removingq.id
+                return x.tempId !== removingq.tempId
+            }))
         
-        } //when the qualification in question is still in edit mode and gets cancelled
+        } 
             setQualifications(q => q.filter(x => {
                 if(x.id) return x.id !== removingq.id
                 return x.tempId !== removingq.tempId

@@ -14,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.QualificationDto;
+import com.infinity.courseservice.dtos.QualificationDtoWithId;
 import com.infinity.courseservice.dtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.UserDtos.StudentDto;
@@ -91,7 +92,7 @@ class QualificationServiceTest {
         when(courseService.findCourse(1L)).thenReturn(courseDto);
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
 
-        QualificationDto dto = qualificationService.instructorAddQualification(request);
+        QualificationDtoWithId dto = qualificationService.instructorAddQualification(request);
 
         assertNotNull(dto);
         assertEquals("Description", dto.description());

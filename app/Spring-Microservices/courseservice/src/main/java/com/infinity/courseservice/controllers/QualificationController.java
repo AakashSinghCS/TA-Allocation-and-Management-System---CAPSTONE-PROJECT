@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.courseservice.dtos.QualificationDto;
+import com.infinity.courseservice.dtos.QualificationDtoWithId;
 import com.infinity.courseservice.dtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.StudentQualiRequest;
@@ -47,8 +48,8 @@ public class QualificationController {
 
     @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
     @PostMapping("/instructor/addQualification")
-    public ResponseEntity<QualificationDto> instructorAddQualification(@RequestBody QualificationRequest request) {
-        QualificationDto dto = qualificationService.instructorAddQualification(request);
+    public ResponseEntity<QualificationDtoWithId> instructorAddQualification(@RequestBody QualificationRequest request) {
+        QualificationDtoWithId dto = qualificationService.instructorAddQualification(request);
         return ResponseEntity.ok(dto);
     }
 

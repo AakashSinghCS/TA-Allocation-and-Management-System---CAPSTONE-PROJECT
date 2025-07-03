@@ -85,8 +85,8 @@ public class CourseServiceTest {
     @Test
     void testAddCourse_Duplicate() {
         CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null,
-                null, null
-                );
+                null,
+                null,null);
 
         when(courseRepository.save(any(Course.class)))
                 .thenThrow(new DataIntegrityViolationException("Duplicate entry"));
