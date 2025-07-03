@@ -91,7 +91,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
             <div
               className="w-full overflow-hidden rounded-lg text-sm italic text-slate-500 border border-dashed border-slate-400 p-2"
             >
-              <Link to={`/user/instructor/addneed/${sec.sectionDetails?.id}`}>Add a need</Link>
+              <Link to={`/user/instructor/addneed/${sec.sectionDetails?.sectionId}`}>Add a need</Link>
             </div>
           )}
 

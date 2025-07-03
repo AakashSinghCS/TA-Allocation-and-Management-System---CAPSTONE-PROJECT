@@ -23,7 +23,7 @@ export default function AllocationCard({
       <ul className="space-y-1">
         {allocations.map((a) => (
           <li key={a.id} className="flex justify-between transition-colors">
-            <Link  to={`/taprofile/${a.student?.id}`} className="truncate hover:text-blue-600" title="Go to student's profile page">
+            <Link  to={`/user/taprofile/${a.student?.id}`} className="truncate hover:text-blue-600" title="Go to student's profile page">
               {a.student?.firstName} {a.student?.lastName}
             </Link>
             <span className="text-xs text-slate-600">

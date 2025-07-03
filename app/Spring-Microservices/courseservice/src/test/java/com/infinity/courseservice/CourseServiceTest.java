@@ -20,8 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 
-import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
+// import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.AllocationDtos.OfferDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
@@ -45,6 +46,7 @@ import com.infinity.courseservice.repositories.SectionScheduleRepository;
 import com.infinity.courseservice.services.CourseService;
 import com.infinity.courseservice.services.NeedService;
 import com.infinity.courseservice.services.SectionService;
+import com.infinity.courseservice.utility.CourseMapper;
 import com.infinity.courseservice.models.StudentTaughtCourse;
 import com.infinity.courseservice.repositories.StudentTaughtCourseRepository;
 import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
@@ -77,6 +79,9 @@ public class CourseServiceTest {
     private SectionService sectionService;
 
     @Mock
+    private CourseMapper courseMapper;
+
+    @Mock
     private StudentTaughtCourseRepository studentTaughtCourseRepository;
 
     @InjectMocks
@@ -102,8 +107,10 @@ public class CourseServiceTest {
         CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null,
                 null, null,null);
         Course savedCourse = new Course("COSC", "Distributed Systems", "455");
+        CourseDto courseDto = new CourseDto(1L, "COSC", "Distributed Systems", "455");
 
         when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);
+        when(courseMapper.courseToDto(savedCourse)).thenReturn(courseDto);
 
         CourseDto dto = courseService.addCourse(request);
 
@@ -116,6 +123,9 @@ public class CourseServiceTest {
     void testFindCourseSuccess() {
             Course course = new Course("COSC", "Distributed Systems", "455");
             when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+
+            CourseDto courseDto = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+            when(courseMapper.courseToDto(course)).thenReturn(courseDto);
 
             CourseDto dto = courseService.findCourse(1L);
 
@@ -143,6 +153,8 @@ public class CourseServiceTest {
             CourseRequest request = new CourseRequest("DATA", "Capstone", "499", null, null, null, null,
                             null,
                             null, null,null);
+            CourseDto courseDto = new CourseDto(1L, "DATA", "Capstone", "499");
+            when(courseMapper.courseToDto(course)).thenReturn(courseDto);
             CourseDto dto = courseService.updateCourse(request, 1L);
 
             assertEquals("DATA", dto.deptCode());
@@ -182,6 +194,10 @@ public class CourseServiceTest {
 
         List<Course> courses = Arrays.asList(course1, course2);
         when(courseRepository.findAllById(Arrays.asList(1L, 2L))).thenReturn(courses);
+        CourseDto courseDto1 = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+        CourseDto courseDto2 = new CourseDto(2L, "COSC", "Operating Systems", "315");
+        when(courseMapper.courseToDto(course1)).thenReturn(courseDto1);
+        when(courseMapper.courseToDto(course2)).thenReturn(courseDto2);
 
         List<CourseDto> result = courseService.findCoursesByIds(Arrays.asList(1L, 2L));
 
@@ -222,11 +238,11 @@ public class CourseServiceTest {
         Section section = new Section(2025, "W1", "001", SectionType.LABORATORY, course,null);
         section.setId(1L);
 
-        NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester);
-
-        AllocationDto dto = new AllocationDto(
+        NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester, null);
+        OfferDto offer = new OfferDto(1L, true, "description");
+        AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
             42L,
-            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),
+            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),offer,
             true,
             10,
             new SectionDto(99L, 2024,"W1","001",SectionType.LECTURE, new CourseDto(1L,"COSC", "CS", "112"))
@@ -261,13 +277,13 @@ public class CourseServiceTest {
 
         SectionDto section2 = new SectionDto(
                 11L, 2025, "W1", "002", SectionType.LABORATORY,
-                new CourseDto(1L, "COSC", "Security", "430") // duplicate course-term
+                new CourseDto(1L, "COSC", "Security", "430")
         );
-
-            NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1");
-            AllocationDto dto = new AllocationDto(
+                OfferDto offer = new OfferDto(1L, true, "description");
+            NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1",null);
+            AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
             42L,
-            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),
+            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),offer,
             true,
             10,
             new SectionDto(99L, 2024,"W1","001",SectionType.LECTURE, new CourseDto(1L,"COSC", "CS", "112"))

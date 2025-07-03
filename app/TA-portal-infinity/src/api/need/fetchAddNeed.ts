@@ -12,13 +12,14 @@ interface FetchAddNeedProps {
 export async function fetchAddNeed({section, description, requiredGradingHours, prereqCourses}:FetchAddNeedProps ): Promise<boolean | null> {
     const BASE = `http://localhost:8080/needs/add/${section.sectionDetails?.id}`;
     const token = localStorage.getItem("token");
-
+    const courseIds = prereqCourses.map(course => course.id);
     const needRequest = {
         description: description,
         requiredGradingHours : requiredGradingHours,
         numHoursCurrentlyAllocated : 0,
         year: section.sectionDetails?.year,
-        semester : section.sectionDetails?.semester
+        semester : section.sectionDetails?.semester,
+        prerequisiteCourseIds : courseIds
     }
     console.log(needRequest);
     try {

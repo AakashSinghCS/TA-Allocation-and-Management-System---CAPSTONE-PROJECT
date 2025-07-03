@@ -1,8 +1,7 @@
 package com.infinity.applicationservice.controllers;
 
-import com.infinity.applicationservice.dtos.AllocationDto;
-import com.infinity.applicationservice.dtos.AllocationHistoryDto;
-import com.infinity.applicationservice.dtos.AllocationRequest;
+import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
+import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
 import com.infinity.applicationservice.services.AllocationService;
 
 import lombok.Data;
@@ -34,6 +33,12 @@ public class AllocationController {
         return ResponseEntity.ok(dto);
     }
 
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @DeleteMapping("/deallocate/{allocationId}")
+    public ResponseEntity<String> deallocatedStudent(@PathVariable Long allocationId) {
+        return ResponseEntity.ok(allocationService.deallocateStudent(allocationId));
+    }
+
     @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("/{id}/acceptOffer")
     public ResponseEntity<Void> acceptOffer(@PathVariable Long id) {
@@ -48,11 +53,29 @@ public class AllocationController {
         return ResponseEntity.ok().build();
     }
 
-    //  @PreAuthorize("hasRole('COORDINATOR')")
-    @GetMapping("/section/{sectionId}")
-    public ResponseEntity<List<AllocationDto>> getBySectionId(@PathVariable Long sectionId) {
-        List<AllocationDto> allocations = allocationService.getAllocationsBySectionId(sectionId);
-        return ResponseEntity.ok(allocations);
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/filter/confirmed/{status}")
+    public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByConfirmationStatus(@PathVariable boolean status) {
+        return ResponseEntity.ok(allocationService.getAllocationsByConfirmationStatus(status));
     }
+
+    // @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/filter/section/{sectionId}")
+    public ResponseEntity<List<AllocationHistoryDto>> getAllocationsBySectionId(@PathVariable Long sectionId) {
+        return ResponseEntity.ok(allocationService.getAllocationsBySectionId(sectionId));
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/filter/application/{applicationId}")
+    public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByApplicationId(@PathVariable Long applicationId) {
+        return ResponseEntity.ok(allocationService.getAllocationsByApplicationId(applicationId));
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/filter/year/{year}")
+    public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByYear(@PathVariable int year) {
+        return ResponseEntity.ok(allocationService.getAllocationsByApplicationYear(year));
+    }
+
     
 }

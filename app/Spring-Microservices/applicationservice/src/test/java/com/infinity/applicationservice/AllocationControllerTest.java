@@ -1,36 +1,45 @@
 package com.infinity.applicationservice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.infinity.applicationservice.controllers.AllocationController;
-import com.infinity.applicationservice.dtos.*;
-import com.infinity.applicationservice.enums.*;
-import com.infinity.applicationservice.services.AllocationService;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.applicationservice.controllers.AllocationController;
+import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
+import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
+import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
+import com.infinity.applicationservice.dtos.Courses.CourseDto;
+import com.infinity.applicationservice.dtos.Courses.SectionDto;
+import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.enums.ApplicationType;
+import com.infinity.applicationservice.enums.SectionType;
+import com.infinity.applicationservice.services.AllocationService;
 
 
 @WebMvcTest(AllocationController.class)
@@ -52,10 +61,12 @@ public class AllocationControllerTest {
     void setup() {
         ApplicationDto application = new ApplicationDto(
             1L,
+            1L,
             List.of(),
+            ApplicationType.UNDERGRADUATE,
             false,
             10,
-            LocalDateTime.now(),
+            LocalDateTime.of(2025, 7, 1, 12, 0),
             Set.of()
         );
         sampleDto = new AllocationHistoryDto(
@@ -85,20 +96,20 @@ public class AllocationControllerTest {
     @Test
     void allocateStudent_createsAllocationAndReturnsDto() throws Exception {
         AllocationRequest request = new AllocationRequest(
-            1L,
-            1L,
-            true,
-            10,
-            1001L
-        );
+                1L,
+                1L,
+                true,
+                10,
+                1001L);
         ApplicationDto application = new ApplicationDto(
-            1L,
-            List.of(),
-            false,
-            10,
-            LocalDateTime.now(),
-            Set.of()
-        );
+                1L,
+                1L,
+                List.of(),
+                ApplicationType.UNDERGRADUATE,
+                false,
+                10,
+                LocalDateTime.now(),
+                Set.of());
 
         AllocationHistoryDto responseDto = new AllocationHistoryDto(
             123L,
@@ -114,12 +125,26 @@ public class AllocationControllerTest {
         mvc.perform(post("/allocations/allocate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(123))
+                .andExpect(jsonPath("$.student.firstName").value("Test"))
+                .andExpect(jsonPath("$.numberOfHours").value(10))
+                .andExpect(jsonPath("$.section.section").value("T01"))
+                .andExpect(jsonPath("$.isConfirmed").value(false));
+    }
+
+    @Test
+    void deallocateStudent_removesAllocationAndReturnsMessage() throws Exception {
+        Long allocationId = 101L;
+        String expectedResponse = "Student deallocated";
+
+        when(allocationService.deallocateStudent(allocationId)).thenReturn(expectedResponse);
+
+        mvc.perform(delete("/allocations/deallocate/{allocationId}", allocationId))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(123))
-            .andExpect(jsonPath("$.student.firstName").value("Test"))
-            .andExpect(jsonPath("$.numberOfHours").value(10))
-            .andExpect(jsonPath("$.section.section").value("T01"))
-            .andExpect(jsonPath("$.isConfirmed").value(false));
+            .andExpect(jsonPath("$").value(expectedResponse));
+
+        verify(allocationService, times(1)).deallocateStudent(allocationId);
     }
 
     @Test
@@ -143,25 +168,58 @@ public class AllocationControllerTest {
     }
 
     @Test
-    public void getBySectionId_ReturnsOkAndListOfAllocationDto() throws Exception {
-        // given
-        AllocationDto dto = new AllocationDto(
-            42L,
-            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),
-            true,
-            10,
-            new SectionDto(99L, 2024,"W1","section",SectionType.LECTURE, new CourseDto(1L,"COSC", "CS", "112"))
-        );
-        when(allocationService.getAllocationsBySectionId(99L)).thenReturn(List.of(dto));
+    void getAllocationsByConfirmationStatus_returnsFilteredResults() throws Exception {
+        sampleDto = new AllocationHistoryDto(
+        sampleDto.id(),
+        sampleDto.student(),
+        sampleDto.applicationDto(),
+        true,
+        sampleDto.numberOfHours(),
+        sampleDto.section()
+    );
+        when(allocationService.getAllocationsByConfirmationStatus(true)).thenReturn(List.of(sampleDto));
 
-        // when / then
-        mvc.perform(get("/allocations/section/99"))
+        mvc.perform(get("/allocations/filter/confirmed/true"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].id").value(42))
-            .andExpect(jsonPath("$[0].student.id").value(7))
-            .andExpect(jsonPath("$[0].isConfirmed").value(true))
-            .andExpect(jsonPath("$[0].numberOfHours").value(10))
-            .andExpect(jsonPath("$[0].section.id").value(99));
+            .andExpect(jsonPath("$[0].id").value(sampleDto.id()))
+            .andExpect(jsonPath("$[0].isConfirmed").value(true));
+
+        verify(allocationService, times(1)).getAllocationsByConfirmationStatus(true);
     }
+
+    @Test
+    void getAllocationsBySectionId_returnsFilteredResults() throws Exception {
+        when(allocationService.getAllocationsBySectionId(1001L)).thenReturn(List.of(sampleDto));
+
+        mvc.perform(get("/allocations/filter/section/1001"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].section.id").value(1001L));
+
+        verify(allocationService, times(1)).getAllocationsBySectionId(1001L);
+    }
+
+    @Test
+    void getAllocationsByApplicationId_returnsFilteredResults() throws Exception {
+        when(allocationService.getAllocationsByApplicationId(55L)).thenReturn(List.of(sampleDto));
+
+        mvc.perform(get("/allocations/filter/application/55"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].applicationDto").exists());
+
+        verify(allocationService, times(1)).getAllocationsByApplicationId(55L);
+    }
+
+    @Test
+    void getAllocationsByYear_returnsFilteredResults() throws Exception {
+        when(allocationService.getAllocationsByApplicationYear(eq(2025))).thenReturn(List.of(sampleDto));
+
+        mvc.perform(get("/allocations/filter/year/2025"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].applicationDto.timeSubmitted").value(org.hamcrest.Matchers.startsWith("2025")));
+    }
+
 }

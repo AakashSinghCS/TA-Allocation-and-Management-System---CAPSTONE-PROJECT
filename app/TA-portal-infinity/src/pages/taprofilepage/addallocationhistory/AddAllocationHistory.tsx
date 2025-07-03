@@ -111,9 +111,9 @@ export default function AddAllocationHistory() {
         </div>
       </div>
 
-      <div className="border p-4 rounded-md shadow-sm mb-4">
-        <SectionFilter onFilterChange={handleFilterChange} mode="large" />
-      </div>
+//       <div className="border p-4 rounded-md shadow-sm mb-4">
+//         <SectionFilter onFilterChange={handleFilterChange} mode="large" />
+//       </div>
 
       {loading ? (
         <p>Loading sections…</p>

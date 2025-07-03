@@ -5,12 +5,9 @@ import App from "../App";
 import PublicLayout from "../components/layout/publicLayout/PublicLayout";
 import CoursesTakenPage from "../pages/taprofilepage/coursestakenpage/CoursesTakenPage";
 import StudentComparerPage from "../pages/taprofilepage/comparerpage/StudentComparerPage";
-
 import InstructorProfilePage from "../pages/instructorprofilepage/InstructorProfilePage";
 import InstructorNeedPage from "../pages/instructorprofilepage/needpage/InstructorNeedPage";
 import InstructorComparerPage from "../pages/instructorprofilepage/comparerpage/InstructorComparerPage";
-
-
 import LoginPage from "../pages/loginPage/LoginPage";
 import ErrorPage from "../pages/errorpage/ErrorPage";
 import StudentHomePage from "../pages/student_homepage/StudentHomePage";
@@ -37,7 +34,7 @@ import InstructorAddSectionPage from "../pages/instructorprofilepage/needpage/ad
 import InstructorAddNeedPage from "../pages/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage";
 import AddAllocationHistory from "../pages/taprofilepage/addallocationhistory/AddAllocationHistory";
 import AddEnrolledCourse from "../pages/taprofilepage/coursestakenpage/addenrolledcourse/AddEnrolledCourse";
-
+import ApplicationViewPage from "../pages/coordinatorpages/applicationviewpage/ApplicationViewPage";
 
 export const router = createBrowserRouter([
   {
@@ -108,6 +105,7 @@ export const router = createBrowserRouter([
           { path: "browseuser/newuser", element: < ManualCreateUserPage/> },
           { path: "sections", element: < SectionListPage/> },
           { path: "sections/add", element: < AddSectionPage/> },
+          { path: "applications", element: <ApplicationViewPage /> },
           {path: "allocation", element: <AllocationPage />},
           { path: "student/questions/:studentId", element: < TaQuestionnairePage/> }, //TEMPORARY for development
           { path: "error", element: <ErrorPage /> },

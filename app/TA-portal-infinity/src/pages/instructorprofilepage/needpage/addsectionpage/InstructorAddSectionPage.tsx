@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import SectionFilter from "../../../../components/features/course/coursefilter/SectionFilter";
 import SectionList from "../../../../components/features/course/sectionlist/SectionList";
 import { useNavigate, useParams } from "react-router-dom";
@@ -29,14 +29,19 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
   const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
   const [loading, setLoading] = useState(false);
   const [selectedPrereqs, setSelectedPrereqs] = useState<Course[]>([]);
+  const [numHoursCurrentlyAllocated, setNumHoursCurrentlyAllocated] = useState(0);
 
   useEffect(() => {
     if (mode === 'update' && courseId && year && semester) {
       fetchGetNeed(courseId,year,semester)
       .then((need) => {
-        setSelectedPrereqs(need?.courseNeeds ?? [])
+        
         setDescription(need?.description ?? "");
         setRequiredHours(need?.requiredGradingHours ?? -1);
+        setNumHoursCurrentlyAllocated(need?.numHoursCurrentlyAllocated ?? -1);
+        // const ids = (need?.prerequisites || []).map(c => c.id!);
+        // originalIdsRef.current = ids;
+        setSelectedPrereqs(need?.prerequisites ?? [])
       })
       .catch((err) => navigate('/error', { replace: true, state: { message: err.message } }));
     }
@@ -61,23 +66,24 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
     navigate(`/user/instructorprofile/${instructorId}/need`);
   };
 
-  // course‐level toggle (in “update” mode)
-  const onSelectCourseForPrereq = useCallback(( cid: number, _dept: string, _num: string, _name: string) => {
-    const group = filteredSections?.filter(sec => sec.sectionDetails?.id === cid) || [];
-    const existingIds = new Set(selectedPrereqs.map(c => c?.id));
-    const allSelected = group.every(s => existingIds.has(s.sectionDetails?.id));
+  const onSelectCourseForPrereq = useCallback((cid: number) => {
+    if (!filteredSections) return;
+    const foundSec = filteredSections.find(sec => sec.sectionDetails?.id === cid);
+    if (!foundSec) return;
 
-    if (allSelected) {
-      setSelectedPrereqs(prev =>
-        prev.filter(cou => cou?.id !== cid)
-      );
-    } else {
-      const toAdd = group
-        .filter(s => !existingIds.has(s.sectionDetails?.id))
-        .map(s => s.sectionDetails as Course); 
-      setSelectedPrereqs(prev => [...prev, ...toAdd]);
-    }
-  }, [filteredSections, selectedPrereqs]);
+    const courseObj: Course = {
+      id: cid,
+      deptCode: foundSec.sectionDetails!.deptCode,
+      courseNum: foundSec.sectionDetails!.courseNum,
+      name: foundSec.sectionDetails!.name
+    };
+
+    setSelectedPrereqs(prev =>
+      prev.some(c => c.id === cid)
+        ? prev.filter(c => c.id !== cid)
+        : [...prev, courseObj]
+    );
+  }, [filteredSections]);
 
   const onRemovePrereq = (courseIdToRemove: number) => {
     setSelectedPrereqs(prev =>
@@ -86,12 +92,16 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
   };
 
   const handleSavePrereqs = async () => {
-    // const ids = selectedPrereqs.map(c => c?.id ?? -1);
+    // const original = originalIdsRef.current;
+    // const current = selectedPrereqs.map(c => c.id!);
     const ok = await fetchUpdateNeed({
+      description: description,
+      requiredGradingHours : requiredHours,
+      numHoursCurrentlyAllocated : numHoursCurrentlyAllocated,
       courseId: courseId, 
       year: year, 
       semester: semester,
-      courseNeeds:selectedPrereqs
+      prerequisites:selectedPrereqs
     });
     alert(ok ? 'Prerequisites updated!' : 'Failed to update prerequisites.');
     navigate(`/user/instructorprofile/${instructorId}/need`);

@@ -9,7 +9,8 @@ import com.infinity.applicationservice.models.Allocation;
 
 @Repository
 public interface AllocationRepository extends JpaRepository<Allocation, Long>{
+
     List<Allocation> findByStudentId(Long studentId);
 
-    List<Allocation> findBySectionId(Long sectionId);
+    boolean existsByApplicationIdAndSectionIdAndStudentId(Long applicationId, Long sectionId, Long studentId);
 }

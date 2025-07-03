@@ -22,8 +22,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.courseservice.controllers.CourseController;
-import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
+// import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.AllocationDtos.OfferDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
@@ -150,12 +151,12 @@ public class CourseControllerTest {
                 Long courseId = 1L;
                 Integer year = 2025;
                 String semester = "W1";
-
-    NeedDto need = new NeedDto(10L, courseId, "Marking", 30, 10, year, semester);
+        OfferDto offer = new OfferDto(1L, true, "description");
+    NeedDto need = new NeedDto(10L, courseId, "Marking", 30, 10, year, semester, null);
     CourseDto course = new CourseDto(courseId, "COSC", "Security", "430");
         SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
-    AllocationDto alloc = new AllocationDto(1L,
-    new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),
+    AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
+    new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),offer,
                     true, 10,
         new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
     );
@@ -175,12 +176,12 @@ public class CourseControllerTest {
     @Test
     void testGetInstructorCourseNeedsAndAllocations() throws Exception {
                 Long instructorId = 77L;
-
+                OfferDto offer = new OfferDto(1L, true, "description");
                 CourseDto course = new CourseDto(1L, "COSC", "Networks", "329");
-                NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2");
+                NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2", null);
                 SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
-                AllocationDto alloc = new AllocationDto(1L,
-    new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),
+                AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
+    new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),offer,
                     true, 10,
         new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
     );

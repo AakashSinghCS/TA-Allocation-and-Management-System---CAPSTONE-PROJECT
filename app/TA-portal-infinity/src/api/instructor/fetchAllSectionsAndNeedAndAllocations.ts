@@ -53,6 +53,17 @@ export async function fetchAllSectionsAndNeedAndAllocations( instructorId: numbe
         name: res.section.course.name,
         id: res.section.course.id
        }
+      //  const need : Need = {
+      //   courseId : res.need.courseId,
+      //   description: res.need.description,
+      //   id: res.need.id,
+      //   numHoursCurrentlyAllocated : res.need.numHoursCurrentlyAllocated,
+      //   requiredGradingHours: res.need.requiredGradingHours,
+      //   semester: res.need.semester,
+      //   year: res.need.year,
+      //   courseNeeds: res.need.
+
+      //  }
       const section :Section = { sectionDetails: sectionDetails, need: res.need, allocations: res.allocations}
       return section;
     })
