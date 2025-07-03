@@ -1829,3 +1829,61 @@ This cycle, I still have to work on:
 - qualifications page (instructor's and student's skill labs) integration
 - integration for comparers
 - Instructor updating needs frontend
+
+
+## Wednesday 7/02 (7/01~7/04)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July02.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Instructor Needs profile, Qualifications, Allopcation History
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#119](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/119)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#315](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/315)
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+So I did get everything I wanted to get done today except for design improvements.
+I integrated the qualifications. I made the allocation history work. I made a very basic CSV export work.
+It was very tough going through all the errors that would happen. I feel like the frontend is more prone to discovering unexpected errors since we are testing in a more practical manner.
+It was very tough integrating everything and making sure everything works well. The data can get messed up and that seems to be oftentimes the source of unexpected errors.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- presentation for MVP
+- refactoring and checking for errors and fixing them.
