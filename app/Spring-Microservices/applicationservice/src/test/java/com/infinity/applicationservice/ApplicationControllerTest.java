@@ -22,10 +22,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.applicationservice.controllers.ApplicationController;
-import com.infinity.applicationservice.dtos.ApplicationDto;
-import com.infinity.applicationservice.dtos.ApplicationRequest;
-import com.infinity.applicationservice.dtos.ApplicationWithStudentDto;
-import com.infinity.applicationservice.dtos.StudentDto;
+import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
+import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
+import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.services.ApplicationService;
 
@@ -41,7 +41,7 @@ public class ApplicationControllerTest {
 
         @Test
         void submitApplication_NullPreferences_BadRequest() throws Exception {
-                ApplicationRequest request = new ApplicationRequest(null, false, 4, null);
+                ApplicationRequest request = new ApplicationRequest(null, ApplicationType.UNDERGRADUATE,false, 4, null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -54,7 +54,7 @@ public class ApplicationControllerTest {
 
         @Test
         void submitApplication_EmptyPreferences_BadRequest() throws Exception {
-                ApplicationRequest request = new ApplicationRequest(List.of(), false, 4, null);
+                ApplicationRequest request = new ApplicationRequest(List.of(), ApplicationType.UNDERGRADUATE,false, 4, null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -68,7 +68,8 @@ public class ApplicationControllerTest {
         @Test
         void submitApplication_Over3Preferences_BadRequest() throws Exception {
                 ApplicationRequest request = new ApplicationRequest(
-                                List.of(Subject.COSC, Subject.MATH, Subject.DATA, Subject.PHYS), false, 4, null);
+                                List.of(Subject.COSC, Subject.MATH, Subject.DATA, Subject.PHYS),
+                                ApplicationType.UNDERGRADUATE, false, 4, null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -82,7 +83,7 @@ public class ApplicationControllerTest {
         @Test
         void submitApplication_TooFewHours_BadRequest() throws Exception {
                 ApplicationRequest request = new ApplicationRequest(
-                                List.of(Subject.COSC), false, 1, null);
+                                List.of(Subject.COSC), ApplicationType.UNDERGRADUATE,false, 1, null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -96,7 +97,7 @@ public class ApplicationControllerTest {
         @Test
         void submitApplication_TooManyHours_BadRequest() throws Exception {
                 ApplicationRequest request = new ApplicationRequest(
-                                List.of(Subject.COSC), false, 13, null);
+                                List.of(Subject.COSC), ApplicationType.UNDERGRADUATE,false, 13, null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -109,7 +110,8 @@ public class ApplicationControllerTest {
 
         @Test
         void submitApplication_Success() throws Exception {
-                ApplicationRequest request = new ApplicationRequest(List.of(Subject.COSC), false, 4, null);
+                ApplicationRequest request = new ApplicationRequest(List.of(Subject.COSC),
+                                ApplicationType.UNDERGRADUATE, false, 4, null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -130,7 +132,8 @@ public class ApplicationControllerTest {
 
         @Test
         void updateApplication_Success() throws Exception {
-                ApplicationRequest request = new ApplicationRequest(List.of(Subject.COSC), false, 4, null);
+                ApplicationRequest request = new ApplicationRequest(List.of(Subject.COSC),
+                                ApplicationType.UNDERGRADUATE, false, 4, null);
 
                 mockMvc.perform(put("/applications/update/1")
                                 .header("X-User-Id", "1")
@@ -165,6 +168,7 @@ public class ApplicationControllerTest {
                                 1L,
                                 studentDto,
                                 List.of(Subject.COSC, Subject.MATH),
+                                ApplicationType.UNDERGRADUATE,
                                 false,
                                 6,
                                 LocalDateTime.of(2024, 1, 1, 12, 0),

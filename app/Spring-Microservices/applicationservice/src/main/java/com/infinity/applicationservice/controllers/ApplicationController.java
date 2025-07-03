@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.infinity.applicationservice.dtos.ApplicationDto;
-import com.infinity.applicationservice.dtos.ApplicationRequest;
-import com.infinity.applicationservice.dtos.ApplicationWithStudentDto;
+import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
+import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
+import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.services.ApplicationService;
 
