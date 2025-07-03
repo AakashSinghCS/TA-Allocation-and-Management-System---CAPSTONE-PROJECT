@@ -78,6 +78,7 @@ public class NeedService {
             courseNeed.setSemester(request.semester());
 
             courseNeed.getPrerequisites().clear();
+            courseNeedRepository.save(courseNeed);
             if (request.prerequisiteCourseIds() != null) {
                     List<Course> prereqCourses = courseRepository.findAllById(request.prerequisiteCourseIds());
                     for (Course prereq : prereqCourses) {
