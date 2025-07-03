@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,6 +30,7 @@ import com.infinity.courseservice.models.Need;
 import com.infinity.courseservice.repositories.CourseNeedRepository;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.NeedRepository;
+import com.infinity.courseservice.repositories.PrereqRepository;
 import com.infinity.courseservice.services.NeedService;
 import com.infinity.courseservice.utility.NeedMapper;
 
@@ -43,6 +45,9 @@ public class NeedServiceTest {
 
     @Mock
     private CourseNeedRepository courseNeedRepository;
+
+    @Mock
+    private PrereqRepository prereqRepository;
 
     @Mock
     private NeedMapper needMapper;
@@ -130,7 +135,7 @@ public class NeedServiceTest {
         NeedRequest request = new NeedRequest("Updated", 40, 20, 2025, "W2", List.of(2L));
         NeedDto needDto = new NeedDto(1L, 1L, "Updated", 40, 20, 2025, "W2",
                 List.of(new CourseDto(2L, "DATA", "Intro to R", "103")));
-
+doNothing().when(prereqRepository).deleteByCourseNeed(mockCourseNeed);
         when(courseNeedRepository.findByCourseIdAndYearAndSemester(1L, 2025, "W1"))
                 .thenReturn(Optional.of(mockCourseNeed));
         when(needRepository.save(any())).thenReturn(mockNeed);

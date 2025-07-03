@@ -154,14 +154,14 @@ export default function NeedCard({ need, className = "", onUpdate, onDelete }: N
           />
           <div className="flex">
             <span className="text-slate-600">Course Prerequisites: </span>
-            {need?.courseNeeds?.length ? (
+            {need?.prerequisites?.length ? (
               <div className="flex flex-wrap text-slate-800">
-                {need.courseNeeds.map((course, idx) => (
+                {need.prerequisites.map((course, idx) => (
                   <span key={course.id}>
-                    <Link to={`/course/${course.id}`} className="hover:text-blue-600">
+                    <Link to={`/user/courseprofile/${course.id}`} className="hover:text-blue-600">
                       {course.deptCode} {course.courseNum}
                     </Link>
-                    {need.courseNeeds && idx < need.courseNeeds.length - 1 && <span>,&nbsp;</span>}
+                    {need.prerequisites && idx < need.prerequisites.length - 1 && <span>,&nbsp;</span>}
                   </span>
                 ))}
               </div>

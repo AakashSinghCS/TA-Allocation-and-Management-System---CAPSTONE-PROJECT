@@ -4,7 +4,7 @@ export interface Need {
     description?: string;
     numHoursCurrentlyAllocated? : number;
     requiredGradingHours? : number;
-    courseNeeds?: Course[];
+    prerequisites?: Course[];
     year? :number;
     semester? : string;
     courseId? : number;

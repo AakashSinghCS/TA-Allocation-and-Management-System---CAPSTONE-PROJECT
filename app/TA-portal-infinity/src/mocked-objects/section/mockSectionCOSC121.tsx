@@ -38,7 +38,7 @@ export const mockSectionNeedCOSC121 :Need = {
     description: "I need smart people",
     numHoursCurrentlyAllocated: 12,
     requiredGradingHours: 12,
-    courseNeeds: [mockCourseCOSC111, mockCourseMATH125]
+    prerequisites: [mockCourseCOSC111, mockCourseMATH125]
 }
 
 

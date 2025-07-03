@@ -15,8 +15,10 @@ import com.infinity.courseservice.models.Prereq;
 import com.infinity.courseservice.repositories.CourseNeedRepository;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.NeedRepository;
+import com.infinity.courseservice.repositories.PrereqRepository;
 import com.infinity.courseservice.utility.NeedMapper;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,6 +29,7 @@ public class NeedService {
     private final NeedRepository needRepository;
     private final CourseNeedRepository courseNeedRepository;
     private final NeedMapper needMapper;
+    private final PrereqRepository prereqRepository;
 
    public NeedDto addNeed(NeedRequest request, Long courseId) {
     Course course = courseRepository.findById(courseId)
@@ -62,10 +65,11 @@ public class NeedService {
             return needMapper.courseNeedToDto(courseNeed);
     }
 
+    @Transactional
     public NeedDto updateNeed(NeedRequest request, Long courseId, Integer year, String semester) {
             CourseNeed courseNeed = courseNeedRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)
                             .orElseThrow(() -> new NotFoundException("Course has no need for that year and semester"));
-
+            prereqRepository.deleteByCourseNeed(courseNeed);
             courseNeed.getNeed().setDescription(request.description());
             courseNeed.getNeed().setRequiredGradingHours(request.requiredGradingHours());
             courseNeed.getNeed().setNumHoursCurrentlyAllocated(request.numHoursCurrentlyAllocated());

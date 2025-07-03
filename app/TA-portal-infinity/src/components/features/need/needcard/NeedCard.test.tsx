@@ -35,7 +35,7 @@ describe('NeedCard', () => {
     );
 
     // each prereq course link
-    need.courseNeeds!.forEach((course) => {
+    need.prerequisites!.forEach((course) => {
       const regex = new RegExp(`${course.deptCode}\\s*${course.courseNum}`, 'i');
       expect(within(card).getByText(regex)).toBeInTheDocument();
     });
