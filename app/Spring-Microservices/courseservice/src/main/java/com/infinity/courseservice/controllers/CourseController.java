@@ -19,8 +19,11 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseNeedAndAllocations;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
+import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
+import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
 import com.infinity.courseservice.services.CourseService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -114,5 +117,37 @@ public class CourseController {
             @RequestParam String year) {
         return ResponseEntity.ok(courseService.getAllSemester(deptCode, courseNum, section, year));
     }
+
+
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'STUDENT')")
+    @PostMapping("/studentTaught/add/{courseId}")
+    public ResponseEntity<Void> addStudentTaughtCourse(
+        @PathVariable Long courseId,
+        @RequestBody StudentTaughtCourseRequest request) {
+            courseService.addStudentTaughtCourse(courseId, request);
+            return ResponseEntity.ok().build();
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'STUDENT')")
+    @DeleteMapping("/studentTaught/delete/{studentId}/{courseId}")
+    public ResponseEntity<Void> deleteStudentTaughtCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
+        courseService.deleteStudentTaughtCourse(studentId, courseId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'STUDENT', 'INSTRUCTOR')")
+    @GetMapping("/studentTaught/{studentId}")
+    public ResponseEntity<List<StudentTaughtCourseDto>> getStudentTaughtCourses(@PathVariable Long studentId) {
+        return ResponseEntity.ok(courseService.getCoursesTaughtByStudent(studentId));
+    }
+
+    // @GetMapping("/getEnrolledCourses/{studentId}")
+    // public ResponseEntity<List<CourseDto>> getMethodName(@PathVariable Integer
+    // studentId) {
+    // List<CourseDto> courseDtos = courseService.getEnrolledCourses(studentId);
+    // return ResponseEntity.ok(courseDtos);
+    // }
+
 
 }
