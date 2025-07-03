@@ -14,7 +14,7 @@ export const mockSectionCOSC111Details : SectionDetails = {
     courseNum : mockCourseCOSC111.courseNum,
     section: "001",
     semester : "W1",
-    type : "Lecture",
+    type : "LECTURE",
     year : 2024
 }
 
@@ -49,6 +49,6 @@ export const mockSectionCOSC111 : Section = {
 export const mockSectionCOSC111Profile : SectionProfile={
     section: "001",
     semester : "W1",
-    type : "Lecture",
+    type : "LECTURE",
     year : 2024
 }

@@ -4,6 +4,7 @@ import InstructorQualificationCard from './InstructorQualificationCard';
 import { mockQualificationCOSC111 } from '../../../../mocked-objects/qualification/mockQualifications';
 import { mockCourseCOSC111 } from '../../../../mocked-objects/course/mockCourseCOSC111';
 import { fetchCreateQualification } from '../../../../api/instructor/fetchCreateQualification';
+import { fetchDeleteQualification } from '../../../../api/instructor/fetchDeleteQualification';
 
 const renderer =() => render(<InstructorQualificationCard
         initialQualifications={mockQualificationCOSC111}
@@ -74,17 +75,22 @@ describe('<InstructorQualificationCard />', () => {
 
 
   it('handles deletion of existing qualification', async () => {
-    renderer();
+  renderer();
 
-    const deleteBtn = screen.getAllByRole('button', { name: /delete/i })[0];
-    fireEvent.click(deleteBtn);
+  // let window.confirm return true
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  // mock the delete call to succeed
+  (fetchDeleteQualification as unknown as Mock).mockResolvedValueOnce(true);
 
-    await waitFor(() => {
-      expect(
-        screen.queryByText(mockQualificationCOSC111[0].description ?? '')
-      ).not.toBeInTheDocument();
-    });
+  const deleteBtn = screen.getAllByRole('button', { name: /delete/i })[0];
+  fireEvent.click(deleteBtn);
+
+  await waitFor(() => {
+    expect(
+      screen.queryByText(mockQualificationCOSC111[0].description ?? '')
+    ).not.toBeInTheDocument();
   });
+});
 
   it('cancels edit row when closing editor', () => {
     renderer();

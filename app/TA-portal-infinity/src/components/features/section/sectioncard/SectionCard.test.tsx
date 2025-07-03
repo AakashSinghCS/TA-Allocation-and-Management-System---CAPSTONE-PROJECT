@@ -24,7 +24,7 @@ describe("SectionCard", () => {
       `${dash} ` +
       `${section.sectionDetails!.name}`;
 
-    const metaLine = `| ${section.sectionDetails!.type} | ${section.sectionDetails!.semester}`;
+    const metaLine = `${section.sectionDetails!.type} | ${section.sectionDetails?.year} | ${section.sectionDetails!.semester}`;
 
     const card = screen.getByTestId(
       `section-card-${section.sectionDetails!.id}`
