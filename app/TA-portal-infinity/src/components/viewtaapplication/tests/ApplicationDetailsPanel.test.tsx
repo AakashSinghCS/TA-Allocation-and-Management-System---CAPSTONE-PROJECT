@@ -21,7 +21,7 @@ describe('ApplicationDetailsPanel', () => {
   const allocations = [
     {
       numberOfHours: 8,
-      isConfirmed: false,
+      status: 'REJECTED',
       section: {
         sectionDetails: {
           deptCode: 'COSC',

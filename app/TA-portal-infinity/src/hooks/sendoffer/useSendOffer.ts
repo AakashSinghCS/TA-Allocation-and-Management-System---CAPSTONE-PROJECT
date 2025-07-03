@@ -52,7 +52,7 @@ export function useSendOffer() {
     const payload: CreateOfferRequest = {
       studentId:     app.student.id,
       applicationId,                        
-      isConfirmed:   false,
+      status:        'SENT',
       numberOfHours: app.wantWorkingHours,
       sectionId,
     };
