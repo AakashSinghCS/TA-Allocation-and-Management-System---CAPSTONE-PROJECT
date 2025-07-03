@@ -1,7 +1,7 @@
 package com.infinity.applicationservice.controllers;
 
-import com.infinity.applicationservice.dtos.AllocationHistoryDto;
-import com.infinity.applicationservice.dtos.AllocationRequest;
+import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
+import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
 import com.infinity.applicationservice.services.AllocationService;
 
 import lombok.Data;
@@ -31,6 +31,12 @@ public class AllocationController {
     public ResponseEntity<AllocationHistoryDto> allocateStudent(@RequestBody AllocationRequest request) {
         AllocationHistoryDto dto = allocationService.allocateStudent(request);
         return ResponseEntity.ok(dto);
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @DeleteMapping("/deallocate/{allocationId}")
+    public ResponseEntity<String> deallocatedStudent(@PathVariable Long allocationId) {
+        return ResponseEntity.ok(allocationService.deallocateStudent(allocationId));
     }
 
     @PreAuthorize("hasRole('STUDENT')")

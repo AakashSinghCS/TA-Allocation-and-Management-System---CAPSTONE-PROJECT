@@ -1,15 +1,19 @@
 package com.infinity.userservice.services;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.userservice.dtos.EmailRequest;
 import com.infinity.userservice.dtos.BaseUserDto;
 import com.infinity.userservice.dtos.CoordinatorDto;
 // import com.infinity.userservice.dtos.CoordinatorUpdateRequest;
@@ -27,11 +31,14 @@ import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.BadRequestException;
 import com.infinity.userservice.exceptions.NotFoundException;
+import com.infinity.userservice.feign.NotificationClient;
 import com.infinity.userservice.models.Coordinator;
 import com.infinity.userservice.models.Instructor;
+import com.infinity.userservice.models.PasswordResetToken;
 import com.infinity.userservice.models.Role;
 import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
+import com.infinity.userservice.repositories.PasswordResetTokenRepository;
 import com.infinity.userservice.repositories.InstructorRepository;
 import com.infinity.userservice.repositories.RoleRepository;
 import com.infinity.userservice.repositories.StudentRepository;
@@ -46,7 +53,6 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Data
 @RequiredArgsConstructor
 public class UserService {
 
@@ -56,7 +62,8 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final Validator validator;
-    private final StudentRepository studentRepository;
+    private final PasswordResetTokenRepository tokenRepository;
+    private final NotificationClient notificationClient;    private final StudentRepository studentRepository;
     private final InstructorRepository instructorRepository;
     private final StudentMapper studentMapper;
     private final InstructorMapper instructorMapper;
@@ -129,7 +136,8 @@ public class UserService {
             String hashedPassword = passwordEncoder.encode(req.password());
             student.setPassword(hashedPassword);
         }
-        if (req.studentNum()     != null) student.setStudentNum(req.studentNum());
+        if (req.studentNum() != null)
+            student.setStudentNum(req.studentNum());
         if (req.program() != null)
             student.setProgram(req.program());
         if (req.enrollmentYear() != null)
@@ -199,6 +207,7 @@ public class UserService {
         userRepository.deleteById(id);
         return "User deleted successfully";
     }
+
 
     public List<BaseUserDto> search(String role, String name, int universityNumber) {
 
