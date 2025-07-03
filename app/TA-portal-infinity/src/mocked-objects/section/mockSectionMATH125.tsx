@@ -9,7 +9,7 @@ import { mockCourseMATH125 } from '../course/mockCourseMATH125';
 
 export const mockSectionMATH125Details : SectionDetails = {
     id: mockCourseMATH125.id,
-    sectionId: 89,
+    sectionId: 2,
     name: mockCourseMATH125.name,
     deptCode : mockCourseMATH125.deptCode,
     courseNum : mockCourseMATH125.courseNum,

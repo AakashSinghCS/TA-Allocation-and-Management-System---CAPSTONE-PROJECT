@@ -1,0 +1,58 @@
+package com.infinity.applicationservice;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
+import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
+import com.infinity.applicationservice.dtos.Courses.CourseDto;
+import com.infinity.applicationservice.dtos.Courses.SectionDto;
+import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.enums.ApplicationType;
+import com.infinity.applicationservice.enums.SectionType;
+import com.infinity.applicationservice.enums.Subject;
+import com.infinity.applicationservice.models.Allocation;
+import com.infinity.applicationservice.utility.AllocationMapper;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
+@ExtendWith(MockitoExtension.class)
+public class AllocationMapperTest {
+
+    private final AllocationMapper mapper = new AllocationMapper();
+
+    @Test
+    void testToDto() {
+        Allocation allocation = new Allocation();
+        allocation.setId(1L);
+        allocation.setConfirmed(true);
+        allocation.setNumberOfHours(8);
+
+        StudentDto student = new StudentDto(2L, "Alice", "Smith", 12345, "MATH", 2020, 4);
+
+        ApplicationDto applicationDto = new ApplicationDto(
+                3L, 2L,
+                List.of(Subject.MATH, Subject.COSC),
+                ApplicationType.UNDERGRADUATE,
+                false,
+                6,
+                LocalDateTime.now(),
+                Set.of());
+
+        SectionDto section = new SectionDto(4L, 2025, "W1", "001", SectionType.LABORATORY, new CourseDto(1L, "COSC", "Intro", "499"));
+
+        AllocationHistoryDto dto = mapper.toDto(allocation, student, applicationDto, section);
+
+        assertEquals(1L, dto.id());
+        assertEquals(student, dto.student());
+        assertEquals(applicationDto, dto.applicationDto());
+        assertTrue(dto.isConfirmed());
+        assertEquals(8, dto.numberOfHours());
+        assertEquals(section, dto.section());
+    }
+}
