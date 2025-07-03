@@ -56,7 +56,7 @@ public class SectionControllerTest {
                 SectionDto response = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE,
                                 new CourseDto(1L, "COSC", "Security", "430"));
 
-                when(sectionService.addSection(eq(courseId), any(CourseRequest.class))).thenReturn(response);
+                when(sectionService.addSection(eq(courseId), any(SectionAddDtoRequest.class))).thenReturn(response);
 
                 mockMvc.perform(post("/sections/addSection/{courseId}", courseId)
                                 .contentType(MediaType.APPLICATION_JSON)

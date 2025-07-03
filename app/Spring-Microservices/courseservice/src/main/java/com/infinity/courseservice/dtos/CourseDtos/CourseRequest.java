@@ -1,6 +1,7 @@
 package com.infinity.courseservice.dtos.CourseDtos;
 
-import com.infinity.courseservice.enums.*;
+import com.infinity.courseservice.enums.SectionType;
+
 import io.micrometer.common.lang.Nullable;
 
 public record CourseRequest(

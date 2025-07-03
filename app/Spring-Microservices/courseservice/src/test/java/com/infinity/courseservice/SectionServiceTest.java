@@ -61,9 +61,9 @@ public class SectionServiceTest {
         Course course = new Course("COSC", "Software Engineering", "310");
         course.setId(1L);
 
-        CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
-                SectionType.LECTURE, 2025, "W1", null, null, null, null);
-        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        SectionAddDtoRequest request = new SectionAddDtoRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
         section.setId(10L);
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
@@ -79,15 +79,15 @@ public class SectionServiceTest {
     void testAddSection_CourseNotFound() {
         when(courseRepository.findById(99L)).thenReturn(Optional.empty());
 
-        CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
-                SectionType.LECTURE, 2025, "W1", null, null, null, null);
+        SectionAddDtoRequest request = new SectionAddDtoRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null);
         assertThrows(NotFoundException.class, () -> sectionService.addSection(99L, request));
     }
 
     @Test
     void testAddSection_Duplicate() {
-        CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
-                SectionType.LECTURE, 2025, "W1", null, null, null, null);
+        SectionAddDtoRequest request = new SectionAddDtoRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null);
         Course course = new Course("COSC", "Test", "123");
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
         when(sectionRepository.save(any(Section.class)))
@@ -114,7 +114,7 @@ public class SectionServiceTest {
     void testUpdateSectionSuccess() {
         Course course = new Course("COSC", "Software Engineering", "310");
         course.setId(1L);
-        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
         when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
         CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
                 SectionType.LECTURE, 2025, "W1", null, null, null, null);
@@ -145,7 +145,7 @@ public class SectionServiceTest {
     @Test
     void testAddSectionScheduleSuccess() {
         Course course = new Course("COSC", "AI", "310");
-        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
         section.setId(20L);
 
         CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00", null);
@@ -173,7 +173,7 @@ public class SectionServiceTest {
     @Test
     void testAddSectionSchedule_Duplicate() {
         Course course = new Course("COSC", "AI", "310");
-        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
 
         CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00", null);
 
@@ -201,7 +201,7 @@ public class SectionServiceTest {
     @Test
     void testUpdateSectionScheduleSuccess() {
         Course course = new Course("COSC", "AI", "310");
-        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
         SectionSchedule schedule = new SectionSchedule("Tue", LocalTime.of(10, 0), LocalTime.of(11, 0), section);
 
         CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00", null);
@@ -233,7 +233,7 @@ public class SectionServiceTest {
     @Test
     void testGetSectionById_Success() {
         Course course = new Course("COSC", "DB Systems", "304");
-        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
         section.setId(55L);
 
         when(sectionRepository.findById(55L)).thenReturn(Optional.of(section));
@@ -258,7 +258,7 @@ public class SectionServiceTest {
     @Test
     void testGetSectionSchedules_Success() {
         Course course = new Course("COSC", "AI", "310");
-        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
         SectionSchedule schedule = new SectionSchedule("Tue", LocalTime.of(10, 0), LocalTime.of(11, 0), section);
         section.setSectionSchedules(List.of(schedule));
         when(sectionRepository.findById(any())).thenReturn(Optional.of(section));
@@ -274,7 +274,7 @@ public class SectionServiceTest {
 
         InstructorDto instructorDto = new InstructorDto(99L, "Jane", "Doe", 1234, "COSC", null);
         Course course = new Course("COSC", "AI", "310");
-        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course,null);
         section.setId(101L);
 
         when(userInterface.getInstructorById(99L)).thenReturn(instructorDto);
@@ -300,7 +300,7 @@ public class SectionServiceTest {
     @Test
     void testUnassignInstructor_Success() {
         Course course = new Course("COSC", "AI", "310");
-        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course,null);
         section.setId(101L);
         section.setInstructorId(99L);
 
@@ -325,9 +325,9 @@ public class SectionServiceTest {
         Course course2 = new Course("COSC", "AI", "310");
         course2.setId(2L);
 
-        Section s1 = new Section(2025, "W1", "001", SectionType.LECTURE, course1);
+        Section s1 = new Section(2025, "W1", "001", SectionType.LECTURE, course1,null);
         s1.setId(10L);
-        Section s2 = new Section(2025, "W1", "002", SectionType.LABORATORY, course2);
+        Section s2 = new Section(2025, "W1", "002", SectionType.LABORATORY, course2,null);
         s2.setId(11L);
 
         List<Section> sections = List.of(s1, s2);
