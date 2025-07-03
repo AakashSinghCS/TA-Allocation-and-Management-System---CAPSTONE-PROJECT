@@ -12,12 +12,12 @@ export async function fetchUpdateNeed(need : Need): Promise<boolean | null> {
   const token = localStorage.getItem("token");
   const BASE = `http://localhost:8080/needs/update/${need.courseId}/${need.year}/${need.semester}`;
 // const ids = selectedPrereqs.map(c => c?.id ?? -1);
-        const uniqueIds = Array.from(new Set(need.prerequisites?.map(c => c.id)));
+  const uniqueIds = Array.from(new Set(need.prerequisites?.map(c => c.id)));
       
   const needRequest = {
         description: need.description,
         requiredGradingHours : need.requiredGradingHours,
-        numHoursCurrentlyAllocated : 0,
+        numHoursCurrentlyAllocated : need.numHoursCurrentlyAllocated,
         year: need.year,
         semester : need.semester,
         prerequisiteCourseIds : uniqueIds

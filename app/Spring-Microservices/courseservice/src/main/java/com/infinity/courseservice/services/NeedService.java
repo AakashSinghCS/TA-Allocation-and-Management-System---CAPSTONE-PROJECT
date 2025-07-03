@@ -1,5 +1,6 @@
 package com.infinity.courseservice.services;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class NeedService {
     private final NeedRepository needRepository;
     private final CourseNeedRepository courseNeedRepository;
     private final NeedMapper needMapper;
-    private final PrereqRepository prereqRepository;
+    // private final PrereqRepository prereqRepository;
 
    public NeedDto addNeed(NeedRequest request, Long courseId) {
     Course course = courseRepository.findById(courseId)
@@ -69,7 +70,7 @@ public class NeedService {
     public NeedDto updateNeed(NeedRequest request, Long courseId, Integer year, String semester) {
             CourseNeed courseNeed = courseNeedRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)
                             .orElseThrow(() -> new NotFoundException("Course has no need for that year and semester"));
-            prereqRepository.deleteByCourseNeed(courseNeed);
+
             courseNeed.getNeed().setDescription(request.description());
             courseNeed.getNeed().setRequiredGradingHours(request.requiredGradingHours());
             courseNeed.getNeed().setNumHoursCurrentlyAllocated(request.numHoursCurrentlyAllocated());
@@ -86,7 +87,6 @@ public class NeedService {
                             courseNeed.getPrerequisites().add(p);
                     }
             }
-
             needRepository.save(courseNeed.getNeed());
             courseNeed = courseNeedRepository.save(courseNeed);
             return needMapper.courseNeedToDto(courseNeed);

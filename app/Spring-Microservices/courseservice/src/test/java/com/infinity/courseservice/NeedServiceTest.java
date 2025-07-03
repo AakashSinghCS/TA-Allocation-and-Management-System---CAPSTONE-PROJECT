@@ -135,7 +135,7 @@ public class NeedServiceTest {
         NeedRequest request = new NeedRequest("Updated", 40, 20, 2025, "W2", List.of(2L));
         NeedDto needDto = new NeedDto(1L, 1L, "Updated", 40, 20, 2025, "W2",
                 List.of(new CourseDto(2L, "DATA", "Intro to R", "103")));
-doNothing().when(prereqRepository).deleteByCourseNeed(mockCourseNeed);
+// doNothing().when(prereqRepository).deleteByCourseNeed(mockCourseNeed);
         when(courseNeedRepository.findByCourseIdAndYearAndSemester(1L, 2025, "W1"))
                 .thenReturn(Optional.of(mockCourseNeed));
         when(needRepository.save(any())).thenReturn(mockNeed);

@@ -29,7 +29,7 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
   const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
   const [loading, setLoading] = useState(false);
   const [selectedPrereqs, setSelectedPrereqs] = useState<Course[]>([]);
-
+  const [numHoursCurrentlyAllocated, setNumHoursCurrentlyAllocated] = useState(0);
 
   useEffect(() => {
     if (mode === 'update' && courseId && year && semester) {
@@ -38,6 +38,7 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
         
         setDescription(need?.description ?? "");
         setRequiredHours(need?.requiredGradingHours ?? -1);
+        setNumHoursCurrentlyAllocated(need?.numHoursCurrentlyAllocated ?? -1);
         // const ids = (need?.prerequisites || []).map(c => c.id!);
         // originalIdsRef.current = ids;
         setSelectedPrereqs(need?.prerequisites ?? [])
@@ -96,7 +97,7 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
     const ok = await fetchUpdateNeed({
       description: description,
       requiredGradingHours : requiredHours,
-      numHoursCurrentlyAllocated : 0,
+      numHoursCurrentlyAllocated : numHoursCurrentlyAllocated,
       courseId: courseId, 
       year: year, 
       semester: semester,
