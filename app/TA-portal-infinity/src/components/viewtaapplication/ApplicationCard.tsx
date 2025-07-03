@@ -106,7 +106,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, allocations, isA
             Hide Details
           </button>
           <a
-            href="/coordinator/allocations"
+            href="/user/coordinator/allocation"
             className="mt-1 underline text-[#040941] hover:text-blue-900 text-center block text-xs"
             target="_blank"
             rel="noopener noreferrer"
