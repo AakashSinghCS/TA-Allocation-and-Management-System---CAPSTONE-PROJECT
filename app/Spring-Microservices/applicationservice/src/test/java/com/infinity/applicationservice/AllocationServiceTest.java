@@ -63,8 +63,9 @@ class AllocationServiceTest {
                 .thenReturn(ResponseEntity
                         .ok(new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4)));
         when(sectionInterface.getSectionById(1001L))
-                .thenReturn(new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL,
-                        new CourseDto("COSC", "Capstone", "499")));
+                .thenReturn(ResponseEntity
+                        .ok(new SectionDto(1001L, 2024,"W1", "T01", SectionType.TUTORIAL,
+                        new CourseDto(1L,"COSC", "Capstone", "499"))));
 
         List<AllocationHistoryDto> result = allocationService.getAllocationsByStudentId(studentId);
 
@@ -110,14 +111,15 @@ class AllocationServiceTest {
         StudentDto studentDto = new StudentDto(studentId, "Test", "User", 63260442, "BSC", 2022, 4);
         SectionDto sectionDto = new SectionDto(
                 sectionId,
-                "Fall",
+                2024,"W1",
                 "T01",
                 SectionType.TUTORIAL,
-                new CourseDto("COSC", "Capstone", "499"));
+                new CourseDto(1L,"COSC", "Capstone", "499"));
 
         when(allocationRepository.save(any(Allocation.class))).thenReturn(savedAllocation);
         when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
-        when(sectionInterface.getSectionById(sectionId)).thenReturn(sectionDto);
+        when(sectionInterface.getSectionById(sectionId)).thenReturn(ResponseEntity
+                        .ok(sectionDto));
 
         AllocationHistoryDto result = allocationService.allocateStudent(request);
 
@@ -214,8 +216,9 @@ class AllocationServiceTest {
         StudentDto studentDto = new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4);
         when(userInterface.getStudentById(7L)).thenReturn(ResponseEntity.ok(studentDto));
 
-        SectionDto sectionDto = new SectionDto(99L, "term","section",SectionType.LECTURE, new CourseDto("COSC", "CS", "112"));
-        when(sectionInterface.getSectionById(99L)).thenReturn(sectionDto);
+        SectionDto sectionDto = new SectionDto(99L, 2024,"W1","section",SectionType.LECTURE, new CourseDto(1L,"COSC", "CS", "112"));
+        when(sectionInterface.getSectionById(99L)).thenReturn(ResponseEntity
+                        .ok(sectionDto));
 
         // when
         List<AllocationDto> result = allocationService.getAllocationsBySectionId(99L);

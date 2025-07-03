@@ -64,7 +64,7 @@ public class AllocationControllerTest {
             application,
             false,
             10,
-            new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"))
+            new SectionDto(1001L, 2024,"W1", "T01", SectionType.TUTORIAL, new CourseDto(1L,"COSC","Capstone","499"))
         );
     }
 
@@ -106,7 +106,7 @@ public class AllocationControllerTest {
             application,
             false,
             10,
-            new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"))
+            new SectionDto(1001L, 2024,"W1", "T01", SectionType.TUTORIAL, new CourseDto(1L,"COSC","Capstone","499"))
         );
 
         when(allocationService.allocateStudent(any(AllocationRequest.class))).thenReturn(responseDto);
@@ -150,7 +150,7 @@ public class AllocationControllerTest {
             new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),
             true,
             10,
-            new SectionDto(99L, "term","section",SectionType.LECTURE, new CourseDto("COSC", "CS", "112"))
+            new SectionDto(99L, 2024,"W1","section",SectionType.LECTURE, new CourseDto(1L,"COSC", "CS", "112"))
         );
         when(allocationService.getAllocationsBySectionId(99L)).thenReturn(List.of(dto));
 

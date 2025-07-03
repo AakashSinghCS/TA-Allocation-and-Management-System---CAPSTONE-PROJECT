@@ -41,7 +41,7 @@ public class AllocationService {
         StudentDto student = studentInterface.getStudentById(studentId).getBody();
 
         return allocations.stream().map(allocation -> {
-            SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+            SectionDto section = sectionInterface.getSectionById(allocation.getSectionId()).getBody();
             
             Application application = allocation.getApplication();
             ApplicationDto applicationDto = new ApplicationDto(
@@ -80,7 +80,7 @@ public class AllocationService {
         Allocation saved = allocationRepository.save(allocation);
 
         StudentDto student = studentInterface.getStudentById(request.studentId()).getBody();
-        SectionDto section = sectionInterface.getSectionById(request.sectionId());
+        SectionDto section = sectionInterface.getSectionById(request.sectionId()).getBody();
         
 
         ApplicationDto applicationDto = new ApplicationDto(
@@ -118,7 +118,7 @@ public class AllocationService {
         return allocations.stream()
             .map(allocation -> {
                 StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();;
-                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId()).getBody();
 
                 return new AllocationDto(
                     allocation.getId(),

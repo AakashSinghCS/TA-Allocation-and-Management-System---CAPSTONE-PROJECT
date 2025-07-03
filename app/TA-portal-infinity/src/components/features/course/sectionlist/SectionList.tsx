@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
 import React from 'react';
 import type Section from '../../../../interfaces/section/Section';
+import ExportAllocationsCSV from '../../csv/ExportAllocationsCSV';
 
 interface Props {
   sections: Section[] | null;
@@ -59,7 +60,11 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
     onDeleted?.(sectionId, false);
   };
 
-  return (
+  const handleExportToCSV = (sectionId : number) =>{
+
+  }
+
+  return (<>
     <table className="min-w-full table-auto border-collapse">
       <thead>
         <tr>
@@ -117,7 +122,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                     className="text-red-600 hover:underline text-sm whitespace-nowrap"
                   >
                     Delete Course
-                  </button>) : (mode == 'instructorPrereqCourse' || 'studentAddEnrollment') ? <button
+                  </button>) : (mode == 'instructorPrereqCourse' || mode === 'studentAddEnrollment') ? <button
                     type="button"
                     onClick={() => {
                       if (!onSelectCourse) return;
@@ -183,7 +188,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                     <td className="border px-3 py-2 text-right">
                       {sid && (
                         <>
-                          {(mode === 'instructorAddSection' ||'studentAddHistory' || 'studentAddEnrollment') ? (
+                          {(mode === 'instructorAddSection' || mode === 'studentAddHistory' || mode === 'studentAddEnrollment') ? (
                             <button
                               type="button"
                               onClick={() => onSelect?.(sec)}
@@ -191,14 +196,24 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                             >
                               Select
                             </button>
-                          ) : mode === 'coordinator' ? (
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteSection(sid)}
-                              className="text-red-600 hover:underline text-sm "
-                            >
-                              Delete Section
-                            </button>
+                          ) : (mode === 'coordinator') ? (
+                            <div>
+                              <ExportAllocationsCSV
+                                courseId={groups[courseId][0].sectionDetails?.id ?? -1}
+                                year={groups[courseId][0].sectionDetails?.year ?? -1}
+                                semester={groups[courseId][0].sectionDetails?.semester ?? ""}
+                                className="text-blue-600 hover:underline text-sm"
+                                buttonLabel="Export to CSV"
+                              />
+                              {" "}
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteSection(sid)}
+                                className="text-red-600 hover:underline text-sm "
+                              >
+                                Delete Section
+                              </button>
+                            </div>
                           ) : <></>}
                         </>
                       )}
@@ -211,5 +226,6 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
         })}
       </tbody>
     </table>
+    </>
   );
 }
