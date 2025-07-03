@@ -1,7 +1,7 @@
 package com.infinity.applicationservice.controllers;
 
-import com.infinity.applicationservice.dtos.AllocationHistoryDto;
-import com.infinity.applicationservice.dtos.AllocationRequest;
+import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
+import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
 import com.infinity.applicationservice.services.AllocationService;
 
 import lombok.Data;

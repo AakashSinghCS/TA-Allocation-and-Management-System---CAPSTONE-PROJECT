@@ -1,31 +1,8 @@
 package com.infinity.applicationservice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.infinity.applicationservice.controllers.AllocationController;
-import com.infinity.applicationservice.dtos.*;
-import com.infinity.applicationservice.enums.*;
-import com.infinity.applicationservice.services.AllocationService;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-import static org.hamcrest.Matchers.startsWith;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,7 +10,33 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.applicationservice.controllers.AllocationController;
+import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
+import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
+import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
+import com.infinity.applicationservice.dtos.Courses.CourseDto;
+import com.infinity.applicationservice.dtos.Courses.SectionDto;
+import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.enums.ApplicationType;
+import com.infinity.applicationservice.enums.SectionType;
+import com.infinity.applicationservice.services.AllocationService;
 
 
 @WebMvcTest(AllocationController.class)
@@ -57,6 +60,7 @@ public class AllocationControllerTest {
             1L,
             1L,
             List.of(),
+            ApplicationType.UNDERGRADUATE,
             false,
             10,
             LocalDateTime.of(2025, 7, 1, 12, 0),
@@ -99,6 +103,7 @@ public class AllocationControllerTest {
             1L,
             1L,
             List.of(),
+            ApplicationType.UNDERGRADUATE,
             false,
             10,
             LocalDateTime.now(),

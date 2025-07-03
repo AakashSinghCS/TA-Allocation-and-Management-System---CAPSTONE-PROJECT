@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.infinity.applicationservice.dtos.ApplicationRequest;
+import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.Subject;
 
@@ -82,11 +82,12 @@ public class Application {
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Availability> availabilities = new HashSet<>();
 
-    public Application(Long studentId, List<Subject> preferences, boolean wantRemote, Integer wantWorkingHours) {
+    public Application(Long studentId, List<Subject> preferences, ApplicationType applicationType, boolean wantRemote, Integer wantWorkingHours) {
         this.studentId = studentId;
         this.subjectPreference1 = preferences.size() > 0 ? preferences.get(0) : null;
         this.subjectPreference2 = preferences.size() > 1 ? preferences.get(1) : null;
         this.subjectPreference3 = preferences.size() > 2 ? preferences.get(2) : null;
+        this.applicationType = applicationType;
         this.wantRemote = wantRemote;
         this.wantWorkingHours = wantWorkingHours;
         this.isAccepted = false;

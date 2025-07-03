@@ -1,9 +1,33 @@
 package com.infinity.applicationservice;
 
-import com.infinity.applicationservice.utility.AllocationMapper;
-import com.infinity.applicationservice.utility.ApplicationMapper;
-import com.infinity.applicationservice.dtos.*;
-import com.infinity.applicationservice.enums.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.http.ResponseEntity;
+
+import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
+import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
+import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
+import com.infinity.applicationservice.dtos.Courses.CourseDto;
+import com.infinity.applicationservice.dtos.Courses.SectionDto;
+import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.enums.ApplicationType;
+import com.infinity.applicationservice.enums.SectionType;
 import com.infinity.applicationservice.feign.SectionInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Allocation;
@@ -11,25 +35,10 @@ import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.repositories.AllocationRepository;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.services.AllocationService;
-
+import com.infinity.applicationservice.utility.AllocationMapper;
+import com.infinity.applicationservice.utility.ApplicationMapper;
 
 import jakarta.persistence.EntityNotFoundException;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.http.ResponseEntity;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
 
 
 class AllocationServiceTest {
@@ -69,7 +78,7 @@ class AllocationServiceTest {
 
         StudentDto studentDto = new StudentDto(1L, "Test", "User", 123456, "BSC", 2022, 4);
         SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L,"COSC","Capstone","499"));
-        ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, false, null, null, Set.of());
+        ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE, false, null, null, Set.of());
         AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, applicationDto, true, 10, sectionDto);
 
         when(allocationRepository.findByStudentId(studentId)).thenReturn(List.of(allocation));
@@ -119,7 +128,7 @@ class AllocationServiceTest {
 
         StudentDto studentDto = new StudentDto(studentId, "Test", "User", 63260442, "BSC", 2022, 4);
         SectionDto sectionDto = new SectionDto(sectionId, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L,"COSC", "Capstone", "499"));
-        ApplicationDto applicationDto = new ApplicationDto(1L,studentId, null, false, null, LocalDateTime.now(), Set.of());
+        ApplicationDto applicationDto = new ApplicationDto(1L,studentId, null, ApplicationType.UNDERGRADUATE, false, null, LocalDateTime.now(), Set.of());
         AllocationHistoryDto expectedDto = new AllocationHistoryDto(500L, studentDto, applicationDto, false, 5, sectionDto);
 
 
@@ -229,7 +238,7 @@ class AllocationServiceTest {
 
         StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", null, null, null, null);
         SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY, new CourseDto(1L,"COSC", "capstone", "499"));
-        ApplicationDto applicationDto = new ApplicationDto(1l,1L, List.of(), false, 6, LocalDateTime.now(), Set.of());
+        ApplicationDto applicationDto = new ApplicationDto(1l,1L, List.of(), ApplicationType.UNDERGRADUATE, false, 6, LocalDateTime.now(), Set.of());
 
         AllocationHistoryDto expectedDto = new AllocationHistoryDto(1L, studentDto, applicationDto, true, 10, sectionDto);
 
@@ -269,7 +278,7 @@ class AllocationServiceTest {
 
         StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", null, null, null, null);
         SectionDto sectionDto = new SectionDto(100L, 2025, "Winter", "001", SectionType.LABORATORY, new CourseDto(1L,"COSC", "capstone", "499"));
-        ApplicationDto applicationDto = new ApplicationDto(1L,1L, List.of(), false, 6, LocalDateTime.now(), Set.of());
+        ApplicationDto applicationDto = new ApplicationDto(1L,1L, List.of(), ApplicationType.UNDERGRADUATE, false, 6, LocalDateTime.now(), Set.of());
 
         AllocationHistoryDto expectedDto = new AllocationHistoryDto(
             1L,
@@ -325,7 +334,7 @@ class AllocationServiceTest {
 
         StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", null, null, null, null);
         SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY, new CourseDto(1L, "COSC", "capstone", "499"));
-        ApplicationDto applicationDto = new ApplicationDto(1L, 1L, List.of(), false, 6, app1.getSubmittedAt(), Set.of());
+        ApplicationDto applicationDto = new ApplicationDto(1L, 1L, List.of(), ApplicationType.UNDERGRADUATE, false, 6, app1.getSubmittedAt(), Set.of());
         AllocationHistoryDto historyDto = new AllocationHistoryDto(1L, studentDto, applicationDto, true, 10, sectionDto);
 
         when(allocationRepository.findAll()).thenReturn(List.of(a1, a2));
@@ -367,7 +376,7 @@ class AllocationServiceTest {
 
         StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", null, null, null, null);
         SectionDto sectionDto= new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY, new CourseDto(1L, "COSC", "capstone", "499"));
-        ApplicationDto applicationDto = new ApplicationDto(1L,1L, List.of(), false, 6, now, Set.of());
+        ApplicationDto applicationDto = new ApplicationDto(1L,1L, List.of(), ApplicationType.UNDERGRADUATE, false, 6, now, Set.of());
         AllocationHistoryDto historyDto = new AllocationHistoryDto(1L, studentDto, applicationDto, true, 10, sectionDto);
 
         when(allocationRepository.findAll()).thenReturn(List.of(a1, a2));

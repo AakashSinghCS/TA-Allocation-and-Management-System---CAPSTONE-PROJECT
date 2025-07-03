@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.infinity.applicationservice.utility.ApplicationMapper;
-import com.infinity.applicationservice.dtos.AllocationHistoryDto;
-import com.infinity.applicationservice.dtos.AllocationRequest;
-import com.infinity.applicationservice.dtos.ApplicationDto;
-import com.infinity.applicationservice.dtos.AvailabilityDto;
-import com.infinity.applicationservice.dtos.SectionDto;
-import com.infinity.applicationservice.dtos.StudentDto;
+import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
+import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
+import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
+import com.infinity.applicationservice.dtos.Applications.AvailabilityDto;
+import com.infinity.applicationservice.dtos.Courses.SectionDto;
+import com.infinity.applicationservice.dtos.Users.StudentDto;
 import com.infinity.applicationservice.feign.SectionInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Allocation;

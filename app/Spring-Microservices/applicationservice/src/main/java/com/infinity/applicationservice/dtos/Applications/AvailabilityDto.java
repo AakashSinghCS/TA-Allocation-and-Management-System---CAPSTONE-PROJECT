@@ -1,4 +1,4 @@
-package com.infinity.applicationservice.dtos;
+package com.infinity.applicationservice.dtos.Applications;
 
 
 import com.infinity.applicationservice.enums.Day;
