@@ -10,7 +10,7 @@ import { mockInstructorChed } from '../user/mockInstructorChed';
 
 export const mockSectionCOSC121Details : SectionDetails = {
     id: mockCourseCOSC121.id,
-    sectionId: 91,
+    sectionId: 1,
     name: mockCourseCOSC121.name,
     deptCode : mockCourseCOSC121.deptCode,
     courseNum : mockCourseCOSC121.courseNum,
@@ -37,7 +37,7 @@ export const mockSectionScheduleCOSC121ForThu : SectionSchedule = {
 export const mockSectionNeedCOSC121 :Need = {
     sectionId: mockSectionCOSC121Details.id,
     description: "I need smart people",
-    numOfHoursCurrentlyAllocated: 12,
+    numOfHoursCurrentlyAllocated: 0,
     requiredGradingHours: 12,
     courseNeeds: [mockCourseCOSC111, mockCourseMATH125, mockCourseMATH125, mockCourseMATH125, mockCourseMATH125]
 }

@@ -22,6 +22,7 @@ import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.models.Availability;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
+import com.infinity.applicationservice.utility.ApplicationMapper;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
     private final UserInterface userInterface;
+    private final ApplicationMapper applicationMapper;
 
     public ApplicationDto submitApplication(ApplicationRequest req, Long userIdFromHeader, List<String> headerRoles) {
         int year = LocalDate.now().getYear();
@@ -47,10 +49,7 @@ public class ApplicationService {
 
         applicationRepository.save(application);
 
-        List<Subject> preferences = filterPreferences(application);
-        return new ApplicationDto(application.getStudentId(), preferences, application.getApplicationType(),
-                application.isWantRemote(), application.getWantWorkingHours(), application.getSubmittedAt(),
-                        toDtoSet(application.getAvailabilities()));
+        return applicationMapper.toDto(application);
     }
 
     public ApplicationDto getApplication(Long studentId, Integer year, Long userIdFromHeader,
@@ -60,10 +59,8 @@ public class ApplicationService {
         }
         Application application = applicationRepository.findByStudentIdAndYear(studentId, year)
                 .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
-        List<Subject> preferences = filterPreferences(application);
-        return new ApplicationDto(application.getStudentId(), preferences, application.getApplicationType(), application.isWantRemote(),
-                application.getWantWorkingHours(), application.getSubmittedAt(), 
-                toDtoSet(application.getAvailabilities()));
+
+        return applicationMapper.toDto(application);
     }
 
     @Transactional
@@ -105,14 +102,7 @@ public class ApplicationService {
                 toDtoSet(application.getAvailabilities()));
     }
 
-    private List<Subject> filterPreferences(Application application) {
-        return Arrays.asList(
-                application.getSubjectPreference1(),
-                application.getSubjectPreference2(),
-                application.getSubjectPreference3()).stream()
-                .filter(s -> s != null)
-                .toList();
-    }
+    
 
     public List<ApplicationDto> getAllApplicationsByStudentId(Long studentId, Long userIdFromHeader,
             List<String> headerRoles) {
@@ -122,18 +112,8 @@ public class ApplicationService {
         List<Application> applications = applicationRepository.findAllByStudentId(studentId)
                 .orElseThrow(() -> new NotFoundException("No applications exist for this user"));
         return applications.stream()
-                .map(app -> {
-                    List<Subject> preferences = filterPreferences(app);
-                    return new ApplicationDto(
-                            app.getStudentId(),
-                            preferences,
-                            app.getApplicationType(),
-                            app.isWantRemote(),
-                            app.getWantWorkingHours(),
-                            app.getSubmittedAt(),
-                            toDtoSet(app.getAvailabilities()));
-                })
-                .toList();
+            .map(applicationMapper::toDto)
+            .toList();
     }
 
     private void validateAvailabilities(ApplicationRequest req) {
@@ -150,14 +130,7 @@ public class ApplicationService {
         }
     }
   
-    private Set<AvailabilityDto> toDtoSet(Set<Availability> entities) {
-        return entities.stream()
-                .map(a -> new AvailabilityDto(
-                        Day.valueOf(a.getDay().name()),
-                        a.getStartTime().toString(),
-                        a.getEndTime().toString()))
-                .collect(Collectors.toSet());
-    }
+    
 
     private void mapAvailability(ApplicationRequest req, Application application) {
         if (req.availabilities() != null) {
@@ -195,5 +168,4 @@ public class ApplicationService {
             ))
             .toList();
     }   
-
 }

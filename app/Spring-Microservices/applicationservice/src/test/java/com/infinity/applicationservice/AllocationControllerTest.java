@@ -20,9 +20,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import static org.hamcrest.Matchers.startsWith;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,10 +55,11 @@ public class AllocationControllerTest {
     void setup() {
         ApplicationDto application = new ApplicationDto(
             1L,
+            1L,
             List.of(),
             false,
             10,
-            LocalDateTime.now(),
+            LocalDateTime.of(2025, 7, 1, 12, 0),
             Set.of()
         );
         sampleDto = new AllocationHistoryDto(
@@ -64,7 +68,7 @@ public class AllocationControllerTest {
             application,
             false,
             10,
-            new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"))
+            new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L, "COSC","Capstone","499"))
         );
     }
 
@@ -93,6 +97,7 @@ public class AllocationControllerTest {
         );
         ApplicationDto application = new ApplicationDto(
             1L,
+            1L,
             List.of(),
             false,
             10,
@@ -106,7 +111,7 @@ public class AllocationControllerTest {
             application,
             false,
             10,
-            new SectionDto(1001L, "Fall", "T01", SectionType.TUTORIAL, new CourseDto("COSC","Capstone","499"))
+            new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L, "COSC","Capstone","499"))
         );
 
         when(allocationService.allocateStudent(any(AllocationRequest.class))).thenReturn(responseDto);
@@ -140,6 +145,61 @@ public class AllocationControllerTest {
             .andExpect(status().isOk());
 
         verify(allocationService, times(1)).updateConfirmationStatus(123L, false);
+    }
+
+    @Test
+    void getAllocationsByConfirmationStatus_returnsFilteredResults() throws Exception {
+        sampleDto = new AllocationHistoryDto(
+        sampleDto.id(),
+        sampleDto.student(),
+        sampleDto.applicationDto(),
+        true,
+        sampleDto.numberOfHours(),
+        sampleDto.section()
+    );
+        when(allocationService.getAllocationsByConfirmationStatus(true)).thenReturn(List.of(sampleDto));
+
+        mvc.perform(get("/allocations/filter/confirmed/true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].id").value(sampleDto.id()))
+            .andExpect(jsonPath("$[0].isConfirmed").value(true));
+
+        verify(allocationService, times(1)).getAllocationsByConfirmationStatus(true);
+    }
+
+    @Test
+    void getAllocationsBySectionId_returnsFilteredResults() throws Exception {
+        when(allocationService.getAllocationsBySectionId(1001L)).thenReturn(List.of(sampleDto));
+
+        mvc.perform(get("/allocations/filter/section/1001"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].section.id").value(1001L));
+
+        verify(allocationService, times(1)).getAllocationsBySectionId(1001L);
+    }
+
+    @Test
+    void getAllocationsByApplicationId_returnsFilteredResults() throws Exception {
+        when(allocationService.getAllocationsByApplicationId(55L)).thenReturn(List.of(sampleDto));
+
+        mvc.perform(get("/allocations/filter/application/55"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].applicationDto").exists());
+
+        verify(allocationService, times(1)).getAllocationsByApplicationId(55L);
+    }
+
+    @Test
+    void getAllocationsByYear_returnsFilteredResults() throws Exception {
+        when(allocationService.getAllocationsByApplicationYear(eq(2025))).thenReturn(List.of(sampleDto));
+
+        mvc.perform(get("/allocations/filter/year/2025"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].applicationDto.timeSubmitted").value(org.hamcrest.Matchers.startsWith("2025")));
     }
 
 }
