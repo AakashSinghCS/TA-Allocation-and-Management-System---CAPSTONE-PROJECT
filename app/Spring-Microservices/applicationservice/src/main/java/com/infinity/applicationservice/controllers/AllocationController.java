@@ -33,6 +33,12 @@ public class AllocationController {
         return ResponseEntity.ok(dto);
     }
 
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @DeleteMapping("/deallocate/{allocationId}")
+    public ResponseEntity<String> deallocatedStudent(@PathVariable Long allocationId) {
+        return ResponseEntity.ok(allocationService.deallocateStudent(allocationId));
+    }
+
     @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("/{id}/acceptOffer")
     public ResponseEntity<Void> acceptOffer(@PathVariable Long id) {

@@ -28,6 +28,8 @@ import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Users.StudentDto;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.SectionType;
+import com.infinity.applicationservice.exceptions.BadRequestException;
+import com.infinity.applicationservice.exceptions.NotFoundException;
 import com.infinity.applicationservice.feign.SectionInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Allocation;
@@ -77,9 +79,12 @@ class AllocationServiceTest {
         allocation.setApplication(application);
 
         StudentDto studentDto = new StudentDto(1L, "Test", "User", 123456, "BSC", 2022, 4);
-        SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L,"COSC","Capstone","499"));
-        ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE, false, null, null, Set.of());
-        AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, applicationDto, true, 10, sectionDto);
+        SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
+                new CourseDto(1L, "COSC", "Capstone", "499"));
+        ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE, false,
+                null, null, Set.of());
+        AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, applicationDto, true, 10,
+                sectionDto);
 
         when(allocationRepository.findByStudentId(studentId)).thenReturn(List.of(allocation));
         when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
@@ -98,6 +103,22 @@ class AllocationServiceTest {
         verify(applicationMapper).toDto(application);
         verify(allocationMapper).toDto(allocation, studentDto, applicationDto, sectionDto);
     }
+    
+    @Test
+    void testAllocateStudent_ThrowsIfAlreadyAllocated() {
+        Long applicationId = 1L;
+        Application application = new Application();
+        application.setId(applicationId);
+        application.setStudentId(1L);
+        application.setSubmittedAt(LocalDateTime.now());
+        when(applicationRepository.findById(applicationId)).thenReturn(Optional.of(application));
+        when(allocationRepository.existsByApplicationIdAndSectionIdAndStudentId(1L, 2L, 3L))
+                .thenReturn(true);
+
+        AllocationRequest request = new AllocationRequest(3L, 1L, false, 10, 2L);
+
+        assertThrows(BadRequestException.class, () -> allocationService.allocateStudent(request));
+    }
 
     @Test
     void allocateStudent_returnsExpectedDto() {
@@ -106,12 +127,11 @@ class AllocationServiceTest {
         Long applicationId = 1L;
 
         AllocationRequest request = new AllocationRequest(
-            studentId,
-            applicationId,
-            true,
-            5,
-            sectionId
-        );
+                studentId,
+                applicationId,
+                true,
+                5,
+                sectionId);
 
         Application application = new Application();
         application.setId(applicationId);
@@ -127,10 +147,12 @@ class AllocationServiceTest {
         savedAllocation.setApplication(application);
 
         StudentDto studentDto = new StudentDto(studentId, "Test", "User", 63260442, "BSC", 2022, 4);
-        SectionDto sectionDto = new SectionDto(sectionId, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L,"COSC", "Capstone", "499"));
-        ApplicationDto applicationDto = new ApplicationDto(1L,studentId, null, ApplicationType.UNDERGRADUATE, false, null, LocalDateTime.now(), Set.of());
-        AllocationHistoryDto expectedDto = new AllocationHistoryDto(500L, studentDto, applicationDto, false, 5, sectionDto);
-
+        SectionDto sectionDto = new SectionDto(sectionId, 2025, "Fall", "T01", SectionType.TUTORIAL,
+                new CourseDto(1L, "COSC", "Capstone", "499"));
+        ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE, false,
+                null, LocalDateTime.now(), Set.of());
+        AllocationHistoryDto expectedDto = new AllocationHistoryDto(500L, studentDto, applicationDto, false, 5,
+                sectionDto);
 
         when(applicationRepository.findById(applicationId)).thenReturn(Optional.of(application));
         when(allocationRepository.save(any(Allocation.class))).thenReturn(savedAllocation);
@@ -155,6 +177,20 @@ class AllocationServiceTest {
         verify(sectionInterface).getSectionById(sectionId);
         verify(applicationMapper).toDto(application);
         verify(allocationMapper).toDto(savedAllocation, studentDto, applicationDto, sectionDto);
+    }
+    
+    @Test
+    void deallocateStudent_NotFound() {
+        when(allocationRepository.existsById(any())).thenReturn(false);
+        assertThrows(NotFoundException.class, () -> allocationService.deallocateStudent(1L));
+    }
+    
+    @Test
+    void deallocateStudent_Success() {
+        when(allocationRepository.existsById(any())).thenReturn(true);
+        String message = allocationService.deallocateStudent(1L);
+        verify(allocationRepository).deleteById(1L);
+        assertEquals(message, "Student deallocated");
     }
 
     @Test
