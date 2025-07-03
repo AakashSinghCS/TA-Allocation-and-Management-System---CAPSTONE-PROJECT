@@ -3,6 +3,7 @@ package com.infinity.courseservice;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalTime;
@@ -44,6 +45,13 @@ import com.infinity.courseservice.repositories.SectionScheduleRepository;
 import com.infinity.courseservice.services.CourseService;
 import com.infinity.courseservice.services.NeedService;
 import com.infinity.courseservice.services.SectionService;
+import com.infinity.courseservice.utility.CourseMapper;
+import com.infinity.courseservice.models.StudentTaughtCourse;
+import com.infinity.courseservice.repositories.StudentTaughtCourseRepository;
+import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
+import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
+import com.infinity.courseservice.enums.Semester;
+
 
 @ExtendWith(MockitoExtension.class)
 public class CourseServiceTest {
@@ -69,6 +77,12 @@ public class CourseServiceTest {
     @Mock
     private SectionService sectionService;
 
+    @Mock
+    private CourseMapper courseMapper;
+
+    @Mock
+    private StudentTaughtCourseRepository studentTaughtCourseRepository;
+
     @InjectMocks
     private CourseService courseService;
 
@@ -92,8 +106,10 @@ public class CourseServiceTest {
         CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null,
                 null, null,null);
         Course savedCourse = new Course("COSC", "Distributed Systems", "455");
+        CourseDto courseDto = new CourseDto(1L, "COSC", "Distributed Systems", "455");
 
         when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);
+        when(courseMapper.courseToDto(savedCourse)).thenReturn(courseDto);
 
         CourseDto dto = courseService.addCourse(request);
 
@@ -106,6 +122,9 @@ public class CourseServiceTest {
     void testFindCourseSuccess() {
             Course course = new Course("COSC", "Distributed Systems", "455");
             when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+
+            CourseDto courseDto = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+            when(courseMapper.courseToDto(course)).thenReturn(courseDto);
 
             CourseDto dto = courseService.findCourse(1L);
 
@@ -133,6 +152,8 @@ public class CourseServiceTest {
             CourseRequest request = new CourseRequest("DATA", "Capstone", "499", null, null, null, null,
                             null,
                             null, null,null);
+            CourseDto courseDto = new CourseDto(1L, "DATA", "Capstone", "499");
+            when(courseMapper.courseToDto(course)).thenReturn(courseDto);
             CourseDto dto = courseService.updateCourse(request, 1L);
 
             assertEquals("DATA", dto.deptCode());
@@ -172,6 +193,10 @@ public class CourseServiceTest {
 
         List<Course> courses = Arrays.asList(course1, course2);
         when(courseRepository.findAllById(Arrays.asList(1L, 2L))).thenReturn(courses);
+        CourseDto courseDto1 = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+        CourseDto courseDto2 = new CourseDto(2L, "COSC", "Operating Systems", "315");
+        when(courseMapper.courseToDto(course1)).thenReturn(courseDto1);
+        when(courseMapper.courseToDto(course2)).thenReturn(courseDto2);
 
         List<CourseDto> result = courseService.findCoursesByIds(Arrays.asList(1L, 2L));
 
@@ -212,7 +237,7 @@ public class CourseServiceTest {
         Section section = new Section(2025, "W1", "001", SectionType.LABORATORY, course);
         section.setId(1L);
 
-        NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester);
+        NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester, null);
 
         AllocationDto dto = new AllocationDto(
             42L,
@@ -251,10 +276,10 @@ public class CourseServiceTest {
 
         SectionDto section2 = new SectionDto(
                 11L, 2025, "W1", "002", SectionType.LABORATORY,
-                new CourseDto(1L, "COSC", "Security", "430") // duplicate course-term
+                new CourseDto(1L, "COSC", "Security", "430")
         );
 
-            NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1");
+            NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1",null);
             AllocationDto dto = new AllocationDto(
             42L,
             new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),
@@ -336,4 +361,58 @@ public class CourseServiceTest {
             List<String> result = courseService.getAllSemester("COSC", "310", "001", "2024");
             assertEquals(mock, result);
     }
+
+    @Test
+    void testAddStudentTaughtCourse_Success() {
+        Long courseId = 1L;
+        Long studentId = 1001L;
+        Course course = new Course("COSC", "Software Engineering", "310");
+        course.setId(courseId);
+
+        StudentTaughtCourseRequest request = new StudentTaughtCourseRequest(studentId, 2024, Semester.W1);
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+
+        courseService.addStudentTaughtCourse(courseId, request);
+
+        verify(studentTaughtCourseRepository).save(any(StudentTaughtCourse.class));
+    }
+
+    @Test
+    void testDeleteStudentTaughtCourse_Success() {
+        Long studentId = 1001L;
+        Long courseId = 1L;
+
+        courseService.deleteStudentTaughtCourse(studentId, courseId);
+
+        verify(studentTaughtCourseRepository).deleteByStudentIdAndCourseId(studentId, courseId);
+    }
+    
+    @Test
+    void testGetCoursesTaughtByStudent_Success() {
+        Long studentId = 1001L;
+
+        Course course = new Course("COSC", "Operating Systems", "315");
+        course.setId(1L);
+
+        StudentTaughtCourse record = StudentTaughtCourse.builder()
+                .id(10L)
+                .studentId(studentId)
+                .course(course)
+                .semester(Semester.S2)
+                .year(2023)
+                .build();
+
+        when(studentTaughtCourseRepository.findByStudentId(studentId)).thenReturn(List.of(record));
+        when(userInterface.getStudentById(studentId)).thenReturn(new StudentDto(studentId, "Ava", "Taylor", null,null,null, null));
+
+        List<StudentTaughtCourseDto> result = courseService.getCoursesTaughtByStudent(studentId);
+
+        assertEquals(1, result.size());
+        assertEquals("Ava", result.get(0).student().firstName());
+        assertEquals("Operating Systems", result.get(0).course().name());
+        assertEquals(Semester.S2, result.get(0).semester());
+        assertEquals(2023, result.get(0).year());
+    }
+
 }

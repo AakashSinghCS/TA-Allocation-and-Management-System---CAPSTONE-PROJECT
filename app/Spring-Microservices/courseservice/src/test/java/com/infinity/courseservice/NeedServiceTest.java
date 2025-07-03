@@ -8,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedRequest;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -28,6 +30,7 @@ import com.infinity.courseservice.repositories.CourseNeedRepository;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.NeedRepository;
 import com.infinity.courseservice.services.NeedService;
+import com.infinity.courseservice.utility.NeedMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class NeedServiceTest {
@@ -40,6 +43,9 @@ public class NeedServiceTest {
 
     @Mock
     private CourseNeedRepository courseNeedRepository;
+
+    @Mock
+    private NeedMapper needMapper;
 
     @InjectMocks
     private NeedService needService;
@@ -61,11 +67,14 @@ public class NeedServiceTest {
 
     @Test
     void testAddNeed_Success() {
-        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1");
+        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1", List.of(1L));
+        NeedDto needDto = new NeedDto(1L, 1L, "Marking Labs", 30, 10, 2025, "W1", List.of(new CourseDto(1L, "COSC", "Capstone", "499")));
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(mockCourse));
         when(courseNeedRepository.existsByCourseAndYearAndSemester(mockCourse, 2025, "W1")).thenReturn(false);
-        when(needRepository.save(any(Need.class))).thenReturn(mockNeed);
+        when(courseNeedRepository.save(any(CourseNeed.class))).thenReturn(mockCourseNeed);
+        when(courseRepository.findAllById(request.prerequisiteCourseIds())).thenReturn(List.of(mockCourse));
+        when(needMapper.courseNeedToDto(mockCourseNeed)).thenReturn(needDto);
 
         NeedDto result = needService.addNeed(request, 1L);
 
@@ -73,12 +82,12 @@ public class NeedServiceTest {
         assertEquals("Marking Labs", result.description());
         assertEquals(2025, result.year());
         assertEquals("W1", result.semester());
-        verify(courseNeedRepository).save(any(CourseNeed.class));
+        assertEquals("Capstone", result.prerequisites().get(0).name());
     }
 
     @Test
     void testAddNeed_DuplicateThrowsBadRequest() {
-        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1");
+        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1", null);
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(mockCourse));
         when(courseNeedRepository.existsByCourseAndYearAndSemester(mockCourse, 2025, "W1")).thenReturn(true);
@@ -89,7 +98,7 @@ public class NeedServiceTest {
 
     @Test
     void testAddNeed_CourseNotFound() {
-        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1");
+        NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1", null);
 
         when(courseRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -100,7 +109,9 @@ public class NeedServiceTest {
     void testGetNeed_Success() {
         when(courseNeedRepository.findByCourseIdAndYearAndSemester(1L, 2025, "W1"))
                 .thenReturn(Optional.of(mockCourseNeed));
-
+        NeedDto needDto = new NeedDto(1L, 1L, "Marking Labs", 30, 10, 2025, "W1",
+                List.of(new CourseDto(1L, "COSC", "Capstone", "499"))); 
+        when(needMapper.courseNeedToDto(mockCourseNeed)).thenReturn(needDto);
         NeedDto result = needService.getNeed(1L, 2025, "W1");
 
         assertEquals("Marking Labs", result.description());
@@ -116,23 +127,27 @@ public class NeedServiceTest {
 
     @Test
     void testUpdateNeed_Success() {
-        NeedRequest request = new NeedRequest("Updated", 40, 20, 2025, "W2");
+        NeedRequest request = new NeedRequest("Updated", 40, 20, 2025, "W2", List.of(2L));
+        NeedDto needDto = new NeedDto(1L, 1L, "Updated", 40, 20, 2025, "W2",
+                List.of(new CourseDto(2L, "DATA", "Intro to R", "103")));
 
         when(courseNeedRepository.findByCourseIdAndYearAndSemester(1L, 2025, "W1"))
                 .thenReturn(Optional.of(mockCourseNeed));
         when(needRepository.save(any())).thenReturn(mockNeed);
         when(courseNeedRepository.save(any())).thenReturn(mockCourseNeed);
+        when(needMapper.courseNeedToDto(mockCourseNeed)).thenReturn(needDto);
 
         NeedDto result = needService.updateNeed(request, 1L, 2025, "W1");
 
         assertEquals("Updated", result.description());
         assertEquals(40, result.requiredGradingHours());
         assertEquals("W2", result.semester());
+        assertEquals(result.prerequisites().get(0).name(), "Intro to R");
     }
 
     @Test
     void testUpdateNeed_NotFound() {
-        NeedRequest request = new NeedRequest("Updated", 40, 20, 2025, "W1");
+        NeedRequest request = new NeedRequest("Updated", 40, 20, 2025, "W1", null);
 
         when(courseNeedRepository.findByCourseIdAndYearAndSemester(1L, 2025, "W1")).thenReturn(Optional.empty());
 
