@@ -29,6 +29,7 @@ import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage
 import SignUpPage from "../pages/signupPage/SignUpPage";
 import SectionListPage from "../pages/coursepage/SectionListPage";
 import AddSectionPage from "../pages/coursepage/AddSectionPage";
+import ViewApplicationPage from "../pages/studentpages/viewapplicationpage/ViewApplicationPage";
 import ApplicationViewPage from "../pages/coordinatorpages/applicationviewpage/ApplicationViewPage";
 
 export const router = createBrowserRouter([
@@ -41,7 +42,6 @@ export const router = createBrowserRouter([
       { path: "taprofile/:studentId/coursesTaken", element: <CoursesTakenPage /> },
       { path: "taprofile/:studentId/compare", element: <StudentComparerPage /> },
       { path: "taprofile/:studentId/qualifications", element: <StudentQualificationPage /> },
-
       { path: "instructorprofile/:instructorId", element: <InstructorProfilePage /> },
       { path: "instructorprofile/:instructorId/need", element: <InstructorNeedPage /> },
       { path: "instructorprofile/:instructorId/compare", element: <InstructorComparerPage /> },
@@ -57,7 +57,8 @@ export const router = createBrowserRouter([
         children: [
           { path: "home", element: <StudentHomePage /> },
           { path: "application", element: <ApplicationPage /> },
-          { path: "questions/:studentId", element: < TaQuestionnairePage/> },
+          { path: "view-applications", element: <ViewApplicationPage /> },
+          { path: "questions/:studentId", element: <TaQuestionnairePage /> },
           { path: "error", element: <ErrorPage /> },
         ],
       },
