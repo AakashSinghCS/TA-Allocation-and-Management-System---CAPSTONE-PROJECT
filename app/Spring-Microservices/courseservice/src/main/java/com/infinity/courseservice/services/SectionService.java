@@ -56,11 +56,11 @@ public class SectionService {
     }
 
     @Transactional
-    public SectionDto addSection(Long courseId, CourseRequest request) {
+    public SectionDto addSection(Long courseId, SectionAddDtoRequest request) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("Course not found"));
 
-        Section section = new Section(request.year(), request.semester(), request.section(), request.type(), course);
+        Section section = new Section(request.year(), request.semester(), request.section(), request.type(), course, request.instructorId());
         try {
             sectionRepository.save(section);
         } catch (DataIntegrityViolationException ex) {
