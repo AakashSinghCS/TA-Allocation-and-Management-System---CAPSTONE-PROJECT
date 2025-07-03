@@ -208,7 +208,7 @@ const ViewApplicationPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredApps.length > 0 ? (
                 filteredApps.map((app, idx) => (
-                  <div key={app.id ?? idx} className="bg-white rounded-2xl shadow-lg border border-blue-100 p-6 flex flex-col gap-4 min-h-[440px] relative overflow-hidden">
+                  <div key={app.id ?? idx} className="bg-white rounded-2xl shadow-lg border border-blue-100 p-8 flex flex-col gap-4 min-h-[440px] relative overflow-hidden max-w-2xl mx-auto w-full">
                     {/* Decorative background */}
                     <div className="absolute right-0 top-0 opacity-10 pointer-events-none select-none">
                       <svg width="120" height="120" viewBox="0 0 120 120" fill="none"><circle cx="60" cy="60" r="60" fill="#2563eb" /></svg>
@@ -239,10 +239,17 @@ const ViewApplicationPage = () => {
                       <div className="mt-2 z-10">
                         <strong>Offer Status:</strong>
                     {app.allocation.status === 'CONFIRMED' && (
-                      <div className="mt-1 flex flex-col gap-2 p-2 bg-green-50 border border-green-200 rounded-lg">
-                        <span className="text-green-700 font-semibold">Allocation Confirmed</span>
-                        <span>Section: {app.allocation.section?.sectionDetails?.name || 'N/A'}</span>
-                        <span>Hours: {app.allocation.numberOfHours ?? 'N/A'}</span>
+                      <div className="mt-1 flex flex-col gap-2 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <span className="text-green-700 font-semibold text-lg">Allocation Confirmed</span>
+                        <span>
+                          <strong>Section:</strong> {app.allocation.section?.sectionDetails?.deptCode || 'N/A'}
+                          {app.allocation.section?.sectionDetails?.courseNum ? ` ${app.allocation.section.sectionDetails.courseNum}` : ''}
+                          {app.allocation.section?.sectionDetails?.section ? ` - ${app.allocation.section.sectionDetails.section}` : ''}
+                          {app.allocation.section?.sectionDetails?.type ? ` (${app.allocation.section.sectionDetails.type})` : ''}
+                          {app.allocation.section?.sectionDetails?.semester || app.allocation.section?.sectionDetails?.year ? ` [${app.allocation.section.sectionDetails.semester || ''} ${app.allocation.section.sectionDetails.year || ''}]` : ''}
+                        </span>
+                        <span><strong>Hours:</strong> {app.allocation.numberOfHours ?? 'N/A'}</span>
+                        <span><strong>Instructor:</strong> {app.allocation.section?.instructor && typeof app.allocation.section.instructor === 'object' && 'firstName' in app.allocation.section.instructor ? `${app.allocation.section.instructor.firstName} ${app.allocation.section.instructor.lastName}` : 'N/A'}</span>
                       </div>
                     )}
                     {app.allocation.status === 'REJECTED' && (
