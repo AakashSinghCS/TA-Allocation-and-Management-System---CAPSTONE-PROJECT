@@ -29,6 +29,7 @@ import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage
 import SignUpPage from "../pages/signupPage/SignUpPage";
 import SectionListPage from "../pages/coursepage/SectionListPage";
 import AddSectionPage from "../pages/coursepage/AddSectionPage";
+import ApplicationViewPage from "../pages/coordinatorpages/applicationviewpage/ApplicationViewPage";
 
 export const router = createBrowserRouter([
   {
@@ -91,6 +92,7 @@ export const router = createBrowserRouter([
           { path: "browseuser/newuser", element: < ManualCreateUserPage/> },
           { path: "sections", element: < SectionListPage/> },
           { path: "sections/add", element: < AddSectionPage/> },
+          { path: "applications", element: <ApplicationViewPage /> },
           {path: "allocation", element: <AllocationPage />},
           { path: "student/questions/:studentId", element: < TaQuestionnairePage/> }, //TEMPORARY for development
           { path: "error", element: <ErrorPage /> },
