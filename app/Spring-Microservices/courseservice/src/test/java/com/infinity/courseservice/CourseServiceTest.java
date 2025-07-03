@@ -20,8 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 
-import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
+// import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.AllocationDtos.OfferDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
@@ -238,10 +239,10 @@ public class CourseServiceTest {
         section.setId(1L);
 
         NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester, null);
-
-        AllocationDto dto = new AllocationDto(
+        OfferDto offer = new OfferDto(1L, true, "description");
+        AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
             42L,
-            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),
+            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),offer,
             true,
             10,
             new SectionDto(99L, 2024,"W1","001",SectionType.LECTURE, new CourseDto(1L,"COSC", "CS", "112"))
@@ -278,11 +279,11 @@ public class CourseServiceTest {
                 11L, 2025, "W1", "002", SectionType.LABORATORY,
                 new CourseDto(1L, "COSC", "Security", "430")
         );
-
+                OfferDto offer = new OfferDto(1L, true, "description");
             NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1",null);
-            AllocationDto dto = new AllocationDto(
+            AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
             42L,
-            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),
+            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),offer,
             true,
             10,
             new SectionDto(99L, 2024,"W1","001",SectionType.LECTURE, new CourseDto(1L,"COSC", "CS", "112"))

@@ -8,8 +8,9 @@ import java.util.Set;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
+// import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseNeedAndAllocations;
@@ -112,7 +113,7 @@ public class CourseService {
         Section section = sectionRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)
                 .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
         NeedDto need = needService.getNeed(courseId, year, semester);
-        List<AllocationDto> allocations = applicationInterface.getAllocationsBySectionId(section.getId()).getBody();
+        List<AllocationHistoryDtoWithCourse> allocations = applicationInterface.getAllocationsBySectionId(section.getId()).getBody();
         SectionDto sectionDto = new SectionDto(section.getId(), section.getYear(), section.getSemester(),
                 section.getSection(), section.getType(), 
                 new CourseDto(section.getCourse().getId(),
@@ -137,7 +138,7 @@ public class CourseService {
             uniqueKeys.add(key);
 
             NeedDto need = null;
-            List<AllocationDto> allocations = new ArrayList<>();
+            List<AllocationHistoryDtoWithCourse> allocations = new ArrayList<>();
 
             try {
 
@@ -145,7 +146,7 @@ public class CourseService {
             } catch (NotFoundException e) {
             }
             try {
-                List<AllocationDto> fetched = applicationInterface.getAllocationsBySectionId(section.id()).getBody();
+                List<AllocationHistoryDtoWithCourse> fetched = applicationInterface.getAllocationsBySectionId(section.id()).getBody();
                 if (fetched != null) {
                     allocations = fetched;
                 }
