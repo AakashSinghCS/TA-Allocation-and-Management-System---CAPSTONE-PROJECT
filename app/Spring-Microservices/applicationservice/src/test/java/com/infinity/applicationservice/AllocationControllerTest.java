@@ -202,14 +202,14 @@ public class AllocationControllerTest {
 
     @Test
     void getAllocationsByApplicationId_returnsFilteredResults() throws Exception {
-        when(allocationService.getAllocationsByApplicationId(55L)).thenReturn(List.of(sampleDto));
+        when(allocationService.getAllocationsByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR"))).thenReturn(List.of(sampleDto));
 
         mvc.perform(get("/allocations/filter/application/55"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(jsonPath("$[0].applicationDto").exists());
 
-        verify(allocationService, times(1)).getAllocationsByApplicationId(55L);
+        verify(allocationService, times(1)).getAllocationsByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR"));
     }
 
     @Test

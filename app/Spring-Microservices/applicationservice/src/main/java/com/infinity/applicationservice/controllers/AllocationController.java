@@ -2,6 +2,7 @@ package com.infinity.applicationservice.controllers;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
+import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.services.AllocationService;
 
 import lombok.Data;
@@ -42,20 +43,20 @@ public class AllocationController {
     @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("/{id}/acceptOffer")
     public ResponseEntity<Void> acceptOffer(@PathVariable Long id) {
-        allocationService.updateConfirmationStatus(id, true);
+        allocationService.updateConfirmationStatus(id, ApplicationStatus.CONFIRMED);
         return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("/{id}/denyOffer")
     public ResponseEntity<Void> denyOffer(@PathVariable Long id) {
-        allocationService.updateConfirmationStatus(id, false);
+        allocationService.updateConfirmationStatus(id, ApplicationStatus.REJECTED);
         return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/filter/confirmed/{status}")
-    public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByConfirmationStatus(@PathVariable boolean status) {
+    public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByConfirmationStatus(@PathVariable ApplicationStatus status) {
         return ResponseEntity.ok(allocationService.getAllocationsByConfirmationStatus(status));
     }
 
@@ -65,10 +66,11 @@ public class AllocationController {
         return ResponseEntity.ok(allocationService.getAllocationsBySectionId(sectionId));
     }
 
-    @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/filter/application/{applicationId}")
-    public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByApplicationId(@PathVariable Long applicationId) {
-        return ResponseEntity.ok(allocationService.getAllocationsByApplicationId(applicationId));
+    public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByApplicationId(@PathVariable Long applicationId,
+            @RequestHeader("X-User-Id") Long requesterId,
+            @RequestHeader("X-User-Roles") List<String> roles) {
+        return ResponseEntity.ok(allocationService.getAllocationsByApplicationId(applicationId, requesterId, roles));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")

@@ -21,7 +21,7 @@ public class AllocationMapper {
             allocation.getId(),
             student,
             applicationDto,
-            allocation.isConfirmed(),
+            allocation.getStatus(),
             allocation.getNumberOfHours(),
             section
         );
