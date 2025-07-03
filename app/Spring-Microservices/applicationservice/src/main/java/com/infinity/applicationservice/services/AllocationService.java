@@ -3,16 +3,15 @@ package com.infinity.applicationservice.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.infinity.applicationservice.utility.ApplicationMapper;
-import com.infinity.applicationservice.dtos.AllocationHistoryDto;
-import com.infinity.applicationservice.dtos.AllocationRequest;
-import com.infinity.applicationservice.dtos.ApplicationDto;
-import com.infinity.applicationservice.dtos.AvailabilityDto;
-import com.infinity.applicationservice.dtos.SectionDto;
-import com.infinity.applicationservice.dtos.StudentDto;
+import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
+import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
+import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
+import com.infinity.applicationservice.dtos.Courses.SectionDto;
+import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.exceptions.BadRequestException;
+import com.infinity.applicationservice.exceptions.NotFoundException;
 import com.infinity.applicationservice.feign.SectionInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Allocation;
@@ -20,12 +19,9 @@ import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.repositories.AllocationRepository;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.utility.AllocationMapper;
+import com.infinity.applicationservice.utility.ApplicationMapper;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -53,6 +49,10 @@ public class AllocationService {
     public AllocationHistoryDto allocateStudent(AllocationRequest request) {
         Application application = applicationRepository.findById(request.applicationId())
                 .orElseThrow(() -> new EntityNotFoundException("Application not found"));
+        if (allocationRepository.existsByApplicationIdAndSectionIdAndStudentId(
+                request.applicationId(), request.sectionId(), request.studentId())) {
+            throw new BadRequestException("You have already allocated this student to that section");
+        }
 
         Allocation allocation = new Allocation();
         allocation.setApplication(application);
@@ -68,6 +68,14 @@ public class AllocationService {
         ApplicationDto applicationDto = applicationMapper.toDto(application);
 
         return allocationMapper.toDto(saved, student, applicationDto, section);
+    }
+    
+    public String deallocateStudent(Long allocationId) {
+        if (!allocationRepository.existsById(allocationId)) {
+            throw new NotFoundException("No allocation with id " + allocationId);
+        }
+        allocationRepository.deleteById(allocationId);
+        return "Student deallocated";
     }
 
 
@@ -126,7 +134,6 @@ public class AllocationService {
                 return allocationMapper.toDto(allocation, student, applicationDto, section);
             })
             .collect(Collectors.toList());
-    }
-
+        }
 
 }

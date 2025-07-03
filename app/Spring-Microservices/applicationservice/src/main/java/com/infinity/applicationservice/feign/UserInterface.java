@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import com.infinity.applicationservice.dtos.UserDto;
 import com.infinity.applicationservice.config.FeignClientInterceptor;
-import com.infinity.applicationservice.dtos.StudentDto;
+import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
 
 @FeignClient(name = "USER-SERVICE", configuration = FeignClientInterceptor.class)
 public interface UserInterface {

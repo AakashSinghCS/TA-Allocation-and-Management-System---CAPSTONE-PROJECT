@@ -1,8 +1,9 @@
-package com.infinity.applicationservice.dtos;
+package com.infinity.applicationservice.dtos.Applications;
 
 import java.util.List;
 import java.util.Set;
 
+import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.Subject;
 
 import jakarta.validation.constraints.Max;
@@ -14,6 +15,8 @@ public record ApplicationRequest(
                 @Size(min = 1, max = 3, message = "At least one and at most three subject preferences allowed")
                 @NotNull(message = "Need at least one preference")
                 List<Subject> preferences,
+                @NotNull
+                ApplicationType applicationType,
                 @NotNull(message = "Remote work preference not specified") 
                 boolean wantRemote,
                 @NotNull(message = "Working hour preferences not specified")

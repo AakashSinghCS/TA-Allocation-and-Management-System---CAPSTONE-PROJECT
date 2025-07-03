@@ -2,18 +2,16 @@ package com.infinity.applicationservice.services;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.infinity.applicationservice.dtos.ApplicationDto;
-import com.infinity.applicationservice.dtos.ApplicationRequest;
-import com.infinity.applicationservice.dtos.ApplicationWithStudentDto;
-import com.infinity.applicationservice.dtos.AvailabilityDto;
-import com.infinity.applicationservice.enums.Day;
+import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
+import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
+import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
+import com.infinity.applicationservice.dtos.Applications.AvailabilityDto;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
@@ -42,8 +40,8 @@ public class ApplicationService {
             throw new BadRequestException("You have already submitted an application for this year.");
         }
         validateAvailabilities(req);
-        Application application = new Application(userIdFromHeader, req.preferences(), req.wantRemote(),
-                req.wantWorkingHours());
+        Application application = new Application(userIdFromHeader, req.preferences(), req.applicationType(),
+                req.wantRemote(), req.wantWorkingHours());
 
         mapAvailability(req, application);
 
@@ -89,6 +87,7 @@ public class ApplicationService {
                 .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
 
         application.setSubjectPreferences(req);
+        application.setApplicationType(req.applicationType());
         application.setWantRemote(req.wantRemote());
         application.setWantWorkingHours(req.wantWorkingHours());
 
@@ -96,11 +95,8 @@ public class ApplicationService {
         mapAvailability(req, application);
 
         applicationRepository.save(application);
-
         return applicationMapper.toDto(application);
     }
-
-    
 
     public List<ApplicationDto> getAllApplicationsByStudentId(Long studentId, Long userIdFromHeader,
             List<String> headerRoles) {
@@ -153,11 +149,10 @@ public class ApplicationService {
         List<Application> applications = applicationRepository.findByFilters(year, wantRemote, hours,
                 preference1, preference2, preference3);
 
-        return applications.stream()
-            .map(app -> applicationMapper.toDtoWithStudent(
-                app,
-                userInterface.getStudentById(app.getStudentId()).getBody()
-            ))
+
+         return applications.stream()
+            .map(app -> applicationMapper.toDtoWithStudent(app,
+                    userInterface.getStudentById(app.getStudentId()).getBody()))
             .toList();
     }   
 }
