@@ -50,14 +50,14 @@ export default function AddSectionPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 w-full max-w-3xl">
+    <div className="container mx-auto p-4 w-full max-w-2xl z-10">
       <h1 className="text-2xl font-bold mb-4">Add Section or Course</h1>
       <div className="space-y-8">
-        <div className="border p-4 rounded-md shadow-sm">
+        <div className="shadow-lg p-4 rounded-2xl shadow-sm">
           <h2 className="text-xl font-semibold mb-2">Add Section or Course Manually</h2>
           <CreateSectionForm onCreateSection={handleCreateSection} />
         </div>
-        <div className="border p-4 rounded-md shadow-sm">
+        <div className="shadow-lg p-4 rounded-2xl shadow-sm">
           <h2 className="text-xl font-semibold mb-2">Upload Sections via CSV</h2>
           <CsvUpload onFileUpload={handleFileUpload} />
         </div>

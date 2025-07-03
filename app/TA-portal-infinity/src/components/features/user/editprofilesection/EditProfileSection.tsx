@@ -103,7 +103,7 @@ export default function EditProfileSection<T extends User>({
         <button
           type="submit"
           disabled={saving}
-          className="bg-[#00C774] text-white px-2 py-1 rounded hover:bg-[#1FE88D] transition-colors"
+          className="bg-[#00c89c] text-white px-2 py-1 rounded hover:bg-[#c7fcec] transition-colors"
         >
           {saving ? "Saving..." : "Save"}
         </button>
@@ -111,7 +111,7 @@ export default function EditProfileSection<T extends User>({
           type="button"
           onClick={onCancel}
           disabled={saving}
-          className="py-1 px-2 rounded hover:bg-red-100 transition-colors"
+          className="py-1 px-2 rounded bg-transparent hover:bg-red-100 transition-colors"
         >
           Cancel
         </button>

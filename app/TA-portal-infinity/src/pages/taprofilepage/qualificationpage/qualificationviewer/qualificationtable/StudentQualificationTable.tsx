@@ -59,12 +59,12 @@ export default function StudentQualificationTable({
 
     return (
   <form onSubmit={onSubmit} className="space-y-4">
-    <table className="min-w-full table-auto border-collapse border rounded-lg overflow-hidden shadow-sm">
+    <table className="min-w-full table-auto border-collapse border border-gray-300 overflow-hidden">
       <thead className="bg-slate-100 text-left text-sm">
         <tr>
-          <th className="w-12 border px-2 py-2 text-center 2xl:text-lg">✓</th>
-          <th className="border px-4 py-2 2xl:text-lg">Qualification</th>
-          <th className="w-28 border px-3 py-2 text-right 2xl:text-lg">Course</th>
+          <th className="w-12 border border-gray-300 px-2 py-2 text-center 2xl:text-medium">✓</th>
+          <th className="border border-gray-300 px-4 py-2 2xl:text-medium">Qualification</th>
+          <th className="w-28 border border-gray-300 px-3 py-2 text-right 2xl:text-medium">Course</th>
         </tr>
       </thead>
 
@@ -79,7 +79,7 @@ export default function StudentQualificationTable({
                 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
               `}
             >
-              <td className="border px-2 py-2 text-center">
+              <td className="border border-gray-300 px-2 py-2 text-center">
                 <input
                   type="checkbox"
                   checked={studentChecked.includes(id)}
@@ -88,11 +88,11 @@ export default function StudentQualificationTable({
                 />
               </td>
 
-              <td className="border px-4 py-2">
+              <td className="border border-gray-300 px-4 py-2">
                 {qualification.description}
               </td>
 
-              <td className="border px-3 py-2 text-right font-medium">
+              <td className="border border-gray-300 px-3 py-2 text-right font-medium">
                 {course.deptCode} {course.courseNum}
               </td>
             </tr>
@@ -103,7 +103,7 @@ export default function StudentQualificationTable({
 
     {isStudent && <button
       type="submit"
-      className="w-full bg-[#040941] text-white py-2 rounded hover:bg-[#040491] transition-colors"
+      className="w-full bg-[#00c89c] text-white py-2 rounded hover:bg-[#c7fcec] transition-colors"
     >
       Save
     </button>

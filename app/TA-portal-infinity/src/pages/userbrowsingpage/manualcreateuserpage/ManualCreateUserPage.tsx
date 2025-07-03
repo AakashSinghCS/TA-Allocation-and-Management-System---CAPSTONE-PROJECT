@@ -38,7 +38,7 @@ export default function ManualCreateUserPage() {
       <button
         type="button"
         onClick={() => navigate(-1)}
-        className=" w-full mt-2 py-2 rounded hover:bg-red-100 transition-colors">
+        className=" w-full mt-2 py-2 rounded bg-transparent hover:bg-red-100 transition-colors">
         Cancel
       </button>
     </div>

@@ -68,12 +68,12 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
     <table className="min-w-full table-auto border-collapse">
       <thead>
         <tr>
-          <th className="border px-3 py-2 text-left">Section</th>
-          <th className="border px-3 py-2 text-left">Year</th>
-          <th className="border px-3 py-2 text-left">Semester</th>
-          <th className="border px-3 py-2 text-left">Type</th>
-          <th className="border px-3 py-2 text-left">Times</th>
-          <th className="border px-3 py-2 text-left">Action</th>
+          <th className="border border-gray-300 px-3 py-2 text-left">Section</th>
+          <th className="border border-gray-300 px-3 py-2 text-left">Year</th>
+          <th className="border border-gray-300 px-3 py-2 text-left">Semester</th>
+          <th className="border border-gray-300 px-3 py-2 text-left">Type</th>
+          <th className="border border-gray-300 px-3 py-2 text-left">Times</th>
+          <th className="border border-gray-300 px-3 py-2 text-left">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -99,27 +99,28 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
               <tr className="bg-gray-100">
                 <td
                   colSpan={5}
-                  className="border px-3 py-2 font-semibold "
+                  className="border border-gray-300 px-3 py-2 font-semibold "
                 >
                   {/* Left: course link */}
                   {courseId ? (
+                    
                     <Link
                       to={`/user/courseprofile/${courseId}`}
-                      className="text-blue-600 hover:underline block truncate"
+                      className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden"
                     >
                       {deptCode} {courseNum} — {name}
                     </Link>
                   ) : (
-                    <span className="block truncate">
+                    <span className="border-gray-300 truncate inline whitespace-nowrap overflow-hidden ">
                       {deptCode} {courseNum} — {name}
                     </span>
                   )}
                 </td>
-                <td colSpan={1} className="border px-3 py-2 text-right">
+                <td colSpan={1} className="border border-gray-300 px-3 py-2 text-right">
                   {mode == 'coordinator' ? (<button
                     type="button"
                     onClick={() => handleDeleteCourse(courseId)}
-                    className="text-red-600 hover:underline text-sm whitespace-nowrap"
+                    className=" cursor-pointer text-red-600 hover:text-red-300 text-sm whitespace-nowrap"
                   >
                     Delete Course
                   </button>) : (mode == 'instructorPrereqCourse' || mode === 'studentAddEnrollment') ? <button
@@ -134,7 +135,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                         groups[courseId][0].sectionDetails?.name ?? "",
                       )
                     }}
-                    className="text-red-600 hover:underline text-sm whitespace-nowrap"
+                    className="cursor-pointer text-[#0089b2] hover:text-[#00b5bc] text-sm whitespace-nowrap"
                   >
                     Select
                   </button> : <></>
@@ -159,40 +160,40 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
 
                 return (
                   <tr key={`${sid}-${times}`}>
-                    <td className="border px-3 py-2 max-w-xs truncate">
+                    <td className="border border-gray-300 px-3 py-2 truncate">
                       {sid ? (
                         <Link
                           to={`/user/sectionprofile/${sid}`}
-                          className="text-blue-600 hover:underline block truncate"
+                          className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden"
                         >
                           {sec.sectionDetails?.deptCode} {sec.sectionDetails?.courseNum}{' '}
                           {sec.sectionDetails?.section} – {sec.sectionDetails?.name}
                         </Link>
                       ) : (
-                        <span className="block truncate">
+                        <span className="truncate inline whitespace-nowrap overflow-hidden">
                           {sec.sectionDetails?.deptCode} {sec.sectionDetails?.courseNum}{' '}
                           {sec.sectionDetails?.section} – {sec.sectionDetails?.name}
                         </span>
                       )}
                     </td>
-                    <td className="border px-3 py-2">
+                    <td className="border border-gray-300  px-3 py-2">
                       {sec.sectionDetails?.year}
                     </td>
-                    <td className="border px-3 py-2">
+                    <td className="border border-gray-300 px-3 py-2">
                       {sec.sectionDetails?.semester}
                     </td>
-                    <td className="border px-3 py-2 max-w-xs truncate">
+                    <td className="border border-gray-300 px-3 py-2 max-w-xs truncate">
                       {sec.sectionDetails?.type}
                     </td>
-                    <td className="border px-3 py-2">{times}</td>
-                    <td className="border px-3 py-2 text-right">
+                    <td className="border border-gray-300 px-3 py-2">{times}</td>
+                    <td className="border border-gray-300 px-3 py-2 text-right">
                       {sid && (
                         <>
                           {(mode === 'instructorAddSection' || mode === 'studentAddHistory' || mode === 'studentAddEnrollment') ? (
                             <button
                               type="button"
                               onClick={() => onSelect?.(sec)}
-                              className="text-blue-600 hover:underline"
+                              className="cursor-pointer text-[#0089b2] hover:text-[#00b5bc]"
                             >
                               Select
                             </button>
@@ -202,14 +203,14 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                                 courseId={groups[courseId][0].sectionDetails?.id ?? -1}
                                 year={groups[courseId][0].sectionDetails?.year ?? -1}
                                 semester={groups[courseId][0].sectionDetails?.semester ?? ""}
-                                className="text-blue-600 hover:underline text-sm"
+                                className="text-[#0089b2] hover:text-[#00b5bc] text-sm"
                                 buttonLabel="Export to CSV"
                               />
                               {" "}
                               <button
                                 type="button"
                                 onClick={() => handleDeleteSection(sid)}
-                                className="text-red-600 hover:underline text-sm "
+                                className="text-red-600 hover:text-red-300 text-sm "
                               >
                                 Delete Section
                               </button>

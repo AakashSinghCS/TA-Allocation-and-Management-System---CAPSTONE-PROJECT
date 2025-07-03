@@ -98,7 +98,7 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
   };
 
   return (
-    <div className="container mx-auto p-4 w-full max-w-3xl">
+    <div className="container mx-auto p-4 w-full max-w-3xl z-10">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-semibold">
           {mode === 'add' ? 'Search for a Section' : 'Update Course Prerequisites'}
@@ -161,7 +161,7 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
         </div>
       )}
 
-      <div className="border p-4 rounded-md shadow-sm mb-4">
+      <div className="shadow-lg p-4 rounded-2xl mb-4">
         <SectionFilter onFilterChange={handleFilterChange} mode="large" />
       </div>
 
