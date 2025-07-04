@@ -13,6 +13,7 @@ import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionWithInstructorDto;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
@@ -36,13 +37,13 @@ public class SectionService {
     private final SectionScheduleRepository sectionScheduleRepository;
     private final UserInterface userInterface;
 
-    public SectionDto getSectionById(Long id) {
+    public SectionWithInstructorDto getSectionById(Long id) {
 
         Section section = sectionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No section with id " + id));
         Course course = section.getCourse();
 
-        return new SectionDto(
+        return new SectionWithInstructorDto(
                 section.getId(),
                 section.getYear(),
                 section.getSemester(),
@@ -52,7 +53,10 @@ public class SectionService {
                         course.getId(),
                         course.getDeptCode(),
                         course.getName(),
-                        course.getCourseNum()));
+                        course.getCourseNum()
+                ),
+                section.getInstructorId()
+        );
     }
 
     @Transactional

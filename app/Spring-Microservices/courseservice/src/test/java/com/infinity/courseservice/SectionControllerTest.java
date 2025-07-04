@@ -31,6 +31,7 @@ import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionWithInstructorDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.services.SectionService;
 
@@ -90,8 +91,10 @@ public class SectionControllerTest {
         @Test
         void testGetSectionById() throws Exception {
                 Long sectionId = 300L;
-                SectionDto response = new SectionDto(sectionId, 2025, "W2", "002", SectionType.LECTURE,
-                                new CourseDto(1L, "COSC", "Networks", "329"));
+                Long instructorId = 700L;
+                SectionWithInstructorDto response = new SectionWithInstructorDto(sectionId, 2025, "W2", "002", SectionType.LECTURE,
+                                new CourseDto(1L, "COSC", "Networks", "329"),
+                                instructorId);
 
                 when(sectionService.getSectionById(sectionId)).thenReturn(response);
 
@@ -101,7 +104,8 @@ public class SectionControllerTest {
                                 .andExpect(jsonPath("$.year").value(2025))
                                 .andExpect(jsonPath("$.semester").value("W2"))
                                 .andExpect(jsonPath("$.section").value("002"))
-                                .andExpect(jsonPath("$.course.name").value("Networks"));
+                                .andExpect(jsonPath("$.course.name").value("Networks"))
+                                .andExpect(jsonPath("$.instructorId").value(instructorId));
         }
 
         @Test
