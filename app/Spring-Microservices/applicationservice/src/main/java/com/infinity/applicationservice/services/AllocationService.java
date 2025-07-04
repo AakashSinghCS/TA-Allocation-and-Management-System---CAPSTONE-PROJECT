@@ -142,4 +142,15 @@ public class AllocationService {
             .collect(Collectors.toList());
         }
 
+        public List<AllocationHistoryDto> getAllocationsBySectionIdWithCourse(Long sectionId) {
+        return allocationRepository.findAll().stream()
+            .filter(a -> a.getSectionId().equals(sectionId))
+            .map(allocation -> {
+                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+                ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
+                return allocationMapper.toDto(allocation, student, applicationDto, section );
+            })
+            .collect(Collectors.toList());
+    }
 }

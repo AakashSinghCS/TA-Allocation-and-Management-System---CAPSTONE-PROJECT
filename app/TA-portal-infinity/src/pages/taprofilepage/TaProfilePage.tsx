@@ -74,6 +74,8 @@ export default function TaProfilePage() {
           <GenericAPIContainer<Section[]>
             fetchFunction={() => fetchAllStudentSectionsHasCompleted(sId, true)}
             render={secs => (
+
+              //make this into a completely new component taking in studentId
               <div className="space-y-2">
                 <SectionsColumn sections={secs ?? []} />
                 <Link to="/">

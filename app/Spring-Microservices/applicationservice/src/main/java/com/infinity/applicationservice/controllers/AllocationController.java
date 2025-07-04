@@ -61,7 +61,7 @@ public class AllocationController {
         return ResponseEntity.ok(allocationService.getAllocationsByConfirmationStatus(status));
     }
 
-    @PreAuthorize("hasRole('COORDINATOR')")
+    // @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/filter/section/{sectionId}")
     public ResponseEntity<List<AllocationHistoryDto>> getAllocationsBySectionId(@PathVariable Long sectionId) {
         return ResponseEntity.ok(allocationService.getAllocationsBySectionId(sectionId));

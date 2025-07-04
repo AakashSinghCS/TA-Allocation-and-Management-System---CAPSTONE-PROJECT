@@ -14,5 +14,6 @@ public record CourseRequest(
         @Nullable String semester,
         @Nullable String day,
         @Nullable String startTime,
-        @Nullable String endTime
+        @Nullable String endTime,
+        @Nullable Long instructorId
         ) {}

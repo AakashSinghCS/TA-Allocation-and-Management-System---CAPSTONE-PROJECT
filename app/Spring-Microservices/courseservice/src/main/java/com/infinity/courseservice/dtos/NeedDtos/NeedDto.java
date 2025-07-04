@@ -1,5 +1,9 @@
 package com.infinity.courseservice.dtos.NeedDtos;
 
+import java.util.List;
+
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+
 public record NeedDto(
         Long id,
         Long courseId,
@@ -7,5 +11,6 @@ public record NeedDto(
         Integer requiredGradingHours,
         Integer numHoursCurrentlyAllocated,
         Integer year,
-        String semester
+        String semester,
+        List<CourseDto> prerequisites
         ) {}

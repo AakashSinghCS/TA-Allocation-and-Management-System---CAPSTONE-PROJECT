@@ -12,6 +12,7 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -79,6 +80,7 @@ public class SectionService {
         section.setSection(request.section());
         section.setType(request.type());
         section.setSemester(request.semester());
+        section.setInstructorId(request.instructorId());
         sectionRepository.save(section);
         return new SectionDto(section.getId(),
                 section.getYear(),
@@ -113,7 +115,7 @@ public class SectionService {
             throw new BadRequestException("Schedule already exists " + ex);
         }
         return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(),
-                sectionSchedule.getEndTime(), sectionSchedule.getSection().getId());
+                sectionSchedule.getEndTime(), sectionSchedule.getSection().getId(), sectionSchedule.getId());
     }
 
     public List<SectionScheduleDto> getSectionSchedules(Long sectionId) {
@@ -122,7 +124,7 @@ public class SectionService {
         return section.getSectionSchedules().stream()
                 .map(sec -> new SectionScheduleDto(sec.getDay(),
                         sec.getStartTime(),
-                        sec.getEndTime(),
+                        sec.getEndTime(),sec.getSection().getId(),
                         sec.getId()))
                 .toList();
     }
@@ -136,7 +138,7 @@ public class SectionService {
         sectionScheduleRepository.save(schedule);
         return new SectionScheduleDto(schedule.getDay(),
                     schedule.getStartTime(),
-                    schedule.getEndTime(),
+                    schedule.getEndTime(),schedule.getSection().getId(),
                     schedule.getId());
     }
 
@@ -179,6 +181,25 @@ public class SectionService {
                                 sec.getCourse().getName(),
                                 sec.getCourse().getCourseNum())))
                 .toList();
+    }
+
+    public SectionDtoWithInstructorId getSectionWithInstructorIdById(Long id) {
+        Section section = sectionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No section with id " + id));
+        Course course = section.getCourse();
+
+        return new SectionDtoWithInstructorId(
+                section.getId(),
+                section.getInstructorId(),
+                section.getYear(),
+                section.getSemester(),
+                section.getSection(),
+                section.getType(),
+                new CourseDto(
+                        course.getId(),
+                        course.getDeptCode(),
+                        course.getName(),
+                        course.getCourseNum()));
     }
 
     @Transactional

@@ -60,9 +60,9 @@ const TAAllocationPage: React.FC = () => {
     setSelCourse({
       ...full,
       hasCompleted: !!(
-        full.need?.numOfHoursCurrentlyAllocated != null &&
+        full.need?.numHoursCurrentlyAllocated != null &&
         full.need?.requiredGradingHours != null &&
-        full.need.numOfHoursCurrentlyAllocated >= full.need.requiredGradingHours
+        full.need.numHoursCurrentlyAllocated >= full.need.requiredGradingHours
       ),
     });
   } catch (err) {
@@ -155,7 +155,7 @@ const events = [
 
 
   const required = selCourse?.need?.requiredGradingHours ?? 0;
-  const allocated = selCourse?.need?.numOfHoursCurrentlyAllocated ?? 0;
+  const allocated = selCourse?.need?.numHoursCurrentlyAllocated ?? 0;
   const remaining = Math.max(required - allocated, 0);
   const hoursOK = allocated >= required;
   const hasAvailabilityMatch = bgMatchedEvents.length > 0;
@@ -234,7 +234,7 @@ const events = [
                   <h2 className="font-bold text-lg">Course Need</h2>
                   <div className="space-y-1 pl-2 text-sm">
                     <p><strong>Description:</strong> {selCourse.need.description}</p>
-                    <p><strong>Allocated Hours:</strong> {selCourse.need.numOfHoursCurrentlyAllocated}</p>
+                    <p><strong>Allocated Hours:</strong> {selCourse.need.numHoursCurrentlyAllocated}</p>
                     <p><strong>Required Hours:</strong> {selCourse.need.requiredGradingHours}</p>
                   </div>
                 </section>
@@ -243,9 +243,9 @@ const events = [
                 <section>
                   <h2 className="font-bold text-lg">Prerequisites</h2>
                   <div className="pl-2 text-sm">
-                    {(selCourse.need.courseNeeds ?? []).length > 0
+                    {(selCourse.need.prerequisites ?? []).length > 0
                       ? <ul className="list-disc pl-4 space-y-1">
-                          {selCourse.need.courseNeeds!.map((c, i) => (
+                          {selCourse.need.prerequisites!.map((c, i) => (
                             <li key={i}>{c.deptCode} {c.courseNum}</li>
                           ))}
                         </ul>

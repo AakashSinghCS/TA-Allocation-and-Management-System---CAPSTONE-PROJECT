@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 
+// import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.AllocationDtos.OfferDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
@@ -43,6 +46,7 @@ import com.infinity.courseservice.repositories.SectionScheduleRepository;
 import com.infinity.courseservice.services.CourseService;
 import com.infinity.courseservice.services.NeedService;
 import com.infinity.courseservice.services.SectionService;
+import com.infinity.courseservice.utility.CourseMapper;
 import com.infinity.courseservice.models.StudentTaughtCourse;
 import com.infinity.courseservice.repositories.StudentTaughtCourseRepository;
 import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
@@ -75,6 +79,9 @@ public class CourseServiceTest {
     private SectionService sectionService;
 
     @Mock
+    private CourseMapper courseMapper;
+
+    @Mock
     private StudentTaughtCourseRepository studentTaughtCourseRepository;
 
     @InjectMocks
@@ -83,8 +90,8 @@ public class CourseServiceTest {
     @Test
     void testAddCourse_Duplicate() {
         CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null,
-                null, null
-                );
+                null,
+                null,null);
 
         when(courseRepository.save(any(Course.class)))
                 .thenThrow(new DataIntegrityViolationException("Duplicate entry"));
@@ -98,10 +105,12 @@ public class CourseServiceTest {
     @Test
     void testAddCourse() {
         CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null, null,
-                null, null);
+                null, null,null);
         Course savedCourse = new Course("COSC", "Distributed Systems", "455");
+        CourseDto courseDto = new CourseDto(1L, "COSC", "Distributed Systems", "455");
 
         when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);
+        when(courseMapper.courseToDto(savedCourse)).thenReturn(courseDto);
 
         CourseDto dto = courseService.addCourse(request);
 
@@ -115,6 +124,9 @@ public class CourseServiceTest {
             Course course = new Course("COSC", "Distributed Systems", "455");
             when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
 
+            CourseDto courseDto = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+            when(courseMapper.courseToDto(course)).thenReturn(courseDto);
+
             CourseDto dto = courseService.findCourse(1L);
 
             assertEquals("COSC", dto.deptCode());
@@ -126,7 +138,7 @@ public class CourseServiceTest {
     void testUpdateCourseNotFound() {
             CourseRequest request = new CourseRequest("COSC", "Capstone", "499", null, null, null, null,
                             null,
-                            null, null);
+                            null, null,null);
             when(courseRepository.findById(1L)).thenReturn(Optional.empty());
 
             NotFoundException ex = assertThrows(NotFoundException.class, () -> courseService.updateCourse(request, 1L));
@@ -140,7 +152,9 @@ public class CourseServiceTest {
             when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
             CourseRequest request = new CourseRequest("DATA", "Capstone", "499", null, null, null, null,
                             null,
-                            null, null);
+                            null, null,null);
+            CourseDto courseDto = new CourseDto(1L, "DATA", "Capstone", "499");
+            when(courseMapper.courseToDto(course)).thenReturn(courseDto);
             CourseDto dto = courseService.updateCourse(request, 1L);
 
             assertEquals("DATA", dto.deptCode());
@@ -180,6 +194,10 @@ public class CourseServiceTest {
 
         List<Course> courses = Arrays.asList(course1, course2);
         when(courseRepository.findAllById(Arrays.asList(1L, 2L))).thenReturn(courses);
+        CourseDto courseDto1 = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+        CourseDto courseDto2 = new CourseDto(2L, "COSC", "Operating Systems", "315");
+        when(courseMapper.courseToDto(course1)).thenReturn(courseDto1);
+        when(courseMapper.courseToDto(course2)).thenReturn(courseDto2);
 
         List<CourseDto> result = courseService.findCoursesByIds(Arrays.asList(1L, 2L));
 
@@ -220,27 +238,26 @@ public class CourseServiceTest {
         Section section = new Section(2025, "W1", "001", SectionType.LABORATORY, course,null);
         section.setId(1L);
 
-        NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester);
-
-        AllocationHistoryDto allocation = new AllocationHistoryDto(
-                1L,
-                new StudentDto(10L, "John", "Smith", 1234, "COSC", 2021, 4),
-                new OfferDto(100L, true, "Lab marking"),
-                true,
-                12,
-                new SectionDtoNoCourse(5L, year, semester, "001", SectionType.LECTURE));
+        NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester, null);
+        OfferDto offer = new OfferDto(1L, true, "description");
+        AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
+            42L,
+            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),offer,
+            true,
+            10,
+            new SectionDto(99L, 2024,"W1","001",SectionType.LECTURE, new CourseDto(1L,"COSC", "CS", "112"))
+        );
 
         when(sectionRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)).thenReturn(Optional.of(section));
         when(needService.getNeed(courseId, year, semester)).thenReturn(need);
-        when(applicationInterface.getStudentAllocationHistory(courseId))
-                .thenReturn(ResponseEntity.ok(List.of(allocation)));
+        when(applicationInterface.getAllocationsBySectionId(section.getId())).thenReturn(ResponseEntity.ok(List.of(dto)));
 
         CourseNeedAndAllocations result = courseService.getCourseNeedAndAllocations(courseId, year, semester);
 
         assertEquals("Networks", result.section().course().name());
         assertEquals("Grading", result.need().description());
         assertEquals(1, result.allocations().size());
-        assertEquals("John", result.allocations().get(0).student().firstName());
+        assertEquals("Jane", result.allocations().get(0).student().firstName());
     }
 
     @Test
@@ -260,32 +277,32 @@ public class CourseServiceTest {
 
         SectionDto section2 = new SectionDto(
                 11L, 2025, "W1", "002", SectionType.LABORATORY,
-                new CourseDto(1L, "COSC", "Security", "430") // duplicate course-term
+                new CourseDto(1L, "COSC", "Security", "430")
         );
-
-            NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1");
-            AllocationHistoryDto alloc = new AllocationHistoryDto(
-                            3L,
-                            new StudentDto(2L, "Alice", "Wang", 9999, "COSC", 2022, 3),
-                            new OfferDto(200L, false, "Lab Marking"),
-                            true,
-                            8,
-                            new SectionDtoNoCourse(10L, 2025, "W1", "001", SectionType.LECTURE));
+                OfferDto offer = new OfferDto(1L, true, "description");
+            NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1",null);
+            AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
+            42L,
+            new StudentDto(7L, "Jane", "Doe",  12345, "CS", 2021, 4),offer,
+            true,
+            10,
+            new SectionDto(99L, 2024,"W1","001",SectionType.LECTURE, new CourseDto(1L,"COSC", "CS", "112"))
+        );
 
             when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1, section2));
             when(needService.getNeed(1L, 2025, "W1")).thenReturn(need);
-            when(applicationInterface.getStudentAllocationHistory(1L)).thenReturn(ResponseEntity.ok(List.of(alloc)));
+                when(applicationInterface.getAllocationsBySectionId(10L)).thenReturn(ResponseEntity.ok(List.of(dto)));
 
             List<CourseNeedAndAllocations> result = courseService.getInstructorCourseNeedsAndAllocations(instructorId);
 
             assertEquals(1, result.size());
             assertEquals("Security", result.get(0).section().course().name());
             assertEquals("Labs", result.get(0).need().description());
-            assertEquals("Alice", result.get(0).allocations().get(0).student().firstName());
+            assertEquals("Jane", result.get(0).allocations().get(0).student().firstName());
     }
 
     @Test
-    void testGetInstructorCourseNeedsAndAllocations_IgnoresMissingNeed() {
+    void testGetInstructorCourseNeedsAndAllocations_DoesNotIgnorenWhenMissingNeed() {
             Long instructorId = 77L;
 
             SectionDto section1 = new SectionDto(
@@ -294,10 +311,10 @@ public class CourseServiceTest {
 
             when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1));
             when(needService.getNeed(1L, 2025, "W1")).thenThrow(new NotFoundException("Need not found"));
-
+                when(applicationInterface.getAllocationsBySectionId(10L)).thenReturn(ResponseEntity.ok(Collections.emptyList()));
             List<CourseNeedAndAllocations> result = courseService.getInstructorCourseNeedsAndAllocations(instructorId);
 
-            assertEquals(0, result.size());
+            assertEquals(1, result.size());
     }
     
     @Test
