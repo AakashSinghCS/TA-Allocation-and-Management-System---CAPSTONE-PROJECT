@@ -12,7 +12,7 @@ interface Props {
   mode?: 'coordinator' | 'instructorAddSection' | 'instructorPrereqCourse' | 'studentAddHistory' | 'studentAddEnrollment';
 }
 
-export default function SectionList({ sections, onDeleted, onSelect, onSelectCourse, mode = 'coordinator' }: Props) {
+
 export default function SectionList({ sections, onDeleted, onSelect, onSelectCourse, mode = 'coordinator' }: Props) {
   if (!sections || sections.length === 0) {
     return <p className="p-4 text-center text-gray-500">No section found.</p>;
@@ -45,11 +45,9 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
     if (
       !window.confirm(
         'Really delete entire course? This deletes all associated sections.'
-        'Really delete entire course? This deletes all associated sections.'
       )
     )
       return;
-    onDeleted?.(courseId, true);
     onDeleted?.(courseId, true);
   };
 
@@ -57,11 +55,9 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
     if (
       !window.confirm(
         'Really delete this section?'
-        'Really delete this section?'
       )
     )
       return;
-    onDeleted?.(sectionId, false);
     onDeleted?.(sectionId, false);
   };
 
@@ -149,8 +145,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
 
               </tr>
 
-              {mode !== 'instructorPrereqCourse' && sortedSections.map((sec) => {
-                if (!sec.sectionDetails?.sectionId) return;
+
 
               {mode !== 'instructorPrereqCourse' && sortedSections.map((sec) => {
                 if (!sec.sectionDetails?.sectionId) return;
