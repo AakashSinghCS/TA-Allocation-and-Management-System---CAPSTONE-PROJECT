@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { fetchApplicationsByStudent } from "../../../api/application/FetchApplicationsByStudent";
 import { acceptOffer } from "../../../api/offer/acceptOffer";
 import { denyOffer } from "../../../api/offer/denyOffer";
-import { fetchStudentAllocationHistory } from "../../../api/allocation/fetchStudentAllocationHistory";
 import { useAuth } from "../../../context/AuthContext";
 import type { ApplicationDto } from "../../../interfaces/application/Application";
 import { fetchUserDetails } from "../../../api/user/fetchUserDetails";
@@ -17,7 +16,6 @@ import { fetchSectionInfo } from "../../../api/section/fetchSectionInfo";
 type ApplicationWithAllocation = ApplicationDto & { allocation?: Allocation };
 
 const ViewApplicationPage = () => {
-  const { userId, token } = useAuth();
   const [applications, setApplications] = useState<ApplicationWithAllocation[]>([]);
   const [yearSubmitted, setYearSubmitted] = useState("");
   const [prefContains, setPrefContains] = useState("");
@@ -141,36 +139,32 @@ const ViewApplicationPage = () => {
       .finally((): void => setLoading(false));
   }, []);
 
-  // Accept/Deny handlers now update allocation status in-place for the application
+  // Accept/Deny handlers: just check response, no fetching allocation history
   const handleAccept = async (allocationId: number, appId: number) => {
     setActionLoading(allocationId);
     setSuccess(null);
     try {
-      await acceptOffer(allocationId);
-      // After accepting, fetch allocation history for the student and update the UI
-      const tokenVal = token || localStorage.getItem("token") || "";
-      const decoded = decodeToken(tokenVal);
-      const studentId = decoded?.userId;
-      if (!studentId) throw new Error("Could not determine student ID");
-      const history = await fetchStudentAllocationHistory(studentId, tokenVal);
-      // Find the allocation for this application
-      const allocation = history.find(a => a.application?.applicationId === appId);
-      if (allocation && allocation.status === 'SENT') {
+      const resp = await acceptOffer(allocationId);
+      if (resp && (resp.ok === true || resp.status === 200)) {
         setSuccess("You have accepted the offer.");
-      } else if (allocation && allocation.status === 'CONFIRMED') {
-        setSuccess("Your allocation is now confirmed!");
+        // Update allocation status in local state
+        setApplications(apps =>
+          apps.map(app => {
+            if ((app.id ?? app.applicationId) === appId && app.allocation) {
+              return {
+                ...app,
+                allocation: {
+                  ...app.allocation,
+                  status: 'CONFIRMED',
+                },
+              };
+            }
+            return app;
+          })
+        );
       } else {
         setError("Failed to accept the offer. Please try again.");
       }
-      // Update the allocation in the UI
-      setApplications(applications =>
-        applications.map(app => {
-          if ((app.id ?? app.applicationId) === appId) {
-            return { ...app, allocation };
-          }
-          return app;
-        })
-      );
     } catch (e: any) {
       console.error('[handleAccept] error:', e);
       setError(e.message);
@@ -183,29 +177,27 @@ const ViewApplicationPage = () => {
     setActionLoading(allocationId);
     setSuccess(null);
     try {
-      await denyOffer(allocationId);
-      // After denying, fetch allocation history for the student and update the UI
-      const tokenVal = token || localStorage.getItem("token") || "";
-      const decoded = decodeToken(tokenVal);
-      const studentId = decoded?.userId;
-      if (!studentId) throw new Error("Could not determine student ID");
-      const history = await fetchStudentAllocationHistory(studentId, tokenVal);
-      // Find the allocation for this application
-      const allocation = history.find(a => a.application?.applicationId === appId);
-      if (allocation && allocation.status === 'REJECTED') {
+      const resp = await denyOffer(allocationId);
+      if (resp && (resp.ok === true || resp.status === 200)) {
         setSuccess("You have declined the offer.");
+        // Update allocation status in local state
+        setApplications(apps =>
+          apps.map(app => {
+            if ((app.id ?? app.applicationId) === appId && app.allocation) {
+              return {
+                ...app,
+                allocation: {
+                  ...app.allocation,
+                  status: 'REJECTED',
+                },
+              };
+            }
+            return app;
+          })
+        );
       } else {
         setError("Failed to decline the offer. Please try again.");
       }
-      // Update the allocation in the UI
-      setApplications(applications =>
-        applications.map(app => {
-          if ((app.id ?? app.applicationId) === appId) {
-            return { ...app, allocation };
-          }
-          return app;
-        })
-      );
     } catch (e: any) {
       console.error('[handleDeny] error:', e);
       setError(e.message);

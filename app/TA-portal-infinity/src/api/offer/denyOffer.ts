@@ -9,10 +9,6 @@ export const denyOffer = async (allocationId: number) => {
     },
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to deny offer");
-  }
-
-  // Always parse as JSON, backend returns a number (e.g., 1)
-  return response.json();
+  // Just return the response object for status checking
+  return response;
 };
