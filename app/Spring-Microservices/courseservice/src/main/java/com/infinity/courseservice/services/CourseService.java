@@ -8,7 +8,6 @@ import java.util.Set;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-// import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
@@ -153,6 +152,8 @@ public class CourseService {
             } catch (NotFoundException e) {
             }
 
+
+
             CourseNeedAndAllocations entry = new CourseNeedAndAllocations(section, need, allocations);
 
             result.add(entry);
@@ -161,6 +162,8 @@ public class CourseService {
     return result;
 
 }
+
+
 
 
     public void addStudentTaughtCourse(Long courseId, StudentTaughtCourseRequest request) {
@@ -193,9 +196,6 @@ public class CourseService {
                         record.getYear()))
                 .toList();
     }
-
-
-    
 
     public List<String> getAllDeptCodes() {
         return courseRepository.findAllUniqueDeptCode();

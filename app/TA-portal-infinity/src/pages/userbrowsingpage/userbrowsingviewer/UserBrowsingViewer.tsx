@@ -17,6 +17,7 @@ export default function UserBrowsingViewer({
     onSelect,
     allowedRoles
 }: UserBrowsingViewerProps) {
+
     const { userRoles } = useAuth();
     const { searchedUsers = [], loading, error, search, deleteUser, lastCriteria } = useUserSearch();
     const navigate = useNavigate();
@@ -43,10 +44,12 @@ export default function UserBrowsingViewer({
 
     return (
         <div>
-            <div className="flex justify-between items-end mb-4">
-                <SearchUserBar onSearch={search} loading={loading} allowedRoles={allowedRoles}/>
+            <div className="flex justify-between items-stretch mb-4">
+                <div className="flex-1">
+                    <SearchUserBar onSearch={search} loading={loading} allowedRoles={allowedRoles}/>
+                </div>
                 {userRoles.includes('COORDINATOR') && mode=='view' && (
-                    <button onClick={() => navigate('/user/coordinator/browseuser/newuser')} className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600">
+                    <button onClick={() => navigate('/user/coordinator/browseuser/newuser')} className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors">
                         Add User
                     </button>
                 )}
@@ -62,8 +65,8 @@ export default function UserBrowsingViewer({
             {searchedUsers && searchedUsers.length > 0 ? (
                 <table className="min-w-full border-collapse">
                     <thead><tr>
-                        {columns.map(col => <th key={String(col)} className="border-b px-3 py-1 text-left bg-gray-100">{labels[col]}</th>)}
-                        <th className="border-b px-3 py-1 text-left bg-gray-100">Actions</th>
+                        {columns.map(col => <th key={String(col)} className="border border-gray-300 px-3 py-1 text-left bg-gray-100">{labels[col]}</th>)}
+                        <th className="border border-gray-300 px-3 py-1 text-left bg-gray-100">Actions</th>
                     </tr></thead>
                     <tbody>
                         {searchedUsers.map(user => (
@@ -77,26 +80,25 @@ export default function UserBrowsingViewer({
                                         const d = typeof raw === 'string' ? new Date(raw) : raw;
                                         display = formatDateForDisplay(d);
                                     }
-                                    // wrap name in link for TA or Instructor
                                     if (col === 'name' && lastCriteria.role !== 'Coordinator' && user.id) {
                                         const path = lastCriteria.role === 'Student' ? `/user/taprofile/${user.id}` : `/user/instructorprofile/${user.id}`;
-                                        return <td key={col as string} className="border-b px-3 py-1"><Link to={path} className="hover:underline text-blue-600">{display}</Link></td>;
+                                        return <td key={col as string} className="border border-gray-300 px-3 py-1"><Link to={path} className="hover:text-[#00b5bc] text-[#0089b2]">{display}</Link></td>;
                                     }
-                                    return <td key={col as string} className="border-b px-3 py-1">{display}</td>;
+                                    return <td key={col as string} className="border border-gray-300 px-3 py-1">{display}</td>;
                                 })}
-                                <td className="border-b px-3 py-1">
+                                <td className="border border-gray-300 px-3 py-1">
                                     {mode === 'select' ? (
                                         <button
                                             type="button"
                                             onClick={() => onSelect?.(user)}
-                                            className="text-blue-600 hover:underline"
+                                            className="text-blue-600 hover:text-red-300"
                                         >
                                             Select
                                         </button>
                                     ) : (
                                         <button
                                             onClick={() => handleDelete(user.id)}
-                                            className="text-red-600 hover:underline"
+                                            className="text-red-600 hover:text-red-300"
                                         >
                                             Delete
                                         </button>

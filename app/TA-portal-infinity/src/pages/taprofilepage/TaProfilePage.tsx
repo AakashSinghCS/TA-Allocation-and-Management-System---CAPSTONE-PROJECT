@@ -12,9 +12,11 @@ import ProfileQuestionsSection from './profilequestionssection/ProfileQuestionsS
 import StudentTabNav from '../../components/layout/tabnav/studenttabnav/StudentTabNav';
 import ProfileDetailsSection from '../../components/features/user/profiledetailssection/ProfileDetailsSection';
 import { fetchStudentDetails } from '../../api/student/fetchStudentDetails';
+import { fetchStudentAllocationHistory } from '../../api/student/fetchStudentAllocationHistory';
+import { useAuth } from '../../context/AuthContext';
 
 function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   return (
     <div className="border border-slate-200 rounded-2xl shadow-sm">
       <button
@@ -39,7 +41,7 @@ function Accordion({ title, children }: { title: string; children: React.ReactNo
 export default function TaProfilePage() {
   const { studentId } = useParams();
   const sId = Number(studentId);
-  
+  const isStudent = useAuth().userRoles.includes('STUDENT');
   const filteredFields = studentProfileFields.filter(
     key => key !== 'id' && key !== 'firstName' && key !== 'lastName'
   );
@@ -72,17 +74,17 @@ export default function TaProfilePage() {
       <div className="grid grid-cols-1 gap-4 items-start">
         <Accordion title="Allocation History">
           <GenericAPIContainer<Section[]>
-            fetchFunction={() => fetchAllStudentSectionsHasCompleted(sId, true)}
+            fetchFunction={() => fetchStudentAllocationHistory(sId)}
             render={secs => (
 
               //make this into a completely new component taking in studentId
               <div className="space-y-2">
-                <SectionsColumn sections={secs ?? []} />
-                <Link to="/">
+                <SectionsColumn sections={secs ?? []} isStudentView={true} />
+                {isStudent && <Link to="/user/student/addallocation">
                   <div className="cursor-pointer italic text-slate-500 border border-dashed border-slate-200 rounded-lg p-2">
                     Add a section
                   </div>
-                </Link>
+                </Link>}
               </div>
             )}
           />

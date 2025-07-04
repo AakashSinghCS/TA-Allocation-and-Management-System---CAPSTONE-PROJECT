@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.QualificationDto;
+import com.infinity.courseservice.dtos.QualificationDtoWithId;
 import com.infinity.courseservice.dtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.UserDtos.StudentDto;
@@ -83,32 +85,69 @@ class QualificationServiceTest {
     }
 
     @Test
-    void instructorAddQualification_shouldSaveQualificationAndReturnDto() {
-        CourseDto courseDto = new CourseDto(1L, "COSC", "Intro to CS", "101");
-        Course course = new Course("COSC", "Intro to CS", "101");
-        QualificationRequest request = new QualificationRequest(1L, 1L, 1L, "Description", "COSC");
+    void instructorAddQualification_returnsDtoWithId_onSuccess() {
+        // Arrange
+        long courseId = 42L;
+        QualificationRequest req = new QualificationRequest(1L, courseId, 2L, "Food Safety", "HOSP");
 
-        when(courseService.findCourse(1L)).thenReturn(courseDto);
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+        Course course = new Course();
+        course.setId(courseId);
+        course.setDeptCode("HOSP");
 
-        QualificationDto dto = qualificationService.instructorAddQualification(request);
+        // stub load
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        when(courseService.findCourse(courseId))
+                .thenReturn(new CourseDto(courseId, "HOSP", "Hospitality", "101"));
 
-        assertNotNull(dto);
-        assertEquals("Description", dto.description());
-        verify(qualificationRepository).save(any(Qualification.class));
+        // no duplicate
+        when(qualificationRepository.existsByCourseAndDescriptionAndDeptCode(
+                course, req.description(), req.deptCode()))
+                .thenReturn(false);
+
+        // simulate save
+        Qualification saved = new Qualification(course, req.description(), req.deptCode());
+        saved.setId(99L);
+        when(qualificationRepository.saveAndFlush(any(Qualification.class))).thenReturn(saved);
+
+        // Act
+        QualificationDtoWithId dto = qualificationService.instructorAddQualification(req);
+
+        // Assert
+        assertEquals(99L, dto.id());
+        assertEquals("Food Safety", dto.description());
+        assertEquals("101", dto.course().courseNum(),
+                "courseDto from service should match what CourseService returned");
+
+        verify(qualificationRepository).saveAndFlush(any(Qualification.class));
     }
 
     @Test
-    void instructorAddQualification_whenDuplicate_shouldThrowBadRequestException() {
-        CourseDto courseDto = new CourseDto(1L, "CS", "Intro to CS", "101");
-        Course course = new Course("CS", "Intro to CS", "101");
-        QualificationRequest request = new QualificationRequest(1L, 1L, 1L,"Description", "CS");
+    void instructorAddQualification_throwsBadRequest_whenDuplicateDetected() {
+        // Arrange
+        long courseId = 84L;
+        QualificationRequest req = new QualificationRequest(1L, courseId, 2L, "Ethics", "PHIL");
 
-        when(courseService.findCourse(1L)).thenReturn(courseDto);
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-        when(qualificationRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
+        Course course = new Course();
+        course.setId(courseId);
+        course.setDeptCode("PHIL");
 
-        assertThrows(BadRequestException.class, () -> qualificationService.instructorAddQualification(request));
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        when(courseService.findCourse(courseId))
+                .thenReturn(new CourseDto(courseId, "PHIL", "Philosophy", "200"));
+
+        // simulate that this combination already exists
+        when(qualificationRepository.existsByCourseAndDescriptionAndDeptCode(
+                course, req.description(), req.deptCode()))
+                .thenReturn(true);
+
+        // Act & Assert
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> qualificationService.instructorAddQualification(req));
+        assertTrue(ex.getMessage().contains("already exists"));
+
+        // ensure we never call saveAndFlush when a duplicate is pre-detected
+        verify(qualificationRepository, never()).saveAndFlush(any());
     }
 
     @Test
@@ -150,8 +189,7 @@ class QualificationServiceTest {
         // Act & Assert
         NotFoundException ex = assertThrows(
                 NotFoundException.class,
-                () -> qualificationService.instructorDeleteQualification(qualificationId)
-        );
+                () -> qualificationService.instructorDeleteQualification(qualificationId));
 
         assertEquals("No qualifications found with id: " + qualificationId, ex.getMessage());
 
@@ -194,14 +232,13 @@ class QualificationServiceTest {
         when(courseService.findCourse(20L)).thenReturn(courseDto2);
 
         StudentDto studentDto = new StudentDto(
-            studentId,
-            "John",
-            "Doe",
-            123456,
-            "Computer Science",
-            2020,
-            4
-        );
+                studentId,
+                "John",
+                "Doe",
+                123456,
+                "Computer Science",
+                2020,
+                4);
         when(studentClient.getStudentById(studentId)).thenReturn(studentDto);
 
         // Act
@@ -230,59 +267,62 @@ class QualificationServiceTest {
         course.setDeptCode("COSC");
         course.setName("Intro to Programming");
         course.setCourseNum("101");
+
         Qualification q = new Qualification();
-        q.setCourse(course);
-        q.setDescription("Sample Qualification");
+        q.setId(100L);
+        q.setDescription("Qualification 1");
         q.setDeptCode("COSC");
+        q.setCourse(course); // <--- This was missing
 
         when(qualificationRepository.findAllByDeptCode("COSC")).thenReturn(List.of(q));
 
-        List<Qualification> result = qualificationService.findQualificationsByDeptCode("COSC");
+        List<QualificationDtoWithId> result = qualificationService.findQualificationsByDeptCode("COSC");
 
         assertEquals(1, result.size());
     }
 
     @Test
-    void findQualificationsByInstructorId_shouldReturnDtos() {
-        // Arrange
-        Long instructorId = 5L;
+    void findQualificationsByInstructorId_returnsDtosForEachSectionQualificationPair() {
+        long instructorId = 77L;
 
         Course course = new Course();
         course.setId(1L);
         course.setDeptCode("COSC");
+        Section s1 = new Section();
+        s1.setId(10L);
+        s1.setYear(2024);
+        s1.setSemester("W1");
+        s1.setSection("001");
+        s1.setType(SectionType.LECTURE);
+        s1.setCourse(course);
+        Section s2 = new Section();
+        s1.setId(11L);
+        s1.setYear(2025);
+        s1.setSemester("W1");
+        s1.setSection("001");
+        s1.setType(SectionType.LECTURE);
+        s1.setCourse(course);
 
-        Section section = new Section();
-        section.setId(10L);
-        section.setYear(2024);
-        section.setSemester("W1");
-        section.setSection("001");
-        section.setType(SectionType.LECTURE);
-        section.setCourse(course);
-
-        Qualification qualification = new Qualification();
-        qualification.setId(100L);
-        qualification.setCourse(course);
-        qualification.setDescription("Test Qualification");
-
+        Qualification q1 = new Qualification(course, "Java", "COSC");
+        Qualification q2 = new Qualification(course, "C++", "COSC");
+        q1.setId(100L);
+        q2.setId(101L);
         when(sectionRepository.findAllByInstructorId(instructorId))
-                .thenReturn(List.of(section));
+                .thenReturn(List.of(s1, s2));
 
-        when(qualificationRepository.findByCourse(course))
-                .thenReturn(qualification);
+        when(qualificationRepository.findAllByCourse(course))
+                .thenReturn(List.of(q1, q2));
 
-        // Act
-        List<QualificationWithSectionDto> result = qualificationService.findQualificationsByInstructorId(instructorId);
+        List<QualificationWithSectionDto> dtos = qualificationService.findQualificationsByInstructorId(instructorId);
 
-        // Assert
-        assertEquals(1, result.size());
-        QualificationWithSectionDto dto = result.get(0);
-        assertEquals(section.getId(), dto.sectionId());
-        assertEquals(section.getYear(), dto.year());
-        assertEquals(section.getSemester(), dto.semester());
-        assertEquals(section.getSection(), dto.sectionName());
-        assertEquals(section.getType(), dto.sectionType());
-        assertEquals(qualification.getId(), dto.qualificationId());
-        assertEquals(course.getDeptCode(), dto.courseDeptCode());
-        assertEquals(qualification.getDescription(), dto.qualificationDescription());
+        assertEquals(2, dtos.size());
+
+        // collect the IDs and verify they contain what we expect
+        List<Long> ids = dtos.stream()
+                .map(QualificationWithSectionDto::qualificationId)
+                .collect(Collectors.toList());
+
+        assertTrue(ids.contains(100L));
+        assertTrue(ids.contains(101L));
     }
 }

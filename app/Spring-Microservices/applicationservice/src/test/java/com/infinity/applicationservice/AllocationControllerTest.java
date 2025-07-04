@@ -75,7 +75,7 @@ public class AllocationControllerTest {
             application,
             false,
             10,
-            new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L, "COSC","Capstone","499"))
+            new SectionDto(1001L, 2024,"W1", "T01", SectionType.TUTORIAL, new CourseDto(1L,"COSC","Capstone","499"))
         );
     }
 
@@ -112,13 +112,13 @@ public class AllocationControllerTest {
                 Set.of());
 
         AllocationHistoryDto responseDto = new AllocationHistoryDto(
-                123L,
-                new StudentDto(1L, "Test", "test@example.com", 63260442, "BSC", 2022, 4),
-                application,
-                false,
-                10,
-                new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
-                        new CourseDto(1L, "COSC", "Capstone", "499")));
+            123L,
+            new StudentDto(1L, "Test", "test@example.com", 63260442, "BSC", 2022, 4),
+            application,
+            false,
+            10,
+            new SectionDto(1001L, 2024,"W1", "T01", SectionType.TUTORIAL, new CourseDto(1L,"COSC","Capstone","499"))
+        );
 
         when(allocationService.allocateStudent(any(AllocationRequest.class))).thenReturn(responseDto);
 

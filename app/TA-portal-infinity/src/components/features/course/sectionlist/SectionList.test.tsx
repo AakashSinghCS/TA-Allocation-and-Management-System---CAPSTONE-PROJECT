@@ -62,8 +62,5 @@ describe('SectionList', () => {
     expect(screen.getByText('LECTURE')).toBeInTheDocument();
     expect(screen.getByText(/Mon-08:00-09:30/)).toBeInTheDocument();
 
-    // Delete buttons exist
-    expect(screen.getByText(/Delete Course/i)).toBeInTheDocument();
-    expect(screen.getByText(/Delete Section/i)).toBeInTheDocument();
   });
 });

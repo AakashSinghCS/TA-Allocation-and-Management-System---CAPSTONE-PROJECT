@@ -17,14 +17,19 @@ export default function CourseProfilePage() {
     if (!isCourse) {
         return (
             <div>
-                <GenericAPIContainer<Section | null>
-                    fetchFunction={() => fetchSection(Number(sectionId))}
-                    render={section => <SectionProfileDetailsSection
-                        section={section}
-                        fields={sectionProfileFields}
-                        labels={sectionFieldLabels}
-                    />}
-                />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+                    <div className="lg:col-span-1 max-h-[40vh]">
+                        <GenericAPIContainer<Section | null>
+                            fetchFunction={() => fetchSection(Number(sectionId))}
+                            render={section => <SectionProfileDetailsSection
+                                section={section}
+                                fields={sectionProfileFields}
+                                labels={sectionFieldLabels}
+                            />}
+                        />
+                    </div>
+                    <div className="lg:col-span-2 max-h-[40vh]"></div>
+                </div>
             </div>
         );
     } else {

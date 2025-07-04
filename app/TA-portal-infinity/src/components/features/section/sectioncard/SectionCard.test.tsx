@@ -7,8 +7,12 @@ const fmt = (n: unknown) => (typeof n === "number" ? n : "-");
 
 describe("SectionCard", () => {
   it("shows section title and meta-info", () => {
+  it("shows section title and meta-info", () => {
     const section = mockSectionCOSC111;
     render(
+      <MemoryRouter>
+        <SectionCard section={section} />
+      </MemoryRouter>
       <MemoryRouter>
         <SectionCard section={section} />
       </MemoryRouter>
@@ -24,7 +28,7 @@ describe("SectionCard", () => {
       `${dash} ` +
       `${section.sectionDetails!.name}`;
 
-    const metaLine = `| ${section.sectionDetails!.type} | ${section.sectionDetails!.semester}`;
+    const metaLine = `${section.sectionDetails!.type} | ${section.sectionDetails?.year} | ${section.sectionDetails!.semester}`;
 
     const card = screen.getByTestId(
       `section-card-${section.sectionDetails!.id}`
@@ -42,7 +46,14 @@ describe("SectionCard", () => {
         <SectionCard section={section} />
       </MemoryRouter>
     );
+    render(
+      <MemoryRouter>
+        <SectionCard section={section} />
+      </MemoryRouter>
+    );
 
+    // each scheduled span should render "Day-StartTime-EndTime"
+    section.sectionSchedule!.forEach(({ day, startTime, endTime }) => {
     // each scheduled span should render "Day-StartTime-EndTime"
     section.sectionSchedule!.forEach(({ day, startTime, endTime }) => {
       const time = `${day}-${startTime}-${endTime}`;
@@ -51,6 +62,9 @@ describe("SectionCard", () => {
       ).toBeInTheDocument();
     });
 
+    // hours badge: "(alloc/req) hrs alloc."
+    const alloc = section.need?.numHoursCurrentlyAllocated;
+    const req = section.need?.requiredGradingHours;
     // hours badge: "(alloc/req) hrs alloc."
     const alloc = section.need?.numHoursCurrentlyAllocated;
     const req = section.need?.requiredGradingHours;
