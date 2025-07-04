@@ -1174,7 +1174,7 @@ Clockify report
         <td>Task 1
         </td>
         <!-- Status -->
-        <td>In review
+        <td>In progress
         </td>
     </tr>
     <tr>
@@ -1223,7 +1223,7 @@ Clockify report
         <td>Task 1
         </td>
         <!-- Status -->
-        <td>In review
+        <td>In progress
         </td>
     </tr>
     <tr>
@@ -1251,3 +1251,639 @@ If that all gets done within 4 hours or 5, I may perhaps start on a task for the
 - visual calendar in ta profile. Maybe in instructor profile too. This will have to be discussed first with teammates because we have not imported the library concerning this yet.
 - any other feature sets we have not completed.
 - qualifications page
+
+
+## Friday 6/20 (6/18~6/20)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June20.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile Questions Answers
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#240](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/240)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I refactored the ProfileQuestions backend. I had to make sure that the students' answers get dropped when a question gets updated. It was difficult to do.
+This made me learn the following when working with someone else in pairs:
+- Prepare a request body and response body that is agreed by both the frontend and backend developer.
+- consider all the edge cases. Especially in updates and deletes.
+I also discussed with all my teammates today and what i will do the next week has been established.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- User management : search, delete, update, etc.
+- qualifications page (instructor's and student's skill labs)
+
+
+## Saturday 6/21 (6/21~6/24)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June21.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Qualifications page
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#260](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/260)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I created the qualifications page for the frontend. A lot of the code was similar to what I had for the profile questions, because it was a feature about inputting or selecting an option and displaying it.
+I created the mocks and interfaces. I discussed with allen how the response body and request body will look like, and I hope we covered all the edge cases.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- User management : search, delete, update, etc.
+- qualifications page (instructor's and student's skill labs)
+
+## Monday 6/23 (6/21~6/24)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June23.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Qualifications page
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#260](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/260)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#268](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/268)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I completed the instructor perspective of the qualifications page. The integration still has to wait, as Allen is still working on it. 
+I discussed with Allen about it and I expect the integration to happen soon.
+I started on the frontend for the student's perspective as well, and I might say that I'm done. But it can't go into review until the first branch #260, first gets merged.
+So tommorrow, I will try working on integratin some other parts of the project like the ta-profile. I will have to try creating the backend registers for students, and retrieving the data.
+I may also try integrating the allocation history. if there is a mapping for courses taken, I will try doing that too.
+I may make a backend work for instructor details as well.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil continue to work on the list I wrote below.
+- User management : search, delete, update, etc.
+- qualifications page (instructor's and student's skill labs) integration
+
+
+## Tuesday 6/24 (6/21~6/24)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June24.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: User Management
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#260](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/260)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#268](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/268)
+  * #4: [UBCO-COSC499-S2025/team-10-capstone-infinity#271](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/271)
+  * #5: [UBCO-COSC499-S2025/team-10-capstone-infinity#274](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/274)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 4
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 5
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I completed integration the profile details with the backend. Now you can update your profile details if you are a student or instructor or coordinator. The design is not complete, but it was more important that the functionality is done to meet deadlines.
+Today I also started on the user management page where you can browse all the users. I plan to complete the frontend part in this branch and do the backend for it in another branch tommorrow.
+The process is going well, but I feel like too much of the work is on me. While I am doing the frontend and the backend integration. The backend working people are creating CRUD operations some of which the frontend will probably never even use. The backend creating people never once touch the frontend to help integrate stuff. So the frontend people have most of the work to do because they are doing essential two tasks. There are some teammates that contribute less as well, leaving me worried about how good our project will be. I think we will meet the deadlines, but unfortunately, because of the lack of contribution and cooperation from everyone, I have a feeling this project might not end as best as it could have.
+There are only 1 or 2 other people (at most 3) in this team that faithfully does the PR reviews. The other 2 people essentially never do reviews. They only did reviews for those that I specifically asked them to do. They never picked it up themselves so far.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- User management : search, delete, update, etc.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- visual assignments shown in profile.
+
+
+## Wednesday 6/25 (6/24~6/26)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June25.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: User Management
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#274](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/274)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#279](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/279)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I got the User Management working with backend. You can now search for a user by their name, role, university number. 
+You can now manually create a new user if you are an admin. You can delete. One of the Comparers is partially integrated.
+I had to refactor SignUp page by extracting a component out of it and reusing it in SignUp and ManualCreateUserPage.
+Tommorrow, I'll finish the tests for the searching user mapping and the tests for the usermanagmenet as well.
+Then I will work on the visual assignments for the profiles using Full Calendar.
+I may also consider brushing up on the design.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- visual assignments shown in profile.
+
+
+## Thursday 6/26 (6/24~6/26)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June26.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: User Management
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#279](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/279)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I worked on the basic aesthetics of the whole application today. I completed writing the tests for the user search backend.
+I reviewed other peoples PRs and did some project discussion. I reviewed #280 and #284 PRs.
+I will probably work on the instructor updating needs and adding them. for the frontend.
+If the backend for the needs get merged, I will integrate as well.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- Instructor updating needs frontend
+
+
+## Friday 6/27 (6/27~6/30)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June27.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Course Management
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#82](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/82)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+In the morning we discussed with our teammates.
+We decided that I would take on Seiya's branch. Seiya has not been communicating and has not delivered anything for the past 3 weeks.
+Therefore, I finished the task we was supposed to get done about 3 weeks ago.
+Tommorrow, I will work on the integration of the sections with the backend.
+If I can, I will also work on a course managment page. right now it's just the sections.
+Then maybe on Monday, I will work on the Needs of the instructor page and the allocation history.
+I need to create the updating of the needs and the allocation history.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- Instructor updating needs frontend
+- course/section management
+
+
+## Saturday 6/28 (6/27~6/30)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June28.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Course Profile
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#82](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/82)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#93](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/93)
+  * #4: [UBCO-COSC499-S2025/team-10-capstone-infinity#295](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/295)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 4
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I completed the course/section creation and filtering (searching) pages it works with the backend. Now, in order to make updating work, I'm creating a courseProfile page. This is part of UR 2.2 and 1.3. 
+I still have to wait for the Deletion of courses/sections to work in backend. That is not integrated.
+I got done in 2 days a feature we waited to be completed for 3 weeks.
+Moreover, the design has been delayed because I felt like I needed to get the functionality done first.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- Instructor updating needs frontend
+- course/section management
+
+
+## Monday 6/30 (6/27~6/30)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/June30.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Course Profile
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#93](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/93)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#295](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/295)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I completed the functionality and tests for the course profiles and section profiles. you can now edit them and view them and update them and delete them. you can now search an instructor and assign them to a section using a searchbar.
+I spent time today merging and creating pull requests, which also took some time.
+Tommorrow, I hope I will get the qualifications done and review Allen's and Aakash's PRs.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- Instructor updating needs frontend
+
+
+## Tuesday 7/01 (7/01~7/04)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July01.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Instructor Needs profile
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#119](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/119)
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I made the instructor needs profile work, somewhat with the backend. I'm missing some mappings so it doesn't not completely work yet.
+I'm afraid of seeing some bugs and problems in the future, because I've been creating things in a hurry.
+I started a new branch [UBCO-COSC499-S2025/team-10-capstone-infinity#315](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/315), which I will work on tommorrow and hopefully finish tommorrow after using the backend Aakash created.
+The qualifications will still have to be deferred, but I hope it's no later than tommorrw midday.
+This cycle, I still have to work on:
+- qualifications (integration with backend),
+- allocation history
+- CSV export
+- design improvements
+- and some other miscelleneous integration I may have forgotten.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- qualifications page (instructor's and student's skill labs) integration
+- integration for comparers
+- Instructor updating needs frontend
+
+
+## Wednesday 7/02 (7/01~7/04)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July02.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Instructor Needs profile, Qualifications, Allopcation History
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#119](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/119)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#315](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/315)
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+So I did get everything I wanted to get done today except for design improvements.
+I integrated the qualifications. I made the allocation history work. I made a very basic CSV export work.
+It was very tough going through all the errors that would happen. I feel like the frontend is more prone to discovering unexpected errors since we are testing in a more practical manner.
+It was very tough integrating everything and making sure everything works well. The data can get messed up and that seems to be oftentimes the source of unexpected errors.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- presentation for MVP
+- refactoring and checking for errors and fixing them.
