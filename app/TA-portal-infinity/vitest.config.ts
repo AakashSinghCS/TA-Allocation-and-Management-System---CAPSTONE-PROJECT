@@ -12,6 +12,9 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       reportsDirectory: './my-custom-coverage', 
+      exclude: [
+        'src/api/**',
+      ],
     },
   },
 })

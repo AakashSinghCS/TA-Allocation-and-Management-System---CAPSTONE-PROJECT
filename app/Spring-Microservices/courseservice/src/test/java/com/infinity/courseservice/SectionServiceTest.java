@@ -23,6 +23,7 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.enums.SectionType;
@@ -101,7 +102,7 @@ public class SectionServiceTest {
     @Test
     void testUpdateSectionNotFound() {
         CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
-                SectionType.LECTURE, 2025, "W1", null, null, null);
+                SectionType.LECTURE, 2025, "W1", null, null, null, null);
         when(sectionRepository.findById(1L)).thenReturn(Optional.empty());
 
         NotFoundException ex = assertThrows(NotFoundException.class, () -> sectionService.updateSection(1L, request));
@@ -116,7 +117,7 @@ public class SectionServiceTest {
         Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
         when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
         CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
-                SectionType.LECTURE, 2025, "W1", null, null, null);
+                SectionType.LECTURE, 2025, "W1", null, null, null, null);
         SectionDto dto = sectionService.updateSection(1L, request);
 
         assertEquals(SectionType.LECTURE, dto.type());
@@ -147,7 +148,7 @@ public class SectionServiceTest {
         Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
         section.setId(20L);
 
-        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00");
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00", null);
         SectionSchedule schedule = new SectionSchedule("Tue", LocalTime.of(10, 0), LocalTime.of(11, 0), section);
 
         when(sectionRepository.findById(20L)).thenReturn(Optional.of(section));
@@ -162,7 +163,7 @@ public class SectionServiceTest {
 
     @Test
     void testAddSectionSchedule_SectionNotFound() {
-        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00");
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00", null);
 
         when(sectionRepository.findById(100L)).thenReturn(Optional.empty());
 
@@ -174,7 +175,7 @@ public class SectionServiceTest {
         Course course = new Course("COSC", "AI", "310");
         Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
 
-        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00");
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00", null);
 
         when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
         doThrow(new DataIntegrityViolationException("Duplicate entry"))
@@ -189,7 +190,7 @@ public class SectionServiceTest {
     @Test
     void testUpdateSectionScheduleNotFound() {
 
-        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00");
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00", null);
         when(sectionScheduleRepository.findById(1L)).thenReturn(Optional.empty());
 
         NotFoundException ex = assertThrows(NotFoundException.class, () -> sectionService.updateSectionSchedule(1L, req));
@@ -203,7 +204,7 @@ public class SectionServiceTest {
         Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
         SectionSchedule schedule = new SectionSchedule("Tue", LocalTime.of(10, 0), LocalTime.of(11, 0), section);
 
-        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00");
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00", null);
         when(sectionScheduleRepository.findById(1L)).thenReturn(Optional.of(schedule));
         SectionScheduleDto dto = sectionService.updateSectionSchedule(1L, req);
 
@@ -355,7 +356,8 @@ public class SectionServiceTest {
                 "Monday",
                 LocalTime.of(8, 0),
                 LocalTime.of(9, 30),
-                null                        // sectionId
+                null,                        // sectionId
+                2L
             )),
             42L                          // instructorId
         );
@@ -411,5 +413,24 @@ public class SectionServiceTest {
             () -> sectionService.add(req)
         );
         assertTrue(ex.getMessage().contains("Both deptCode and courseNum are required"));
+    }
+
+    @Test
+    void testGetSectionWithInstructorIdById_Success() {
+        Course course = new Course("COSC", "DB Systems", "304");
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, 1L,course);
+        section.setId(55L);
+
+        when(sectionRepository.findById(55L)).thenReturn(Optional.of(section));
+
+        SectionDtoWithInstructorId result = sectionService.getSectionWithInstructorIdById(55L);
+        assertEquals("COSC", result.course().deptCode());
+         assertEquals(1L, result.instructorId());
+    }
+
+    @Test
+    void testGetSectionWithInstructorIdById_NotFound() {
+        when(sectionRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> sectionService.getSectionWithInstructorIdById(99L));
     }
 }

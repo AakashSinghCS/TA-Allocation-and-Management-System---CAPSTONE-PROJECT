@@ -80,7 +80,7 @@ export default function Comparer({ studentId, className }: ComparerProps) {
     const handleCompareClick = () => {
         if (!selectedSection) return;
         setExactMatchId(null);
-        const needs = selectedSection?.need?.courseNeeds ?? [];
+        const needs = selectedSection?.need?.prerequisites ?? [];
         const courseIds = needs.flatMap((c) => c.id ? [c.id] : [])
         setHighlightCourseIds(courseIds);
         setNeededCourses(needs);

@@ -226,13 +226,13 @@ class AllocationServiceTest {
     @Test
     void acceptOffer_throwsIfNotFound() {
         when(allocationRepository.findById(123L)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> allocationService.updateConfirmationStatus(123L,true));
+        assertThrows(EntityNotFoundException.class, () -> allocationService.updateConfirmationStatus(123L, true));
     }
 
     @Test
     void denyOffer_throwsIfNotFound() {
         when(allocationRepository.findById(123L)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> allocationService.updateConfirmationStatus(123L,false));
+        assertThrows(EntityNotFoundException.class, () -> allocationService.updateConfirmationStatus(123L, false));
     }
 
     @Test
@@ -242,12 +242,11 @@ class AllocationServiceTest {
         Long applicationId = 99L;
 
         AllocationRequest request = new AllocationRequest(
-            studentId,
-            applicationId,
-            true,
-            5,
-            sectionId
-        );
+                studentId,
+                applicationId,
+                true,
+                5,
+                sectionId);
 
         when(applicationRepository.findById(applicationId)).thenReturn(Optional.empty());
 
