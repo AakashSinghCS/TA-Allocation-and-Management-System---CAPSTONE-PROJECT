@@ -21,7 +21,7 @@ public class AllocationController {
 
     private final AllocationService allocationService;
 
-    @PreAuthorize("hasRole('COORDINATOR')")
+    @PreAuthorize("hasRole('COORDINATOR', 'STUDENT')")
     @GetMapping("/student/{studentId}/history")
     public ResponseEntity<List<AllocationHistoryDto>> getStudentAllocationHistory(@PathVariable Long studentId) {
         return ResponseEntity.ok(allocationService.getAllocationsByStudentId(studentId));
@@ -56,7 +56,8 @@ public class AllocationController {
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/filter/status/{status}")
-    public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByConfirmationStatus(@PathVariable ApplicationStatus status) {
+    public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByConfirmationStatus(
+            @PathVariable ApplicationStatus status) {
         return ResponseEntity.ok(allocationService.getAllocationsByConfirmationStatus(status));
     }
 
@@ -79,5 +80,4 @@ public class AllocationController {
         return ResponseEntity.ok(allocationService.getAllocationsByApplicationYear(year));
     }
 
-    
 }

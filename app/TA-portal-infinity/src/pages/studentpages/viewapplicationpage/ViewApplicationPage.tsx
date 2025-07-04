@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchApplicationsByStudent } from "../../../api/application/FetchApplicationsByStudent";
 import { acceptOffer } from "../../../api/offer/acceptOffer";
 import { denyOffer } from "../../../api/offer/denyOffer";
+import { fetchStudentAllocationHistory } from "../../../api/allocation/fetchStudentAllocationHistory";
 import { useAuth } from "../../../context/AuthContext";
 import type { ApplicationDto } from "../../../interfaces/application/Application";
 import { fetchUserDetails } from "../../../api/user/fetchUserDetails";
@@ -9,6 +10,8 @@ import type { Student } from "../../../interfaces/user/Student";
 import { fetchAllocationByApplicationId } from "../../../api/allocation/fetchAllocationByApplicationId";
 import type { Allocation } from "../../../interfaces/allocation/Allocation";
 import { decodeToken } from "../../../utility/decodeToken";
+
+import { fetchSectionInfo } from "../../../api/section/fetchSectionInfo";
 
 
 type ApplicationWithAllocation = ApplicationDto & { allocation?: Allocation };
@@ -21,8 +24,10 @@ const ViewApplicationPage = () => {
   const [remotePref, setRemotePref] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [filtersApplied, setFiltersApplied] = useState(false);
+  const [expandedCard, setExpandedCard] = useState<number | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -31,10 +36,11 @@ const ViewApplicationPage = () => {
       return;
     }
 
-    // Debug: Log the token and its decoded payload
+  
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      console.log('Decoded JWT payload:', payload);
+        console.log('Decoded JWT payload:', payload);
+
     } catch (e) {
       console.warn('Could not decode JWT:', e);
     }
@@ -51,19 +57,63 @@ const ViewApplicationPage = () => {
     fetchApplicationsByStudent(userIdFromToken, token)
       .then(async (data: ApplicationDto[]) => {
         console.log("Fetched applications:", data);
-        // For each application, fetch allocation and student info if needed
+        // For each application, fetch allocation, section schedule, and student info if needed
         const appsWithDetails = await Promise.all(
           data.map(async (app) => {
             let allocation: Allocation | null = null;
             try {
-              // Log the headers for this fetch
-              console.log('Fetching allocation for app', app.id ?? app.applicationId, 'with token:', token);
+            
               const allocations = await fetchAllocationByApplicationId(app.id ?? app.applicationId ?? 0, token);
               allocation = allocations && allocations.length > 0 ? allocations[0] : null;
-              // Remove isConfirmed if present, and ensure status is used
               if (allocation && 'isConfirmed' in allocation) {
                 // @ts-ignore
                 delete allocation.isConfirmed;
+              }
+              // Fetch instructor details if instructor is an ID (number or string)
+              // Always fetch instructor details for the section if possible
+              let instructorId: number | undefined = undefined;
+              if (allocation?.section) {
+                if (typeof allocation.section.instructor === 'number') {
+                  instructorId = allocation.section.instructor;
+                } else if (
+                  allocation.section.sectionDetails &&
+                  typeof (allocation.section.sectionDetails as any).instructorId === 'number'
+                ) {
+                  instructorId = (allocation.section.sectionDetails as any).instructorId;
+                }
+              }
+              if (instructorId && allocation?.section) {
+                try {
+                  const instructor = await fetchUserDetails(instructorId);
+                  allocation.section.instructor = instructor;
+                } catch {
+                  // If fetch fails, leave as is (will show N/A)
+                }
+              }
+              // Fetch full section info (year, semester, schedule, etc.) if sectionId is present
+              let sectionId: number | undefined = undefined;
+              if (allocation && allocation.section && allocation.section.sectionDetails) {
+                sectionId = (allocation.section.sectionDetails.sectionId as number | undefined)
+                  || (allocation.section.sectionDetails.id as number | undefined);
+              }
+              if (
+                allocation &&
+                allocation.section &&
+                sectionId &&
+                (
+                  !allocation.section.sectionDetails ||
+                  !allocation.section.sectionDetails.year ||
+                  !allocation.section.sectionDetails.semester ||
+                  !allocation.section.sectionSchedule
+                )
+              ) {
+                try {
+                  const sectionInfo = await fetchSectionInfo(sectionId, token);
+                  allocation.section.sectionDetails = sectionInfo.sectionDetails;
+                  allocation.section.sectionSchedule = sectionInfo.sectionSchedule;
+                } catch (e) {
+                  // If fetch fails, just skip
+                }
               }
             } catch (err) {
               console.error('Allocation fetch error:', err);
@@ -94,26 +144,35 @@ const ViewApplicationPage = () => {
   // Accept/Deny handlers now update allocation status in-place for the application
   const handleAccept = async (allocationId: number, appId: number) => {
     setActionLoading(allocationId);
+    setSuccess(null);
     try {
       await acceptOffer(allocationId);
-      // Re-fetch allocation for this application only
-      const allocations = await fetchAllocationByApplicationId(appId, token || "");
+      // After accepting, fetch allocation history for the student and update the UI
+      const tokenVal = token || localStorage.getItem("token") || "";
+      const decoded = decodeToken(tokenVal);
+      const studentId = decoded?.userId;
+      if (!studentId) throw new Error("Could not determine student ID");
+      const history = await fetchStudentAllocationHistory(studentId, tokenVal);
+      // Find the allocation for this application
+      const allocation = history.find(a => a.application?.applicationId === appId);
+      if (allocation && allocation.status === 'SENT') {
+        setSuccess("You have accepted the offer.");
+      } else if (allocation && allocation.status === 'CONFIRMED') {
+        setSuccess("Your allocation is now confirmed!");
+      } else {
+        setError("Failed to accept the offer. Please try again.");
+      }
+      // Update the allocation in the UI
       setApplications(applications =>
         applications.map(app => {
           if ((app.id ?? app.applicationId) === appId) {
-            // Only set allocation if not null, otherwise remove the property
-            const allocation = allocations && allocations.length > 0 ? allocations[0] : undefined;
-            if (allocation) {
-              return { ...app, allocation };
-            } else {
-              const { allocation: _, ...rest } = app;
-              return rest as ApplicationWithAllocation;
-            }
+            return { ...app, allocation };
           }
           return app;
         })
       );
     } catch (e: any) {
+      console.error('[handleAccept] error:', e);
       setError(e.message);
     } finally {
       setActionLoading(null);
@@ -122,25 +181,33 @@ const ViewApplicationPage = () => {
 
   const handleDeny = async (allocationId: number, appId: number) => {
     setActionLoading(allocationId);
+    setSuccess(null);
     try {
       await denyOffer(allocationId);
-      // Re-fetch allocation for this application only
-      const allocations = await fetchAllocationByApplicationId(appId, token || "");
+      // After denying, fetch allocation history for the student and update the UI
+      const tokenVal = token || localStorage.getItem("token") || "";
+      const decoded = decodeToken(tokenVal);
+      const studentId = decoded?.userId;
+      if (!studentId) throw new Error("Could not determine student ID");
+      const history = await fetchStudentAllocationHistory(studentId, tokenVal);
+      // Find the allocation for this application
+      const allocation = history.find(a => a.application?.applicationId === appId);
+      if (allocation && allocation.status === 'REJECTED') {
+        setSuccess("You have declined the offer.");
+      } else {
+        setError("Failed to decline the offer. Please try again.");
+      }
+      // Update the allocation in the UI
       setApplications(applications =>
         applications.map(app => {
           if ((app.id ?? app.applicationId) === appId) {
-            const allocation = allocations && allocations.length > 0 ? allocations[0] : undefined;
-            if (allocation) {
-              return { ...app, allocation };
-            } else {
-              const { allocation: _, ...rest } = app;
-              return rest as ApplicationWithAllocation;
-            }
+            return { ...app, allocation };
           }
           return app;
         })
       );
     } catch (e: any) {
+      console.error('[handleDeny] error:', e);
       setError(e.message);
     } finally {
       setActionLoading(null);
@@ -196,7 +263,7 @@ const ViewApplicationPage = () => {
                 </div>
               </div>
               <div className="flex gap-2 mt-4">
-                <button onClick={applyFilters} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition">Filter</button>
+                <button onClick={applyFilters} className="px-4 py-2 bg-[#040941] text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition">Filter</button>
                 <button onClick={resetFilters} className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-400 transition">Reset</button>
               </div>
             </div>
@@ -205,41 +272,46 @@ const ViewApplicationPage = () => {
           <div className="lg:col-span-9 flex flex-col gap-8">
             {loading && <div>Loading...</div>}
             {error && <div className="text-red-500">{error}</div>}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {success && <div className="text-green-600 font-semibold">{success}</div>}
+            <div className="grid grid-cols-1 gap-6">
               {filteredApps.length > 0 ? (
-                filteredApps.map((app, idx) => (
-                  <div key={app.id ?? idx} className="bg-white rounded-2xl shadow-lg border border-blue-100 p-8 flex flex-col gap-4 min-h-[440px] relative overflow-hidden max-w-2xl mx-auto w-full">
-                    {/* Decorative background */}
-                    <div className="absolute right-0 top-0 opacity-10 pointer-events-none select-none">
-                      <svg width="120" height="120" viewBox="0 0 120 120" fill="none"><circle cx="60" cy="60" r="60" fill="#2563eb" /></svg>
-                    </div>
-                    {app.student ? (
-                      <div className="flex items-center gap-2 mb-1 z-10">
-                        <div className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-lg font-bold text-[#040941]">
-                          {app.student.firstName?.[0] || "?"}{app.student.lastName?.[0] || "?"}
-                        </div>
-                        <div>
-                          <h2 className="font-semibold text-base text-[#040941] leading-tight">
-                            {app.student.firstName || "Unknown"} {app.student.lastName || "Student"}
-                          </h2>
-                          <p className="text-xs text-gray-500 leading-tight">ID: {app.student.studentNum || "N/A"}</p>
-                        </div>
+                filteredApps.map((app, idx) => {
+                  const cardId = app.id ?? idx;
+                  const expanded = expandedCard === cardId;
+                  const sectionDetails = app.allocation?.section?.sectionDetails;
+                  return (
+                    <div key={cardId} className="bg-white rounded-2xl shadow-lg border border-blue-100 p-10 flex flex-col gap-6 min-h-[520px] relative overflow-hidden w-full transition-all duration-300 hover:shadow-2xl hover:border-blue-300" style={{ maxWidth: '900px', margin: '0 auto' }}>
+                      {/* Decorative background */}
+                      <div className="absolute right-0 top-0 opacity-10 pointer-events-none select-none">
                       </div>
-                    ) : (
-                      <div className="text-red-500 text-sm">Student information is missing.</div>
-                    )}
-                    <div className="flex flex-col gap-0.5 text-xs z-10">
-                      <span><strong>Preferences:</strong> {app.preferences.join(', ')}</span>
-                      <span><strong>Remote:</strong> {app.wantRemote ? 'Yes' : 'No'}</span>
-                      <span><strong>Hours Requested:</strong> {app.wantWorkingHours}</span>
-                      <span><strong>Submitted:</strong> {new Date(app.timeSubmitted).toLocaleString()}</span>
-                    </div>
+                      {app.student ? (
+                        <div className="flex items-center gap-2 mb-1 z-10">
+                          <div className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-lg font-bold text-[#040941]">
+                            {app.student.firstName?.[0] || "?"}{app.student.lastName?.[0] || "?"}
+                          </div>
+                          <div>
+                            <h2 className="font-semibold text-base text-[#040941] leading-tight">
+                              {app.student.firstName || "Unknown"} {app.student.lastName || "Student"}
+                            </h2>
+                            <p className="text-xs text-gray-500 leading-tight">ID: {app.student.studentNum || "N/A"}</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-red-500 text-sm">Student information is missing.</div>
+                      )}
+                      <div className="flex flex-col gap-0.5 text-xs z-10">
+                        <span><strong>Preferences:</strong> {app.preferences.join(', ')}</span>
+                        <span><strong>Remote:</strong> {app.wantRemote ? 'Yes' : 'No'}</span>
+                        <span><strong>Hours Requested:</strong> {app.wantWorkingHours}</span>
+                        <span><strong>Submitted:</strong> {new Date(app.timeSubmitted).toLocaleString()}</span>
+                      </div>
+                      
                     {/* Offer/Allocation Info */}
                     {app.allocation ? (
                       <div className="mt-2 z-10">
                         <strong>Offer Status:</strong>
                     {app.allocation.status === 'CONFIRMED' && (
-                      <div className="mt-1 flex flex-col gap-2 p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="mt-1 flex flex-col gap-2 p-4 bg-green-50 border border-[#040941] rounded-lg">
                         <span className="text-green-700 font-semibold text-lg">Allocation Confirmed</span>
                         <span>
                           <strong>Section:</strong> {app.allocation.section?.sectionDetails?.deptCode || 'N/A'}
@@ -312,14 +384,15 @@ const ViewApplicationPage = () => {
                                     <button
                                       onClick={() => typeof offer.id === 'number' && typeof (app.id ?? app.applicationId) === 'number' && handleAccept(offer.id as number, (app.id ?? app.applicationId) as number)}
                                       disabled={typeof offer.id !== 'number' || typeof (app.id ?? app.applicationId) !== 'number' || actionLoading === offer.id}
-                                      className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
+                                      className="px-3 py-1 bg-green-8
+                                      00 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
                                     >
                                       {actionLoading === offer.id ? 'Accepting...' : 'Accept Offer'}
                                     </button>
                                     <button
                                       onClick={() => typeof offer.id === 'number' && typeof (app.id ?? app.applicationId) === 'number' && handleDeny(offer.id as number, (app.id ?? app.applicationId) as number)}
                                       disabled={typeof offer.id !== 'number' || typeof (app.id ?? app.applicationId) !== 'number' || actionLoading === offer.id}
-                                      className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition"
+                                      className="px-3 py-1 bg-red-800 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition"
                                     >
                                       {actionLoading === offer.id ? 'Declining...' : 'Decline Offer'}
                                     </button>
@@ -333,29 +406,136 @@ const ViewApplicationPage = () => {
                         )}
                       </>
                     )}
-                    {/* Creative: Progress bar and fun fact */}
-                    <div className="mt-4 z-10">
-                      <div className="w-full bg-blue-50 rounded-full h-2.5 mb-2">
-                        <div className="bg-blue-400 h-2.5 rounded-full transition-all duration-500" style={{ width: `${Math.min(100, (app.offers && app.offers.length > 0 ? 100 : 50))}%` }}></div>
-                      </div>
-                      <div className="text-xs text-blue-700 font-semibold">
-                        {app.offers && app.offers.length > 0 ? 'Offer received! 🎉' : 'Application submitted. Waiting for offer...'}
-                      </div>
-                      {app.offers && app.offers.length > 0 && (
-                        <div className="mt-1 text-xs text-green-700 font-semibold">Tip: Accepting an offer will notify the coordinator instantly!</div>
+
+
+                    {/* Expandable Details Button */}
+                      <button
+                        className="self-end px-3 py-1 text-xs rounded-lg font-semibold border border-blue-200 bg-[#040941] hover:bg-blue-100 text-white transition"
+                        onClick={() => setExpandedCard(expanded ? null : cardId)}
+                        aria-expanded={expanded}
+                      >
+                        {expanded ? 'Hide Details' : 'View Details'}
+                      </button>
+                      {/* Expandable Details Section */}
+                      {expanded && (
+                        <div className="mt-2 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm animate-fade-in">
+                          <div className="mb-2 font-semibold text-blue-900">Section Details</div>
+                          {sectionDetails ? (
+                            <>
+                              <div><strong>Course:</strong> {sectionDetails.deptCode || 'N/A'} {sectionDetails.courseNum || ''}</div>
+                              <div><strong>Section:</strong> {sectionDetails.section || 'N/A'}</div>
+                              <div><strong>Type:</strong> {sectionDetails.type || 'N/A'}</div>
+                              <div><strong>Semester:</strong> {sectionDetails.semester || 'N/A'}</div>
+                              <div><strong>Year:</strong> {sectionDetails.year || 'N/A'}</div>
+                              {/* Show schedule from sectionSchedule array if present, else fallback to schedule string, else show message */}
+                              {app.allocation?.section?.sectionSchedule && app.allocation.section.sectionSchedule.length > 0 ? (
+                                <div>
+                                  <strong>Schedule:</strong>
+                                  <ul className="ml-4 list-disc">
+                                    {app.allocation.section.sectionSchedule.map((sch, i) => (
+                                      <li key={i}>
+                                        {sch.day || 'N/A'} {sch.startTime && sch.endTime ? `${sch.startTime} - ${sch.endTime}` : ''}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              ) : (sectionDetails as any).schedule && String((sectionDetails as any).schedule).trim() !== '' ? (
+                                <div><strong>Schedule:</strong> {(sectionDetails as any).schedule}</div>
+                              ) : (
+                                <div className="text-gray-500">No schedule info available.</div>
+                              )}
+                            </>
+                          ) : (
+                            <div className="text-gray-500">No section details available.</div>
+                          )}
+                        </div>
                       )}
+
+                    {/* Creative: Progress bar */}
+                 
+                    <div className="mt-4 z-10">
+                      {/* Progress bar logic: 0=submitted, 1=offer sent, 2=offer accepted, 3=confirmed allocation */}
+                      {(() => {
+                        // Determine progress step and label
+                        let step = 0;
+                        let label = 'Application submitted. Waiting for offer...';
+                        let tip = '';
+                        // Allocation status logic
+                        if (app.allocation) {
+                          if (app.allocation.status === 'CONFIRMED') {
+                            step = 3;
+                            label = 'Allocation confirmed!';
+                            tip = 'You are officially allocated to this section.';
+                          } else if (app.allocation.status === 'SENT') {
+                            // If the backend does not use 'ACCEPTED', treat 'SENT' as offer received, but check if the offer is accepted via offers array
+                            const accepted = app.offers && app.offers.some(o => o.isAccepted === true);
+                            if (accepted) {
+                              step = 2;
+                              label = 'Offer accepted. Awaiting confirmation...';
+                              tip = 'Coordinator will confirm your allocation soon.';
+                            } else {
+                              step = 1;
+                              label = 'Offer received! Please accept or decline.';
+                              tip = 'Accepting an offer will notify the coordinator instantly!';
+                            }
+                          } else if (app.allocation.status === 'REJECTED') {
+                            step = 1;
+                            label = 'Offer declined.';
+                            tip = '';
+                          }
+                        } else if (app.offers && app.offers.length > 0) {
+                          // If there are offers but no allocation, treat as offer sent
+                          const accepted = app.offers.some(o => o.isAccepted === true);
+                          if (accepted) {
+                            step = 2;
+                            label = 'Offer accepted. Awaiting confirmation...';
+                            tip = 'Coordinator will confirm your allocation soon.';
+                          } else {
+                            step = 1;
+                            label = 'Offer received! Please accept or decline.';
+                            tip = 'Accepting an offer will notify the coordinator instantly!';
+                          }
+                        }
+                        // Progress bar width per step
+                        const progressPercents = [20, 50, 80, 100];
+                        const percent = progressPercents[step];
+                        // Progress bar steps
+                        const steps = [
+                          { label: 'Submitted' },
+                          { label: 'Offer Received' },
+                          { label: 'Offer Accepted' },
+                          { label: 'Confirmed' },
+                        ];
+                        return (
+                          <>
+                            <div className="w-full bg-blue-50 rounded-full h-2.5 mb-2 relative">
+                              <div className="bg-blue-400 h-2.5 rounded-full transition-all duration-500" style={{ width: `${percent}%` }}></div>
+                              {/* Step markers */}
+                              <div className="absolute top-0 left-0 w-full h-2.5 flex justify-between items-center pointer-events-none">
+                                {steps.map((s, i) => (
+                                  <div key={i} className={`w-2 h-2 rounded-full border-2 ${i <= step ? 'bg-blue-500 border-blue-500' : 'bg-white border-blue-200'} transition-all duration-500`} style={{ zIndex: 2 }}></div>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="flex justify-between text-[11px] text-blue-900 font-semibold mb-1 px-1">
+                              {steps.map((s, i) => (
+                                <span key={i} className={i === step ? 'text-blue-700 font-bold' : 'text-blue-400'}>{s.label}</span>
+                              ))}
+                            </div>
+                            <div className="text-xs text-blue-700 font-semibold">{label}</div>
+                            {tip && <div className="mt-1 text-xs text-green-700 font-semibold">{tip}</div>}
+                          </>
+                        );
+                      })()}
                     </div>
                   </div>
-                ))
+                  );
+                })
               ) : (
                 <div className="col-span-full text-center text-gray-500 py-12 text-lg">No applications found based on filters</div>
               )}
             </div>
-            {/* Creative: Motivational quote and illustration */}
-            <div className="mt-8 flex flex-col items-center justify-center">
-              <svg width="80" height="80" viewBox="0 0 80 80" fill="none"><circle cx="40" cy="40" r="40" fill="#2563eb" opacity="0.1"/><path d="M40 20v20l14 8" stroke="#2563eb" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              <div className="mt-2 text-blue-900 text-center text-sm font-semibold max-w-xs">“Success is the sum of small efforts, repeated day in and day out.”</div>
-            </div>
+
           </div>
         </div>
       </div>
