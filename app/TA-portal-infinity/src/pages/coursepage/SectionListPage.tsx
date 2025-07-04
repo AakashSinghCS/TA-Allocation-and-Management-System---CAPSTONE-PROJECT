@@ -43,17 +43,17 @@ export default function SectionListPage() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-4">
+    <div className="container mx-auto p-4 z-10">
+      <div className="flex justify-between items-stretch mb-4">
           <h1 className="text-xl font-semibold">Search for a Section or Course</h1>
           <Link
             to="/user/coordinator/sections/add"
-            className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+            className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors text-white"
           >
             Add New Section or Course
           </Link>
         </div>
-      <div className="border p-4 rounded-md shadow-sm mb-4">
+      <div className="shadow-lg p-4 rounded-2xl  mb-4 ">
         <SectionFilter onFilterChange={handleFilterChange} mode="large" />
       </div>
 
@@ -62,6 +62,7 @@ export default function SectionListPage() {
         : <SectionList
             sections={filteredSections}
             onDeleted={handleDeleted}
+            // mode = 'coordinator'
           />
       }
     </div>

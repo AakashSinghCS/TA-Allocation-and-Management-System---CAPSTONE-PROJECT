@@ -40,7 +40,6 @@ import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.SectionType;
 import com.infinity.applicationservice.services.AllocationService;
 
-
 @WebMvcTest(AllocationController.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class AllocationControllerTest {
@@ -59,23 +58,22 @@ public class AllocationControllerTest {
     @BeforeEach
     void setup() {
         ApplicationDto application = new ApplicationDto(
-            1L,
-            1L,
-            List.of(),
-            ApplicationType.UNDERGRADUATE,
-            false,
-            10,
-            LocalDateTime.of(2025, 7, 1, 12, 0),
-            Set.of()
-        );
+                1L,
+                1L,
+                List.of(),
+                ApplicationType.UNDERGRADUATE,
+                false,
+                10,
+                LocalDateTime.of(2025, 7, 1, 12, 0),
+                Set.of());
         sampleDto = new AllocationHistoryDto(
-            101L,
-            new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4),
-            application,
-            ApplicationStatus.SENT,
-            10,
-            new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL, new CourseDto(1L, "COSC","Capstone","499"))
-        );
+                101L,
+                new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4),
+                application,
+                ApplicationStatus.SENT,
+                10,
+                new SectionDto(1001L, 2024, "W1", "T01", SectionType.TUTORIAL,
+                        new CourseDto(1L, "COSC", "Capstone", "499")));
     }
 
     @Test
@@ -84,12 +82,12 @@ public class AllocationControllerTest {
         when(allocationService.getAllocationsByStudentId(sid)).thenReturn(List.of(sampleDto));
 
         mvc.perform(get("/allocations/student/{sid}/history", sid))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].id").value(101))
-            .andExpect(jsonPath("$[0].student.firstName").value("Test User"))
-            .andExpect(jsonPath("$[0].section.section").value("T01"))
-            .andExpect(jsonPath("$[0].status").value("SENT"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(101))
+                .andExpect(jsonPath("$[0].student.firstName").value("Test User"))
+                .andExpect(jsonPath("$[0].section.section").value("T01"))
+                .andExpect(jsonPath("$[0].status").value("SENT"));
     }
 
     @Test
@@ -140,8 +138,8 @@ public class AllocationControllerTest {
         when(allocationService.deallocateStudent(allocationId)).thenReturn(expectedResponse);
 
         mvc.perform(delete("/allocations/deallocate/{allocationId}", allocationId))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$").value(expectedResponse));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(expectedResponse));
 
         verify(allocationService, times(1)).deallocateStudent(allocationId);
     }
@@ -151,7 +149,7 @@ public class AllocationControllerTest {
         doNothing().when(allocationService).updateConfirmationStatus(123L, ApplicationStatus.CONFIRMED);
 
         mvc.perform(put("/allocations/123/acceptOffer"))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         verify(allocationService, times(1)).updateConfirmationStatus(123L, ApplicationStatus.CONFIRMED);
     }
@@ -161,7 +159,7 @@ public class AllocationControllerTest {
         doNothing().when(allocationService).updateConfirmationStatus(123L, ApplicationStatus.REJECTED);
 
         mvc.perform(put("/allocations/123/denyOffer"))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         verify(allocationService, times(1)).updateConfirmationStatus(123L, ApplicationStatus.REJECTED);
     }
@@ -169,20 +167,20 @@ public class AllocationControllerTest {
     @Test
     void getAllocationsByConfirmationStatus_returnsFilteredResults() throws Exception {
         sampleDto = new AllocationHistoryDto(
-        sampleDto.id(),
-        sampleDto.student(),
-        sampleDto.applicationDto(),
-        ApplicationStatus.CONFIRMED,
-        sampleDto.numberOfHours(),
-        sampleDto.section()
-    );
-        when(allocationService.getAllocationsByConfirmationStatus(ApplicationStatus.CONFIRMED)).thenReturn(List.of(sampleDto));
+                sampleDto.id(),
+                sampleDto.student(),
+                sampleDto.applicationDto(),
+                ApplicationStatus.CONFIRMED,
+                sampleDto.numberOfHours(),
+                sampleDto.section());
+        when(allocationService.getAllocationsByConfirmationStatus(ApplicationStatus.CONFIRMED))
+                .thenReturn(List.of(sampleDto));
 
         mvc.perform(get("/allocations/filter/status/CONFIRMED"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].id").value(sampleDto.id()))
-            .andExpect(jsonPath("$[0].status").value("CONFIRMED"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(sampleDto.id()))
+                .andExpect(jsonPath("$[0].status").value("CONFIRMED"));
 
         verify(allocationService, times(1)).getAllocationsByConfirmationStatus(ApplicationStatus.CONFIRMED);
     }
@@ -192,24 +190,25 @@ public class AllocationControllerTest {
         when(allocationService.getAllocationsBySectionId(1001L)).thenReturn(List.of(sampleDto));
 
         mvc.perform(get("/allocations/filter/section/1001"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].section.id").value(1001L));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].section.id").value(1001L));
 
         verify(allocationService, times(1)).getAllocationsBySectionId(1001L);
     }
 
     @Test
     void getAllocationsByApplicationId_returnsFilteredResults() throws Exception {
-        when(allocationService.getAllocationsByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR"))).thenReturn(List.of(sampleDto));
+        when(allocationService.getAllocationsByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR")))
+                .thenReturn(List.of(sampleDto));
 
         mvc.perform(get("/allocations/filter/application/55")
                 .header("X-User-Id", "1")
                 .header("X-User-Roles", "ROLE_COORDINATOR")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].applicationDto").exists());
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].applicationDto").exists());
 
         verify(allocationService, times(1)).getAllocationsByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR"));
     }
@@ -219,9 +218,10 @@ public class AllocationControllerTest {
         when(allocationService.getAllocationsByApplicationYear(eq(2025))).thenReturn(List.of(sampleDto));
 
         mvc.perform(get("/allocations/filter/year/2025"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].applicationDto.timeSubmitted").value(org.hamcrest.Matchers.startsWith("2025")));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(
+                        jsonPath("$[0].applicationDto.timeSubmitted").value(org.hamcrest.Matchers.startsWith("2025")));
     }
 
 }

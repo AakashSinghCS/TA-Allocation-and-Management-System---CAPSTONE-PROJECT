@@ -8,9 +8,10 @@ interface SectionProps {
   highlightCourseIds?: number[];
   exactMatchId?: number | null;
   neededCourses?: Course[];
+  isStudentView?: boolean
 }
 
-export default function SectionsColumn({ sections = [], className = "", highlightCourseIds = [], exactMatchId = null, neededCourses = [] }: SectionProps) {
+export default function SectionsColumn({ sections = [], className = "", highlightCourseIds = [], exactMatchId = null, neededCourses = [] , isStudentView = false}: SectionProps) {
 
   const displayedIds = new Set(sections.map(s => s.sectionDetails?.id));
   const missing = neededCourses ? neededCourses.filter(c => !displayedIds.has(c.id)) : [];
@@ -43,7 +44,7 @@ export default function SectionsColumn({ sections = [], className = "", highligh
             let extra = "";
             if (exactMatch) extra = "outline-2 outline-offset-[-2px] outline-blue-400";
             else if (needMatch) extra = "outline-2 outline-offset-[-2px] outline-green-400";
-            return <SectionCard key={sec.sectionDetails?.id} section={sec} className={extra} />
+            return <SectionCard key={sec.sectionDetails?.id} section={sec} className={extra} isStudentView={isStudentView} big={true}/>
           })}
         </div>
       ) : (

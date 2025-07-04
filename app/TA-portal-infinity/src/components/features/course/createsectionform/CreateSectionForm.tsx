@@ -117,7 +117,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
 
       {/* always enabled */}
       <div>
-        <label htmlFor='name'>Name</label>
+        <label htmlFor='name' className="text-sm block mb-1">Name</label>
         <input
           id="name"
           value={form.name ?? ""}
@@ -127,7 +127,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
         />
       </div>
       <div>
-        <label htmlFor="deptCode">Dept Code</label>
+        <label htmlFor="deptCode" className="text-sm block mb-1">Dept Code</label>
         <input
           id="deptCode"
           value={form.deptCode}
@@ -139,7 +139,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
         />
       </div>
       <div>
-        <label htmlFor='courseNum'>Course Num</label>
+        <label htmlFor='courseNum' className="text-sm block mb-1">Course Num</label>
         <input
           id="courseNum"
           value={form.courseNum}
@@ -154,7 +154,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
       {/* everything below is disabled when isCourse===true */}
       <fieldset disabled={disabled} className="space-y-4">
         <div>
-          <label htmlFor='sectionCode'>Section Code</label>
+          <label htmlFor='sectionCode' className="text-sm block mb-1">Section Code</label>
           <input
             id="sectionCode"
             value={form.section ?? ""}
@@ -166,7 +166,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
           />
         </div>
         <div>
-          <label htmlFor='year'>Year</label>
+          <label htmlFor='year' className="text-sm block mb-1">Year</label>
           <input
             id='year'
             type="number"
@@ -184,7 +184,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
           />
         </div>
         <div>
-          <label htmlFor="semester">Semester</label>
+          <label htmlFor="semester" className="text-sm block mb-1">Semester</label>
           <select
             id="semester"
             value={form.semester ?? ""}
@@ -201,7 +201,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
           </select>
         </div>
         <div>
-          <label htmlFor='type'>Section Type</label>
+          <label htmlFor='type' className="text-sm block mb-1">Section Type</label>
           <select
             id="type"
             value={form.type ?? ""}
@@ -221,7 +221,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
           </select>
         </div>
         <div>
-          <label htmlFor='instructorId'>Instructor ID</label>
+          <label htmlFor='instructorId' className="text-sm block mb-1">Instructor ID</label>
           {selectedInstructor ? (
             <div className="flex items-center justify-between bg-slate-50 px-3 py-2 rounded">
               <span>
@@ -257,7 +257,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
               className="grid grid-cols-4 gap-2 items-end "
             >
               <div>
-                <label>Day</label>
+                <label className="text-sm block mb-1">Day</label>
                 <select
                   value={sched.day}
                   onChange={e =>
@@ -276,7 +276,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
                 </select>
               </div>
               <div>
-                <label>Start</label>
+                <label className="text-sm block mb-1">Start</label>
                 <select
                   value={sched.startTime}
                   onChange={e =>
@@ -295,7 +295,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
                 </select>
               </div>
               <div>
-                <label>End</label>
+                <label className="text-sm block mb-1">End</label>
                 <select
                   value={sched.endTime}
                   onChange={e =>
@@ -314,7 +314,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
               <button
                 type="button"
                 onClick={() => removeSchedule(i)}
-                className="text-red-600 mt-6"
+                className="text-red-600 hover:text-red-100"
               >
                 Remove
               </button>
@@ -323,7 +323,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
           <button
             type="button"
             onClick={addSchedule}
-            className="text-blue-600"
+            className="text-[#040941] hover:text-[#040491]"
           >
             + Add a Schedule
           </button>
@@ -333,14 +333,14 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
       <div className="flex gap-3">
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded flex-1"
+          className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors flex-1"
         >
           Create Section
         </button>
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="bg-red-600 text-white px-4 py-2 rounded flex-1"
+          className="bg-transparent hover:bg-red-100 transition-colors px-4 py-1 rounded flex-1"
         >
           Cancel
         </button>

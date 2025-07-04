@@ -41,7 +41,7 @@ describe('InstructorTabNav', () => {
     ALL_TABS.forEach(label => {
       const link = screen.getByText(label);
       if (label === activeLabel) {
-        expect(link).toHaveClass('border-b-2', 'text-blue-600');
+        expect(link).toHaveClass('border-b-2', 'text-[#0089b2]');
       } else {
         expect(link).not.toHaveClass('border-b-2');
       }

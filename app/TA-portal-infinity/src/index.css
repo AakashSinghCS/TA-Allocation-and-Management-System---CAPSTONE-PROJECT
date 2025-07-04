@@ -24,6 +24,8 @@ input, select {
   padding: 0.5rem 0.75rem;   /* Tailwind's py-2 px-3 */
   box-sizing: border-box;
 }
+
+
 /* a {
   font-weight: 500;
   color: #ffffff;

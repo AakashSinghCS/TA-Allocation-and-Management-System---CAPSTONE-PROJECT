@@ -7,7 +7,9 @@ import  StudentQualificationTable  from './StudentQualificationTable';
 import { fetchAllStudentQualifications } from '../../../../../api/student/fetchAllStudentQualifications';
 import { fetchSubmitStudentQualifications } from '../../../../../api/student/fetchSubmitStudentQualifications';
 
-
+vi.mock('../../../../../context/AuthContext', () => ({
+  useAuth: () => ({ userRoles: ['STUDENT'] as const }),
+}));
 vi.mock('../../../../../api/student/fetchAllStudentQualifications', () => ({
   fetchAllStudentQualifications: vi.fn().mockResolvedValue([1]),
 }));

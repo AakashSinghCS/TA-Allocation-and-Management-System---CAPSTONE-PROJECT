@@ -32,6 +32,8 @@ import SectionListPage from "../pages/coursepage/SectionListPage";
 import AddSectionPage from "../pages/coursepage/AddSectionPage";
 import InstructorAddSectionPage from "../pages/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage";
 import InstructorAddNeedPage from "../pages/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage";
+import AddAllocationHistory from "../pages/taprofilepage/addallocationhistory/AddAllocationHistory";
+import AddEnrolledCourse from "../pages/taprofilepage/coursestakenpage/addenrolledcourse/AddEnrolledCourse";
 import ViewApplicationPage from "../pages/studentpages/viewapplicationpage/ViewApplicationPage";
 import ApplicationViewPage from "../pages/coordinatorpages/applicationviewpage/ApplicationViewPage";
 
@@ -65,6 +67,8 @@ export const router = createBrowserRouter([
           { path: "application", element: <ApplicationPage /> },
           { path: "view-applications", element: <ViewApplicationPage /> },
           { path: "questions/:studentId", element: <TaQuestionnairePage /> },
+          { path: "addallocation", element: <AddAllocationHistory/>},
+          { path: "addenrollment", element: <AddEnrolledCourse/>},
           { path: "error", element: <ErrorPage /> },
         ],
       },
