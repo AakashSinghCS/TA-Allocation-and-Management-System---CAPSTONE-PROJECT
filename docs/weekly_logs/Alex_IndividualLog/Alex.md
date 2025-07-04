@@ -1,3 +1,63 @@
+## Thursday (July 1-3)
+
+### Timesheet
+Clockify report
+![alt text](./jul1-3.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Sending notifications when application is sent, accepted, and rejected
+  * #2: Debugging why the frontend takes so much CPU to run in Docker
+
+### Progress Update (since June 30th 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Added prerequisite course to the needs of instructors
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Refactored applications to store the status of application rather than boolean isConfirmed
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Handling student enrollment in the intermediate table for students and courses
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Creating a notification service for emailing and having it work with forgot password
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+A number of PR's from last cycle got merged, and I spent most of this week helping prepare for MVP by creating endpoints that were missing or needed, sometimes in other people's branches. I also finished the prerequisite course handling and tied it to needs of an instructor so they can input what they prefer a student to have taken before being allocated.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * At the moment I plan to use the notification service when receiving an offer for an application to a student, and vice versa the coordinator receiving one when they accept/reject the offer. Also the frontend takes a lot of CPU and it really probably shouldn't, so I want that to be fixed ASAP.
+
+
 ## Monday (June 27-30)
 
 ### Timesheet
