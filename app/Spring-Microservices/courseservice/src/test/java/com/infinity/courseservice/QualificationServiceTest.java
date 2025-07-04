@@ -88,21 +88,21 @@ class QualificationServiceTest {
     void instructorAddQualification_returnsDtoWithId_onSuccess() {
         // Arrange
         long courseId = 42L;
-        QualificationRequest req = new QualificationRequest(1L,courseId, 2L,"Food Safety", "HOSP");
-        
+        QualificationRequest req = new QualificationRequest(1L, courseId, 2L, "Food Safety", "HOSP");
+
         Course course = new Course();
         course.setId(courseId);
         course.setDeptCode("HOSP");
-        
+
         // stub load
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
         when(courseService.findCourse(courseId))
-            .thenReturn(new CourseDto(courseId, "HOSP", "Hospitality", "101"));
-        
+                .thenReturn(new CourseDto(courseId, "HOSP", "Hospitality", "101"));
+
         // no duplicate
         when(qualificationRepository.existsByCourseAndDescriptionAndDeptCode(
                 course, req.description(), req.deptCode()))
-            .thenReturn(false);
+                .thenReturn(false);
 
         // simulate save
         Qualification saved = new Qualification(course, req.description(), req.deptCode());
@@ -115,9 +115,9 @@ class QualificationServiceTest {
         // Assert
         assertEquals(99L, dto.id());
         assertEquals("Food Safety", dto.description());
-        assertEquals("101", dto.course().courseNum(), 
-            "courseDto from service should match what CourseService returned");
-        
+        assertEquals("101", dto.course().courseNum(),
+                "courseDto from service should match what CourseService returned");
+
         verify(qualificationRepository).saveAndFlush(any(Qualification.class));
     }
 
@@ -126,25 +126,24 @@ class QualificationServiceTest {
         // Arrange
         long courseId = 84L;
         QualificationRequest req = new QualificationRequest(1L, courseId, 2L, "Ethics", "PHIL");
-        
+
         Course course = new Course();
         course.setId(courseId);
         course.setDeptCode("PHIL");
 
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
         when(courseService.findCourse(courseId))
-            .thenReturn(new CourseDto(courseId, "PHIL", "Philosophy", "200"));
-        
+                .thenReturn(new CourseDto(courseId, "PHIL", "Philosophy", "200"));
+
         // simulate that this combination already exists
         when(qualificationRepository.existsByCourseAndDescriptionAndDeptCode(
                 course, req.description(), req.deptCode()))
-            .thenReturn(true);
+                .thenReturn(true);
 
         // Act & Assert
         BadRequestException ex = assertThrows(
-            BadRequestException.class,
-            () -> qualificationService.instructorAddQualification(req)
-        );
+                BadRequestException.class,
+                () -> qualificationService.instructorAddQualification(req));
         assertTrue(ex.getMessage().contains("already exists"));
 
         // ensure we never call saveAndFlush when a duplicate is pre-detected
@@ -268,14 +267,16 @@ class QualificationServiceTest {
         course.setDeptCode("COSC");
         course.setName("Intro to Programming");
         course.setCourseNum("101");
+
         Qualification q = new Qualification();
-        q.setCourse(course);
-        q.setDescription("Sample Qualification");
+        q.setId(100L);
+        q.setDescription("Qualification 1");
         q.setDeptCode("COSC");
+        q.setCourse(course); // <--- This was missing
 
         when(qualificationRepository.findAllByDeptCode("COSC")).thenReturn(List.of(q));
 
-        List<Qualification> result = qualificationService.findQualificationsByDeptCode("COSC");
+        List<QualificationDtoWithId> result = qualificationService.findQualificationsByDeptCode("COSC");
 
         assertEquals(1, result.size());
     }

@@ -62,7 +62,12 @@ class QualificationControllerTest {
     void getQualificationsByDeptCode_shouldReturnList() throws Exception {
         // CourseDto courseDto = new CourseDto(1L, "COSC", "Intro", "101");
         // StudentDto studentDto = new StudentDto(2L, "Alice","Sun",10001,"BA",  2020, 3);
-        Qualification q = new Qualification();
+        QualificationDtoWithId q = new QualificationDtoWithId(
+                1L,
+                new CourseDto(1L, "COSC", "Intro", "101"),
+                "desc",
+                null
+        );
         when(qualificationService.findQualificationsByDeptCode("COSC")).thenReturn(List.of(q));
 
         mockMvc.perform(get("/qualifications/byDepartment/COSC"))

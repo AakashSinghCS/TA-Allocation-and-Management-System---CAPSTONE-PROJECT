@@ -40,13 +40,13 @@ export async function fetchAllDeptCodeQualifications(
 
     // parse once into the raw backend shape
     const rawList: BackendQualification[] = await res.json();
-
+    console.log(rawList);
     // transform into DeptCodeQualificationResponse[]
     return rawList.map((bq) => ({
       qualification: {
         id:          bq.id,
         description: bq.description,
-        deptCode:    bq.deptCode,
+        deptCode:    bq.course.deptCode,
       },
       course: {
         id:       bq.course.id,
