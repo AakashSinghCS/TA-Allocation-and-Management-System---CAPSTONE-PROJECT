@@ -69,6 +69,7 @@ const ApplicationPage: React.FC = () => {
     wantRemote: '',
     transcriptFile: null as File | null,
     confirmProfileUpdated: false,
+    applicationType: '' as '' | 'UNDERGRADUATE' | 'GRADUATE',
   });
   const [availability, setAvailability] = useState<Availability[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -140,6 +141,7 @@ useEffect(() => {
   if (!formData.transcriptFile)    newErrors.transcriptFile    = 'Upload your transcript.';
   if (!formData.confirmProfileUpdated)
                                    newErrors.confirmProfileUpdated = 'Please confirm profile update.';
+  if (!formData.applicationType)   newErrors.applicationType   = 'Select application type.';
 
   if (Object.keys(newErrors).length) {
     setErrors(newErrors);
@@ -163,7 +165,34 @@ useEffect(() => {
       startTime: av.startTime,
       endTime: av.endTime
     })),
+    applicationType: formData.applicationType as 'UNDERGRADUATE' | 'GRADUATE',
   };
+            {/* Application Type */}
+            <section>
+              <label className="block mb-2 font-medium">Application Type*</label>
+              <div className="flex gap-6">
+                {(['UNDERGRADUATE', 'GRADUATE'] as const).map(type => {
+                  const id = `applicationType-${type.toLowerCase()}`;
+                  return (
+                    <label key={type} htmlFor={id} className="inline-flex items-center space-x-2">
+                      <input
+                        id={id}
+                        type="radio"
+                        name="applicationType"
+                        value={type}
+                        checked={formData.applicationType === type}
+                        onChange={handleChange}
+                        className="form-radio text-indigo-600"
+                      />
+                      <span className="capitalize">{type.toLowerCase()}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              {errors.applicationType && (
+                <p className="text-sm text-red-600 mt-1">{errors.applicationType}</p>
+              )}
+            </section>
 
   // preparing URLs & headers
   const addUrl    = 'http://localhost:8080/applications/add';
@@ -229,7 +258,7 @@ useEffect(() => {
             <div className="bg-white rounded-lg w-full max-w-lg p-6 shadow-xl pointer-events-auto">
               <h2 className="text-2xl font-bold mb-4">Previous Application Details</h2>
               <div className="space-y-3 text-gray-800 text-sm">
-                <p><strong>Student ID:</strong> {savedApp.studentId}</p>
+                <p><strong>Student ID:</strong> {savedApp.student.studentNum}</p>
                 <p><strong>Submitted at:</strong> {new Date(savedApp.timeSubmitted).toLocaleString()}</p>
                 <p><strong>Preferences:</strong> {savedApp.preferences.join(', ')}</p>
                 <p><strong>Remote:</strong> {savedApp.wantRemote ? 'Yes' : 'No'}</p>
@@ -278,6 +307,7 @@ useEffect(() => {
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_320px] gap-14">
           <div>
           <form onSubmit={handleSubmit} className="space-y-12">
+            
             {/* Subject Preferences */}
             <section>
               <h2 className="text-xl font-semibold mb-4">Subject Preferences</h2>
@@ -334,6 +364,7 @@ useEffect(() => {
                     accept=".pdf,.doc,.docx"
                     onChange={handleChange}
                     className="hidden"
+                    aria-label="Choose File"
                   />
                 </label>
                 <input
@@ -346,7 +377,28 @@ useEffect(() => {
               </div>
               {errors.transcriptFile && <p className="text-sm text-red-600 mt-1">{errors.transcriptFile}</p>}
             </section>
-
+            {/* Application Type */}
+            <section>
+              <label className="block mb-2 font-medium">Application Type*</label>
+              <div className="flex gap-6">
+                {(['UNDERGRADUATE', 'GRADUATE'] as const).map(type => (
+                  <label key={type} className="inline-flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      name="applicationType"
+                      value={type}
+                      checked={formData.applicationType === type}
+                      onChange={handleChange}
+                      className="form-radio text-indigo-600"
+                    />
+                    <span className="capitalize">{type.toLowerCase()}</span>
+                  </label>
+                ))}
+              </div>
+              {errors.applicationType && (
+                <p className="text-sm text-red-600 mt-1">{errors.applicationType}</p>
+              )}
+            </section>
             {/* Remote Preference */}
               <section>
                 <label className="block mb-2 font-medium">Remote Work Preference*</label>
@@ -438,7 +490,7 @@ useEffect(() => {
           {submitted && savedApp && (
             <div className="mt-12 bg-white p-6 rounded-2xl shadow-md border-t-[6px] border-[#040941]">
               <h2 className="text-2xl font-bold text-[#040941] mb-6 text-center">Your TA application has been successfully submitted and is now under review by the coordinator</h2>
-              <p><strong>Student ID:</strong> {savedApp.studentId}</p>
+              <p><strong>Student ID:</strong> {savedApp.student && savedApp.student.studentNum ? savedApp.student.studentNum : 'N/A'}</p>
               <p><strong>Submitted at:</strong> {new Date(savedApp.timeSubmitted).toLocaleString()}</p>
 
               <h3 className="mt-4 font-semibold">Subject Preferences</h3>
@@ -447,7 +499,7 @@ useEffect(() => {
                   <li key={i}>{i + 1}. {c}</li>
                 ))}
               </ul>
-
+              <p className="mt-2"><strong>Application Type:</strong> {savedApp.applicationType}</p>
               <p className="mt-2"><strong>Remote?</strong> {savedApp.wantRemote ? 'Yes' : 'No'}</p>
               <p><strong>Hours:</strong> {savedApp.wantWorkingHours}</p>
 
@@ -479,6 +531,11 @@ useEffect(() => {
                   label: 'Upload Transcript',
                   description: 'Attach a valid transcript file.',
                   done: !!formData.transcriptFile
+                },
+                {
+                  label: 'Application Type',
+                  description: 'Select the type of application you are submitting.',
+                  done: !!formData.applicationType
                 },
                 {
                   label: 'Remote Preference',

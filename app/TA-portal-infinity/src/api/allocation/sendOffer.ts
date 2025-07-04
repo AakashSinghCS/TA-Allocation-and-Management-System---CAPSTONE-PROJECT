@@ -4,7 +4,7 @@ import { fetchWithAuth } from '../Auth/fetchWithAuth';
 export interface CreateOfferRequest {
   studentId:     number;
   applicationId: number;
-  isConfirmed:   boolean;
+  status:        import('../../interfaces/enum/ApplicationStatus').ApplicationStatus;
   numberOfHours: number;
   sectionId:     number;
 }

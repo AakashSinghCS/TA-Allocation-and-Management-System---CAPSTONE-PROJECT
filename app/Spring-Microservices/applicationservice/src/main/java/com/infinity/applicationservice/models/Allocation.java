@@ -1,5 +1,7 @@
 package com.infinity.applicationservice.models;
 
+import com.infinity.applicationservice.enums.ApplicationStatus;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +15,8 @@ public class Allocation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private boolean isConfirmed;
+    @Enumerated(EnumType.STRING)
+    private ApplicationStatus status;
 
     private int numberOfHours;
 

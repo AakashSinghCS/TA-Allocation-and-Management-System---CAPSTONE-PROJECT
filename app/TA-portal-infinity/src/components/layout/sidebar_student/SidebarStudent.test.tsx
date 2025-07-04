@@ -42,7 +42,7 @@ describe("SideNavStudent", () => {
     const sidebar = screen.getByRole("complementary");
     fireEvent.mouseEnter(sidebar);
 
-    expect(screen.getByText("My Applications")).toBeInTheDocument();
+    expect(screen.getByText("View Applications")).toBeInTheDocument();
     expect(screen.getByText("Logout")).toBeInTheDocument();
   });
 

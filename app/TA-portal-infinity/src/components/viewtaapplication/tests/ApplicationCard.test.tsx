@@ -21,7 +21,7 @@ describe('ApplicationCard', () => {
   const allocations = [
     {
       numberOfHours: 5,
-      isConfirmed: true,
+      status: 'CONFIRMED',
       section: {
         sectionDetails: {
           deptCode: 'COSC',

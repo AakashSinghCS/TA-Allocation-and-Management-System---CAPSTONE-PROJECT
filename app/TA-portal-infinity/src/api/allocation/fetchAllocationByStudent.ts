@@ -7,7 +7,7 @@ interface RawAllocationHistoryDto {
   id: number;
   student: Allocation['student'];
   applicationDto: ApplicationDto;
-  isConfirmed: boolean;
+  status?: string;
   numberOfHours: number;
   section: {
     id: number;
@@ -61,7 +61,7 @@ export async function fetchAllocationsByStudent(
       id: raw.id,
       student: raw.student,
       application: raw.applicationDto,
-      isConfirmed: raw.isConfirmed,
+      status: raw.status as any as import('../../interfaces/enum/ApplicationStatus').ApplicationStatus,
       numberOfHours: raw.numberOfHours,
       section: mappedSection,
     };

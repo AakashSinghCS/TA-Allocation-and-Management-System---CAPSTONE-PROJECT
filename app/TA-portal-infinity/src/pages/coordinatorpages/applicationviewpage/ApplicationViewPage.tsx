@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { fetchApplications } from '../../../api/application/FetchApplications';
 import { fetchAllocationsByStudent } from '../../../api/allocation/fetchAllocationByStudent';
-import { fetchAllocationByIsConfirmed } from '../../../api/allocation/fetchAllocationByIsConfirmed';
+import { fetchAllocationByStatus } from '../../../api/allocation/fetchAllocationByStatus';
 import { fetchAllocationByApplicationId } from '../../../api/allocation/fetchAllocationByApplicationId';  //may use later(mandeep)
 import { useAuth } from '../../../context/AuthContext';
 import type { ApplicationDto } from '../../../interfaces/application/Application';
@@ -34,7 +34,7 @@ const ApplicationPage: React.FC = () => {
   const [prefContains, setPrefContains] = useState('');
   const [remotePref, setRemotePref] = useState('');
   // Allocation filters (advanced)
-  const [allocationIsConfirmed, setAllocationIsConfirmed] = useState('');
+  const [allocationStatus, setAllocationStatus] = useState('');
   const [allocationDept, setAllocationDept] = useState('');
   const [allocationCourseNum, setAllocationCourseNum] = useState('');
   const [allocationSectionYear, setAllocationSectionYear] = useState('');
@@ -56,8 +56,12 @@ const ApplicationPage: React.FC = () => {
     async function fetchFilteredAllocations() {
       let allocations: Allocation[] = [];
       try {
-        if (allocationIsConfirmed) {
-          allocations = await fetchAllocationByIsConfirmed(allocationIsConfirmed === 'true', token || '');
+        if (allocationStatus) {
+          // Use new status-based API utility
+          const all = await Promise.all(
+            allApps.map(() => fetchAllocationByStatus(allocationStatus, token || ''))
+          );
+          allocations = all.flat();
         } else {
           // fallback: fetch all allocations for all students in allApps
           const all = await Promise.all(
@@ -76,7 +80,7 @@ const ApplicationPage: React.FC = () => {
     if (allApps.length > 0) {
       fetchFilteredAllocations();
     }
-  }, [filterTrigger, allApps]);
+  }, [filterTrigger, allApps, allocationStatus, token]);
 
   // Handle section filter changes
   // const handleSectionFilter = async (filters: any) => {
@@ -113,18 +117,12 @@ const ApplicationPage: React.FC = () => {
         );
         if (hasOffer) match = false;
       }
-      // Allocation confirmed: true if any allocation for this app has isConfirmed true
-      if (allocationIsConfirmed === 'true') {
-        const hasConfirmed = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.isConfirmed === true
+      // Allocation status filter
+      if (allocationStatus) {
+        const hasStatus = allocationHistory.some(
+          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.status === allocationStatus
         );
-        if (!hasConfirmed) match = false;
-      }
-      if (allocationIsConfirmed === 'false') {
-        const hasUnconfirmed = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.isConfirmed === false
-        );
-        if (!hasUnconfirmed) match = false;
+        if (!hasStatus) match = false;
       }
       if (allocatedHoursFilter !== '') {
         const totalAllocatedHours = allocationHistory
@@ -165,7 +163,7 @@ const ApplicationPage: React.FC = () => {
       }
       return match;
     });
-  }, [allApps, allocationHistory, offerSentFilter, allocatedHoursFilter, yearSubmitted, studentName, allocationIsConfirmed, allocationDept, allocationCourseNum, allocationSectionYear, allocationSemester, allocationType, filterTrigger]);
+  }, [allApps, allocationHistory, offerSentFilter, allocatedHoursFilter, yearSubmitted, studentName, allocationStatus, allocationDept, allocationCourseNum, allocationSectionYear, allocationSemester, allocationType, filterTrigger]);
 
   const [selectedApp, setSelectedApp] = useState<ApplicationDto | null>(null);
   const allocations = useMemo(() => {
@@ -180,7 +178,7 @@ const ApplicationPage: React.FC = () => {
   const [allocationsLoading, setAllocationsLoading] = useState(false);
 
   // helper to check if any filter is set
-  const anyFilterSet = [yearSubmitted, studentName, prefContains, remotePref, offerSentFilter, allocatedHoursFilter, allocationIsConfirmed, allocationDept, allocationCourseNum, allocationSectionYear, allocationSemester, allocationType].some(f => f && f !== '');
+  const anyFilterSet = [yearSubmitted, studentName, prefContains, remotePref, offerSentFilter, allocatedHoursFilter, allocationStatus, allocationDept, allocationCourseNum, allocationSectionYear, allocationSemester, allocationType].some(f => f && f !== '');
 
   // Reset expanded card when filters change, but only after allocations are loaded
   useEffect(() => {
@@ -249,10 +247,10 @@ const ApplicationPage: React.FC = () => {
               <ApplicationStats
                 totalApplications={allApps.length}
                 appsWithOffer={allApps.filter(app => allocationHistory.some(alloc => alloc.application?.applicationId === app.applicationId)).length}
-                appsWithConfirmed={allApps.filter(app => allocationHistory.some(alloc => alloc.application?.applicationId === app.applicationId && alloc.isConfirmed)).length}
+                appsWithConfirmed={allApps.filter(app => allocationHistory.some(alloc => alloc.application?.applicationId === app.applicationId && alloc.status === 'CONFIRMED')).length}
                 appsWithOfferWaiting={allApps.filter(app => {
                   const appAllocs = allocationHistory.filter(alloc => alloc.application?.applicationId === app.applicationId);
-                  return appAllocs.length > 0 && !appAllocs.some(alloc => alloc.isConfirmed);
+                  return appAllocs.length > 0 && !appAllocs.some(alloc => alloc.status === 'CONFIRMED');
                 }).length}
                 filteredCount={filteredApps.length}
               />
@@ -317,10 +315,11 @@ const ApplicationPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Allocation Confirmed</label>
-                  <select value={allocationIsConfirmed} onChange={e => setAllocationIsConfirmed(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                  <select value={allocationStatus} onChange={e => setAllocationStatus(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
                     <option value="">Any</option>
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
+                    <option value="CONFIRMED">Confirmed</option>
+                    <option value="REJECTED">Rejected</option>
+                    <option value="SENT">Sent</option>
                   </select>
                 </div>
                 <div>

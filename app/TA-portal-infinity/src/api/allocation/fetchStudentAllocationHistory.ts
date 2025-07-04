@@ -1,12 +1,13 @@
 import type { Allocation } from '../../interfaces/allocation/Allocation';
 
 /**
- * Fetch allocations filtered by isConfirmed status.
- * @param isConfirmed true for confirmed, false for pending
- * @param token  auth token for protected endpoints
+ * Fetch allocation history for a student by studentId.
+ * @param studentId The student's unique ID
+ * @param token (optional) auth token for protected endpoints
+ * @returns Promise<Allocation[]>
  */
-export async function fetchAllocationByIsConfirmed(isConfirmed: boolean, token?: string): Promise<Allocation[]> {
-  const url = `http://localhost:8080/allocations/filter/confirmed/${isConfirmed}`;
+export async function fetchStudentAllocationHistory(studentId: number, token?: string): Promise<Allocation[]> {
+  const url = `http://localhost:8080/allocations/student/${studentId}/history`;
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
