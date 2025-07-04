@@ -16,7 +16,7 @@ export const mockSectionMATH125Details : SectionDetails = {
     section: "001",
     semester : "W2",
     year: 2023,
-    type : "Lecture"
+    type : "LECTURE"
 }
 
 export const mockSectionScheduleMATH125ForTue : SectionSchedule = {
@@ -34,11 +34,11 @@ export const mockSectionScheduleMATH125ForFri : SectionSchedule = {
 }
 
 export const mockSectionNeedMATH125 :Need = {
-    sectionId: mockSectionMATH125Details.id,
+    // sectionId: mockSectionMATH125Details.id,
     description: "I need smart people. I need them to be able to do somersaults 10 times consecutively within 10 seconds. If they cannot do this, I will not accept them as a TA for the course and resign from my position as instructor.",
-    numOfHoursCurrentlyAllocated: 13,
+    numHoursCurrentlyAllocated: 13,
     requiredGradingHours: 12,
-    courseNeeds: [mockCourseCOSC111, mockCourseCOSC121]
+    prerequisites: [mockCourseCOSC111, mockCourseCOSC121]
 }
 
 

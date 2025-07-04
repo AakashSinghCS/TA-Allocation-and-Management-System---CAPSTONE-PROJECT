@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import SearchUserBar, { useUserSearch, type SearchCriteria } from "../../../components/ui/searchuserbar/SearchUserBar";
-import SearchUserBar, { useUserSearch, type SearchCriteria } from "../../../components/ui/searchuserbar/SearchUserBar";
 import { useAuth } from "../../../context/AuthContext";
 import type User from "../../../interfaces/user/User";
 import { studentFieldLabels, studentProfileFields } from "../../../interfaces/user/Student";
@@ -18,17 +17,7 @@ export default function UserBrowsingViewer({
     onSelect,
     allowedRoles
 }: UserBrowsingViewerProps) {
-interface UserBrowsingViewerProps {
-    mode?: 'view' | 'select';
-    onSelect?: (u: User) => void;
-    allowedRoles? : SearchCriteria['role'][];
-}
 
-export default function UserBrowsingViewer({
-    mode = 'view',
-    onSelect,
-    allowedRoles
-}: UserBrowsingViewerProps) {
     const { userRoles } = useAuth();
     const { searchedUsers = [], loading, error, search, deleteUser, lastCriteria } = useUserSearch();
     const navigate = useNavigate();
