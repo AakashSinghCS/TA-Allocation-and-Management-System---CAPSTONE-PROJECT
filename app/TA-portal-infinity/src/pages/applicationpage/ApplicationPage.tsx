@@ -171,19 +171,23 @@ useEffect(() => {
             <section>
               <label className="block mb-2 font-medium">Application Type*</label>
               <div className="flex gap-6">
-                {(['UNDERGRADUATE', 'GRADUATE'] as const).map(type => (
-                  <label key={type} className="inline-flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      name="applicationType"
-                      value={type}
-                      checked={formData.applicationType === type}
-                      onChange={handleChange}
-                      className="form-radio text-indigo-600"
-                    />
-                    <span className="capitalize">{type.toLowerCase()}</span>
-                  </label>
-                ))}
+                {(['UNDERGRADUATE', 'GRADUATE'] as const).map(type => {
+                  const id = `applicationType-${type.toLowerCase()}`;
+                  return (
+                    <label key={type} htmlFor={id} className="inline-flex items-center space-x-2">
+                      <input
+                        id={id}
+                        type="radio"
+                        name="applicationType"
+                        value={type}
+                        checked={formData.applicationType === type}
+                        onChange={handleChange}
+                        className="form-radio text-indigo-600"
+                      />
+                      <span className="capitalize">{type.toLowerCase()}</span>
+                    </label>
+                  );
+                })}
               </div>
               {errors.applicationType && (
                 <p className="text-sm text-red-600 mt-1">{errors.applicationType}</p>
@@ -360,6 +364,7 @@ useEffect(() => {
                     accept=".pdf,.doc,.docx"
                     onChange={handleChange}
                     className="hidden"
+                    aria-label="Choose File"
                   />
                 </label>
                 <input

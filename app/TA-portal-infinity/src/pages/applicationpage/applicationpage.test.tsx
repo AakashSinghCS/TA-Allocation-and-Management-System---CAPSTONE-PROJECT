@@ -11,11 +11,13 @@ globalThis.fetch = vi.fn(() =>
     ok: true,
     json: () => Promise.resolve({
       studentId: 123,
+      student: { studentNum: 'S12345678' },
       preferences: ['COSC111', 'COSC121'],
       wantRemote: true,
       wantWorkingHours: 10,
       timeSubmitted: new Date().toISOString(),
       availabilities: [],
+      applicationType: 'UNDERGRADUATE',
     }),
   })
 ) as unknown as typeof fetch;
@@ -50,8 +52,12 @@ describe('ApplicationPage', () => {
 
   it('validates required fields on submit', async () => {
     renderWithProviders();
-    const submitBtn = screen.getByRole('button', { name: /submit application/i });
-    fireEvent.click(submitBtn);
+    // The button could be 'Submit Application' or 'Update Application'
+    let submitBtn = screen.queryByRole('button', { name: /submit application/i });
+    if (!submitBtn) {
+      submitBtn = screen.getByRole('button', { name: /update application/i });
+    }
+    fireEvent.click(submitBtn!);
     expect(await screen.findByText(/1st preference is required/)).toBeInTheDocument();
     expect(screen.getByText(/Upload your transcript/)).toBeInTheDocument();
   });
@@ -67,16 +73,18 @@ describe('ApplicationPage', () => {
     renderWithProviders();
 
     const file = new File(['dummy content'], 'test.pdf', { type: 'application/pdf' });
-    const selects = screen.getAllByRole('combobox');
-    const select = selects[0];
+    // Find the first select (combobox) for preferences
+    const select = screen.getByLabelText(/1st Preference/i);
     fireEvent.change(select, { target: { value: 'COSC' } });
     expect((select as HTMLSelectElement).value).toBe('COSC');
 
-    const inputEl = screen.getByLabelText('Choose File');
-    fireEvent.change(inputEl, { target: { files: [file] } });
+    // File input
+    const fileInput = screen.getByLabelText(/choose file/i);
+    fireEvent.change(fileInput, { target: { files: [file] } });
 
-    // Application type radio
-    const gradRadio = screen.getByRole('radio', { name: /graduate/i });
+    // Application type radio (get all and pick the one for graduate)
+    const gradRadios = screen.getAllByRole('radio', { name: /graduate/i });
+    const gradRadio = gradRadios[0];
     fireEvent.click(gradRadio);
     expect((gradRadio as HTMLInputElement).checked).toBe(true);
 
