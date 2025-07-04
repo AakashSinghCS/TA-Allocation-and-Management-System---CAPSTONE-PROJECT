@@ -1207,3 +1207,119 @@ Retrospective: Process is going well. Most team members are working hard to get 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Complete additional endpoint mappings and service methods requested by Mandeep and begin next assigned coding task. 
 
+## Tuesday 7/01 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/7.01.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation - Additional mappings and service methods
+
+### Progress Update (since 29/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 80% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Created additional allocation filter mappings that mandeep requested. Have some slight modifications left.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additional endpoint mappings and service methods requested by Mandeep and begin next assigned coding task. 
+
+## Wednesday 7/02 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/7.02.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation - Additional mappings and service methods
+  * #2: Application - utilizing mappers created for allocation in applications
+
+### Progress Update (since 29/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Completed additional allocation filter mappings. Added all service methods and created tests. Utilized a mapper for Dto conversions. Alex asked me to utilize these same mappers for the applications. I was able to get it working. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Prepare for MVP presentation and begin next assigned coding task. 
+
+## Thursday 7/03 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/7.03.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: MVP : create presentation and assign duties for presentation tomorrow.
+
+### Progress Update (since 29/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met up with Alex, Mandeep, and Dup to discuss regarding the MVP presentation tomorrow. We created the slides and assigned duties. I will be talking about the testing tomorrow. Also did a demo run to test if everything is working as expected.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Prepare for MVP presentation and begin next assigned coding task. 
