@@ -1216,7 +1216,7 @@ Retrospective: Process is going well. Most team members are working hard to get 
 ### Current Tasks (Provide sufficient detail)
   * #1: Allocation - Additional mappings and service methods
 
-### Progress Update (since 29/6/2025) 
+### Progress Update (since 30/6/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1253,7 +1253,7 @@ Retrospective: Process is going well. Team members are working hard to get their
   * #1: Allocation - Additional mappings and service methods
   * #2: Application - utilizing mappers created for allocation in applications
 
-### Progress Update (since 29/6/2025) 
+### Progress Update (since 01/7/2025) 
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1297,7 +1297,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: MVP : create presentation and assign duties for presentation tomorrow.
 
-### Progress Update (since 29/6/2025) 
+### Progress Update (since 02/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
