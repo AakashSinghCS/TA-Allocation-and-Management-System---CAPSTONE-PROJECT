@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { UserRole } from '../../interfaces/enum/UserRole';
 
 // mock fetch globally
-window.fetch = vi.fn(() =>
+globalThis.fetch = vi.fn(() =>
   Promise.resolve({
     ok: true,
     json: () => Promise.resolve({
@@ -63,18 +63,22 @@ describe('ApplicationPage', () => {
     expect(await screen.findByText(/Previous Application Details/)).toBeInTheDocument();
   });
 
-  it('handles file input and preference select', async () => {
+  it('handles file input, preference select, and application type radio', async () => {
     renderWithProviders();
 
     const file = new File(['dummy content'], 'test.pdf', { type: 'application/pdf' });
     const selects = screen.getAllByRole('combobox');
-    const select = selects[0]; 
-   fireEvent.change(select, { target: { value: 'COSC' } });
-   expect((select as HTMLSelectElement).value).toBe('COSC');
+    const select = selects[0];
+    fireEvent.change(select, { target: { value: 'COSC' } });
+    expect((select as HTMLSelectElement).value).toBe('COSC');
 
     const inputEl = screen.getByLabelText('Choose File');
     fireEvent.change(inputEl, { target: { files: [file] } });
 
+    // Application type radio
+    const gradRadio = screen.getByRole('radio', { name: /graduate/i });
+    fireEvent.click(gradRadio);
+    expect((gradRadio as HTMLInputElement).checked).toBe(true);
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('test.pdf')).toBeInTheDocument();

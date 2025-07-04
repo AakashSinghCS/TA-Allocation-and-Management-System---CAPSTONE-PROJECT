@@ -21,7 +21,7 @@ public class AllocationController {
 
     private final AllocationService allocationService;
 
-    @PreAuthorize("hasRole('COORDINATOR', 'STUDENT')")
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'STUDENT')")
     @GetMapping("/student/{studentId}/history")
     public ResponseEntity<List<AllocationHistoryDto>> getStudentAllocationHistory(@PathVariable Long studentId) {
         return ResponseEntity.ok(allocationService.getAllocationsByStudentId(studentId));
