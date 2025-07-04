@@ -5,6 +5,8 @@ import { mockCourseCOSC111 } from '../course/mockCourseCOSC111';
 import type { Need } from '../../interfaces/need/Need';
 import type { SectionProfile } from '../../interfaces/section/Section';
 import { mockInstructorChed } from '../user/mockInstructorChed';
+import type { SectionProfile } from '../../interfaces/section/Section';
+import { mockInstructorChed } from '../user/mockInstructorChed';
 
 export const mockSectionCOSC111Details : SectionDetails = {
     id: mockCourseCOSC111.id,
@@ -42,6 +44,7 @@ export const mockSectionScheduleCOSC111ForFri : SectionSchedule = {
 export const mockSectionCOSC111 : Section = {
     sectionDetails : mockSectionCOSC111Details,
     sectionSchedule : [mockSectionScheduleCOSC111ForTue,mockSectionScheduleCOSC111ForFri],
+    instructor: mockInstructorChed
     instructor: mockInstructorChed
    // need : mockSectionNeedCOSC111
 }

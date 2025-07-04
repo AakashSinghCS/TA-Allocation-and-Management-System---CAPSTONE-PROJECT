@@ -50,7 +50,7 @@ export default function AddSectionPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 w-full max-w-2xl z-10">
+    <div className="container mx-auto p-4 w-full max-w-3xl z-10">
       <h1 className="text-2xl font-bold mb-4">Add Section or Course</h1>
       <div className="space-y-8">
         <div className="shadow-lg p-4 rounded-2xl shadow-sm">

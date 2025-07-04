@@ -27,6 +27,7 @@ export default function SectionCard({
     <div
       data-testid={`section-card-${section.sectionDetails?.id}`}
       className={`${className} relative w-full overflow-hidden rounded-lg border border-slate-200 p-2 bg-slate-50`}
+      className={`${className} relative w-full overflow-hidden rounded-lg border border-slate-200 p-2 bg-slate-50`}
     >
       {onDelete && (
         <div title="Delete section from list">
@@ -65,6 +66,7 @@ export default function SectionCard({
           {section.sectionDetails?.type} | {section.sectionDetails?.year} | {section.sectionDetails?.semester}
         </p>
       </div>
+
 
       <div className="flex flex-row gap-1 flex-wrap mt-1 items-center">
         <div className="flex items-center">

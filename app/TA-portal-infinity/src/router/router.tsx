@@ -28,6 +28,7 @@ import UserBrowsingPage from "../pages/userbrowsingpage/UserBrowsingPage";
 import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
 import SignUpPage from "../pages/signupPage/SignUpPage";
 import CourseProfilePage from "../pages/courseprofilepage/CourseProfilePage";
+import CourseProfilePage from "../pages/courseprofilepage/CourseProfilePage";
 import SectionListPage from "../pages/coursepage/SectionListPage";
 import AddSectionPage from "../pages/coursepage/AddSectionPage";
 import InstructorAddSectionPage from "../pages/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage";

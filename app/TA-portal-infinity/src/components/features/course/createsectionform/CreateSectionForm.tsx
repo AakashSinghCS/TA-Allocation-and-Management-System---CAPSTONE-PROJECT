@@ -4,6 +4,8 @@ import { timeOptions } from '../../../ui/timeselector/TimeSelector';
 import { useNavigate } from 'react-router-dom';
 import UserBrowsingViewer from '../../../../pages/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer';
 import type { Instructor } from '../../../../interfaces/user/Instructor';
+import UserBrowsingViewer from '../../../../pages/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer';
+import type { Instructor } from '../../../../interfaces/user/Instructor';
 export interface SectionScheduleInput {
   day: string
   startTime: string
