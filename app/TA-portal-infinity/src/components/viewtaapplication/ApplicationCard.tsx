@@ -35,7 +35,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, allocations, isA
           isAllocated ? <span className="text-green-600 font-semibold">Yes</span> : <span className="text-red-500 font-semibold">No</span>
         }</span>
         <span><strong>Allocation Confirmed:</strong> {
-          allocations.some(a => a.isConfirmed) ? <span className="text-green-600 font-semibold">Yes</span> : <span className="text-red-500 font-semibold">No</span>
+          allocations.some(a => a.status === 'CONFIRMED') ? <span className="text-green-600 font-semibold">Yes</span> : <span className="text-red-500 font-semibold">No</span>
         }</span>
         <span><strong>Allocated Hours:</strong> {
           allocations.reduce((total, alloc) => total + (alloc.numberOfHours ?? 0), 0)
@@ -87,7 +87,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, allocations, isA
                       <div><strong>Year:</strong> {alloc.section?.sectionDetails?.year ? alloc.section.sectionDetails.year : <span className="text-gray-400">N/A</span>}</div>
                       <div><strong>Type:</strong> {alloc.section?.sectionDetails?.type ? alloc.section.sectionDetails.type : <span className="text-gray-400">N/A</span>}</div>
                       <div><strong>Allocated Hours:</strong> {alloc.numberOfHours}</div>
-                      <div><strong>Confirmed:</strong> {alloc.isConfirmed ? 'Yes' : 'No'}</div>
+                      <div><strong>Status:</strong> {alloc.status ? alloc.status.charAt(0) + alloc.status.slice(1).toLowerCase() : 'N/A'}</div>
                       <div><strong>Instructor:</strong> {alloc.section?.instructor && typeof alloc.section.instructor === 'object' && 'firstName' in alloc.section.instructor
                         ? `${alloc.section.instructor.firstName} ${alloc.section.instructor.lastName}`
                         : 'N/A'}</div>

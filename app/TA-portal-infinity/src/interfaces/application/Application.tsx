@@ -21,12 +21,15 @@ export interface OfferDto {
   description: string;
 }
 
+import type { ApplicationType } from '../enum/ApplicationType';
 export interface ApplicationRequest {
   preferences: string[];
   wantRemote: boolean;
   wantWorkingHours: number;
   availabilities: AvailabilityDto[];
+  applicationType: ApplicationType;
 }
+
 
 export interface ApplicationDto {
    id?:             number;
@@ -44,6 +47,7 @@ export interface ApplicationDto {
   wantRemote: boolean;
   wantWorkingHours: number;
   timeSubmitted: string;
+  applicationType: ApplicationType;
   availabilities: AvailabilityDto[];
   transcript?: TranscriptDto;
   offers?: OfferDto[];

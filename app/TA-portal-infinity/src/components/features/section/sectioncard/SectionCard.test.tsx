@@ -6,35 +6,68 @@ import { MemoryRouter } from "react-router-dom";
 const fmt = (n: unknown) => (typeof n === "number" ? n : "-");
 
 describe("SectionCard", () => {
-  it("shows section details", () => {
+  it("shows section title and meta-info", () => {
+  it("shows section title and meta-info", () => {
     const section = mockSectionCOSC111;
     render(
-      <MemoryRouter><SectionCard section={section} /></MemoryRouter>
+      <MemoryRouter>
+        <SectionCard section={section} />
+      </MemoryRouter>
+      <MemoryRouter>
+        <SectionCard section={section} />
+      </MemoryRouter>
     );
 
-    const courseCodeAndName =
-      `${section.sectionDetails?.deptCode} ${section.sectionDetails?.courseNum} ` +
-      `${section.sectionDetails?.section} - ${section.sectionDetails?.name}`;
-    const metaInfo = `| ${section.sectionDetails?.type} | ${section.sectionDetails?.semester}`;
+    // note the en-dash (U+2013) used in the component
+    const dash = "–";
 
-    const card = screen.getByTestId(`section-card-${section.sectionDetails?.id}`);
-    expect(within(card).getByText(courseCodeAndName)).toBeInTheDocument();
+    const titleLine =
+      `${section.sectionDetails!.deptCode} ` +
+      `${section.sectionDetails!.courseNum} ` +
+      `${section.sectionDetails!.section} ` +
+      `${dash} ` +
+      `${section.sectionDetails!.name}`;
 
+    const metaLine = `${section.sectionDetails!.type} | ${section.sectionDetails?.year} | ${section.sectionDetails!.semester}`;
+
+    const card = screen.getByTestId(
+      `section-card-${section.sectionDetails!.id}`
+    );
+
+    // assert that both title and meta-info appear inside the card
+    expect(within(card).getByText(titleLine)).toBeInTheDocument();
+    expect(within(card).getByText(metaLine)).toBeInTheDocument();
   });
 
   it("shows section schedule and hours badge", () => {
     const section = mockSectionCOSC111;
-    render(<MemoryRouter><SectionCard section={section} /></MemoryRouter>);
+    render(
+      <MemoryRouter>
+        <SectionCard section={section} />
+      </MemoryRouter>
+    );
+    render(
+      <MemoryRouter>
+        <SectionCard section={section} />
+      </MemoryRouter>
+    );
 
-    section.sectionSchedule?.forEach(({ day, startTime, endTime }) => {
+    // each scheduled span should render "Day-StartTime-EndTime"
+    section.sectionSchedule!.forEach(({ day, startTime, endTime }) => {
+    // each scheduled span should render "Day-StartTime-EndTime"
+    section.sectionSchedule!.forEach(({ day, startTime, endTime }) => {
       const time = `${day}-${startTime}-${endTime}`;
       expect(
         screen.getByText((_, node) => node?.textContent?.trim() === time)
       ).toBeInTheDocument();
     });
 
-    const alloc = section.need?.numOfHoursCurrentlyAllocated;
-    const req   = section.need?.requiredGradingHours; 
+    // hours badge: "(alloc/req) hrs alloc."
+    const alloc = section.need?.numHoursCurrentlyAllocated;
+    const req = section.need?.requiredGradingHours;
+    // hours badge: "(alloc/req) hrs alloc."
+    const alloc = section.need?.numHoursCurrentlyAllocated;
+    const req = section.need?.requiredGradingHours;
     const badge = `(${fmt(alloc)}/${fmt(req)}) hrs alloc.`;
     expect(screen.getByText(badge)).toBeInTheDocument();
   });

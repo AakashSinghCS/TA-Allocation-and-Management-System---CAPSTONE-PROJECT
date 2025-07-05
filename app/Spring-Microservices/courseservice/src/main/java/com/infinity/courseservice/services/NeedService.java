@@ -17,6 +17,7 @@ import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.NeedRepository;
 import com.infinity.courseservice.utility.NeedMapper;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -56,12 +57,12 @@ public class NeedService {
 }
 
 
-    public NeedDto getNeed(Long courseId, Integer year, String semester) {
-            CourseNeed courseNeed = courseNeedRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)
-                .orElseThrow(() -> new NotFoundException("Course has no need for that year and semester"));
-            return needMapper.courseNeedToDto(courseNeed);
-    }
-
+public NeedDto getNeed(Long courseId, Integer year, String semester) {
+    CourseNeed courseNeed = courseNeedRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)
+            .orElseThrow(() -> new NotFoundException("Course has no need for that year and semester"));
+    return needMapper.courseNeedToDto(courseNeed);
+}
+    
     public NeedDto updateNeed(NeedRequest request, Long courseId, Integer year, String semester) {
             CourseNeed courseNeed = courseNeedRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)
                             .orElseThrow(() -> new NotFoundException("Course has no need for that year and semester"));
@@ -83,7 +84,6 @@ public class NeedService {
                             courseNeed.getPrerequisites().add(p);
                     }
             }
-
             needRepository.save(courseNeed.getNeed());
             courseNeed = courseNeedRepository.save(courseNeed);
             return needMapper.courseNeedToDto(courseNeed);

@@ -206,7 +206,7 @@ const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
                   — {h.section?.sectionDetails?.deptCode || 'N/A'}{' '}
                   {h.section?.sectionDetails?.courseNum || ''} Section{' '}
                   {h.section?.sectionDetails?.section || ''} — {h.numberOfHours ?? 'N/A'}h{' '}
-                  {h.isConfirmed ? '(Confirmed)' : '(Pending)'}
+                  {h.status === 'CONFIRMED' ? '(Confirmed)' : h.status ? `(${h.status.charAt(0) + h.status.slice(1).toLowerCase()})` : '(Pending)'}
                 </li>
               ))}
             </ul>

@@ -30,6 +30,7 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionWithInstructorDto;
 import com.infinity.courseservice.enums.SectionType;
@@ -52,7 +53,7 @@ public class SectionControllerTest {
         void testAddSection() throws Exception {
                 Long courseId = 1L;
                 CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025,
-                                "W1", null, null, null);
+                                "W1", null, null, null,null);
                 SectionDto response = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE,
                                 new CourseDto(1L, "COSC", "Security", "430"));
 
@@ -73,9 +74,9 @@ public class SectionControllerTest {
         void testAddSectionSchedule() throws Exception {
                 Long sectionId = 200L;
                 CourseRequest request = new CourseRequest(null, null, null, null, null, null, null, "Mon", "09:00",
-                                "10:00");
+                                "10:00",null);
                 SectionScheduleDto response = new SectionScheduleDto("Mon", LocalTime.of(9, 0), LocalTime.of(10, 0),
-                                sectionId);
+                                sectionId, 2L);
 
                 when(sectionService.addSectionSchedule(eq(sectionId), any(CourseRequest.class))).thenReturn(response);
 
@@ -111,7 +112,7 @@ public class SectionControllerTest {
         @Test
         void testUpdateSection() throws Exception {
                 CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025,
-                                "W1", null, null, null);
+                                "W1", null, null, null,null);
                 SectionDto response = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE,
                                    new CourseDto(1L, "COSC", "Security", "430"));
 
@@ -142,9 +143,9 @@ public class SectionControllerTest {
         @Test
         void testGetSectionSchedules() throws Exception {
                 SectionScheduleDto schedule1 = new SectionScheduleDto("Tue", LocalTime.of(10, 0),
-                                LocalTime.parse("11:00"), 1L);
+                                LocalTime.parse("11:00"), 1L, 3L);
                 SectionScheduleDto schedule2 = new SectionScheduleDto("Fri", LocalTime.of(12, 0),
-                                LocalTime.parse("13:30"), 2L);
+                                LocalTime.parse("13:30"), 2L, 4L);
                 List<SectionScheduleDto> response = List.of(schedule1, schedule2);
 
                 when(sectionService.getSectionSchedules(any())).thenReturn(response);
@@ -160,9 +161,9 @@ public class SectionControllerTest {
         @Test
         void testUpdateSectionSchedule() throws Exception {
                 CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025,
-                                "W1", null, null, null);
+                                "W1", null, null, null,null);
                 SectionScheduleDto response = new SectionScheduleDto("Tue", LocalTime.parse("10:00"), 
-                                LocalTime.parse("11:00"), 1L);
+                                LocalTime.parse("11:00"), 1L, 2L);
 
                 when(sectionService.updateSectionSchedule(any(), any(CourseRequest.class))).thenReturn(response);
 
@@ -259,5 +260,22 @@ public class SectionControllerTest {
                 .andExpect(content().string("true"));
     }
 
+     @Test
+        void testGetSectionWithInstructorIdById() throws Exception {
+                Long sectionId = 300L;
+                Long instructorId = 1L;
+                SectionDtoWithInstructorId response = new SectionDtoWithInstructorId(sectionId, instructorId,2025, "W2", "002", SectionType.LECTURE,
+                                new CourseDto(1L, "COSC", "Networks", "329" ));
 
+                when(sectionService.getSectionWithInstructorIdById(sectionId)).thenReturn(response);
+
+                mockMvc.perform(get("/sections/getIncludeInstructorId/{id}", sectionId))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(sectionId))
+                                .andExpect(jsonPath("$.year").value(2025))
+                                .andExpect(jsonPath("$.semester").value("W2"))
+                                .andExpect(jsonPath("$.section").value("002"))
+                                .andExpect(jsonPath("$.course.name").value("Networks"))
+                                .andExpect(jsonPath("$.instructorId").value(1L));
+        }
 }

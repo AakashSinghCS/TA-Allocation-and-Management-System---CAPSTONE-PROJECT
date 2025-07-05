@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import com.infinity.userservice.dtos.BaseUserDto;
 
+import com.infinity.userservice.dtos.BaseUserDto;
+
 public record InstructorDto(
     Long id,
     String firstName,
@@ -13,3 +15,4 @@ public record InstructorDto(
     String dept,
     LocalDateTime createdAt
 ) implements BaseUserDto{}
+

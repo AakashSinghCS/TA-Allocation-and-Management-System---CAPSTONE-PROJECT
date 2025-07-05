@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchAllStudentQualifications } from "../../../../../api/student/fetchAllStudentQualifications";
 import { fetchSubmitStudentQualifications } from "../../../../../api/student/fetchSubmitStudentQualifications";
 import type { DeptCodeQualificationResponse } from "../../../../../api/student/fetchAllDeptCodeQualifications";
+import { useAuth } from "../../../../../context/AuthContext";
 
 interface StudentQualificationTableProps {
     qualificationList: DeptCodeQualificationResponse[];
@@ -13,7 +14,7 @@ export default function StudentQualificationTable({
     studentId,
 }: StudentQualificationTableProps) {
     const [studentChecked, setStudentChecked] = useState<number[] | null>(null);
-
+    const isStudent = useAuth().userRoles.includes('STUDENT')
     useEffect(() => {
         fetchAllStudentQualifications(studentId).then((qIds) => {
             setStudentChecked(qIds ?? []);
@@ -25,6 +26,7 @@ export default function StudentQualificationTable({
     }
 
     const handleCheckboxChange = (id: number) => {
+      if(!isStudent) return;
         setStudentChecked((prev) => {
             if (!prev) return [];
             return prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
@@ -32,10 +34,13 @@ export default function StudentQualificationTable({
         );
     };
 
-    const onSubmit = (e: React.FormEvent) => {
+    const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if(!isStudent) return;
         // we know studentChecked is number[] here
-        fetchSubmitStudentQualifications(studentId, studentChecked);
+        const ok = await fetchSubmitStudentQualifications(studentId, studentChecked);
+        if(!ok) alert("Failed to submit!")
+        if(ok) alert("Submitted!");
     };
 
     // sort + filter out any items without a defined id
@@ -54,12 +59,12 @@ export default function StudentQualificationTable({
 
     return (
   <form onSubmit={onSubmit} className="space-y-4">
-    <table className="min-w-full table-auto border-collapse border rounded-lg overflow-hidden shadow-sm">
+    <table className="min-w-full table-auto border-collapse border border-gray-300 overflow-hidden">
       <thead className="bg-slate-100 text-left text-sm">
         <tr>
-          <th className="w-12 border px-2 py-2 text-center 2xl:text-lg">✓</th>
-          <th className="border px-4 py-2 2xl:text-lg">Qualification</th>
-          <th className="w-28 border px-3 py-2 text-right 2xl:text-lg">Course</th>
+          <th className="w-12 border border-gray-300 px-2 py-2 text-center 2xl:text-medium">✓</th>
+          <th className="border border-gray-300 px-4 py-2 2xl:text-medium">Qualification</th>
+          <th className="w-28 border border-gray-300 px-3 py-2 text-right 2xl:text-medium">Course</th>
         </tr>
       </thead>
 
@@ -74,7 +79,7 @@ export default function StudentQualificationTable({
                 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
               `}
             >
-              <td className="border px-2 py-2 text-center">
+              <td className="border border-gray-300 px-2 py-2 text-center">
                 <input
                   type="checkbox"
                   checked={studentChecked.includes(id)}
@@ -83,11 +88,11 @@ export default function StudentQualificationTable({
                 />
               </td>
 
-              <td className="border px-4 py-2">
+              <td className="border border-gray-300 px-4 py-2">
                 {qualification.description}
               </td>
 
-              <td className="border px-3 py-2 text-right font-medium">
+              <td className="border border-gray-300 px-3 py-2 text-right font-medium">
                 {course.deptCode} {course.courseNum}
               </td>
             </tr>
@@ -96,12 +101,13 @@ export default function StudentQualificationTable({
       </tbody>
     </table>
 
-    <button
+    {isStudent && <button
       type="submit"
-      className="w-full bg-[#040941] text-white py-2 rounded hover:bg-[#040491] transition-colors"
+      className="w-full bg-[#00c89c] text-white py-2 rounded hover:bg-[#c7fcec] transition-colors"
     >
       Save
     </button>
+}
   </form>
 );
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.infinity.courseservice.dtos.QualificationDtoWithId;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Qualification;
 
@@ -33,4 +34,10 @@ public interface QualificationRepository extends JpaRepository<Qualification, Lo
 
     @Query("SELECT q FROM Qualification q WHERE q.id IN :ids")
     List<Qualification> findAllByIds(@Param("ids") List<Long> ids);
+
+    boolean existsByCourseAndDescriptionAndDeptCode(
+        Course course, String description, String deptCode
+    );
+
+    List<Qualification> findAllByCourse(Course course);
 }

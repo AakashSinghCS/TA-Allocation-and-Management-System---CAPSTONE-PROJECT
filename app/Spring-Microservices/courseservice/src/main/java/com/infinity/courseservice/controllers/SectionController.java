@@ -18,6 +18,7 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionWithInstructorDto;
 import com.infinity.courseservice.models.Course;
@@ -33,10 +34,22 @@ public class SectionController {
 
     private final SectionService sectionService;
 
+
     @GetMapping("/get/{id}")
     public ResponseEntity<SectionWithInstructorDto> getSectionById(@PathVariable Long id) {
         return ResponseEntity.ok(sectionService.getSectionById(id));
     }
+
+     @GetMapping("/get/{id}")
+     public ResponseEntity<SectionDto> getSectionById(@PathVariable Long id) {
+         return ResponseEntity.ok(sectionService.getSectionById(id));
+     }
+
+     @GetMapping("/getIncludeInstructorId/{id}")
+     public ResponseEntity<SectionDtoWithInstructorId> getSectionWithInstructorIdById(@PathVariable Long id) {
+         return ResponseEntity.ok(sectionService.getSectionWithInstructorIdById(id));
+     }
+
     
      @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addSection/{courseId}")
@@ -81,13 +94,13 @@ public class SectionController {
         return ResponseEntity.ok(sectionService.deleteSectionSchedule(sectionScheduleId));
     }
 
-    @PreAuthorize("hasRole('COORDINATOR')")
+    @PreAuthorize("hasAnyRole('COORDINATOR','INSTRUCTOR')")
     @PostMapping("/assignInstructor")
     public ResponseEntity<String> assignInstructor(@RequestBody AssignInstructorRequest request) {
         return ResponseEntity.ok(sectionService.assignInstructor(request));
     }
 
-    @PreAuthorize("hasRole('COORDINATOR')")
+    @PreAuthorize("hasAnyRole('COORDINATOR','INSTRUCTOR')")
     @DeleteMapping("/unassignInstructor/{sectionId}/{instructorId}")
     public ResponseEntity<String> unassignInstructor(@PathVariable Long sectionId,
             @PathVariable Long instructorId) {

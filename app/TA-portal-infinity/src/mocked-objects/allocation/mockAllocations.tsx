@@ -4,7 +4,7 @@ import { mockStudentJohnDoe,mockStudentEmmaDoe } from "../user/mockStudents";
 export const mockAllocationJohnDoe : Allocation= {
     id:79,
     student: mockStudentJohnDoe,
-    isConfirmed: true,
+    status: 'CONFIRMED',
     numberOfHours: 6,
     // section: mockSectionCOSC121
 }
@@ -12,7 +12,7 @@ export const mockAllocationJohnDoe : Allocation= {
 export const mockAllocationEmmaDoe : Allocation= {
     id:79,
     student: mockStudentEmmaDoe,
-    isConfirmed: true,
+    status: 'CONFIRMED',
     numberOfHours: 6,
     // section: mockSectionCOSC121
 }

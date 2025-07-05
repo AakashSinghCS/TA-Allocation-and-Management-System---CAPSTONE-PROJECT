@@ -81,6 +81,8 @@ public class CourseController {
             @PathVariable Long instructorId) {
         return ResponseEntity.ok(courseService.getInstructorCourseNeedsAndAllocations(instructorId));
     }
+
+    
     
     @GetMapping("/allDeptCodes")
     public ResponseEntity<List<String>> getAllDeptCodes() {

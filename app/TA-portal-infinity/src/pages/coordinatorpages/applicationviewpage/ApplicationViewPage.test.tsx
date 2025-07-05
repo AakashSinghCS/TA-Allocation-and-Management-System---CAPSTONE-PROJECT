@@ -3,7 +3,7 @@ import ApplicationPage from './ApplicationViewPage';
 import * as AuthContext from '../../../context/AuthContext';
 import * as FetchApplications from '../../../api/application/FetchApplications';
 import * as FetchAllocationsByStudent from '../../../api/allocation/fetchAllocationByStudent';
-import * as FetchAllocationByIsConfirmed from '../../../api/allocation/fetchAllocationByIsConfirmed';
+import * as FetchAllocationByStatus from '../../../api/allocation/fetchAllocationByStatus';
 
 describe('ApplicationViewPage', () => {
   beforeEach(() => {
@@ -41,7 +41,7 @@ describe('ApplicationViewPage', () => {
     vi.spyOn(FetchAllocationsByStudent, 'fetchAllocationsByStudent').mockResolvedValue([
       {
         numberOfHours: 5,
-        isConfirmed: true,
+        status: 'CONFIRMED',
         section: {
           sectionDetails: {
             deptCode: 'COSC',
@@ -55,7 +55,7 @@ describe('ApplicationViewPage', () => {
         application: mockApp,
       },
     ]);
-    vi.spyOn(FetchAllocationByIsConfirmed, 'fetchAllocationByIsConfirmed').mockResolvedValue([]);
+    vi.spyOn(FetchAllocationByStatus, 'fetchAllocationByStatus').mockResolvedValue([]);
 
     render(<ApplicationPage />);
     await waitFor(() => expect(screen.getByText('Applications Overview')).toBeInTheDocument());

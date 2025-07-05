@@ -27,7 +27,7 @@ export default function StudentQualificationViewer({ studentId }: ViewerProps) {
       {/* 2) Once a dept is chosen, load its qualifications */}
       {selectedDeptCode && (
         <GenericAPIContainer<DeptCodeQualificationResponse[] | null>
-          fetchFunction={() => fetchAllDeptCodeQualifications()}
+          fetchFunction={() => fetchAllDeptCodeQualifications(selectedDeptCode)}
           render={(qualificationList) => (
             <StudentQualificationTable
               qualificationList={qualificationList || []}

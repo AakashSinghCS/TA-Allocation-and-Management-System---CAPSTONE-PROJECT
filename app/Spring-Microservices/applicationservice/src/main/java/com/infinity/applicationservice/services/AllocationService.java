@@ -10,6 +10,8 @@ import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.enums.ApplicationStatus;
+import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
 import com.infinity.applicationservice.feign.SectionInterface;
@@ -57,7 +59,7 @@ public class AllocationService {
         Allocation allocation = new Allocation();
         allocation.setApplication(application);
         allocation.setStudentId(request.studentId());
-        allocation.setConfirmed(false);
+        allocation.setStatus(ApplicationStatus.SENT);
         allocation.setNumberOfHours(request.numberOfHours());
         allocation.setSectionId(request.sectionId());
 
@@ -79,17 +81,17 @@ public class AllocationService {
     }
 
 
-    public void updateConfirmationStatus(Long allocationId, boolean status) {
+    public void updateConfirmationStatus(Long allocationId, ApplicationStatus status) {
         Allocation allocation = allocationRepository.findById(allocationId)
             .orElseThrow(() -> new EntityNotFoundException("Allocation not found"));
 
-        allocation.setConfirmed(status);
+        allocation.setStatus(status);
         allocationRepository.save(allocation);
     }
 
-    public List<AllocationHistoryDto> getAllocationsByConfirmationStatus(boolean status) {
+    public List<AllocationHistoryDto> getAllocationsByConfirmationStatus(ApplicationStatus status) {
         return allocationRepository.findAll().stream()
-            .filter(a -> a.isConfirmed() == status)
+            .filter(a -> a.getStatus() == status)
             .map(allocation -> {
                 StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
@@ -111,7 +113,11 @@ public class AllocationService {
             .collect(Collectors.toList());
     }
 
-    public List<AllocationHistoryDto> getAllocationsByApplicationId(Long appId) {
+    public List<AllocationHistoryDto> getAllocationsByApplicationId(Long appId, Long userIdFromHeader,
+            List<String> headerRoles) {
+        if (!allocationRepository.existsByStudentIdAndApplicationId(userIdFromHeader, appId) && !headerRoles.contains("ROLE_COORDINATOR")) {
+                    throw new AuthorizationException("You don't have permission to access this application");
+                }
         return allocationRepository.findAll().stream()
             .filter(a -> a.getApplication() != null && a.getApplication().getId().equals(appId))
             .map(allocation -> {
@@ -136,4 +142,15 @@ public class AllocationService {
             .collect(Collectors.toList());
         }
 
+        public List<AllocationHistoryDto> getAllocationsBySectionIdWithCourse(Long sectionId) {
+        return allocationRepository.findAll().stream()
+            .filter(a -> a.getSectionId().equals(sectionId))
+            .map(allocation -> {
+                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+                ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
+                return allocationMapper.toDto(allocation, student, applicationDto, section );
+            })
+            .collect(Collectors.toList());
+    }
 }

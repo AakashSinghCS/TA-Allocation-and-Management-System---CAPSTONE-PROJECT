@@ -87,7 +87,7 @@ function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null })
           ) : null))}
       <button
         type="submit"
-        className="px-4 py-2 bg-blue-600 text-white rounded"
+        className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors"
       >
         Save answers
       </button>

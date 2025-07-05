@@ -27,8 +27,14 @@ import ResetPasswordPage from "../pages/resetpasswordpage/ResetPasswordPage";
 import UserBrowsingPage from "../pages/userbrowsingpage/UserBrowsingPage";
 import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
 import SignUpPage from "../pages/signupPage/SignUpPage";
+import CourseProfilePage from "../pages/courseprofilepage/CourseProfilePage";
 import SectionListPage from "../pages/coursepage/SectionListPage";
 import AddSectionPage from "../pages/coursepage/AddSectionPage";
+import InstructorAddSectionPage from "../pages/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage";
+import InstructorAddNeedPage from "../pages/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage";
+import AddAllocationHistory from "../pages/taprofilepage/addallocationhistory/AddAllocationHistory";
+import AddEnrolledCourse from "../pages/taprofilepage/coursestakenpage/addenrolledcourse/AddEnrolledCourse";
+import ViewApplicationPage from "../pages/studentpages/viewapplicationpage/ViewApplicationPage";
 import ApplicationViewPage from "../pages/coordinatorpages/applicationviewpage/ApplicationViewPage";
 
 export const router = createBrowserRouter([
@@ -41,11 +47,13 @@ export const router = createBrowserRouter([
       { path: "taprofile/:studentId/coursesTaken", element: <CoursesTakenPage /> },
       { path: "taprofile/:studentId/compare", element: <StudentComparerPage /> },
       { path: "taprofile/:studentId/qualifications", element: <StudentQualificationPage /> },
-
       { path: "instructorprofile/:instructorId", element: <InstructorProfilePage /> },
       { path: "instructorprofile/:instructorId/need", element: <InstructorNeedPage /> },
       { path: "instructorprofile/:instructorId/compare", element: <InstructorComparerPage /> },
       { path: "instructorprofile/:instructorId/qualifications", element: <InstructorQualificationPage /> },
+
+      { path: "sectionprofile/:sectionId", element: <CourseProfilePage /> },
+      { path: "courseprofile/:courseId", element: <CourseProfilePage /> },
       // STUDENT routes
       {
         path: "student",
@@ -57,7 +65,10 @@ export const router = createBrowserRouter([
         children: [
           { path: "home", element: <StudentHomePage /> },
           { path: "application", element: <ApplicationPage /> },
-          { path: "questions/:studentId", element: < TaQuestionnairePage/> },
+          { path: "view-applications", element: <ViewApplicationPage /> },
+          { path: "questions/:studentId", element: <TaQuestionnairePage /> },
+          { path: "addallocation", element: <AddAllocationHistory/>},
+          { path: "addenrollment", element: <AddEnrolledCourse/>},
           { path: "error", element: <ErrorPage /> },
         ],
       },
@@ -73,6 +84,9 @@ export const router = createBrowserRouter([
         children: [
           { path: "home", element: <InstructorHomePage /> },
           { path: "browseuser", element: <UserBrowsingPage /> },
+          { path: "addsection", element: <InstructorAddSectionPage /> },
+          { path: "updateprereqcourses/:courseId/:year/:semester", element: <InstructorAddSectionPage mode="update"/> },
+          { path: "addneed/:sectionId", element: <InstructorAddNeedPage /> },
           { path: "error", element: <ErrorPage /> },
         ],
       },
