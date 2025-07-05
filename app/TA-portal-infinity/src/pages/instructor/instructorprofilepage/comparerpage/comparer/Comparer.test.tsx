@@ -1,11 +1,11 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Comparer from "./Comparer";
-import { mockStudentJohnDoe, mockStudentEmmaDoe } from "../../../../mocked-objects/user/mockStudents";
-import { mockSectionCOSC121 } from "../../../../mocked-objects/section/mockSectionCOSC121";
+import { mockStudentJohnDoe, mockStudentEmmaDoe } from "../../../../../mocked-objects/user/mockStudents";
+import { mockSectionCOSC121 } from "../../../../../mocked-objects/section/mockSectionCOSC121";
 
 
-vi.mock("../../../../components/ui/searchuserbar/SearchUserBar", () => ({
+vi.mock("../../../../../components/ui/user/searchuserbar/SearchUserBar", () => ({
   useUserSearch: (): any => ({
     searchedUsers: [mockStudentJohnDoe, mockStudentEmmaDoe],
     loading: false,

@@ -27,7 +27,7 @@ const mockFetchAddNeed = vi.fn();
 vi.mock('../../../../../api/section/fetchSectionIncludeInstructorId', () => ({
   fetchSectionIncludeInstructorId: (...args: any[]) => mockFetchSection(...args),
 }));
-vi.mock('../../../../../api/sectionfilter/fetchFilteredSections', () => ({
+vi.mock('../../../../../api/course/sectionfilter/fetchFilteredSections', () => ({
   fetchFilteredSections: (...args: any[]) => mockFetchFiltered(...args),
 }));
 vi.mock('../../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections', () => ({
@@ -82,16 +82,25 @@ describe('<InstructorAddNeedPage />', () => {
 
     // Mock initial fetchSection
     mockFetchSection.mockResolvedValue({
-      sectionDetails: { id: 99, deptCode: 'CS', courseNum: '101', name: 'Intro', sectionId: 1 },
+      course:{
+        id: 99, deptCode: 'CS', courseNum: '101', name: 'Intro',
+      },
+      id: 1
     });
 
     // Mock filtering
-    mockFetchFiltered.mockResolvedValue([
-      { sectionDetails: { id: 88, deptCode: 'MATH', courseNum: '125', name: 'Calc', sectionId: 2 } },
-    ]);
-    mockConvert.mockReturnValue([
-      { sectionDetails: { id: 88, deptCode: 'MATH', courseNum: '125', name: 'Calc', sectionId: 2 } },
-    ]);
+    mockFetchFiltered.mockResolvedValue([{
+      course:{
+        id: 88, deptCode: 'MATH', courseNum: '125', name: 'Calc',
+      },
+      id: 2
+  }]);
+    mockConvert.mockReturnValue([{
+      course:{
+        id: 88, deptCode: 'MATH', courseNum: '125', name: 'Calc',
+      },
+      id: 2
+  }]);
 
     // Mock addNeed success
     mockFetchAddNeed.mockResolvedValue(true);
@@ -128,13 +137,13 @@ it('loads section, filters courses, selects prereq and submits', async () => {
     expect(mockFetchAddNeed).toHaveBeenCalledWith(
       expect.objectContaining({
         section: {
-          sectionDetails: {
+          id:1,
+          course:{
             id: 99,
             deptCode: 'CS',
             courseNum: '101',
             name: 'Intro',
-            sectionId: 1,
-          },
+          }
         },
       })
     );

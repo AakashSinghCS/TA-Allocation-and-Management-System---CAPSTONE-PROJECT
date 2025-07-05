@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import bgImage from '../../assets/ubc_image.png?url';
+import bgImage from '../../../assets/ubc_image.png?url';
 import Navbar from '../../../components/layout/login_navbar/Navbar';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
 

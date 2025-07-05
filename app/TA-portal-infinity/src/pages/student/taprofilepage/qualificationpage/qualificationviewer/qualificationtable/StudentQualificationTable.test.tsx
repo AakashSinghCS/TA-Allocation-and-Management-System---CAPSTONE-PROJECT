@@ -11,7 +11,7 @@ vi.mock('../../../../../../context/AuthContext', () => ({
 vi.mock('../../../../../../api/student/qualification/fetchAllStudentQualifications', () => ({
   fetchAllStudentQualifications: vi.fn().mockResolvedValue([1]),
 }));
-vi.mock('../../../../....//api/student/qualification/fetchSubmitStudentQualifications', () => ({
+vi.mock('../../../../../../api/student/qualification/fetchSubmitStudentQualifications', () => ({
   fetchSubmitStudentQualifications: vi.fn(),
 }));
 

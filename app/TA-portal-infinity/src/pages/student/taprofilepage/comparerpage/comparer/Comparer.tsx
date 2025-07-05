@@ -7,7 +7,7 @@ import { GenericAPIContainer } from '../../../../../utility/genericapicontainer/
 import { fetchAllStudentSectionsHasCompleted } from '../../../../../api/student/fetchAllStudentSectionsHasCompleted';
 import SectionsColumn from '../../../../../components/features/section/sectionscolumn/SectionsColumn';
 import type { Course } from '../../../../../interfaces/course/Course';
-import rightArrow from '../../../../assets/icons/right_arrow_black_border_transparent.png'
+import rightArrow from '../../../../../assets/icons/right_arrow_black_border_transparent.png';
 
 interface ComparerProps {
     studentId: number;
@@ -135,7 +135,7 @@ export default function Comparer({ studentId, className }: ComparerProps) {
                         {filtered.map((sec) => {
                             const isSelected = selectedSection && sec.course?.id === selectedSection.course?.id;
                             const cardClass = `cursor-pointer ${isSelected ? "outline-1 outline-offset-[-1px] outline-yellow-400" : ""}`;
-                            return <span key={sec.course?.id} onClick={() => handleClickSection(sec)}><SectionCard section={sec} className={cardClass} /></span>
+                            return <span key={sec?.id} onClick={() => handleClickSection(sec)}><SectionCard section={sec} className={cardClass} /></span>
                         })}
                     </div>
                 ) : (

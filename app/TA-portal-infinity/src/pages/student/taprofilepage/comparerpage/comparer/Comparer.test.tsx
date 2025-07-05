@@ -55,23 +55,22 @@ describe('<Comparer />', () => {
 
 
     await waitFor(() => {
-      const allCards = screen.getAllByTestId('section-card-1');
-      const highlightedCard = allCards.find((card) =>
-        card.className.includes('outline-green-400')
-      );
-      expect(highlightedCard).toBeTruthy();
-    })
+      const highlighted = screen
+        .getAllByTestId(/^section-card-/)      // grab every card
+        .find(card => card.className.includes('outline-green-400'));
+      expect(highlighted).toBeTruthy();        // will be the COSC 111 card
+    });
 
     const cosc111 = screen.getAllByText(/cosc\s*111/i);
     fireEvent.click(cosc111[0]);
     expect(exactBtn).toBeEnabled();
     fireEvent.click(exactBtn);
+
     await waitFor(() => {
-      const allCards = screen.getAllByTestId('section-card-1');
-      const highlightedCard = allCards.find((card) =>
-        card.className.includes('outline-blue-400')
-      );
-      expect(highlightedCard).toBeTruthy();
-    })
+      const highlighted = screen
+        .getAllByTestId(/^section-card-/)      // grab every card
+        .find(card => card.className.includes('outline-blue-400'));
+      expect(highlighted).toBeTruthy();        // will be the COSC 111 card
+    });
   });
 });

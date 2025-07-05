@@ -7,7 +7,7 @@ import type Section from "../../../../interfaces/section/Section";
 import type SectionSchedule from "../../../../interfaces/section/SectionSchedule";
 import { fetchUpdateSectionSchedule } from "../../../../api/section/sectionschedule/fetchUpdateSectionSchedule";
 import { fetchAddSectionSchedule } from "../../../../api/section/sectionschedule/fetchAddSectionSchedule";
-import { fetchSection } from "../../../../api/section/fetchSectionIncludeInstructorId";
+import { fetchSectionIncludeInstructorId } from "../../../../api/section/fetchSectionIncludeInstructorId";
 import { fetchUpdateSectionDetails } from "../../../../api/section/fetchUpdateSectionDetails";
 import { fetchDeleteSection } from "../../../../api/section/fetchDeleteSection";
 import { useNavigate } from "react-router-dom";
@@ -44,7 +44,7 @@ export default function SectionProfileDetailsSection({
     } else {
       ok = await fetchAddSectionSchedule(id, sched);
     }
-    const updated = await fetchSection(id);
+    const updated = await fetchSectionIncludeInstructorId(id);
     setSection(updated ?? {});
     return ok;
   };
@@ -68,7 +68,7 @@ export default function SectionProfileDetailsSection({
           labels={labels}
           onSave={async updates => {
             const ok = await fetchUpdateSectionDetails(section?.id ?? -1, updates);
-            if (ok) setSection(await fetchSection(section.course?.id ?? -1))
+            if (ok) setSection(await fetchSectionIncludeInstructorId(section.course?.id ?? -1))
             setIsEditingProfile(false);
           }}
           onCancel={cancelProfileEdit}

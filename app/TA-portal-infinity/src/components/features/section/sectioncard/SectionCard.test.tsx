@@ -27,7 +27,7 @@ describe("SectionCard", () => {
     const metaLine = `${section!.type} | ${section?.year} | ${section!.semester}`;
 
     const card = screen.getByTestId(
-      `section-card-${section.course!.id}`
+      `section-card-${section!.id}`
     );
 
     // assert that both title and meta-info appear inside the card

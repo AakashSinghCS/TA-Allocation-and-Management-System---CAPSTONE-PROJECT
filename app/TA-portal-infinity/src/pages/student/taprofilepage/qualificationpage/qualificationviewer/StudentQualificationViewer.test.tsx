@@ -7,10 +7,10 @@ import { mockDeptCodeQualificationResponse } from '../../../../../mocked-objects
 
 const mockDeptCodes = ['COSC', 'MATH'];
 const mockQualifications = mockDeptCodeQualificationResponse; 
-vi.mock('../../../../context/AuthContext', () => ({
+vi.mock('../../../../../context/AuthContext', () => ({
   useAuth: () => ({ userRoles: ['STUDENT'] as const }),
 }));
-vi.mock('../../../../../api/student/fetchAllStudentQualifications', () => ({
+vi.mock('../../../../../api/student/qualification/fetchAllStudentQualifications', () => ({
   fetchAllStudentQualifications: vi.fn().mockResolvedValue([]), 
 }));
 

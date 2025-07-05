@@ -76,7 +76,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
 
       {/* Section rows */}
       {sections.map((sec) => (
-        <div key={sec.course?.id} className="grid gap-2 sm:grid-cols-1 lg:grid-cols-3">
+        <div key={sec?.id} className="grid gap-2 sm:grid-cols-1 lg:grid-cols-3">
           <SectionCard section={sec} className="" onDelete={onDeleteSection} />
 
           {/* Need column */}

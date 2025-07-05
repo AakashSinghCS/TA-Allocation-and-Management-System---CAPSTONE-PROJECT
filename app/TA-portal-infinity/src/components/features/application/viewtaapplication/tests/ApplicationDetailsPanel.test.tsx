@@ -23,12 +23,13 @@ describe('ApplicationDetailsPanel', () => {
       numberOfHours: 8,
       status: 'REJECTED',
       section: {
-        sectionDetails: {
+      
+        semester: 'S',
+        year: 2024,
+        type: 'TUTORIAL',
+        course:{
           deptCode: 'COSC',
           courseNum: '121',
-          semester: 'S',
-          year: 2024,
-          type: 'TUTORIAL',
         },
         instructor: { firstName: 'Bob', lastName: 'Brown' },
       },

@@ -25,7 +25,7 @@ export default function SectionCard({
 
   return (
     <div
-      data-testid={`section-card-${section.course?.id}`}
+      data-testid={`section-card-${section?.id}`}
       className={`${className} relative w-full overflow-hidden rounded-lg border border-slate-200 p-2 bg-slate-50`}
     >
       {onDelete && (
@@ -44,7 +44,7 @@ export default function SectionCard({
           {
             section?.id ? <Link
             to={`/user/sectionprofile/${section?.id}`}
-            data-testid={`section-link-${section.course?.id}`}
+            data-testid={`section-link-${section?.id}`}
             title="Go to course profile page"
             className={`${big?"text-md":"text-sm"} font-medium whitespace-nowrap 2xl:text-base hover:text-blue-600`}
           >

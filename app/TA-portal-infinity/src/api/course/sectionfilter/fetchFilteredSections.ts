@@ -1,21 +1,21 @@
-import type Section from "../../interfaces/section/Section";
-import type { SectionType } from "../../interfaces/section/SectionDetails";
-import { mockSectionCOSC111 } from "../../mocked-objects/section/mockSectionCOSC111";
+import type Section from "../../../interfaces/section/Section";
+import type { SectionType } from "../../../interfaces/section/SectionDetails";
+import { mockSectionCOSC111 } from "../../../mocked-objects/section/mockSectionCOSC111";
 
-export interface FilterSectionsProps{
-sectionId? : number | null;
-courseId? : number | null;
-   deptCode? : string | null;
-   name? : string | null ;
-   courseNum? : string | null;
-   section? : string | null;
-   year? : number | null;
-   semester? : string | null;
-   type? : SectionType | null;
-   day ?: string | null;
-   startTime ?: string | null; //14:00. LocalTime type in backend.
-   endTime? : string | null;
-   isCourse? : boolean | null;
+export interface FilterSectionsProps {
+    sectionId?: number | null;
+    courseId?: number | null;
+    deptCode?: string | null;
+    name?: string | null;
+    courseNum?: string | null;
+    section?: string | null;
+    year?: number | null;
+    semester?: string | null;
+    type?: SectionType | null;
+    day?: string | null;
+    startTime?: string | null; //14:00. LocalTime type in backend.
+    endTime?: string | null;
+    isCourse?: boolean | null;
 }
 
 export async function fetchFilteredSections(filters: FilterSectionsProps): Promise<FilterSectionsProps[] | null> {

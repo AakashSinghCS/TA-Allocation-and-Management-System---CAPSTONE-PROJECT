@@ -21,7 +21,7 @@ vi.mock('react-router-dom', async () => {
 });
 
 // mock your API modules
-vi.mock('../../../../../api/sectionfilter/fetchFilteredSections', () => ({
+vi.mock('../../../../../api/course/sectionfilter/fetchFilteredSections', () => ({
   fetchFilteredSections: (...args: any[]) => mockFetchFiltered(...args),
 }));
 vi.mock('../../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections', () => ({
@@ -72,9 +72,9 @@ describe('<InstructorAddSectionPage /> (add mode)', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     // prepare fetchFilteredSections -> raw data
-    mockFetchFiltered.mockResolvedValue([{ sectionDetails: { sectionId: 42 } }]);
+    mockFetchFiltered.mockResolvedValue([{  id: 42  }]);
     // convert -> typed Section[]
-    mockConvert.mockReturnValue([{ sectionDetails: { sectionId: 42 } }]);
+    mockConvert.mockReturnValue([{  id: 42  }]);
     // assign -> success
     mockAssign.mockResolvedValue(true);
   });
@@ -93,7 +93,9 @@ describe('<InstructorAddSectionPage /> (add mode)', () => {
     expect(list).toBeInTheDocument();
 
     // ensure fetchFilteredSections was called with the dummy filter
-    expect(mockFetchFiltered).toHaveBeenCalledWith({ foo: 'bar' });
+    await waitFor(() => {
+      expect(mockFetchFiltered).toHaveBeenCalledWith({ foo: 'bar' });
+    });
 
     // now click the "Select 42" button
     fireEvent.click(screen.getByTestId('select-42'));

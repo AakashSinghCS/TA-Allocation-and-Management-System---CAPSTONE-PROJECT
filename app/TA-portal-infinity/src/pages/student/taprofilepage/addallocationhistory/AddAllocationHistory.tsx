@@ -23,11 +23,9 @@ export default function AddAllocationHistory() {
     // ensure every Section has a sectionDetails.sectionId+    
      const sectionsWithSids: Section[] = fetched.map(sec => ({
       ...sec,
-      sectionDetails: {
-        ...sec,
         // if the real sectionId is missing, fall back to the course‐level id
-       sectionId: sec?.id ?? sec.course?.id ?? -1
-      }
+       id: sec?.id ?? sec.course?.id ?? -1
+      
     }));
 
     setSelectedSections(sectionsWithSids);
@@ -111,9 +109,9 @@ export default function AddAllocationHistory() {
         </div>
       </div>
 
-//       <div className="border p-4 rounded-md shadow-sm mb-4">
-//         <SectionFilter onFilterChange={handleFilterChange} mode="large" />
-//       </div>
+       <div className="border p-4 rounded-md shadow-sm mb-4">
+         <SectionFilter onFilterChange={handleFilterChange} mode="large" />
+       </div>
 
       {loading ? (
         <p>Loading sections…</p>

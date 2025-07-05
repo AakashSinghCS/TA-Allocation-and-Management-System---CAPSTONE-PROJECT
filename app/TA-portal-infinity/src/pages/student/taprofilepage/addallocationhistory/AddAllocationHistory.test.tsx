@@ -5,13 +5,13 @@ import AddAllocationHistory from './AddAllocationHistory';
 
 // ---------- helpers ----------
 const makeSection = (id: number) => ({
-  id,
-  sectionDetails: {
-    sectionId: id,
+  id: id,
+  course:{
+    id: id,
     deptCode: 'COSC',
     courseNum: '101',
     name: `Intro ${id}`,
-  },
+  }
 });
 
 // ---------- global mocks ----------

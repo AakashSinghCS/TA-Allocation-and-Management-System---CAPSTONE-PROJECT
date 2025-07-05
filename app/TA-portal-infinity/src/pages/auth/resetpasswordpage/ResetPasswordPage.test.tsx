@@ -8,7 +8,7 @@ vi.mock('../../../components/layout/login_navbar/Navbar', () => ({
   default: () => <div data-testid="navbar" />,
 }));
 // bg image
-vi.mock('../../assets/ubc_image.png?url', () => ({
+vi.mock('../../../assets/ubc_image.png?url', () => ({
   default: 'bg.png',
 }));
 
