@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import Comparer from "./comparer/Comparer";
-import InstructorTabNav from "../../../components/layout/tabnav/instructortabnav/InstructorTabNav";
-import { GenericAPIContainer } from "../../../utility/genericapicontainer/GenericAPIContainer";
-import { fetchAllSectionsAndNeedAndAllocations } from "../../../api/instructor/fetchAllSectionsAndNeedAndAllocations";
-import type Section from "../../../interfaces/section/Section";
+import InstructorTabNav from "../../../../components/layout/tabnav/instructortabnav/InstructorTabNav";
+import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
+import { fetchAllSectionsAndNeedAndAllocations } from "../../../../api/instructor/fetchAllSectionsAndNeedAndAllocations";
+import type Section from "../../../../interfaces/section/Section";
 
 
 export default function InstructorComparerPage (){

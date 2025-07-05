@@ -1,6 +1,3 @@
-import { mockDeptCodeQualificationResponse } from "../../mocked-objects/qualification/mockDeptCodeQualificationResponse";
-
-
 
 export async function fetchAllStudentQualifications(studentId: number): Promise<number[] | null> {
   const BASE = `http://localhost:8080/qualifications/findByStudentId/${studentId}`;

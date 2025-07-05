@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { fetchAllProfileQuestions } from "../../api/question/fetchAllProfileQuestions";
-import type { ProfileQuestion } from "../../interfaces/question/ProfileQuestion";
-import { GenericAPIContainer } from "../../utility/genericapicontainer/GenericAPIContainer";
-import QuestionItem from "../../components/features/questionanswer/questionitem/QuestionItem";
-import { fallbackTempId, toObjectWithTempId } from "../../utility/fallbackTempId/fallbackTempId";
+import { fetchAllProfileQuestions } from "../../../api/question/fetchAllProfileQuestions";
+import type { ProfileQuestion } from "../../../interfaces/question/ProfileQuestion";
+import { GenericAPIContainer } from "../../../utility/genericapicontainer/GenericAPIContainer";
+import QuestionItem from "../../../components/features/questionanswer/questionitem/QuestionItem";
+import { fallbackTempId, toObjectWithTempId } from "../../../utility/fallbackTempId/fallbackTempId";
 
 
 //TODO: Confirm with the coordinator first when he clicks submit! Explain the consequences of the submit. 
