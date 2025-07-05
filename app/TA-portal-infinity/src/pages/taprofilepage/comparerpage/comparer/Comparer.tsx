@@ -88,7 +88,7 @@ export default function Comparer({ studentId, className }: ComparerProps) {
 
     const handleExactMatch = () => {
         if (!selectedSection) return;
-        setExactMatchId(selectedSection.sectionDetails?.id ?? null);
+        setExactMatchId(selectedSection.course?.id ?? null);
         setHighlightCourseIds([]);
         setNeededCourses([]);
     };
@@ -133,9 +133,9 @@ export default function Comparer({ studentId, className }: ComparerProps) {
                 {filtered.length ? (
                     <div className="grid gap-1">
                         {filtered.map((sec) => {
-                            const isSelected = selectedSection && sec.sectionDetails?.id === selectedSection.sectionDetails?.id;
+                            const isSelected = selectedSection && sec.course?.id === selectedSection.course?.id;
                             const cardClass = `cursor-pointer ${isSelected ? "outline-1 outline-offset-[-1px] outline-yellow-400" : ""}`;
-                            return <span key={sec.sectionDetails?.id} onClick={() => handleClickSection(sec)}><SectionCard section={sec} className={cardClass} /></span>
+                            return <span key={sec.course?.id} onClick={() => handleClickSection(sec)}><SectionCard section={sec} className={cardClass} /></span>
                         })}
                     </div>
                 ) : (

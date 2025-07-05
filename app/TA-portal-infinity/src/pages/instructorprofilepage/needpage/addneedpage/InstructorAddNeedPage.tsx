@@ -88,7 +88,7 @@ export default function InstructorAddNeedPage() {
     <div className="container mx-auto p-4 w-full max-w-3xl">
       <h2 className="text-2xl font-bold mb-4">
         {section
-          ? `${section.sectionDetails?.deptCode} ${section.sectionDetails?.courseNum} – ${section.sectionDetails?.name}`
+          ? `${section.course?.deptCode} ${section.course?.courseNum} – ${section.course?.name}`
           : "Loading section..."}
       </h2>
 

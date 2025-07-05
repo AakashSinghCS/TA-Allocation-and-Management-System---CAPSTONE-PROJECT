@@ -60,18 +60,18 @@ vi.mock('../../../../components/features/course/sectionlist/SectionList', () => 
     <div data-testid="section-list">
       {sections?.map((s) => (
         <button
-          key={s.sectionDetails?.sectionId}
-          data-testid={`select-course-${s.sectionDetails?.sectionId}`}
+          key={s?.id}
+          data-testid={`select-course-${s?.id}`}
           onClick={() =>
             onSelectCourse(
-              s.sectionDetails!.id!,
-              s.sectionDetails!.deptCode!,
-              s.sectionDetails!.courseNum!,
-              s.sectionDetails!.name!
+              s.course!.id!,
+              s.course!.deptCode!,
+              s.course!.courseNum!,
+              s.course!.name!
             )
           }
         >
-          Add {s.sectionDetails?.deptCode}{s.sectionDetails?.courseNum}
+          Add {s.course?.deptCode}{s.course?.courseNum}
         </button>
       ))}
     </div>

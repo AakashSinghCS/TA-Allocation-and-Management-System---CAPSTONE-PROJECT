@@ -2,7 +2,7 @@ import React, { useState, useEffect , useMemo } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { getDayNumber } from '../../utility/calendar/calendarUtils';
-import type { SectionDetails } from '../../interfaces/section/SectionDetails';
+import type  SectionDetails  from '../../interfaces/section/SectionDetails';
 import type Section from '../../interfaces/section/Section';
 import { useAuth } from '../../context/AuthContext';
 import type { ApplicationDto } from '../../interfaces/application/Application';
@@ -54,9 +54,9 @@ const TAAllocationPage: React.FC = () => {
   const [selApp, setSelApp] = useState<ApplicationDto | null>(null);
 
   const loadCourse = async (details: SectionDetails) => {
-  if (!details.sectionId) return;
+  if (!details.id) return;
   try {
-    const full = await fetchSectionInfo(details.sectionId, token!);
+    const full = await fetchSectionInfo(details.id, token!);
     setSelCourse({
       ...full,
       hasCompleted: !!(
@@ -70,15 +70,15 @@ const TAAllocationPage: React.FC = () => {
   }
 };
   const onSend = () => {
-    if (!selApp || !selCourse?.sectionDetails?.sectionId || !selCourse.need) return;
+    if (!selApp || !selCourse?.id || !selCourse.need) return;
     
     sendOffer(
       selApp,
-      selCourse.sectionDetails.sectionId,
+      selCourse.id,
       selCourse.need,
       hasAvailabilityMatch,
       async () => {
-        await loadCourse(selCourse.sectionDetails!);
+        await loadCourse(selCourse!);
         setShowBanner(true);
       }
     );
@@ -176,7 +176,7 @@ const events = [
         if (!selApp || !selCourse) return false;
         return history.some(h =>
           h.application?.applicationId === selApp.applicationId &&
-          h.section?.sectionDetails?.sectionId === selCourse.sectionDetails?.sectionId
+          h.section?.id === selCourse?.id
         );
       }, [history, selApp, selCourse]);
 
@@ -197,16 +197,16 @@ const events = [
               <h1 className="font-semibold text-xl mt-2">Please select a course*</h1>
               <div className="max-h-48 overflow-auto grid gap-2">
                 {filteredSections.map(s => {
-                  const isSelected = selCourse?.sectionDetails?.sectionId === s.sectionDetails?.sectionId;
+                  const isSelected = selCourse?.id === s?.id;
                   return (
                     <button
-                      key={s.sectionDetails?.sectionId}
-                      onClick={() => loadCourse(s.sectionDetails!)}
+                      key={s?.id}
+                      onClick={() => loadCourse(s!)}
                       className={`w-full text-left px-3 py-2 rounded transition ${
                         isSelected ? 'bg-gray-900 text-white' : 'bg-gray-300 hover:bg-gray-600'
                       }`}
                     >
-                      {s.sectionDetails?.deptCode} {s.sectionDetails?.courseNum} • {s.sectionDetails?.section} • {s.sectionDetails?.semester} {s.sectionDetails?.year}
+                      {s.course?.deptCode} {s.course?.courseNum} • {s?.section} • {s?.semester} {s?.year}
                     </button>
                   );
                 })}
@@ -217,15 +217,15 @@ const events = [
             </>
           )}
          
-          {selCourse?.need && selCourse.sectionDetails && (
+          {selCourse?.need && selCourse && (
               <div className="mt-6 border-t pt-6 space-y-6">
                 {/* section details */}
                 <section>
                   <h2 className="font-bold text-lg">Section Details</h2>
                   <div className="space-y-1 pl-2 text-sm">
-                    <p><strong>Year &amp; Semester:</strong> {selCourse.sectionDetails.semester} {selCourse.sectionDetails.year}</p>
-                    <p><strong>Section:</strong> {selCourse.sectionDetails.section}</p>
-                    <p><strong>Type:</strong> {selCourse.sectionDetails.type}</p>
+                    <p><strong>Year &amp; Semester:</strong> {selCourse.semester} {selCourse.year}</p>
+                    <p><strong>Section:</strong> {selCourse.section}</p>
+                    <p><strong>Type:</strong> {selCourse.type}</p>
                   </div>
                 </section>
 
@@ -275,7 +275,7 @@ const events = [
 
           </div>
           <FullCalendar
-            key={selCourse?.sectionDetails?.sectionId ?? 'none'}
+            key={selCourse?.id ?? 'none'}
             plugins={[timeGridPlugin]}
             initialView="timeGridWeek"
             headerToolbar={false}
@@ -346,9 +346,9 @@ const events = [
               </strong>{' '}
               for{' '}
               <strong>
-                {selCourse.sectionDetails?.deptCode}{' '}
-                {selCourse.sectionDetails?.courseNum}{' '}
-                Section {selCourse.sectionDetails?.section}
+                {selCourse.course?.deptCode}{' '}
+                {selCourse.course?.courseNum}{' '}
+                Section {selCourse?.section}
               </strong>
               .{' '}
               {showBanner

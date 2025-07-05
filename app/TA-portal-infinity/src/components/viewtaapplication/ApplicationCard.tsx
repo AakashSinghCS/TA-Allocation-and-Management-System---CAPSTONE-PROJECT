@@ -82,10 +82,10 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, allocations, isA
                 {allocations.map((alloc, idx) => (
                   <li key={idx} className="ml-1">
                     <div className="text-xs space-y-0.5">
-                      <div><strong>Section:</strong> {alloc.section?.sectionDetails?.deptCode} {alloc.section?.sectionDetails?.courseNum}</div>
-                      <div><strong>Semester:</strong> {alloc.section?.sectionDetails?.semester ? alloc.section.sectionDetails.semester : <span className="text-gray-400">N/A</span>}</div>
-                      <div><strong>Year:</strong> {alloc.section?.sectionDetails?.year ? alloc.section.sectionDetails.year : <span className="text-gray-400">N/A</span>}</div>
-                      <div><strong>Type:</strong> {alloc.section?.sectionDetails?.type ? alloc.section.sectionDetails.type : <span className="text-gray-400">N/A</span>}</div>
+                      <div><strong>Section:</strong> {alloc.section?.course?.deptCode} {alloc.section?.course?.courseNum}</div>
+                      <div><strong>Semester:</strong> {alloc.section?.semester ? alloc.section.semester : <span className="text-gray-400">N/A</span>}</div>
+                      <div><strong>Year:</strong> {alloc.section?.year ? alloc.section.year : <span className="text-gray-400">N/A</span>}</div>
+                      <div><strong>Type:</strong> {alloc.section?.type ? alloc.section.type : <span className="text-gray-400">N/A</span>}</div>
                       <div><strong>Allocated Hours:</strong> {alloc.numberOfHours}</div>
                       <div><strong>Status:</strong> {alloc.status ? alloc.status.charAt(0) + alloc.status.slice(1).toLowerCase() : 'N/A'}</div>
                       <div><strong>Instructor:</strong> {alloc.section?.instructor && typeof alloc.section.instructor === 'object' && 'firstName' in alloc.section.instructor

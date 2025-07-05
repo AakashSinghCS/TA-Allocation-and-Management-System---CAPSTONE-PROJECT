@@ -37,7 +37,7 @@ export default function SectionProfileDetailsSection({
   // Save schedule and refresh
   const handleSaveSchedule = async (sched: SectionSchedule, isUpdate: boolean): Promise<boolean> => {
     if (!section) return false;
-    const id = section.sectionDetails!.sectionId!;
+    const id = section!.id!;
     let ok = false;
     if (isUpdate) {
       ok = await fetchUpdateSectionSchedule(sched.id ?? -1, sched);
@@ -54,7 +54,7 @@ export default function SectionProfileDetailsSection({
   const cancelProfileEdit = () => setIsEditingProfile(false);
   const deleteCourse = async () => {
     //alert user here
-    const ok = await fetchDeleteSection(section?.sectionDetails?.sectionId ?? -1);
+    const ok = await fetchDeleteSection(section?.id ?? -1);
     if (ok) navigate(-1);
   }
 
@@ -62,13 +62,13 @@ export default function SectionProfileDetailsSection({
     <div className="relative">
       {section && isEditingProfile ? (
         <EditSectionProfileSection
-          sectionId={section.sectionDetails?.id ?? -1}
-          section={section.sectionDetails!}
+          sectionId={section.course?.id ?? -1}
+          section={section!}
           fields={fields}
           labels={labels}
           onSave={async updates => {
-            const ok = await fetchUpdateSectionDetails(section.sectionDetails?.sectionId ?? -1, updates);
-            if (ok) setSection(await fetchSection(section.sectionDetails?.id ?? -1))
+            const ok = await fetchUpdateSectionDetails(section?.id ?? -1, updates);
+            if (ok) setSection(await fetchSection(section.course?.id ?? -1))
             setIsEditingProfile(false);
           }}
           onCancel={cancelProfileEdit}

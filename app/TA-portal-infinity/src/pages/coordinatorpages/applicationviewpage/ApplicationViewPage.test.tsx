@@ -4,6 +4,7 @@ import * as AuthContext from '../../../context/AuthContext';
 import * as FetchApplications from '../../../api/application/FetchApplications';
 import * as FetchAllocationsByStudent from '../../../api/allocation/fetchAllocationByStudent';
 import * as FetchAllocationByStatus from '../../../api/allocation/fetchAllocationByStatus';
+import type { ApplicationDto } from '../../../interfaces/application/Application';
 
 describe('ApplicationViewPage', () => {
   beforeEach(() => {
@@ -18,13 +19,14 @@ describe('ApplicationViewPage', () => {
   });
 
   it('renders and filters applications', async () => {
-    const mockApp = {
+    const mockApp :ApplicationDto= {
       applicationId: 1,
       preferences: ['COSC 111'],
       wantRemote: true,
       wantWorkingHours: 10,
       timeSubmitted: '2024-01-01T12:00:00Z',
       availabilities: [],
+      applicationType: 'UNDERGRADUATE',
       student: {
         id: 1,
         firstName: 'John',
@@ -38,19 +40,37 @@ describe('ApplicationViewPage', () => {
     vi.spyOn(FetchApplications, 'fetchApplications').mockResolvedValue([
       mockApp
     ]);
+    // vi.spyOn(FetchAllocationsByStudent, 'fetchAllocationsByStudent').mockResolvedValue([
+    //   {
+    //     numberOfHours: 5,
+    //     status: 'CONFIRMED',
+    //     section: {
+    //       sectionDetails: {
+    //         deptCode: 'COSC',
+    //         courseNum: '111',
+    //         semester: 'W',
+    //         year: 2024,
+    //         type: 'LECTURE',
+    //       },
+    //       instructor: { firstName: 'Jane', lastName: 'Smith' },
+    //     },
+    //     application: mockApp,
+    //   },
+    // ]);
+
     vi.spyOn(FetchAllocationsByStudent, 'fetchAllocationsByStudent').mockResolvedValue([
       {
         numberOfHours: 5,
         status: 'CONFIRMED',
         section: {
-          sectionDetails: {
+          course:{
             deptCode: 'COSC',
             courseNum: '111',
-            semester: 'W',
-            year: 2024,
-            type: 'LECTURE',
           },
-          instructor: { firstName: 'Jane', lastName: 'Smith' },
+          semester: 'W',
+          year: 2024,
+          type: 'LECTURE',
+          instructor: { firstName: 'Jane', lastName: 'Smith' }
         },
         application: mockApp,
       },

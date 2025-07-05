@@ -20,9 +20,9 @@ export default function InstructorQualificationViewer({
 
         // 3. merge: one QualificationResponse per section, with [] if none
         return sections.map((section) => {
-          const sid = section.sectionDetails!.sectionId!;
+          const sid = section!.id!;
           const match = quals.find(
-            (q) => q.section.sectionDetails!.sectionId === sid
+            (q) => q.section!.id === sid
           );
           return {
             section,
@@ -40,10 +40,10 @@ export default function InstructorQualificationViewer({
 
           {/* one row per real section */}
           {response?.map((resp) => {
-            const sd = resp.section.sectionDetails!;
+            const sd = resp.section!;
             return (
               <div
-                key={sd.sectionId}
+                key={sd.id}
                 className="grid gap-2 sm:grid-cols-1 lg:grid-cols-[1fr_2fr]"
               >
                 <SectionCard section={resp.section} />
@@ -51,7 +51,7 @@ export default function InstructorQualificationViewer({
                 <InstructorQualificationCard
                   course={{
                     id: sd.id,
-                    deptCode: sd.deptCode,
+                    deptCode: sd.course?.deptCode,
                   }}
                   initialQualifications={resp.qualifications}
                 />

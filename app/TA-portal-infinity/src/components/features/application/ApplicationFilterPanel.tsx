@@ -203,9 +203,9 @@ const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
                     ? new Date(h.application.timeSubmitted).toLocaleString()
                     : 'N/A'}
                   </strong>{' '}
-                  — {h.section?.sectionDetails?.deptCode || 'N/A'}{' '}
-                  {h.section?.sectionDetails?.courseNum || ''} Section{' '}
-                  {h.section?.sectionDetails?.section || ''} — {h.numberOfHours ?? 'N/A'}h{' '}
+                  — {h.section?.course?.deptCode || 'N/A'}{' '}
+                  {h.section?.course?.courseNum || ''} Section{' '}
+                  {h.section?.section || ''} — {h.numberOfHours ?? 'N/A'}h{' '}
                   {h.status === 'CONFIRMED' ? '(Confirmed)' : h.status ? `(${h.status.charAt(0) + h.status.slice(1).toLowerCase()})` : '(Pending)'}
                 </li>
               ))}

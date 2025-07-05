@@ -2,22 +2,22 @@ import type Qualification from "../../interfaces/qualification/Qualification";
 import type Section from "../../interfaces/section/Section";
 import type { SectionType } from "../../interfaces/section/SectionDetails";
 import { mockInstructorQualificationResponse } from "../../mocked-objects/qualification/mockInstructorQualificationResponse";
- 
-interface BackendResponse{
-    courseId : number;
-    sectionId : number;
-    year : number;
-    semester : string;
-    sectionName : string;
-    sectionType : SectionType;
-    qualificationId : number;
-    courseDeptCode : string;
-    qualificationDescription: string;
+
+interface BackendResponse {
+  courseId: number;
+  sectionId: number;
+  year: number;
+  semester: string;
+  sectionName: string;
+  sectionType: SectionType;
+  qualificationId: number;
+  courseDeptCode: string;
+  qualificationDescription: string;
 }
 
 export interface QualificationResponse {
-    section: Section;
-    qualifications: Qualification[];
+  section: Section;
+  qualifications: Qualification[];
 }
 
 export async function fetchAllInstructorQualifications(
@@ -49,15 +49,15 @@ export async function fetchAllInstructorQualifications(
       if (!grouped.has(key)) {
         grouped.set(key, {
           section: {
-            sectionDetails: {
-              id:            d.courseId,
-              sectionId:     d.sectionId,
-              year:          d.year,
-              semester:      d.semester,
-              name:          d.sectionName,
-              type:          d.sectionType,
-              deptCode:      d.courseDeptCode,
-            },
+            id: d.sectionId,
+            year: d.year,
+            semester: d.semester,
+            type: d.sectionType,
+            course: {
+              id: d.courseId,
+              name: d.sectionName,
+              deptCode: d.courseDeptCode,
+            }
           },
           qualifications: [],
         });
@@ -65,9 +65,9 @@ export async function fetchAllInstructorQualifications(
 
       // now push this qualification onto that section’s list
       grouped.get(key)!.qualifications.push({
-        id:          d.qualificationId,
+        id: d.qualificationId,
         description: d.qualificationDescription,
-        deptCode:    d.courseDeptCode,
+        deptCode: d.courseDeptCode,
       });
     });
 

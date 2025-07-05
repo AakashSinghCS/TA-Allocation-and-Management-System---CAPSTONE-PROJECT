@@ -24,9 +24,9 @@ export default function AddAllocationHistory() {
      const sectionsWithSids: Section[] = fetched.map(sec => ({
       ...sec,
       sectionDetails: {
-        ...sec.sectionDetails,
+        ...sec,
         // if the real sectionId is missing, fall back to the course‐level id
-       sectionId: sec.sectionDetails?.sectionId ?? sec.sectionDetails?.id ?? -1
+       sectionId: sec?.id ?? sec.course?.id ?? -1
       }
     }));
 
@@ -50,12 +50,12 @@ export default function AddAllocationHistory() {
 
   // toggle a single section by sectionId
   const onSelect = useCallback((sec: Section) => {
-    const sid = sec.sectionDetails?.sectionId;
+    const sid = sec?.id;
     if (sid == null) return;
 
     setSelectedSections(prev => {
-      if (prev.some(s => s.sectionDetails?.sectionId === sid)) {
-        return prev.filter(s => s.sectionDetails?.sectionId !== sid);
+      if (prev.some(s => s?.id === sid)) {
+        return prev.filter(s => s?.id !== sid);
       }
       return [...prev, sec];
     });
@@ -65,7 +65,7 @@ export default function AddAllocationHistory() {
   // remove by sectionId
   const onRemovePrereq = (sidToRemove: number) => {
     setSelectedSections(prev =>
-      prev.filter(s => s.sectionDetails?.sectionId !== sidToRemove)
+      prev.filter(s => s?.id !== sidToRemove)
     );
   };
 
@@ -88,15 +88,15 @@ export default function AddAllocationHistory() {
         <h3 className="text-lg font-semibold mb-2">Selected Sections</h3>
         <div className="space-y-2">
           {selectedSections.map(sec => {
-            const sid = sec.sectionDetails?.sectionId;
+            const sid = sec?.id;
             return (
               <div
                 key={sid}
                 className="flex items-center justify-between bg-slate-50 px-3 py-2 rounded"
               >
                 <span>
-                  {sec.sectionDetails?.deptCode} {sec.sectionDetails?.courseNum} –{" "}
-                  {sec.sectionDetails?.name}
+                  {sec.course?.deptCode} {sec.course?.courseNum} –{" "}
+                  {sec.course?.name}
                 </span>
                 <button
                   type="button"

@@ -15,17 +15,17 @@ export async function fetchPostAllocationHistory(
 
   // Identify which to delete (in initial, but not in current)
   const toDelete = initialSections.filter(init =>
-    !sections.some(s => s.sectionDetails?.id === init.sectionDetails?.id)
+    !sections.some(s => s.course?.id === init.course?.id)
   );
 
   // Identify which to add (in current, but not in initial)
   const toAdd = sections.filter(s =>
-    !initialSections.some(init => init.sectionDetails?.id === s.sectionDetails?.id)
+    !initialSections.some(init => init.course?.id === s.course?.id)
   );
 
   // DELETE all that are gone
   for (const sec of toDelete) {
-    const id = sec.sectionDetails?.id;
+    const id = sec.course?.id;
     if (id == null) continue;
     const deleteUrl = `http://localhost:8080/courses/studentTaught/delete/${studentId}/${id}`;
     try {
@@ -48,7 +48,7 @@ export async function fetchPostAllocationHistory(
 
   // POST all the new ones
   for (const sec of toAdd) {
-    const details = sec.sectionDetails;
+    const details = sec;
     if (!details?.id || !details.year || !details.semester) {
       console.warn("Skipping invalid section", sec);
       continue;

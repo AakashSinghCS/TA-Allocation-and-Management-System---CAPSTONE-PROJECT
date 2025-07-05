@@ -20,7 +20,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
 
   // Group sections by course ID
   const groups = sections.reduce<Record<number, Section[]>>((acc, sec) => {
-    const cid = sec.sectionDetails?.id ?? 0;
+    const cid = sec.course?.id ?? 0;
     if (!acc[cid]) acc[cid] = [];
     acc[cid].push(sec);
     return acc;
@@ -30,8 +30,8 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
   const sortedCourseIds = Object.keys(groups)
     .map((id) => Number(id))
     .sort((a, b) => {
-      const numA = Number(groups[a][0].sectionDetails?.courseNum);
-      const numB = Number(groups[b][0].sectionDetails?.courseNum);
+      const numA = Number(groups[a][0].course?.courseNum);
+      const numB = Number(groups[b][0].course?.courseNum);
       return numA - numB;
     });
 
@@ -83,17 +83,17 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
 
           // Sort this group's sections by type order
           const sortedSections = [...group].sort((a, b) => {
-            const indexA = a.sectionDetails?.type
-              ? sectionTypeOptions.indexOf(a.sectionDetails.type)
+            const indexA = a?.type
+              ? sectionTypeOptions.indexOf(a.type)
               : Infinity;
-            const indexB = b.sectionDetails?.type
-              ? sectionTypeOptions.indexOf(b.sectionDetails.type)
+            const indexB = b?.type
+              ? sectionTypeOptions.indexOf(b.type)
               : Infinity;
             return indexA - indexB;
           });
 
           // Course header info
-          const { deptCode, courseNum, name } = group[0].sectionDetails || {};
+          const { deptCode, courseNum, name } = group[0].course || {};
 
           return (
             <React.Fragment key={courseId}>
@@ -131,9 +131,9 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                       if(groups[courseId].length<1) return;
                       return onSelectCourse(
                         courseId,
-                        groups[courseId][0].sectionDetails?.deptCode ?? "",
-                        groups[courseId][0].sectionDetails?.courseNum ?? "",
-                        groups[courseId][0].sectionDetails?.name ?? "",
+                        groups[courseId][0].course?.deptCode ?? "",
+                        groups[courseId][0].course?.courseNum ?? "",
+                        groups[courseId][0].course?.name ?? "",
                       )
                     }}
                     className="cursor-pointer text-[#0089b2] hover:text-[#00b5bc] text-sm whitespace-nowrap"
@@ -148,7 +148,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
 
 
               {mode !== 'instructorPrereqCourse' && sortedSections.map((sec) => {
-                if (!sec.sectionDetails?.sectionId) return;
+                if (!sec?.id) return;
 
                 const times = (sec.sectionSchedule ?? [])
                   .map((s) =>
@@ -159,7 +159,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                   .filter((t) => t)
                   .join(', ');
 
-                const sid = sec.sectionDetails?.sectionId;
+                const sid = sec?.id;
 
                 return (
                   <tr key={`${sid}-${times}`}>
@@ -169,24 +169,24 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                           to={`/user/sectionprofile/${sid}`}
                           className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden"
                         >
-                          {sec.sectionDetails?.deptCode} {sec.sectionDetails?.courseNum}{' '}
-                          {sec.sectionDetails?.section} – {sec.sectionDetails?.name}
+                          {sec.course?.deptCode} {sec.course?.courseNum}{' '}
+                          {sec?.section} – {sec.course?.name}
                         </Link>
                       ) : (
                         <span className="truncate inline whitespace-nowrap overflow-hidden">
-                          {sec.sectionDetails?.deptCode} {sec.sectionDetails?.courseNum}{' '}
-                          {sec.sectionDetails?.section} – {sec.sectionDetails?.name}
+                          {sec.course?.deptCode} {sec.course?.courseNum}{' '}
+                          {sec?.section} – {sec.course?.name}
                         </span>
                       )}
                     </td>
                     <td className="border border-gray-300  px-3 py-2">
-                      {sec.sectionDetails?.year}
+                      {sec?.year}
                     </td>
                     <td className="border border-gray-300 px-3 py-2">
-                      {sec.sectionDetails?.semester}
+                      {sec?.semester}
                     </td>
                     <td className="border border-gray-300 px-3 py-2 max-w-xs truncate">
-                      {sec.sectionDetails?.type}
+                      {sec?.type}
                     </td>
                     <td className="border border-gray-300 px-3 py-2">{times}</td>
                     <td className="border border-gray-300 px-3 py-2 text-right">
@@ -203,9 +203,9 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                           ) : (mode === 'coordinator') ? (
                             <div>
                               <ExportAllocationsCSV
-                                courseId={groups[courseId][0].sectionDetails?.id ?? -1}
-                                year={groups[courseId][0].sectionDetails?.year ?? -1}
-                                semester={groups[courseId][0].sectionDetails?.semester ?? ""}
+                                courseId={groups[courseId][0].course?.id ?? -1}
+                                year={groups[courseId][0]?.year ?? -1}
+                                semester={groups[courseId][0]?.semester ?? ""}
                                 className="text-[#0089b2] hover:text-[#00b5bc] text-sm"
                                 buttonLabel="Export to CSV"
                               />

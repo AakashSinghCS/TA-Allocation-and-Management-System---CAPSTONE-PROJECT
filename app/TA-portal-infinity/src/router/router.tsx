@@ -10,7 +10,7 @@ import InstructorNeedPage from "../pages/instructorprofilepage/needpage/Instruct
 import InstructorComparerPage from "../pages/instructorprofilepage/comparerpage/InstructorComparerPage";
 import LoginPage from "../pages/loginPage/LoginPage";
 import ErrorPage from "../pages/errorpage/ErrorPage";
-import StudentHomePage from "../pages/student_homepage/StudentHomePage";
+import StudentHomePage from "../pages/student/student_homepage/StudentHomePage";
 import ApplicationPage from "../pages/applicationpage/ApplicationPage";
 import InstructorHomePage from "../pages/instructor_homepage/InstructorHomePage";
 import CoordinatorHomePage from "../pages/coordinator_homepage/CoordinatorHomePage";
@@ -34,7 +34,7 @@ import InstructorAddSectionPage from "../pages/instructorprofilepage/needpage/ad
 import InstructorAddNeedPage from "../pages/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage";
 import AddAllocationHistory from "../pages/taprofilepage/addallocationhistory/AddAllocationHistory";
 import AddEnrolledCourse from "../pages/taprofilepage/coursestakenpage/addenrolledcourse/AddEnrolledCourse";
-import ViewApplicationPage from "../pages/studentpages/viewapplicationpage/ViewApplicationPage";
+import ViewApplicationPage from "../pages/student/viewapplicationpage/ViewApplicationPage";
 import ApplicationViewPage from "../pages/coordinatorpages/applicationviewpage/ApplicationViewPage";
 
 export const router = createBrowserRouter([

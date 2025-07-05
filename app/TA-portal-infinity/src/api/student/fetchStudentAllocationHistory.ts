@@ -26,14 +26,14 @@ export async function fetchStudentAllocationHistory(studentId: number): Promise<
 
     const sections: Section[] = data.map((d) => {
       return {
-        sectionDetails: {
-          id: d.course.id,
-          name: d.course.name,
-          deptCode: d.course.deptCode,
-          courseNum: d.course.courseNum,
           semester: d.semester,
           year: d.year,
-        },
+          course:{
+            id: d.course.id,
+            name: d.course.name,
+            deptCode: d.course.deptCode,
+            courseNum: d.course.courseNum,
+          }
       };
     });
 

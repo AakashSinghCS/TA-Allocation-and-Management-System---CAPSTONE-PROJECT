@@ -29,9 +29,9 @@ export default function Comparer({ sections = [], className }: ComparerProps) {
         const completedIds = new Set(completed.map(c => c.id));
         const matches = sections
             .filter(sec =>
-                sec.need?.courseNeeds?.every(c => completedIds.has(c.id))
+                sec.need?.prerequisites?.every(c => completedIds.has(c.id))
             )
-            .map(sec => sec.sectionDetails?.id)
+            .map(sec => sec.course?.id)
             .filter((id): id is number => !!id);
 
         setHighlightCourseIds(matches);

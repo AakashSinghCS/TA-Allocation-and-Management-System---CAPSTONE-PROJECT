@@ -133,31 +133,31 @@ const ApplicationPage: React.FC = () => {
       // Allocation advanced filters
       if (allocationDept) {
         const hasDept = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.section?.sectionDetails?.deptCode?.toLowerCase() === allocationDept.toLowerCase()
+          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.section?.course?.deptCode?.toLowerCase() === allocationDept.toLowerCase()
         );
         if (!hasDept) match = false;
       }
       if (allocationCourseNum) {
         const hasCourse = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && String(alloc.section?.sectionDetails?.courseNum) === allocationCourseNum
+          (alloc) => alloc.application?.applicationId === app.applicationId && String(alloc.section?.course?.courseNum) === allocationCourseNum
         );
         if (!hasCourse) match = false;
       }
       if (allocationSectionYear) {
         const hasYear = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && String(alloc.section?.sectionDetails?.year) === allocationSectionYear
+          (alloc) => alloc.application?.applicationId === app.applicationId && String(alloc.section?.year) === allocationSectionYear
         );
         if (!hasYear) match = false;
       }
       if (allocationSemester) {
         const hasSemester = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.section?.sectionDetails?.semester?.toLowerCase() === allocationSemester.toLowerCase()
+          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.section?.semester?.toLowerCase() === allocationSemester.toLowerCase()
         );
         if (!hasSemester) match = false;
       }
       if (allocationType) {
         const hasType = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.section?.sectionDetails?.type?.toLowerCase() === allocationType.toLowerCase()
+          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.section?.type?.toLowerCase() === allocationType.toLowerCase()
         );
         if (!hasType) match = false;
       }

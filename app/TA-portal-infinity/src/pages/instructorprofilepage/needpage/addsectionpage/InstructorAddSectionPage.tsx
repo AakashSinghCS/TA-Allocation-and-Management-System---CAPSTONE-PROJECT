@@ -61,21 +61,21 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
 
   // per‐section add (in “add” mode)
   const onSelect = async (section: Section) => {
-    const ok = await fetchAssignInstructor(instructorId, section.sectionDetails?.sectionId ?? -1);
+    const ok = await fetchAssignInstructor(instructorId, section?.id ?? -1);
     alert(ok ? 'Section added!' : 'Failed to add section.');
     navigate(`/user/instructorprofile/${instructorId}/need`);
   };
 
   const onSelectCourseForPrereq = useCallback((cid: number) => {
     if (!filteredSections) return;
-    const foundSec = filteredSections.find(sec => sec.sectionDetails?.id === cid);
+    const foundSec = filteredSections.find(sec => sec.course?.id === cid);
     if (!foundSec) return;
 
     const courseObj: Course = {
       id: cid,
-      deptCode: foundSec.sectionDetails!.deptCode,
-      courseNum: foundSec.sectionDetails!.courseNum,
-      name: foundSec.sectionDetails!.name
+      deptCode: foundSec.course!.deptCode,
+      courseNum: foundSec.course!.courseNum,
+      name: foundSec.course!.name
     };
 
     setSelectedPrereqs(prev =>

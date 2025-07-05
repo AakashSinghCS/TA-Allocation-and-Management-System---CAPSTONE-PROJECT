@@ -74,10 +74,10 @@ const ViewApplicationPage = () => {
                 if (typeof allocation.section.instructor === 'number') {
                   instructorId = allocation.section.instructor;
                 } else if (
-                  allocation.section.sectionDetails &&
-                  typeof (allocation.section.sectionDetails as any).instructorId === 'number'
+                  allocation.section &&
+                  typeof (allocation.section as any).instructorId === 'number'
                 ) {
-                  instructorId = (allocation.section.sectionDetails as any).instructorId;
+                  instructorId = (allocation.section as any).instructorId;
                 }
               }
               if (instructorId && allocation?.section) {
@@ -90,24 +90,24 @@ const ViewApplicationPage = () => {
               }
               // Fetch full section info (year, semester, schedule, etc.) if sectionId is present
               let sectionId: number | undefined = undefined;
-              if (allocation && allocation.section && allocation.section.sectionDetails) {
-                sectionId = (allocation.section.sectionDetails.sectionId as number | undefined)
-                  || (allocation.section.sectionDetails.id as number | undefined);
+              if (allocation && allocation.section ) {
+                sectionId = (allocation.section.id as number | undefined)
+                  || (allocation.section.course?.id as number | undefined);
               }
               if (
                 allocation &&
                 allocation.section &&
                 sectionId &&
                 (
-                  !allocation.section.sectionDetails ||
-                  !allocation.section.sectionDetails.year ||
-                  !allocation.section.sectionDetails.semester ||
+                  !allocation.section ||
+                  !allocation.section.year ||
+                  !allocation.section.semester ||
                   !allocation.section.sectionSchedule
                 )
               ) {
                 try {
                   const sectionInfo = await fetchSectionInfo(sectionId, token);
-                  allocation.section.sectionDetails = sectionInfo.sectionDetails;
+                  allocation.section = sectionInfo;
                   allocation.section.sectionSchedule = sectionInfo.sectionSchedule;
                 } catch (e) {
                   // If fetch fails, just skip
@@ -270,7 +270,7 @@ const ViewApplicationPage = () => {
                 filteredApps.map((app, idx) => {
                   const cardId = app.id ?? idx;
                   const expanded = expandedCard === cardId;
-                  const sectionDetails = app.allocation?.section?.sectionDetails;
+                  const sectionDetails = app.allocation?.section;
                   return (
                     <div key={cardId} className="bg-white rounded-2xl shadow-lg border border-blue-100 p-10 flex flex-col gap-6 min-h-[520px] relative overflow-hidden w-full transition-all duration-300 hover:shadow-2xl hover:border-blue-300" style={{ maxWidth: '900px', margin: '0 auto' }}>
                       {/* Decorative background */}
@@ -306,11 +306,11 @@ const ViewApplicationPage = () => {
                       <div className="mt-1 flex flex-col gap-2 p-4 bg-green-50 border border-[#040941] rounded-lg">
                         <span className="text-green-700 font-semibold text-lg">Allocation Confirmed</span>
                         <span>
-                          <strong>Section:</strong> {app.allocation.section?.sectionDetails?.deptCode || 'N/A'}
-                          {app.allocation.section?.sectionDetails?.courseNum ? ` ${app.allocation.section.sectionDetails.courseNum}` : ''}
-                          {app.allocation.section?.sectionDetails?.section ? ` - ${app.allocation.section.sectionDetails.section}` : ''}
-                          {app.allocation.section?.sectionDetails?.type ? ` (${app.allocation.section.sectionDetails.type})` : ''}
-                          {app.allocation.section?.sectionDetails?.semester || app.allocation.section?.sectionDetails?.year ? ` [${app.allocation.section.sectionDetails.semester || ''} ${app.allocation.section.sectionDetails.year || ''}]` : ''}
+                          <strong>Section:</strong> {app.allocation.section?.course?.deptCode || 'N/A'}
+                          {app.allocation.section?.course?.courseNum ? ` ${app.allocation.section.course.courseNum}` : ''}
+                          {app.allocation.section?.section ? ` - ${app.allocation.section.section}` : ''}
+                          {app.allocation.section?.type ? ` (${app.allocation.section.type})` : ''}
+                          {app.allocation.section?.semester || app.allocation.section?.year ? ` [${app.allocation.section.semester || ''} ${app.allocation.section.year || ''}]` : ''}
                         </span>
                         <span><strong>Hours:</strong> {app.allocation.numberOfHours ?? 'N/A'}</span>
                         <span><strong>Instructor:</strong> {app.allocation.section?.instructor && typeof app.allocation.section.instructor === 'object' && 'firstName' in app.allocation.section.instructor ? `${app.allocation.section.instructor.firstName} ${app.allocation.section.instructor.lastName}` : 'N/A'}</span>
@@ -414,7 +414,7 @@ const ViewApplicationPage = () => {
                           <div className="mb-2 font-semibold text-blue-900">Section Details</div>
                           {sectionDetails ? (
                             <>
-                              <div><strong>Course:</strong> {sectionDetails.deptCode || 'N/A'} {sectionDetails.courseNum || ''}</div>
+                              <div><strong>Course:</strong> {sectionDetails.course?.deptCode || 'N/A'} {sectionDetails.course?.courseNum || ''}</div>
                               <div><strong>Section:</strong> {sectionDetails.section || 'N/A'}</div>
                               <div><strong>Type:</strong> {sectionDetails.type || 'N/A'}</div>
                               <div><strong>Semester:</strong> {sectionDetails.semester || 'N/A'}</div>

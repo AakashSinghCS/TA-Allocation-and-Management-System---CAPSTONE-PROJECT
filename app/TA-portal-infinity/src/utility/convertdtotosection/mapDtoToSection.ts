@@ -1,10 +1,12 @@
 // src/utils/sectionMapper.ts
 
-import type { SectionDetails, SectionType } from '../../interfaces/section/SectionDetails';
+
 import type { Course } from '../../interfaces/course/Course';
 import type { Instructor } from '../../interfaces/user/Instructor';
 import type SectionSchedule from '../../interfaces/section/SectionSchedule';
 import type Section from '../../interfaces/section/Section';
+import type { SectionType } from '../../interfaces/section/SectionDetails';
+import type SectionDetails from '../../interfaces/section/SectionDetails';
 
 export interface SectionDtoWithInstructorId{
     id: number;
@@ -28,19 +30,21 @@ export function mapDtoToSection(
 ): Section {
   // Flatten CourseDto + SectionDto into our SectionDetails
   const details: SectionDetails = {
-    id: dto.course.id,
-    sectionId:        dto.id,
-    name:             dto.course.name,
-    deptCode:         dto.course.deptCode,
-    courseNum:        dto.course.courseNum,
+    id:        dto.id,
     year:             dto.year,
     semester:         dto.semester,
     section:          dto.section,
     type:             dto.type,
+    course:{
+      id: dto.course.id,
+      name:             dto.course.name,
+      deptCode:         dto.course.deptCode,
+      courseNum:        dto.course.courseNum,
+    }
   };
 
   return {
-    sectionDetails:  details,
+    ...details,
     sectionSchedule: schedules,
     // instructorId was on the DTO; if you fetched an instructor, pass it in, otherwise undefined:
     instructor:      instructor ?? undefined,

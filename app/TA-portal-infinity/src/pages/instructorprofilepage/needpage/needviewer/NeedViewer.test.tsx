@@ -23,10 +23,10 @@ describe('<NeedViewer />', () => {
 
     // two SectionCards
     expect(
-      screen.getByTestId(`section-card-${s111.sectionDetails?.id}`)
+      screen.getByTestId(`section-card-${s111?.id}`)
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId(`section-card-${s121.sectionDetails?.id}`)
+      screen.getByTestId(`section-card-${s121?.id}`)
     ).toBeInTheDocument();
 
     expect(screen.getAllByTestId('need-card')).toHaveLength(1);

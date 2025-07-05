@@ -57,11 +57,11 @@ vi.mock('../../../../components/features/course/sectionlist/SectionList', () => 
     <div data-testid="section-list">
       {sections?.map((s) => (
         <button
-          key={s.sectionDetails?.sectionId}
-          data-testid={`select-${s.sectionDetails?.sectionId}`}
+          key={s?.id}
+          data-testid={`select-${s?.id}`}
           onClick={() => onSelect(s)}
         >
-          Select {s.sectionDetails?.sectionId}
+          Select {s?.id}
         </button>
       ))}
     </div>

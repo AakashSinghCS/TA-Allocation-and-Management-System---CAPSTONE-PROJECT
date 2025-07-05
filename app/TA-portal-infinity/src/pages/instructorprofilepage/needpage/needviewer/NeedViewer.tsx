@@ -56,10 +56,10 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
       "Do you really wish to unassign yourself from this section?"
     );
     if (confirm) {
-      const ok = await fetchUnassignInstructor(s.sectionDetails?.sectionId ?? -1, instructorId);
+      const ok = await fetchUnassignInstructor(s?.id ?? -1, instructorId);
       if (ok) {
         setSections((prev) =>
-          prev.filter((sec) => sec.sectionDetails?.sectionId !== s.sectionDetails?.sectionId)
+          prev.filter((sec) => sec?.id !== s?.id)
         );
       }
     }
@@ -76,7 +76,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
 
       {/* Section rows */}
       {sections.map((sec) => (
-        <div key={sec.sectionDetails?.id} className="grid gap-2 sm:grid-cols-1 lg:grid-cols-3">
+        <div key={sec.course?.id} className="grid gap-2 sm:grid-cols-1 lg:grid-cols-3">
           <SectionCard section={sec} className="" onDelete={onDeleteSection} />
 
           {/* Need column */}
@@ -91,7 +91,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
             <div
               className="w-full overflow-hidden rounded-lg text-sm italic text-slate-500 border border-dashed border-slate-400 p-2"
             >
-              <Link to={`/user/instructor/addneed/${sec.sectionDetails?.sectionId}`}>Add a need</Link>
+              <Link to={`/user/instructor/addneed/${sec?.id}`}>Add a need</Link>
             </div>
           )}
 
