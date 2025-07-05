@@ -4,7 +4,7 @@ import SectionFilter from './SectionFilter';
 import { MemoryRouter } from "react-router-dom";
 
 // Mock the dept-code fetch so GenericAPIContainer resolves immediately
-vi.mock('../../../api/sectionfilter/fetchAllExsitingDeptCodes', () => ({
+vi.mock('../../../../api/course/sectionfilter/fetchAllExsitingDeptCodes', () => ({
   fetchAllExistingDeptCodes: () => Promise.resolve([]),
 }));
 

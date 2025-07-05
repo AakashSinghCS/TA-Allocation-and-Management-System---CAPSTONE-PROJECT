@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
 import React from 'react';
 import type Section from '../../../../interfaces/section/Section';
-import ExportAllocationsCSV from '../../csv/ExportAllocationsCSV';
+import ExportAllocationsCSV from '../../csv/exportallocationscsv/ExportAllocationsCSV';
 
 interface Props {
   sections: Section[] | null;

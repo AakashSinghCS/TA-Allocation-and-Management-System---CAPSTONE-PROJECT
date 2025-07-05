@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
-import DeptCodeDropdown from "../../../ui/deptcodedropdown/DeptCodeDropdown";
-import CourseNumDropdown from "../../../ui/coursenumdropdown/CourseNumDropdown";
-import SectionDropdown from "../../../ui/sectiondropdown/SectionDropdown";
-import YearDropdown from "../../../ui/yeardropdown/YearDropdown";
-import SemesterDropdown from "../../../ui/semesterdropdown/SemesterDropdown";
+import DeptCodeDropdown from "../../../ui/section/deptcodedropdown/DeptCodeDropdown";
+import SemesterDropdown from "../../../ui/section/semesterdropdown/SemesterDropdown";
 
 import {
   fetchAllExistingCourseNums,
-} from "../../../../api/sectionfilter/fetchAllExistingCourseNums";
-import { fetchAllExistingSemesters } from "../../../../api/sectionfilter/fetchAllExistingSemesters";
-import { fetchAllExistingYears } from "../../../../api/sectionfilter/fetchAllExistingYears";
-import { fetchAllExistingSections } from "../../../../api/sectionfilter/fetchAllExistingSections";
+} from "../../../../api/course/sectionfilter/fetchAllExistingCourseNums";
+import { fetchAllExistingSemesters } from "../../../../api/course/sectionfilter/fetchAllExistingSemesters";
+import { fetchAllExistingYears } from "../../../../api/course/sectionfilter/fetchAllExistingYears";
+import { fetchAllExistingSections } from "../../../../api/course/sectionfilter/fetchAllExistingSections";
 import type { DeptCodeCourseNumSectionYearSemesterProps } from "../coursefilter/SectionFilter";
+import CourseNumDropdown from "../../../ui/section/coursenumdropdown/CourseNumDropdown";
+import SectionDropdown from "../../../ui/section/sectiondropdown/SectionDropdown";
+import YearDropdown from "../../../ui/section/yeardropdown/YearDropdown";
 
 
 interface Props {

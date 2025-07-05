@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import ViewApplicationPage from "../../../pages/studentpages/viewapplicationpage/ViewApplicationPage";
 import { MemoryRouter } from "react-router-dom";
 import { AuthProvider } from "../../../context/AuthContext";
+import ViewApplicationPage from "./ViewApplicationPage";
 
 // Mock localStorage for token
 beforeEach(() => {

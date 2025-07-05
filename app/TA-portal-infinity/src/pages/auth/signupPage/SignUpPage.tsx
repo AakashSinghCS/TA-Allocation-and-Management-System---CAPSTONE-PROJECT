@@ -1,8 +1,8 @@
-import Navbar from '../../components/layout/login_navbar/Navbar';
+import Navbar from '../../../components/layout/login_navbar/Navbar';
 import bgImage from '../../assets/ubc_image.png?url';
 import gradCap from '../../assets/grad-cap-blue.png';
 import { useNavigate } from 'react-router-dom';
-import CreateUserForm, { type UserFormData } from '../../components/features/user/createuserform/CreateUserForm';
+import CreateUserForm, { type UserFormData } from '../../../components/features/user/createuserform/CreateUserForm';
 
 export default function SignUpPage() {
     const navigate = useNavigate();

@@ -7,7 +7,7 @@ import type Section from "../../../../interfaces/section/Section";
 import type SectionSchedule from "../../../../interfaces/section/SectionSchedule";
 import { fetchUpdateSectionSchedule } from "../../../../api/section/sectionschedule/fetchUpdateSectionSchedule";
 import { fetchAddSectionSchedule } from "../../../../api/section/sectionschedule/fetchAddSectionSchedule";
-import { fetchSection } from "../../../../api/section/fetchSection";
+import { fetchSection } from "../../../../api/section/fetchSectionIncludeInstructorId";
 import { fetchUpdateSectionDetails } from "../../../../api/section/fetchUpdateSectionDetails";
 import { fetchDeleteSection } from "../../../../api/section/fetchDeleteSection";
 import { useNavigate } from "react-router-dom";

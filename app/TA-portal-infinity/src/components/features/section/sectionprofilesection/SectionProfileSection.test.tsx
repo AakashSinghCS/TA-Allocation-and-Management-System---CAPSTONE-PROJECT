@@ -1,10 +1,8 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, type Mock } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import SectionProfileSection, { createProfileDetails } from '../sectionprofilesection/SectionProfileSection';
 import type { SectionProfile } from '../../../../interfaces/section/Section';
-import type SectionSchedule from '../../../../interfaces/section/SectionSchedule';
 import type Section from '../../../../interfaces/section/Section';
 
 // Dummy data for tests
