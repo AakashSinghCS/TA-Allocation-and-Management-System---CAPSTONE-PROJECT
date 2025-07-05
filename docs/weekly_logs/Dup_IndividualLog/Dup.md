@@ -1887,3 +1887,115 @@ It was very tough integrating everything and making sure everything works well. 
   * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
 - presentation for MVP
 - refactoring and checking for errors and fixing them.
+
+
+## Thursday 7/03 (7/01~7/04)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July03.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Instructor Needs profile, Qualifications, Allopcation History
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#119](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/119)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#315](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/315)
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I completed the design improvements for all the work I did so far. Of course, it's far from done.
+- basic CSV export function is done
+- Did presentation preparation and project discussion.
+- did merging into dev with teammates.
+Presentation preparation wasn't the best, but it was good we got some discussion. 
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- refactoring and checking for errors and fixing them.
+
+
+## Friday 7/04 (7/01~7/04)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July04.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: MVP Presentation
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#328](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/328)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today we did the MVP presentation. It went okay. Was satisfied that we got the most done functionality wise out of all the groups.
+Our project still has some features to be desired and improved.
+- Talked with Seiya about his lack of communication. He told us that he is willing to do more in the future and also explained his unfortunate circumstances of losing his family member and friend within the span of just a few weeks.
+- Told Allen he also should have done more.
+- Started on the refactoring. It isn't as hard as I expected. Might be done sooner than I expected.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- refactoring and checking for errors and fixing them.
+- make the Comparers work with the backend.
+- error checking 
