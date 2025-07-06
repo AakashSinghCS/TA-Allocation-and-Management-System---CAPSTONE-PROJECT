@@ -1,5 +1,5 @@
 import type Section from '../../interfaces/section/Section';
-import type { SectionDetails } from '../../interfaces/section/SectionDetails';
+import type  SectionDetails  from '../../interfaces/section/SectionDetails';
 import type SectionSchedule from '../../interfaces/section/SectionSchedule';
 import type { Course } from '../../interfaces/course/Course';
 import type { Need } from '../../interfaces/need/Need';
@@ -56,20 +56,22 @@ export async function fetchSectionInfo(
 
   // Assemble SectionDetails
   const sectionDetails: SectionDetails = {
-    sectionId: sectionData.id,
+    id: sectionData.id,
     year:      sectionData.year,
     semester:  sectionData.semester,
     section:   sectionData.section,
     type:      sectionData.type,
-    id:        courseData.id,
-    deptCode:  courseData.deptCode,
-    name:      courseData.name,
-    courseNum: courseData.courseNum,
+    course:{
+      id:        courseData.id,
+     deptCode:  courseData.deptCode,
+      name:      courseData.name,
+      courseNum: courseData.courseNum,
+    }
   };
 
   // Build full Section
   return {
-    sectionDetails,
+    ...sectionDetails,
     sectionSchedule: sectionSchedules,
     need:            needData,
   };

@@ -46,14 +46,14 @@ export async function fetchAllocationsByStudent(
 
   return rawList.map(raw => {
     const mappedSection: Section = {
-      sectionDetails: {
-        sectionId: raw.section.id,
+      id: raw.section.id,
+      section: raw.section.section,
+      type: raw.section.type,
+      semester: raw.section.term ?? undefined,
+      course: {
         deptCode: raw.section.course.deptCode,
         courseNum: raw.section.course.courseNum,
         name: raw.section.course.name,
-        section: raw.section.section,
-        type: raw.section.type,
-        semester: raw.section.term ?? undefined,
       },
     };
 

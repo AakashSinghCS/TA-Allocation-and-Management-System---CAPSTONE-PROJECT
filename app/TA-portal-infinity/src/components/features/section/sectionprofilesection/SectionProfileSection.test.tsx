@@ -1,25 +1,24 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, type Mock } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import SectionProfileSection, { createProfileDetails } from '../sectionprofilesection/SectionProfileSection';
 import type { SectionProfile } from '../../../../interfaces/section/Section';
-import type SectionSchedule from '../../../../interfaces/section/SectionSchedule';
 import type Section from '../../../../interfaces/section/Section';
 
 // Dummy data for tests
 const dummySection: Section = {
-  sectionDetails: {
+  course: {
     id: 2,
-    sectionId: 20,
     deptCode: 'COSC',
     courseNum: '111',
     name: 'Intro to CS',
-    section: 'A',
-    year: 2025,
-    semester: 'S1',
-    type: 'TUTORIAL',
   },
+  id: 20,
+  section: 'A',
+  year: 2025,
+  semester: 'S1',
+  type: 'TUTORIAL',
+
   sectionSchedule: [
     { id: 1, day: 'Mon', startTime: '08:00', endTime: '09:30' },
   ],
@@ -37,10 +36,10 @@ describe('createProfileDetails helper', () => {
   it('returns correct profile details array', () => {
     const details = createProfileDetails(dummySection, fields, labels);
     expect(details).toEqual([
-      { label: 'Section', value: String(dummySection.sectionDetails?.section) },
-      { label: 'Year', value: String(dummySection.sectionDetails?.year) },
-      { label: 'Semester', value: String(dummySection.sectionDetails?.semester) },
-      { label: 'Type', value: String(dummySection.sectionDetails?.type) },
+      { label: 'Section', value: String(dummySection?.section) },
+      { label: 'Year', value: String(dummySection?.year) },
+      { label: 'Semester', value: String(dummySection?.semester) },
+      { label: 'Type', value: String(dummySection?.type) },
     ]);
   });
 });

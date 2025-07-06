@@ -13,9 +13,9 @@ interface SectionProps {
 
 export default function SectionsColumn({ sections = [], className = "", highlightCourseIds = [], exactMatchId = null, neededCourses = [] , isStudentView = false}: SectionProps) {
 
-  const displayedIds = new Set(sections.map(s => s.sectionDetails?.id));
+  const displayedIds = new Set(sections.map(s => s.course?.id));
   const missing = neededCourses ? neededCourses.filter(c => !displayedIds.has(c.id)) : [];
-  const exactMatchExists = sections.filter((sec)=> exactMatchId === sec.sectionDetails?.id).length > 0;
+  const exactMatchExists = sections.filter((sec)=> exactMatchId === sec.course?.id).length > 0;
 
   return (
     <section className={"min-h-[30vh] "+className}>
@@ -38,13 +38,13 @@ export default function SectionsColumn({ sections = [], className = "", highligh
       {sections.length ? (
         <div className="grid gap-1 max-h-[50vh] overflow-y-auto">
           {sections.map((sec) => {
-            const cid = sec.sectionDetails?.id;
+            const cid = sec.course?.id;
             const needMatch = cid !== undefined && highlightCourseIds.includes(cid);
             const exactMatch = exactMatchId === cid;
             let extra = "";
             if (exactMatch) extra = "outline-2 outline-offset-[-2px] outline-blue-400";
             else if (needMatch) extra = "outline-2 outline-offset-[-2px] outline-green-400";
-            return <SectionCard key={sec.sectionDetails?.id} section={sec} className={extra} isStudentView={isStudentView} big={true}/>
+            return <SectionCard key={sec.course?.id} section={sec} className={extra} isStudentView={isStudentView} big={true}/>
           })}
         </div>
       ) : (

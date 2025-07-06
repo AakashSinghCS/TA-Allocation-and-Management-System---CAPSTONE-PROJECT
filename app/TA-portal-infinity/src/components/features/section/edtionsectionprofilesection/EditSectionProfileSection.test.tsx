@@ -10,7 +10,7 @@ import { sectionFieldLabels } from "../../../../interfaces/section/Section";
 
 // 1. Mock the UserBrowsingViewer to render a simple “SelectInstructor” button
 vi.mock(
-  "../../../../pages/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer",
+  "../../../../pages/coordinator/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer",
   () => ({
     default: (props: any) => (
       <button
