@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import FullCalendar from '@fullcalendar/react';
 import type { DateSelectArg, EventClickArg } from '@fullcalendar/core';
-import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import mockSubjectList from '../../mocked-objects/mockSubjects';
-import { useAuth } from '../../context/AuthContext';
-import type { ApplicationRequest, ApplicationDto} from '../../interfaces/application/Application';
+import FullCalendar from '@fullcalendar/react';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchExistingApplication } from '../../api/application/FetchExistingApplication';
+import { useAuth } from '../../context/AuthContext';
+import type { ApplicationDto, ApplicationRequest } from '../../interfaces/application/Application';
+import mockSubjectList from '../../mocked-objects/mockSubjects';
 
 type Day =
   | 'MONDAY'

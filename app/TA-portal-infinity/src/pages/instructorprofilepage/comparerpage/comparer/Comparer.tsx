@@ -1,13 +1,12 @@
 // src/pages/userBrowsing/Comparer.tsx
 import { useState } from 'react';
-import { useUserSearch, type SearchCriteria } from '../../../../components/ui/searchuserbar/SearchUserBar';
-import StudentCard from '../../../../components/features/user/usercard/StudentCard';
-import SectionsColumn from '../../../../components/features/section/sectionscolumn/SectionsColumn';
 import { fetchAllCoursesStudentHasCompleted } from '../../../../api/student/fetchAllCoursesStudentHasCompleted';
 import rightArrow from '../../../../assets/icons/right_arrow_black_border_transparent.png';
+import SectionsColumn from '../../../../components/features/section/sectionscolumn/SectionsColumn';
+import StudentCard from '../../../../components/features/user/usercard/StudentCard';
+import SearchUserBar, { useUserSearch, type SearchCriteria } from '../../../../components/ui/searchuserbar/SearchUserBar';
 import type Section from '../../../../interfaces/section/Section';
 import type { Student } from '../../../../interfaces/user/Student';
-import SearchUserBar from '../../../../components/ui/searchuserbar/SearchUserBar';
 
 interface ComparerProps {
     sections?: Section[];

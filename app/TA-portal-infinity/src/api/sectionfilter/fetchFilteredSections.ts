@@ -1,6 +1,4 @@
-import type Section from "../../interfaces/section/Section";
 import type { SectionType } from "../../interfaces/section/SectionDetails";
-import { mockSectionCOSC111 } from "../../mocked-objects/section/mockSectionCOSC111";
 
 export interface FilterSectionsProps{
 sectionId? : number | null;

@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
-import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import type Section from '../../../../interfaces/section/Section';
+import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
 import ExportAllocationsCSV from '../../csv/ExportAllocationsCSV';
 
 interface Props {

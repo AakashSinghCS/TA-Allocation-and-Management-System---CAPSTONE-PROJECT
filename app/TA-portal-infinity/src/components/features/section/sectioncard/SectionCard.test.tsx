@@ -1,18 +1,14 @@
-import { mockSectionCOSC111 } from "../../../../mocked-objects/section/mockSectionCOSC111";
 import { render, screen, within } from "@testing-library/react";
-import SectionCard from "./SectionCard";
 import { MemoryRouter } from "react-router-dom";
+import { mockSectionCOSC111 } from "../../../../mocked-objects/section/mockSectionCOSC111";
+import SectionCard from "./SectionCard";
 
 const fmt = (n: unknown) => (typeof n === "number" ? n : "-");
 
 describe("SectionCard", () => {
   it("shows section title and meta-info", () => {
-  it("shows section title and meta-info", () => {
     const section = mockSectionCOSC111;
     render(
-      <MemoryRouter>
-        <SectionCard section={section} />
-      </MemoryRouter>
       <MemoryRouter>
         <SectionCard section={section} />
       </MemoryRouter>
@@ -46,14 +42,7 @@ describe("SectionCard", () => {
         <SectionCard section={section} />
       </MemoryRouter>
     );
-    render(
-      <MemoryRouter>
-        <SectionCard section={section} />
-      </MemoryRouter>
-    );
 
-    // each scheduled span should render "Day-StartTime-EndTime"
-    section.sectionSchedule!.forEach(({ day, startTime, endTime }) => {
     // each scheduled span should render "Day-StartTime-EndTime"
     section.sectionSchedule!.forEach(({ day, startTime, endTime }) => {
       const time = `${day}-${startTime}-${endTime}`;
@@ -62,9 +51,6 @@ describe("SectionCard", () => {
       ).toBeInTheDocument();
     });
 
-    // hours badge: "(alloc/req) hrs alloc."
-    const alloc = section.need?.numHoursCurrentlyAllocated;
-    const req = section.need?.requiredGradingHours;
     // hours badge: "(alloc/req) hrs alloc."
     const alloc = section.need?.numHoursCurrentlyAllocated;
     const req = section.need?.requiredGradingHours;

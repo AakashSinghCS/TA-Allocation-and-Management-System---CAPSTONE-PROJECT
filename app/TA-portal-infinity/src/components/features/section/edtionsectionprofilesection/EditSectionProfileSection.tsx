@@ -1,10 +1,10 @@
-import { useState, type ChangeEvent, type FormEvent, type InputHTMLAttributes } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import { fetchAddSectionSchedule } from "../../../../api/section/sectionschedule/fetchAddSectionSchedule";
 import type { SectionProfile } from '../../../../interfaces/section/Section';
 import { sectionTypeOptions, type SectionType } from "../../../../interfaces/section/SectionDetails";
-import EditSectionSchedule from "../editsectionschedule/EditSectionSchedule";
 import type { Instructor } from "../../../../interfaces/user/Instructor";
 import UserBrowsingViewer from "../../../../pages/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer";
-import { fetchAddSectionSchedule } from "../../../../api/section/sectionschedule/fetchAddSectionSchedule";
+import EditSectionSchedule from "../editsectionschedule/EditSectionSchedule";
 
 export interface EditSectionProfileSectionProps {
   sectionId : number;

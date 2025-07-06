@@ -1,10 +1,8 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import InstructorAddNeedPage from './InstructorAddNeedPage';
-import type { Course } from '../../../../interfaces/course/Course';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type Section from '../../../../interfaces/section/Section';
+import InstructorAddNeedPage from './InstructorAddNeedPage';
 
 // --- Mocks ---
 

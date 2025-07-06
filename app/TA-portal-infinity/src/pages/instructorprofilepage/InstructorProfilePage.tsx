@@ -1,16 +1,15 @@
 import { useParams } from 'react-router-dom';
-import ProfileSection from '../../components/features/user/profilesection/ProfileSection';
 import { GenericAPIContainer } from '../../utility/genericapicontainer/GenericAPIContainer';
 
-import { fetchInstructorDetails } from '../../api/instructor/fetchInstructorDetails'
+import { fetchInstructorDetails } from '../../api/instructor/fetchInstructorDetails';
 import {
   type Instructor,
-  instructorProfileFields,
   instructorFieldLabels,
+  instructorProfileFields,
 } from '../../interfaces/user/Instructor';
 
-import InstructorTabNav from '../../components/layout/tabnav/instructortabnav/InstructorTabNav';
 import ProfileDetailsSection from '../../components/features/user/profiledetailssection/ProfileDetailsSection';
+import InstructorTabNav from '../../components/layout/tabnav/instructortabnav/InstructorTabNav';
 
 export default function InstructorProfilePage() {
   const { instructorId } = useParams();

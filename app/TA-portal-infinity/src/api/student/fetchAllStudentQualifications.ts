@@ -1,4 +1,3 @@
-import { mockDeptCodeQualificationResponse } from "../../mocked-objects/qualification/mockDeptCodeQualificationResponse";
 
 
 

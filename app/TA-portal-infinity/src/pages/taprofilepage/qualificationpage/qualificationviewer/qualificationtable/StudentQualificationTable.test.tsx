@@ -1,11 +1,10 @@
 // StudentQualificationTable.test.tsx
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import  StudentQualificationTable  from './StudentQualificationTable';
-import { fetchAllStudentQualifications } from '../../../../../api/student/fetchAllStudentQualifications';
 import { fetchSubmitStudentQualifications } from '../../../../../api/student/fetchSubmitStudentQualifications';
+import StudentQualificationTable from './StudentQualificationTable';
 
 vi.mock('../../../../../context/AuthContext', () => ({
   useAuth: () => ({ userRoles: ['STUDENT'] as const }),

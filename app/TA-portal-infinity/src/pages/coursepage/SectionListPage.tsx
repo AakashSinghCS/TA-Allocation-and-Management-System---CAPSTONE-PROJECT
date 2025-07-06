@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import SectionList from '../../components/features/course/sectionlist/SectionList';
-import SectionFilter from '../../components/features/course/coursefilter/SectionFilter';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { fetchDeleteCourse } from '../../api/course/fetchDeleteCourse';
+import { fetchDeleteSection } from '../../api/section/fetchDeleteSection';
 import { fetchFilteredSections, type FilterSectionsProps } from '../../api/sectionfilter/fetchFilteredSections';
+import SectionFilter from '../../components/features/course/coursefilter/SectionFilter';
+import SectionList from '../../components/features/course/sectionlist/SectionList';
 import type Section from '../../interfaces/section/Section';
 import { convertFilterSectionsToSections } from '../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
-import { fetchDeleteSection } from '../../api/section/fetchDeleteSection';
-import { fetchDeleteCourse } from '../../api/course/fetchDeleteCourse';
 
 
 export default function SectionListPage() {

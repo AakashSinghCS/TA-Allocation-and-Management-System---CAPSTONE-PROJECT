@@ -1,8 +1,7 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 import CreateSectionForm, { type CreateSectionData } from './CreateSectionForm';
-import { MemoryRouter } from 'react-router-dom';
 
 // Mock UserBrowsingViewer to avoid useAuth errors
 vi.mock('../../../../pages/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer', () => ({

@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { fetchAllExistingDeptCodes } from '../../../../api/sectionfilter/fetchAllExsitingDeptCodes';
+import { type FilterSectionsProps } from '../../../../api/sectionfilter/fetchFilteredSections';
+import { sectionTypeOptions, type SectionType } from '../../../../interfaces/section/SectionDetails';
+import { GenericAPIContainer } from '../../../../utility/genericapicontainer/GenericAPIContainer';
 import DaySelector from '../../../ui/dayselector/DaySelector';
 import TimeSelector from '../../../ui/timeselector/TimeSelector';
-import { GenericAPIContainer } from '../../../../utility/genericapicontainer/GenericAPIContainer';
-import { fetchAllExistingDeptCodes } from '../../../../api/sectionfilter/fetchAllExsitingDeptCodes';
-import { sectionTypeOptions, type SectionType } from '../../../../interfaces/section/SectionDetails';
 import DeptCodeCourseNumSectionYearSemesterDropdownContainer from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
-import { type FilterSectionsProps } from '../../../../api/sectionfilter/fetchFilteredSections';
 type Mode = 'small' | 'large';
 
 interface CourseFilterProps {

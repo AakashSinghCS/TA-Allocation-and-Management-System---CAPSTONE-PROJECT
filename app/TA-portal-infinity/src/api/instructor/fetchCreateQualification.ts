@@ -1,6 +1,5 @@
 import type { Course } from "../../interfaces/course/Course";
 import type Qualification from "../../interfaces/qualification/Qualification";
-import type Section from "../../interfaces/section/Section";
 
 // export interface QualificationResponse {
 //     section: Section;

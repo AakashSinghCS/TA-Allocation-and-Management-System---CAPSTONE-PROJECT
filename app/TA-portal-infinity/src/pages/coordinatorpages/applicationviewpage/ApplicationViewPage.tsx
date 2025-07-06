@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { fetchApplications } from '../../../api/application/FetchApplications';
-import { fetchAllocationsByStudent } from '../../../api/allocation/fetchAllocationByStudent';
+import React, { useEffect, useMemo, useState } from 'react';
 import { fetchAllocationByStatus } from '../../../api/allocation/fetchAllocationByStatus';
-import { fetchAllocationByApplicationId } from '../../../api/allocation/fetchAllocationByApplicationId';  //may use later(mandeep)
-import { useAuth } from '../../../context/AuthContext';
-import type { ApplicationDto } from '../../../interfaces/application/Application';
-import type { Allocation } from '../../../interfaces/allocation/Allocation';
-import { Link } from 'react-router-dom';
+import { fetchAllocationsByStudent } from '../../../api/allocation/fetchAllocationByStudent';
+import { fetchApplications } from '../../../api/application/FetchApplications';
 import ApplicationCard from '../../../components/viewtaapplication/ApplicationCard';
 import ApplicationDetailsPanel from '../../../components/viewtaapplication/ApplicationDetailsPanel';
 import ApplicationStats from '../../../components/viewtaapplication/ApplicationStats';
+import { useAuth } from '../../../context/AuthContext';
+import type { Allocation } from '../../../interfaces/allocation/Allocation';
+import type { ApplicationDto } from '../../../interfaces/application/Application';
 
 const ApplicationPage: React.FC = () => {
   const { token } = useAuth();
