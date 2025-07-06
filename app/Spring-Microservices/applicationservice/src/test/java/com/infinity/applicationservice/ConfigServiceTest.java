@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.anyList;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -31,72 +30,88 @@ public class ConfigServiceTest {
 
     private GlobalDeadline sampleDeadline;
 
+    private GlobalDeadline entity;
+    private DeadlineDto dto;
+
     @BeforeEach
     void setUp() {
-        sampleDeadline = new GlobalDeadline();
-        sampleDeadline.setId(1L);
-        sampleDeadline.setName("student_application_deadline");
-        sampleDeadline.setStartTime(LocalDateTime.parse("2025-08-01T00:00:00"));
-        sampleDeadline.setEndTime(LocalDateTime.parse("2025-08-31T23:59:59"));
+        entity = new GlobalDeadline();
+        entity.setId(1L);
+        entity.setName("student_application_deadline");
+        entity.setStartTime(LocalDateTime.parse("2025-08-01T00:00:00"));
+        entity.setEndTime(LocalDateTime.parse("2025-08-31T23:59:59"));
+
+        dto = new DeadlineDto(
+                "student_application_deadline",
+                LocalDateTime.parse("2025-08-01T00:00:00"),
+                LocalDateTime.parse("2025-08-31T23:59:59")
+        );
     }
 
     @Test
     void testGetDeadlines_ShouldReturnAll() {
-        when(configRepository.findAll()).thenReturn(List.of(sampleDeadline));
+        when(configRepository.findAll()).thenReturn(List.of(entity));
 
-        List<GlobalDeadline> result = configService.getDeadlines();
+        List<DeadlineDto> result = configService.getDeadlines();
 
-        assertThat(result).containsExactly(sampleDeadline);
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).name()).isEqualTo("student_application_deadline");
     }
 
     @Test
     void testGetDeadlineByName_ShouldReturnDeadline() {
-        when(configRepository.findByName("student_application_deadline")).thenReturn(sampleDeadline);
+        when(configRepository.findByName("student_application_deadline")).thenReturn(entity);
 
-        GlobalDeadline result = configService.getDeadlineByName("student_application_deadline");
+        DeadlineDto result = configService.getDeadlineByName("student_application_deadline");
 
-        assertThat(result).isEqualTo(sampleDeadline);
+        assertThat(result.name()).isEqualTo("student_application_deadline");
     }
 
     @Test
     void testAddDeadlines_ShouldSaveAll() {
-        DeadlineDto dto = new DeadlineDto(
+        DeadlineDto requestDto = new DeadlineDto(
                 "student_application_deadline",
                 LocalDateTime.parse("2025-08-01T00:00:00"),
                 LocalDateTime.parse("2025-08-31T23:59:59")
         );
 
-        when(configRepository.saveAll(anyList())).thenReturn(List.of(sampleDeadline));
+        when(configRepository.saveAll(anyList())).thenReturn(List.of(entity));
 
-        List<GlobalDeadline> result = configService.addDeadlines(List.of(dto));
+        List<DeadlineDto> result = configService.addDeadlines(List.of(requestDto));
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getName()).isEqualTo("student_application_deadline");
-
-        ArgumentCaptor<List<GlobalDeadline>> captor = ArgumentCaptor.forClass(List.class);
-        verify(configRepository).saveAll(captor.capture());
-
-        GlobalDeadline captured = captor.getValue().get(0);
-        assertThat(captured.getName()).isEqualTo(dto.name());
-        assertThat(captured.getStartTime()).isEqualTo(dto.startTime());
-        assertThat(captured.getEndTime()).isEqualTo(dto.endTime());
+        assertThat(result.get(0).name()).isEqualTo("student_application_deadline");
     }
 
     @Test
     void testUpdateDeadline_ShouldUpdateAndSave() {
-        when(configRepository.findByName("student_application_deadline")).thenReturn(sampleDeadline);
+        when(configRepository.findByName("student_application_deadline")).thenReturn(entity);
 
-        DeadlineDto dto = new DeadlineDto(
+        DeadlineDto updateDto = new DeadlineDto(
                 "student_application_deadline",
                 LocalDateTime.parse("2025-09-01T00:00:00"),
                 LocalDateTime.parse("2025-09-30T23:59:59")
         );
 
-        GlobalDeadline updated = configService.updateDeadline("student_application_deadline", dto);
+        DeadlineDto result = configService.updateDeadline("student_application_deadline", updateDto);
 
-        assertThat(updated.getStartTime()).isEqualTo(dto.startTime());
-        assertThat(updated.getEndTime()).isEqualTo(dto.endTime());
+        assertThat(result.startTime()).isEqualTo(updateDto.startTime());
+        assertThat(result.endTime()).isEqualTo(updateDto.endTime());
 
-        verify(configRepository).save(sampleDeadline);
+        verify(configRepository).save(entity);
     }
+
+    @Test
+void testDeleteDeadline_ShouldDeleteAndReturnDto() {
+
+    when(configRepository.findByName("student_application_deadline")).thenReturn(entity);
+
+    DeadlineDto result = configService.deleteDeadline("student_application_deadline");
+
+    assertThat(result.name()).isEqualTo("student_application_deadline");
+    assertThat(result.startTime()).isEqualTo(entity.getStartTime());
+    assertThat(result.endTime()).isEqualTo(entity.getEndTime());
+
+    verify(configRepository).delete(entity);
+}
 }

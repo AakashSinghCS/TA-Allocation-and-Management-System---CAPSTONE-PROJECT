@@ -2,7 +2,9 @@ package com.infinity.applicationservice.controllers;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.applicationservice.dtos.DeadlineDto;
-import com.infinity.applicationservice.models.GlobalDeadline;
 import com.infinity.applicationservice.services.ConfigService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,28 +28,35 @@ public class ConfigController {
 
     // Get all deadlines
     @GetMapping
-    public List<GlobalDeadline> getDeadlines() {
+    public List<DeadlineDto> getDeadlines() {
         return configService.getDeadlines();
     }
 
     @GetMapping("{name}")
-    public GlobalDeadline getDeadlineByName(@PathVariable String name) {
+    public DeadlineDto getDeadlineByName(@PathVariable String name) {
         return configService.getDeadlineByName(name);
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/add")
-    public List<GlobalDeadline> addDeadlines(@RequestBody List<DeadlineDto> dto) {
+    public List<DeadlineDto> addDeadlines(@RequestBody List<DeadlineDto> dto) {
         return configService.addDeadlines(dto);
     }
 
     // Update a deadline by name
     @PreAuthorize("hasRole('COORDINATOR')")
     @PutMapping("/update/{name}")
-    public GlobalDeadline updateDeadline(
+    public DeadlineDto updateDeadline(
             @PathVariable String name,
             @RequestBody DeadlineDto deadline
     ) {
         return configService.updateDeadline(name, deadline);
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @DeleteMapping("/delete/{name}")
+    public ResponseEntity<DeadlineDto> deleteDeadline(@PathVariable String name) {
+        DeadlineDto deleted = configService.deleteDeadline(name);
+        return ResponseEntity.ok(deleted);
     }
 }
