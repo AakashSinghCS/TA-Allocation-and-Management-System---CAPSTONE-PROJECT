@@ -29,7 +29,7 @@ public class ConfigService {
             .map(dto -> {
                 GlobalDeadline entity = new GlobalDeadline();
                 entity.setName(dto.name());
-                entity.setStartTime(dto.starTime());
+                entity.setStartTime(dto.startTime());
                 entity.setEndTime(dto.endTime());
                 return entity;
             })
@@ -39,7 +39,7 @@ public class ConfigService {
 
     public GlobalDeadline updateDeadline(String name, DeadlineDto updated) {
         GlobalDeadline existing = configRepository.findByName(name);
-        existing.setStartTime(updated.starTime());
+        existing.setStartTime(updated.startTime());
         existing.setEndTime(updated.endTime());
         configRepository.save(existing);
         return existing;
