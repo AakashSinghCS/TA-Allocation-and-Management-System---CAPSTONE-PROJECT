@@ -1,4 +1,3 @@
-import type { Need } from "../../interfaces/need/Need";
 
 export async function fetchUpdatePrereqCourses(courseId: number, year : number, semester:string, ids:number[]): Promise<boolean | null> {
   const token = localStorage.getItem("token");

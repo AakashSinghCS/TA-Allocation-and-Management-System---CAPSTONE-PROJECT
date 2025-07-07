@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { AuthProvider, useAuth } from "./AuthContext";
-import type { AuthResponse } from "../interfaces/auth/AuthResponse";
 import { act } from "react-dom/test-utils";
+import { beforeEach, describe, expect, it } from "vitest";
+import type { AuthResponse } from "../interfaces/auth/AuthResponse";
+import { AuthProvider, useAuth } from "./AuthContext";
 
 function buildJwt(payload: object): string {
   const header = btoa(JSON.stringify({ alg: "none", typ: "JWT" }))

@@ -1,4 +1,3 @@
-import { mockInstructorChed } from "../../mocked-objects/user/mockInstructorChed";
 
 const BASE = "http://localhost:8080/instructors";
 

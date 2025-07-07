@@ -1,13 +1,13 @@
-import  { useState, useEffect, useCallback } from "react";
-import type Section from "../../../../interfaces/section/Section";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../../context/AuthContext";
-import { convertFilterSectionsToSections } from "../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections";
-import SectionList from "../../../../components/features/course/sectionlist/SectionList";
-import SectionFilter from "../../../../components/features/course/coursefilter/SectionFilter";
-import { fetchStudentAllocationHistory } from "../../../../api/student/allocation/fetchStudentAllocationHistory";
-import { fetchPostAllocationHistory } from "../../../../api/student/allocation/fetchPostAllocationHistory";
 import { fetchFilteredSections, type FilterSectionsProps } from "../../../../api/course/sectionfilter/fetchFilteredSections";
+import { fetchPostAllocationHistory } from "../../../../api/student/allocation/fetchPostAllocationHistory";
+import { fetchStudentAllocationHistory } from "../../../../api/student/allocation/fetchStudentAllocationHistory";
+import SectionFilter from "../../../../components/features/course/coursefilter/SectionFilter";
+import SectionList from "../../../../components/features/course/sectionlist/SectionList";
+import { useAuth } from "../../../../context/AuthContext";
+import type Section from "../../../../interfaces/section/Section";
+import { convertFilterSectionsToSections } from "../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections";
 
 export default function AddAllocationHistory() {
   const { userId: studentId } = useAuth();

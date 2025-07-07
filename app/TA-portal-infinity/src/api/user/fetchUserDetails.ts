@@ -1,4 +1,3 @@
-import type { Student } from "../../interfaces/user/Student";
 import type User from "../../interfaces/user/User";
 
 const BASE = "http://localhost:8080/users";

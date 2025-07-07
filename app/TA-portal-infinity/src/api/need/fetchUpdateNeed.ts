@@ -1,5 +1,4 @@
 import type { Need } from "../../interfaces/need/Need";
-import type { SectionProfile } from "../../interfaces/section/Section";
 
 // interface NeedRequest { 
 //     requiredGradingHours : number,

@@ -1,8 +1,8 @@
+import { AlertTriangle, CheckCircle } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bgImage from '../../../assets/ubc_image.png?url';
 import Navbar from '../../../components/layout/login_navbar/Navbar';
-import { CheckCircle, AlertTriangle } from 'lucide-react';
 
 const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState('');

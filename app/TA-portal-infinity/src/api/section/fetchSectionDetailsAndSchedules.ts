@@ -1,4 +1,3 @@
-import type Section from "../../interfaces/section/Section";
 
 // export async function fetchSectionDetailsSchedulesInstructor(sectionId: number):Promise<Section | null>{
 //   const BASE = `http://localhost:8080/sections/getIncludeInstructorId/${sectionId}`;

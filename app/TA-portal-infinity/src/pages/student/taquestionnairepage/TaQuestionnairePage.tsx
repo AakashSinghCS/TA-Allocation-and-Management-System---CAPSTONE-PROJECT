@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import type { ProfileQuestion } from "../../../interfaces/question/ProfileQuestion";
-import type { StudentResponseDto } from "../../../components/features/questionanswer/questionitem/QuestionItem";
-import { useNavigate, useParams } from "react-router-dom";
-import QuestionItem from "../../../components/features/questionanswer/questionitem/QuestionItem";
-import { GenericAPIContainer } from "../../../utility/genericapicontainer/GenericAPIContainer";
+import { useNavigate } from "react-router-dom";
 import { fetchAllProfileQuestions } from "../../../api/question/fetchAllProfileQuestions";
 import { fetchSubmitQuestions, type RequestSubmitQuestions } from "../../../api/question/fetchSubmitQuestions";
+import type { StudentResponseDto } from "../../../components/features/questionanswer/questionitem/QuestionItem";
+import QuestionItem from "../../../components/features/questionanswer/questionitem/QuestionItem";
 import { useAuth } from "../../../context/AuthContext";
+import type { ProfileQuestion } from "../../../interfaces/question/ProfileQuestion";
+import { GenericAPIContainer } from "../../../utility/genericapicontainer/GenericAPIContainer";
 //ResponseState is an object whose keys are numbers (question IDs), and each value is a StudentResponseDto.
 type ResponseState = {
   [questionId: number]: StudentResponseDto;
 }
 
-function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null }) {
+export default function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null }) {
   const studentId = useAuth().userId;
   const [responses, setResponses] = useState<ResponseState>({});
   const navigate = useNavigate();

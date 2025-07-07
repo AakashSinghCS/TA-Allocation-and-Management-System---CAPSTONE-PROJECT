@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import type Section from '../../../interfaces/section/Section';
 import { Link, useParams } from 'react-router-dom';
-import { type Student, studentProfileFields, studentFieldLabels } from '../../../interfaces/user/Student';
-import { type ProfileQuestion } from '../../../interfaces/question/ProfileQuestion';
 import { fetchAllStudentQuestions } from '../../../api/question/fetchAllStudentQuestion';
+import { fetchStudentAllocationHistory } from '../../../api/student/allocation/fetchStudentAllocationHistory';
+import { fetchStudentDetails } from '../../../api/student/fetchStudentDetails';
 import SectionsColumn from '../../../components/features/section/sectionscolumn/SectionsColumn';
+import ProfileDetailsSection from '../../../components/features/user/profiledetailssection/ProfileDetailsSection';
+import StudentTabNav from '../../../components/layout/tabnav/studenttabnav/StudentTabNav';
+import { useAuth } from '../../../context/AuthContext';
+import { type ProfileQuestion } from '../../../interfaces/question/ProfileQuestion';
+import type Section from '../../../interfaces/section/Section';
+import { type Student, studentFieldLabels, studentProfileFields } from '../../../interfaces/user/Student';
 import { GenericAPIContainer } from '../../../utility/genericapicontainer/GenericAPIContainer';
 import ProfileQuestionsSection from './profilequestionssection/ProfileQuestionsSection';
-import StudentTabNav from '../../../components/layout/tabnav/studenttabnav/StudentTabNav';
-import ProfileDetailsSection from '../../../components/features/user/profiledetailssection/ProfileDetailsSection';
-import { fetchStudentDetails } from '../../../api/student/fetchStudentDetails';
-import { fetchStudentAllocationHistory } from '../../../api/student/allocation/fetchStudentAllocationHistory';
-import { useAuth } from '../../../context/AuthContext';
 
 function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(true);

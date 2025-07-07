@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { BookOpen, Check, Edit2, Trash2, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Edit2, Trash2, Check, X, BookOpen } from "lucide-react";
 import type { Need } from "../../../../interfaces/need/Need";
 
 interface NeedCardProps {
