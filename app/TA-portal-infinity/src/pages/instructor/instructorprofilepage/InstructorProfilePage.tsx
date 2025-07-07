@@ -6,6 +6,7 @@ import { fetchInstructorDetails } from '../../../api/instructor/fetchInstructorD
 import {
   type Instructor,
   instructorFieldLabels,
+  instructorProfileFields,
 } from '../../../interfaces/user/Instructor';
 
 import ProfileDetailsSection from '../../../components/features/user/profiledetailssection/ProfileDetailsSection';

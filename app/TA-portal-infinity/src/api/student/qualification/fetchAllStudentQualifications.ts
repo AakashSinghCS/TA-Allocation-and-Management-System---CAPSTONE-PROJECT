@@ -1,9 +1,3 @@
-<<<<<<< HEAD:app/TA-portal-infinity/src/api/student/fetchAllStudentQualifications.ts
-
-
-=======
->>>>>>> develop:app/TA-portal-infinity/src/api/student/qualification/fetchAllStudentQualifications.ts
-
 export async function fetchAllStudentQualifications(studentId: number): Promise<number[] | null> {
   const BASE = `http://localhost:8080/qualifications/findByStudentId/${studentId}`;
   const token = localStorage.getItem("token");
