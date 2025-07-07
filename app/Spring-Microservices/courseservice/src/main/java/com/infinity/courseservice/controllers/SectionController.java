@@ -13,16 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
-import com.infinity.courseservice.dtos.SectionDtos.SectionWithInstructorDto;
-import com.infinity.courseservice.models.Course;
-import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.services.SectionService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,22 +30,15 @@ public class SectionController {
 
     private final SectionService sectionService;
 
-
     @GetMapping("/get/{id}")
-    public ResponseEntity<SectionWithInstructorDto> getSectionById(@PathVariable Long id) {
+    public ResponseEntity<SectionDto> getSectionById(@PathVariable Long id) {
         return ResponseEntity.ok(sectionService.getSectionById(id));
     }
 
-     @GetMapping("/get/{id}")
-     public ResponseEntity<SectionDto> getSectionById(@PathVariable Long id) {
-         return ResponseEntity.ok(sectionService.getSectionById(id));
-     }
-
-     @GetMapping("/getIncludeInstructorId/{id}")
-     public ResponseEntity<SectionDtoWithInstructorId> getSectionWithInstructorIdById(@PathVariable Long id) {
-         return ResponseEntity.ok(sectionService.getSectionWithInstructorIdById(id));
-     }
-
+    @GetMapping("/getIncludeInstructorId/{id}")
+    public ResponseEntity<SectionDtoWithInstructorId> getSectionWithInstructorIdById(@PathVariable Long id) {
+        return ResponseEntity.ok(sectionService.getSectionWithInstructorIdById(id));
+    }
     
      @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addSection/{courseId}")
