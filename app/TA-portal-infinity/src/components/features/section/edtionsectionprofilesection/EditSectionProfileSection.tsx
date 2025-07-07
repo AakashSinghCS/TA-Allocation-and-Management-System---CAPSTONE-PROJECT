@@ -3,8 +3,7 @@ import { fetchAddSectionSchedule } from "../../../../api/section/sectionschedule
 import type { SectionProfile } from '../../../../interfaces/section/Section';
 import { sectionTypeOptions, type SectionType } from "../../../../interfaces/section/SectionDetails";
 import type { Instructor } from "../../../../interfaces/user/Instructor";
-import UserBrowsingViewer from "../../../../pages/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer";
-import EditSectionSchedule from "../editsectionschedule/EditSectionSchedule";
+import UserBrowsingViewer from "../../../../pages/coordinator/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer";
 
 export interface EditSectionProfileSectionProps {
   sectionId : number;

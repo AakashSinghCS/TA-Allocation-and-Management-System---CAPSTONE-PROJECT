@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { describe, it, beforeEach, afterEach, vi, expect } from 'vitest';
-import TaProfilePage from '../../src/pages/taprofilepage/TaProfilePage';
+import TaProfilePage from '../../src/pages/student/taprofilepage/TaProfilePage';
 import { mockStudentJohnDoe } from '../../src/mocked-objects/user/mockStudents';
 import { mockSectionCOSC111 } from '../../src/mocked-objects/section/mockSectionCOSC111';
 import { mockTaProfileQuestion1 } from '../../src/mocked-objects/profile/mockTaProfileQuestions';

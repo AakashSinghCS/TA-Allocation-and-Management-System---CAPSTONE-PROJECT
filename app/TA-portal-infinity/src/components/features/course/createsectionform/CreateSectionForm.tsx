@@ -1,9 +1,10 @@
 import { useState, type FormEvent } from 'react';
 import { sectionTypeOptions, type SectionType } from '../../../../interfaces/section/SectionDetails';
-import { timeOptions } from '../../../ui/timeselector/TimeSelector';
+
 import { useNavigate } from 'react-router-dom';
-import UserBrowsingViewer from '../../../../pages/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer';
+import UserBrowsingViewer from '../../../../pages/coordinator/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer';
 import type { Instructor } from '../../../../interfaces/user/Instructor';
+import { timeOptions } from '../../../ui/section/timeselector/TimeSelector';
 export interface SectionScheduleInput {
   day: string
   startTime: string

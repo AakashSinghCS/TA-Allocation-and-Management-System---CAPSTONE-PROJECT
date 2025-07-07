@@ -14,12 +14,12 @@ describe("SectionsColumn", () => {
       </MemoryRouter>
     );
 
-    const { sectionDetails } = mockSections[0];
+    const  sectionDetails  = mockSections[0];
     const id = sectionDetails!.id;
-    const dept = sectionDetails!.deptCode;
-    const num = sectionDetails!.courseNum;
+    const dept = sectionDetails!.course?.deptCode;
+    const num = sectionDetails!.course?.courseNum;
     const sec = sectionDetails!.section;
-    const name = sectionDetails!.name;
+    const name = sectionDetails!.course?.name;
 
     // Use the testid from SectionCard's Link:
     const link = screen.getByTestId(`section-link-${id}`);

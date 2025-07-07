@@ -15,8 +15,8 @@ interface BackendResponse{
 }
 
 export interface QualificationResponse {
-    section: Section;
-    qualifications: Qualification[];
+  section: Section;
+  qualifications: Qualification[];
 }
 
 export async function fetchAllInstructorQualifications(
@@ -48,15 +48,15 @@ export async function fetchAllInstructorQualifications(
       if (!grouped.has(key)) {
         grouped.set(key, {
           section: {
-            sectionDetails: {
-              id:            d.courseId,
-              sectionId:     d.sectionId,
-              year:          d.year,
-              semester:      d.semester,
-              name:          d.sectionName,
-              type:          d.sectionType,
-              deptCode:      d.courseDeptCode,
-            },
+            id: d.sectionId,
+            year: d.year,
+            semester: d.semester,
+            type: d.sectionType,
+            course: {
+              id: d.courseId,
+              name: d.sectionName,
+              deptCode: d.courseDeptCode,
+            }
           },
           qualifications: [],
         });
@@ -64,9 +64,9 @@ export async function fetchAllInstructorQualifications(
 
       // now push this qualification onto that section’s list
       grouped.get(key)!.qualifications.push({
-        id:          d.qualificationId,
+        id: d.qualificationId,
         description: d.qualificationDescription,
-        deptCode:    d.courseDeptCode,
+        deptCode: d.courseDeptCode,
       });
     });
 

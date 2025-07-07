@@ -8,7 +8,7 @@ import type { Need } from '../../interfaces/need/Need';
 /** Compute remaining hours for a section */
 function getRemainingHours(need: Need): number {
   const required = need.requiredGradingHours ?? 0;
-  const allocated = need.numOfHoursCurrentlyAllocated ?? 0;
+  const allocated = need.numHoursCurrentlyAllocated ?? 0;
   return Math.max(required - allocated, 0);
 }
 

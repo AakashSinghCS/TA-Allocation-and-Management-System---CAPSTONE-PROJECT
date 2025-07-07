@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import SectionFilter from './SectionFilter';
 
 // Mock the dept-code fetch so GenericAPIContainer resolves immediately
-vi.mock('../../../api/sectionfilter/fetchAllExsitingDeptCodes', () => ({
+vi.mock('../../../../api/course/sectionfilter/fetchAllExsitingDeptCodes', () => ({
   fetchAllExistingDeptCodes: () => Promise.resolve([]),
 }));
 

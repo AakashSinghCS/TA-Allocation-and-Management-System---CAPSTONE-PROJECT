@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { fetchAllExistingDeptCodes } from '../../../../api/sectionfilter/fetchAllExsitingDeptCodes';
-import { type FilterSectionsProps } from '../../../../api/sectionfilter/fetchFilteredSections';
+import { fetchAllExistingDeptCodes } from '../../../../api/course/sectionfilter/fetchAllExistingDeptCodes';
+import { type FilterSectionsProps } from '../../../../api/course/sectionfilter/fetchFilteredSections';
 import { sectionTypeOptions, type SectionType } from '../../../../interfaces/section/SectionDetails';
 import { GenericAPIContainer } from '../../../../utility/genericapicontainer/GenericAPIContainer';
-import DaySelector from '../../../ui/dayselector/DaySelector';
-import TimeSelector from '../../../ui/timeselector/TimeSelector';
+import DaySelector from '../../../ui/section/dayselector/DaySelector';
+import TimeSelector from '../../../ui/section/timeselector/TimeSelector';
 import DeptCodeCourseNumSectionYearSemesterDropdownContainer from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
 type Mode = 'small' | 'large';
 
@@ -105,7 +105,7 @@ export default function SectionFilter({
       </div>
 
       <button
-      type="button"
+        type="button"
         onClick={handleFilter}
         className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#040491] transition-colors text-white w-full"
       >

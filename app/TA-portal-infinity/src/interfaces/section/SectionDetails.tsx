@@ -10,12 +10,13 @@ export type SectionType =
     | "EXPERENTIAL"
     | "INDEPENDENT_STUDY"
 
-export interface SectionDetails extends Course{
-    sectionId?: number,
+export default interface SectionDetails {
+    id?: number,
     semester?: string,
     section?: string,
     type?: SectionType,
-    year?: number
+    year?: number,
+    course? : Course,
 }
 
 export const sectionTypeOptions: SectionType[] = [

@@ -28,7 +28,7 @@ export default function SectionProfileSection({
 }: ProfileSectionProps) {
   if (!section) return null;
 
-  const dto = section.sectionDetails || {};
+  const dto = section || {};
   const profileDetails: ProfileDetail[] = createProfileDetails(section, profileFields, fieldLabels);
   const [editingSchedule, setEditingSchedule] = useState<SectionSchedule | null>(null);
   const [addingSchedule, setAddingSchedule] = useState(false);
@@ -40,9 +40,9 @@ export default function SectionProfileSection({
       <section className={`bg-white border border-slate-200 rounded-2xl shadow-sm p-4 ${className}`}>
           <h1 className="text-xl font-bold mb-4 break-words">
             <Link to={`/user/courseprofile/${dto.id}`} className="hover:text-blue-600">
-            {dto.deptCode} {dto.courseNum}{' '}
+            {dto.course?.deptCode} {dto.course?.courseNum}{' '}
             {!isCourse && dto.section}{' '}
-            — {dto.name}
+            — {dto.course?.name}
             </Link>
           </h1>
         <div className={layoutClass}>
@@ -124,7 +124,7 @@ export function createProfileDetails(
   fields: (keyof SectionProfile)[],
   labels: Record<keyof SectionProfile, string>
 ): ProfileDetail[] {
-  const dto = section.sectionDetails || {};
+  const dto = section || {};
   return fields.reduce<ProfileDetail[]>((acc, key) => {
     const val = dto[key];
     if (val == null) return acc;

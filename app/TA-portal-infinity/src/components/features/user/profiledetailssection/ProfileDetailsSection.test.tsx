@@ -8,7 +8,7 @@ vi.mock('../../../../context/AuthContext', () => ({
     useAuth: vi.fn(),
 }));
 
-vi.mock('../../../../components/features/user/editprofilesection/EditProfileSection', () => ({
+vi.mock('../editprofilesection/EditProfileSection', () => ({
     default: () => <div data-testid="edit-section">EDIT MODE</div>,
 }));
 
