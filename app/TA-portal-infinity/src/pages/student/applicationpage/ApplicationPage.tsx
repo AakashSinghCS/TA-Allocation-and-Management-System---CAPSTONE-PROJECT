@@ -111,7 +111,7 @@ useEffect(() => {
   const payload = buildPayload(formData, availability);
             {/* Application Type */}
             <section>
-              <label className="block mb-2 font-medium">Application Type*</label>
+              <label className="block mb-2 font-semibold">Application Type*</label>
               <div className="flex gap-6">
                 {(['UNDERGRADUATE', 'GRADUATE'] as const).map(type => {
                   const id = `applicationType-${type.toLowerCase()}`;
@@ -203,7 +203,7 @@ useEffect(() => {
         )}
 
       {/* heading change if exists */}
-      <h1 className="text-4xl font-bold text-[#040941] mb-10">
+      <h1 className="text-3xl font-bold text-[#040941] mb-10">
         {savedApp ? 'Update Your TA Application' : 'TA Application Submission'}
       </h1>
 
@@ -218,7 +218,7 @@ useEffect(() => {
           >
             {/* Availability Calendar */}
             <section>
-              <h2 className="text-xl font-semibold mb-2">Availability*</h2>
+              <h2 className="text-lg font-semibold mb-2">Availability*</h2>
               <div className="bg-white rounded shadow p-2">
                 <FullCalendar
                   ref={calendarRef as any}

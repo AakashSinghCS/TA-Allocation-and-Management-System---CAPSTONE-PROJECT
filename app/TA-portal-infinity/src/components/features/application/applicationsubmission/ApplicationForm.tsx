@@ -41,14 +41,14 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
     <form onSubmit={handleSubmit} className="space-y-8 md:space-y-10 lg:space-y-12" role="form">
       {/* Subject Preferences */}
       <section>
-        <h2 className="text-xl font-semibold mb-4">Subject Preferences</h2>
+        <h2 className="text-lg font-semibold mb-4">Subject Preferences</h2>
         {loading ? (
           <div className="text-gray-600">Loading department codes...</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {(['firstPreference','secondPreference','thirdPreference'] as const).map(pref => (
               <div key={pref}>
-                <label className="block mb-1 font-medium text-base md:text-lg" htmlFor={pref}>
+                <label className="block mb-1 font-semibold text-lg md:text-lg" htmlFor={pref}>
                   {pref === 'firstPreference' ? '1st Preference*'
                     : pref === 'secondPreference' ? '2nd Preference*'
                     : '3rd Preference*'}
@@ -80,7 +80,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
 
     {/* Hours Requested */}
     <section>
-      <label className="block mb-2 font-medium text-base md:text-lg" htmlFor="wantWorkingHours">Hours Requested*</label>
+      <label className="block mb-2 font-semibold text-base md:text-lg" htmlFor="wantWorkingHours">Hours Requested*</label>
       <input
         id="wantWorkingHours"
         type="number"
@@ -104,7 +104,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
 
     {/* Transcript Upload */}
     <section>
-      <label className="block mb-2 font-medium text-base md:text-lg" htmlFor="transcriptFile">Upload Transcript*</label>
+      <label className="block mb-2 font-semibold text-base md:text-lg" htmlFor="transcriptFile">Upload Transcript*</label>
       <div className="flex items-center gap-3">
         <label className="bg-[#040941] text-white px-6 py-2 rounded cursor-pointer hover:bg-[#030735] text-base md:text-base min-h-[36px] md:min-h-[40px] flex items-center" htmlFor="transcriptFile">
           Choose File
@@ -132,7 +132,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
 
     {/* Application Type */}
     <section>
-      <label className="block mb-2 font-medium text-base md:text-lg" id="applicationTypeLabel">Application Type*</label>
+      <label className="block mb-2 font-semibold text-base md:text-lg" id="applicationTypeLabel">Application Type*</label>
       <div className="flex gap-6">
         {(['UNDERGRADUATE', 'GRADUATE'] as const).map(type => (
           <label key={type} className="inline-flex items-center space-x-2 text-base md:text-base min-h-[36px] md:min-h-[40px]" htmlFor={`applicationType-${type}`}>
@@ -157,7 +157,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
 
     {/* Remote Preference */}
     <section>
-      <label className="block mb-2 font-medium text-base md:text-lg" id="remoteWorkPreferenceLabel">Remote Work Preference*</label>
+      <label className="block mb-2 font-semibold text-base md:text-lg" id="remoteWorkPreferenceLabel">Remote Work Preference*</label>
       <div className="flex gap-6">
         {(['yes', 'no'] as const).map(option => (
           <label key={option} className="inline-flex items-center space-x-2 text-base md:text-base min-h-[36px] md:min-h-[40px]" htmlFor={`wantRemote-${option}`}> 
