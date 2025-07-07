@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
@@ -69,6 +70,7 @@ class AllocationServiceTest {
                 Long studentId = 1L;
 
                 Application application = new Application();
+                application.setId(1L);
                 application.setStudentId(studentId);
                 Allocation allocation = new Allocation();
                 allocation.setId(101L);
@@ -465,5 +467,68 @@ class AllocationServiceTest {
                 assertEquals(1, result.size());
                 assertEquals(2025, result.get(0).applicationDto().timeSubmitted().getYear());
         }
+
+        @Test
+        void importPreviousAllocations_importsCorrectly() throws Exception {
+                String csvContent = """
+                        studentNum,deptCode,courseNum,section,year,semester
+                        123456,COSC,499,001,2023,W1
+                        """;
+
+                MockMultipartFile mockFile = new MockMultipartFile("file", "allocations.csv", "text/csv", csvContent.getBytes());
+
+                StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", 123456, "BSC", 2021, 4);
+                when(userInterface.getStudentByNum(123456)).thenReturn(ResponseEntity.ok(studentDto));
+
+                CourseDto courseDto = new CourseDto(10L, "COSC", "Capstone", "499");
+                when(sectionInterface.getCourseByDeptCodeAndCourseNum("COSC", "499")).thenReturn(ResponseEntity.ok(courseDto));
+
+                SectionDto sectionDto = new SectionDto(100L, 2023, "W1", "001", SectionType.LECTURE, courseDto);
+                when(sectionInterface.getByCourseIdSectionYearSemester(10L, "001", 2023, "W1")).thenReturn(sectionDto);
+
+                allocationService.importPreviousAllocations(mockFile);
+
+                verify(allocationRepository).save(Mockito.argThat(allocation ->
+                        allocation.getStudentId().equals(1L) &&
+                        allocation.getSectionId().equals(100L) &&
+                        allocation.getStatus() == ApplicationStatus.CONFIRMED
+                ));
+        }
+
+        @Test
+        void getAllocationsByStudentId_handlesNullApplication() {
+                Long studentId = 1L;
+
+                Allocation allocation = new Allocation();
+                allocation.setId(101L);
+                allocation.setStudentId(studentId);
+                allocation.setStatus(ApplicationStatus.CONFIRMED);
+                allocation.setNumberOfHours(10);
+                allocation.setSectionId(1001L);
+                allocation.setApplication(null); 
+
+                StudentDto studentDto = new StudentDto(1L, "Test", "User", 123456, "BSC", 2022, 4);
+                SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
+                        new CourseDto(1L, "COSC", "Capstone", "499"));
+
+                AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, null,
+                        ApplicationStatus.CONFIRMED, 10, sectionDto);
+
+                when(allocationRepository.findByStudentId(studentId)).thenReturn(List.of(allocation));
+                when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
+                when(sectionInterface.getSectionById(1001L)).thenReturn(sectionDto);
+                when(allocationMapper.toDto(allocation, studentDto, null, sectionDto)).thenReturn(expectedDto);
+
+                List<AllocationHistoryDto> result = allocationService.getAllocationsByStudentId(studentId);
+
+                assertEquals(1, result.size());
+                assertEquals(expectedDto, result.get(0));
+
+                verify(allocationRepository).findByStudentId(studentId);
+                verify(userInterface).getStudentById(studentId);
+                verify(sectionInterface).getSectionById(1001L);
+                verify(allocationMapper).toDto(allocation, studentDto, null, sectionDto);
+        }
+
 
 }

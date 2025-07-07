@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -38,6 +41,8 @@ import com.infinity.applicationservice.dtos.Users.StudentDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.SectionType;
+import com.infinity.applicationservice.feign.SectionInterface;
+import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.services.AllocationService;
 
 @WebMvcTest(AllocationController.class)
@@ -52,6 +57,12 @@ public class AllocationControllerTest {
 
     @MockitoBean
     private AllocationService allocationService;
+
+    @MockitoBean
+    private UserInterface studentInterface;
+    
+    @MockitoBean
+    private SectionInterface sectionInterface;
 
     private AllocationHistoryDto sampleDto;
 
@@ -223,5 +234,44 @@ public class AllocationControllerTest {
                 .andExpect(
                         jsonPath("$[0].applicationDto.timeSubmitted").value(org.hamcrest.Matchers.startsWith("2025")));
     }
+
+    @Test
+    void importPreviousAllocations_processesCsvAndReturns200() throws Exception {
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "file",
+                "test.csv",
+                "text/csv",
+                "studentNum,deptCode,courseNum,section,year,semester\n63260442,COSC,499,T01,2025,W1".getBytes()
+        );
+
+        StudentDto student = new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4);
+        when(studentInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
+
+        CourseDto course = new CourseDto(1L, "COSC", "Capstone", "499");
+        when(sectionInterface.getCourseByDeptCodeAndCourseNum("COSC", "499")).thenReturn(ResponseEntity.ok(course));
+
+        SectionDto section = new SectionDto(1001L, 2025, "W1", "T01", SectionType.TUTORIAL, course);
+        when(sectionInterface.getByCourseIdSectionYearSemester(1L, "T01", 2025, "W1")).thenReturn(section);
+
+        mvc.perform(multipart("/allocations/import").file(mockFile))
+                .andExpect(status().isOk());
+
+        verify(allocationService, times(1)).importPreviousAllocations(any());
+
+     }
+
+     @Test
+     void importPreviousAllocations_invalidFileType_returnsBadRequest() throws Exception {
+        MockMultipartFile invalidFile = new MockMultipartFile(
+            "file",
+            "test.txt",
+            "text/plain",
+            "this is not a csv".getBytes()
+        );
+
+        mvc.perform(multipart("/allocations/import").file(invalidFile))
+            .andExpect(status().isBadRequest());
+     }
+
 
 }

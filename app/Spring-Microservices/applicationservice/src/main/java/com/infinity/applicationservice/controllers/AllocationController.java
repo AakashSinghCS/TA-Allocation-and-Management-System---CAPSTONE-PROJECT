@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -78,6 +79,16 @@ public class AllocationController {
     @GetMapping("/filter/year/{year}")
     public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByYear(@PathVariable int year) {
         return ResponseEntity.ok(allocationService.getAllocationsByApplicationYear(year));
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<String> importPreviousAllocations(@RequestParam("file") MultipartFile file) {
+        if (!file.getOriginalFilename().endsWith(".csv")) {
+            return ResponseEntity.badRequest().body("Only CSV files are supported.");
+        } else{
+            allocationService.importPreviousAllocations(file);
+            return ResponseEntity.ok("Import successful.");
+        }
     }
 
 }

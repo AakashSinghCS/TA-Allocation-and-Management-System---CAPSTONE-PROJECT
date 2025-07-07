@@ -274,4 +274,28 @@ public class SectionControllerTest {
                                 .andExpect(jsonPath("$.course.name").value("Networks"))
                                 .andExpect(jsonPath("$.instructorId").value(1L));
         }
+
+        @Test
+        void shouldReturnSectionByCourseIdAndDetails() throws Exception {
+                Long courseId = 1L;
+                String sectionName = "001";
+                int year = 2023;
+                String semester = "W1";
+
+                SectionDto dto = new SectionDto(
+                        10L, year, semester, sectionName, null,
+                        new CourseDto(courseId, "COSC", "CAPSTONE","499")
+                );
+
+                when(sectionService.getByCourseIdSectionYearSemester(courseId, sectionName, year, semester))
+                        .thenReturn(dto);
+
+                mockMvc.perform(get("/sections/getByCourseIdSectionYearSemester/{courseId}/{section}/{year}/{semester}",
+                                courseId, sectionName, year, semester))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value(10))
+                        .andExpect(jsonPath("$.section").value("001"))
+                        .andExpect(jsonPath("$.year").value(2023))
+                        .andExpect(jsonPath("$.semester").value("W1"));
+        }   
 }
