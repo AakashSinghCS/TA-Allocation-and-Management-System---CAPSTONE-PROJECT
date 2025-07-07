@@ -12,7 +12,7 @@ type ResponseState = {
   [questionId: number]: StudentResponseDto;
 }
 
-function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null }) {
+export default function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null }) {
   const studentId = useAuth().userId;
   const [responses, setResponses] = useState<ResponseState>({});
   const navigate = useNavigate();
