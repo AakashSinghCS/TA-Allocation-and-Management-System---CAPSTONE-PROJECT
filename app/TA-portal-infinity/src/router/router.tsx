@@ -5,36 +5,43 @@ import RoleGuard from "../components/features/roleguard/RoleGuard";
 import { UserRole } from "../interfaces/enum/UserRole";
 import PublicLayout from "../components/layout/publicLayout/PublicLayout";
 
-import CoursesTakenPage from "../pages/student/taprofilepage/coursestakenpage/CoursesTakenPage";
-import StudentComparerPage from "../pages/student/taprofilepage/comparerpage/StudentComparerPage";
-import InstructorProfilePage from "../pages/instructor/instructorprofilepage/InstructorProfilePage";
-import InstructorNeedPage from "../pages/instructor/instructorprofilepage/needpage/InstructorNeedPage";
-import InstructorComparerPage from "../pages/instructor/instructorprofilepage/comparerpage/InstructorComparerPage";
-import LoginPage from "../pages/auth/loginPage/LoginPage";
-import ErrorPage from "../pages/auth/errorpage/ErrorPage";
-import StudentHomePage from "../pages/student/student_homepage/StudentHomePage";
-import ApplicationPage from "../pages/student/applicationpage/ApplicationPage";
-import InstructorHomePage from "../pages/instructor/instructorhomepage/InstructorHomePage";
-import CoordinatorHomePage from "../pages/coordinator/coordinator_homepage/CoordinatorHomePage";
-import TaProfilePage from "../pages/student/taprofilepage/TaProfilePage";
 import { TaQuestionnairePage } from "../pages/student/taquestionnairepage/TaQuestionnairePage";
 import { CoordinatorQuestionnairePage } from "../pages/coordinator/coordinatorquestionnairepage/CoordinatorQuestionnairePage";
-import AllocationPage from "../pages/coordinator/allocationpage/AllocationPage";
-import InstructorQualificationPage from "../pages/instructor/instructorprofilepage/qualificationpage/InstructorQualificationPage";
-import StudentQualificationPage from "../pages/student/taprofilepage/qualificationpage/StudentQualificationPage";
-import ForgotPasswordPage from "../pages/auth/forgotpasswordpage/ForgotPasswordPage";
-import ResetPasswordPage from "../pages/auth/resetpasswordpage/ResetPasswordPage";
-import UserBrowsingPage from "../pages/coordinator/userbrowsingpage/UserBrowsingPage";
-import ManualCreateUserPage from "../pages/coordinator/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
-import SignUpPage from "../pages/auth/signupPage/SignUpPage";
-import CourseProfilePage from "../pages/course/courseprofilepage/CourseProfilePage";
-import SectionListPage from "../pages/course/sectionlistpage/SectionListPage";
-import AddSectionPage from "../pages/course/addsectionpage/AddSectionPage";
-import InstructorAddSectionPage from "../pages/instructor/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage";
-import InstructorAddNeedPage from "../pages/instructor/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage";
-import AddAllocationHistory from "../pages/student/taprofilepage/addallocationhistory/AddAllocationHistory";
-import AddEnrolledCourse from "../pages/student/taprofilepage/coursestakenpage/addenrolledcourse/AddEnrolledCourse";
-import ApplicationViewPage from "../pages/coordinator/applicationviewpage/ApplicationViewPage";
+
+const TaProfilePage = lazy(() => import("../pages/student/taprofilepage/TaProfilePage"));
+const CoursesTakenPage = lazy(() => import("../pages/student/taprofilepage/coursestakenpage/CoursesTakenPage"));
+const StudentComparerPage = lazy(() => import("../pages/student/taprofilepage/comparerpage/StudentComparerPage"));
+const StudentQualificationPage = lazy(() => import("../pages/student/taprofilepage/qualificationpage/StudentQualificationPage"));
+const AddAllocationHistory = lazy(() => import("../pages/student/taprofilepage/addallocationhistory/AddAllocationHistory"));
+const AddEnrolledCourse = lazy(() => import("../pages/student/taprofilepage/coursestakenpage/addenrolledcourse/AddEnrolledCourse"));
+const StudentHomePage = lazy(() => import("../pages/student/student_homepage/StudentHomePage"));
+const ApplicationPage = lazy(() => import("../pages/student/applicationpage/ApplicationPage"));
+const ViewApplicationPage = lazy(() => import("../pages/student/viewapplicationpage/ViewApplicationPage"));
+
+const InstructorProfilePage = lazy(() => import("../pages/instructor/instructorprofilepage/InstructorProfilePage"));
+const InstructorNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/InstructorNeedPage"));
+const InstructorComparerPage = lazy(() => import("../pages/instructor/instructorprofilepage/comparerpage/InstructorComparerPage"));
+const InstructorQualificationPage = lazy(() => import("../pages/instructor/instructorprofilepage/qualificationpage/InstructorQualificationPage"));
+const InstructorAddSectionPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage"));
+const InstructorAddNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage"));
+const InstructorHomePage = lazy(() => import("../pages/instructor/instructorhomepage/InstructorHomePage"));
+
+const CoordinatorHomePage = lazy(() => import("../pages/coordinator/coordinator_homepage/CoordinatorHomePage"));
+const AllocationPage = lazy(() => import("../pages/coordinator/allocationpage/AllocationPage"));
+const ApplicationViewPage = lazy(() => import("../pages/coordinator/applicationviewpage/ApplicationViewPage"));
+const UserBrowsingPage = lazy(() => import("../pages/coordinator/userbrowsingpage/UserBrowsingPage"));
+const ManualCreateUserPage = lazy(() => import("../pages/coordinator/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage"));
+
+const CourseProfilePage = lazy(() => import("../pages/course/courseprofilepage/CourseProfilePage"));
+const SectionListPage = lazy(() => import("../pages/course/sectionlistpage/SectionListPage"));
+const AddSectionPage = lazy(() => import("../pages/course/addsectionpage/AddSectionPage"));
+
+const LoginPage = lazy(() => import("../pages/auth/loginPage/LoginPage"));
+const SignUpPage = lazy(() => import("../pages/auth/signupPage/SignUpPage"));
+const ForgotPasswordPage = lazy(() => import("../pages/auth/forgotpasswordpage/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("../pages/auth/resetpasswordpage/ResetPasswordPage"));
+const ErrorPage = lazy(() => import("../pages/auth/errorpage/ErrorPage"));
+
 
 export const router = createBrowserRouter([
   {
@@ -64,7 +71,7 @@ export const router = createBrowserRouter([
           { path: "home", element: <Suspense fallback={<div>Loading...</div>}><StudentHomePage /></Suspense> },
           { path: "application", element: <Suspense fallback={<div>Loading...</div>}><ApplicationPage /></Suspense> },
           { path: "view-applications", element: <Suspense fallback={<div>Loading...</div>}><ApplicationViewPage /></Suspense> },
-          { path: "questions/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaQuestionnairePage /></Suspense> },
+          { path: "questions/:studentId", element: <TaQuestionnairePage /> },
           { path: "addallocation", element: <Suspense fallback={<div>Loading...</div>}><AddAllocationHistory /></Suspense> },
           { path: "addenrollment", element: <Suspense fallback={<div>Loading...</div>}><AddEnrolledCourse /></Suspense> },
           { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
@@ -97,7 +104,7 @@ export const router = createBrowserRouter([
         ),
         children: [
           { path: "home", element: <Suspense fallback={<div>Loading...</div>}><CoordinatorHomePage /></Suspense> },
-          { path: "questions", element: <Suspense fallback={<div>Loading...</div>}><CoordinatorQuestionnairePage /></Suspense> },
+          { path: "questions", element: <CoordinatorQuestionnairePage />},
           { path: "browseuser", element: <Suspense fallback={<div>Loading...</div>}><UserBrowsingPage /></Suspense> },
           { path: "browseuser/newuser", element: <Suspense fallback={<div>Loading...</div>}><ManualCreateUserPage /></Suspense> },
           { path: "sections", element: <Suspense fallback={<div>Loading...</div>}><SectionListPage /></Suspense> },
