@@ -70,7 +70,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "home", element: <Suspense fallback={<div>Loading...</div>}><StudentHomePage /></Suspense> },
           { path: "application", element: <Suspense fallback={<div>Loading...</div>}><ApplicationPage /></Suspense> },
-          { path: "view-applications", element: <Suspense fallback={<div>Loading...</div>}><ApplicationViewPage /></Suspense> },
+          { path: "view-applications", element: <Suspense fallback={<div>Loading...</div>}><ViewApplicationPage /></Suspense> },
           { path: "questions/:studentId", element: <TaQuestionnairePage /> },
           { path: "addallocation", element: <Suspense fallback={<div>Loading...</div>}><AddAllocationHistory /></Suspense> },
           { path: "addenrollment", element: <Suspense fallback={<div>Loading...</div>}><AddEnrolledCourse /></Suspense> },

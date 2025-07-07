@@ -1,6 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as FetchAllocationByStatus from '../../../api/allocation/fetchAllocationByStatus';
+import * as FetchAllocationsByStudent from '../../../api/allocation/fetchAllocationByStudent';
+import * as FetchApplications from '../../../api/application/FetchApplications';
+import * as AuthContext from '../../../context/AuthContext';
 import type { ApplicationDto } from '../../../interfaces/application/Application';
+import ApplicationPage from './ApplicationViewPage';
 
 describe('ApplicationViewPage', () => {
   beforeEach(() => {

@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { fetchAllocationByStatus } from '../../../api/allocation/fetchAllocationByStatus';
+import { fetchAllocationsByStudent } from '../../../api/allocation/fetchAllocationByStudent';
+import { fetchApplications } from '../../../api/application/FetchApplications';
 import ApplicationCard from '../../../components/features/application/viewtaapplication/ApplicationCard';
 import ApplicationDetailsPanel from '../../../components/features/application/viewtaapplication/ApplicationDetailsPanel';
 import ApplicationStats from '../../../components/features/application/viewtaapplication/ApplicationStats';

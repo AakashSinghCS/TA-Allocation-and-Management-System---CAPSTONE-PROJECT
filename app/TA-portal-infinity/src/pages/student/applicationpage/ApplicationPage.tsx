@@ -1,5 +1,9 @@
 import type { DateSelectArg, EventClickArg } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction';
+import FullCalendar from '@fullcalendar/react';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchExistingApplication } from '../../../api/application/FetchExistingApplication';
 import { useAuth } from '../../../context/AuthContext';
 import type { ApplicationDto, ApplicationRequest } from '../../../interfaces/application/Application';
