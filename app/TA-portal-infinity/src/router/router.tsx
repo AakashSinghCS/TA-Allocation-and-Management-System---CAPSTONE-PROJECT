@@ -36,7 +36,7 @@ import AddAllocationHistory from "../pages/taprofilepage/addallocationhistory/Ad
 import AddEnrolledCourse from "../pages/taprofilepage/coursestakenpage/addenrolledcourse/AddEnrolledCourse";
 import ViewApplicationPage from "../pages/studentpages/viewapplicationpage/ViewApplicationPage";
 import ApplicationViewPage from "../pages/coordinatorpages/applicationviewpage/ApplicationViewPage";
-
+import DeadlineManagementPage from "../pages/coordinatorpages/"
 export const router = createBrowserRouter([
   {
     path: "/user",
@@ -107,8 +107,9 @@ export const router = createBrowserRouter([
           { path: "sections", element: < SectionListPage/> },
           { path: "sections/add", element: < AddSectionPage/> },
           { path: "applications", element: <ApplicationViewPage /> },
-          {path: "allocation", element: <AllocationPage />},
+          { path: "allocation", element: <AllocationPage />},
           { path: "student/questions/:studentId", element: < TaQuestionnairePage/> }, //TEMPORARY for development
+          { path: "deadlines", element: <DeadlineManagementPage /> },
           { path: "error", element: <ErrorPage /> },
         ],
       },
