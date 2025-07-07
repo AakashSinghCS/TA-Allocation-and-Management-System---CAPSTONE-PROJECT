@@ -25,16 +25,16 @@ describe('SectionList', () => {
 
     const sections: Section[] = [
       {
-        sectionDetails: {
+        id: 2,
+        section: '001',
+        year: 2024,
+        semester: 'W1',
+        type: 'LECTURE',
+        course: {
           id: 1,           // courseId
           name: 'Intro to CS',
           deptCode: 'COSC',
           courseNum: '111',
-          sectionId: 2,
-          section: '001',
-          year: 2024,
-          semester: 'W1',
-          type: 'LECTURE',
         },
         sectionSchedule: [
           {

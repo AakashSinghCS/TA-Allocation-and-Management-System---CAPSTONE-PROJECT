@@ -1,4 +1,3 @@
-// src/components/section/SectionProfileDetailsSection.test.tsx
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import SectionProfileDetailsSection from "./SectionProfileDetailsSection";
@@ -27,8 +26,8 @@ vi.mock("../../../../api/section/sectionschedule/fetchAddSectionSchedule", () =>
   fetchAddSectionSchedule: (...args: any[]) =>
     mockFetchAddSched(...args),
 }));
-vi.mock("../../../../api/section/fetchSection", () => ({
-  fetchSection: (...args: any[]) => mockFetchSection(...args),
+vi.mock("../../../../api/section/fetchSectionIncludeInstructorId", () => ({
+  fetchSectionIncludeInstructorId: (...args: any[]) => mockFetchSection(...args),
 }));
 vi.mock("../../../../api/section/fetchUpdateSectionDetails", () => ({
   fetchUpdateSectionDetails: (...args: any[]) =>
@@ -52,7 +51,8 @@ vi.mock("react-router-dom", async (importOriginal) => {
 describe("SectionProfileDetailsSection", () => {
   // Minimal “section” shape: we only care about sectionDetails.sectionId and id
   const baseSection = {
-    sectionDetails: { sectionId: 123, id: 456 },
+    id: 123,
+    course:{id: 456},
     sectionSchedule: [],
   };
 

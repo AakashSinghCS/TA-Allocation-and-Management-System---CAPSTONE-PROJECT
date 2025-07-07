@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import DaySelector from '../../../ui/dayselector/DaySelector';
-import TimeSelector from '../../../ui/timeselector/TimeSelector';
 import { GenericAPIContainer } from '../../../../utility/genericapicontainer/GenericAPIContainer';
-import { fetchAllExistingDeptCodes } from '../../../../api/sectionfilter/fetchAllExsitingDeptCodes';
+import { fetchAllExistingDeptCodes } from '../../../../api/course/sectionfilter/fetchAllExistingDeptCodes';
 import { sectionTypeOptions, type SectionType } from '../../../../interfaces/section/SectionDetails';
 import DeptCodeCourseNumSectionYearSemesterDropdownContainer from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
-import { type FilterSectionsProps } from '../../../../api/sectionfilter/fetchFilteredSections';
+import { type FilterSectionsProps } from '../../../../api/course/sectionfilter/fetchFilteredSections';
+import DaySelector from '../../../ui/section/dayselector/DaySelector';
+import TimeSelector from '../../../ui/section/timeselector/TimeSelector';
 type Mode = 'small' | 'large';
 
 interface CourseFilterProps {
@@ -105,7 +105,7 @@ export default function SectionFilter({
       </div>
 
       <button
-      type="button"
+        type="button"
         onClick={handleFilter}
         className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#040491] transition-colors text-white w-full"
       >

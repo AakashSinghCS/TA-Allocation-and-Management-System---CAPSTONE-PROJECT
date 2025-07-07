@@ -1,6 +1,7 @@
-import type { FilterSectionsProps } from "../../api/sectionfilter/fetchFilteredSections";
+
+import type { FilterSectionsProps } from "../../api/course/sectionfilter/fetchFilteredSections";
 import type Section from "../../interfaces/section/Section";
-import type { SectionDetails } from "../../interfaces/section/SectionDetails";
+
 import type SectionSchedule from "../../interfaces/section/SectionSchedule";
 
 
@@ -16,14 +17,16 @@ export function convertFilterSectionsToSections(
 
     // if we haven't seen this section yet, create its container
     if (!bySection.has(key)) {
-      const details: SectionDetails = {
+      const details: Section = {
         // fields from Course
+        course:{
         id:         f.courseId   ?? undefined,
         name:       f.name       ?? undefined,
         deptCode:   f.deptCode   ?? undefined,
         courseNum:  f.courseNum  ?? undefined,
-        // fields specific to SectionDetails
-        sectionId:  f.sectionId  ?? undefined,
+        },
+
+        id:  f.sectionId  ?? undefined,
         semester:   f.semester   ?? undefined,
         section:    f.section    ?? undefined,
         type:       f.type       ?? undefined,
@@ -31,7 +34,7 @@ export function convertFilterSectionsToSections(
       };
 
       bySection.set(key, {
-        sectionDetails:  details,
+        ...details,
         sectionSchedule: [],       // start empty
         // you can omit or leave these undefined if you don't need them right now:
         need:            undefined,

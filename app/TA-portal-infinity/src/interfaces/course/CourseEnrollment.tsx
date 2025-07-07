@@ -1,4 +1,4 @@
-import type { SectionDetails } from "../section/SectionDetails";
+import type  SectionDetails  from "../section/SectionDetails";
 import type { Student } from "../user/Student";
 import type { Course } from "./Course";
 
