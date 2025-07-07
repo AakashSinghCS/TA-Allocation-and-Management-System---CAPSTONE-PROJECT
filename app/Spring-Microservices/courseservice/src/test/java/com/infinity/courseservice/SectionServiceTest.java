@@ -25,6 +25,7 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionWithInstructorDto;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -233,14 +234,15 @@ public class SectionServiceTest {
     @Test
     void testGetSectionById_Success() {
         Course course = new Course("COSC", "DB Systems", "304");
-        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, 999L);
         section.setId(55L);
 
         when(sectionRepository.findById(55L)).thenReturn(Optional.of(section));
 
-        SectionDto result = sectionService.getSectionById(55L);
+        SectionWithInstructorDto result = sectionService.getSectionById(55L);
         assertEquals("001", result.section());
         assertEquals("COSC", result.course().deptCode());
+        assertEquals(999L, result.instructorId());
     }
 
     @Test

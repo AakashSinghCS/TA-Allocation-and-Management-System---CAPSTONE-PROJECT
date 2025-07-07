@@ -1,9 +1,11 @@
 {
 	"info": {
-		"_postman_id": "3f677c86-6df4-4c18-8150-bb6ea5c08e7e",
+
+		"_postman_id": "60604062-88f8-4234-b492-8e18216c2b43",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "5014489"
+		"_exporter_id": "45690522"
+
 	},
 	"item": [
 		{
@@ -1374,7 +1376,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"section\": \"001\",\r\n    \"year\": \"2025\",\r\n    \"semester\": \"W1\",\r\n    \"type\": \"LABORATORY\"\r\n}",
+									"raw": "{\r\n    \"section\": \"001\",\r\n    \"year\": \"2025\",\r\n    \"semester\": \"W1\",\r\n    \"type\": \"LABORATORY\",\r\n    \"instructorId\": \"1\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
