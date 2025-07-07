@@ -47,6 +47,8 @@ export function useUserSearch<T extends User>() {
 
   const deleteUser = useCallback(async (id?: number) => {
     if (!id) return;
+    const confirm = window.confirm("Really delete user?");
+    if(!confirm) return;
     const success = await fetchDeleteUser(id);
     if (success) {
       setSearchedUsers(prev => prev?.filter(u => u.id !== id) ?? []);

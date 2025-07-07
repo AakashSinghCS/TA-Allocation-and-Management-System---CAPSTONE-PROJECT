@@ -1,9 +1,10 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import { fetchAddSectionSchedule } from "../../../../api/section/sectionschedule/fetchAddSectionSchedule";
+// import { fetchAddSectionSchedule } from "../../../../api/section/sectionschedule/fetchAddSectionSchedule";
 import type { SectionProfile } from '../../../../interfaces/section/Section';
 import { sectionTypeOptions, type SectionType } from "../../../../interfaces/section/SectionDetails";
 import type { Instructor } from "../../../../interfaces/user/Instructor";
-import UserBrowsingViewer from "../../../../pages/coordinator/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer";
+import UserBrowsingViewer from "../../../coordinator/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer";
+// import EditSectionSchedule from "../editsectionschedule/EditSectionSchedule";
 
 export interface EditSectionProfileSectionProps {
   sectionId : number;
@@ -28,7 +29,7 @@ export default function EditSectionProfileSection({
   onCancel,
 }: EditSectionProfileSectionProps) {
   const [form, setForm] = useState<Partial<SectionProfile>>(Object.fromEntries(fields.map(k => [k, section[k]])) as Partial<SectionProfile>);
-  const [showScheduleEdit, setShowScheduleEdit] = useState(false);
+  // const [showScheduleEdit, setShowScheduleEdit] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
 
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
@@ -105,7 +106,7 @@ export default function EditSectionProfileSection({
         </div>
       </form>
 
-      <button
+      {/* <button
         onClick={() => setShowScheduleEdit(true)}
         className="mt-2 text-sm text-green-600 hover:underline"
       >
@@ -122,7 +123,7 @@ export default function EditSectionProfileSection({
           }}
           onCancel={() => setShowScheduleEdit(false)}
         />
-      )}
+      )} */}
     </div>
   );
 }

@@ -7,13 +7,15 @@ import SectionFilter from '../../../components/features/course/coursefilter/Sect
 import SectionList from '../../../components/features/course/sectionlist/SectionList';
 import type Section from '../../../interfaces/section/Section';
 import { convertFilterSectionsToSections } from '../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
+import { confirmCourseDeletion } from '../../../utility/confirmation/course/confirmCourseDeletion';
+import { confirmSectionDeletion } from '../../../utility/confirmation/section/confirmSectionDeletion';
 
 
 export default function SectionListPage() {
   const navigate = useNavigate();
   const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
-  const [lastFilters, setLastFilters]         = useState<FilterSectionsProps | null>(null);
-  const [loading, setLoading]                 = useState(false);
+  const [lastFilters, setLastFilters] = useState<FilterSectionsProps | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleFilterChange = async (filters: FilterSectionsProps) => {
     setLoading(true);
@@ -30,11 +32,14 @@ export default function SectionListPage() {
   };
 
   // this will be passed down to <SectionList> and called after delete
-  const handleDeleted = async(id : number, isCourse : boolean) => {
-
-    if(isCourse){
+  const handleDeleted = async (id: number, isCourse: boolean) => {
+    if (isCourse) {
+      const confirm = confirmCourseDeletion();
+      if (!confirm) return;
       await fetchDeleteCourse(id);
-    }else{
+    } else {
+      const confirm = confirmSectionDeletion();
+      if (!confirm) return;
       await fetchDeleteSection(id);
     }
     if (lastFilters) {
@@ -45,14 +50,14 @@ export default function SectionListPage() {
   return (
     <div className="container mx-auto p-4 z-10">
       <div className="flex justify-between items-stretch mb-4">
-          <h1 className="text-xl font-semibold">Search for a Section or Course</h1>
-          <Link
-            to="/user/coordinator/sections/add"
-            className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors text-white"
-          >
-            Add New Section or Course
-          </Link>
-        </div>
+        <h1 className="text-xl font-semibold">Search for a Section or Course</h1>
+        <Link
+          to="/user/coordinator/sections/add"
+          className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors text-white"
+        >
+          Add New Section or Course
+        </Link>
+      </div>
       <div className="shadow-lg p-4 rounded-2xl  mb-4 ">
         <SectionFilter onFilterChange={handleFilterChange} mode="large" />
       </div>
@@ -60,10 +65,10 @@ export default function SectionListPage() {
       {loading
         ? <p>Loading courses…</p>
         : <SectionList
-            sections={filteredSections}
-            onDeleted={handleDeleted}
-            // mode = 'coordinator'
-          />
+          sections={filteredSections}
+          onDeleted={handleDeleted}
+        // mode = 'coordinator'
+        />
       }
     </div>
   );

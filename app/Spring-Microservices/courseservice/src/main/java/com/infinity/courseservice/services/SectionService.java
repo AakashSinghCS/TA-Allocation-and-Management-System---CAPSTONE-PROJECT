@@ -22,6 +22,7 @@ import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.models.SectionSchedule;
+import com.infinity.courseservice.models.StudentCourse;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
@@ -103,6 +104,13 @@ public class SectionService {
             throw new NotFoundException("No section with id " + sectionId);
         }
         sectionRepository.deleteById(sectionId);
+
+        // TODO: Prevent orphaned foreign keys in StudentCourse when deleting Section!! Do the same for Allocation!! Set them to null!
+        // List<StudentCourse> related = studentCourseRepository.findBySection(section);
+        //     for (StudentCourse sc : related) {
+        //         sc.setSection(null);
+        //     }
+        // studentCourseRepository.saveAll(related);
         return "Section deleted";
     }
 

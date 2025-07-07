@@ -7,6 +7,8 @@ import { fetchCourse } from "../../../../api/course/fetchCourse";
 import { fetchUpdateCourse } from "../../../../api/course/fetchUpdateCourse";
 import { fetchDeleteCourse } from "../../../../api/course/fetchDeleteCourse";
 import { useNavigate } from "react-router-dom";
+import { validateCourseProfile } from "../../../../utility/validation/course/validateCourseProfile";
+import { confirmCourseDeletion } from "../../../../utility/confirmation/course/confirmCourseDeletion";
 
 interface Props {
     course: Course | null;
@@ -32,10 +34,23 @@ export default function CourseProfileDetails({
     const startProfileEdit = () => setIsEditingProfile(true);
     const cancelProfileEdit = () => setIsEditingProfile(false);
     const deleteCourse = async () =>{
-        //alert user here
+        const confirm = confirmCourseDeletion();
+        if(!confirm) return;
         const ok = await fetchDeleteCourse(course?.id ?? -1);
         if(ok) navigate(-1);
     }
+
+    const onSave = async (updates: Partial<CourseProfile>) =>{
+        const {ok , sanitized, errors} = validateCourseProfile(updates);
+        if (!ok) {
+            alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
+            return;
+        }
+        const success = await fetchUpdateCourse(course?.id ?? -1, sanitized);
+        if (success) setCourse(await fetchCourse(course?.id ?? -1))
+        setIsEditingProfile(false);
+    }
+
     return (
         <div className="relative">
             {course && isEditingProfile ? (
@@ -44,11 +59,7 @@ export default function CourseProfileDetails({
                     course={course}
                     fields={fields}
                     labels={labels}
-                    onSave={async updates => {
-                        const ok = await fetchUpdateCourse(course?.id ?? -1, updates);
-                        if (ok) setCourse(await fetchCourse(course?.id ?? -1))
-                        setIsEditingProfile(false);
-                    }}
+                    onSave={onSave}
                     onCancel={cancelProfileEdit}
                 />
             ) : (

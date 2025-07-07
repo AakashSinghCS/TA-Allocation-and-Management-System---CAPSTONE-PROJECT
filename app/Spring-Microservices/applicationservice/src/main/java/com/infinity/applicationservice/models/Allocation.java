@@ -27,7 +27,8 @@ public class Allocation {
     @JoinColumn(name = "application_id", nullable = false)
     private Application application;
 
-    @Column(name = "section_id")
+    //TODO: prevent orphaned keys when deleting sections! make it be null.
+    @Column(name = "section_id", nullable = true)
     private Long sectionId;
 }
 
