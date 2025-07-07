@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import type { DateSelectArg, EventClickArg } from '@fullcalendar/core';
@@ -79,7 +81,8 @@ const ApplicationPage: React.FC = () => {
   const navigate = useNavigate();
 const calendarRef = useRef<FullCalendar>(null);
 const { token, userId, userRoles } = useAuth();
-const [isModalOpen, setIsModalOpen] = useState(false);
+// Inline details toggle for confirmation row
+const [showDetails, setShowDetails] = useState(false);
 
 useEffect(() => {
   async function loadExisting() {
@@ -250,52 +253,15 @@ useEffect(() => {
 };
 
   return (
-    <div className="min-h-screen px-2 sm:px-6 py-12 bg-[#f4f6fc]">
-      <div className="max-w-[1100px] mx-auto">
-        {/* Modal for previous application */}
-        {isModalOpen && savedApp && (
-         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/20">
-            <div className="bg-white rounded-lg w-full max-w-lg p-6 shadow-xl pointer-events-auto">
-              <h2 className="text-2xl font-bold mb-4">Previous Application Details</h2>
-              <div className="space-y-3 text-gray-800 text-sm">
-                <p><strong>Student ID:</strong> {savedApp.student.studentNum}</p>
-                <p><strong>Submitted at:</strong> {new Date(savedApp.timeSubmitted).toLocaleString()}</p>
-                <p><strong>Preferences:</strong> {savedApp.preferences.join(', ')}</p>
-                <p><strong>Remote:</strong> {savedApp.wantRemote ? 'Yes' : 'No'}</p>
-                <p><strong>Requested Hours:</strong> {savedApp.wantWorkingHours}</p>
-                <div>
-                  <strong>Availability:</strong>
-                  <ul className="list-disc list-inside ml-4">
-                    {savedApp.availabilities.map((a, i) => (
-                      <li key={i}>{a.day} {a.startTime}–{a.endTime}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-              <div className="mt-6 flex justify-end">
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+    <div className="min-h-screen px-2 sm:px-4 md:px-6 py-6 md:py-12">
+      <div className="max-w-[1100px] mx-auto w-full">
 
-        {/* only when previous application exists */}
-            {savedApp && (
+        {/* always show submission confirmation if savedApp exists */}
+        {savedApp && (
           <div className="mb-6 rounded-lg border-l-4 border-yellow-500 bg-yellow-100 p-3 text-yellow-800 flex items-center justify-between">
             <span>
-              You’ve already submitted an application this year — editing will update your existing one.
+              An application for this year has already been submitted. You can view it below — any changes you make will update it.
             </span>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="ml-4 px-4 py-2 bg-[#040941] text-white rounded hover:bg-[#040941]/90 transition-colors"
-            >
-              View Details
-            </button>
           </div>
         )}
 
@@ -304,17 +270,17 @@ useEffect(() => {
         {savedApp ? 'Update Your TA Application' : 'TA Application Submission'}
       </h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-[1fr_320px] gap-14">
-          <div>
-          <form onSubmit={handleSubmit} className="space-y-12">
+        <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr_320px] gap-8 md:gap-12 lg:gap-14">
+          <div className="w-full">
+          <form onSubmit={handleSubmit} className="space-y-8 md:space-y-10 lg:space-y-12">
             
             {/* Subject Preferences */}
             <section>
               <h2 className="text-xl font-semibold mb-4">Subject Preferences</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                {(['firstPreference','secondPreference','thirdPreference'] as const).map(pref => (
                 <div key={pref}>
-                  <label className="block mb-1 font-medium" htmlFor={pref}>
+                  <label className="block mb-1 font-medium text-base md:text-lg" htmlFor={pref}>
                     {pref === 'firstPreference' ? '1st Preference*'
                       : pref === 'secondPreference' ? '2nd Preference*'
                       : '3rd Preference*'}
@@ -324,7 +290,7 @@ useEffect(() => {
                     name={pref}
                     value={(formData as any)[pref]}
                     onChange={handleChange}
-                    className="w-full border rounded px-3 py-2"
+                    className="w-full border rounded px-3 py-2 text-base md:text-base min-h-[36px] md:min-h-[40px]"
                   >
                     <option value="">Select</option>
                     {mockSubjectList.map(subject => (
@@ -340,13 +306,13 @@ useEffect(() => {
 
             {/* Hours Requested */}
             <section>
-              <label className="block mb-2 font-medium">Hours Requested*</label>
+              <label className="block mb-2 font-medium text-base md:text-lg">Hours Requested*</label>
               <input
                 type="number"
                 name="wantWorkingHours"
                 value={formData.wantWorkingHours}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2"
+                className="w-full border rounded px-3 py-2 text-base md:text-base min-h-[36px] md:min-h-[40px]"
                 placeholder="Enter hours"
               />
               {errors.wantWorkingHours && <p className="text-sm text-red-600 mt-1">{errors.wantWorkingHours}</p>}
@@ -354,9 +320,9 @@ useEffect(() => {
 
             {/* Transcript Upload */}
             <section>
-              <label className="block mb-2 font-medium">Upload Transcript*</label>
+              <label className="block mb-2 font-medium text-base md:text-lg">Upload Transcript*</label>
               <div className="flex items-center gap-3">
-                <label className="bg-[#040941] text-white px-6 py-2 rounded cursor-pointer hover:bg-[#030735]">
+                <label className="bg-[#040941] text-white px-6 py-2 rounded cursor-pointer hover:bg-[#030735] text-base md:text-base min-h-[36px] md:min-h-[40px] flex items-center">
                   Choose File
                   <input
                     type="file"
@@ -372,17 +338,17 @@ useEffect(() => {
                   readOnly
                   value={formData.transcriptFile?.name || ''}
                   placeholder="No file chosen"
-                  className="flex-1 px-3 py-2 text-[#040941] bg-white"
+                  className="flex-1 px-3 py-2 text-[#040941] bg-white text-base md:text-base min-h-[36px] md:min-h-[40px]"
                 />
               </div>
               {errors.transcriptFile && <p className="text-sm text-red-600 mt-1">{errors.transcriptFile}</p>}
             </section>
             {/* Application Type */}
             <section>
-              <label className="block mb-2 font-medium">Application Type*</label>
+              <label className="block mb-2 font-medium text-base md:text-lg">Application Type*</label>
               <div className="flex gap-6">
                 {(['UNDERGRADUATE', 'GRADUATE'] as const).map(type => (
-                  <label key={type} className="inline-flex items-center space-x-2">
+                  <label key={type} className="inline-flex items-center space-x-2 text-base md:text-base min-h-[36px] md:min-h-[40px]">
                     <input
                       type="radio"
                       name="applicationType"
@@ -401,10 +367,10 @@ useEffect(() => {
             </section>
             {/* Remote Preference */}
               <section>
-                <label className="block mb-2 font-medium">Remote Work Preference*</label>
+                <label className="block mb-2 font-medium text-base md:text-lg">Remote Work Preference*</label>
                 <div className="flex gap-6">
                   {(['yes', 'no'] as const).map(option => (
-                    <label key={option} className="inline-flex items-center space-x-2">
+                    <label key={option} className="inline-flex items-center space-x-2 text-base md:text-base min-h-[36px] md:min-h-[40px]">
                       <input
                         type="radio"
                         name="wantRemote"
@@ -426,29 +392,32 @@ useEffect(() => {
             {/* Availability */}
             <section>
               <h2 className="text-xl font-semibold mb-2">Availability*</h2>
-              <div className="bg-white rounded shadow p-2 h-[400px] overflow-y-auto">
-                <FullCalendar
-                  ref={calendarRef as any}
-                  plugins={[timeGridPlugin, interactionPlugin]}
-                  initialView="timeGridWeek"
-                  allDaySlot={false}
-                  headerToolbar={false}
-                  slotMinTime="06:00:00"
-                  slotMaxTime={`${visibleEndHour}:00:00`}
-                  height="100%"
-                  selectable
-                  selectMirror
-                  select={handleDateSelect}
-                  eventClick={handleEventClick}
-                  events={availability.map(av => ({
-                    id: av.id,
-                    start: getDateForDay(av.day, av.startTime),
-                    end:   getDateForDay(av.day, av.endTime),
-                    backgroundColor: colorByDay[av.day],
-                    borderColor:     colorByDay[av.day],
-                  }))}
-                  dayHeaderFormat={{ weekday: 'long' }}
-                />
+              <div className="bg-white rounded shadow p-2">
+              <FullCalendar
+                ref={calendarRef as any}
+                plugins={[timeGridPlugin, interactionPlugin]}
+                initialView="timeGridWeek"
+                allDaySlot={false}
+                headerToolbar={false}
+                slotMinTime="06:00:00"
+                slotMaxTime={`${visibleEndHour}:00:00`}
+                height="auto"
+                selectable
+                selectMirror
+                select={handleDateSelect}
+                eventClick={handleEventClick}
+                events={availability.map(av => ({
+                id: av.id,
+                start: getDateForDay(av.day, av.startTime),
+                end:   getDateForDay(av.day, av.endTime),
+                backgroundColor: colorByDay[av.day],
+                borderColor:     colorByDay[av.day],
+                }))}
+                dayHeaderFormat={{ weekday: 'long' }}
+                slotEventOverlap={false}
+                expandRows={true}
+                contentHeight="auto"
+              />
               </div>
               {errors.availability && <p className="text-sm text-red-600 mt-1">{errors.availability}</p>}
             </section>
@@ -460,16 +429,16 @@ useEffect(() => {
                 name="confirmProfileUpdated"
                 checked={formData.confirmProfileUpdated}
                 onChange={handleChange}
-                className="mt-1 mr-2"
+                className="mt-1 mr-2 min-h-[16px] min-w-[16px] md:min-h-[20px] md:min-w-[20px]"
               />
-              <span className="text-sm text-gray-700">
+              <span className="text-base md:text-base text-gray-700">
                 I confirm that I have updated my profile, as it will be used in the TA allocation decision process.*
               </span>
             </section>
             {errors.confirmProfileUpdated && <p className="text-sm text-red-600 mt-1">{errors.confirmProfileUpdated}</p>}
 
             {/* Buttons */}
-            <div className="flex justify-end gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
               <button
                 type="button"
                 className="px-5 py-2 border border-gray-400 text-gray-700 rounded hover:bg-gray-100"
@@ -486,34 +455,13 @@ useEffect(() => {
           </button>
             </div>
           </form>
-
-          {submitted && savedApp && (
-            <div className="mt-12 bg-white p-6 rounded-2xl shadow-md border-t-[6px] border-[#040941]">
-              <h2 className="text-2xl font-bold text-[#040941] mb-6 text-center">Your TA application has been successfully submitted and is now under review by the coordinator</h2>
-              <p><strong>Student ID:</strong> {savedApp.student && savedApp.student.studentNum ? savedApp.student.studentNum : 'N/A'}</p>
-              <p><strong>Submitted at:</strong> {new Date(savedApp.timeSubmitted).toLocaleString()}</p>
-
-              <h3 className="mt-4 font-semibold">Subject Preferences</h3>
-              <ul className="list-disc list-inside">
-                {savedApp.preferences.map((c, i) => (
-                  <li key={i}>{i + 1}. {c}</li>
-                ))}
-              </ul>
-              <p className="mt-2"><strong>Application Type:</strong> {savedApp.applicationType}</p>
-              <p className="mt-2"><strong>Remote?</strong> {savedApp.wantRemote ? 'Yes' : 'No'}</p>
-              <p><strong>Hours:</strong> {savedApp.wantWorkingHours}</p>
-
-              <h3 className="mt-4 font-semibold">Availability</h3>
-              <ul className="list-disc list-inside">
-                {savedApp.availabilities.map((a, i) => (
-                  <li key={i}>{a.day} {a.startTime}–{a.endTime}</li>
-                ))}
-              </ul>
-            </div>
-          )}
           </div>
+
+         
           {/* Sidebar Progress Tracker */}
-          <aside className="hidden sm:block w-[320px] self-start bg-white border border-blue-200 shadow-md p-6 rounded-xl">
+          <aside className="w-full sm:w-[320px] self-start bg-white border border-blue-200 shadow-md p-4 md:p-6 rounded-xl mb-8 sm:mb-0 mx-auto sm:mx-0"
+            style={{ maxWidth: 400 }}
+          >
             <h3 className="text-lg font-semibold text-[#040941] mb-4">Application Steps</h3>
             <ul className="space-y-6 text-sm text-gray-700">
               {[
@@ -575,9 +523,132 @@ useEffect(() => {
                 </li>
               ))}
             </ul>
-          </aside>
+          </aside> 
         </div>
+        {/* Submission confirmation always visible if savedApp exists */}
+        {savedApp && (
+          <div className="mt-6 w-full mb-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white border-t-4 border-[#040941] px-3 md:px-4 py-3 rounded-b-xl shadow">
+              <div className="flex flex-wrap items-center gap-x-4 md:gap-x-6 gap-y-2 min-w-0 flex-1 text-sm md:text-base">
+                <span className="font-semibold text-[#040941]">Application ID:</span>
+                <span className="text-gray-700 truncate max-w-[120px]">{savedApp.id || savedApp.applicationId || 'N/A'}</span>
+                <span className="font-semibold text-[#040941] ml-4">Submitted at:</span>
+                <span className="text-gray-700">{new Date(savedApp.timeSubmitted).toLocaleString()}</span>
+                <span className="ml-4 text-green-700 font-semibold">Submitted & Under Review</span>
+              </div>
+              <div className="flex gap-2 flex-wrap mt-2 md:mt-0">
+                <button
+                  className="px-4 py-2 bg-[#040941] text-white rounded hover:bg-[#030735] transition-colors"
+                  onClick={() => setShowDetails((prev) => !prev)}
+                  aria-expanded={showDetails}
+                  aria-controls="application-details-row"
+                >
+                  {showDetails ? 'Hide Details' : 'View Application'}
+                </button>
+                <button
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                  onClick={async () => {
+                    if (!savedApp) return;
+                    const toastId = toast(
+                      <div>
+                        <div className="font-semibold mb-2">Delete Application?</div>
+                        <div className="mb-3 text-sm text-gray-700">Are you sure you want to delete this application? This action cannot be undone.</div>
+                        <div className="flex gap-2 justify-end">
+                          <button
+                            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-800"
+                            onClick={() => toast.dismiss(toastId)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white"
+                            onClick={async () => {
+                              toast.dismiss(toastId);
+                              try {
+                                const { deleteApplication } = await import('../../../api/application/DeleteApplication');
+                                if (typeof userId !== 'number' && typeof userId !== 'string') throw new Error('No valid user ID found.');
+                                if (!token) throw new Error('No valid authentication token found.');
+                                await deleteApplication(Number(userId), token, userId, userRoles);
+                                setSavedApp(null);
+                                setSubmitted(false);
+                                setShowDetails(false);
+                                setFormData({
+                                  firstPreference: '',
+                                  secondPreference: '',
+                                  thirdPreference: '',
+                                  wantWorkingHours: '',
+                                  wantRemote: '',
+                                  transcriptFile: null,
+                                  confirmProfileUpdated: false,
+                                  applicationType: '',
+                                });
+                                setAvailability([]);
+                                toast.success('Application deleted successfully.', { autoClose: 2500 });
+                                setTimeout(() => window.location.reload(), 2600);
+                              } catch (err: any) {
+                                if (err.message && err.message.includes('403')) {
+                                  toast.error('You do not have permission to delete this application.', { autoClose: 3500 });
+                                } else {
+                                  toast.error('Failed to delete application. Please try again.', { autoClose: 3500 });
+                                }
+                                console.error(err);
+                              }
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>,
+                      {
+                        autoClose: false,
+                        closeOnClick: false,
+                        draggable: false,
+                        closeButton: false,
+                        position: "top-right",
+                        style: { marginTop: 80 },
+                      }
+                    );
+                  }}
+                >
+                  Delete Application
+                </button>
+              </div>
+            </div>
+            {showDetails && (
+              <div
+                id="application-details-row"
+                className="w-full border-x border-b border-[#040941] rounded-b-xl px-3 md:px-6 py-4 text-sm animate-slide-down relative overflow-hidden"
+                role="region"
+                aria-live="polite"
+              >
+                {/* View Application Details */}
+                <div className="absolute left-1/2 top-0 -translate-x-1/2 w-16 h-2 bg-gray-300 rounded-b-xl shadow-md z-10 animate-fold-bar" aria-hidden="true"></div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                  <div><span className="font-semibold">Student ID:</span> {savedApp.student?.studentNum || 'N/A'}</div>
+                  <div><span className="font-semibold">Preferences:</span> {savedApp.preferences?.join(', ') || 'N/A'}</div>
+                  <div><span className="font-semibold">Remote:</span> {savedApp.wantRemote ? 'Yes' : 'No'}</div>
+                  <div><span className="font-semibold">Requested Hours:</span> {savedApp.wantWorkingHours}</div>
+                  <div className="sm:col-span-2 md:col-span-3">
+                    <span className="font-semibold">Availability:</span>
+                    <ul className="list-disc list-inside ml-4 inline">
+                      {savedApp.availabilities?.length ? (
+                        savedApp.availabilities.map((a, i) => (
+                          <li key={i} className="inline-block mr-4">{a.day} {a.startTime}–{a.endTime}</li>
+                        ))
+                      ) : (
+                        <li>N/A</li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Toast container for notifications */}
+      <ToastContainer limit={2} />
     </div>
   );
 };
