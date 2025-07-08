@@ -1,9 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import StudentQualificationViewer from './StudentQualificationViewer';
 import { mockDeptCodeQualificationResponse } from '../../../../../mocked-objects/qualification/mockDeptCodeQualificationResponse';
+import StudentQualificationViewer from './StudentQualificationViewer';
 
 const mockDeptCodes = ['COSC', 'MATH'];
 const mockQualifications = mockDeptCodeQualificationResponse; 

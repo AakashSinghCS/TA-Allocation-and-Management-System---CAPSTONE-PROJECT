@@ -1,13 +1,13 @@
-import SectionCard from '../../../../../components/features/section/sectioncard/SectionCard';
-import { mockSectionCOSC111 } from '../../../../../mocked-objects/section/mockSectionCOSC111';
-import { mockSectionCOSC121 } from '../../../../../mocked-objects/section/mockSectionCOSC121';
 import { useState, type JSX } from 'react';
-import type Section from '../../../../../interfaces/section/Section';
-import { GenericAPIContainer } from '../../../../../utility/genericapicontainer/GenericAPIContainer';
 import { fetchAllStudentSectionsHasCompleted } from '../../../../../api/student/fetchAllStudentSectionsHasCompleted';
+import rightArrow from '../../../../../assets/icons/right_arrow_black_border_transparent.png';
+import SectionCard from '../../../../../components/features/section/sectioncard/SectionCard';
 import SectionsColumn from '../../../../../components/features/section/sectionscolumn/SectionsColumn';
 import type { Course } from '../../../../../interfaces/course/Course';
-import rightArrow from '../../../../../assets/icons/right_arrow_black_border_transparent.png';
+import type Section from '../../../../../interfaces/section/Section';
+import { mockSectionCOSC111 } from '../../../../../mocked-objects/section/mockSectionCOSC111';
+import { mockSectionCOSC121 } from '../../../../../mocked-objects/section/mockSectionCOSC121';
+import { GenericAPIContainer } from '../../../../../utility/genericapicontainer/GenericAPIContainer';
 
 interface ComparerProps {
     studentId: number;

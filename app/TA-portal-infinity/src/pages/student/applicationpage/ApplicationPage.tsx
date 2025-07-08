@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,6 +9,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { useAuth } from '../../../context/AuthContext';
 import type { ApplicationRequest, ApplicationDto, Day } from '../../../interfaces/application/Application';
 import { fetchExistingApplication } from '../../../api/application/FetchExistingApplication';
+
 
 import ApplicationForm from '../../../components/features/application/applicationsubmission/ApplicationForm';
 import ApplicationSidebar from '../../../components/features/application/applicationsubmission/ApplicationSidebar';

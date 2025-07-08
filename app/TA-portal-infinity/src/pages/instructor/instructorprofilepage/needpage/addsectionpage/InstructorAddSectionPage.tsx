@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import SectionFilter from "../../../../../components/features/course/coursefilter/SectionFilter";
-import SectionList from "../../../../../components/features/course/sectionlist/SectionList";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type Section from "../../../../../interfaces/section/Section";
-import type { Course } from "../../../../../interfaces/course/Course";
 import { fetchFilteredSections, type FilterSectionsProps } from "../../../../../api/course/sectionfilter/fetchFilteredSections";
-import { convertFilterSectionsToSections } from "../../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections";
-import { fetchAssignInstructor } from "../../../../../api/section/instructor/fetchAssignInstructor";
-import { useAuth } from "../../../../../context/AuthContext";
 import { fetchGetNeed } from "../../../../../api/need/fetchGetNeed";
 import { fetchUpdateNeed } from "../../../../../api/need/fetchUpdateNeed";
+import { fetchAssignInstructor } from "../../../../../api/section/instructor/fetchAssignInstructor";
+import SectionFilter from "../../../../../components/features/course/coursefilter/SectionFilter";
+import SectionList from "../../../../../components/features/course/sectionlist/SectionList";
+import { useAuth } from "../../../../../context/AuthContext";
+import type { Course } from "../../../../../interfaces/course/Course";
+import type Section from "../../../../../interfaces/section/Section";
+import { convertFilterSectionsToSections } from "../../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections";
 
 type Mode = "update" | "add";
 

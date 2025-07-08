@@ -1,4 +1,4 @@
-import type {Course} from '../course/Course';
+import type { Course } from '../course/Course';
 
 export interface Need {
     description?: string;

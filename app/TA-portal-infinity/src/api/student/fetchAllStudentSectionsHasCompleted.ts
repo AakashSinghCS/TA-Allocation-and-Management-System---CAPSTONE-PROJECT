@@ -1,5 +1,4 @@
 import type Section from "../../interfaces/section/Section";
-import { mockSectionCOSC111 } from "../../mocked-objects/section/mockSectionCOSC111";
 import { mockSectionCOSC121 } from "../../mocked-objects/section/mockSectionCOSC121";
 
 export async function fetchAllStudentSectionsHasCompleted(

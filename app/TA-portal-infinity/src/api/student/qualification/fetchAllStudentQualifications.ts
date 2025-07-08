@@ -1,4 +1,3 @@
-
 export async function fetchAllStudentQualifications(studentId: number): Promise<number[] | null> {
   const BASE = `http://localhost:8080/qualifications/findByStudentId/${studentId}`;
   const token = localStorage.getItem("token");

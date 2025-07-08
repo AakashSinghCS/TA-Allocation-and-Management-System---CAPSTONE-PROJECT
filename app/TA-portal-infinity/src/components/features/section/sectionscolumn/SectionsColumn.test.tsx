@@ -1,8 +1,8 @@
-import { render, screen, within } from "@testing-library/react";
-import SectionsColumn from "./SectionsColumn";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import type Section from "../../../../interfaces/section/Section";
 import { mockSectionCOSC111 } from "../../../../mocked-objects/section/mockSectionCOSC111";
-import { MemoryRouter } from "react-router-dom";
+import SectionsColumn from "./SectionsColumn";
 
 describe("SectionsColumn", () => {
   const mockSections: Section[] = [mockSectionCOSC111];

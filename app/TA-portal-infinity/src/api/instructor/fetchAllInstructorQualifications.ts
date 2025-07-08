@@ -1,18 +1,17 @@
 import type Qualification from "../../interfaces/qualification/Qualification";
 import type Section from "../../interfaces/section/Section";
 import type { SectionType } from "../../interfaces/section/SectionDetails";
-import { mockInstructorQualificationResponse } from "../../mocked-objects/qualification/mockInstructorQualificationResponse";
-
-interface BackendResponse {
-  courseId: number;
-  sectionId: number;
-  year: number;
-  semester: string;
-  sectionName: string;
-  sectionType: SectionType;
-  qualificationId: number;
-  courseDeptCode: string;
-  qualificationDescription: string;
+ 
+interface BackendResponse{
+    courseId : number;
+    sectionId : number;
+    year : number;
+    semester : string;
+    sectionName : string;
+    sectionType : SectionType;
+    qualificationId : number;
+    courseDeptCode : string;
+    qualificationDescription: string;
 }
 
 export interface QualificationResponse {

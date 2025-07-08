@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../../../context/AuthContext';
 import SectionFilter from '../../../../../components/features/course/coursefilter/SectionFilter';
+import { useAuth } from '../../../../../context/AuthContext';
 
-import SectionList from '../../../../../components/features/course/sectionlist/SectionList';
-import type Section from '../../../../../interfaces/section/Section';
-import type { Course } from '../../../../../interfaces/course/Course';
-import type { EnrollmentStatus } from '../../../../../interfaces/course/CourseEnrollment';
-import type { CourseEnrollmentOverview } from '../../../../../interfaces/course/CourseEnrollment';
+import { fetchFilteredSections, type FilterSectionsProps } from '../../../../../api/course/sectionfilter/fetchFilteredSections';
+import { fetchAllStudentEnrollmentOverview } from '../../../../../api/student/enrollment/fetchAllStudentCompletedCourses';
 import { fetchDeleteEnrollment } from '../../../../../api/student/enrollment/fetchDeleteEnrollment';
 import { fetchEnrollStudent } from '../../../../../api/student/enrollment/fetchEnrollStudent';
+import SectionList from '../../../../../components/features/course/sectionlist/SectionList';
+import type { Course } from '../../../../../interfaces/course/Course';
+import type { CourseEnrollmentOverview, EnrollmentStatus } from '../../../../../interfaces/course/CourseEnrollment';
+import type Section from '../../../../../interfaces/section/Section';
 import { convertFilterSectionsToSections } from '../../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
-import { fetchAllStudentEnrollmentOverview } from '../../../../../api/student/enrollment/fetchAllStudentCompletedCourses';
-import { fetchFilteredSections, type FilterSectionsProps } from '../../../../../api/course/sectionfilter/fetchFilteredSections';
 
 
 // an enrollment can be tied to either a specific section or a whole course

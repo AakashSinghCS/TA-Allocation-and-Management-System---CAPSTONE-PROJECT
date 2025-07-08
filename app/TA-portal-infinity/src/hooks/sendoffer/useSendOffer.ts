@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { sendOffer as apiSendOffer } from '../../api/allocation/sendOffer';
 import type { CreateOfferRequest } from '../../api/allocation/sendOffer';
+import { sendOffer as apiSendOffer } from '../../api/allocation/sendOffer';
 import type { ApplicationDto } from '../../interfaces/application/Application';
 import type { Need } from '../../interfaces/need/Need';
 

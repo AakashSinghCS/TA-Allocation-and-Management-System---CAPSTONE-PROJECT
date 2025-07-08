@@ -1,9 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { vi, type Mock } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import SectionProfileSection, { createProfileDetails } from '../sectionprofilesection/SectionProfileSection';
-import type { SectionProfile } from '../../../../interfaces/section/Section';
+import { vi, type Mock } from 'vitest';
 import type Section from '../../../../interfaces/section/Section';
+import type { SectionProfile } from '../../../../interfaces/section/Section';
+import SectionProfileSection, { createProfileDetails } from '../sectionprofilesection/SectionProfileSection';
 
 // Dummy data for tests
 const dummySection: Section = {

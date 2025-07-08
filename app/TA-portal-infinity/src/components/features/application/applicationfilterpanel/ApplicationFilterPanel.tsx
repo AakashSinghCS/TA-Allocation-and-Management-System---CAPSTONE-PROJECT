@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react';
-import type { ApplicationDto } from '../../../../interfaces/application/Application';
-import type { Allocation } from '../../../../interfaces/allocation/Allocation';
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../../../context/AuthContext';
+import React, { useEffect, useState } from 'react';
 import { fetchAllocationsByStudent } from '../../../../api/allocation/fetchAllocationByStudent';
+import { useAuth } from '../../../../context/AuthContext';
+import type { Allocation } from '../../../../interfaces/allocation/Allocation';
+import type { ApplicationDto } from '../../../../interfaces/application/Application';
 
 interface ApplicationFilterPanelProps {
   appQ: {

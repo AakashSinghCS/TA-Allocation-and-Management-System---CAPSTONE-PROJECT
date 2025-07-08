@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen,fireEvent  } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 
-import { FreeText } from './FreeText';       
-import { mockTaProfileQuestion3 } from '../../../../mocked-objects/profile/mockTaProfileQuestions';
 import { useState } from 'react';
+import { mockTaProfileQuestion3 } from '../../../../mocked-objects/profile/mockTaProfileQuestions';
+import { FreeText } from './FreeText';
 
 function FreeTextTestWrapper() {
   const [text, setText] = useState<string>("");
