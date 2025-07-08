@@ -27,6 +27,7 @@ import com.infinity.applicationservice.repositories.AllocationRepository;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.utility.AllocationMapper;
 import com.infinity.applicationservice.utility.ApplicationMapper;
+import com.infinity.applicationservice.exceptions.NotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -174,10 +175,10 @@ public class AllocationService {
             String semester = data.get("semester").trim();
 
             StudentDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
-            if (studentDto == null) throw new RuntimeException("Student not found: " + studentNum);
+            if (studentDto == null) throw new NotFoundException("Student not found: " + studentNum);
 
             CourseDto courseDto = sectionInterface.getCourseByDeptCodeAndCourseNum(deptCode, courseNum).getBody();
-            if (courseDto == null) throw new RuntimeException("Course not found: " + deptCode + " " + courseNum);
+            if (courseDto == null) throw new NotFoundException("Course not found: " + deptCode + " " + courseNum);
 
             SectionDto sectionDto = sectionInterface.getByCourseIdSectionYearSemester(courseDto.id(), sectionName, year, semester);
 
