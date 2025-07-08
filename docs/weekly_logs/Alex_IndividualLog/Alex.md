@@ -1,3 +1,58 @@
+## Monday (July 4-7)
+
+### Timesheet
+Clockify report
+![alt text](./jul4-7.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Sending notifications when application is sent, accepted, and rejected
+  * #2: Debugging why the frontend takes so much CPU to run in Docker
+  * #3: Promoting/demoting users
+
+### Progress Update (since July 3rd 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Sending notifications when application is sent, accepted, and rejected
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Debugging why the frontend takes so much CPU to run in Docker
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Promoting/demoting users
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+   
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I was able to debug the frontend CPU this weekend which was great. Basically, the Chokidar polling for HMR was eating a huge amount of CPU power to just track the folders, and since our frontend directory is really modular, it was taking a lot of CPU. I've turned it off, and added an option in the viteconfig.ts to add it back with a lower time interval for people working on frontend, but at least this way it won't idly take a bunch of power. Also, I made the pages in the router be lazily loaded since before the App.tsx was calling the router and the router had all the pages, so it was making over 200 get requests to itself for all the files. Now it just loads what it needs when it needs it, and has improved the load times significantly.
+
+I also just completed notifications for when applications are sent and when an allocation offer is made to the student.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * I will do the user management (promoting, demoting, etc), and this may come with a refactor of the way users are currently stored in the system. If so, then this could take a while to accomplish, and hopefully can be done this upcoming cycle.
+
 ## Thursday (July 1-3)
 
 ### Timesheet
