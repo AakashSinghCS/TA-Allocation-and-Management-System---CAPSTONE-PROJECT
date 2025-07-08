@@ -315,7 +315,6 @@ finished the backend of course filter, enrollment table building with feign to r
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * building enrollment table to enable frontend comparer
-  * building qualification table and corresponding services
 
 
 ## June 19 - 30
