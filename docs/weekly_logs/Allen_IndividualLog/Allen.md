@@ -315,7 +315,6 @@ finished the backend of course filter, enrollment table building with feign to r
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * building enrollment table to enable frontend comparer
-  * building qualification table and corresponding services
 
 
 ## June 19 - 30
@@ -358,4 +357,4 @@ Clockify report
 finished the backend of qualification service, had a final at 25th, didn't really contributed at that week.
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
-  * building enrollment table to enable frontend comparer
+  * building qualification table and corresponding services
