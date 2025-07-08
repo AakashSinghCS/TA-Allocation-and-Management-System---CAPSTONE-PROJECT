@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import com.infinity.notificationservice.services.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -12,11 +13,13 @@ public class EmailServiceTest {
 
     private JavaMailSender mailSender;
     private EmailService emailService;
+    private Environment env;
 
     @BeforeEach
     void setUp() {
         mailSender = mock(JavaMailSender.class);
-        emailService = new EmailService(mailSender);
+        env = mock(Environment.class);
+        emailService = new EmailService(mailSender, env);
     }
 
     @Test
