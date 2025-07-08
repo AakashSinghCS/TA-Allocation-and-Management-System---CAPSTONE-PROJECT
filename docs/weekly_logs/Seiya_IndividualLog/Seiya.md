@@ -1,3 +1,123 @@
+## Monday (July 4-7)
+
+### Timesheet
+Clockify report
+![alt text](./clockify_images/clockify_weekly_log_2025-07-04_07-07_seiya.png)
+
+
+### Current Tasks (Provide sufficient detail)
+* #1: Planning - Action plan creation and task breakdown
+* #2: CSV export feature - Implement section data export to CSV functionality
+* #3: CSV import feature - Implement section data import from CSV functionality
+* #4: Improving the design - UI/UX improvements for CSV functionality
+
+
+
+### Progress Update (since July 3, 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>#1: Planning - Action plan creation and task breakdown
+        </td>
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <td>#2: CSV export feature - Implement section data export to CSV functionality
+        </td>
+        <td>In Progress
+        </td>
+    </tr>
+    <tr>
+        <td>#3: CSV import feature - Implement section data import from CSV functionality
+        </td>
+        <td>In Progress
+        </td>
+    </tr>
+    <tr>
+        <td>#4: Improving the design - UI/UX improvements for CSV functionality
+        </td>
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+My primary goals for this cycle were to implement a complete CSV export/import feature for course sections, focusing on backend API development and frontend integration.
+
+What was done:
+* Created a detailed action plan.
+* Built the backend API structure, including controllers and initial CSV validation logic.
+* Developed the  frontend UI for both export and import pages.
+
+
+What was not done:
+* The core backend logic for database integration is still pending. This includes fetching data from the DB for exports and saving data to the DB for imports.
+* End-to-end testing will be conducted after the database logic is implemented, which is the plan for the next cycle.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Complete Backend Integration: Collaborate with the team to implement the core database logic for both the CSV export (retrieving data) and import (saving data) features
+* Finalize and Test: Conduct end-to-end testing of the full feature, from UI interaction to database changes, to ensure it functions as expected.
+* Improve Test Coverage for New Feature: Write comprehensive unit tests for the new backend service logic, covering scenarios like successful imports, validation errors, and new course creation to achieve at least 85% coverage for the new code.
+
+
+## Thursday (June 17-19)
+
+### Timesheet
+Clockify report
+![alt text](./clockify_images/clockify_weekly_log_2025-06-17_06-19_seiya.png)
+
+### Current Tasks (Provide sufficient detail)
+* #1: Complete frontend–backend integration for the Course Management page and confirm successful data exchange.
+* #2: Begin implementing role-based access control so only Coordinator users can access the page.
+
+
+### Progress Update (since June 16, 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>#1: Complete frontend–backend integration for the Course Management page
+        </td>
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <td>#2: Begin implementing role-based access control
+        </td>
+        <td>Complete
+        </td>
+    </tr>
+</table>
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+My primary goals for this cycle were to integrate the frontend filter with the backend API and implement role-based access control, both of which were successfully achieved.
+
+What was done:
+* Completed the frontend-backend integration, allowing the filter component to communicate with the API.
+* Confirmed that filter parameters are correctly passed and the backend returns the expected filtered data.
+* Implemented role-based access control, ensuring only users with the 'Coordinator' role can access the Course Management page.
+
+What was not done:
+* I was unable to work on June 18th and 19th due to a fever, which delayed progress on other items like testing.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Finalize and merge the frontend/backend integration for the course filter feature.
+* Refine the UI for the Course Management (Filter) page.
+* Implement the frontend for the Course Creation Page.
+
+
 ## Monday (June 13-16)
 
 ### Timesheet
