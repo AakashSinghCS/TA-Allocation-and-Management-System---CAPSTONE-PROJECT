@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchAllocationByApplicationId } from "../../../api/allocation/fetchAllocationByApplicationId";
 import { fetchApplicationsByStudent } from "../../../api/application/FetchApplicationsByStudent";
 import { acceptOffer } from "../../../api/offer/acceptOffer";
 import { denyOffer } from "../../../api/offer/denyOffer";
-import { useAuth } from "../../../context/AuthContext";
-import type { ApplicationDto } from "../../../interfaces/application/Application";
 import { fetchUserDetails } from "../../../api/user/fetchUserDetails";
-import type { Student } from "../../../interfaces/user/Student";
-import { fetchAllocationByApplicationId } from "../../../api/allocation/fetchAllocationByApplicationId";
 import type { Allocation } from "../../../interfaces/allocation/Allocation";
+import type { ApplicationDto } from "../../../interfaces/application/Application";
+import type { Student } from "../../../interfaces/user/Student";
 import { decodeToken } from "../../../utility/decodeToken";
 
 import { fetchSectionInfo } from "../../../api/section/fetchSectionInfo";

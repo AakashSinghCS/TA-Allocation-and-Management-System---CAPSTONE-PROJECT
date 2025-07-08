@@ -1,34 +1,35 @@
 package com.infinity.courseservice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.infinity.courseservice.controllers.QualificationController;
-import com.infinity.courseservice.dtos.*;
-import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
-import com.infinity.courseservice.enums.SectionType;
-import com.infinity.courseservice.models.Qualification;
-import com.infinity.courseservice.models.Section;
-import com.infinity.courseservice.models.StudentQualification;
-import com.infinity.courseservice.services.QualificationService;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.courseservice.controllers.QualificationController;
+import com.infinity.courseservice.dtos.QualificationDto;
+import com.infinity.courseservice.dtos.QualificationDtoWithId;
+import com.infinity.courseservice.dtos.QualificationRequest;
+import com.infinity.courseservice.dtos.QualificationWithSectionDto;
+import com.infinity.courseservice.dtos.StudentQualiRequest;
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.courseservice.enums.SectionType;
+import com.infinity.courseservice.services.QualificationService;
 
 @WebMvcTest(QualificationController.class)
 @AutoConfigureMockMvc(addFilters = false)

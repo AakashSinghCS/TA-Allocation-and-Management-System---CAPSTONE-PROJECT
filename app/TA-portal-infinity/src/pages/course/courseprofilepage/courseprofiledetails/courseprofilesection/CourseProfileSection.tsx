@@ -1,5 +1,4 @@
-import { useState, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { type ReactNode } from 'react';
 import type { Course, CourseProfile } from '../../../../../interfaces/course/Course';
 
 export interface ProfileSectionProps {

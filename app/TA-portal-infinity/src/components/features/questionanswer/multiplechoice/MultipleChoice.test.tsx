@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen,fireEvent  } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 
-import { MultipleChoice } from './MultipleChoice';       
-import { mockTaProfileQuestion2 } from '../../../../mocked-objects/profile/mockTaProfileQuestions';
 import { useState } from 'react';
+import { mockTaProfileQuestion2 } from '../../../../mocked-objects/profile/mockTaProfileQuestions';
+import { MultipleChoice } from './MultipleChoice';
 
 function MultipleChoiceTestWrapper() {
   const [selected, setToggled] = useState<number[]>([]);

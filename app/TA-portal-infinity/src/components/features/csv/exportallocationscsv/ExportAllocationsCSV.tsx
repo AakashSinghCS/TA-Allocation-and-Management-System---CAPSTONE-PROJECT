@@ -134,7 +134,6 @@
 //   )
 // }
 // ExportAllocationsCSV.tsx
-import React from 'react'
 import { fetchGetCourseNeedAndAllocations } from '../../../../api/csv/fetchGetCourseNeedAndAllocations'
 
 interface ExportAllocationsCSVProps {

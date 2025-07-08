@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import { fetchAllSearchedUsers } from "../../../../api/user/fetchAllSearchedUsers";
-import type { Student } from "../../../../interfaces/user/Student";
-import type { Instructor } from "../../../../interfaces/user/Instructor";
-import type User from "../../../../interfaces/user/User";
 import { fetchDeleteUser } from "../../../../api/user/fetchDeleteUser";
+import type { Instructor } from "../../../../interfaces/user/Instructor";
+import type { Student } from "../../../../interfaces/user/Student";
+import type User from "../../../../interfaces/user/User";
 
 export interface SearchCriteria {
   role: "Student" | "Instructor" | "Coordinator";
