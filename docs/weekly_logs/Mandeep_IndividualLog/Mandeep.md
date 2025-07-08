@@ -1104,7 +1104,7 @@ Tests passed successfully, the PR is now in good shape for merging. The reusable
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 30 June, Monday 2025
 
-**Clockify:** ![alt text](image-44.png)
+**Clockify:** ![alt text](clockify_images/image-44.png)
 
 ## Time Slots
 - **12:00AM–2:13AM:** Send offer integration completion
@@ -1135,7 +1135,7 @@ Both critical backend integrations and frontend user experience have improved. A
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 1 July, Tuesday 2025
 
-**Clockify:** ![alt text](image-45.png)
+**Clockify:** ![alt text](clockify_images/image-45.png)
 
 ## Time Slot
 - **9:30AM–10:44AM:** Team meeting about MVP
@@ -1161,3 +1161,161 @@ The team is aligned and clear on responsibilities, reducing blockers for the upc
 - Monitor progress and adjust scope in upcoming sync-ups.
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 1 July, Tuesday 2025
+
+**Clockify:**  ![alt text](clockify_images/image-46.png)
+
+## Time Slot
+- **1:49PM – 9:24PM & 11:16PM - 3:39AM:** Allocation page changes, integration, and bug fixes
+
+## Current Tasks
+- Made various changes to the allocation page and integrated new functionality
+- Fixed related bugs and improved flow
+- Verified integration with backend and overall system stability
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                               | STATUS    |
+|---------------|-------------------------------------------|-----------|
+| Task 1        | Allocation page changes and integration   | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Focused on improving allocation logic and UI/UX. Multiple iterations to ensure data correctness and fix edge case bugs. Integration testing completed successfully.
+
+### Retrospective
+Allocation flow is now more stable and better aligned with user requirements. Further refinements can be done based on user feedback.
+
+## Next Cycle Goals
+- Conduct additional UI polish
+- Start preparing final tests and user review sessions
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 2 July, Wednesday 2025
+
+**Clockify:**  ![alt text](clockify_images/image-47.png)
+
+## Time Slot
+- **11:52AM – 3:43PM & 7:00PM – 3:20AM:** Created application viewer page for coordinator; integrated and wrote tests for application view page
+
+## Current Tasks
+- Developed application viewer page for coordinators
+- Integrated application view page logic
+- Implemented and wrote unit tests to ensure correctness
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                       | STATUS    |
+|---------------|---------------------------------------------------|-----------|
+| Task 1        | Created application viewer page for coordinator   | Completed |
+| Task 2        | Integrated and wrote tests for application page   | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Successfully implemented and tested the new application viewer feature for coordinators. Strengthened frontend test coverage and confirmed functionality across scenarios.
+
+### Retrospective
+Feature is functional and well-tested, reducing future maintenance effort and improving user confidence.
+
+## Next Cycle Goals
+- Continue enhancing UI responsiveness
+- Add user feedback improvements based on coordinator review
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 3 July, Thursday 2025
+
+**Clockify:**  ![alt text](clockfy_images/image-48.png)
+
+## Time Slot
+- **9:53AM – 3:32PM & 4:23PM – 12:10AM:** Prep for MVP and testing view status flow; implemented view status page for student
+
+## Current Tasks
+- Prepared for MVP presentation and feature stabilization
+- Tested end-to-end view status flow
+- Developed and refined the view status page for students
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                         | STATUS    |
+|---------------|-------------------------------------|-----------|
+| Task 1        | Prep for MVP and testing flow      | Completed |
+| Task 2        | View status page for student      | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Worked on critical finishing tasks for MVP, focusing on ensuring smooth flow for students to check their application status.
+
+### Retrospective
+Ready for user feedback and final adjustments; major functionality is now integrated.
+
+## Next Cycle Goals
+- Address feedback from MVP presentation
+- Polish UI/UX and improve responsiveness
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 6 July, Sunday
+
+**Clockify:**  ![alt text](clockify_images/image-49.png)
+
+## Time Slot
+- **9:12AM – 1:19PM:** Refactoring of some pages, logs, understanding requirements, and KANBAN enhancements
+
+## Current Tasks
+- Refactored various frontend pages
+- Improved and updated logs for clarity
+- Reviewed and refined requirements
+- Enhanced KANBAN board organization
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                       | STATUS    |
+|---------------|-----------------------------------|-----------|
+| Task 1        | Refactoring and requirement review | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Strengthened code maintainability and improved team workflow visibility via KANBAN refinements.
+
+### Retrospective
+Team is better aligned; reduced tech debt and improved clarity on upcoming tasks.
+
+## Next Cycle Goals
+- Continue refining UI
+- Prepare documentation for final presentation
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 7 July, Monday
+
+**Clockify:**  ![alt text](clockify_images/image-50.png)
+
+## Time Slot
+- **10:50AM – 5:11PM:** Cancel TA application feature, reviewed two PRs, refactored application page, and improved UI
+
+## Current Tasks
+- Implemented cancel TA application feature
+- Reviewed and provided feedback on two pull requests
+- Refactored application page for better structure and maintainability
+- Enhanced UI for improved user experience
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                        | STATUS    |
+|---------------|------------------------------------|-----------|
+| Task 1        | Cancel TA application feature     | Completed |
+| Task 2        | PR reviews and UI improvements    | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Addressed critical usability improvements and prepared system for final evaluations.
+
+### Retrospective
+Increased system stability and user satisfaction with improved cancellation flow and UI polish.
+
+## Next Cycle Goals
+- Finalize any pending bugs or UI tweaks
+- Assist team in preparing final deliverables
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
