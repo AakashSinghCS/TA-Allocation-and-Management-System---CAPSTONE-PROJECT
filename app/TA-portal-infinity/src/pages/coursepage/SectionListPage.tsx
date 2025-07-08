@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import SectionList from '../../components/features/course/sectionlist/SectionList';
 import SectionFilter from '../../components/features/course/coursefilter/SectionFilter';
@@ -46,12 +46,26 @@ export default function SectionListPage() {
     <div className="container mx-auto p-4 z-10">
       <div className="flex justify-between items-stretch mb-4">
           <h1 className="text-xl font-semibold">Search for a Section or Course</h1>
-          <Link
-            to="/user/coordinator/sections/add"
-            className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors text-white"
-          >
-            Add New Section or Course
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              to="/user/coordinator/sections/export"
+              className="bg-[#0066CC] text-white px-4 py-1 rounded hover:bg-[#0052A3] transition-colors"
+            >
+              Export to CSV
+            </Link>
+            <Link
+              to="/user/coordinator/sections/import"
+              className="bg-[#FF6B35] text-white px-4 py-1 rounded hover:bg-[#E5522A] transition-colors"
+            >
+              Import from CSV
+            </Link>
+            <Link
+              to="/user/coordinator/sections/add"
+              className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors text-white"
+            >
+              Add New Section or Course
+            </Link>
+          </div>
         </div>
       <div className="shadow-lg p-4 rounded-2xl  mb-4 ">
         <SectionFilter onFilterChange={handleFilterChange} mode="large" />

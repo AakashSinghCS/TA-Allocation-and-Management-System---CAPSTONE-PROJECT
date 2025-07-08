@@ -19,6 +19,10 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
+import com.infinity.courseservice.dtos.SectionDtos.ExportSectionsRequest;
+import com.infinity.courseservice.dtos.SectionDtos.ExportedSectionData;
+import com.infinity.courseservice.dtos.SectionDtos.ImportSectionsBatchRequest;
+import com.infinity.courseservice.dtos.SectionDtos.ImportSectionsBatchResponse;
 import com.infinity.courseservice.services.SectionService;
 
 import lombok.RequiredArgsConstructor;
@@ -106,5 +110,19 @@ public class SectionController {
     @PostMapping("/add")
     public ResponseEntity<Boolean> add( @RequestBody SectionAddDtoRequest request) {      
         return ResponseEntity.ok(sectionService.add(request));
+    }
+
+    // CSV Export endpoint
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @PostMapping("/export")
+    public ResponseEntity<List<ExportedSectionData>> exportSections(@RequestBody ExportSectionsRequest request) {
+        return ResponseEntity.ok(sectionService.exportSections(request.sectionIds()));
+    }
+
+    // CSV Import endpoint
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @PostMapping("/import")
+    public ResponseEntity<ImportSectionsBatchResponse> importSections(@RequestBody ImportSectionsBatchRequest request) {
+        return ResponseEntity.ok(sectionService.importSections(request));
     }
 }
