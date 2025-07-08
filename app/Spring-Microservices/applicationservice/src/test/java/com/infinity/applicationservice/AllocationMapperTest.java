@@ -34,7 +34,7 @@ public class AllocationMapperTest {
         allocation.setStatus(ApplicationStatus.CONFIRMED);
         allocation.setNumberOfHours(8);
 
-        StudentDto student = new StudentDto(2L, "Alice", "Smith", 12345, "MATH", 2020, 4);
+        StudentDto student = new StudentDto(2L, "Alice", "Smith", "alice@test.com", 12345, "MATH", 2020, 4);
 
         ApplicationDto applicationDto = new ApplicationDto(
                 3L, 2L,

@@ -68,7 +68,7 @@ public class AllocationControllerTest {
                 Set.of());
         sampleDto = new AllocationHistoryDto(
                 101L,
-                new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4),
+                new StudentDto(1L, "Test", "User", "test@example.com", 63260442, "BSC", 2022, 4),
                 application,
                 ApplicationStatus.SENT,
                 10,
@@ -85,7 +85,7 @@ public class AllocationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(101))
-                .andExpect(jsonPath("$[0].student.firstName").value("Test User"))
+                .andExpect(jsonPath("$[0].student.firstName").value("Test"))
                 .andExpect(jsonPath("$[0].section.section").value("T01"))
                 .andExpect(jsonPath("$[0].status").value("SENT"));
     }
@@ -110,7 +110,7 @@ public class AllocationControllerTest {
 
         AllocationHistoryDto responseDto = new AllocationHistoryDto(
                 123L,
-                new StudentDto(1L, "Test", "test@example.com", 63260442, "BSC", 2022, 4),
+                new StudentDto(1L, "Test", "User", "test@example.com", 63260442, "BSC", 2022, 4),
                 application,
                 ApplicationStatus.SENT,
                 10,
