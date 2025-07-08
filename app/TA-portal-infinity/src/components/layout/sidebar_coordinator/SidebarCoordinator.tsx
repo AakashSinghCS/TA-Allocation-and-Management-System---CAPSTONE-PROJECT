@@ -14,6 +14,7 @@ const navItems = [
   { label: "Courses", to: "/user/coordinator/sections", icon: <Users size={22} /> }, 
 
   { label: "Users", to: "/user/coordinator/browseuser", icon: <Users size={22} /> }, 
+  { label: "deadline management", to: "/user/coordinator/deadlines", icon: <BookOpen size={22} /> },
 ];
 
 export default function SideNavCoordinator() {

@@ -19,24 +19,24 @@ import { TaQuestionnairePage } from "../pages/student/taquestionnairepage/TaQues
 import { CoordinatorQuestionnairePage } from "../pages/coordinator/coordinatorquestionnairepage/CoordinatorQuestionnairePage";
 import RoleGuard from "../components/features/roleguard/RoleGuard";
 import { UserRole } from "../interfaces/enum/UserRole";
-import AllocationPage from "../pages/allocationpage/AllocationPage";
-import InstructorQualificationPage from "../pages/instructorprofilepage/qualificationpage/InstructorQualificationPage";
-import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
-import ForgotPasswordPage from "../pages/forgotpasswordpage/ForgotPasswordPage";
-import ResetPasswordPage from "../pages/resetpasswordpage/ResetPasswordPage";
-import UserBrowsingPage from "../pages/userbrowsingpage/UserBrowsingPage";
-import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
-import SignUpPage from "../pages/signupPage/SignUpPage";
-import CourseProfilePage from "../pages/courseprofilepage/CourseProfilePage";
-import SectionListPage from "../pages/coursepage/SectionListPage";
-import AddSectionPage from "../pages/coursepage/AddSectionPage";
-import InstructorAddSectionPage from "../pages/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage";
-import InstructorAddNeedPage from "../pages/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage";
-import AddAllocationHistory from "../pages/taprofilepage/addallocationhistory/AddAllocationHistory";
-import AddEnrolledCourse from "../pages/taprofilepage/coursestakenpage/addenrolledcourse/AddEnrolledCourse";
-import ViewApplicationPage from "../pages/studentpages/viewapplicationpage/ViewApplicationPage";
-import ApplicationViewPage from "../pages/coordinatorpages/applicationviewpage/ApplicationViewPage";
-import DeadlineManagementPage from "../pages/coordinatorpages/"
+import AllocationPage from "../pages/coordinator/allocationpage/AllocationPage";
+import InstructorQualificationPage from "../pages/instructor/instructorprofilepage/qualificationpage/InstructorQualificationPage";
+import StudentQualificationPage from "../pages/student/taprofilepage/qualificationpage/StudentQualificationPage";
+import ForgotPasswordPage from "../pages/auth/forgotpasswordpage/ForgotPasswordPage";
+import ResetPasswordPage from "../pages/auth/resetpasswordpage/ResetPasswordPage";
+import UserBrowsingPage from "../pages/coordinator/userbrowsingpage/UserBrowsingPage";
+import ManualCreateUserPage from "../pages/coordinator/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
+import SignUpPage from "../pages/auth/signupPage/SignUpPage";
+import CourseProfilePage from "../pages/course/courseprofilepage/CourseProfilePage";
+import SectionListPage from "../pages/course/sectionlistpage/SectionListPage";
+import AddSectionPage from "../pages/course/addsectionpage/AddSectionPage";
+import InstructorAddSectionPage from "../pages/instructor/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage";
+import InstructorAddNeedPage from "../pages/instructor/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage";
+import AddAllocationHistory from "../pages/student/taprofilepage/addallocationhistory/AddAllocationHistory";
+import AddEnrolledCourse from "../pages/student/taprofilepage/coursestakenpage/addenrolledcourse/AddEnrolledCourse";
+import ViewApplicationPage from "../pages/student/viewapplicationpage/ViewApplicationPage";
+import ApplicationViewPage from "../pages/coordinator/applicationviewpage/ApplicationViewPage";
+import DeadlineManagementPage from "../pages/admin/deadlinemanagementpage/DeadlineManagementPage";
 export const router = createBrowserRouter([
   {
     path: "/user",

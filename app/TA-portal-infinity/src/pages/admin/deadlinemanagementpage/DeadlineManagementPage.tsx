@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from '../../../context/AuthContext';
 import { fetchDeadlines, updateDeadline } from "../../../api/admin/FetchDeadline";
-import type { DeadlineDto } from "../../../interfaces/config/Deadline";
+import type { DeadlineDto } from "../../../interfaces/admin/Deadline";
 
 const DeadlineManagementPage: React.FC = () => {
   const { token } = useAuth();

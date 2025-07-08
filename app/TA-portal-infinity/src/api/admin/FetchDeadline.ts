@@ -1,4 +1,4 @@
-import type { DeadlineDto } from "../../interfaces/config/Deadline";
+import type { DeadlineDto } from "../../interfaces/admin/Deadline";
 
 /**
  * Fetch all deadlines
