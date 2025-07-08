@@ -3,12 +3,12 @@ package com.infinity.courseservice;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalTime;
@@ -32,7 +32,6 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
-import com.infinity.courseservice.dtos.SectionDtos.SectionWithInstructorDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.services.SectionService;
 
@@ -92,10 +91,9 @@ public class SectionControllerTest {
         @Test
         void testGetSectionById() throws Exception {
                 Long sectionId = 300L;
-                Long instructorId = 700L;
-                SectionWithInstructorDto response = new SectionWithInstructorDto(sectionId, 2025, "W2", "002", SectionType.LECTURE,
-                                new CourseDto(1L, "COSC", "Networks", "329"),
-                                instructorId);
+                SectionDto response = new SectionDto(sectionId,2025, "W2", "002", SectionType.LECTURE,
+                                new CourseDto(1L, "COSC", "Networks", "329")
+                                );
 
                 when(sectionService.getSectionById(sectionId)).thenReturn(response);
 
@@ -105,8 +103,7 @@ public class SectionControllerTest {
                                 .andExpect(jsonPath("$.year").value(2025))
                                 .andExpect(jsonPath("$.semester").value("W2"))
                                 .andExpect(jsonPath("$.section").value("002"))
-                                .andExpect(jsonPath("$.course.name").value("Networks"))
-                                .andExpect(jsonPath("$.instructorId").value(instructorId));
+                                .andExpect(jsonPath("$.course.name").value("Networks"));
         }
 
         @Test
