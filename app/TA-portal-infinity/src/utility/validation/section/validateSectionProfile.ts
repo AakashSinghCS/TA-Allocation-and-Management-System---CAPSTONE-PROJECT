@@ -5,7 +5,7 @@ import type { SectionProfile } from "../../../interfaces/section/Section";
 import { looksLikeSqlInjection } from "../sqlinjection/looksLikeSqlInjection";
 
 // 1. "001", "A01", "B2C", up to 3 chars, NO lowercase
-const reSectionCode  = /^[A-Z0-9]{1,3}$/;
+const reSectionCode  = /^[A-Z0-9]{3}$/;
 
 // 2. "W1", "W2", "S1", "S2", "F1", "F2"
 const reSemester     = /^[WS][12]$/;

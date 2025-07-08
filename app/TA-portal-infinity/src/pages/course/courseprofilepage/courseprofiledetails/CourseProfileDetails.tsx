@@ -8,7 +8,8 @@ import { fetchUpdateCourse } from "../../../../api/course/fetchUpdateCourse";
 import { fetchDeleteCourse } from "../../../../api/course/fetchDeleteCourse";
 import { useNavigate } from "react-router-dom";
 import { validateCourseProfile } from "../../../../utility/validation/course/validateCourseProfile";
-import { confirmCourseDeletion } from "../../../../utility/confirmation/course/confirmCourseDeletion";
+import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
+
 
 interface Props {
     course: Course | null;
@@ -34,7 +35,7 @@ export default function CourseProfileDetails({
     const startProfileEdit = () => setIsEditingProfile(true);
     const cancelProfileEdit = () => setIsEditingProfile(false);
     const deleteCourse = async () =>{
-        const confirm = confirmCourseDeletion();
+        const confirm = confirmDeletion("course","This will delete all associated sections.");
         if(!confirm) return;
         const ok = await fetchDeleteCourse(course?.id ?? -1);
         if(ok) navigate(-1);

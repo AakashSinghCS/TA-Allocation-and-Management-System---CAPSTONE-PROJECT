@@ -12,7 +12,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor; 
@@ -33,13 +32,12 @@ public class Course {
     @GeneratedValue
     private Long id;
 
-    @Pattern(regexp = "^[A-Z]{4}$")
     private String deptCode;
 
     @NotBlank @Size(max = 100)
     private String name;
 
-    @Pattern(regexp = "^[0-9]{3}$")
+
     private String courseNum;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)

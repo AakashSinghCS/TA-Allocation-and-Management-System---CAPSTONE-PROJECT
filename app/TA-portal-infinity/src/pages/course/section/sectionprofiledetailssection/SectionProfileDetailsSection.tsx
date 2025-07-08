@@ -10,9 +10,9 @@ import { fetchSectionIncludeInstructorId } from "../../../../api/section/fetchSe
 import { fetchUpdateSectionDetails } from "../../../../api/section/fetchUpdateSectionDetails";
 import { fetchDeleteSection } from "../../../../api/section/fetchDeleteSection";
 import { useNavigate } from "react-router-dom";
-import { confirmSectionDeletion } from "../../../../utility/confirmation/section/confirmSectionDeletion";
 import { validateSectionProfile } from "../../../../utility/validation/section/validateSectionProfile";
 import SectionProfileSection from "../sectionprofilesection/SectionProfileSection";
+import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
 interface Props {
   section: Section | null;
   fields: (keyof SectionProfile)[];
@@ -55,7 +55,7 @@ export default function SectionProfileDetailsSection({
   const startProfileEdit = () => setIsEditingProfile(true);
   const cancelProfileEdit = () => setIsEditingProfile(false);
   const deleteCourse = async () => {
-    const confirm = confirmSectionDeletion();
+    const confirm = confirmDeletion("section","This will delete associated schedule and exam data");
     if (!confirm) return;
     const ok = await fetchDeleteSection(section?.id ?? -1);
     if (ok) navigate(-1);

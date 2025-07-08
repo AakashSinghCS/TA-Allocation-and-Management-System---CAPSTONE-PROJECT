@@ -4,6 +4,7 @@ import { fetchDeleteUser } from "../../../../api/user/fetchDeleteUser";
 import type { Instructor } from "../../../../interfaces/user/Instructor";
 import type { Student } from "../../../../interfaces/user/Student";
 import type User from "../../../../interfaces/user/User";
+import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
 
 export interface SearchCriteria {
   role: "Student" | "Instructor" | "Coordinator";
@@ -47,7 +48,7 @@ export function useUserSearch<T extends User>() {
 
   const deleteUser = useCallback(async (id?: number) => {
     if (!id) return;
-    const confirm = window.confirm("Really delete user?");
+    const confirm = confirmDeletion("user","This will delete associated .....");
     if(!confirm) return;
     const success = await fetchDeleteUser(id);
     if (success) {

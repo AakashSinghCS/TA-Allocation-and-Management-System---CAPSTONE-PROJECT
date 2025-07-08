@@ -7,8 +7,7 @@ import SectionFilter from '../../../components/features/course/coursefilter/Sect
 import SectionList from '../../../components/features/course/sectionlist/SectionList';
 import type Section from '../../../interfaces/section/Section';
 import { convertFilterSectionsToSections } from '../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
-import { confirmCourseDeletion } from '../../../utility/confirmation/course/confirmCourseDeletion';
-import { confirmSectionDeletion } from '../../../utility/confirmation/section/confirmSectionDeletion';
+import { confirmDeletion } from '../../../utility/confirmation/confirmDeletion';
 
 
 export default function SectionListPage() {
@@ -34,11 +33,11 @@ export default function SectionListPage() {
   // this will be passed down to <SectionList> and called after delete
   const handleDeleted = async (id: number, isCourse: boolean) => {
     if (isCourse) {
-      const confirm = confirmCourseDeletion();
+      const confirm = confirmDeletion("course","This will delete all associated sections.");
       if (!confirm) return;
       await fetchDeleteCourse(id);
     } else {
-      const confirm = confirmSectionDeletion();
+      const confirm = confirmDeletion("section","This will delete associated schedule and exam data");
       if (!confirm) return;
       await fetchDeleteSection(id);
     }
