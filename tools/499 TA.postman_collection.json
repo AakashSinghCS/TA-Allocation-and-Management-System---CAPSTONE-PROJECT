@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "85ca30c8-be8e-4613-ab1b-f02b2ac9687f",
+		"_postman_id": "e448564d-3efb-43a0-9387-f3140919cb9c",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45669202",
-		"_collection_link": "https://allen-9145341.postman.co/workspace/Allen's-Workspace~5d13c9f6-ede4-4301-81d3-649ab495ae62/collection/45669202-85ca30c8-be8e-4613-ab1b-f02b2ac9687f?action=share&source=collection_link&creator=45669202"
+		"_exporter_id": "45690522"
 	},
 	"item": [
 		{
@@ -783,6 +782,44 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Get by DeptCode and CourseNum",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJpYXQiOjE3NDkzMTk4MTd9.ztFEXzMsE9S6nDLRTWmN_G0kuqrTlARwEWJjqXnDQCAjVi3eaFXoWzpA1DTi_WS4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "localhost:8080/courses/getByDeptCodeAndCourseNum/COSC/499",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"courses",
+										"getByDeptCodeAndCourseNum",
+										"COSC",
+										"499"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -1375,7 +1412,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"section\": \"001\",\r\n    \"year\": \"2025\",\r\n    \"semester\": \"W1\",\r\n    \"type\": \"LABORATORY\"\r\n}",
+									"raw": "{\r\n    \"section\": \"001\",\r\n    \"year\": \"2025\",\r\n    \"semester\": \"W1\",\r\n    \"type\": \"LABORATORY\",\r\n    \"instructorId\": \"1\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1801,6 +1838,47 @@
 								"sections",
 								"getInstructorSections",
 								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get section by CourseId,Section,Year,Semester",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"section\": \"001\",\r\n    \"year\": \"2025\",\r\n    \"semester\": \"W1\",\r\n    \"type\": \"LABORATORY\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sections/getByCourseIdSectionYearSemester/1/001/2025/W1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sections",
+								"getByCourseIdSectionYearSemester",
+								"1",
+								"001",
+								"2025",
+								"W1"
 							]
 						}
 					},
@@ -2675,6 +2753,46 @@
 										"filter",
 										"year",
 										"2025"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Import Allocations",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n  {\n    \"firstName\": \"Scoobert\",\n    \"lastName\": \"Doobert\",\n    \"studentNum\": \"63260442\",\n    \"deptCode\": \"COSC\",\n    \"courseNum\": \"499\",\n    \"section\": \"001\",\n    \"year\": \"2025\",\n    \"semester\": \"W1\"\n  }\n]\n"
+								},
+								"url": {
+									"raw": "http://localhost:8080/allocations/import",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"allocations",
+										"import"
 									]
 								}
 							},

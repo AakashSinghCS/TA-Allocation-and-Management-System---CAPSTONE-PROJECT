@@ -1,7 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import SectionList from './SectionList';
 import type Section from '../../../../interfaces/section/Section';
+import SectionList from './SectionList';
 
 describe('SectionList', () => {
   it('renders "No section found." when sections is empty or null', () => {
@@ -25,16 +25,16 @@ describe('SectionList', () => {
 
     const sections: Section[] = [
       {
-        sectionDetails: {
+        id: 2,
+        section: '001',
+        year: 2024,
+        semester: 'W1',
+        type: 'LECTURE',
+        course: {
           id: 1,           // courseId
           name: 'Intro to CS',
           deptCode: 'COSC',
           courseNum: '111',
-          sectionId: 2,
-          section: '001',
-          year: 2024,
-          semester: 'W1',
-          type: 'LECTURE',
         },
         sectionSchedule: [
           {

@@ -1,16 +1,15 @@
 // src/components/section/edtionsectionprofilesection/EditSectionProfileSection.test.tsx
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { SectionProfile } from "../../../../interfaces/section/Section";
+import { sectionFieldLabels, sectionProfileFields } from "../../../../interfaces/section/Section";
 import EditSectionProfileSection, {
   SECTION_TYPE_OPTIONS,
 } from "./EditSectionProfileSection";
-import type { SectionProfile } from "../../../../interfaces/section/Section";
-import { sectionProfileFields } from "../../../../interfaces/section/Section";
-import { sectionFieldLabels } from "../../../../interfaces/section/Section";
 
 // 1. Mock the UserBrowsingViewer to render a simple “SelectInstructor” button
 vi.mock(
-  "../../../../pages/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer",
+  "../../../../pages/coordinator/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer",
   () => ({
     default: (props: any) => (
       <button

@@ -24,7 +24,9 @@ import com.infinity.courseservice.models.SectionSchedule;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
+import com.infinity.courseservice.utility.SectionMapper;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +38,7 @@ public class SectionService {
     private final CourseRepository courseRepository;
     private final SectionScheduleRepository sectionScheduleRepository;
     private final UserInterface userInterface;
+    private final SectionMapper sectionMapper;
 
     public SectionDto getSectionById(Long id) {
 
@@ -53,7 +56,9 @@ public class SectionService {
                         course.getId(),
                         course.getDeptCode(),
                         course.getName(),
-                        course.getCourseNum()));
+                        course.getCourseNum()
+                )
+        );
     }
 
     @Transactional
@@ -250,6 +255,16 @@ public class SectionService {
         }
 
         return true;
+    }
+
+    public SectionDto getByCourseIdSectionYearSemester(Long courseId, String section, Integer year, String semester) {
+        Optional<Section> optionalSection = sectionRepository
+            .findByCourseIdAndSectionAndYearAndSemester(courseId, section, year, semester);
+
+        Section entity = optionalSection
+            .orElseThrow(() -> new EntityNotFoundException("Section not found"));
+
+        return sectionMapper.sectionToDto(entity);
     }
 
 }

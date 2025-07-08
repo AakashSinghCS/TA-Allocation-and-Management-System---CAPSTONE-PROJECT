@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ProfileSection from "../profilesection/ProfileSection";
 import EditProfileSection from "../editprofilesection/EditProfileSection";
-import { fetchUpdateUserDetails } from "../../../../api/student/fetchUpdateUserDetails";
+import { fetchUpdateUserDetails } from "../../../../api/user/fetchUpdateUserDetails";
 import type User from "../../../../interfaces/user/User";
 import { useAuth } from "../../../../context/AuthContext";
 

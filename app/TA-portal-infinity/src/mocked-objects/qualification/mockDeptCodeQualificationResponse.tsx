@@ -1,4 +1,4 @@
-import type { DeptCodeQualificationResponse } from "../../api/student/fetchAllDeptCodeQualifications";
+import type { DeptCodeQualificationResponse } from "../../api/qualification/fetchAllDeptCodeQualifications";
 import { mockCourseCOSC111 } from "../course/mockCourseCOSC111";
 import { mockCourseCOSC121 } from "../course/mockCourseCOSC121";
 import { mockQualificationCOSC111, mockQualificationCOSC121 } from "./mockQualifications";

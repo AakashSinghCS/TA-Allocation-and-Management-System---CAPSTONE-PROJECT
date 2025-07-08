@@ -1,5 +1,5 @@
 import type { OfferDto } from '../../interfaces/application/Application';
-import { fetchWithAuth } from '../Auth/fetchWithAuth';
+import { fetchWithAuth } from '../auth/fetchWithAuth';
 
 export interface CreateOfferRequest {
   studentId:     number;

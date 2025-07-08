@@ -233,7 +233,7 @@ public class SectionServiceTest {
     @Test
     void testGetSectionById_Success() {
         Course course = new Course("COSC", "DB Systems", "304");
-        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
+        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, 999L);
         section.setId(55L);
 
         when(sectionRepository.findById(55L)).thenReturn(Optional.of(section));

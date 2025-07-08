@@ -2,30 +2,30 @@ import type { Allocation } from "../../interfaces/allocation/Allocation";
 import type { Course } from "../../interfaces/course/Course";
 import type { Need } from "../../interfaces/need/Need";
 import type Section from "../../interfaces/section/Section";
-import type { SectionDetails, SectionType } from "../../interfaces/section/SectionDetails";
+import type { SectionType } from "../../interfaces/section/SectionDetails";
 
 interface SectionDto {
-  id :number,
+  id: number,
   year: number,
-  semester : string,
-  section : string,
-  type : SectionType,
-  course : Course
+  semester: string,
+  section: string,
+  type: SectionType,
+  course: Course
 }
 
 interface SectionsAndNeedAndAllocations {
   section: SectionDto,
-  need : Need,
-  allocations : Allocation[]
+  need: Need,
+  allocations: Allocation[]
 }
 
 export interface SectionsNeedsAndAllocations {
-  section : Section[];
-  need : Need;
-  allocations : Allocation[];
+  section: Section[];
+  need: Need;
+  allocations: Allocation[];
 }
 
-export async function fetchAllSectionsAndNeedAndAllocations( instructorId: number): Promise<Section[] | null> {
+export async function fetchAllSectionsAndNeedAndAllocations(instructorId: number): Promise<Section[] | null> {
   const token = localStorage.getItem("token");
   const url = `http://localhost:8080/courses/needAndAllocations/${instructorId}`;
 
@@ -38,21 +38,24 @@ export async function fetchAllSectionsAndNeedAndAllocations( instructorId: numbe
       },
     });
 
-    const data : SectionsAndNeedAndAllocations[] = await res.json();
+    const data: SectionsAndNeedAndAllocations[] = await res.json();
 
-    if(!res.ok) return null;
-    const sections : Section[]  = data.map((res) =>{
-       const sectionDetails:SectionDetails = {
-        sectionId : res.section.id,
+    if (!res.ok) return null;
+    const sections: Section[] = data.map((res) => {
+      const sectionDetails: Section = {
+        id: res.section.id,
         semester: res.section.semester,
         section: res.section.section,
         type: res.section.type,
         year: res.section.year,
-        deptCode: res.section.course.deptCode,
-        courseNum: res.section.course.courseNum,
-        name: res.section.course.name,
-        id: res.section.course.id
-       }
+        course: {
+          deptCode: res.section.course.deptCode,
+          courseNum: res.section.course.courseNum,
+          name: res.section.course.name,
+          id: res.section.course.id
+        }
+
+      }
       //  const need : Need = {
       //   courseId : res.need.courseId,
       //   description: res.need.description,
@@ -64,7 +67,7 @@ export async function fetchAllSectionsAndNeedAndAllocations( instructorId: numbe
       //   courseNeeds: res.need.
 
       //  }
-      const section :Section = { sectionDetails: sectionDetails, need: res.need, allocations: res.allocations}
+      const section: Section = { ...sectionDetails, need: res.need, allocations: res.allocations }
       return section;
     })
 
