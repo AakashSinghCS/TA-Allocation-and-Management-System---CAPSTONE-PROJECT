@@ -2005,7 +2005,7 @@ Our project still has some features to be desired and improved.
 
 ### Timesheet
 Clockify report
-![Clockify Report](clockify_images/July04.png)
+![Clockify Report](clockify_images/July05.png)
 
 ### Current Tasks (Provide sufficient detail)
   * #1: Refactoring
@@ -2058,7 +2058,7 @@ I encountered lots of errors and had to fix lots of tests due to the moving file
 
 ### Timesheet
 Clockify report
-![Clockify Report](clockify_images/July04.png)
+![Clockify Report](clockify_images/July07.png)
 
 ### Current Tasks (Provide sufficient detail)
   * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#343](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/343)
