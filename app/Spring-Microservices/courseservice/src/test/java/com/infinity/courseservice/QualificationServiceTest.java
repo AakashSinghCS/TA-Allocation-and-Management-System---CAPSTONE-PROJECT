@@ -1,28 +1,35 @@
 package com.infinity.courseservice;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.QualificationDto;
 import com.infinity.courseservice.dtos.QualificationDtoWithId;
 import com.infinity.courseservice.dtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationWithSectionDto;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
-import com.infinity.courseservice.dtos.UserDtos.UserDto;
-import com.infinity.courseservice.enums.SectionType;
-import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.dtos.StudentQualiRequest;
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.UserInterface;
@@ -30,7 +37,10 @@ import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Qualification;
 import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.models.StudentQualification;
-import com.infinity.courseservice.repositories.*;
+import com.infinity.courseservice.repositories.CourseRepository;
+import com.infinity.courseservice.repositories.QualificationRepository;
+import com.infinity.courseservice.repositories.SectionRepository;
+import com.infinity.courseservice.repositories.StudentQualificationRepository;
 import com.infinity.courseservice.services.CourseService;
 import com.infinity.courseservice.services.QualificationService;
 

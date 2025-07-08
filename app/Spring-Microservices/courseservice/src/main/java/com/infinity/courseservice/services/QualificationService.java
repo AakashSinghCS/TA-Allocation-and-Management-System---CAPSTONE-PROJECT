@@ -2,21 +2,18 @@ package com.infinity.courseservice.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.hibernate.mapping.Map;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import com.infinity.courseservice.dtos.CourseDtos.*;
 import com.infinity.courseservice.dtos.QualificationDto;
 import com.infinity.courseservice.dtos.QualificationDtoWithId;
 import com.infinity.courseservice.dtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationWithSectionDto;
-import com.infinity.courseservice.dtos.UserDtos.*;
 import com.infinity.courseservice.dtos.StudentQualiRequest;
-import com.infinity.courseservice.dtos.StudentQualificationResponseDto;
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.courseservice.dtos.UserDtos.StudentDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.UserInterface;

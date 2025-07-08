@@ -17,7 +17,6 @@ import com.infinity.courseservice.dtos.QualificationDtoWithId;
 import com.infinity.courseservice.dtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.StudentQualiRequest;
-import com.infinity.courseservice.models.Qualification;
 import com.infinity.courseservice.services.QualificationService;
 
 import lombok.RequiredArgsConstructor;
