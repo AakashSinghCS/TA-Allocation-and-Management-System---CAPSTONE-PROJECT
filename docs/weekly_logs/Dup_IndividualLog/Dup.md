@@ -2051,3 +2051,52 @@ I encountered lots of errors and had to fix lots of tests due to the moving file
 - make the Comparers work with the backend.
 - UR 1.4 and UR 1.5
 - error checking 
+
+
+
+## Saturday 7/04 (7/01~7/04)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July04.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#343](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/343)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I reviewed other's PRs. Spent about 2 hours on that.
+I improved the user-accessability. I made confirmation of user stronger for DELETE and UPDATE operations in some parts of the project.
+I also added a SQL injection checks in frontend, though it's not really necessary, as Spring Boot already has something embedded in it to prvent it. There were other checks I added such as the size and regex patterns of inputs in course, section, user registration and creation.
+Things to note for tommorrow:
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- need to assure the deletion of sections implies there are no orphaned foreign key constraints in other tables. Like StudentCoursea and Allocation.
+- handle other possible orphaned foreign key constraints
+- make Section Filter work with only Year and Semester
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- make the Comparers work with the backend.
+- UR 1.5
+- error checking 
