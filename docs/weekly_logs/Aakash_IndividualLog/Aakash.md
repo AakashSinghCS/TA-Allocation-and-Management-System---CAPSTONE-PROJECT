@@ -873,7 +873,7 @@ Retrospective: Process is going well. All team members are working hard to get t
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin coding of assigning students to courses/labs manually.
 
-<<<<<<< Aakash_IndividualLog
+
 ## Saturday 6/21 (6/17 - 6/26)
 
 ### Timesheet
@@ -1323,3 +1323,113 @@ Retrospective: Process is going well. Team members are working hard to get their
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Prepare for MVP presentation and begin next assigned coding task. 
+
+
+## Saturday 7/05 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/7.05.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Import past allocation : Backend - handle the backend for importing past allocations
+
+### Progress Update (since 03/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 50% complete
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Successfully planned out workflow for backend csv parsing. Had to modify couple of files but i figured it out to prevent code breakage. Initial mapping and service method created, some modifications required.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete backend for importing past allocations and then work on front end. 
+
+## Sunday 7/06 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/7.06.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Import past allocation : Backend - handle the backend for importing past allocations
+
+### Progress Update (since 03/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> 80% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: All mappings, service method, and tests are complete. But, i might have to change everything again as my teammates just informed me that we should consider parsing csv in the frontend due to the small file size. I will meet with them tomorrow to finalize the changes and get the update completed.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete backend for importing past allocations and then work on front end.
+
+## Monday 7/07 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/7.07.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Import past allocation : Backend - handle the backend for importing past allocations
+
+### Progress Update (since 03/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Changed backend logic to handle the parsed csv from the frontend. Updated mappings, service method, and tests. Everything works as expected now.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Work on frontend for importing past allocations.
+
