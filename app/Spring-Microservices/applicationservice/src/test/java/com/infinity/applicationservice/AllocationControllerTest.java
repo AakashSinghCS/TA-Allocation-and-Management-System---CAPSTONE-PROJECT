@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -236,42 +236,26 @@ public class AllocationControllerTest {
     }
 
     @Test
-    void importPreviousAllocations_processesCsvAndReturns200() throws Exception {
-        MockMultipartFile mockFile = new MockMultipartFile(
-                "file",
-                "test.csv",
-                "text/csv",
-                "studentNum,deptCode,courseNum,section,year,semester\n63260442,COSC,499,T01,2025,W1".getBytes()
-        );
+    void importAllocations_receivesJsonAndReturnsDtoList() throws Exception {
+        List<Map<String, String>> requestList = List.of(Map.of(
+                "studentNum", "63260442",
+                "deptCode", "COSC",
+                "courseNum", "499",
+                "section", "001",
+                "year", "2025",
+                "semester", "W1"
+        ));
 
-        StudentDto student = new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4);
-        when(studentInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
+        when(allocationService.importPreviousAllocations(any())).thenReturn(List.of(sampleDto));
 
-        CourseDto course = new CourseDto(1L, "COSC", "Capstone", "499");
-        when(sectionInterface.getCourseByDeptCodeAndCourseNum("COSC", "499")).thenReturn(ResponseEntity.ok(course));
-
-        SectionDto section = new SectionDto(1001L, 2025, "W1", "T01", SectionType.TUTORIAL, course);
-        when(sectionInterface.getByCourseIdSectionYearSemester(1L, "T01", 2025, "W1")).thenReturn(section);
-
-        mvc.perform(multipart("/allocations/import").file(mockFile))
-                .andExpect(status().isOk());
+        mvc.perform(post("/allocations/import")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(mapper.writeValueAsString(requestList)))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$", hasSize(1)))
+           .andExpect(jsonPath("$[0].student.firstName").value("Test User"));
 
         verify(allocationService, times(1)).importPreviousAllocations(any());
-
      }
-
-     @Test
-     void importPreviousAllocations_invalidFileType_returnsBadRequest() throws Exception {
-        MockMultipartFile invalidFile = new MockMultipartFile(
-            "file",
-            "test.txt",
-            "text/plain",
-            "this is not a csv".getBytes()
-        );
-
-        mvc.perform(multipart("/allocations/import").file(invalidFile))
-            .andExpect(status().isBadRequest());
-     }
-
 
 }

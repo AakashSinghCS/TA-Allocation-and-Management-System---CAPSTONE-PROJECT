@@ -2772,16 +2772,16 @@
 									]
 								},
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
 								"body": {
-									"mode": "formdata",
-									"formdata": [
-										{
-											"key": "file",
-											"type": "file",
-											"src": "/Users/aakash/Downloads/sample_allocations copy.csv"
-										}
-									]
+									"mode": "raw",
+									"raw": "[\n  {\n    \"firstName\": \"Scoobert\",\n    \"lastName\": \"Doobert\",\n    \"studentNum\": \"63260442\",\n    \"deptCode\": \"COSC\",\n    \"courseNum\": \"499\",\n    \"section\": \"001\",\n    \"year\": \"2025\",\n    \"semester\": \"W1\"\n  }\n]\n"
 								},
 								"url": {
 									"raw": "http://localhost:8080/allocations/import",

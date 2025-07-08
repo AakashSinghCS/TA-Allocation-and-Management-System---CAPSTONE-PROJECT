@@ -469,30 +469,46 @@ class AllocationServiceTest {
         }
 
         @Test
-        void importPreviousAllocations_importsCorrectly() throws Exception {
-                String csvContent = """
-                        studentNum,deptCode,courseNum,section,year,semester
-                        123456,COSC,499,001,2023,W1
-                        """;
+        void getAllocationsByStudentId_returnsMappedDtoList_whenApplicationExists() {
+                Long studentId = 1L;
 
-                MockMultipartFile mockFile = new MockMultipartFile("file", "allocations.csv", "text/csv", csvContent.getBytes());
+                Application application = new Application();
+                application.setId(1L); // Important: simulate non-null application
+                application.setStudentId(studentId);
 
-                StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", 123456, "BSC", 2021, 4);
-                when(userInterface.getStudentByNum(123456)).thenReturn(ResponseEntity.ok(studentDto));
+                Allocation allocation = new Allocation();
+                allocation.setId(101L);
+                allocation.setStudentId(studentId);
+                allocation.setStatus(ApplicationStatus.CONFIRMED);
+                allocation.setNumberOfHours(10);
+                allocation.setSectionId(1001L);
+                allocation.setApplication(application);
 
-                CourseDto courseDto = new CourseDto(10L, "COSC", "Capstone", "499");
-                when(sectionInterface.getCourseByDeptCodeAndCourseNum("COSC", "499")).thenReturn(ResponseEntity.ok(courseDto));
+                StudentDto studentDto = new StudentDto(1L, "Test", "User", 123456, "BSC", 2022, 4);
+                SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
+                        new CourseDto(1L, "COSC", "Capstone", "499"));
+                ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE,
+                        false, null, null, Set.of());
 
-                SectionDto sectionDto = new SectionDto(100L, 2023, "W1", "001", SectionType.LECTURE, courseDto);
-                when(sectionInterface.getByCourseIdSectionYearSemester(10L, "001", 2023, "W1")).thenReturn(sectionDto);
+                AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, applicationDto,
+                        ApplicationStatus.CONFIRMED, 10, sectionDto);
 
-                allocationService.importPreviousAllocations(mockFile);
+                when(allocationRepository.findByStudentId(studentId)).thenReturn(List.of(allocation));
+                when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
+                when(sectionInterface.getSectionById(1001L)).thenReturn(sectionDto);
+                when(applicationMapper.toDto(application)).thenReturn(applicationDto);
+                when(allocationMapper.toDto(allocation, studentDto, applicationDto, sectionDto)).thenReturn(expectedDto);
 
-                verify(allocationRepository).save(Mockito.argThat(allocation ->
-                        allocation.getStudentId().equals(1L) &&
-                        allocation.getSectionId().equals(100L) &&
-                        allocation.getStatus() == ApplicationStatus.CONFIRMED
-                ));
+                List<AllocationHistoryDto> result = allocationService.getAllocationsByStudentId(studentId);
+
+                assertEquals(1, result.size());
+                assertEquals(expectedDto, result.get(0));
+
+                verify(allocationRepository).findByStudentId(studentId);
+                verify(userInterface).getStudentById(studentId);
+                verify(sectionInterface).getSectionById(1001L);
+                verify(applicationMapper).toDto(application);
+                verify(allocationMapper).toDto(allocation, studentDto, applicationDto, sectionDto);
         }
 
         @Test

@@ -1,16 +1,13 @@
 package com.infinity.applicationservice.services;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Optional;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
+
 
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
@@ -165,52 +162,36 @@ public class AllocationService {
             .collect(Collectors.toList());
     }
 
-    public void importPreviousAllocations(MultipartFile file) {
-        try (Reader reader = new InputStreamReader(file.getInputStream())) {
+    public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList) {
+        List<AllocationHistoryDto> importedAllocations = new ArrayList<>();
 
-            CSVFormat format = CSVFormat.DEFAULT.builder()
-                    .setHeader()
-                    .setSkipHeaderRecord(true)
-                    .get();
+        for (Map<String, String> data : allocationDataList) {
+            Integer studentNum = Integer.parseInt(data.get("studentNum").trim());
+            String deptCode = data.get("deptCode").trim();
+            String courseNum = data.get("courseNum").trim();
+            String sectionName = data.get("section").trim();
+            int year = Integer.parseInt(data.get("year").trim());
+            String semester = data.get("semester").trim();
 
-            Iterable<CSVRecord> records = format.parse(reader);
+            StudentDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
+            if (studentDto == null) throw new RuntimeException("Student not found: " + studentNum);
 
-            for (CSVRecord record : records) {
-                Integer studentNum = Integer.parseInt(record.get("studentNum").trim());
-                String deptCode = record.get("deptCode").trim();
-                String courseNum = record.get("courseNum").trim();
-                String sectionName = record.get("section").trim();
-                int year = Integer.parseInt(record.get("year").trim());
-                String semester = record.get("semester").trim();
+            CourseDto courseDto = sectionInterface.getCourseByDeptCodeAndCourseNum(deptCode, courseNum).getBody();
+            if (courseDto == null) throw new RuntimeException("Course not found: " + deptCode + " " + courseNum);
 
-                StudentDto studentDto = studentInterface
-                        .getStudentByNum(studentNum)
-                        .getBody();
+            SectionDto sectionDto = sectionInterface.getByCourseIdSectionYearSemester(courseDto.id(), sectionName, year, semester);
 
-                if (studentDto == null) {
-                    throw new RuntimeException("Student not found with studentNum: " + studentNum);
-                }
+            Allocation allocation = new Allocation();
+            allocation.setStudentId(studentDto.id());
+            allocation.setSectionId(sectionDto.id());
+            allocation.setStatus(ApplicationStatus.CONFIRMED);
 
-                CourseDto courseDto = sectionInterface
-                        .getCourseByDeptCodeAndCourseNum(deptCode, courseNum)
-                        .getBody();
+            Allocation saved = allocationRepository.save(allocation);
 
-                if (courseDto == null) {
-                    throw new RuntimeException("Course not found: " + deptCode + " " + courseNum);
-                }
-
-                SectionDto sectionDto = sectionInterface
-                        .getByCourseIdSectionYearSemester(courseDto.id(), sectionName, year, semester);
-                Allocation allocation = new Allocation();
-                allocation.setStudentId(studentDto.id());
-                allocation.setSectionId(sectionDto.id());
-                allocation.setStatus(ApplicationStatus.CONFIRMED);
-
-                allocationRepository.save(allocation);
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to parse CSV: " + e.getMessage(), e);
+            importedAllocations.add(allocationMapper.toDto(saved, studentDto, null, sectionDto));
         }
+
+        return importedAllocations;
     }
+
 }
