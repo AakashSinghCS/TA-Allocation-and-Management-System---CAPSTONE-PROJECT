@@ -1,7 +1,7 @@
 ## 19 May, Monday 10:00AM–12:30PM  
 ### Timesheet
 
-**Clockify:** ![alt text](image-4.png)
+**Clockify:**   ![alt text](clockify_images/image-4.png)     
 ### Current Tasks  
 - **#1:** Team Charter (Completed in the team meeting and reviewed with team simultaneously)  
 - **#2:** Clockify Setup (Completed during meeting)  
@@ -28,7 +28,7 @@ The overall process is progressing steadily. We allocated more time for team dis
 
 ## 21 May, Wednesday 10:00AM–12:30PM  
 ### Timesheet
-**Clockify:** ![alt text](image-5.png)
+**Clockify:** ![alt text](clockify_images/image-5.png)   
 
 ### Current Tasks  
 - **#1:** FR, User, and NFR requirements (Completed in team meeting and reviewed)  
@@ -61,7 +61,7 @@ The overall process is steady. More time was allocated for team discussions on T
 ## 22 May, Thursday 12:00PM–2:00PM  
 ### Timesheet
 
-**Clockify:** ![alt text](image-6.png)
+**Clockify:** ![alt text](clockify_images/image-6.png)
 
 ### Current Tasks  
 - **#1:** User Scenarios  
@@ -92,7 +92,7 @@ Progress continues steadily. More time was allocated for team discussions on Fri
 ## 26 May, Monday 12:00PM–2:00PM  
 ### Timesheet
 
-**Clockify:** ![alt text](image-7.png)
+**Clockify:** ![alt text](clockify_images/image-7.png)
 
 ### Current Tasks  
 - **#1:** Converted user stories into KANBAN  
@@ -120,7 +120,7 @@ Progress is steady. Additional discussion time was scheduled for Tuesday after c
 ## 27 May, Tuesday 1:30PM–4:30PM  
 ### Timesheet
 
-**Clockify:** ![alt text](image-8.png)
+**Clockify:** ![alt text](clockify_images/image-8.png)
 
 ### Current Tasks  
 - **#1:** Reviewed PR related to backend setup  
@@ -151,7 +151,7 @@ Process is progressing well. More discussion time was scheduled for Friday after
 ## 28 May, Wednesday 11:15AM–3:51PM  
 ### Timesheet
 
-**Clockify:** ![alt text](image-9.png)
+**Clockify:** ![alt text](clockify_images/image-9.png)
 
 ### Current Tasks  
 - **#1:** Designed the Login Page UI in Figma  
@@ -179,7 +179,7 @@ The design process went smoothly, and working within Figma helped visualize user
 ## 29 May, Thursday 12:30PM–4:00PM  
 ### Timesheet
 
-**Clockify:** ![alt text](image-10.png)
+**Clockify:** ![alt text](clockify_images/image-10.png)
 
 ### Current Tasks  
 - **#1:** Designed the TA Dashboard Page in Figma  
@@ -207,7 +207,7 @@ The design decisions were guided by the feedback from team discussions. Designin
 ## 31 May, Saturday 1.05PM–2:52PM  
 ### Timesheet
 
-**Clockify:** ![alt text](image-12.png)
+**Clockify:** ![alt text](clockify_images/image-12.png)
 
 ### Current Tasks  
 - **#1:** Designed Instructor pages (Home, Profile) in Figma  
@@ -234,7 +234,7 @@ The design decisions were guided by feedback from team discussions. Creating lay
 ## 1 June, Sunday 3:06PM–7:03PM  
 ### Timesheet
 
-**Clockify:** ![alt text](image-13.png)
+**Clockify:** ![alt text](clockify_images/image-13.png)
 
 ### Current Tasks  
 - **#1:** Designed TA Allocations page  
@@ -262,7 +262,7 @@ Team feedback played a key role in shaping these pages. Aligning design elements
 ## 2 June, Monday 10:26AM–2:58PM  
 ### Timesheet
 
-**Clockify:** ![alt text](image-14.png)
+**Clockify:** ![alt text](clockify_images/image-14.png)
 
 ### Current Tasks  
 - **#1:** Designed TA Application page  
@@ -290,7 +290,7 @@ Designs were shaped by user stories and refined with input from teammates. Build
 ## 2 June, Monday 11:01PM–12:37AM  
 ### Timesheet
 
-**Clockify:** ![alt text](image-15.png)
+**Clockify:** ![alt text](clockify_images/image-15.png)
 
 ## Current Tasks  
 - **#1:** Design and implement TA Allocation page
@@ -322,7 +322,7 @@ The design was based on user stories defined earlier in the project. Input from 
 ## 2 June, Monday 11:01PM–12:37AM  
 ### Timesheet
 
-**Clockify:** ![alt text](image-15.png)
+**Clockify:** ![alt text](clockify_images/image-15.png)
 
 ## Current Tasks  
 - **#1:** Design and implement TA Allocation page
@@ -355,7 +355,7 @@ The design was based on user stories defined earlier in the project. Input from 
 ## 3 June, Tuesday 10.10AM–12:15PM   & 2:16PM - 6:10PM  & 10:15PM-11:03PM
 ### Timesheet
 
-**Clockify:** ![alt text](image-17.png)
+**Clockify:** ![alt text](clockify_images/image-17.png)
 
 ## Current Tasks  
 - **#1:** Expanded user stories into sub-issues with the team  
@@ -396,7 +396,7 @@ This sprint improved visual consistency across user roles and clarified the TA�
 ## 4 June, Wednesday 9.00AM–10:03PM   &  10:03PM-10:33PM
 ### Timesheet
 
-**Clockify:** ![alt text](image-18.png)
+**Clockify:** ![alt text](clockify_images/image-18.png)
 
 ## Current Tasks  
 - **#1:** Recorded video walkthrough of UI mockups  
@@ -428,7 +428,7 @@ The walkthrough added clarity and value by visually conveying the user experienc
 ## 5 June, Thursday 12.41PM–3:12PM  
 ### Timesheet
 
-**Clockify:** ![alt text](image-19.png)
+**Clockify:** ![alt text](clockify_images/image-19.png)
 
 ## Current Tasks  
 - **#1:** Merged PR for frontend routing and backend setup
@@ -456,7 +456,7 @@ This cycle was primarily focused on the technical setup of the frontend and back
 
 ### Timesheet
 
-**Clockify:**  ![alt text](image-20.png)
+**Clockify:**  ![alt text](clockify_images/image-20.png)
 ## Current Tasks  
 - **#1:** Weekly Team logs
  
@@ -480,7 +480,7 @@ The log and presentation were completed on schedule. While effective, we could e
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 6 June, Friday 10.10AM–1:17PM 
 
-**Clockify:** ![alt text](image-21.png)
+**Clockify:** ![alt text](clockify_images/image-21.png)
 ## Current Tasks  
 - **#1:** Team meeting and helped seiya in setup backend and frontend 
 ## Progress Update  
@@ -504,7 +504,7 @@ The setup went smoothly and teamwork was effective. Future setups can be faster 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 8 June, Sunday 10.10AM–1:17PM 
 
-**Clockify:** ![alt text](image-22.png)
+**Clockify:** ![alt text](clockify_images/image-22.png)
 ## Current Tasks  
 - **#1:** Coded header and footer as reusable components in react with testing 
 ## Progress Update  
@@ -527,7 +527,7 @@ While coding the header and footer components, I ensured they were modular and r
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 8 June, Sunday 10.10AM–1:17PM 
 
-**Clockify:** ![alt text](image-22.png)
+**Clockify:** ![alt text](clockify_images/image-22.png)
 ## Current Tasks  
 - **#1:** Login page in react with testing 
 ## Progress Update  
@@ -550,7 +550,7 @@ The login page was successfully implemented with a clean design and working test
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 9 June, Monday 10.10AM–1:17PM 
 
-**Clockify:** ![alt text](image-23.png)
+**Clockify:** ![alt text](clockify_images/image-23.png)
 ## Current Tasks  
 - **#1:** Integration of frontend and backend discussed with Alex, Meeting
 ## Progress Update  
@@ -573,7 +573,7 @@ During the meeting with Alex, we discussed the technical steps needed to integra
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 9 June, Monday 1.49PM–3:17PM 
 
-**Clockify:** ![alt text](image-24.png)
+**Clockify:** ![alt text](clockify_images/image-24.png)
 ## Current Tasks  
 - **#1:** Nav bar component with tests
 ## Progress Update  
@@ -596,7 +596,7 @@ While building the Nav Bar component, I focused on reusability, responsiveness, 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 10 June,Tuesday 10.30AM–1:10PM 
 
-**Clockify:** ![alt text](image-26.png)
+**Clockify:** ![alt text](clockify_images/image-26.png)
 ## Current Tasks  
 - **#1:** Team Meeting 
 ## Progress Update  
@@ -620,7 +620,7 @@ Helping Seiya set up their environment revealed several configuration issues, ma
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 10 June,Tuesday 4:47PM–8:41PM
 
-**Clockify:** ![alt text](image-26.png)
+**Clockify:** ![alt text](clockify_images/image-26.png)
 ## Current Tasks  
 - **#1:** Signup Page
 ## Progress Update  
@@ -643,7 +643,7 @@ The Signup page development went smoothly overall. One area for improvement woul
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 10 June,Tuesday 8:41PM–10:41PM
 
-**Clockify:** ![alt text](image-26.png)
+**Clockify:** ![alt text](clockify_images/image-26.png)
 ## Current Tasks  
 - **#1:** Integrated the Signup page with backend, including frontend retesting   
 ## Progress Update  
@@ -666,7 +666,7 @@ The integration required careful matching of request structures and field names 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 11 June,Wednesday 1:15PM–3:58PM
 
-**Clockify:** ![alt text](image-28.png)
+**Clockify:** ![alt text](clockify_images/image-28.png)
 ## Current Tasks  
 - **#1:** Integrated Login page frontend with backend using appropriate API calls
 ## Progress Update  
@@ -689,7 +689,7 @@ During the integration, attention to detail was required to ensure the request p
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 12 June,Thursday 10:50AM–3:27PM
 
-**Clockify:** ![alt text](image-29.png)
+**Clockify:** ![alt text](clockify_images/image-29.png)
 ## Current Tasks  
 - **#1:** Implemented JWT authentication
 ## Progress Update  
@@ -712,7 +712,7 @@ Integrating JWT authentication required careful attention to token structure, ex
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 13 June,Thursday 10:30AM–1:03PM
 
-**Clockify:** ![alt text](image-30.png)
+**Clockify:** ![alt text](clockify_images/image-30.png)
 ## Current Tasks  
 - **#1:** Team meeting 
 ## Progress Update  
@@ -735,7 +735,7 @@ During the meeting, we identified areas needing improvement in coordination and 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 15 June,Sunday 1:08PM–3:52PM & 4:28PM-5:58PM & 8.02AM-10:22PM
 
-**Clockify:** ![alt text](image-31.png)
+**Clockify:** ![alt text](clockify_images/image-31.png)
 ## Current Tasks  
 - **#1:** Quiz one prep
 - **#2:** Meeting with Alex and Dup
@@ -762,7 +762,7 @@ During the meeting, we identified areas needing improvement in coordination and 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 16 June,Monday 10:11PM–12:19AM & 3:35PM-6:09PM
 
-**Clockify:** ![alt text](image-32.png)
+**Clockify:** ![alt text](clockify_images/image-32.png)
 ## Current Tasks  
 - **#1:** Mini Presentation
 - **#2:** Application page
@@ -789,7 +789,7 @@ The mini presentation was well-received and helped the team articulate progress 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 17 June, Tuesday 5:10PM–8:13PM
 
-**Clockify:** ![alt text](image-33.png)
+**Clockify:** ![alt text](clockify_images/image-33.png)
 
 ## Current Tasks  
 - **#1:** Application page (frontend completed)
@@ -815,7 +815,7 @@ The frontend was completed without significant issues, but there was a focus on 
 
 ## 18 June, Wednesday 12:01AM–1:05AM & 1:16PM–2:16PM
 
-**Clockify:** ![alt text](image-34.png)
+**Clockify:** ![alt text](clockify_images/image-34.png)
 
 ## Current Tasks  
 - **#1:** Routing documentation read
@@ -843,7 +843,7 @@ The routing was successfully implemented, though it took some time to properly a
 
 ## 19 June, Thursday 11:25AM–3:30PM
 
-**Clockify:** ![alt text](image-35.png)
+**Clockify:** ![alt text](clockify_images/image-35.png)
 
 ## Current Tasks  
 - **#1:** Routing completed
@@ -869,7 +869,7 @@ The routing was completed without issues, but further testing will be needed to 
 
 ## 20 June, Friday 12:06AM–1:54AM & 12:46PM–1:38PM
 
-**Clockify:** ![alt text](image-36.png)
+**Clockify:** ![alt text](clockify_images/image-36.png)
 
 ## Current Tasks  
 - **#1:** Application page planning
@@ -896,7 +896,7 @@ The tasks were completed efficiently, but we encountered some challenges with al
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 22 June, Sunday 1:06PM–3:21PM & 4:02PM–6:53PM
 
-**Clockify:** ![alt text](image-37.png)
+**Clockify:** ![alt text](clockify_images/image-37.png)
 
 ## Current Tasks  
 - **#1:** Wrote tests and manual testing
@@ -926,7 +926,7 @@ The tasks were completed successfully, but further testing is required to ensure
 
 ## 24 June, Tuesday 11:02AM–1:07PM
 
-**Clockify:** ![alt text](image-38.png)
+**Clockify:** ![alt text](clockify_images/image-38.png)
 
 ## Current Tasks  
 - **#1:** UI for allocation page
@@ -952,7 +952,7 @@ The UI was completed without major issues, though some fine-tuning may be requir
 
 ## 25 June, Wednesday 11:00AM–2:32AM & 8:24PM–2:32AM
 
-**Clockify:** ![alt text](image-39.png)
+**Clockify:** ![alt text](clockify_images/image-39.png)
 
 ## Current Tasks  
 - **#1:** TA allocation page
@@ -978,7 +978,7 @@ Although the main functionality was completed, there are still some bugs to be r
 
 ## 26 June, Thursday 2:01PM–5:30PM
 
-**Clockify:** ![alt text](image-40.png)
+**Clockify:** ![alt text](clockify_images/image-40.png)
 
 ## Current Tasks  
 - **#1:** Bug in allocation page
@@ -1007,7 +1007,7 @@ The bug is not fixed yet , but also testing is still required to verify that the
 - **6:32PM–7:44PM:** PR for allocation page and logs
 - **9:27PM–10:29PM:** Team meeting about allocation
 
-**Clockify:** ![alt text](image-41.png)
+**Clockify:** ![alt text](clockify_images/image-41.png)
 
 
 ## Current Tasks
@@ -1043,7 +1043,7 @@ The team achieved strong alignment on priorities and cleared any ambiguity regar
 - **12:31PM–1:51PM:** Forgot and reset password page implementation
 - **11:33PM–12:00AM (+1):** Team logs update
 
-**Clockify:** ![alt text](image-42.png)
+**Clockify:** ![alt text](clockify_images/image-42.png)
 
 ## Current Tasks
 - Assign upcoming sprint tasks and clarify individual responsibilities.
@@ -1072,7 +1072,7 @@ The day significantly improved overall project clarity. The forgot/reset feature
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 29 June, Sunday 2025
-**Clockify:** ![alt text](image-43.png)
+**Clockify:** ![alt text](clockify_images/image-43.png)
 
 ## Time Slots
 - **1:32PM–6:18PM:** Forgot/reset page PR with frontend tests
@@ -1287,7 +1287,7 @@ Team is better aligned; reduced tech debt and improved clarity on upcoming tasks
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## 7 July, Monday
+## 7 July, Monday   
 
 **Clockify:**  ![alt text](clockify_images/image-50.png)
 
