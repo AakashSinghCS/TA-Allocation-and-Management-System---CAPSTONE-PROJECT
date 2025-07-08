@@ -130,9 +130,10 @@ public class CourseService {
 
     for (SectionDto section : sections) {
         Long courseId = section.course().id();
+        Long sectionId = section.id();
         Integer year = section.year();
         String semester = section.semester();
-        String key = courseId + "-" + year + "-" + semester;
+        String key = sectionId.toString();
         if (!uniqueKeys.contains(key)) {
             uniqueKeys.add(key);
 
@@ -145,26 +146,19 @@ public class CourseService {
             } catch (NotFoundException e) {
             }
             try {
-                List<AllocationHistoryDtoWithCourse> fetched = applicationInterface.getAllocationsBySectionId(section.id()).getBody();
+                List<AllocationHistoryDtoWithCourse> fetched = applicationInterface.getAllocationsBySectionId(sectionId).getBody();
                 if (fetched != null) {
                     allocations = fetched;
                 }
             } catch (NotFoundException e) {
             }
-
-
-
             CourseNeedAndAllocations entry = new CourseNeedAndAllocations(section, need, allocations);
 
             result.add(entry);
         }
     }
     return result;
-
 }
-
-
-
 
     public void addStudentTaughtCourse(Long courseId, StudentTaughtCourseRequest request) {
         Course course = courseRepository.findById(courseId)
@@ -210,13 +204,13 @@ public class CourseService {
         return courseRepository.findSectionsByDeptCodeAndCourseNum(deptCode, courseNum);
     }
 
-    public List<String> getAllYears(String deptCode, String courseNum, String section) {
-        return courseRepository.findYearsByDeptCodeAndCourseNumAndSection(deptCode, courseNum, section);
+    public List<String> getAllYears() {
+        return courseRepository.findAllDistinctYearStrings();
     }
 
-    public List<String> getAllSemester(String deptCode, String courseNum, String section, String year) {
-        return courseRepository.findSemestersByDeptCodeAndCourseNumAndSectionAndYear(deptCode, courseNum, section, year);
-    }
+    // public List<String> getAllSemester(String deptCode, String courseNum, String section, String year) {
+    //     return courseRepository.findSemestersByDeptCodeAndCourseNumAndSectionAndYear(deptCode, courseNum, section, year);
+    // }
 
     // public List<CourseDto> getEnrolledCourses(Integer studentId) {
     // UserDto user = userInterface.getStudentById(studentId).getBody();

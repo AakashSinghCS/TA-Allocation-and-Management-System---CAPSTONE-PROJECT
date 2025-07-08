@@ -24,6 +24,7 @@ import com.infinity.applicationservice.utility.AllocationMapper;
 import com.infinity.applicationservice.utility.ApplicationMapper;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -142,7 +143,7 @@ public class AllocationService {
             .collect(Collectors.toList());
         }
 
-        public List<AllocationHistoryDto> getAllocationsBySectionIdWithCourse(Long sectionId) {
+    public List<AllocationHistoryDto> getAllocationsBySectionIdWithCourse(Long sectionId) {
         return allocationRepository.findAll().stream()
             .filter(a -> a.getSectionId().equals(sectionId))
             .map(allocation -> {
@@ -152,5 +153,10 @@ public class AllocationService {
                 return allocationMapper.toDto(allocation, student, applicationDto, section );
             })
             .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Integer setSectionIdNull(Long sectionId) {
+        return allocationRepository.clearSectionIdBySectionId(sectionId);
     }
 }

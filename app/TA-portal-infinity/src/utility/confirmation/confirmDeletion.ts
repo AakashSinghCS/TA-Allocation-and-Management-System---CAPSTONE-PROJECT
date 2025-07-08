@@ -3,7 +3,10 @@ export function confirmDeletion (subject:string, extraInfo:string):boolean {
     if(!firstConfirm) return false;
 
     const confirmPhrase = "DELETE";
-    const userInput = window.prompt(`Type "${confirmPhrase}" to confirm ${subject} deletion. ${extraInfo}`);
+    if(extraInfo.length > 0){
+        extraInfo= extraInfo+".";
+    }
+    const userInput = window.prompt(`${extraInfo} Type "${confirmPhrase}" to confirm ${subject} deletion. `);
 
     if (userInput !== confirmPhrase) {
         alert("Deletion cancelled.");

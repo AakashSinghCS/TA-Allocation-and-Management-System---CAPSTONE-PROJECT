@@ -18,6 +18,7 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionWithInstructorDto;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
+import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
@@ -38,6 +39,8 @@ public class SectionService {
     private final CourseRepository courseRepository;
     private final SectionScheduleRepository sectionScheduleRepository;
     private final UserInterface userInterface;
+    private final ApplicationInterface applicationInterface;
+    private final EnrollmentService enrollmentService;
 
     public SectionWithInstructorDto getSectionById(Long id) {
 
@@ -105,13 +108,9 @@ public class SectionService {
         }
         sectionRepository.deleteById(sectionId);
 
-        // TODO: Prevent orphaned foreign keys in StudentCourse when deleting Section!! Do the same for Allocation!! Set them to null!
-        // List<StudentCourse> related = studentCourseRepository.findBySection(section);
-        //     for (StudentCourse sc : related) {
-        //         sc.setSection(null);
-        //     }
-        // studentCourseRepository.saveAll(related);
-        return "Section deleted";
+        Integer allocationsAffected = applicationInterface.setSectionIdNull(sectionId).getBody();
+        Integer enrollmentsAffected = enrollmentService.clearSectionFromStudentCourses(sectionId);
+        return "Section deleted. "+allocationsAffected+" allocations cleared. "+enrollmentsAffected+" enrollments affected.";
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package com.infinity.courseservice.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -46,6 +47,12 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseNeed> courseNeeds;
+
+    @OneToMany( mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentCourse> studentCourses = new ArrayList<>();
+
+    @OneToMany( mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentTaughtCourse> studentTaughtCourses = new ArrayList<>();
 
     public Course(String deptCode, String name, String courseNum) {
         this.deptCode = deptCode;

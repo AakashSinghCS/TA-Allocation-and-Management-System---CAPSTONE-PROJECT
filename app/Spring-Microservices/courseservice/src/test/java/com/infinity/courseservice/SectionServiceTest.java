@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
@@ -30,6 +31,7 @@ import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
+import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
@@ -37,6 +39,7 @@ import com.infinity.courseservice.models.SectionSchedule;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
+import com.infinity.courseservice.services.EnrollmentService;
 import com.infinity.courseservice.services.SectionService;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,8 +57,16 @@ public class SectionServiceTest {
     @Mock
     private UserInterface userInterface;
 
+    @Mock
+    private ApplicationInterface applicationInterface;
+
     @InjectMocks
     private SectionService sectionService;
+
+    @Mock
+    private EnrollmentService enrollmentService;
+
+
 
     @Test
     void testAddSectionSuccess() {
@@ -138,9 +149,14 @@ public class SectionServiceTest {
     @Test
     void testDeleteSectionSuccess() {
         when(sectionRepository.existsById(1L)).thenReturn(true);
+        when(applicationInterface.setSectionIdNull(1L))
+            .thenReturn(ResponseEntity.ok(3));
+        when(enrollmentService.clearSectionFromStudentCourses(1L))
+            .thenReturn(5);
+
         String response = sectionService.deleteSection(1L);
 
-        assertEquals("Section deleted", response);
+        assertEquals("Section deleted. 3 allocations cleared. 5 enrollments affected.", response);
     }
 
     @Test

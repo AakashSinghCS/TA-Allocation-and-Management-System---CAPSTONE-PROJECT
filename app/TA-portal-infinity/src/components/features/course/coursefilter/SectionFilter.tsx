@@ -5,7 +5,8 @@ import { sectionTypeOptions, type SectionType } from '../../../../interfaces/sec
 import { GenericAPIContainer } from '../../../../utility/genericapicontainer/GenericAPIContainer';
 import DaySelector from '../../../ui/section/dayselector/DaySelector';
 import TimeSelector from '../../../ui/section/timeselector/TimeSelector';
-import DeptCodeCourseNumSectionYearSemesterDropdownContainer from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
+import DeptCodeCourseNumSectionYearSemesterDropdownContainer, { type AllExistingDeptCodesAndYears } from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
+import { fetchAllExistingYears } from '../../../../api/course/sectionfilter/fetchAllExistingYears';
 type Mode = 'small' | 'large';
 
 interface CourseFilterProps {
@@ -73,11 +74,20 @@ export default function SectionFilter({
 
       <div className={mode === 'small' ? "grid grid-cols-2 gap-2" : "grid grid-rows-2 gap-4"}>
         <div className="">
-          <GenericAPIContainer<string[] | null>
-            fetchFunction={fetchAllExistingDeptCodes}
-            render={(allDeptCodes) => (
+          <GenericAPIContainer<AllExistingDeptCodesAndYears | null>
+            fetchFunction={async () =>{
+              const deptCodes = await fetchAllExistingDeptCodes();
+
+              const years = await fetchAllExistingYears();
+              const returnVal : AllExistingDeptCodesAndYears = {
+                deptCodes:deptCodes ?? [],
+                years:years ??[]
+              };
+              return returnVal;
+            }}
+            render={(allDeptCodesAndYears) => (
               <DeptCodeCourseNumSectionYearSemesterDropdownContainer
-                allExistingDeptCodes={allDeptCodes}
+                allExistingDeptCodesAndYears={allDeptCodesAndYears}
                 mode={mode}
                 onChange={(partial) => setdCCNSYS(prev => ({ ...prev, ...partial }))}
               />

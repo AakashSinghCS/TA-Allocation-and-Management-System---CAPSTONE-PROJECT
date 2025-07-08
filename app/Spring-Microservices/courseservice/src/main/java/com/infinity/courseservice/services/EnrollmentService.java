@@ -21,6 +21,8 @@ import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.StudentCourseRepository;
 import com.infinity.courseservice.utility.EnrollmentMapper;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -101,5 +103,14 @@ public class EnrollmentService {
                 EnrollmentStatus.COMPLETED);
 
         return enrollmentMapper.toOverviewDto(student, enrolled, completed);
+    }
+
+    @Transactional
+    public Integer clearSectionFromStudentCourses(Long sectionId) {
+        Integer updated = studentCourseRepository.clearSectionReference(sectionId);
+        if (updated == 0) {
+            throw new EntityNotFoundException("No student-course entries found for section " + sectionId);
+        }
+        return updated;
     }
 }

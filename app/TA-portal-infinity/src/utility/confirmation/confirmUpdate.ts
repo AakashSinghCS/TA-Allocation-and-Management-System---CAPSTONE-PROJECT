@@ -3,7 +3,10 @@ export function confirmUpdate (subject:string, extraInfo:string):boolean {
     if(!firstConfirm) return false;
 
     const confirmPhrase = "UPDATE";
-    const userInput = window.prompt(`Type "${confirmPhrase}" to confirm ${subject} update. ${extraInfo}`);
+    if(extraInfo.length > 0){
+        extraInfo= extraInfo+".";
+    }
+    const userInput = window.prompt(`${extraInfo} Type "${confirmPhrase}" to confirm ${subject} update.`);
 
     if (userInput !== confirmPhrase) {
         alert("Update cancelled.");
