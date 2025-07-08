@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { fetchAllProfileQuestions } from "../../../api/question/fetchAllProfileQuestions";
-import type { ProfileQuestion } from "../../../interfaces/question/ProfileQuestion";
-import { GenericAPIContainer } from "../../../utility/genericapicontainer/GenericAPIContainer";
 import QuestionItem from "../../../components/features/questionanswer/questionitem/QuestionItem";
+import type { ProfileQuestion } from "../../../interfaces/question/ProfileQuestion";
 import { fallbackTempId, toObjectWithTempId } from "../../../utility/fallbackTempId/fallbackTempId";
+import { GenericAPIContainer } from "../../../utility/genericapicontainer/GenericAPIContainer";
 
 
 //TODO: Confirm with the coordinator first when he clicks submit! Explain the consequences of the submit. 
 //That any preexisting questions that have been updated or deleted will have all students' answers deleted in the database. And students will be notified that the questions changed and they must update it again.
 //In summary: updaing or deleting does a CASCADE delete on ProfileAnswers.
 //TODO: CoordinatorQuestionnaire will need a seperate testing file, as it has too much functionality to not get tested.
-function CoordinatorQuestionnaire({ initial }: { initial: ProfileQuestion[] | null }) {
+export default function CoordinatorQuestionnaire({ initial }: { initial: ProfileQuestion[] | null }) {
     //TODO: make a toTempProfileQuestion function for decoupling and clearer code.
     const [questions, setQuestions] = useState<TempProfileQuestion[]>(
         () => toObjectWithTempId(initial) 

@@ -56,7 +56,9 @@ public class SectionService {
                         course.getId(),
                         course.getDeptCode(),
                         course.getName(),
-                        course.getCourseNum()));
+                        course.getCourseNum()
+                )
+        );
     }
 
     @Transactional

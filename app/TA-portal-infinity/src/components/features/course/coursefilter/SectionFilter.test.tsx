@@ -1,7 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import SectionFilter from './SectionFilter';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from "react-router-dom";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import SectionFilter from './SectionFilter';
 
 // Mock the dept-code fetch so GenericAPIContainer resolves immediately
 vi.mock('../../../../api/course/sectionfilter/fetchAllExsitingDeptCodes', () => ({

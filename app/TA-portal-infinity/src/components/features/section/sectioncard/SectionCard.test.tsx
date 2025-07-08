@@ -1,7 +1,7 @@
-import { mockSectionCOSC111 } from "../../../../mocked-objects/section/mockSectionCOSC111";
 import { render, screen, within } from "@testing-library/react";
-import SectionCard from "./SectionCard";
 import { MemoryRouter } from "react-router-dom";
+import { mockSectionCOSC111 } from "../../../../mocked-objects/section/mockSectionCOSC111";
+import SectionCard from "./SectionCard";
 
 const fmt = (n: unknown) => (typeof n === "number" ? n : "-");
 

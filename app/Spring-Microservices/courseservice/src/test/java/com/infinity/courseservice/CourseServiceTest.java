@@ -20,8 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 
-// import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
-import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.AllocationDtos.OfferDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
@@ -29,29 +27,28 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseNeedAndAllocations;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
+import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
+import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
-import com.infinity.courseservice.dtos.SectionDtos.SectionDtoNoCourse;
 import com.infinity.courseservice.dtos.UserDtos.StudentDto;
 import com.infinity.courseservice.enums.SectionType;
+import com.infinity.courseservice.enums.Semester;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.StudentTaughtCourse;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
+import com.infinity.courseservice.repositories.StudentTaughtCourseRepository;
 import com.infinity.courseservice.services.CourseService;
 import com.infinity.courseservice.services.NeedService;
 import com.infinity.courseservice.services.SectionService;
 import com.infinity.courseservice.utility.CourseMapper;
-import com.infinity.courseservice.models.StudentTaughtCourse;
-import com.infinity.courseservice.repositories.StudentTaughtCourseRepository;
-import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
-import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
-import com.infinity.courseservice.enums.Semester;
 
 
 @ExtendWith(MockitoExtension.class)

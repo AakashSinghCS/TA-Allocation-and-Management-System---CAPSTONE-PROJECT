@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen,fireEvent  } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 
-import { SingleChoice } from './SingleChoice';        
-import { mockTaProfileQuestion1 } from '../../../../mocked-objects/profile/mockTaProfileQuestions';
 import { useState } from 'react';
+import { mockTaProfileQuestion1 } from '../../../../mocked-objects/profile/mockTaProfileQuestions';
+import { SingleChoice } from './SingleChoice';
 
 function SingleChoiceTestWrapper() {
   const [selectedId, setSelectedId] = useState<number | null>(null);

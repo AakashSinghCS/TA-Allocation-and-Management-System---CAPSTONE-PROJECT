@@ -1,10 +1,8 @@
 import type Section from '../../interfaces/section/Section';
+import type SectionDetails from '../../interfaces/section/SectionDetails';
 import type SectionSchedule from '../../interfaces/section/SectionSchedule';
 import { mockCourseCOSC111 } from '../course/mockCourseCOSC111';
-import type { Need } from '../../interfaces/need/Need';
-import type { SectionProfile } from '../../interfaces/section/Section';
 import { mockInstructorChed } from '../user/mockInstructorChed';
-import type SectionDetails from '../../interfaces/section/SectionDetails';
 
 
 export const mockSectionCOSC111Details:SectionDetails = {

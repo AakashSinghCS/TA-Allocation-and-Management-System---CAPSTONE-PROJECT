@@ -1,9 +1,9 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { vi, describe, it, expect } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import InstructorQualificationViewer from './InstructorQualificationViewer';
 import { mockInstructorQualificationResponse } from '../../../../../mocked-objects/qualification/mockInstructorQualificationResponse';
+import InstructorQualificationViewer from './InstructorQualificationViewer';
 
 vi.mock('../../../../../utility/genericapicontainer/GenericAPIContainer', () => {
   return {

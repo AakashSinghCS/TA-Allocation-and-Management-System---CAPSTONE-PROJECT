@@ -1,6 +1,5 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ManualCreateUserPage from './ManualCreateUserPage';
-import { vi, describe, it, beforeEach } from 'vitest';
 
 // Mock useNavigate
 const navigateMock = vi.fn();

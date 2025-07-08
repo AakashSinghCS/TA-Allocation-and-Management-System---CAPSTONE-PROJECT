@@ -1,10 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import ApplicationFilterPanel from './ApplicationFilterPanel';
-import { useAuth } from '../../../../context/AuthContext';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fetchAllocationsByStudent } from '../../../../api/allocation/fetchAllocationByStudent';
-import type { Day } from '../../../../interfaces/application/Application';
-import type { ApplicationDto } from '../../../../interfaces/application/Application';
+import { useAuth } from '../../../../context/AuthContext';
+import type { ApplicationDto, Day } from '../../../../interfaces/application/Application';
+import ApplicationFilterPanel from './ApplicationFilterPanel';
 // Mock the dependencies
 vi.mock('../../../../context/AuthContext');
 vi.mock('../../../../api/allocation/fetchAllocationByStudent');

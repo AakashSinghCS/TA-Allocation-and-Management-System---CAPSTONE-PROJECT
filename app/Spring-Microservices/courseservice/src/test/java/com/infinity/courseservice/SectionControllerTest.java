@@ -3,12 +3,12 @@ package com.infinity.courseservice;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalTime;
@@ -91,8 +91,9 @@ public class SectionControllerTest {
         @Test
         void testGetSectionById() throws Exception {
                 Long sectionId = 300L;
-                SectionDto response = new SectionDto(sectionId, 2025, "W2", "002", SectionType.LECTURE,
-                                new CourseDto(1L, "COSC", "Networks", "329"));
+                SectionDto response = new SectionDto(sectionId,2025, "W2", "002", SectionType.LECTURE,
+                                new CourseDto(1L, "COSC", "Networks", "329")
+                                );
 
                 when(sectionService.getSectionById(sectionId)).thenReturn(response);
 
