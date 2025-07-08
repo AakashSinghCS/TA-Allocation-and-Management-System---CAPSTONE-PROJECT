@@ -1,0 +1,87 @@
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import DeadlineManagementPage from "./DeadlineManagementPage";
+import * as AuthContext from "../../../context/AuthContext";
+import * as FetchDeadline from "../../../api/admin/FetchDeadline";
+import type { DeadlineDto } from "../../../interfaces/admin/Deadline";
+
+// Setup: Mock the modules
+vi.mock("../../../context/AuthContext");
+vi.mock("../../../api/admin/FetchDeadline");
+
+describe("DeadlineManagementPage", () => {
+  beforeEach(() => {
+    // Mock useAuth
+    vi.spyOn(AuthContext, "useAuth").mockReturnValue({
+      token: "test-token",
+      login: vi.fn(),
+      logout: vi.fn(),
+      isAuthenticated: true,
+      userRoles: [],
+      userId: 1,
+    });
+  });
+
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
+
+  it("renders deadlines and allows updating them", async () => {
+    const mockDeadline: DeadlineDto = {
+      name: "student_application_deadline",
+      startTime: "2025-08-01T00:00:00",
+      endTime: "2025-08-31T23:59:59",
+    };
+
+    // Mock fetchDeadlines
+    vi.spyOn(FetchDeadline, "fetchDeadlines").mockResolvedValue([mockDeadline]);
+
+    // Mock updateDeadline
+    vi.spyOn(FetchDeadline, "updateDeadline").mockResolvedValue({
+      ...mockDeadline,
+      endTime: "2025-09-30T23:59:59",
+    });
+
+    render(<DeadlineManagementPage />);
+
+    // Should show loading initially
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+
+    // Wait for deadlines to load
+    expect(await screen.findByText(/student_application_deadline/i)).toBeInTheDocument();
+
+    // There should be input fields with the original datetime values
+    const startInput = screen.getByDisplayValue("2025-08-01T00:00");
+    const endInput = screen.getByDisplayValue("2025-08-31T23:59");
+
+    // Change the end date
+    fireEvent.change(endInput, {
+      target: { value: "2025-09-30T23:59" },
+    });
+
+    // Click Save
+    const saveButton = screen.getByRole("button", { name: /save/i });
+    fireEvent.click(saveButton);
+
+    // Confirm updateDeadline was called
+    await waitFor(() => {
+      expect(FetchDeadline.updateDeadline).toHaveBeenCalledWith(
+        "student_application_deadline",
+        expect.objectContaining({
+          endTime: expect.stringContaining("2025-09-30"),
+        }),
+        "test-token"
+      );
+    });
+  });
+
+  it("shows error when fetch fails", async () => {
+    vi.spyOn(FetchDeadline, "fetchDeadlines").mockRejectedValue(new Error("Failed"));
+
+    render(<DeadlineManagementPage />);
+
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+
+    // Wait for error to show
+    expect(await screen.findByText(/failed to load deadlines/i)).toBeInTheDocument();
+  });
+});
