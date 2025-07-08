@@ -1283,16 +1283,15 @@ Team is better aligned; reduced tech debt and improved clarity on upcoming tasks
 
 ## Next Cycle Goals
 - Continue refining UI
-- Prepare documentation for final presentation
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## 7 July, Monday   
 
-**Clockify:**  ![alt text](clockify_images/image-50.png)
+**Clockify:**  ![alt text](clockify_images/image-50.png) ![alt text](clockify_images/image-51.png)
 
 ## Time Slot
-- **10:50AM – 5:11PM:** Cancel TA application feature, reviewed two PRs, refactored application page, and improved UI
+- **10:50AM – 5:11PM & 10:24PM-12:33AM:**  Cancel TA application feature, reviewed two PRs, refactored application page, basic dashboard for student and improved UI
 
 ## Current Tasks
 - Implemented cancel TA application feature
@@ -1305,6 +1304,7 @@ Team is better aligned; reduced tech debt and improved clarity on upcoming tasks
 |---------------|------------------------------------|-----------|
 | Task 1        | Cancel TA application feature     | Completed |
 | Task 2        | PR reviews and UI improvements    | Completed |
+| Task 3        | Basic homepage for student       | In progress |
 
 ## Cycle Goal Review
 
@@ -1315,7 +1315,6 @@ Addressed critical usability improvements and prepared system for final evaluati
 Increased system stability and user satisfaction with improved cancellation flow and UI polish.
 
 ## Next Cycle Goals
-- Finalize any pending bugs or UI tweaks
-- Assist team in preparing final deliverables
+- Finalize any pending bugs or UI tweaks in homepage
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
