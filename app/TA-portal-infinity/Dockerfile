@@ -1,4 +1,6 @@
 FROM node:20-alpine
+RUN apk add --no-cache tzdata
+ENV TZ=America/Vancouver
 WORKDIR /app
 
 # copy lockfiles first and put it into the current working directory which is ./
