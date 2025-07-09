@@ -10,11 +10,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -24,8 +21,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.infinity.userservice.dtos.EmailRequest;
@@ -35,7 +30,6 @@ import com.infinity.userservice.dtos.Registration.ResetRequest;
 import com.infinity.userservice.exceptions.BadRequestException;
 import com.infinity.userservice.feign.NotificationClient;
 import com.infinity.userservice.models.PasswordResetToken;
-import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
 import com.infinity.userservice.repositories.PasswordResetTokenRepository;
 import com.infinity.userservice.repositories.UserRepository;
@@ -90,7 +84,7 @@ public class AuthServiceTest {
 
     @Test
     void testForgotPassword_userExists() {
-        User user = new Student("user@example.com", "First", "Last", "P@ssword1");
+        User user = new User("user@example.com", "First", "Last", "P@ssword1");
         user.setId(1L);
 
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
@@ -116,7 +110,7 @@ public class AuthServiceTest {
 
     @Test
     void testResetPassword_success() {
-        User user = new Student("user@example.com", "First", "Last", "OldP@ssword1");
+        User user = new User("user@example.com", "First", "Last", "OldP@ssword1");
         user.setId(1L);
 
         PasswordResetToken token = new PasswordResetToken("token123", user, LocalDateTime.now().plusMinutes(5));
@@ -134,7 +128,7 @@ public class AuthServiceTest {
 
     @Test
     void testResetPassword_tokenExpired() {
-        User user = new Student("user@example.com", "First", "Last", "OldP@ssword1");
+        User user = new User("user@example.com", "First", "Last", "OldP@ssword1");
         PasswordResetToken token = new PasswordResetToken("token123", user, LocalDateTime.now().minusMinutes(1));
 
         when(tokenRepository.findByToken("token123")).thenReturn(Optional.of(token));

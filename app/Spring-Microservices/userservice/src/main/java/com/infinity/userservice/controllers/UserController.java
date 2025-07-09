@@ -12,15 +12,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.infinity.userservice.dtos.BaseUserDto;
 import com.infinity.userservice.dtos.UserDto;
+import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.services.UserService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -59,14 +58,24 @@ public class UserController {
     //users/search?role=STUDENT&name=Alice&universityNumber=12345678
     @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/search")
-    public ResponseEntity<List<BaseUserDto>> searchUsers(
-            @RequestParam("role") String role,
-            @RequestParam(value = "name", required = false, defaultValue = "") String name,
-            @RequestParam(value = "universityNumber", required = false, defaultValue = "0") int universityNumber
-    ) {
-        List<BaseUserDto> results = userService.search(role, name, universityNumber);
+    public ResponseEntity<List<UserDto>> searchUsers(
+            @RequestParam String role,
+            @RequestParam(required = false, defaultValue = "") String name,
+            @RequestParam(required = false, defaultValue = "0") int universityNumber) {
+        List<UserDto> results = userService.search(role, name, universityNumber);
         return ResponseEntity.ok(results);
     }
     
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("changeRole/{id}")
+    public ResponseEntity<UserDto> changeRole(@PathVariable Long id, @RequestBody List<UserRole> roles) {
+        return ResponseEntity.ok(userService.changeRole(id, roles));
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/studentNum/{studentNum}")
+    public ResponseEntity<UserDto> getStudentByNum(@PathVariable Integer studentNum) {
+        return ResponseEntity.ok(userService.getStudentByNum(studentNum));
+    }
 
 }
