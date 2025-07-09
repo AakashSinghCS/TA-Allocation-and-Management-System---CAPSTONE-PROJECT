@@ -77,8 +77,7 @@ public class UserMapperTest {
 
     @Test
     void mapRegisterRequestToUser() {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", UserRole.STUDENT,
-                false);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", List.of(UserRole.STUDENT));
         Set<Role> roles = Set.of(new Role(1L, UserRole.STUDENT));
 
         User user = userMapper.registerToUser(request, roles);
@@ -92,7 +91,7 @@ public class UserMapperTest {
 
     @Test
     void registerThrows_WhenUserTypeIsNull() {
-        RegisterRequest request = new RegisterRequest("nope@test.com", "Nope", "Guy", "P@ssword1", null, false);
+        RegisterRequest request = new RegisterRequest("nope@test.com", "Nope", "Guy", "P@ssword1", null);
         Set<Role> roles = Set.of(new Role(1L, UserRole.STUDENT));
 
         BadRequestException ex = assertThrows(BadRequestException.class, () -> {

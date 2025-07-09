@@ -24,7 +24,6 @@ public class JwtUtilTest {
     
     @Test
     void testInvalidToken() {
-        String token = jwtUtil.generateToken("test@example.com", 1L, List.of("ROLE_STUDENT"));
         assertFalse(jwtUtil.validateToken("not the right token"));
     }
 }

@@ -1,5 +1,7 @@
 package com.infinity.userservice.dtos.Registration;
 
+import java.util.List;
+
 import com.infinity.userservice.enums.UserRole;
 
 import jakarta.validation.constraints.Email;
@@ -26,7 +28,6 @@ public record RegisterRequest(
         
         String password,
         @NotNull(message = "User type is required")         
-        UserRole userType,
-        boolean isAdmin
+        List<UserRole> userType
         ) {
 }

@@ -56,7 +56,7 @@ public class AuthControllerTest {
 
     @Test
     void whenEmailIsInvalid_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("invalid-email", "John", "Smith", "P@ssword1", UserRole.STUDENT, false);
+        RegisterRequest request = new RegisterRequest("invalid-email", "John", "Smith", "P@ssword1", List.of(UserRole.STUDENT));
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -67,7 +67,7 @@ public class AuthControllerTest {
     
     @Test
     void whenFirstNameIsMissing_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "", "Smith", "P@ssword1", UserRole.STUDENT, false);
+        RegisterRequest request = new RegisterRequest("john@test.com", "", "Smith", "P@ssword1", List.of(UserRole.STUDENT));
         
         mockMvc.perform(post("/auth/register")
         .contentType(MediaType.APPLICATION_JSON)
@@ -78,7 +78,7 @@ public class AuthControllerTest {
     
     @Test
     void whenLastNameIsMissing_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "", "P@ssword1", UserRole.STUDENT, false);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "", "P@ssword1", List.of(UserRole.STUDENT));
         
         mockMvc.perform(post("/auth/register")
         .contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +89,7 @@ public class AuthControllerTest {
     
     @Test
     void whenPasswordIsWeak_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "123", UserRole.STUDENT, false);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "123", List.of(UserRole.STUDENT));
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -100,7 +100,7 @@ public class AuthControllerTest {
 
     @Test
     void whenUserTypeIsMissing_thenReturns400() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", null, false);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", null);
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -111,7 +111,7 @@ public class AuthControllerTest {
 
     @Test
     void succesfullyRegisterStudent_thenReturns201() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", UserRole.STUDENT, false);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", List.of(UserRole.STUDENT));
         UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.STUDENT), null, null, null, null, null, null, null);
 
         when(userService.register(any())).thenReturn(mockResponse);
@@ -128,7 +128,7 @@ public class AuthControllerTest {
 
     @Test
     void successfullyRegisterInstructor_thenReturns201() throws Exception {
-        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", UserRole.INSTRUCTOR, false);
+        RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", List.of(UserRole.INSTRUCTOR));
         UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.INSTRUCTOR), null, null,
                         null, null, null, null, null);
 
@@ -147,7 +147,7 @@ public class AuthControllerTest {
     @Test
     void succesfullyRegisterCoordinator_thenReturns201() throws Exception {
         RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", 
-                UserRole.COORDINATOR, false);
+                List.of(UserRole.COORDINATOR));
         UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.COORDINATOR), null, null,
                         null, null, null, null, null);
 

@@ -1,15 +1,12 @@
 package com.infinity.userservice.services;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.UserUpdateRequest;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
@@ -24,8 +21,6 @@ import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.utility.UserMapper;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,37 +29,29 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final ObjectMapper objectMapper;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final Validator validator;
 
     public UserDto register(RegisterRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new BadRequestException("An account with this email already exists");
         }
 
-        if (request.userType() == UserRole.ADMIN) {
-            throw new BadRequestException("Cannot register with ADMIN as primary user type");
+        if (request.userType().contains(UserRole.ADMIN)) {
+            throw new BadRequestException("Cannot register with ADMIN as part of initial registration");
         }
 
-        Set<Role> roles = new HashSet<>();
-        Role primaryRole = roleRepository.findByName(request.userType())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
-        roles.add(primaryRole);
-
-        if (request.isAdmin()) {
-            Role adminRole = roleRepository.findByName(UserRole.ADMIN)
-                    .orElseThrow(() -> new RuntimeException("ADMIN role not found"));
-            roles.add(adminRole);
-        }
+        Set<Role> roles = request.userType().stream()
+                .map(roleEnum -> roleRepository.findByName(roleEnum)
+                        .orElseThrow(() -> new RuntimeException("Role not found: " + roleEnum)))
+                .collect(Collectors.toSet());
 
         User user = userMapper.registerToUser(request, roles);
-        String hashedPassword = passwordEncoder.encode(request.password());
-        user.setPassword(hashedPassword);
+        user.setPassword(passwordEncoder.encode(request.password()));
         userRepository.save(user);
+
         return userMapper.toDto(user);
-    }
+    }    
 
     public UserDto getUserById(Long id, Long userIdFromHeader, List<String> headerRoles) {
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
@@ -75,15 +62,13 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public void updateUserById(Long id, Long userIdFromHeader, List<String> headerRoles, Map<String, Object> payload) {
+    public void updateUserById(Long id, Long userIdFromHeader, List<String> headerRoles, UserUpdateRequest req) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_ADMIN")) {
             throw new AuthorizationException("Not allowed");
         }
-
-        UserUpdateRequest req = validateAndMap(payload, UserUpdateRequest.class);
 
         if (req.email() != null)
             user.setEmail(req.email());
@@ -111,18 +96,6 @@ public class UserService {
             user.setDepartment(req.department());
 
         userRepository.save(user);
-    }
-
-    private <T> T validateAndMap(Map<String, Object> payload, Class<T> clazz) {
-        T dto = objectMapper.convertValue(payload, clazz);
-        Set<ConstraintViolation<T>> violations = validator.validate(dto);
-        if (!violations.isEmpty()) {
-            String errorMsg = violations.stream()
-                    .map(ConstraintViolation::getMessage)
-                    .collect(Collectors.joining("; "));
-            throw new BadRequestException(errorMsg);
-        }
-        return dto;
     }
 
     public String deleteUserById(Long id, Long userIdFromHeader, List<String> headerRoles) {
@@ -192,6 +165,8 @@ public class UserService {
         }
         return userMapper.toDto(user);
     }
+
+    //Instructor methods
 
     public UserDto getInstructorById(Long id) {
         User user = userRepository.findById(id)

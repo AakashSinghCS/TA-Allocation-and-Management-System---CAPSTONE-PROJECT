@@ -1,7 +1,6 @@
 package com.infinity.userservice.controllers;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.userservice.dtos.UserDto;
+import com.infinity.userservice.dtos.UserUpdateRequest;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.services.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 
@@ -42,9 +43,9 @@ public class UserController {
     public ResponseEntity<String> updateUser(@PathVariable Long id,
             @RequestHeader("X-User-Id") Long requesterId,
             @RequestHeader("X-User-Roles") List<String> roles,
-            @RequestBody Map<String, Object> payload) {
+            @RequestBody @Valid UserUpdateRequest request) {
 
-        userService.updateUserById(id, requesterId, roles, payload);
+        userService.updateUserById(id, requesterId, roles, request);
         return ResponseEntity.ok("User updated");
     }
 
@@ -78,4 +79,15 @@ public class UserController {
         return ResponseEntity.ok(userService.getStudentByNum(studentNum));
     }
 
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/students/{id}")
+    public ResponseEntity<UserDto> getStudentById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getStudentById(id));
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/instructors/{id}")
+    public ResponseEntity<UserDto> getInstructorById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getInstructorById(id));
+    }
 }
