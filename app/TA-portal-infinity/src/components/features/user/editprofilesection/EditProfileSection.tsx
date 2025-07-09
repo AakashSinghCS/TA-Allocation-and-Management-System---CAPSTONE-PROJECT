@@ -1,6 +1,7 @@
 // src/components/EditProfileSection.tsx
 import { useState, type ChangeEvent, type FormEvent, type InputHTMLAttributes } from "react";
 import type User from "../../../../interfaces/user/User";
+import { validateProfileData } from "../../../../utility/validation/user/validateProfileData";
 
 interface Props<T extends User> {
   user: T;
@@ -22,14 +23,15 @@ export default function EditProfileSection<T extends User>({
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof T, string>>>({});
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
 
     // If this is studentNumber or employeeNumber, strip non-digits and enforce length
     if (name === "studentNumber" || name === "employeeNumber" || name === "schoolYear" || name === "enrollmentYear") {
-  
-      const maxLen = name === "studentNumber" || name ==="employeeNumber" ? 8 : name === "schoolYear" ? 1 : name === "enrollmentYear" ? 4: 8;
+
+      const maxLen = name === "studentNumber" || name === "employeeNumber" ? 8 : name === "schoolYear" ? 1 : name === "enrollmentYear" ? 4 : 8;
       const digits = value.replace(/\D/g, "");
       setForm((f) => ({
         ...f,
@@ -42,10 +44,16 @@ export default function EditProfileSection<T extends User>({
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+
+    const { ok, sanitized, fieldErrors } = validateProfileData(form, fields);
+    if (!ok) {
+      setFieldErrors(fieldErrors);
+      return;
+    }
     setSaving(true);
     setError(null);
     try {
-      await onSave(form);
+      await onSave(sanitized);
     } catch (err) {
       setError((err as Error).message);
       setSaving(false);
@@ -93,6 +101,11 @@ export default function EditProfileSection<T extends User>({
               {...props}
               className="w-full border border-gray-400 rounded px-3 py-2"
             />
+            {fieldErrors[field] && (
+              <div className="text-red-500 text-xs mt-1">
+                {fieldErrors[field]}
+              </div>
+            )}
           </div>
         );
       })}

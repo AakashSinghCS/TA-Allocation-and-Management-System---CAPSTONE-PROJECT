@@ -159,7 +159,7 @@ public class UserMapperTest {
         assertEquals(instructor.getFirstName(), dto.firstName());
         assertEquals(instructor.getLastName(), dto.lastName());
         assertEquals(instructor.getEmployeeNum(), dto.employeeNum());
-        assertEquals(instructor.getDepartment(), dto.dept());
+        assertEquals(instructor.getDepartment(), dto.department());
         assertEquals(instructor.getCreatedAt(), dto.createdAt());
     }
 
