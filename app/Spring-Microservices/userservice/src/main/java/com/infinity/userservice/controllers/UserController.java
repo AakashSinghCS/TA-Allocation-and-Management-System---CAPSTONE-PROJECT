@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.infinity.userservice.dtos.RoleChangeRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.UserUpdateRequest;
 import com.infinity.userservice.enums.UserRole;
@@ -68,9 +69,9 @@ public class UserController {
     }
     
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("changeRole/{id}")
-    public ResponseEntity<UserDto> changeRole(@PathVariable Long id, @RequestBody List<UserRole> roles) {
-        return ResponseEntity.ok(userService.changeRole(id, roles));
+    @PutMapping("/changeRole/{id}")
+    public ResponseEntity<UserDto> changeRole(@PathVariable Long id, @RequestBody RoleChangeRequest request) {
+        return ResponseEntity.ok(userService.changeRole(id, request));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")

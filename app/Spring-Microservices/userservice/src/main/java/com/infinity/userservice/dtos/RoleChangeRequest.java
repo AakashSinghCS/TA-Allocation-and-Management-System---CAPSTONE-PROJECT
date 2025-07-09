@@ -1,0 +1,8 @@
+package com.infinity.userservice.dtos;
+
+import java.util.List;
+
+import com.infinity.userservice.enums.UserRole;
+
+public record RoleChangeRequest(List<UserRole> roles) {
+}

@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.userservice.controllers.UserController;
+import com.infinity.userservice.dtos.RoleChangeRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
@@ -243,15 +244,16 @@ public class UserControllerTest {
 
         @Test
         void changeRole_returnsUpdatedUser() throws Exception {
-                List<UserRole> roles = List.of(UserRole.STUDENT, UserRole.COORDINATOR);
-                UserDto updatedUser = new UserDto(1L, "Alice", "Smith", "alice@example.com", roles,
+                RoleChangeRequest request = new RoleChangeRequest(List.of(UserRole.STUDENT, UserRole.COORDINATOR));
+                UserDto updatedUser = new UserDto(1L, "Alice", "Smith", "alice@example.com", List.of(UserRole.STUDENT,
+                                UserRole.COORDINATOR),
                                 null, null, null, null, null, null, null);
 
-                when(userService.changeRole(eq(1L), eq(roles))).thenReturn(updatedUser);
+                when(userService.changeRole(eq(1L), eq(request))).thenReturn(updatedUser);
 
                 mockMvc.perform(put("/users/changeRole/1")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(roles)))
+                                .content(objectMapper.writeValueAsString(request)))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.id").value(1))
                                 .andExpect(jsonPath("$.roles[0]").value("STUDENT"))

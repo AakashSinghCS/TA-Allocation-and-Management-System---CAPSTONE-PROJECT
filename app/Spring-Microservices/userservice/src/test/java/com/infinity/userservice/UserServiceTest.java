@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.userservice.dtos.RoleChangeRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.UserUpdateRequest;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
@@ -278,7 +279,7 @@ void testRegister_SuccessMultipleRoles() {
                 null, null, null, null);
         when(userMapper.toDto(user)).thenReturn(dto);
 
-        UserDto result = userService.changeRole(1L, List.of(UserRole.STUDENT));
+        UserDto result = userService.changeRole(1L, new RoleChangeRequest(List.of(UserRole.STUDENT)));
         assertEquals(List.of(UserRole.STUDENT), result.roles());
     }
 

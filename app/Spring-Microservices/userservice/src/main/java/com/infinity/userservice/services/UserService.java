@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.infinity.userservice.dtos.RoleChangeRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.UserUpdateRequest;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
@@ -133,11 +134,11 @@ public class UserService {
     }    
 
     @Transactional
-    public UserDto changeRole(Long id, List<UserRole> roleEnums) {
+    public UserDto changeRole(Long id, RoleChangeRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        Set<Role> newRoles = roleEnums.stream()
+        Set<Role> newRoles = request.roles().stream()
                 .map(roleEnum -> roleRepository.findByName(roleEnum)
                         .orElseThrow(() -> new NotFoundException("Role not found: " + roleEnum)))
                 .collect(Collectors.toSet());
