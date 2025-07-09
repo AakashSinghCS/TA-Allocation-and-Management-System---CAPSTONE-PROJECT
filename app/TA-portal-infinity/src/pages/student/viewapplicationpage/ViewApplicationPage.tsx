@@ -229,7 +229,7 @@ const ViewApplicationPage = () => {
   return (
     <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl md:text-4xl font-bold text-[#040941] mb-8 tracking-tight">My Applications</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-[#040941] mb-8 tracking-tight">My Applications</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8">
           {/* Filters */}
           <div className="lg:col-span-3">

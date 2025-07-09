@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchStudentDetails } from "../../../api/student/fetchStudentDetails";
 import { fetchApplicationsByStudent } from "../../../api/application/FetchApplicationsByStudent";
@@ -6,98 +6,201 @@ import { fetchAllStudentQualifications } from "../../../api/student/qualificatio
 import { fetchAllStudentEnrollmentOverview } from "../../../api/student/enrollment/fetchAllStudentCompletedCourses";
 import { fetchAllStudentQuestions } from "../../../api/question/fetchAllStudentQuestion";
 import { fetchAllocationByApplicationId } from "../../../api/allocation/fetchAllocationByApplicationId";
-// import { fetchAllNotificationsForStudent } from "../../../api/notification/fetchAllNotificationsForStudent";
 import { useAuth } from "../../../context/AuthContext";
 import type { ApplicationDto } from "../../../interfaces/application/Application";
 import type { Student } from "../../../interfaces/user/Student";
 import type { ProfileQuestion } from "../../../interfaces/question/ProfileQuestion";
 import type { CourseEnrollmentOverview } from "../../../interfaces/course/CourseEnrollment";
-import { Bell, User, GraduationCap, FileText, BookOpen, FileQuestion, Award } from "lucide-react";
+import { Bell, User, GraduationCap, FileText, BookOpen, FileQuestion } from "lucide-react";
 
 export default function StudentHomePage() {
   const { userId } = useAuth();
   const [student, setStudent] = useState<Student | null>(null);
-  type ApplicationWithAllocation = ApplicationDto & { allocation?: { status?: string } };
+  type ApplicationWithAllocation = ApplicationDto & { allocation?: { status?: string; section?: any } };
   const [applications, setApplications] = useState<ApplicationWithAllocation[]>([]);
-  const [qualifications, setQualifications] = useState<number[] | null>(null);
   const [courses, setCourses] = useState<CourseEnrollmentOverview | null>(null);
   const [profileQuestions, setProfileQuestions] = useState<ProfileQuestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [notifications, setNotifications] = useState<any[]>([
-    {
-      id: 1,
-      title: "Welcome!",
-      body: "Your student dashboard is now live.",
-      time: new Date().toISOString(),
-    },
-    {
-      id: 2,
-      title: "Application Update",
-      body: "Your recent TA application has been submitted.",
-      time: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-    },
-    {
-      id: 3,
-      title: "Profile Reminder",
-      body: "Don't forget to update your profile for the new semester!",
-      time: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-    },
-  ]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  // Track dismissed notification IDs in localStorage (until we have a backend solution)
+  const [dismissedNotifIds, setDismissedNotifIds] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem('dismissedStudentNotifIds');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
   const [showNotifications, setShowNotifications] = useState(true);
   // const navigate = useNavigate();
 
+  const [refreshKey, setRefreshKey] = useState(0);
+  async function fetchAll() {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = localStorage.getItem("token") || "";
+      // Fetch student, applications, courses, questions
+      const [stu, apps, , crs, qs] = await Promise.all([
+        fetchStudentDetails<Student>(userId),
+        fetchApplicationsByStudent(userId, token),
+        fetchAllStudentQualifications(userId),
+        fetchAllStudentEnrollmentOverview(userId),
+        fetchAllStudentQuestions(userId),
+      ]);
+      setStudent(stu);
+      setCourses(crs);
+      setProfileQuestions(qs || []);
+
+      // Student has only one application at a time, so fetch allocation for that application
+      let appsWithDetails: any[] = [];
+      if (apps.length > 0) {
+        const app = apps[0];
+        let allocation = null;
+        try {
+          const allocations = await fetchAllocationByApplicationId(app.id ?? app.applicationId ?? 0, token);
+          allocation = allocations && allocations.length > 0 ? allocations[0] : null;
+        } catch (err) {
+          console.error('fetchAllocationByApplicationId error:', err);
+        }
+        appsWithDetails = [{ ...app, allocation }];
+      }
+      setApplications(appsWithDetails);
+      // Build notifications
+      const notificationsList: any[] = [];
+     
+      if (appsWithDetails.length > 0) {
+        notificationsList.push({
+          id: 'submitted',
+          title: 'Application Submitted',
+          body: 'Your TA application has been submitted.',
+          time: appsWithDetails[0].timeSubmitted || new Date().toISOString(),
+        });
+      }
+      appsWithDetails.forEach((app: any) => {
+        if (app.allocation && app.allocation.status) {
+          const section = app.allocation.section;
+          let sectionStr = '';
+          if (section && section.course) {
+            sectionStr = `${section.course.deptCode} ${section.course.courseNum} - ${section.course.name}`;
+          }
+          const statusTime = app.allocation.timeStatusChanged || app.allocation.updatedAt || app.timeSubmitted || new Date().toISOString();
+          if (app.allocation.status === 'SENT') {
+            notificationsList.push({
+              id: `offer-${app.id}`,
+              title: 'Offer Received',
+              body: `You have received an offer${sectionStr ? ' for ' + sectionStr : ''}.`,
+              time: statusTime,
+            });
+          } else if (app.allocation.status === 'CONFIRMED') {
+            notificationsList.push({
+              id: `confirmed-${app.id}`,
+              title: 'Offer Accepted',
+              body: `You accepted the offer${sectionStr ? ' for ' + sectionStr : ''}.`,
+              time: statusTime,
+            });
+            notificationsList.push({
+              id: `allocation-${app.id}`,
+              title: 'Allocation Confirmed',
+              body: `Your allocation is confirmed${sectionStr ? ' for ' + sectionStr : ''}.`,
+              time: statusTime,
+            });
+          } else if (app.allocation.status === 'REJECTED') {
+            notificationsList.push({
+              id: `rejected-${app.id}`,
+              title: 'Offer Rejected',
+              body: `You rejected the offer${sectionStr ? ' for ' + sectionStr : ''}.`,
+              time: statusTime,
+            });
+          }
+        }
+      });
+      // Filter out dismissed notifications
+      const filtered = notificationsList.filter((notif, idx) => {
+        const id = notif.id ?? idx;
+        return !dismissedNotifIds.includes(String(id));
+      });
+      setNotifications(filtered);
+      console.log('[StudentHomePage] Final notifications:', notificationsList);
+      console.log('[StudentHomePage] courses fetched:', crs);
+    } catch (e: any) {
+      setError(e.message || "Failed to load dashboard data.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // --- Polling with Page Visibility API ---
+  const pollingInterval = 30000; 
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   useEffect(() => {
-    async function fetchAll() {
-      setLoading(true);
-      setError(null);
-      try {
-        const token = localStorage.getItem("token") || "";
-        const [stu, apps, quals, crs, qs] = await Promise.all([
-          fetchStudentDetails<Student>(userId),
-          fetchApplicationsByStudent(userId, token),
-          fetchAllStudentQualifications(userId),
-          fetchAllStudentEnrollmentOverview(userId),
-          fetchAllStudentQuestions(userId),
-        ]);
-        setStudent(stu);
-        setQualifications(quals);
-        setCourses(crs);
-        setProfileQuestions(qs || []);
-        // Fetch allocations for the first 3 applications
-        const appsWithAlloc = await Promise.all(
-          apps.slice(0, 3).map(async (app) => {
-            let allocation: { status?: string } | undefined = undefined;
-            try {
-              const allocs = await fetchAllocationByApplicationId(app.id ?? app.applicationId ?? 0, token);
-              if (allocs && allocs.length > 0) {
-                allocation = { status: allocs[0].status };
-              }
-            } catch {}
-            return { ...app, allocation };
-          })
-        );
-        setApplications(appsWithAlloc);
-        console.log("[StudentHomePage] courses fetched:", crs);
-      } catch (e: any) {
-        setError(e.message || "Failed to load dashboard data.");
-      } finally {
-        setLoading(false);
+    fetchAll();
+
+    function startPolling() {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      intervalRef.current = setInterval(() => {
+        if (document.visibilityState === 'visible') {
+          fetchAll();
+        }
+      }, pollingInterval);
+    }
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'visible') {
+        fetchAll();
+        startPolling();
+      } else if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
     }
-    fetchAll();
-  }, [userId]);
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    startPolling();
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [userId, refreshKey]);
 
   if (loading) return <div className="p-8">Loading dashboard...</div>;
   if (error) return <div className="p-8 text-red-500">{error}</div>;
 
   // dashboard with notification panel on the right
   return (
-    <section className="p-0 md:p-8 min-h-screen -mt-8">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 py-8">
+    <section className="p-0 md:p-8 min-h-screen -mt-8 ">
+      <div className="max-w-7xl mx-auto py-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-[#040941] mb-8 tracking-tight">My Dashboard</h1>
+        {/* Dashboard Summary Metrics */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <div className="bg-white rounded-xl shadow-md p-4 flex items-center justify-between hover:shadow-lg transition-shadow">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Applications</p>
+              <p className="text-2xl font-bold text-gray-900">{applications.length}</p>
+            </div>
+            <FileText className="w-8 h-8 text-blue-500" />
+          </div>
+          <div className="bg-white rounded-xl shadow-md p-4 flex items-center justify-between hover:shadow-lg transition-shadow">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Accepted</p>
+              <p className="text-2xl font-bold text-green-600">{applications.filter(a => a.allocation?.status==='CONFIRMED').length}</p>
+            </div>
+            <Bell className="w-8 h-8 text-green-500" />
+          </div>
+          <div className="bg-white rounded-xl shadow-md p-4 flex items-center justify-between hover:shadow-lg transition-shadow">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Rejected</p>
+              <p className="text-2xl font-bold text-red-600">{applications.filter(a => a.allocation?.status==='REJECTED').length}</p>
+            </div>
+            <Bell className="w-8 h-8 text-red-500" />
+          </div>
+        </div>
+        <div className="flex flex-col md:flex-row gap-8">
         {/* Main Content */}
         <main className="flex-1 flex flex-col gap-10">
-          {/* Profile & Qualifications Strip */}
+          {/* Profile Strip (without Qualifications) */}
           <div className="flex flex-col md:flex-row gap-8 items-stretch">
             <div className="flex-1 flex items-center gap-6 bg-gradient-to-r from-blue-950 to-blue-800 text-white rounded-xl px-8 py-6 shadow-lg">
               <div className="h-24 w-24 rounded-full bg-gradient-to-br from-blue-200 to-blue-100 flex items-center justify-center text-4xl font-extrabold text-blue-900 border-4 border-white">
@@ -113,26 +216,6 @@ export default function StudentHomePage() {
                 </div>
                 <Link to={`/user/taprofile/${userId}`} className="mt-2 inline-block text-blue-100 hover:underline text-xs font-semibold bg-blue-700/40 rounded px-3 py-1 shadow flex items-center gap-1">Edit Profile</Link>
               </div>
-              <div className="flex flex-col items-end justify-between min-w-[180px]">
-                <div className="flex items-center gap-2 mb-2">
-                  <Award className="w-5 h-5 text-green-100" />
-                  <h2 className="text-lg font-bold text-green-100 tracking-wide">Qualifications</h2>
-                </div>
-                {qualifications && qualifications.length > 0 ? (
-                  <ul className="flex flex-wrap gap-2 mt-1">
-                    {qualifications.slice(0, 6).map((q) => (
-                      <li key={q} className="flex items-center gap-1 bg-green-100/80 rounded-full px-3 py-1 text-green-900 font-semibold text-xs">
-                        <Award className="w-4 h-4 text-green-500" />
-                        <span className="inline-block bg-green-400 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold">{q}</span>
-                        Qual
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div className="text-green-100/80 italic mt-2">No qualifications</div>
-                )}
-                <Link to={`/user/taprofile/${userId}/qualifications`} className="mt-2 text-green-100 hover:underline text-xs font-semibold flex items-center gap-1"><Award className="w-4 h-4 text-green-100" />View All</Link>
-              </div>
             </div>
           </div>
 
@@ -144,30 +227,76 @@ export default function StudentHomePage() {
                 <div className="text-slate-400 italic">No applications found.</div>
               ) : (
                 <ul className="space-y-6">
-                  {applications.map((app, idx) => (
-                    <li key={app.id ?? idx} className="relative">
-                      <span className="absolute -left-7 top-2 w-4 h-4 rounded-full bg-blue-400 border-2 border-white"></span>
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 bg-blue-50/60 rounded-lg px-4 py-3">
-                        <div className="flex flex-col">
-                          <span className="font-medium text-blue-900">{app.preferences?.join(", ") || "No preferences"}</span>
-                          <span className="text-xs text-gray-500">{new Date(app.timeSubmitted).toLocaleString()}</span>
+                  {applications.map((app, idx) => {
+                    // Stepper logic
+                    let steps = [
+                      { label: 'Submitted', key: 'SUBMITTED' },
+                      { label: 'Offer Received', key: 'SENT' },
+                      { label: '', key: '' }, 
+                      { label: 'Confirmed', key: 'CONFIRMED_FINAL' }
+                    ];
+                    let currentStep = 0;
+                    if (app.allocation?.status === 'SENT') currentStep = 1;
+                    else if (app.allocation?.status === 'CONFIRMED') currentStep = 2;
+                    else if (app.allocation?.status === 'REJECTED') currentStep = 2;
+                    //  Accepted or Rejected
+                    if (app.allocation?.status === 'CONFIRMED') {
+                      steps[2] = { label: 'Accepted', key: 'CONFIRMED' };
+                      currentStep = 2;
+                    } else if (app.allocation?.status === 'REJECTED') {
+                      steps[2] = { label: 'Rejected', key: 'REJECTED' };
+                      currentStep = 2;
+                    } else {
+                      steps[2] = { label: 'Accepted/Rejected', key: 'PENDING' };
+                    }
+                    // Confirmed only if status is CONFIRMED
+                    let visibleSteps = steps;
+                    if (app.allocation?.status !== 'CONFIRMED') {
+                      visibleSteps = steps.slice(0, 3);
+                    } else {
+                      currentStep = 3;
+                    }
+                    return (
+                      <li key={app.id ?? idx} className="relative">
+                        {/* Fancy horizontal stepper */}
+                        <div className="flex items-center mb-2">
+                          {visibleSteps.map((step, i) => (
+                            <div key={step.key} className="flex items-center">
+                              <div
+                                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all duration-300
+                                  ${i === visibleSteps.length - 1 && app.allocation?.status === 'CONFIRMED' ? 'bg-blue-700 border-blue-900 text-white' : i === currentStep ? 'bg-blue-500 border-blue-700 text-white' : i < currentStep ? 'bg-blue-200 border-blue-400 text-blue-700' : 'bg-gray-200 border-gray-300 text-gray-400'}`}
+                                title={step.label}
+                              >
+                                {i + 1}
+                              </div>
+                              {i < visibleSteps.length - 1 && (
+                                <div className={`h-1 w-8 ${i < currentStep ? 'bg-blue-400' : 'bg-gray-200'} mx-1 rounded transition-all duration-300`}></div>
+                              )}
+                            </div>
+                          ))}
                         </div>
-                        <div className="flex flex-wrap items-center gap-3">
-                          <span className="text-xs">Remote: {app.wantRemote ? "Yes" : "No"}</span>
-                          <span className="text-xs">Hours: {app.wantWorkingHours}</span>
-                          <span className="text-xs font-semibold">
-                            Status: {
-                              !app.allocation?.status ? "Submitted"
-                              : app.allocation.status === "SENT" ? "Offer Received"
-                              : app.allocation.status === "CONFIRMED" ? "Offer Accepted & Confirmed"
-                              : app.allocation.status === "REJECTED" ? "Offer Rejected"
-                              : app.allocation.status
-                            }
-                          </span>
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 bg-blue-50/60 rounded-lg px-4 py-3">
+                          <div className="flex flex-col">
+                            <span className="font-medium text-blue-900">{app.preferences?.join(", ") || "No preferences"}</span>
+                            <span className="text-xs text-gray-500">{new Date(app.timeSubmitted).toLocaleString()}</span>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <span className="text-xs">Remote: {app.wantRemote ? "Yes" : "No"}</span>
+                            <span className="text-xs">Hours: {app.wantWorkingHours}</span>
+                            <span className="text-xs font-semibold">
+                              Status: {
+                                !app.allocation?.status ? "Submitted"
+                                : app.allocation.status === "SENT" ? "Offer Received"
+                                : app.allocation.status === "CONFIRMED" ? "Offer Accepted & Confirmed"
+                                : app.allocation.status === "REJECTED" ? "Offer Rejected"
+                                : app.allocation.status
+                              }
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
               <Link to="/user/student/view-applications" className="mt-6 inline-block text-blue-700 hover:underline text-sm">View All Applications</Link>
@@ -202,7 +331,7 @@ export default function StudentHomePage() {
             <div className="bg-blue-50/60 rounded-lg px-6 py-4 shadow">
               {courses && Array.isArray(courses.completedCourses) && courses.completedCourses.length > 0 ? (
                 <ul className="flex flex-wrap gap-2">
-                  {courses.completedCourses.slice(0, 8).map((c) => (
+                  {courses.completedCourses.map((c) => (
                     <li key={c.course.id} className="bg-blue-100 rounded px-3 py-1 text-xs font-medium text-blue-900">
                       {c.course.deptCode} {c.course.courseNum} - {c.course.name}
                     </li>
@@ -214,7 +343,7 @@ export default function StudentHomePage() {
               <Link to="/user/student/courses" className="mt-4 inline-block text-blue-700 hover:underline text-sm">View All Courses</Link>
             </div>
           </section>
-        </main>
+          </main>
 
         {/* Notification Panel on the right */}
         <aside className="w-full md:w-1/4 flex flex-col gap-4 bg-white/80 rounded-2xl shadow-lg p-4 min-h-[500px] border border-blue-100">
@@ -222,6 +351,13 @@ export default function StudentHomePage() {
             <div className="flex items-center gap-2">
               <Bell size={22} className="text-blue-400" />
               <h2 className="text-lg font-bold text-blue-900">Notifications</h2>
+              <button
+                onClick={() => setRefreshKey((k) => k + 1)}
+                className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 border border-blue-200"
+                title="Refresh notifications"
+              >
+                Refresh
+              </button>
             </div>
             <button onClick={() => setShowNotifications((v) => !v)} className="text-xs text-blue-700 hover:underline font-semibold">{showNotifications ? "Hide" : "Show"}</button>
           </div>
@@ -232,10 +368,25 @@ export default function StudentHomePage() {
               ) : (
                 <ul className="space-y-3">
                   {notifications.map((notif, idx) => (
-                    <li key={notif.id ?? idx} className="bg-blue-50/80 rounded-lg px-3 py-2 text-xs text-blue-900 border border-blue-100 flex flex-col gap-1">
+                    <li key={notif.id ?? idx} className="bg-blue-50/80 rounded-lg px-3 py-2 text-xs text-blue-900 border border-blue-100 flex flex-col gap-1 relative group">
+                      <button
+                        aria-label="Remove notification"
+                        className="absolute top-1 right-1 text-blue-400 hover:text-red-500 text-lg font-bold opacity-60 hover:opacity-100 transition-opacity"
+                        onClick={() => {
+                      const removeId = String(notif.id ?? idx);
+                      setNotifications((prev) => prev.filter((n, i) => String(n.id ?? i) !== removeId));
+                      setDismissedNotifIds((prev) => {
+                        const updated = [...prev, removeId];
+                        localStorage.setItem('dismissedStudentNotifIds', JSON.stringify(updated));
+                        return updated;
+                      });
+                        }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                      >
+                        ×
+                      </button>
                       <span className="font-semibold">{notif.title || "Notification"}</span>
                       <span>{notif.body || notif.message}</span>
-                      <span className="text-[10px] text-gray-500 self-end">{notif.time ? new Date(notif.time).toLocaleString() : ""}</span>
                     </li>
                   ))}
                 </ul>
@@ -243,7 +394,8 @@ export default function StudentHomePage() {
             </div>
           )}
         </aside>
-      </div>
+      </div> {/* end inner flex */}
+      </div> {/* end container */}
     </section>
   );
 }
