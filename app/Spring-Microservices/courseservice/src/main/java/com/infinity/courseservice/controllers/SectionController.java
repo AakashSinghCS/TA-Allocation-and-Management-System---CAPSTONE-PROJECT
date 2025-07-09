@@ -107,4 +107,16 @@ public class SectionController {
     public ResponseEntity<Boolean> add( @RequestBody SectionAddDtoRequest request) {      
         return ResponseEntity.ok(sectionService.add(request));
     }
+
+    @GetMapping("/getByCourseIdSectionYearSemester/{courseId}/{section}/{year}/{semester}")
+    public ResponseEntity<SectionDto> getByCourseIdSectionYearSemester(
+            @PathVariable Long courseId,
+            @PathVariable String section,
+            @PathVariable Integer year,
+            @PathVariable String semester) {
+
+        SectionDto sectionDto = sectionService.getByCourseIdSectionYearSemester(courseId, section, year, semester);
+        return ResponseEntity.ok(sectionDto);
+    }
+
 }

@@ -289,4 +289,17 @@ public class CourseControllerTest {
                                 .andExpect(jsonPath("$[0]").value("W1"))
                                 .andExpect(jsonPath("$[1]").value("W2"));
         }
+
+        @Test
+        void shouldReturnCourseByDeptCodeAndCourseNum() throws Exception {
+                CourseDto courseDto = new CourseDto(1L, "COSC", "CAPSTONE","499");
+
+                when(courseService.getByDeptCodeAndCourseNum("COSC", "499"))
+                        .thenReturn(courseDto);
+
+                mockMvc.perform(get("/courses/getByDeptCodeAndCourseNum/COSC/499"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.deptCode").value("COSC"))
+                        .andExpect(jsonPath("$.courseNum").value("499"));
+        }
 }

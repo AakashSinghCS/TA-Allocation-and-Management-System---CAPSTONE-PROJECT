@@ -413,4 +413,24 @@ public class CourseServiceTest {
         assertEquals(2023, result.get(0).year());
     }
 
+    @Test
+    void shouldReturnCourseDtoWhenFound() {
+        Course course = new Course();
+        course.setId(1L);
+        course.setDeptCode("COMP");
+        course.setCourseNum("101");
+
+        CourseDto dto = new CourseDto(1L, "COSC", "CAPSTONE", "499");
+
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "499"))
+            .thenReturn(Optional.of(course));
+
+        when(courseMapper.courseToDto(course)).thenReturn(dto);
+
+        CourseDto result = courseService.getByDeptCodeAndCourseNum("COSC", "499");
+
+        assertEquals("COSC", result.deptCode());
+        assertEquals("499", result.courseNum());
+    }
+
 }
