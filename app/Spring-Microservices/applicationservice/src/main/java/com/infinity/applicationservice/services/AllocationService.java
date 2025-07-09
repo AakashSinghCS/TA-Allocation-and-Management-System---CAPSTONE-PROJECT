@@ -51,7 +51,7 @@ public class AllocationService {
             Long sectionId = allocation.getSectionId();
 
             if (sectionId == null) {
-                throw new IllegalArgumentException("Allocation ID " + allocation.getId() + " has no associated sectionId.");
+                throw new NotFoundException("Allocation ID " + allocation.getId() + " has no associated sectionId.");
             }
             
             SectionDto section = sectionInterface.getSectionById(sectionId);
