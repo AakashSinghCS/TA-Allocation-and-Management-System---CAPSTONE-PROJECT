@@ -2001,7 +2001,7 @@ Our project still has some features to be desired and improved.
 - error checking 
 
 
-## Saturday 7/04 (7/01~7/04)
+## Saturday 7/05 (7/04~7/08)
 
 ### Timesheet
 Clockify report
@@ -2054,7 +2054,7 @@ I encountered lots of errors and had to fix lots of tests due to the moving file
 
 
 
-## Saturday 7/04 (7/01~7/04)
+## Monday 7/07 (7/04~7/08)
 
 ### Timesheet
 Clockify report
@@ -2100,3 +2100,47 @@ Things to note for tommorrow:
 - make the Comparers work with the backend.
 - UR 1.5
 - error checking 
+
+
+## Monday 7/08 (7/04~7/08)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July08.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#343](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/343)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I completed the orphaned key problems in Sections. I fixed bugs in Qualifications and Needs pages. I added the validation to user edit profile as well.
+We did a project discussion today face to face. It was productive, and we decided what we are going to do over the next few days.
+I will primarily focus on UR 1.5 after today. After that I will work on the other goals.
+The process is going smoothly now and is less stressful now, as I am finding myself looking for work to do rather than the work hunting me down.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- UR 1.5
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- enrollment for student works
+- section profile shows needs
