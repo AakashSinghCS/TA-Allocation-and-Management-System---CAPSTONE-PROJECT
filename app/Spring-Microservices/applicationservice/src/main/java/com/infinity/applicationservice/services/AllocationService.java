@@ -48,7 +48,13 @@ public class AllocationService {
         StudentDto student = studentInterface.getStudentById(studentId).getBody();
 
         return allocations.stream().map(allocation -> {
-            SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+            Long sectionId = allocation.getSectionId();
+
+            if (sectionId == null) {
+                throw new IllegalArgumentException("Allocation ID " + allocation.getId() + " has no associated sectionId.");
+            }
+            
+            SectionDto section = sectionInterface.getSectionById(sectionId);
             ApplicationDto applicationDto = null;
             if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
                 applicationDto = applicationMapper.toDto(allocation.getApplication());

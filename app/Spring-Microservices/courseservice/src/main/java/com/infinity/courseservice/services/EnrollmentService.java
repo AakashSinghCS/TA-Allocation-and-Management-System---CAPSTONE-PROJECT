@@ -108,9 +108,6 @@ public class EnrollmentService {
     @Transactional
     public Integer clearSectionFromStudentCourses(Long sectionId) {
         Integer updated = studentCourseRepository.clearSectionReference(sectionId);
-        if (updated == 0) {
-            throw new EntityNotFoundException("No student-course entries found for section " + sectionId);
-        }
         return updated;
     }
 }
