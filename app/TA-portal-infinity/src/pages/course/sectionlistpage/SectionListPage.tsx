@@ -53,6 +53,8 @@ export default function SectionListPage() {
 
   const token = localStorage.getItem('token');
 
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
   const handleCsvUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -85,8 +87,24 @@ export default function SectionListPage() {
           setSuccessMessage('Allocations imported successfully!');
           setTimeout(() => setSuccessMessage(null), 3000);
           setShowImportModal(false);
-        } catch (err) {
-          setCsvError('Failed to import allocations: ' + (err as Error).message);
+        } catch (err:any) {
+          let friendlyMessage = 'Failed to import allocations: Unknown error occurred.';
+
+          const errorText = err.message || '';
+
+          if (errorText.includes('User with student number')) {
+            const match = errorText.match(/User with student number (\d+) not found/);
+            const studentNum = match ? match[1] : 'unknown';
+            friendlyMessage = `❌ Failed to import allocations: Student with student number ${studentNum} not found. Please verify student details or add a new student.`;
+          } else if (errorText.includes('Course not found with')) {
+            const match = errorText.match(/Course not found with: ([A-Z]+ \d+)/);
+            const courseInfo = match ? match[1] : 'unknown';
+            friendlyMessage = `❌ Failed to import allocations: Course ${courseInfo} not found. Please create a new course.`;
+          } else if (errorText.includes('Section not found')) {
+            friendlyMessage = `❌ Failed to import allocations: Section not found. Please add a new section to the course.`;
+          }
+
+          setErrorMsg(friendlyMessage);
         }
       },
       error: (error) => {
@@ -134,6 +152,10 @@ export default function SectionListPage() {
           <div className="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full">
             <h2 className="text-xl font-semibold mb-4">Import Past Allocations</h2>
 
+            {errorMsg && (
+              <p className="text-red-600 text-sm mt-2">{errorMsg}</p>
+            )}
+            
             {csvError && <p className="text-red-500 mb-2">{csvError}</p>}
 
             <label htmlFor="csvFileInput" className="block mb-4">
