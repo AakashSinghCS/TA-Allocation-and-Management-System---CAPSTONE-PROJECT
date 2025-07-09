@@ -23,7 +23,7 @@
 | [#315](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/315) | Student Allocation History                                 | Allocation/History             | Dup      | Done     |
 | [#77](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/77)   | Have notification sent to student when an offer is made     | Offer Notification             | Alex, Mandeep   | In progress |
 | [#85](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/85)   | Send notification when offer is accepted                    | Offer Notification             | Alex, Mandeep   | In progress |
-| [#117](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/117) | Cancel TA Application - frontendpoints                      | TA Application Management      | Dup, Mandeep  | In progress |
+| [#117](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/117) | Cancel TA Application - frontendpoints                      | TA Application Management      | Mandeep  | In progress |
 | [#337](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/337) | Implement CSV Import for Previous Year Allocations          | CSV Import Frontend            | Aakash   | In progress |
 | [#332](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/332) | create admin system setting page frontend                   | Admin UI/UX                     | Beichen  | In progress |
 | [#331](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/331) | add deadlines to tables, build system setting page backend  | Admin Settings Backend          | Beichen  | In progress |
@@ -87,7 +87,7 @@
 | ------- | ---------------------------------------------------------- | ----------------- |
 | #77     | Have notification sent to student when an offer is made    | Alex, Mandeep     |
 | #85     | Send notification when offer is accepted                   | Alex, Mandeep     |
-| #117    | Cancel TA Application - frontendpoints                     | Dup, Mandeep      |
+| #117    | Cancel TA Application - frontendpoints                     | Mandeep      |
 | #337    | Implement CSV Import for Previous Year Allocations         | Aakash            |
 | #332    | create admin system setting page frontend                  | Beichen           |
 | #331    | add deadlines to tables, build system setting page backend | Beichen           |
