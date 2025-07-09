@@ -2102,7 +2102,7 @@ Things to note for tommorrow:
 - error checking 
 
 
-## Monday 7/08 (7/04~7/08)
+## Tuesday 7/08 (7/04~7/08)
 
 ### Timesheet
 Clockify report
