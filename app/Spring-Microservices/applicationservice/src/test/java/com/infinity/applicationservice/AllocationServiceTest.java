@@ -486,18 +486,19 @@ class AllocationServiceTest {
 
                 StudentDto studentDto = new StudentDto(1L, "Test", "User", 123456, "BSC", 2022, 4);
                 SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
-                        new CourseDto(1L, "COSC", "Capstone", "499"));
+                                new CourseDto(1L, "COSC", "Capstone", "499"));
                 ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE,
-                        false, null, null, Set.of());
+                                false, null, null, Set.of());
 
                 AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, applicationDto,
-                        ApplicationStatus.CONFIRMED, 10, sectionDto);
+                                ApplicationStatus.CONFIRMED, 10, sectionDto);
 
                 when(allocationRepository.findByStudentId(studentId)).thenReturn(List.of(allocation));
                 when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
                 when(sectionInterface.getSectionById(1001L)).thenReturn(sectionDto);
                 when(applicationMapper.toDto(application)).thenReturn(applicationDto);
-                when(allocationMapper.toDto(allocation, studentDto, applicationDto, sectionDto)).thenReturn(expectedDto);
+                when(allocationMapper.toDto(allocation, studentDto, applicationDto, sectionDto))
+                                .thenReturn(expectedDto);
 
                 List<AllocationHistoryDto> result = allocationService.getAllocationsByStudentId(studentId);
 
@@ -521,14 +522,14 @@ class AllocationServiceTest {
                 allocation.setStatus(ApplicationStatus.CONFIRMED);
                 allocation.setNumberOfHours(10);
                 allocation.setSectionId(1001L);
-                allocation.setApplication(null); 
+                allocation.setApplication(null);
 
                 StudentDto studentDto = new StudentDto(1L, "Test", "User", 123456, "BSC", 2022, 4);
                 SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
-                        new CourseDto(1L, "COSC", "Capstone", "499"));
+                                new CourseDto(1L, "COSC", "Capstone", "499"));
 
                 AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, null,
-                        ApplicationStatus.CONFIRMED, 10, sectionDto);
+                                ApplicationStatus.CONFIRMED, 10, sectionDto);
 
                 when(allocationRepository.findByStudentId(studentId)).thenReturn(List.of(allocation));
                 when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
@@ -546,5 +547,25 @@ class AllocationServiceTest {
                 verify(allocationMapper).toDto(allocation, studentDto, null, sectionDto);
         }
 
+        @Test
+        void testSetSectionIdNullReturnsAffectedCount() {
+                long sectionId = 42L;
+                when(allocationRepository.clearSectionIdBySectionId(sectionId))
+                                .thenReturn(7);
 
+                Integer result = allocationService.setSectionIdNull(sectionId);
+
+                assertEquals(7, result);
+        }
+
+        @Test
+        void testSetSectionIdNullZeroWhenNothingToClear() {
+                long sectionId = 99L;
+                when(allocationRepository.clearSectionIdBySectionId(sectionId))
+                                .thenReturn(0);
+
+                Integer result = allocationService.setSectionIdNull(sectionId);
+
+                assertEquals(0, result);
+        }
 }

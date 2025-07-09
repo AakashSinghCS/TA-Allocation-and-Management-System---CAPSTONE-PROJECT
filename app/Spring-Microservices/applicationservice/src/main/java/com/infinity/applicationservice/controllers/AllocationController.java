@@ -81,7 +81,6 @@ public class AllocationController {
         return ResponseEntity.ok(allocationService.getAllocationsByApplicationYear(year));
     }
 
-    // @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("/{sectionId}/setSectionIdNull")
     public ResponseEntity<Integer> setSectionIdNull(@PathVariable Long sectionId) {
         Integer affected =allocationService.setSectionIdNull(sectionId);

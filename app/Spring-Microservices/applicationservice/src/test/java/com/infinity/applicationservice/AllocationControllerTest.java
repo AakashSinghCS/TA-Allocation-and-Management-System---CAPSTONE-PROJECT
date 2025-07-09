@@ -49,213 +49,224 @@ import com.infinity.applicationservice.services.AllocationService;
 @AutoConfigureMockMvc(addFilters = false)
 public class AllocationControllerTest {
 
-    @Autowired
-    private MockMvc mvc;
+        @Autowired
+        private MockMvc mvc;
 
-    @Autowired
-    private ObjectMapper mapper;
+        @Autowired
+        private ObjectMapper mapper;
 
-    @MockitoBean
-    private AllocationService allocationService;
+        @MockitoBean
+        private AllocationService allocationService;
 
-    @MockitoBean
-    private UserInterface studentInterface;
-    
-    @MockitoBean
-    private SectionInterface sectionInterface;
+        @MockitoBean
+        private UserInterface studentInterface;
 
-    private AllocationHistoryDto sampleDto;
+        @MockitoBean
+        private SectionInterface sectionInterface;
 
-    @BeforeEach
-    void setup() {
-        ApplicationDto application = new ApplicationDto(
-                1L,
-                1L,
-                List.of(),
-                ApplicationType.UNDERGRADUATE,
-                false,
-                10,
-                LocalDateTime.of(2025, 7, 1, 12, 0),
-                Set.of());
-        sampleDto = new AllocationHistoryDto(
-                101L,
-                new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4),
-                application,
-                ApplicationStatus.SENT,
-                10,
-                new SectionDto(1001L, 2024, "W1", "T01", SectionType.TUTORIAL,
-                        new CourseDto(1L, "COSC", "Capstone", "499")));
-    }
+        private AllocationHistoryDto sampleDto;
 
-    @Test
-    void testGetStudentAllocationHistory() throws Exception {
-        Long sid = 1L;
-        when(allocationService.getAllocationsByStudentId(sid)).thenReturn(List.of(sampleDto));
+        @BeforeEach
+        void setup() {
+                ApplicationDto application = new ApplicationDto(
+                                1L,
+                                1L,
+                                List.of(),
+                                ApplicationType.UNDERGRADUATE,
+                                false,
+                                10,
+                                LocalDateTime.of(2025, 7, 1, 12, 0),
+                                Set.of());
+                sampleDto = new AllocationHistoryDto(
+                                101L,
+                                new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4),
+                                application,
+                                ApplicationStatus.SENT,
+                                10,
+                                new SectionDto(1001L, 2024, "W1", "T01", SectionType.TUTORIAL,
+                                                new CourseDto(1L, "COSC", "Capstone", "499")));
+        }
 
-        mvc.perform(get("/allocations/student/{sid}/history", sid))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id").value(101))
-                .andExpect(jsonPath("$[0].student.firstName").value("Test User"))
-                .andExpect(jsonPath("$[0].section.section").value("T01"))
-                .andExpect(jsonPath("$[0].status").value("SENT"));
-    }
+        @Test
+        void testGetStudentAllocationHistory() throws Exception {
+                Long sid = 1L;
+                when(allocationService.getAllocationsByStudentId(sid)).thenReturn(List.of(sampleDto));
 
-    @Test
-    void allocateStudent_createsAllocationAndReturnsDto() throws Exception {
-        AllocationRequest request = new AllocationRequest(
-                1L,
-                1L,
-                ApplicationStatus.SENT,
-                10,
-                1001L);
-        ApplicationDto application = new ApplicationDto(
-                1L,
-                1L,
-                List.of(),
-                ApplicationType.UNDERGRADUATE,
-                false,
-                10,
-                LocalDateTime.now(),
-                Set.of());
+                mvc.perform(get("/allocations/student/{sid}/history", sid))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$", hasSize(1)))
+                                .andExpect(jsonPath("$[0].id").value(101))
+                                .andExpect(jsonPath("$[0].student.firstName").value("Test User"))
+                                .andExpect(jsonPath("$[0].section.section").value("T01"))
+                                .andExpect(jsonPath("$[0].status").value("SENT"));
+        }
 
-        AllocationHistoryDto responseDto = new AllocationHistoryDto(
-                123L,
-                new StudentDto(1L, "Test", "test@example.com", 63260442, "BSC", 2022, 4),
-                application,
-                ApplicationStatus.SENT,
-                10,
-                new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
-                        new CourseDto(1L, "COSC", "Capstone", "499")));
+        @Test
+        void allocateStudent_createsAllocationAndReturnsDto() throws Exception {
+                AllocationRequest request = new AllocationRequest(
+                                1L,
+                                1L,
+                                ApplicationStatus.SENT,
+                                10,
+                                1001L);
+                ApplicationDto application = new ApplicationDto(
+                                1L,
+                                1L,
+                                List.of(),
+                                ApplicationType.UNDERGRADUATE,
+                                false,
+                                10,
+                                LocalDateTime.now(),
+                                Set.of());
 
-        when(allocationService.allocateStudent(any(AllocationRequest.class))).thenReturn(responseDto);
+                AllocationHistoryDto responseDto = new AllocationHistoryDto(
+                                123L,
+                                new StudentDto(1L, "Test", "test@example.com", 63260442, "BSC", 2022, 4),
+                                application,
+                                ApplicationStatus.SENT,
+                                10,
+                                new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
+                                                new CourseDto(1L, "COSC", "Capstone", "499")));
 
-        mvc.perform(post("/allocations/allocate")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(123))
-                .andExpect(jsonPath("$.student.firstName").value("Test"))
-                .andExpect(jsonPath("$.numberOfHours").value(10))
-                .andExpect(jsonPath("$.section.section").value("T01"))
-                .andExpect(jsonPath("$.status").value("SENT"));
-    }
+                when(allocationService.allocateStudent(any(AllocationRequest.class))).thenReturn(responseDto);
 
-    @Test
-    void deallocateStudent_removesAllocationAndReturnsMessage() throws Exception {
-        Long allocationId = 101L;
-        String expectedResponse = "Student deallocated";
+                mvc.perform(post("/allocations/allocate")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(request)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(123))
+                                .andExpect(jsonPath("$.student.firstName").value("Test"))
+                                .andExpect(jsonPath("$.numberOfHours").value(10))
+                                .andExpect(jsonPath("$.section.section").value("T01"))
+                                .andExpect(jsonPath("$.status").value("SENT"));
+        }
 
-        when(allocationService.deallocateStudent(allocationId)).thenReturn(expectedResponse);
+        @Test
+        void deallocateStudent_removesAllocationAndReturnsMessage() throws Exception {
+                Long allocationId = 101L;
+                String expectedResponse = "Student deallocated";
 
-        mvc.perform(delete("/allocations/deallocate/{allocationId}", allocationId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(expectedResponse));
+                when(allocationService.deallocateStudent(allocationId)).thenReturn(expectedResponse);
 
-        verify(allocationService, times(1)).deallocateStudent(allocationId);
-    }
+                mvc.perform(delete("/allocations/deallocate/{allocationId}", allocationId))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$").value(expectedResponse));
 
-    @Test
-    void acceptOffer_updatesConfirmationStatusToTrue() throws Exception {
-        doNothing().when(allocationService).updateConfirmationStatus(123L, ApplicationStatus.CONFIRMED);
+                verify(allocationService, times(1)).deallocateStudent(allocationId);
+        }
 
-        mvc.perform(put("/allocations/123/acceptOffer"))
-                .andExpect(status().isOk());
+        @Test
+        void acceptOffer_updatesConfirmationStatusToTrue() throws Exception {
+                doNothing().when(allocationService).updateConfirmationStatus(123L, ApplicationStatus.CONFIRMED);
 
-        verify(allocationService, times(1)).updateConfirmationStatus(123L, ApplicationStatus.CONFIRMED);
-    }
+                mvc.perform(put("/allocations/123/acceptOffer"))
+                                .andExpect(status().isOk());
 
-    @Test
-    void denyOffer_updatesConfirmationStatusToFalse() throws Exception {
-        doNothing().when(allocationService).updateConfirmationStatus(123L, ApplicationStatus.REJECTED);
+                verify(allocationService, times(1)).updateConfirmationStatus(123L, ApplicationStatus.CONFIRMED);
+        }
 
-        mvc.perform(put("/allocations/123/denyOffer"))
-                .andExpect(status().isOk());
+        @Test
+        void denyOffer_updatesConfirmationStatusToFalse() throws Exception {
+                doNothing().when(allocationService).updateConfirmationStatus(123L, ApplicationStatus.REJECTED);
 
-        verify(allocationService, times(1)).updateConfirmationStatus(123L, ApplicationStatus.REJECTED);
-    }
+                mvc.perform(put("/allocations/123/denyOffer"))
+                                .andExpect(status().isOk());
 
-    @Test
-    void getAllocationsByConfirmationStatus_returnsFilteredResults() throws Exception {
-        sampleDto = new AllocationHistoryDto(
-                sampleDto.id(),
-                sampleDto.student(),
-                sampleDto.applicationDto(),
-                ApplicationStatus.CONFIRMED,
-                sampleDto.numberOfHours(),
-                sampleDto.section());
-        when(allocationService.getAllocationsByConfirmationStatus(ApplicationStatus.CONFIRMED))
-                .thenReturn(List.of(sampleDto));
+                verify(allocationService, times(1)).updateConfirmationStatus(123L, ApplicationStatus.REJECTED);
+        }
 
-        mvc.perform(get("/allocations/filter/status/CONFIRMED"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id").value(sampleDto.id()))
-                .andExpect(jsonPath("$[0].status").value("CONFIRMED"));
+        @Test
+        void getAllocationsByConfirmationStatus_returnsFilteredResults() throws Exception {
+                sampleDto = new AllocationHistoryDto(
+                                sampleDto.id(),
+                                sampleDto.student(),
+                                sampleDto.applicationDto(),
+                                ApplicationStatus.CONFIRMED,
+                                sampleDto.numberOfHours(),
+                                sampleDto.section());
+                when(allocationService.getAllocationsByConfirmationStatus(ApplicationStatus.CONFIRMED))
+                                .thenReturn(List.of(sampleDto));
 
-        verify(allocationService, times(1)).getAllocationsByConfirmationStatus(ApplicationStatus.CONFIRMED);
-    }
+                mvc.perform(get("/allocations/filter/status/CONFIRMED"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$", hasSize(1)))
+                                .andExpect(jsonPath("$[0].id").value(sampleDto.id()))
+                                .andExpect(jsonPath("$[0].status").value("CONFIRMED"));
 
-    @Test
-    void getAllocationsBySectionId_returnsFilteredResults() throws Exception {
-        when(allocationService.getAllocationsBySectionId(1001L)).thenReturn(List.of(sampleDto));
+                verify(allocationService, times(1)).getAllocationsByConfirmationStatus(ApplicationStatus.CONFIRMED);
+        }
 
-        mvc.perform(get("/allocations/filter/section/1001"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].section.id").value(1001L));
+        @Test
+        void getAllocationsBySectionId_returnsFilteredResults() throws Exception {
+                when(allocationService.getAllocationsBySectionId(1001L)).thenReturn(List.of(sampleDto));
 
-        verify(allocationService, times(1)).getAllocationsBySectionId(1001L);
-    }
+                mvc.perform(get("/allocations/filter/section/1001"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$", hasSize(1)))
+                                .andExpect(jsonPath("$[0].section.id").value(1001L));
 
-    @Test
-    void getAllocationsByApplicationId_returnsFilteredResults() throws Exception {
-        when(allocationService.getAllocationsByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR")))
-                .thenReturn(List.of(sampleDto));
+                verify(allocationService, times(1)).getAllocationsBySectionId(1001L);
+        }
 
-        mvc.perform(get("/allocations/filter/application/55")
-                .header("X-User-Id", "1")
-                .header("X-User-Roles", "ROLE_COORDINATOR")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].applicationDto").exists());
+        @Test
+        void getAllocationsByApplicationId_returnsFilteredResults() throws Exception {
+                when(allocationService.getAllocationsByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR")))
+                                .thenReturn(List.of(sampleDto));
 
-        verify(allocationService, times(1)).getAllocationsByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR"));
-    }
+                mvc.perform(get("/allocations/filter/application/55")
+                                .header("X-User-Id", "1")
+                                .header("X-User-Roles", "ROLE_COORDINATOR")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$", hasSize(1)))
+                                .andExpect(jsonPath("$[0].applicationDto").exists());
 
-    @Test
-    void getAllocationsByYear_returnsFilteredResults() throws Exception {
-        when(allocationService.getAllocationsByApplicationYear(eq(2025))).thenReturn(List.of(sampleDto));
+                verify(allocationService, times(1)).getAllocationsByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR"));
+        }
 
-        mvc.perform(get("/allocations/filter/year/2025"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(
-                        jsonPath("$[0].applicationDto.timeSubmitted").value(org.hamcrest.Matchers.startsWith("2025")));
-    }
+        @Test
+        void getAllocationsByYear_returnsFilteredResults() throws Exception {
+                when(allocationService.getAllocationsByApplicationYear(eq(2025))).thenReturn(List.of(sampleDto));
 
-    @Test
-    void importAllocations_receivesJsonAndReturnsDtoList() throws Exception {
-        List<Map<String, String>> requestList = List.of(Map.of(
-                "studentNum", "63260442",
-                "deptCode", "COSC",
-                "courseNum", "499",
-                "section", "001",
-                "year", "2025",
-                "semester", "W1"
-        ));
+                mvc.perform(get("/allocations/filter/year/2025"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$", hasSize(1)))
+                                .andExpect(
+                                                jsonPath("$[0].applicationDto.timeSubmitted")
+                                                                .value(org.hamcrest.Matchers.startsWith("2025")));
+        }
 
-        when(allocationService.importPreviousAllocations(any())).thenReturn(List.of(sampleDto));
+        @Test
+        void importAllocations_receivesJsonAndReturnsDtoList() throws Exception {
+                List<Map<String, String>> requestList = List.of(Map.of(
+                                "studentNum", "63260442",
+                                "deptCode", "COSC",
+                                "courseNum", "499",
+                                "section", "001",
+                                "year", "2025",
+                                "semester", "W1"));
 
-        mvc.perform(post("/allocations/import")
-               .contentType(MediaType.APPLICATION_JSON)
-               .content(mapper.writeValueAsString(requestList)))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath("$", hasSize(1)))
-           .andExpect(jsonPath("$[0].student.firstName").value("Test User"));
+                when(allocationService.importPreviousAllocations(any())).thenReturn(List.of(sampleDto));
 
-        verify(allocationService, times(1)).importPreviousAllocations(any());
-     }
+                mvc.perform(post("/allocations/import")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(requestList)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$", hasSize(1)))
+                                .andExpect(jsonPath("$[0].student.firstName").value("Test User"));
 
+                verify(allocationService, times(1)).importPreviousAllocations(any());
+        }
+
+        @Test
+        void testSetSectionIdNullEndpointReturnsCount() throws Exception {
+                long sectionId = 17L;
+                when(allocationService.setSectionIdNull(sectionId))
+                                .thenReturn(4);
+
+                mvc.perform(put("/allocations/{sectionId}/setSectionIdNull", sectionId)
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$").value(4));
+        }
 }
