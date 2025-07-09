@@ -1,3 +1,118 @@
+## Monday (July 4-7)
+
+### Timesheet
+Clockify report
+![alt text](./jul4-7.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Sending notifications when application is sent, accepted, and rejected
+  * #2: Debugging why the frontend takes so much CPU to run in Docker
+  * #3: Promoting/demoting users
+
+### Progress Update (since July 3rd 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Sending notifications when application is sent, accepted, and rejected
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Debugging why the frontend takes so much CPU to run in Docker
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Promoting/demoting users
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+   
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I was able to debug the frontend CPU this weekend which was great. Basically, the Chokidar polling for HMR was eating a huge amount of CPU power to just track the folders, and since our frontend directory is really modular, it was taking a lot of CPU. I've turned it off, and added an option in the viteconfig.ts to add it back with a lower time interval for people working on frontend, but at least this way it won't idly take a bunch of power. Also, I made the pages in the router be lazily loaded since before the App.tsx was calling the router and the router had all the pages, so it was making over 200 get requests to itself for all the files. Now it just loads what it needs when it needs it, and has improved the load times significantly.
+
+I also just completed notifications for when applications are sent and when an allocation offer is made to the student.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * I will do the user management (promoting, demoting, etc), and this may come with a refactor of the way users are currently stored in the system. If so, then this could take a while to accomplish, and hopefully can be done this upcoming cycle.
+
+## Thursday (July 1-3)
+
+### Timesheet
+Clockify report
+![alt text](./jul1-3.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Sending notifications when application is sent, accepted, and rejected
+  * #2: Debugging why the frontend takes so much CPU to run in Docker
+
+### Progress Update (since June 30th 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Added prerequisite course to the needs of instructors
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Refactored applications to store the status of application rather than boolean isConfirmed
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Handling student enrollment in the intermediate table for students and courses
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Creating a notification service for emailing and having it work with forgot password
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+A number of PR's from last cycle got merged, and I spent most of this week helping prepare for MVP by creating endpoints that were missing or needed, sometimes in other people's branches. I also finished the prerequisite course handling and tied it to needs of an instructor so they can input what they prefer a student to have taken before being allocated.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * At the moment I plan to use the notification service when receiving an offer for an application to a student, and vice versa the coordinator receiving one when they accept/reject the offer. Also the frontend takes a lot of CPU and it really probably shouldn't, so I want that to be fixed ASAP.
+
+
 ## Monday (June 27-30)
 
 ### Timesheet

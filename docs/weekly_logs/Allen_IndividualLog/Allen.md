@@ -317,6 +317,7 @@ finished the backend of course filter, enrollment table building with feign to r
   * building enrollment table to enable frontend comparer
 
 
+
 ## June 19 - 30
 
 ### Timesheet
@@ -365,6 +366,7 @@ finished the backend of qualification service, had a final at 25th, didn't reall
 ### Timesheet
 Clockify report
 ![alt text](./clockify/7.04.png)
+
 
 ### Current Tasks (Provide sufficient detail)
   * #1: the whole qualification service backend
@@ -444,3 +446,4 @@ built the deadline page for admin and the corresponding backend service, fronten
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * testing the deadline page
   * add deadline limitations to other services
+
