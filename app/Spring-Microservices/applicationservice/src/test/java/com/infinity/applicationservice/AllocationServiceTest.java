@@ -282,6 +282,7 @@ class AllocationServiceTest {
                 a2.setSectionId(1L);
 
                 Application application = new Application();
+                application.setId(1L);
                 application.setStudentId(1L);
                 application.setSubmittedAt(LocalDateTime.now());
                 a1.setApplication(application);
@@ -331,6 +332,7 @@ class AllocationServiceTest {
                 a2.setStatus(ApplicationStatus.REJECTED);
 
                 Application application = new Application();
+                application.setId(1L);
                 application.setStudentId(1L);
                 application.setSubmittedAt(LocalDateTime.now());
                 a1.setApplication(application);
@@ -429,10 +431,12 @@ class AllocationServiceTest {
                 LocalDateTime now = LocalDateTime.of(2025, 7, 1, 10, 0);
 
                 Application app1 = new Application();
+                app1.setId(1L);
                 app1.setStudentId(1L);
                 app1.setSubmittedAt(now);
 
                 Application app2 = new Application();
+                app2.setId(2L);
                 app2.setStudentId(1L);
                 app2.setSubmittedAt(now.minusYears(2));
 
