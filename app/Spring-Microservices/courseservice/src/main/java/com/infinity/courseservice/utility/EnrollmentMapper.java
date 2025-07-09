@@ -10,7 +10,7 @@ import com.infinity.courseservice.dtos.EnrollmentDtos.ActiveEnrollmentDto;
 import com.infinity.courseservice.dtos.EnrollmentDtos.CompletedCourseDto;
 import com.infinity.courseservice.dtos.EnrollmentDtos.StudentEnrollmentOverviewDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoNoCourse;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.models.StudentCourse;
 
@@ -49,7 +49,7 @@ public class EnrollmentMapper {
     }
 
     public StudentEnrollmentOverviewDto toOverviewDto(
-            StudentDto student,
+            UserDto student,
             List<StudentCourse> enrolled,
             List<StudentCourse> completed) {
         List<ActiveEnrollmentDto> activeDtos = enrolled.stream()

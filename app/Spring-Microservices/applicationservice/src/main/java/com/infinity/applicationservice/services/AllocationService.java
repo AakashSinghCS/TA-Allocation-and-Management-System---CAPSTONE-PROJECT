@@ -8,13 +8,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
-import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
@@ -27,7 +26,6 @@ import com.infinity.applicationservice.repositories.AllocationRepository;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.utility.AllocationMapper;
 import com.infinity.applicationservice.utility.ApplicationMapper;
-import com.infinity.applicationservice.exceptions.NotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +43,7 @@ public class AllocationService {
 
     public List<AllocationHistoryDto> getAllocationsByStudentId(Long studentId) {
         List<Allocation> allocations = allocationRepository.findByStudentId(studentId);
-        StudentDto student = studentInterface.getStudentById(studentId).getBody();
+        UserDto student = studentInterface.getStudentById(studentId).getBody();
 
         return allocations.stream().map(allocation -> {
             SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
@@ -73,7 +71,7 @@ public class AllocationService {
         allocation.setSectionId(request.sectionId());
 
         Allocation saved = allocationRepository.save(allocation);
-        StudentDto student = studentInterface.getStudentById(request.studentId()).getBody();
+        UserDto student = studentInterface.getStudentById(request.studentId()).getBody();
         SectionDto section = sectionInterface.getSectionById(request.sectionId());
 
         ApplicationDto applicationDto = applicationMapper.toDto(application);
@@ -102,7 +100,7 @@ public class AllocationService {
         return allocationRepository.findAll().stream()
             .filter(a -> a.getStatus() == status)
             .map(allocation -> {
-                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
                 return allocationMapper.toDto(allocation, student, applicationDto, section);
@@ -114,7 +112,7 @@ public class AllocationService {
         return allocationRepository.findAll().stream()
             .filter(a -> a.getSectionId().equals(sectionId))
             .map(allocation -> {
-                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
                 return allocationMapper.toDto(allocation, student, applicationDto, section);
@@ -130,7 +128,7 @@ public class AllocationService {
         return allocationRepository.findAll().stream()
             .filter(a -> a.getApplication() != null && a.getApplication().getId().equals(appId))
             .map(allocation -> {
-                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
                 return allocationMapper.toDto(allocation, student, applicationDto, section);
@@ -143,7 +141,7 @@ public class AllocationService {
             .filter(a -> a.getApplication() != null &&
                         a.getApplication().getSubmittedAt().getYear() == year)
             .map(allocation -> {
-                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
                 return allocationMapper.toDto(allocation, student, applicationDto, section);
@@ -155,7 +153,7 @@ public class AllocationService {
         return allocationRepository.findAll().stream()
             .filter(a -> a.getSectionId().equals(sectionId))
             .map(allocation -> {
-                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
                 return allocationMapper.toDto(allocation, student, applicationDto, section );
@@ -174,7 +172,7 @@ public class AllocationService {
             int year = Integer.parseInt(data.get("year").trim());
             String semester = data.get("semester").trim();
 
-            StudentDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
+            UserDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
             if (studentDto == null) throw new NotFoundException("Student not found: " + studentNum);
 
             CourseDto courseDto = sectionInterface.getCourseByDeptCodeAndCourseNum(deptCode, courseNum).getBody();

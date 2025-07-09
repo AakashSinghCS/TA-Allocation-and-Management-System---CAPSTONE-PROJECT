@@ -24,9 +24,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.applicationservice.controllers.ApplicationController;
 import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
-import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.Subject;
+import com.infinity.applicationservice.enums.UserRole;
 import com.infinity.applicationservice.services.ApplicationService;
 
 @WebMvcTest(ApplicationController.class)
@@ -163,7 +164,8 @@ public class ApplicationControllerTest {
 
         @Test
         void testGetAllApplicationsWithStudentDto() throws Exception {
-                StudentDto studentDto = new StudentDto(1L, "Alex", "Wargo", 1234567, "COSC", 2022, 3);
+                UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
+                                12345678, "COSC", 2025, 3, null, null, null);
                 ApplicationWithStudentDto dto = new ApplicationWithStudentDto(
                                 1L,
                                 studentDto,
@@ -183,7 +185,7 @@ public class ApplicationControllerTest {
                                 .param("hours", "6")
                                 .param("preference1", "COSC"))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$[0].student.firstName").value("Alex"))
+                                .andExpect(jsonPath("$[0].student.firstName").value("Alice"))
                                 .andExpect(jsonPath("$[0].wantRemote").value(false))
                                 .andExpect(jsonPath("$[0].wantWorkingHours").value(6))
                                 .andExpect(jsonPath("$[0].preferences[0]").value("COSC"));

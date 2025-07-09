@@ -8,7 +8,7 @@ import com.infinity.courseservice.dtos.EnrollmentDtos.ActiveEnrollmentDto;
 import com.infinity.courseservice.dtos.EnrollmentDtos.CompletedCourseDto;
 import com.infinity.courseservice.dtos.EnrollmentDtos.EnrollmentRequest;
 import com.infinity.courseservice.dtos.EnrollmentDtos.StudentEnrollmentOverviewDto;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.enums.EnrollmentStatus;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
@@ -93,7 +93,7 @@ public class EnrollmentService {
     } 
 
     public StudentEnrollmentOverviewDto getFullEnrollmentOverview(Long studentId) {
-        StudentDto student = userInterface.getStudentById(studentId);
+        UserDto student = userInterface.getStudentById(studentId);
 
         List<StudentCourse> enrolled = studentCourseRepository.findAllByStudentIdAndStatus(studentId,
                 EnrollmentStatus.ENROLLED);

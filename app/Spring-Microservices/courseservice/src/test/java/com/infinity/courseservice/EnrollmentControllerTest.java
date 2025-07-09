@@ -28,8 +28,9 @@ import com.infinity.courseservice.dtos.EnrollmentDtos.CompletedCourseDto;
 import com.infinity.courseservice.dtos.EnrollmentDtos.EnrollmentRequest;
 import com.infinity.courseservice.dtos.EnrollmentDtos.StudentEnrollmentOverviewDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoNoCourse;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.enums.EnrollmentStatus;
+import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.services.EnrollmentService;
 
 @WebMvcTest(EnrollmentController.class)
@@ -95,7 +96,8 @@ public class EnrollmentControllerTest {
     @Test
     void testGetEnrollmentOverview_returnsAggregatedData() throws Exception {
         StudentEnrollmentOverviewDto overview = new StudentEnrollmentOverviewDto(
-                new StudentDto(1L, "Scoobert", "Doobert", 123456, "COSC", 2021, 4),
+                new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
+    null, null),
                 List.of(new ActiveEnrollmentDto(
                         new CourseDto(1L, "COSC", "Intro", "111"),
                         new SectionDtoNoCourse(1L, 2024, "W1", "001", null),
@@ -109,7 +111,7 @@ public class EnrollmentControllerTest {
 
         mockMvc.perform(get("/enrollments/overview/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.student.firstName").value("Scoobert"))
+                .andExpect(jsonPath("$.student.firstName").value("Alice"))
                 .andExpect(jsonPath("$.currentCourses[0].course.name").value("Intro"))
                 .andExpect(jsonPath("$.completedCourses[0].course.name").value("Calc"));
     }

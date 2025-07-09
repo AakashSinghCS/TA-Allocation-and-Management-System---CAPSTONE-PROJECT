@@ -33,9 +33,10 @@ import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.Semester;
+import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.services.CourseService;
 
 @WebMvcTest(CourseController.class)
@@ -145,7 +146,7 @@ public class CourseControllerTest {
     
     @Test
     void testGetCourseNeedAndAllocations() throws Exception {
-                Long courseId = 1L;
+            Long courseId = 1L;
                 Integer year = 2025;
                 String semester = "W1";
         OfferDto offer = new OfferDto(1L, true, "description");
@@ -153,7 +154,8 @@ public class CourseControllerTest {
     CourseDto course = new CourseDto(courseId, "COSC", "Security", "430");
         SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
     AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
-    new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),offer,
+    new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
+    null, null),offer,
                     true, 10,
         new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
     );
@@ -178,7 +180,9 @@ public class CourseControllerTest {
                 NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2", null);
                 SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
                 AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
-    new StudentDto(2L, "Alice", "Wang", 2345, "EECE", 2021, 3),offer,
+                                new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
+                                                "COSC", 2025, 3, null,
+                                                null, null),offer,
                     true, 10,
         new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
     );
@@ -215,7 +219,9 @@ public class CourseControllerTest {
     
     @Test
     void testGetStudentTaughtCourses() throws Exception {
-        StudentDto student = new StudentDto(1001L, "Liam", "Chen", 4567, "COSC", 2021, 4);
+        UserDto student = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
+                        "COSC", 2025, 3, null,
+                        null, null);
         CourseDto course = new CourseDto(1L, "COSC", "Algorithms", "320");
 
         StudentTaughtCourseDto dto = new StudentTaughtCourseDto(student, course, Semester.S2, 2022);
@@ -224,7 +230,7 @@ public class CourseControllerTest {
 
         mockMvc.perform(get("/courses/studentTaught/1001"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].student.firstName").value("Liam"))
+                .andExpect(jsonPath("$[0].student.firstName").value("Alice"))
                 .andExpect(jsonPath("$[0].course.name").value("Algorithms"))
                 .andExpect(jsonPath("$[0].semester").value("S2"))
                 .andExpect(jsonPath("$[0].year").value(2022));
