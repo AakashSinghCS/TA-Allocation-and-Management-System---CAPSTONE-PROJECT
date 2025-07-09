@@ -26,7 +26,6 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
-import com.infinity.courseservice.dtos.SectionDtos.SectionWithInstructorDto;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -255,10 +254,9 @@ public class SectionServiceTest {
 
         when(sectionRepository.findById(55L)).thenReturn(Optional.of(section));
 
-        SectionWithInstructorDto result = sectionService.getSectionById(55L);
+        SectionDto result = sectionService.getSectionById(55L);
         assertEquals("001", result.section());
         assertEquals("COSC", result.course().deptCode());
-        assertEquals(999L, result.instructorId());
     }
 
     @Test

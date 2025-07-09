@@ -8,7 +8,6 @@ import java.util.Set;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
@@ -20,20 +19,20 @@ import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.UserDtos.StudentDto;
-
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
-import com.infinity.courseservice.models.StudentTaughtCourse;
 import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.StudentTaughtCourse;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
-import com.infinity.courseservice.utility.CourseMapper;
 import com.infinity.courseservice.repositories.StudentTaughtCourseRepository;
+import com.infinity.courseservice.utility.CourseMapper;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -211,6 +210,12 @@ public class CourseService {
     // public List<String> getAllSemester(String deptCode, String courseNum, String section, String year) {
     //     return courseRepository.findSemestersByDeptCodeAndCourseNumAndSectionAndYear(deptCode, courseNum, section, year);
     // }
+
+    public CourseDto getByDeptCodeAndCourseNum(String deptCode, String courseNum) {
+        Course course = courseRepository.findByDeptCodeAndCourseNum(deptCode, courseNum)
+            .orElseThrow(() -> new EntityNotFoundException("Course not found with: " + deptCode + " " + courseNum));
+        return courseMapper.courseToDto(course);
+    }
 
     // public List<CourseDto> getEnrolledCourses(Integer studentId) {
     // UserDto user = userInterface.getStudentById(studentId).getBody();

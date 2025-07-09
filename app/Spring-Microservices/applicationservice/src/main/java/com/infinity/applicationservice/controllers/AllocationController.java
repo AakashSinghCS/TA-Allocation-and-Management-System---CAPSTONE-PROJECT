@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @RestController
@@ -86,4 +87,10 @@ public class AllocationController {
         Integer affected =allocationService.setSectionIdNull(sectionId);
         return ResponseEntity.ok(affected);
     }
+    @PostMapping("/import")
+    public ResponseEntity<List<AllocationHistoryDto>> importAllocations(@RequestBody List<Map<String, String>> allocationList) {
+        List<AllocationHistoryDto> result = allocationService.importPreviousAllocations(allocationList);
+        return ResponseEntity.ok(result);
+    }
+
 }

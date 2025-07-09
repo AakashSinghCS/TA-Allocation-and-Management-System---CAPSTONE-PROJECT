@@ -142,6 +142,16 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getCoursesTaughtByStudent(studentId));
     }
 
+    @GetMapping("/getByDeptCodeAndCourseNum/{deptCode}/{courseNum}")
+    public ResponseEntity<CourseDto> getByDeptCodeAndCourseNum(
+            @PathVariable String deptCode,
+            @PathVariable String courseNum) {
+    
+        CourseDto dto = courseService.getByDeptCodeAndCourseNum(deptCode, courseNum);
+        return ResponseEntity.ok(dto);
+    }
+
+
     // @GetMapping("/getEnrolledCourses/{studentId}")
     // public ResponseEntity<List<CourseDto>> getMethodName(@PathVariable Integer
     // studentId) {

@@ -24,7 +24,7 @@ public class Allocation {
     private Long studentId;
     
     @ManyToOne
-    @JoinColumn(name = "application_id", nullable = false)
+    @JoinColumn(name = "application_id")
     private Application application;
 
     //TODO: prevent orphaned keys when deleting sections! make it be null.

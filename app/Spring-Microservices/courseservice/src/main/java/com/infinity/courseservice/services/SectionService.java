@@ -14,7 +14,6 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
-import com.infinity.courseservice.dtos.SectionDtos.SectionWithInstructorDto;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
@@ -27,7 +26,9 @@ import com.infinity.courseservice.models.StudentCourse;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
+import com.infinity.courseservice.utility.SectionMapper;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -41,14 +42,15 @@ public class SectionService {
     private final UserInterface userInterface;
     private final ApplicationInterface applicationInterface;
     private final EnrollmentService enrollmentService;
+    private final SectionMapper sectionMapper;
 
-    public SectionWithInstructorDto getSectionById(Long id) {
+    public SectionDto getSectionById(Long id) {
 
         Section section = sectionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No section with id " + id));
         Course course = section.getCourse();
 
-        return new SectionWithInstructorDto(
+        return new SectionDto(
                 section.getId(),
                 section.getYear(),
                 section.getSemester(),
@@ -59,8 +61,7 @@ public class SectionService {
                         course.getDeptCode(),
                         course.getName(),
                         course.getCourseNum()
-                ),
-                section.getInstructorId()
+                )
         );
     }
 
@@ -261,6 +262,16 @@ public class SectionService {
         }
 
         return true;
+    }
+
+    public SectionDto getByCourseIdSectionYearSemester(Long courseId, String section, Integer year, String semester) {
+        Optional<Section> optionalSection = sectionRepository
+            .findByCourseIdAndSectionAndYearAndSemester(courseId, section, year, semester);
+
+        Section entity = optionalSection
+            .orElseThrow(() -> new EntityNotFoundException("Section not found"));
+
+        return sectionMapper.sectionToDto(entity);
     }
 
 }

@@ -1,13 +1,18 @@
 package com.infinity.applicationservice.services;
 
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
+import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Users.StudentDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
@@ -44,7 +49,10 @@ public class AllocationService {
 
         return allocations.stream().map(allocation -> {
             SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
-            ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
+            ApplicationDto applicationDto = null;
+            if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
+                applicationDto = applicationMapper.toDto(allocation.getApplication());
+            }
             return allocationMapper.toDto(allocation, student, applicationDto, section);
         }).collect(Collectors.toList());
     }
@@ -159,4 +167,37 @@ public class AllocationService {
     public Integer setSectionIdNull(Long sectionId) {
         return allocationRepository.clearSectionIdBySectionId(sectionId);
     }
+
+    public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList) {
+        List<AllocationHistoryDto> importedAllocations = new ArrayList<>();
+
+        for (Map<String, String> data : allocationDataList) {
+            Integer studentNum = Integer.parseInt(data.get("studentNum").trim());
+            String deptCode = data.get("deptCode").trim();
+            String courseNum = data.get("courseNum").trim();
+            String sectionName = data.get("section").trim();
+            int year = Integer.parseInt(data.get("year").trim());
+            String semester = data.get("semester").trim();
+
+            StudentDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
+            if (studentDto == null) throw new NotFoundException("Student not found: " + studentNum);
+
+            CourseDto courseDto = sectionInterface.getCourseByDeptCodeAndCourseNum(deptCode, courseNum).getBody();
+            if (courseDto == null) throw new NotFoundException("Course not found: " + deptCode + " " + courseNum);
+
+            SectionDto sectionDto = sectionInterface.getByCourseIdSectionYearSemester(courseDto.id(), sectionName, year, semester);
+
+            Allocation allocation = new Allocation();
+            allocation.setStudentId(studentDto.id());
+            allocation.setSectionId(sectionDto.id());
+            allocation.setStatus(ApplicationStatus.CONFIRMED);
+
+            Allocation saved = allocationRepository.save(allocation);
+
+            importedAllocations.add(allocationMapper.toDto(saved, studentDto, null, sectionDto));
+        }
+
+        return importedAllocations;
+    }
+
 }
