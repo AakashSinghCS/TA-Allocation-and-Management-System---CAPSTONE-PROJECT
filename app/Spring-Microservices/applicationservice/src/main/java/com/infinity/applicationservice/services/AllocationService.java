@@ -1,13 +1,13 @@
 package com.infinity.applicationservice.services;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-
 
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
@@ -27,7 +27,6 @@ import com.infinity.applicationservice.repositories.AllocationRepository;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.utility.AllocationMapper;
 import com.infinity.applicationservice.utility.ApplicationMapper;
-import com.infinity.applicationservice.exceptions.NotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +39,7 @@ public class AllocationService {
     private final ApplicationRepository applicationRepository;
     private final SectionInterface sectionInterface;
     private final UserInterface studentInterface;
+    private final ConfigService configService;
     private final ApplicationMapper applicationMapper;
     private final AllocationMapper allocationMapper;
 
@@ -97,7 +97,12 @@ public class AllocationService {
     public void updateConfirmationStatus(Long allocationId, ApplicationStatus status) {
         Allocation allocation = allocationRepository.findById(allocationId)
             .orElseThrow(() -> new EntityNotFoundException("Allocation not found"));
-
+        if (LocalDateTime.now().isAfter(configService.getDeadlineByName("student_offer_accept_deadline").endTime())) {
+            throw new BadRequestException("The application deadline has passed.");
+        }
+        if (LocalDateTime.now().isBefore(configService.getDeadlineByName("student_offer_accept_deadline").startTime())) {
+            throw new BadRequestException("The application is not open yet.");
+        }
         allocation.setStatus(status);
         allocationRepository.save(allocation);
     }

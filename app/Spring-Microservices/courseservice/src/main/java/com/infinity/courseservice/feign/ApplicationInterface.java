@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.infinity.courseservice.config.FeignClientInterceptor;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
+import com.infinity.courseservice.dtos.DeadlineDto;
 
 @FeignClient(name = "APPLICATION-SERVICE", configuration = FeignClientInterceptor.class)
 public interface ApplicationInterface {
@@ -19,4 +20,8 @@ public interface ApplicationInterface {
 
     @GetMapping("/allocations/filter/section/{sectionId}")
     ResponseEntity<List<AllocationHistoryDtoWithCourse>> getAllocationsBySectionId(@PathVariable Long sectionId);
+
+    @GetMapping("/config/{name}")
+    ResponseEntity<DeadlineDto> getDeadlineByName(@PathVariable String name);
+
 }

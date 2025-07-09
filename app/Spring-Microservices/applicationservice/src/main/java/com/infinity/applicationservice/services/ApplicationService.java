@@ -1,6 +1,7 @@
 package com.infinity.applicationservice.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +33,7 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserInterface userInterface;
     private final ApplicationMapper applicationMapper;
+    private final ConfigService configService;
 
     public ApplicationDto submitApplication(ApplicationRequest req, Long userIdFromHeader, List<String> headerRoles) {
         int year = LocalDate.now().getYear();
@@ -39,6 +41,13 @@ public class ApplicationService {
         if (applicationRepository.existsByStudentIdAndYear(userIdFromHeader, year)) {
             throw new BadRequestException("You have already submitted an application for this year.");
         }
+        if (LocalDateTime.now().isAfter(configService.getDeadlineByName("student_application_deadline").endTime())) {
+            throw new BadRequestException("The application deadline has passed.");
+        }
+        if (LocalDateTime.now().isBefore(configService.getDeadlineByName("student_application_deadline").startTime())) {
+            throw new BadRequestException("The application is not open yet.");
+        }
+
         validateAvailabilities(req);
         Application application = new Application(userIdFromHeader, req.preferences(), req.applicationType(),
                 req.wantRemote(), req.wantWorkingHours());
@@ -78,6 +87,12 @@ public class ApplicationService {
             List<String> headerRoles) {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
+        }
+        if (LocalDateTime.now().isAfter(configService.getDeadlineByName("student_application_deadline").endTime())) {
+            throw new BadRequestException("The application deadline has passed.");
+        }
+        if (LocalDateTime.now().isBefore(configService.getDeadlineByName("student_application_deadline").startTime())) {
+            throw new BadRequestException("The application is not open yet.");
         }
         validateAvailabilities(req);
         int year = LocalDate.now().getYear();

@@ -1,23 +1,21 @@
 package com.infinity.applicationservice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockMultipartFile;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
@@ -38,6 +36,7 @@ import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.repositories.AllocationRepository;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.services.AllocationService;
+import com.infinity.applicationservice.services.ConfigService;
 import com.infinity.applicationservice.utility.AllocationMapper;
 import com.infinity.applicationservice.utility.ApplicationMapper;
 
@@ -46,6 +45,7 @@ import jakarta.persistence.EntityNotFoundException;
 class AllocationServiceTest {
 
         private AllocationService allocationService;
+        private ConfigService configService;
         private AllocationRepository allocationRepository;
         private ApplicationRepository applicationRepository;
         private SectionInterface sectionInterface;
@@ -62,7 +62,7 @@ class AllocationServiceTest {
                 applicationMapper = Mockito.mock(ApplicationMapper.class);
                 allocationMapper = Mockito.mock(AllocationMapper.class);
                 allocationService = new AllocationService(allocationRepository, applicationRepository, sectionInterface,
-                                userInterface, applicationMapper, allocationMapper);
+                                userInterface, configService, applicationMapper, allocationMapper);
         }
 
         @Test
