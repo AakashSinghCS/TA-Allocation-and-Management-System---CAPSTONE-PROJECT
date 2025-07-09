@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
@@ -40,7 +41,6 @@ import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.repositories.AllocationRepository;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.services.AllocationService;
-import com.infinity.applicationservice.services.ConfigService;
 import com.infinity.applicationservice.utility.AllocationMapper;
 import com.infinity.applicationservice.utility.ApplicationMapper;
 import com.infinity.applicationservice.utility.EmailMapper;
@@ -51,7 +51,6 @@ import jakarta.persistence.EntityNotFoundException;
 class AllocationServiceTest {
 
         @Mock
-        private ConfigService configService;
         private AllocationRepository allocationRepository;
         @Mock
         private ApplicationRepository applicationRepository;
