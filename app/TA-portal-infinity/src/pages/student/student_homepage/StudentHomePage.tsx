@@ -170,11 +170,11 @@ export default function StudentHomePage() {
 
   // dashboard with notification panel on the right
   return (
-    <section className="p-0 md:p-8 min-h-screen -mt-8 ">
-      <div className="max-w-7xl mx-auto py-8">
+    <section className="px-4 py-6 md:px-8 md:py-8 min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-8">
         <h1 className="text-2xl md:text-3xl font-bold text-[#040941] mb-8 tracking-tight">My Dashboard</h1>
         {/* Dashboard Summary Metrics */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-xl shadow-md p-4 flex items-center justify-between hover:shadow-lg transition-shadow">
             <div>
               <p className="text-sm font-medium text-gray-500">Applications</p>
@@ -201,8 +201,8 @@ export default function StudentHomePage() {
         {/* Main Content */}
         <main className="flex-1 flex flex-col gap-10">
           {/* Profile Strip (without Qualifications) */}
-          <div className="flex flex-col md:flex-row gap-8 items-stretch">
-            <div className="flex-1 flex items-center gap-6 bg-gradient-to-r from-blue-950 to-blue-800 text-white rounded-xl px-8 py-6 shadow-lg">
+          <div className="flex flex-col gap-8 items-stretch">
+            <div className="flex-1 flex flex-col md:flex-row items-center gap-4 md:gap-6 bg-gradient-to-r from-blue-950 to-blue-800 text-white rounded-xl px-4 md:px-8 py-4 md:py-6 shadow-lg">
               <div className="h-24 w-24 rounded-full bg-gradient-to-br from-blue-200 to-blue-100 flex items-center justify-center text-4xl font-extrabold text-blue-900 border-4 border-white">
                 <User className="w-12 h-12 text-blue-700" />
               </div>
@@ -347,13 +347,13 @@ export default function StudentHomePage() {
 
         {/* Notification Panel on the right */}
         <aside className="w-full md:w-1/4 flex flex-col gap-4 bg-white/80 rounded-2xl shadow-lg p-4 min-h-[500px] border border-blue-100">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <Bell size={22} className="text-blue-400" />
-              <h2 className="text-lg font-bold text-blue-900">Notifications</h2>
+          <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between mb-2 gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+               <Bell size={22} className="text-blue-400" />
+               <h2 className="text-lg font-bold text-blue-900">Notifications</h2>
               <button
                 onClick={() => setRefreshKey((k) => k + 1)}
-                className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 border border-blue-200"
+                className="mt-1 sm:mt-0 ml-0 sm:ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 border border-blue-200"
                 title="Refresh notifications"
               >
                 Refresh
