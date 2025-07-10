@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval : 15s
+
+scrape_configs:
+
+#### 3.1  Services that run INSIDE Docker (containerised build)
+  - job_name: "user-service"
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['user-service:8081']
+        labels:
+          application: 'User Service Application'
+    basic_auth:
+      username: prometheus
+      password: prompass

@@ -31,6 +31,9 @@ public class UserSeeder {
                     "P@ssword1",
                     UserRole.COORDINATOR, true);
             userService.register(coordinatorRequest);
+
+            userService.addRolesToUser("coordinator@test.com", UserRole.ADMIN);
+
             RegisterRequest instructorRequest = new RegisterRequest("instructor@test.com", "Scawt", "Fawz", "P@ssword1",
                     UserRole.INSTRUCTOR, false);
             userService.register(instructorRequest);
@@ -39,4 +42,6 @@ public class UserSeeder {
           }
         }
     }
+
+    
 }
