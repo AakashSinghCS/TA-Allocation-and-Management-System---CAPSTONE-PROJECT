@@ -10,7 +10,7 @@ export default function SideNavStudent() {
   const [hovered, setHovered] = useState(false);
   const navItems = [
     { label: "Home", to: "/user/student/home", icon: <Home size={22} /> },
-    { label: "My Courses", to: "/user/student/courses", icon: <BookOpen size={22} /> },
+    { label: "My Courses", to: "/user/student/mycourses", icon: <BookOpen size={22} /> },
     { label: "Start Application", to: "/user/student/application", icon: <FileUser size={22} /> },
     { label: "View Applications", to: "/user/student/view-applications", icon: <GraduationCap size={22} /> },
     { label: "Profile", to: `/user/taprofile/${useAuth().userId}`, icon: <User size={22} /> },

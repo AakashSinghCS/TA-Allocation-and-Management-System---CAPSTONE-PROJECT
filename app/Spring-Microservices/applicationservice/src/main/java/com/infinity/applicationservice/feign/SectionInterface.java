@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
+import org.springframework.http.ResponseEntity;
 
 @FeignClient(name = "COURSE-SERVICE")
 public interface SectionInterface {
@@ -14,15 +15,13 @@ public interface SectionInterface {
 
     @GetMapping("/sections/getByCourseIdSectionYearSemester/{courseId}/{section}/{year}/{semester}")
     SectionDto getByCourseIdSectionYearSemester(
-        @PathVariable("courseId") Long courseId,
-        @PathVariable("section") String section,
-        @PathVariable("year") Integer year,
-        @PathVariable("semester") String semester
-    );
+            @PathVariable("courseId") Long courseId,
+            @PathVariable("section") String section,
+            @PathVariable("year") Integer year,
+            @PathVariable("semester") String semester);
 
     @GetMapping("/courses/getByDeptCodeAndCourseNum/{deptCode}/{courseNum}")
     ResponseEntity<CourseDto> getCourseByDeptCodeAndCourseNum(
-        @PathVariable String deptCode,
-        @PathVariable String courseNum
-    );
+            @PathVariable String deptCode,
+            @PathVariable String courseNum);
 }

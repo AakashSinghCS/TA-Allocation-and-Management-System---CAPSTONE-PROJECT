@@ -7,6 +7,7 @@ import PublicLayout from "../components/layout/publicLayout/PublicLayout";
 
 import { TaQuestionnairePage } from "../pages/student/taquestionnairepage/TaQuestionnairePage";
 import { CoordinatorQuestionnairePage } from "../pages/coordinator/coordinatorquestionnairepage/CoordinatorQuestionnairePage";
+import MyCoursesPage from "../pages/student/mycoursespage/MyCoursesPage";
 
 const TaProfilePage = lazy(() => import("../pages/student/taprofilepage/TaProfilePage"));
 const CoursesTakenPage = lazy(() => import("../pages/student/taprofilepage/coursestakenpage/CoursesTakenPage"));
@@ -71,6 +72,7 @@ export const router = createBrowserRouter([
         ),
         children: [
           { path: "home", element: <Suspense fallback={<div>Loading...</div>}><StudentHomePage /></Suspense> },
+          { path: "mycourses", element: <Suspense fallback={<div>Loading...</div>}><MyCoursesPage /></Suspense> },
           { path: "application", element: <Suspense fallback={<div>Loading...</div>}><ApplicationPage /></Suspense> },
           { path: "view-applications", element: <Suspense fallback={<div>Loading...</div>}><ViewApplicationPage /></Suspense> },
           { path: "questions/:studentId", element: <TaQuestionnairePage /> },
