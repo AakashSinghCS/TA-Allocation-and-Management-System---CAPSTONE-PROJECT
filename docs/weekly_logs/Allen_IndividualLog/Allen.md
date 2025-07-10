@@ -315,7 +315,7 @@ finished the backend of course filter, enrollment table building with feign to r
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * building enrollment table to enable frontend comparer
-  * building qualification table and corresponding services
+
 
 
 ## June 19 - 30
@@ -341,7 +341,7 @@ Clockify report
         <td>the whole qualification service backend
         </td>
         <!-- Status -->
-        <td>in progress
+        <td>complete
         </td>
     </tr>
     <tr>
@@ -361,11 +361,12 @@ finished the backend of qualification service, had a final at 25th, didn't reall
   * building enrollment table to enable frontend comparer
 
 
-## July 1 - 4
+## July 01 - 04
 
 ### Timesheet
 Clockify report
-![alt text](./clockify/7.4.png)
+![alt text](./clockify/7.04.png)
+
 
 ### Current Tasks (Provide sufficient detail)
   * #1: the whole qualification service backend
@@ -398,7 +399,51 @@ Clockify report
 </table>
 
 ### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
-finished the backend of qualification service, integrating with Dup
+mainly testing and modifying based on teammates's reflections
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
-  * testings and emailing
+  * building the deadline page for admin and the corresponding backend service
+
+
+## July 05 - 07
+
+### Timesheet
+Clockify report
+![alt text](./clockify/7.07.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: the deadline service backend
+  * #2: deadline page
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>the deadline service backend
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>deadline page
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+built the deadline page for admin and the corresponding backend service, frontend test not writen yet.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * testing the deadline page
+  * add deadline limitations to other services
+
