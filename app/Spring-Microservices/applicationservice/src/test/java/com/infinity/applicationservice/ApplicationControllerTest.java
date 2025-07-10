@@ -163,7 +163,7 @@ public class ApplicationControllerTest {
 
         @Test
         void testGetAllApplicationsWithStudentDto() throws Exception {
-                StudentDto studentDto = new StudentDto(1L, "Alex", "Wargo", 1234567, "COSC", 2022, 3);
+                StudentDto studentDto = new StudentDto(1L, "Alex", "Wargo", "test@test.com",1234567, "COSC", 2022, 3);
                 ApplicationWithStudentDto dto = new ApplicationWithStudentDto(
                                 1L,
                                 studentDto,

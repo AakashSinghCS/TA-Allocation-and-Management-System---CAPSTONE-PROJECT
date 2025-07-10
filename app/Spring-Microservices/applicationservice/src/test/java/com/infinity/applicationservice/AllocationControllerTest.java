@@ -13,9 +13,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -38,6 +41,8 @@ import com.infinity.applicationservice.dtos.Users.StudentDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.SectionType;
+import com.infinity.applicationservice.feign.SectionInterface;
+import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.services.AllocationService;
 
 @WebMvcTest(AllocationController.class)
@@ -52,6 +57,12 @@ public class AllocationControllerTest {
 
     @MockitoBean
     private AllocationService allocationService;
+
+    @MockitoBean
+    private UserInterface studentInterface;
+    
+    @MockitoBean
+    private SectionInterface sectionInterface;
 
     private AllocationHistoryDto sampleDto;
 
@@ -68,7 +79,7 @@ public class AllocationControllerTest {
                 Set.of());
         sampleDto = new AllocationHistoryDto(
                 101L,
-                new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4),
+                new StudentDto(1L, "Test", "User", "test@example.com", 63260442, "BSC", 2022, 4),
                 application,
                 ApplicationStatus.SENT,
                 10,
@@ -85,7 +96,7 @@ public class AllocationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(101))
-                .andExpect(jsonPath("$[0].student.firstName").value("Test User"))
+                .andExpect(jsonPath("$[0].student.firstName").value("Test"))
                 .andExpect(jsonPath("$[0].section.section").value("T01"))
                 .andExpect(jsonPath("$[0].status").value("SENT"));
     }
@@ -110,7 +121,7 @@ public class AllocationControllerTest {
 
         AllocationHistoryDto responseDto = new AllocationHistoryDto(
                 123L,
-                new StudentDto(1L, "Test", "test@example.com", 63260442, "BSC", 2022, 4),
+                new StudentDto(1L, "Test", "User", "test@example.com", 63260442, "BSC", 2022, 4),
                 application,
                 ApplicationStatus.SENT,
                 10,
@@ -223,5 +234,28 @@ public class AllocationControllerTest {
                 .andExpect(
                         jsonPath("$[0].applicationDto.timeSubmitted").value(org.hamcrest.Matchers.startsWith("2025")));
     }
+
+    @Test
+    void importAllocations_receivesJsonAndReturnsDtoList() throws Exception {
+        List<Map<String, String>> requestList = List.of(Map.of(
+                "studentNum", "63260442",
+                "deptCode", "COSC",
+                "courseNum", "499",
+                "section", "001",
+                "year", "2025",
+                "semester", "W1"
+        ));
+
+        when(allocationService.importPreviousAllocations(any())).thenReturn(List.of(sampleDto));
+
+        mvc.perform(post("/allocations/import")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(mapper.writeValueAsString(requestList)))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$", hasSize(1)))
+           .andExpect(jsonPath("$[0].student.firstName").value("Test User"));
+
+        verify(allocationService, times(1)).importPreviousAllocations(any());
+     }
 
 }
