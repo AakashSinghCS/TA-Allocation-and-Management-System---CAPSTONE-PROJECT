@@ -538,7 +538,7 @@ class AllocationServiceTest {
                 allocation.setSectionId(1001L);
                 allocation.setApplication(application);
 
-                StudentDto studentDto = new StudentDto(1L, "Test", "User", 123456, "BSC", 2022, 4);
+                StudentDto studentDto = new StudentDto(1L, "Test", "User", null, 123456, "BSC", 2022, 4);
                 SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
                         new CourseDto(1L, "COSC", "Capstone", "499"));
                 ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE,
@@ -577,7 +577,7 @@ class AllocationServiceTest {
                 allocation.setSectionId(1001L);
                 allocation.setApplication(null); 
 
-                StudentDto studentDto = new StudentDto(1L, "Test", "User", 123456, "BSC", 2022, 4);
+                StudentDto studentDto = new StudentDto(1L, "Test", "User", null, 123456, "BSC", 2022, 4);
                 SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
                         new CourseDto(1L, "COSC", "Capstone", "499"));
 
