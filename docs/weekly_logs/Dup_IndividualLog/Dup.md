@@ -2144,3 +2144,49 @@ The process is going smoothly now and is less stressful now, as I am finding mys
 - student Allocation history needs to make sure the student is creating entries only for himself.
 - enrollment for student works
 - section profile shows needs
+
+## Wednesday 7/09 (7/08~7/011)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July09.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#358](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/358)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I made prometheus and grafana work. I can see a dashboard in grafana for user-service (and the others too probably), but I haven't yet placed it behind a gateway. I need to do that so only the admins can access it after logging in.
+It was a big challenge to set this up. There were many errors, stackoverflow errors, and such that just wouldn't let the code work that smoothly. After many greuling hours, I somehow got it to work.
+
+Tommorrow I have to
+- make gateway store a cookie when logging in as admin. delete it when logging out.
+- use the cookie to access prometheus through localhost:8080.
+- same for grafana. 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- enrollment for student works
+- section profile shows needs
+- reflect the changes in User Role in backend in frontend
