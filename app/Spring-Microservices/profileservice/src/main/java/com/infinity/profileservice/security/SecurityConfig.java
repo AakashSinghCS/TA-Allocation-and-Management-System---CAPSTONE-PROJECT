@@ -46,12 +46,14 @@ public class SecurityConfig {
     SecurityFilterChain actuatorChain(HttpSecurity http, @Qualifier("prometheusUser") UserDetailsService prometheusUser)
             throws Exception {
 
-        AuthenticationManager authManager = http
-                .getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(prometheusUser)
-                .passwordEncoder(passwordEncoder())
-                .and()
-                .build();
+        AuthenticationManagerBuilder authBuilder =
+        http.getSharedObject(AuthenticationManagerBuilder.class);
+    
+        authBuilder
+        .userDetailsService(prometheusUser)
+        .passwordEncoder(passwordEncoder());
+        
+        AuthenticationManager authManager = authBuilder.build();
 
         http
                 .securityMatcher("/actuator/**")
