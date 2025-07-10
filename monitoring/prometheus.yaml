@@ -14,3 +14,39 @@ scrape_configs:
     basic_auth:
       username: prometheus
       password: prompass
+  - job_name: "course-service"
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['course-service:8082']
+        labels:
+          application: 'Course Service Application'
+    basic_auth:
+      username: prometheus
+      password: prompass
+  - job_name: "profile-service"
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['profile-service:8083']
+        labels:
+          application: 'Profile Service Application'
+    basic_auth:
+      username: prometheus
+      password: prompass
+  - job_name: "application-service"
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['application-service:8084']
+        labels:
+          application: 'Application Service Application'
+    basic_auth:
+      username: prometheus
+      password: prompass
+  - job_name: "notification-service"
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['notification-service:8084']
+        labels:
+          application: 'Notification Service Application'
+    basic_auth:
+      username: prometheus
+      password: prompass
