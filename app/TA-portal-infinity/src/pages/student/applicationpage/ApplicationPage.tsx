@@ -322,7 +322,7 @@ useEffect(() => {
                               } catch (err: any) {
                                 if (err.message && err.message.includes('403')) {
                                   toast.error('You do not have permission to delete this application.', { autoClose: 3500 });
-                                }  else if (errorMessage.includes('Failed to delete application')) {
+                                }  else if (err.message.includes('Failed to delete application')) {
                                   toast.error('This application has allocations and cannot be deleted.', { autoClose: 3500 });
                                 }  else {
                                   toast.error('Failed to delete application. Please try again.', { autoClose: 3500 });
