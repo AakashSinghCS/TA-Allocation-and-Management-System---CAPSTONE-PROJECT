@@ -12,15 +12,18 @@ import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
 import com.infinity.applicationservice.dtos.Applications.AvailabilityDto;
+import com.infinity.applicationservice.dtos.Users.StudentDto;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
+import com.infinity.applicationservice.feign.NotificationClient;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.models.Availability;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.utility.ApplicationMapper;
+import com.infinity.applicationservice.utility.EmailMapper;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,8 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserInterface userInterface;
     private final ApplicationMapper applicationMapper;
+    private final NotificationClient notificationClient;
+    private final EmailMapper emailMapper;
 
     public ApplicationDto submitApplication(ApplicationRequest req, Long userIdFromHeader, List<String> headerRoles) {
         int year = LocalDate.now().getYear();
@@ -46,6 +51,9 @@ public class ApplicationService {
         mapAvailability(req, application);
 
         applicationRepository.save(application);
+        
+        StudentDto student = userInterface.getStudentById(userIdFromHeader).getBody();
+        notificationClient.sendEmail(emailMapper.applicationReceivedEmailRequest(student));
 
         return applicationMapper.toDto(application);
     }

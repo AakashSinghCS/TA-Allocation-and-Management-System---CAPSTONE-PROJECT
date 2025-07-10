@@ -66,40 +66,40 @@ public class AllocationControllerTest {
 
         private AllocationHistoryDto sampleDto;
 
-        @BeforeEach
-        void setup() {
-                ApplicationDto application = new ApplicationDto(
-                                1L,
-                                1L,
-                                List.of(),
-                                ApplicationType.UNDERGRADUATE,
-                                false,
-                                10,
-                                LocalDateTime.of(2025, 7, 1, 12, 0),
-                                Set.of());
-                sampleDto = new AllocationHistoryDto(
-                                101L,
-                                new StudentDto(1L, "Test User", "test@example.com", 63260442, "BSC", 2022, 4),
-                                application,
-                                ApplicationStatus.SENT,
-                                10,
-                                new SectionDto(1001L, 2024, "W1", "T01", SectionType.TUTORIAL,
-                                                new CourseDto(1L, "COSC", "Capstone", "499")));
-        }
+    @BeforeEach
+    void setup() {
+        ApplicationDto application = new ApplicationDto(
+                1L,
+                1L,
+                List.of(),
+                ApplicationType.UNDERGRADUATE,
+                false,
+                10,
+                LocalDateTime.of(2025, 7, 1, 12, 0),
+                Set.of());
+        sampleDto = new AllocationHistoryDto(
+                101L,
+                new StudentDto(1L, "Test", "User", "test@example.com", 63260442, "BSC", 2022, 4),
+                application,
+                ApplicationStatus.SENT,
+                10,
+                new SectionDto(1001L, 2024, "W1", "T01", SectionType.TUTORIAL,
+                        new CourseDto(1L, "COSC", "Capstone", "499")));
+    }
 
         @Test
         void testGetStudentAllocationHistory() throws Exception {
                 Long sid = 1L;
                 when(allocationService.getAllocationsByStudentId(sid)).thenReturn(List.of(sampleDto));
 
-                mvc.perform(get("/allocations/student/{sid}/history", sid))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$", hasSize(1)))
-                                .andExpect(jsonPath("$[0].id").value(101))
-                                .andExpect(jsonPath("$[0].student.firstName").value("Test User"))
-                                .andExpect(jsonPath("$[0].section.section").value("T01"))
-                                .andExpect(jsonPath("$[0].status").value("SENT"));
-        }
+        mvc.perform(get("/allocations/student/{sid}/history", sid))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(101))
+                .andExpect(jsonPath("$[0].student.firstName").value("Test"))
+                .andExpect(jsonPath("$[0].section.section").value("T01"))
+                .andExpect(jsonPath("$[0].status").value("SENT"));
+    }
 
         @Test
         void allocateStudent_createsAllocationAndReturnsDto() throws Exception {
@@ -119,14 +119,14 @@ public class AllocationControllerTest {
                                 LocalDateTime.now(),
                                 Set.of());
 
-                AllocationHistoryDto responseDto = new AllocationHistoryDto(
-                                123L,
-                                new StudentDto(1L, "Test", "test@example.com", 63260442, "BSC", 2022, 4),
-                                application,
-                                ApplicationStatus.SENT,
-                                10,
-                                new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
-                                                new CourseDto(1L, "COSC", "Capstone", "499")));
+        AllocationHistoryDto responseDto = new AllocationHistoryDto(
+                123L,
+                new StudentDto(1L, "Test", "User", "test@example.com", 63260442, "BSC", 2022, 4),
+                application,
+                ApplicationStatus.SENT,
+                10,
+                new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
+                        new CourseDto(1L, "COSC", "Capstone", "499")));
 
                 when(allocationService.allocateStudent(any(AllocationRequest.class))).thenReturn(responseDto);
 
