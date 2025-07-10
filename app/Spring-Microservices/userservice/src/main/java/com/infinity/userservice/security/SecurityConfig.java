@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -53,12 +54,14 @@ public class SecurityConfig {
     @Bean
     @Order(1)                                     // must run before the “catch-all” chain
     SecurityFilterChain actuatorChain(HttpSecurity http, @Qualifier("prometheusUser") UserDetailsService prometheusUser) throws Exception {
-        AuthenticationManager authManager = http
-          .getSharedObject(AuthenticationManagerBuilder.class)
-          .userDetailsService(prometheusUser)
-          .passwordEncoder(passwordEncoder())
-          .and()
-          .build();
+        AuthenticationManagerBuilder authBuilder =
+        http.getSharedObject(AuthenticationManagerBuilder.class);
+    
+        authBuilder
+        .userDetailsService(prometheusUser)
+        .passwordEncoder(passwordEncoder());
+        
+        AuthenticationManager authManager = authBuilder.build();
 
         http
             .securityMatcher("/actuator/**")      // only /actuator/…
@@ -76,15 +79,17 @@ public class SecurityConfig {
     @Order(2)
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        AuthenticationManager apiAuthManager = http
-            .getSharedObject(AuthenticationManagerBuilder.class)
-            .userDetailsService(userDetailsService)
-            .passwordEncoder(passwordEncoder())
-            .and()
-            .build();
+        AuthenticationManagerBuilder apiAuthManager =
+        http.getSharedObject(AuthenticationManagerBuilder.class);
+    
+        apiAuthManager
+        .userDetailsService(userDetailsService)
+        .passwordEncoder(passwordEncoder());
+        
+        AuthenticationManager authManager = apiAuthManager.build();
 
         return http
-                .authenticationManager(apiAuthManager)
+                .authenticationManager(authManager)
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
