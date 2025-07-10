@@ -319,7 +319,6 @@ useEffect(() => {
                                 });
                                 setAvailability([]);
                                 toast.success('Application deleted successfully.', { autoClose: 2500 });
-                                setTimeout(() => window.location.reload(), 2600);
                               } catch (err: any) {
                                 if (err.message && err.message.includes('403')) {
                                   toast.error('You do not have permission to delete this application.', { autoClose: 3500 });
