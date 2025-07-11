@@ -1318,3 +1318,74 @@ Increased system stability and user satisfaction with improved cancellation flow
 - Finalize any pending bugs or UI tweaks in homepage
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 9 June, Monday
+
+**Clockify:**  ![alt text](clockify_images/image-52.png)
+
+## Time Slot
+- **12:43 PM – 5:36 PM:** Finished the dashboard for student & fixed time bug in Docker
+- **9:22 PM – 10:48 PM:** Reviewed some PRs
+- **11:45 PM – 2:37 AM (+1):** Learned about parsing
+
+## Current Tasks
+- Completed student dashboard UI and resolved time bug in Docker
+- Reviewed and provided feedback on pull requests
+- Studied and prototyped parsing logic for future integrations
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                         | STATUS     |
+|---------------|-------------------------------------|------------|
+| #095          | Student dashboard and Docker fix    | Completed  |
+| #096          | PR reviews and feedback            | Completed  |
+| #097          | Parsing logic prototype           | In progress |
+
+## Cycle Goal Review
+
+### Reflection
+Successfully improved dashboard stability and addressed critical Docker timing issues, enabling better cross-environment consistency. Parsing study laid the foundation for upcoming transcript import work.
+
+### Retrospective
+Effective focus on UI and backend issues increased confidence in system readiness. Evening parsing session helped clarify next parsing steps.
+
+## Next Cycle Goals
+- Finalize parsing implementation and start integrating it
+- Gather user feedback on the new student dashboard and iterate
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 10 June, Tuesday
+
+**Clockify:**  ![alt text](clockify_images/image-53.png)
+
+## Time Slot
+- **1:15 PM – 3:31 PM:** Worked on allocations; revoke offer
+
+## Current Tasks
+- Improved and updated allocations logic
+- Implemented revoke offer functionality
+- Verified backend and frontend integration for allocation updates
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                         | STATUS     |
+|---------------|-------------------------------------|------------|
+| #101          | Update allocations logic            | Completed  |
+| #102          | Revoke offer feature                | In progress  |
+| #103          | Integration testing                | In progress |
+
+## Cycle Goal Review
+
+### Reflection
+Streamlined allocation handling and completed the revoke offer feature, improving system flexibility for coordinators.
+
+### Retrospective
+Simplified flows and resolved potential edge cases; next step is to finalize integration tests and improve UX messaging.
+
+## Next Cycle Goals
+- Finish and validate all revoke offer tests
+- Improve UI confirmations and error handling
+- Update allocation documentation and user guide
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
