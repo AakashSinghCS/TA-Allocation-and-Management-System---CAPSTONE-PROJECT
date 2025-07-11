@@ -66,8 +66,8 @@ export async function fetchExportSectionsToCSV(sectionIds: number[]): Promise<Ex
   }
 }
 
-// New simplified CSV export function for better import compatibility
-export async function fetchExportSectionsAsCSV(sectionIds: number[]): Promise<SectionCsvData[] | null> {
+// New simplified CSV export function for direct CSV download
+export async function fetchExportSectionsAsCSV(sectionIds: number[]): Promise<Blob | null> {
   const token = localStorage.getItem('token');
   const BASE = 'http://localhost:8080/sections/export-csv';
 
@@ -86,7 +86,9 @@ export async function fetchExportSectionsAsCSV(sectionIds: number[]): Promise<Se
       return null;
     }
 
-    return res.json();
+    // Convert JSON response to CSV
+    const jsonData = await res.json();
+    return convertSectionCsvDataToBlob(jsonData);
   } catch (err) {
     console.error('CSV export request failed:', err);
     return null;
@@ -94,7 +96,7 @@ export async function fetchExportSectionsAsCSV(sectionIds: number[]): Promise<Se
 }
 
 // Export all sections as CSV
-export async function fetchExportAllSectionsAsCSV(): Promise<SectionCsvData[] | null> {
+export async function fetchExportAllSectionsAsCSV(): Promise<Blob | null> {
   const token = localStorage.getItem('token');
   const BASE = 'http://localhost:8080/sections/export-csv/all';
 
@@ -102,7 +104,6 @@ export async function fetchExportAllSectionsAsCSV(): Promise<SectionCsvData[] | 
     const res = await fetch(BASE, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     });
@@ -112,7 +113,9 @@ export async function fetchExportAllSectionsAsCSV(): Promise<SectionCsvData[] | 
       return null;
     }
 
-    return res.json();
+    // Convert JSON response to CSV
+    const jsonData = await res.json();
+    return convertSectionCsvDataToBlob(jsonData);
   } catch (err) {
     console.error('Export all sections CSV request failed:', err);
     return null;
@@ -259,4 +262,68 @@ export function downloadSectionsCsvData(data: SectionCsvData[], filename?: strin
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+// Direct CSV download function for the new API
+export function downloadCSVBlob(blob: Blob, filename?: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename || `sections_export_${new Date().toISOString().split('T')[0]}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Helper function to convert SectionCsvData array to CSV Blob
+function convertSectionCsvDataToBlob(data: SectionCsvData[]): Blob {
+  if (!data || data.length === 0) {
+    return new Blob([''], { type: 'text/csv;charset=utf-8;' });
+  }
+
+  // CSV Headers matching SectionCsvData interface
+  const headers = [
+    'Dept Code',
+    'Course Number',
+    'Course Name',
+    'Year',
+    'Semester',
+    'Section',
+    'Type',
+    'Day',
+    'Start Time',
+    'End Time',
+  ];
+
+  // Convert data to CSV rows
+  const csvRows = data.map(row => [
+    row.deptCode,
+    row.courseNum,
+    row.name,
+    row.year,
+    row.semester,
+    row.section,
+    row.type,
+    row.day,
+    row.startTime,
+    row.endTime,
+  ]);
+
+  // Combine headers and rows
+  const allRows = [headers, ...csvRows];
+
+  // Convert to CSV string
+  const csvContent = allRows
+    .map(row =>
+      row
+        .map(cell => {
+          const cellStr = String(cell).replace(/"/g, '""');
+          return `"${cellStr}"`;
+        })
+        .join(',')
+    )
+    .join('\r\n');
+
+  return new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 }

@@ -4,7 +4,7 @@ import SectionFilter from '../../../components/features/course/coursefilter/Sect
 import SectionList from '../../../components/features/course/sectionlist/SectionList';
 import { fetchFilteredSections, type FilterSectionsProps } from '../../../api/sectionfilter/fetchFilteredSections';
 import { convertFilterSectionsToSections } from '../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
-import { fetchExportSectionsToCSV, downloadSectionsAsCSV } from '../../../api/csv/fetchExportSections';
+import { fetchExportSectionsAsCSV, fetchExportAllSectionsAsCSV, downloadCSVBlob } from '../../../api/csv/fetchExportSections';
 import type Section from '../../../interfaces/section/Section';
 
 export default function ExportToCSVPage() {
@@ -64,17 +64,36 @@ export default function ExportToCSVPage() {
         .map((section: Section) => section.sectionDetails?.sectionId)
         .filter((id: number | undefined): id is number => id !== undefined);
 
-      const exportData = await fetchExportSectionsToCSV(sectionIds);
+      const csvBlob = await fetchExportSectionsAsCSV(sectionIds);
       
-      if (exportData && exportData.length > 0) {
-        downloadSectionsAsCSV(exportData);
+      if (csvBlob) {
+        downloadCSVBlob(csvBlob);
         alert('CSV export completed successfully!');
       } else {
-        alert('No data available for export');
+        alert('Export failed. Please try again.');
       }
     } catch (err) {
       console.error('Export failed:', err);
       setError('Export failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleExportAllSections = async () => {
+    setIsLoading(true);
+    try {
+      const csvBlob = await fetchExportAllSectionsAsCSV();
+      
+      if (csvBlob) {
+        downloadCSVBlob(csvBlob);
+        alert('All sections exported successfully!');
+      } else {
+        alert('Export failed. Please try again.');
+      }
+    } catch (err) {
+      console.error('Export all failed:', err);
+      setError('Export all failed');
     } finally {
       setIsLoading(false);
     }
@@ -101,6 +120,27 @@ export default function ExportToCSVPage() {
             <p className="text-blue-700 text-sm">
               {selectedSections.length} of {sections.length} sections selected
             </p>
+            {selectedSections.length > 0 && (
+              <div className="mt-2">
+                <p className="text-sm text-blue-600 mb-1">Selected:</p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedSections.map((section) => (
+                    <span
+                      key={section.sectionDetails?.sectionId}
+                      className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                    >
+                      {section.sectionDetails?.deptCode} {section.sectionDetails?.courseNum} - {section.sectionDetails?.section}
+                      <button
+                        onClick={() => handleSectionSelect(section)}
+                        className="ml-1 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           <div className="flex space-x-2">
             <button
@@ -122,7 +162,14 @@ export default function ExportToCSVPage() {
               disabled={selectedSections.length === 0 || isLoading}
               className="px-4 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 disabled:bg-gray-400"
             >
-              {isLoading ? 'Exporting...' : 'Export to CSV'}
+              {isLoading ? 'Exporting...' : 'Export Selected'}
+            </button>
+            <button
+              onClick={handleExportAllSections}
+              disabled={isLoading}
+              className="px-4 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:bg-gray-400"
+            >
+              {isLoading ? 'Exporting...' : 'Export All Sections'}
             </button>
           </div>
         </div>
