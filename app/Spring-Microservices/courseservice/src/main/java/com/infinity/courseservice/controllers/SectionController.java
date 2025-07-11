@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
+import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
@@ -112,11 +113,25 @@ public class SectionController {
         return ResponseEntity.ok(sectionService.add(request));
     }
 
-    // CSV Export endpoint
+    // Legacy CSV Export endpoint (using complex ExportedSectionData)
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/export")
     public ResponseEntity<List<ExportedSectionData>> exportSections(@RequestBody ExportSectionsRequest request) {
         return ResponseEntity.ok(sectionService.exportSections(request.sectionIds()));
+    }
+
+    // New CSV Export endpoint (using simple SectionCsvData for better import compatibility)
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @PostMapping("/export-csv")
+    public ResponseEntity<List<SectionCsvData>> exportSectionsAsCsv(@RequestBody ExportSectionsRequest request) {
+        return ResponseEntity.ok(sectionService.exportSectionsAsCsv(request.sectionIds()));
+    }
+
+    // Export all sections as CSV
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/export-csv/all")
+    public ResponseEntity<List<SectionCsvData>> exportAllSectionsAsCsv() {
+        return ResponseEntity.ok(sectionService.exportAllSectionsAsCsv());
     }
 
     // CSV Import endpoint

@@ -21,6 +21,7 @@ import com.infinity.courseservice.dtos.SectionDtos.ImportSectionRequest;
 import com.infinity.courseservice.dtos.SectionDtos.ImportSectionResponse;
 import com.infinity.courseservice.dtos.SectionDtos.ImportSectionsBatchRequest;
 import com.infinity.courseservice.dtos.SectionDtos.ImportSectionsBatchResponse;
+import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -422,6 +423,51 @@ public class SectionService {
                 created,
                 section.getId(),
                 created ? "Section created successfully" : "Section updated successfully"
+        );
+    }
+
+    /**
+     * Export sections as CSV data format that matches ImportSectionRequest structure.
+     * This enables seamless export -> edit -> import workflow.
+     */
+    public List<SectionCsvData> exportSectionsAsCsv(List<Long> sectionIds) {
+        List<Section> sections = sectionRepository.findAllById(sectionIds);
+        
+        return sections.stream()
+                .map(this::convertToSectionCsvData)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Export all sections as CSV data format.
+     */
+    public List<SectionCsvData> exportAllSectionsAsCsv() {
+        List<Section> sections = sectionRepository.findAll();
+        
+        return sections.stream()
+                .map(this::convertToSectionCsvData)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Convert Section entity to SectionCsvData DTO.
+     */
+    private SectionCsvData convertToSectionCsvData(Section section) {
+        // Get the first schedule for this section (if exists)
+        List<SectionSchedule> schedules = sectionScheduleRepository.findBySection(section);
+        SectionSchedule schedule = schedules.isEmpty() ? null : schedules.get(0);
+        
+        return new SectionCsvData(
+                section.getCourse().getDeptCode(),
+                section.getCourse().getCourseNum(),
+                section.getCourse().getName(),
+                section.getYear(),
+                section.getSemester(),
+                section.getSection(),
+                section.getType().toString(),
+                schedule != null ? schedule.getDay() : "",
+                schedule != null && schedule.getStartTime() != null ? schedule.getStartTime().toString() : "",
+                schedule != null && schedule.getEndTime() != null ? schedule.getEndTime().toString() : ""
         );
     }
 }

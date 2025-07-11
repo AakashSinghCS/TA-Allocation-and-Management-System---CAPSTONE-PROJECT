@@ -2,6 +2,21 @@ export interface ExportSectionsRequest {
   sectionIds: number[];
 }
 
+// New simplified interface for CSV export/import compatibility
+export interface SectionCsvData {
+  deptCode: string;
+  courseNum: string;
+  name: string;
+  year: number;
+  semester: string;
+  section: string;
+  type: string;
+  day: string;
+  startTime: string;
+  endTime: string;
+}
+
+// Legacy interface for complex export data
 export interface ExportedSectionData {
   sectionId: number;
   year: number;
@@ -24,6 +39,7 @@ export interface ExportedSectionData {
   numberOfHours?: number;
 }
 
+// Legacy function for complex export data
 export async function fetchExportSectionsToCSV(sectionIds: number[]): Promise<ExportedSectionData[] | null> {
   const token = localStorage.getItem('token');
   const BASE = 'http://localhost:8080/sections/export';
@@ -50,7 +66,60 @@ export async function fetchExportSectionsToCSV(sectionIds: number[]): Promise<Ex
   }
 }
 
-// Helper function to convert sections to CSV format and trigger download
+// New simplified CSV export function for better import compatibility
+export async function fetchExportSectionsAsCSV(sectionIds: number[]): Promise<SectionCsvData[] | null> {
+  const token = localStorage.getItem('token');
+  const BASE = 'http://localhost:8080/sections/export-csv';
+
+  try {
+    const res = await fetch(BASE, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({ sectionIds }),
+    });
+
+    if (!res.ok) {
+      console.error('CSV export request failed with status:', res.status);
+      return null;
+    }
+
+    return res.json();
+  } catch (err) {
+    console.error('CSV export request failed:', err);
+    return null;
+  }
+}
+
+// Export all sections as CSV
+export async function fetchExportAllSectionsAsCSV(): Promise<SectionCsvData[] | null> {
+  const token = localStorage.getItem('token');
+  const BASE = 'http://localhost:8080/sections/export-csv/all';
+
+  try {
+    const res = await fetch(BASE, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+
+    if (!res.ok) {
+      console.error('Export all sections CSV request failed with status:', res.status);
+      return null;
+    }
+
+    return res.json();
+  } catch (err) {
+    console.error('Export all sections CSV request failed:', err);
+    return null;
+  }
+}
+
+// Helper function to convert sections to CSV format and trigger download (legacy format)
 export function downloadSectionsAsCSV(data: ExportedSectionData[], filename?: string) {
   if (!data || data.length === 0) {
     console.warn('No data to export');
@@ -124,6 +193,68 @@ export function downloadSectionsAsCSV(data: ExportedSectionData[], filename?: st
   const a = document.createElement('a');
   a.href = url;
   a.download = filename || `sections_export_${new Date().toISOString().split('T')[0]}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// New simplified CSV download function for import compatibility
+export function downloadSectionsCsvData(data: SectionCsvData[], filename?: string) {
+  if (!data || data.length === 0) {
+    console.warn('No data to export');
+    return;
+  }
+
+  // CSV Headers matching import format
+  const headers = [
+    'Dept Code',
+    'Course Number',
+    'Course Name',
+    'Year',
+    'Semester',
+    'Section',
+    'Type',
+    'Day',
+    'Start Time',
+    'End Time',
+  ];
+
+  // Convert data to CSV rows
+  const csvRows = data.map(row => [
+    row.deptCode,
+    row.courseNum,
+    row.name,
+    row.year,
+    row.semester,
+    row.section,
+    row.type,
+    row.day,
+    row.startTime,
+    row.endTime,
+  ]);
+
+  // Combine headers and rows
+  const allRows = [headers, ...csvRows];
+
+  // Convert to CSV string
+  const csvContent = allRows
+    .map(row =>
+      row
+        .map(cell => {
+          const cellStr = String(cell).replace(/"/g, '""');
+          return `"${cellStr}"`;
+        })
+        .join(',')
+    )
+    .join('\r\n');
+
+  // Trigger download
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename || `sections_csv_export_${new Date().toISOString().split('T')[0]}.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
