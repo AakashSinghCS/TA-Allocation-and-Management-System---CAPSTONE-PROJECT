@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.infinity.userservice.dtos.RoleChangeRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.UserUpdateRequest;
-import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.services.UserService;
 
 import jakarta.validation.Valid;
@@ -74,19 +73,16 @@ public class UserController {
         return ResponseEntity.ok(userService.changeRole(id, request));
     }
 
-    @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/studentNum/{studentNum}")
     public ResponseEntity<UserDto> getStudentByNum(@PathVariable Integer studentNum) {
         return ResponseEntity.ok(userService.getStudentByNum(studentNum));
     }
 
-    @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/students/{id}")
     public ResponseEntity<UserDto> getStudentById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getStudentById(id));
     }
 
-    @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/instructors/{id}")
     public ResponseEntity<UserDto> getInstructorById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getInstructorById(id));
