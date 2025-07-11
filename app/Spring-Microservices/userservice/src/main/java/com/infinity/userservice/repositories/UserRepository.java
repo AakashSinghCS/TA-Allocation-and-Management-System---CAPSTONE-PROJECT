@@ -26,9 +26,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByStudentNum(Integer studentNum);
 
-    @Query("SELECT u FROM User u " +
-            "WHERE :role MEMBER OF u.roles " +
-            "AND (LOWER(u.firstName) LIKE %:name% OR LOWER(u.lastName) LIKE %:name%)")
+    @Query("""
+            SELECT u FROM User u
+            JOIN u.roles r
+            WHERE r.name = :role
+              AND (LOWER(u.firstName) LIKE LOWER(CONCAT('%', :name, '%'))
+                   OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :name, '%')))
+            """)
     List<User> findByRoleAndName(@Param("role") UserRole role, @Param("name") String name);
 
 }
