@@ -3,31 +3,48 @@ import type Section from "../../interfaces/section/Section";
 import type { SectionDetails } from "../../interfaces/section/SectionDetails";
 import type SectionSchedule from "../../interfaces/section/SectionSchedule";
 
+// Interface matching the backend CourseSectionScheduleDto
+interface CourseSectionScheduleDto {
+  sectionId: number;
+  courseId: number;
+  deptCode: string;
+  name: string;
+  courseNum: string;
+  section: string;
+  year: number;
+  semester: string;
+  type: string;
+  scheduleDay: string;
+  startTime: string;
+  endTime: string;
+  isCourse: boolean;
+}
+
 
 export function convertFilterSectionsToSections(
-  filters: FilterSectionsProps[]
+  filters: CourseSectionScheduleDto[]
 ): Section[] {
   // Use a Map keyed by sectionId (or a fallback key if null)
-  const bySection = new Map<number | string, Section>();
+  const bySection = new Map<number, Section>();
 
   for (const f of filters) {
     // key on sectionId if present, otherwise on a fixed string
-    const key = f.sectionId ?? "__NO_SECTION_ID__";
+    const key = f.sectionId;
 
     // if we haven't seen this section yet, create its container
     if (!bySection.has(key)) {
       const details: SectionDetails = {
         // fields from Course
-        id:         f.courseId   ?? undefined,
-        name:       f.name       ?? undefined,
-        deptCode:   f.deptCode   ?? undefined,
-        courseNum:  f.courseNum  ?? undefined,
+        id:         f.courseId,
+        name:       f.name,
+        deptCode:   f.deptCode,
+        courseNum:  f.courseNum,
         // fields specific to SectionDetails
-        sectionId:  f.sectionId  ?? undefined,
-        semester:   f.semester   ?? undefined,
-        section:    f.section    ?? undefined,
-        type:       f.type       ?? undefined,
-        year:       f.year       ?? undefined,
+        sectionId:  f.sectionId,
+        semester:   f.semester,
+        section:    f.section,
+        type:       f.type as any,
+        year:       f.year,
       };
 
       bySection.set(key, {
@@ -44,10 +61,10 @@ export function convertFilterSectionsToSections(
     // now push this row’s schedule info into that section’s schedule array
     const sec = bySection.get(key)!;
     const sched: SectionSchedule = {
-      day:       f.day       ?? undefined,
-      startTime: f.startTime ?? undefined,
-      endTime:   f.endTime   ?? undefined,
-      sectionId: f.sectionId ?? undefined,
+      day:       f.scheduleDay,
+      startTime: f.startTime,
+      endTime:   f.endTime,
+      sectionId: f.sectionId,
     };
     
     if(sec.sectionSchedule)sec.sectionSchedule.push(sched);

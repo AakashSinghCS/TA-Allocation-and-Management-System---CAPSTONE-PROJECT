@@ -17,7 +17,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("""
     SELECT DISTINCT new com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto(
-        s.id, c.id, c.deptCode, c.name, c.courseNum, s.section, s.year, s.semester, s.type, ss.day, ss.startTime, ss.endTime,CASE WHEN s.id IS NULL THEN true ELSE false END
+        s.id, c.id, c.deptCode, c.name, c.courseNum, s.section, s.year, s.semester, s.type, ss.scheduleDay, ss.startTime, ss.endTime,CASE WHEN s.id IS NULL THEN true ELSE false END
     )
     FROM Course c
     LEFT JOIN c.sections s
@@ -28,7 +28,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
       AND (:type IS NULL OR s.type = :type)
       AND (:year IS NULL OR s.year = :year)
       AND (:semester IS NULL OR s.semester = :semester)
-      AND (:day IS NULL OR ss.day = :day)
+      AND (:day IS NULL OR ss.scheduleDay = :day)
       AND (:startTime IS NULL OR ss.startTime >= :startTime)
       AND (:endTime IS NULL OR ss.endTime <= :endTime)
 """)
