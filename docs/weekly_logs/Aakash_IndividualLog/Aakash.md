@@ -1397,7 +1397,9 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Complete backend for importing past allocations and then work on front end.
 
+
 ## Monday 7/07 (7/07- 7/16)
+
 
 ### Timesheet
 
@@ -1432,6 +1434,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Work on frontend for importing past allocations.
+
 
 ## Tuesday 7/08 (7/07- 7/16)
 
@@ -1540,3 +1543,4 @@ Retrospective: Process is going well. Team members are working hard to get their
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Meet with team and begin next assigned coding task.
+
