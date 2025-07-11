@@ -1397,7 +1397,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Complete backend for importing past allocations and then work on front end.
 
-## Monday 7/07 (6/27- 7/06)
+## Monday 7/07 (7/07- 7/16)
 
 ### Timesheet
 
@@ -1433,3 +1433,110 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Work on frontend for importing past allocations.
 
+## Tuesday 7/08 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.08.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Import past allocation : Frontend 
+
+### Progress Update (since 03/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 40% Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met with team to discuss next tasks assigned to each person. I am in charge of frontend for past allocations.Designed the front end button to import csv past allocations and created modal that pops up when button clicked. Have to integrate backend with frontend.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Work on frontend for importing past allocations then begin next assigned coding task.
+
+## Wednesday 7/09 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.09.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Import past allocation : Frontend 
+
+### Progress Update (since 03/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 80% Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Integrated backend with front end and all design elements have been created. Functionality works as expected, and tests pass. However, my team has asked me to make the error messages more user-friendly instead of displaying the backend error thrown directly. They have all asked me to implement a checkbox so that if the user clicks it, new courses/sections are created if they don't exist in the database.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Work on frontend for importing past allocations then begin next assigned coding task.
+
+## Thursday 7/10 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.10.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Import past allocation : Frontend 
+
+### Progress Update (since 03/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Made the error messages more user-friendly instead of displaying the backend error thrown directly. Implemented a checkbox so that if the user clicks it, new courses/sections are created if they don't exist in the database. The functionality is now fully complete.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Meet with team and begin next assigned coding task.
