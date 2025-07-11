@@ -7,6 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import com.infinity.userservice.dtos.RoleChangeRequest;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.repositories.UserRepository;
@@ -32,6 +33,7 @@ public class UserSeeder {
             RegisterRequest coordinatorRequest = new RegisterRequest("coordinator@test.com", "Ched", "Devis",
                     "P@ssword1", List.of(UserRole.COORDINATOR));
             userService.register(coordinatorRequest);
+            userService.changeRole(2L, new RoleChangeRequest(List.of(UserRole.ADMIN, UserRole.COORDINATOR)));
             RegisterRequest instructorRequest = new RegisterRequest("instructor@test.com", "Scawt", "Fawz", "P@ssword1",
                     List.of(UserRole.INSTRUCTOR));
             userService.register(instructorRequest);
