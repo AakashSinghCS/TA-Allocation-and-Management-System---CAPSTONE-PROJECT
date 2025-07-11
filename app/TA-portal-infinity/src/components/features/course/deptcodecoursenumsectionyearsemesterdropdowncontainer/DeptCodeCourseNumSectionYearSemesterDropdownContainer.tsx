@@ -5,42 +5,41 @@ import SemesterDropdown from "../../../ui/section/semesterdropdown/SemesterDropd
 import {
   fetchAllExistingCourseNums,
 } from "../../../../api/course/sectionfilter/fetchAllExistingCourseNums";
-import { fetchAllExistingSemesters } from "../../../../api/course/sectionfilter/fetchAllExistingSemesters";
-import { fetchAllExistingYears } from "../../../../api/course/sectionfilter/fetchAllExistingYears";
 import { fetchAllExistingSections } from "../../../../api/course/sectionfilter/fetchAllExistingSections";
 import type { DeptCodeCourseNumSectionYearSemesterProps } from "../coursefilter/SectionFilter";
 import CourseNumDropdown from "../../../ui/section/coursenumdropdown/CourseNumDropdown";
 import SectionDropdown from "../../../ui/section/sectiondropdown/SectionDropdown";
 import YearDropdown from "../../../ui/section/yeardropdown/YearDropdown";
 
+export interface AllExistingDeptCodesAndYears{
+  deptCodes : string[];
+  years : string[];
+}
+
 
 interface Props {
-  allExistingDeptCodes: string[] | null;
+  allExistingDeptCodesAndYears: AllExistingDeptCodesAndYears | null;
   mode?: string;
   onChange: (val: Partial<DeptCodeCourseNumSectionYearSemesterProps>) => void;
 }
 
-export default function DeptCodeCourseNumSectionYearSemesterDropdownContainer({ allExistingDeptCodes, mode, onChange }: Props) {
+export default function DeptCodeCourseNumSectionYearSemesterDropdownContainer({ allExistingDeptCodesAndYears, mode, onChange }: Props) {
   const [selectedDeptCode, setSelectedDeptCode] = useState<string | null>(null);
   const [selectedCourseNum, setSelectedCourseNum] = useState<string | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
-  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [selectedYear, setSelectedYear] = useState<string | null>(null);
   const [selectedSemester, setSelectedSemester] = useState<string | null>(null);
 
   const [courseNumData, setCourseNumData] = useState<string[] | null>(null);
   const [sectionData, setSectionData] = useState<string[] | null>(null);
-  const [yearData, setYearData] = useState<number[] | null>(null);
-  const [semesterData, setSemesterData] = useState<string[] | null>(null);
+  // const [semesterData, setSemesterData] = useState<string[] | null>(null);
+  const semesterData = ["W1","W2","S1","S2"];
 
   useEffect(() => {
     setSelectedCourseNum(null);
     setCourseNumData(null);
     setSelectedSection(null);
     setSectionData(null);
-    setSelectedYear(null);
-    setYearData(null);
-    setSelectedSemester(null);
-    setSemesterData(null);
 
     if (!selectedDeptCode) return;
     onChange({ deptCode: selectedDeptCode })
@@ -52,10 +51,6 @@ export default function DeptCodeCourseNumSectionYearSemesterDropdownContainer({ 
   useEffect(() => {
     setSelectedSection(null);
     setSectionData(null);
-    setSelectedYear(null);
-    setYearData(null);
-    setSelectedSemester(null);
-    setSemesterData(null);
 
     if (!selectedDeptCode || !selectedCourseNum) return;
     onChange({ courseNum: selectedCourseNum });
@@ -65,57 +60,46 @@ export default function DeptCodeCourseNumSectionYearSemesterDropdownContainer({ 
   }, [selectedDeptCode, selectedCourseNum]);
 
   useEffect(() => {
-    setSelectedYear(null);
-    setYearData(null);
-    setSelectedSemester(null);
-    setSemesterData(null);
-
     if (!selectedDeptCode || !selectedCourseNum || !selectedSection) return;
     onChange({ section: selectedSection });
-    fetchAllExistingYears(
-      selectedDeptCode,
-      selectedCourseNum,
-      selectedSection
-    )
-      .then((data) => setYearData(data))
-      .catch(() => setYearData([]));
   }, [selectedDeptCode, selectedCourseNum, selectedSection]);
 
-  useEffect(() => {
-    setSelectedSemester(null);
-    setSemesterData(null);
+  //Not erased because it's possible we allow coordinators to create more semesters than W1 W2 S1 S2.
+  // useEffect(() => {
+  //   setSelectedSemester(null);
+  //   // setSemesterData(null);
 
-    if (
-      !selectedDeptCode ||
-      !selectedCourseNum ||
-      !selectedSection ||
-      selectedYear === null
-    )
-      return;
-    onChange({ year: selectedYear });
-    fetchAllExistingSemesters(
-      selectedDeptCode,
-      selectedCourseNum,
-      selectedSection,
-      selectedYear
-    )
-      .then((data) => setSemesterData(data))
-      .catch(() => setSemesterData([]));
-  }, [selectedDeptCode, selectedCourseNum, selectedSection, selectedYear]);
+  //   if (
+  //     !selectedDeptCode ||
+  //     !selectedCourseNum ||
+  //     !selectedSection ||
+  //     selectedYear === null
+  //   )
+  //     return;
+  //   onChange({ year: selectedYear });
+  //   fetchAllExistingSemesters(
+  //     selectedDeptCode,
+  //     selectedCourseNum,
+  //     selectedSection,
+  //     selectedYear
+  //   )
+  //     .then((data) => setSemesterData(data))
+  //     .catch(() => setSemesterData([]));
+  // }, [selectedDeptCode, selectedCourseNum, selectedSection, selectedYear]);
 
   useEffect(() => {
     if (!selectedSemester) return;
     onChange({ semester: selectedSemester });
   }, [selectedSemester]);
 
-  if (allExistingDeptCodes === null) {
+  if (allExistingDeptCodesAndYears === null) {
     return <p>Loading departments…</p>;
   }
 
   return (
     <div className={mode === 'small' ? "grid grid-cols-1 gap-2" : "flex gap-5"}>
       <DeptCodeDropdown
-        deptCodes={allExistingDeptCodes}
+        deptCodes={allExistingDeptCodesAndYears.deptCodes}
         value={selectedDeptCode}
         onChange={setSelectedDeptCode}
         mode={mode} />
@@ -135,17 +119,15 @@ export default function DeptCodeCourseNumSectionYearSemesterDropdownContainer({ 
         mode={mode} />
 
       <YearDropdown
-        years={yearData}
+        years={allExistingDeptCodesAndYears.years}
         value={selectedYear !== null ? String(selectedYear) : null}
-        onChange={(v) => setSelectedYear(v !== null ? Number(v) : null)}
-        disabled={!selectedSection}
+        onChange={setSelectedYear}
         mode={mode} />
 
       <SemesterDropdown
         semesters={semesterData}
         value={selectedSemester}
         onChange={setSelectedSemester}
-        disabled={!selectedYear}
         mode={mode} />
     </div>
   );

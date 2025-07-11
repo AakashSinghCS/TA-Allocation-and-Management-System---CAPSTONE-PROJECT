@@ -102,6 +102,8 @@ describe('<SectionListPage />', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockFetchFiltered.mockResolvedValue([s1]); // what the filter returns
+    vi.spyOn(window, "confirm").mockReturnValue(true)
+    vi.spyOn(window, "prompt").mockReturnValue("DELETE")
   });
 
   it('filters, renders result, then deletes and refreshes', async () => {

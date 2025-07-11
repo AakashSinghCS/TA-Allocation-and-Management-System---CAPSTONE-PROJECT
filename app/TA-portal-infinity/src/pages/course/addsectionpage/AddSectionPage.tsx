@@ -3,42 +3,55 @@ import CreateSectionForm, { type CreateSectionData } from '../../../components/f
 import { fetchCreateSection, type SectionAddDtoRequest } from '../../../api/section/fetchCreateSection';
 import { fetchCreateCourse, type CourseAddDtoRequest } from '../../../api/course/fetchCreateCourse';
 import CsvUpload from '../../../components/features/csv/csvupload/CsvUpload';
+import type { CourseProfile } from '../../../interfaces/course/Course';
+import { validateCourseProfile } from '../../../utility/validation/course/validateCourseProfile';
+import { validateSectionProfile } from '../../../utility/validation/section/validateSectionProfile';
+import type { SectionProfile } from '../../../interfaces/section/Section';
 
 export default function AddSectionPage() {
   const navigate = useNavigate();
 
   const handleCreateSection = async (data: CreateSectionData) => {
-    if(data.isCourse){
-      const courseAddDtoRequest : CourseAddDtoRequest = {
-                  deptCode: data.deptCode,
-        name: data.name,
-        courseNum : data.courseNum,
-      }
-      const ok = await fetchCreateCourse(courseAddDtoRequest);
-      if(ok){
-        alert("Course is created!");
-        navigate('/user/coordinator/sections', { replace: true });
-      }else{
-        alert("Failed to create course")
-      }
-    }else if(!data.isCourse){
-      const sectionAddDtoRequest : SectionAddDtoRequest = {
-        deptCode: data.deptCode,
-        name: data.name,
-        courseNum : data.courseNum,
-        section : data.section,
-        type : data.type,
-        year : data.year,
-        semester : data.semester,
-        sectionSchedules : data.sectionSchedules,
-        instructorId : data.instructorId
+    const courseProfile = extractCourseProfile(data);
+    const { ok, sanitized, errors } = validateCourseProfile(courseProfile);
+
+    if (!ok) {
+      alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
+      return;
+    }
+
+    if (data.isCourse) {
+      const courseAddDtoRequest: CourseAddDtoRequest = {
+        ...sanitized,
       }
 
-      const ok = await fetchCreateSection(sectionAddDtoRequest);
-      if(ok){
+      const success = await fetchCreateCourse(courseAddDtoRequest);
+
+      if (success) {
+        alert("Course is created!");
+        navigate('/user/coordinator/sections', { replace: true });
+      } else {
+        alert("Failed to create course")
+      }
+    } else if (!data.isCourse) {
+      const sectionProfile = extractSectionProfile(data);
+      const { ok, sanitized: sanitizedSections, errors } = validateSectionProfile(sectionProfile);
+      if (!ok) {
+        alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
+        return;
+      }
+      const sectionAddDtoRequest: SectionAddDtoRequest = {
+        ...sanitized,
+        ...sanitizedSections,
+        sectionSchedules: data.sectionSchedules,
+        instructorId: data.instructorId
+      }
+
+      const success = await fetchCreateSection(sectionAddDtoRequest);
+      if (success) {
         alert("Section is created!");
         navigate('/user/coordinator/sections', { replace: true });
-      }else{
+      } else {
         alert("Failed to create section")
       }
     }
@@ -64,4 +77,21 @@ export default function AddSectionPage() {
       </div>
     </div>
   );
+}
+
+function extractCourseProfile(data: CreateSectionData): Partial<CourseProfile> {
+  return {
+    name: data.name ?? undefined,
+    deptCode: data.deptCode,
+    courseNum: data.courseNum,
+  };
+}
+
+function extractSectionProfile(data: CreateSectionData): Partial<SectionProfile> {
+  return {
+    section: data.section ?? undefined,
+    year: data.year ?? undefined,
+    semester: data.semester ?? undefined,
+    type: data.type ?? undefined
+  };
 }

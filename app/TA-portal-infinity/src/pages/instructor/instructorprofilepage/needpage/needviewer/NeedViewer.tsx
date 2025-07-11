@@ -8,6 +8,7 @@ import { fetchUpdateNeed } from "../../../../../api/need/fetchUpdateNeed";
 import { useEffect, useState } from "react";
 import { fetchDeleteNeed } from "../../../../../api/need/fetchDeleteNeed";
 import { fetchUnassignInstructor } from "../../../../../api/section/instructor/fetchUnassignInstructor";
+import { confirmDeletion } from "../../../../../utility/confirmation/confirmDeletion";
 
 interface NeedViewerProps {
   instructorId: number;
@@ -23,9 +24,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
   }, [initial]);
 
   const onDeleteNeed = async (need: Need) => {
-    const confirm = window.confirm(
-      "Do you really wish to delete this?"
-    );
+    const confirm = confirmDeletion("TA requirement","This will erase all the TA requirements for other sections of the associated course");
     if (confirm) {
       const success = await fetchDeleteNeed(need);
       if (success) {

@@ -62,6 +62,8 @@ describe("SectionProfileDetailsSection", () => {
     mockFetchSection.mockResolvedValue(baseSection);
     // Delete resolves true
     mockFetchDelete.mockResolvedValue(true);
+    vi.spyOn(window, "confirm").mockReturnValue(true)
+    vi.spyOn(window, "prompt").mockReturnValue("DELETE")
   });
 
   it("toggles into edit mode when Edit Details is clicked", async () => {

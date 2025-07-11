@@ -66,29 +66,21 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
             @Param("deptCode") String deptCode,
             @Param("courseNum") String courseNum);
 
-    @Query("""
-                SELECT s.year FROM Section s
-                WHERE s.course.deptCode = :deptCode
-                AND s.course.courseNum = :courseNum
-                AND s.section = :section
-            """)
-    List<String> findYearsByDeptCodeAndCourseNumAndSection(
-            @Param("deptCode") String deptCode,
-            @Param("courseNum") String courseNum,
-            @Param("section") String section);
+   @Query("SELECT DISTINCT CAST(s.year AS string) FROM Section s")
+    List<String> findAllDistinctYearStrings();
 
-    @Query("""
-                SELECT s.semester FROM Section s
-                WHERE s.course.deptCode = :deptCode
-                AND s.course.courseNum = :courseNum
-                AND s.section = :section
-                AND s.year = :year
-            """)        
-    List<String> findSemestersByDeptCodeAndCourseNumAndSectionAndYear(
-            @Param("deptCode")String deptCode, 
-            @Param("courseNum")String courseNum, 
-            @Param("section")String section,
-            @Param("year")String year);
+    // @Query("""
+    //             SELECT s.semester FROM Section s
+    //             WHERE s.course.deptCode = :deptCode
+    //             AND s.course.courseNum = :courseNum
+    //             AND s.section = :section
+    //             AND s.year = :year
+    //         """)        
+    // List<String> findSemestersByDeptCodeAndCourseNumAndSectionAndYear(
+    //         @Param("deptCode")String deptCode, 
+    //         @Param("courseNum")String courseNum, 
+    //         @Param("section")String section,
+    //         @Param("year")String year);
 
 
     @Query("SELECT DISTINCT c.deptCode FROM Course c")
