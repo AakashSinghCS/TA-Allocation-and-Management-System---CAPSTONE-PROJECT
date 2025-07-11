@@ -44,8 +44,6 @@ public class SectionController {
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
-
-   
     @PostMapping("/addSection/{courseId}")
     public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId,
             @RequestBody SectionAddDtoRequest request) {
