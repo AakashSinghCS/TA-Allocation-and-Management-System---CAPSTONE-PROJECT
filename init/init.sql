@@ -19,3 +19,4 @@ GRANT ALL PRIVILEGES ON application_db.* TO 'dev_user'@'%';
 GRANT ALL PRIVILEGES ON profiles_db.*    TO 'dev_user'@'%';
 
 FLUSH PRIVILEGES;
+SET GLOBAL time_zone = 'America/Vancouver';
