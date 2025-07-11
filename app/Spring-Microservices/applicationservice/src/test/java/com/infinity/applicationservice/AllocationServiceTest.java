@@ -24,7 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockMultipartFile;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
@@ -498,7 +497,8 @@ class AllocationServiceTest {
                 mockAllocation.setSectionId(sectionId);
 
                 Application mockApplication = new Application();
-                mockApplication.setId(30L);
+
+                mockApplication.setId(1L);
                 mockAllocation.setApplication(mockApplication);
 
                 StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", "scoob@test.com", null, null, null,
@@ -548,7 +548,7 @@ class AllocationServiceTest {
                 allocation.setSectionId(1001L);
                 allocation.setApplication(application);
 
-                StudentDto studentDto = new StudentDto(1L, "Test", "User", "test@test.com", 12345678, "BSC", 2022, 4);
+                StudentDto studentDto = new StudentDto(1L, "Test", "User", "email@test.com",123456, "BSC", 2022, 4);
                 SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
                                 new CourseDto(1L, "COSC", "Capstone", "499"));
                 ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE,
@@ -588,7 +588,9 @@ class AllocationServiceTest {
                 allocation.setSectionId(1001L);
                 allocation.setApplication(null);
 
-                StudentDto studentDto = new StudentDto(1L, "Test", "User", "test@test.com", 12345678, "BSC", 2022, 4);
+                StudentDto studentDto = new StudentDto(1L, "Test", "User", "email@test.com", 123456, "BSC", 2022, 4);
+
+
                 SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
                                 new CourseDto(1L, "COSC", "Capstone", "499"));
 
