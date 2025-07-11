@@ -1,3 +1,47 @@
+## Thursday (July 8-10)
+
+### Timesheet
+Clockify report
+![alt text](./jul8-10.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Promoting/demoting users
+  * #2: Updating need allocated time when accepting an offer
+
+### Progress Update (since July 7th 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Sending notifications when application is sent, accepted, and rejected
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Promoting/demoting users
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+   
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+We ended up deciding to overall the way we store users in the backend, so there's no subtypes anymore and so I refactored everything on the backend to just return UserDto's so this way a user can still have many roles but the fields stored aren't typed to their subtype. This will be a lot better, but it obviously broken a bunch of the frontend which I haven't fixed yet.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * I will get the frontend fixed from this big refactor of users so that it's all smooth. I also am going to update the needs table so that when a student accepts an allocation offer that the requested time need of that course diminishes.
+
 ## Monday (July 4-7)
 
 ### Timesheet
