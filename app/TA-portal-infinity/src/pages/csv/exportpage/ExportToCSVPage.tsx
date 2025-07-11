@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SectionFilter from '../../../components/features/course/coursefilter/SectionFilter';
 import SectionList from '../../../components/features/course/sectionlist/SectionList';
-import { fetchFilteredSections, type FilterSectionsProps } from '../../../api/sectionfilter/fetchFilteredSections';
+import { fetchFilteredSections, type FilterSectionsProps } from '../../../api/course/sectionfilter/fetchFilteredSections';
 import { convertFilterSectionsToSections } from '../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
 import { fetchExportSectionsAsCSV, fetchExportAllSectionsAsCSV, downloadCSVBlob } from '../../../api/csv/fetchExportSections';
 import type Section from '../../../interfaces/section/Section';
@@ -35,9 +35,9 @@ export default function ExportToCSVPage() {
 
   const handleSectionSelect = (section: Section) => {
     setSelectedSections((prev: Section[]) => {
-      const isAlreadySelected = prev.some((s: Section) => s.sectionDetails?.sectionId === section.sectionDetails?.sectionId);
+      const isAlreadySelected = prev.some((s: Section) => s.id === section.id);
       if (isAlreadySelected) {
-        return prev.filter((s: Section) => s.sectionDetails?.sectionId !== section.sectionDetails?.sectionId);
+        return prev.filter((s: Section) => s.id !== section.id);
       } else {
         return [...prev, section];
       }
@@ -59,10 +59,18 @@ export default function ExportToCSVPage() {
     }
 
     setIsLoading(true);
+    setError(null);
     try {
       const sectionIds = selectedSections
-        .map((section: Section) => section.sectionDetails?.sectionId)
+        .map((section: Section) => section.id)
         .filter((id: number | undefined): id is number => id !== undefined);
+
+      console.log('Exporting sections with IDs:', sectionIds);
+
+      if (sectionIds.length === 0) {
+        alert('Selected sections do not have valid IDs');
+        return;
+      }
 
       const csvBlob = await fetchExportSectionsAsCSV(sectionIds);
       
@@ -74,7 +82,7 @@ export default function ExportToCSVPage() {
       }
     } catch (err) {
       console.error('Export failed:', err);
-      setError('Export failed');
+      setError('Export failed: ' + (err as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -126,10 +134,10 @@ export default function ExportToCSVPage() {
                 <div className="flex flex-wrap gap-2">
                   {selectedSections.map((section) => (
                     <span
-                      key={section.sectionDetails?.sectionId}
+                      key={section.id}
                       className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
                     >
-                      {section.sectionDetails?.deptCode} {section.sectionDetails?.courseNum} - {section.sectionDetails?.section}
+                      {section.course?.deptCode} {section.course?.courseNum} - {section.section}
                       <button
                         onClick={() => handleSectionSelect(section)}
                         className="ml-1 text-blue-600 hover:text-blue-800"

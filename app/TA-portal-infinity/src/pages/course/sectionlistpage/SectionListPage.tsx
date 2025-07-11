@@ -111,6 +111,13 @@ export default function SectionListPage() {
               Add New Section or Course
             </Link>
 
+            <Link
+              to="/user/coordinator/sections/export"
+              className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#363a7a] transition-colors"
+            >
+              Export to CSV
+            </Link>
+
             <button
               onClick={() => setShowImportModal(true)}
               className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-300 transition-colors"

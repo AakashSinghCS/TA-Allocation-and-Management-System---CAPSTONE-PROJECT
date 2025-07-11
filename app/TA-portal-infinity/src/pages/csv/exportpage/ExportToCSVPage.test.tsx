@@ -5,7 +5,7 @@ import ExportToCSVPage from './ExportToCSVPage';
 import { AuthContext } from '../../../context/AuthContext';
 import { UserRole } from '../../../interfaces/enum/UserRole';
 import * as fetchExportSections from '../../../api/csv/fetchExportSections';
-import * as fetchFilteredSections from '../../../api/sectionfilter/fetchFilteredSections';
+import * as fetchFilteredSections from '../../../api/course/sectionfilter/fetchFilteredSections';
 import { convertFilterSectionsToSections } from '../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
 
 // Mock the converter utility
@@ -21,7 +21,7 @@ vi.mock('../../../api/csv/fetchExportSections', () => ({
 }));
 
 // Mock the section filter API
-vi.mock('../../../api/sectionfilter/fetchFilteredSections', () => ({
+vi.mock('../../../api/course/sectionfilter/fetchFilteredSections', () => ({
   fetchFilteredSections: vi.fn(),
 }));
 
@@ -118,16 +118,16 @@ const mockCourseSectionScheduleDtos = [
 // Expected sections after conversion using convertFilterSectionsToSections
 const mockSections = [
   {
-    sectionDetails: {
+    id: 1,
+    semester: 'W1',
+    section: '001',
+    type: 'LECTURE' as const,
+    year: 2025,
+    course: {
       id: 101,
       name: 'Introduction to Programming',
       deptCode: 'COSC',
       courseNum: '111',
-      sectionId: 1,
-      semester: 'W1',
-      section: '001',
-      type: 'LECTURE' as const,
-      year: 2025,
     },
     sectionSchedule: [
       {
@@ -143,22 +143,22 @@ const mockSections = [
     instructor: undefined,
   },
   {
-    sectionDetails: {
+    id: 2,
+    semester: 'W1',
+    section: 'L01',
+    type: 'LABORATORY' as const,
+    year: 2025,
+    course: {
       id: 101,
       name: 'Introduction to Programming',
       deptCode: 'COSC',
       courseNum: '111',
-      sectionId: 2,
-      semester: 'W1',
-      section: 'L01',
-      type: 'LABORATORY' as const,
-      year: 2025,
     },
     sectionSchedule: [
       {
         day: 'Wednesday',
         startTime: '14:00',
-        endTime: '16:00',
+        endTime: '15:30',
         sectionId: 2,
       }
     ],
@@ -168,16 +168,16 @@ const mockSections = [
     instructor: undefined,
   },
   {
-    sectionDetails: {
-      id: 201,
-      name: 'Data Structures and Algorithms',
+    id: 3,
+    semester: 'W1',
+    section: '001',
+    type: 'LECTURE' as const,
+    year: 2025,
+    course: {
+      id: 102,
+      name: 'Data Structures',
       deptCode: 'COSC',
       courseNum: '221',
-      sectionId: 3,
-      semester: 'W1',
-      section: '001',
-      type: 'LECTURE' as const,
-      year: 2025,
     },
     sectionSchedule: [
       {
@@ -467,7 +467,7 @@ describe('ExportToCSVPage', () => {
       fireEvent.click(exportButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Export failed')).toBeInTheDocument();
+        expect(screen.getByText('Export failed: Export failed')).toBeInTheDocument();
       });
     });
 

@@ -1,61 +1,67 @@
-
 import { createBrowserRouter, Outlet } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import App from "../App";
-
-import PublicLayout from "../components/layout/publicLayout/PublicLayout";
-import CoursesTakenPage from "../pages/taprofilepage/coursestakenpage/CoursesTakenPage";
-import StudentComparerPage from "../pages/taprofilepage/comparerpage/StudentComparerPage";
-import InstructorProfilePage from "../pages/instructorprofilepage/InstructorProfilePage";
-import InstructorNeedPage from "../pages/instructorprofilepage/needpage/InstructorNeedPage";
-import InstructorComparerPage from "../pages/instructorprofilepage/comparerpage/InstructorComparerPage";
-import LoginPage from "../pages/loginPage/LoginPage";
-import ErrorPage from "../pages/errorpage/ErrorPage";
-import StudentHomePage from "../pages/student_homepage/StudentHomePage";
-import ApplicationPage from "../pages/applicationpage/ApplicationPage";
-import InstructorHomePage from "../pages/instructor_homepage/InstructorHomePage";
-import CoordinatorHomePage from "../pages/coordinator_homepage/CoordinatorHomePage";
-import TaProfilePage from "../pages/taprofilepage/TaProfilePage";
-import { TaQuestionnairePage } from "../pages/taquestionnairepage/TaQuestionnairePage";
-import { CoordinatorQuestionnairePage } from "../pages/coordinatorquestionnairepage/CoordinatorQuestionnairePage";
 import RoleGuard from "../components/features/roleguard/RoleGuard";
 import { UserRole } from "../interfaces/enum/UserRole";
-import AllocationPage from "../pages/allocationpage/AllocationPage";
-import InstructorQualificationPage from "../pages/instructorprofilepage/qualificationpage/InstructorQualificationPage";
-import StudentQualificationPage from "../pages/taprofilepage/qualificationpage/StudentQualificationPage";
-import ForgotPasswordPage from "../pages/forgotpasswordpage/ForgotPasswordPage";
-import ResetPasswordPage from "../pages/resetpasswordpage/ResetPasswordPage";
-import UserBrowsingPage from "../pages/userbrowsingpage/UserBrowsingPage";
-import ManualCreateUserPage from "../pages/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage";
-import SignUpPage from "../pages/signupPage/SignUpPage";
-import CourseProfilePage from "../pages/courseprofilepage/CourseProfilePage";
-import SectionListPage from "../pages/coursepage/SectionListPage";
-import AddSectionPage from "../pages/coursepage/AddSectionPage";
-import InstructorAddSectionPage from "../pages/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage";
-import InstructorAddNeedPage from "../pages/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage";
-import AddAllocationHistory from "../pages/taprofilepage/addallocationhistory/AddAllocationHistory";
-import AddEnrolledCourse from "../pages/taprofilepage/coursestakenpage/addenrolledcourse/AddEnrolledCourse";
-import ViewApplicationPage from "../pages/studentpages/viewapplicationpage/ViewApplicationPage";
-import ApplicationViewPage from "../pages/coordinatorpages/applicationviewpage/ApplicationViewPage";
-import ExportToCSVPage from "../pages/csv/exportpage/ExportToCSVPage";
+import PublicLayout from "../components/layout/publicLayout/PublicLayout";
+
+import { TaQuestionnairePage } from "../pages/student/taquestionnairepage/TaQuestionnairePage";
+import { CoordinatorQuestionnairePage } from "../pages/coordinator/coordinatorquestionnairepage/CoordinatorQuestionnairePage";
+
+const TaProfilePage = lazy(() => import("../pages/student/taprofilepage/TaProfilePage"));
+const CoursesTakenPage = lazy(() => import("../pages/student/taprofilepage/coursestakenpage/CoursesTakenPage"));
+const StudentComparerPage = lazy(() => import("../pages/student/taprofilepage/comparerpage/StudentComparerPage"));
+const StudentQualificationPage = lazy(() => import("../pages/student/taprofilepage/qualificationpage/StudentQualificationPage"));
+const AddAllocationHistory = lazy(() => import("../pages/student/taprofilepage/addallocationhistory/AddAllocationHistory"));
+const AddEnrolledCourse = lazy(() => import("../pages/student/taprofilepage/coursestakenpage/addenrolledcourse/AddEnrolledCourse"));
+const StudentHomePage = lazy(() => import("../pages/student/student_homepage/StudentHomePage"));
+const ApplicationPage = lazy(() => import("../pages/student/applicationpage/ApplicationPage"));
+const ViewApplicationPage = lazy(() => import("../pages/student/viewapplicationpage/ViewApplicationPage"));
+
+const InstructorProfilePage = lazy(() => import("../pages/instructor/instructorprofilepage/InstructorProfilePage"));
+const InstructorNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/InstructorNeedPage"));
+const InstructorComparerPage = lazy(() => import("../pages/instructor/instructorprofilepage/comparerpage/InstructorComparerPage"));
+const InstructorQualificationPage = lazy(() => import("../pages/instructor/instructorprofilepage/qualificationpage/InstructorQualificationPage"));
+const InstructorAddSectionPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage"));
+const InstructorAddNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage"));
+const InstructorHomePage = lazy(() => import("../pages/instructor/instructorhomepage/InstructorHomePage"));
+
+const CoordinatorHomePage = lazy(() => import("../pages/coordinator/coordinator_homepage/CoordinatorHomePage"));
+const AllocationPage = lazy(() => import("../pages/coordinator/allocationpage/AllocationPage"));
+const ApplicationViewPage = lazy(() => import("../pages/coordinator/applicationviewpage/ApplicationViewPage"));
+const UserBrowsingPage = lazy(() => import("../pages/coordinator/userbrowsingpage/UserBrowsingPage"));
+const ManualCreateUserPage = lazy(() => import("../pages/coordinator/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage"));
+const DeadlineManagementPage = lazy(() => import("../pages/admin/deadlinemanagementpage/DeadlineManagementPage"));
+
+const CourseProfilePage = lazy(() => import("../pages/course/courseprofilepage/CourseProfilePage"));
+const SectionListPage = lazy(() => import("../pages/course/sectionlistpage/SectionListPage"));
+const AddSectionPage = lazy(() => import("../pages/course/addsectionpage/AddSectionPage"));
+
+const LoginPage = lazy(() => import("../pages/auth/loginPage/LoginPage"));
+const SignUpPage = lazy(() => import("../pages/auth/signupPage/SignUpPage"));
+const ForgotPasswordPage = lazy(() => import("../pages/auth/forgotpasswordpage/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("../pages/auth/resetpasswordpage/ResetPasswordPage"));
+const ErrorPage = lazy(() => import("../pages/auth/errorpage/ErrorPage"));
+
+const ExportToCSVPage = lazy(() => import("../pages/csv/exportpage/ExportToCSVPage"));
 
 export const router = createBrowserRouter([
   {
     path: "/user",
     element: <App />,
-    errorElement: <ErrorPage />,
+    errorElement: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense>,
     children: [
-      { path: "taprofile/:studentId", element: <TaProfilePage /> },
-      { path: "taprofile/:studentId/coursesTaken", element: <CoursesTakenPage /> },
-      { path: "taprofile/:studentId/compare", element: <StudentComparerPage /> },
-      { path: "taprofile/:studentId/qualifications", element: <StudentQualificationPage /> },
-      { path: "instructorprofile/:instructorId", element: <InstructorProfilePage /> },
-      { path: "instructorprofile/:instructorId/need", element: <InstructorNeedPage /> },
-      { path: "instructorprofile/:instructorId/compare", element: <InstructorComparerPage /> },
-      { path: "instructorprofile/:instructorId/qualifications", element: <InstructorQualificationPage /> },
+      { path: "taprofile/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaProfilePage /></Suspense> },
+      { path: "taprofile/:studentId/coursesTaken", element: <Suspense fallback={<div>Loading...</div>}><CoursesTakenPage /></Suspense> },
+      { path: "taprofile/:studentId/compare", element: <Suspense fallback={<div>Loading...</div>}><StudentComparerPage /></Suspense> },
+      { path: "taprofile/:studentId/qualifications", element: <Suspense fallback={<div>Loading...</div>}><StudentQualificationPage /></Suspense> },
+      { path: "instructorprofile/:instructorId", element: <Suspense fallback={<div>Loading...</div>}><InstructorProfilePage /></Suspense> },
+      { path: "instructorprofile/:instructorId/need", element: <Suspense fallback={<div>Loading...</div>}><InstructorNeedPage /></Suspense> },
+      { path: "instructorprofile/:instructorId/compare", element: <Suspense fallback={<div>Loading...</div>}><InstructorComparerPage /></Suspense> },
+      { path: "instructorprofile/:instructorId/qualifications", element: <Suspense fallback={<div>Loading...</div>}><InstructorQualificationPage /></Suspense> },
+      { path: "sectionprofile/:sectionId", element: <Suspense fallback={<div>Loading...</div>}><CourseProfilePage /></Suspense> },
+      { path: "courseprofile/:courseId", element: <Suspense fallback={<div>Loading...</div>}><CourseProfilePage /></Suspense> },
 
-      { path: "sectionprofile/:sectionId", element: <CourseProfilePage /> },
-      { path: "courseprofile/:courseId", element: <CourseProfilePage /> },
-      // STUDENT routes
       {
         path: "student",
         element: (
@@ -64,17 +70,16 @@ export const router = createBrowserRouter([
           </RoleGuard>
         ),
         children: [
-          { path: "home", element: <StudentHomePage /> },
-          { path: "application", element: <ApplicationPage /> },
-          { path: "view-applications", element: <ViewApplicationPage /> },
+          { path: "home", element: <Suspense fallback={<div>Loading...</div>}><StudentHomePage /></Suspense> },
+          { path: "application", element: <Suspense fallback={<div>Loading...</div>}><ApplicationPage /></Suspense> },
+          { path: "view-applications", element: <Suspense fallback={<div>Loading...</div>}><ViewApplicationPage /></Suspense> },
           { path: "questions/:studentId", element: <TaQuestionnairePage /> },
-          { path: "addallocation", element: <AddAllocationHistory/>},
-          { path: "addenrollment", element: <AddEnrolledCourse/>},
-          { path: "error", element: <ErrorPage /> },
+          { path: "addallocation", element: <Suspense fallback={<div>Loading...</div>}><AddAllocationHistory /></Suspense> },
+          { path: "addenrollment", element: <Suspense fallback={<div>Loading...</div>}><AddEnrolledCourse /></Suspense> },
+          { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
         ],
       },
 
-      // INSTRUCTOR routes
       {
         path: "instructor",
         element: (
@@ -83,16 +88,15 @@ export const router = createBrowserRouter([
           </RoleGuard>
         ),
         children: [
-          { path: "home", element: <InstructorHomePage /> },
-          { path: "browseuser", element: <UserBrowsingPage /> },
-          { path: "addsection", element: <InstructorAddSectionPage /> },
-          { path: "updateprereqcourses/:courseId/:year/:semester", element: <InstructorAddSectionPage mode="update"/> },
-          { path: "addneed/:sectionId", element: <InstructorAddNeedPage /> },
-          { path: "error", element: <ErrorPage /> },
+          { path: "home", element: <Suspense fallback={<div>Loading...</div>}><InstructorHomePage /></Suspense> },
+          { path: "browseuser", element: <Suspense fallback={<div>Loading...</div>}><UserBrowsingPage /></Suspense> },
+          { path: "addsection", element: <Suspense fallback={<div>Loading...</div>}><InstructorAddSectionPage /></Suspense> },
+          { path: "updateprereqcourses/:courseId/:year/:semester", element: <Suspense fallback={<div>Loading...</div>}><InstructorAddSectionPage mode="update" /></Suspense> },
+          { path: "addneed/:sectionId", element: <Suspense fallback={<div>Loading...</div>}><InstructorAddNeedPage /></Suspense> },
+          { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
         ],
       },
 
-      // COORDINATOR routes
       {
         path: "coordinator",
         element: (
@@ -101,35 +105,35 @@ export const router = createBrowserRouter([
           </RoleGuard>
         ),
         children: [
-          { path: "home", element: <CoordinatorHomePage /> },
-          { path: "questions", element: < CoordinatorQuestionnairePage/> },
-          { path: "browseuser", element: <UserBrowsingPage /> },
-          { path: "browseuser/newuser", element: < ManualCreateUserPage/> },
-          { path: "sections", element: < SectionListPage/> },
-          { path: "sections/add", element: < AddSectionPage/> },
-          { path: "sections/export", element: < ExportToCSVPage/> },
-          { path: "applications", element: <ApplicationViewPage /> },
-          {path: "allocation", element: <AllocationPage />},
-          { path: "student/questions/:studentId", element: < TaQuestionnairePage/> }, //TEMPORARY for development
-          { path: "error", element: <ErrorPage /> },
+          { path: "home", element: <Suspense fallback={<div>Loading...</div>}><CoordinatorHomePage /></Suspense> },
+          { path: "questions", element: <CoordinatorQuestionnairePage />},
+          { path: "browseuser", element: <Suspense fallback={<div>Loading...</div>}><UserBrowsingPage /></Suspense> },
+          { path: "browseuser/newuser", element: <Suspense fallback={<div>Loading...</div>}><ManualCreateUserPage /></Suspense> },
+          { path: "sections", element: <Suspense fallback={<div>Loading...</div>}><SectionListPage /></Suspense> },
+          { path: "sections/add", element: <Suspense fallback={<div>Loading...</div>}><AddSectionPage /></Suspense> },
+          { path: "sections/export", element: <Suspense fallback={<div>Loading...</div>}><ExportToCSVPage /></Suspense> },
+          { path: "applications", element: <Suspense fallback={<div>Loading...</div>}><ApplicationViewPage /></Suspense> },
+          {  path: "allocation", element: <Suspense fallback={<div>Loading...</div>}><AllocationPage /></Suspense> },
+          { path: "student/questions/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaQuestionnairePage /></Suspense> },
+          { path: "deadlines", element: <Suspense fallback={<div>Loading...</div>}><DeadlineManagementPage /></Suspense> },
+          { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
         ],
       },
-      { path: "*", element: <ErrorPage /> },
+
+      { path: "*", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
     ],
   },
 
-  // Public (no auth required)
   {
     path: "/",
     element: <PublicLayout />,
     children: [
-      { path: "", element: <LoginPage /> },
-      { path: "login", element: <LoginPage /> },
-      // { path: "signup", element: <SignUpPage /> },
-      { path: "signup", element: <SignUpPage /> },
-      { path: "forgot-password", element: <ForgotPasswordPage /> },
-      { path: "reset-password", element: <ResetPasswordPage /> },
-      { path: "*", element: <ErrorPage /> },
+      { path: "", element: <Suspense fallback={<div>Loading...</div>}><LoginPage /></Suspense> },
+      { path: "login", element: <Suspense fallback={<div>Loading...</div>}><LoginPage /></Suspense> },
+      { path: "signup", element: <Suspense fallback={<div>Loading...</div>}><SignUpPage /></Suspense> },
+      { path: "forgot-password", element: <Suspense fallback={<div>Loading...</div>}><ForgotPasswordPage /></Suspense> },
+      { path: "reset-password", element: <Suspense fallback={<div>Loading...</div>}><ResetPasswordPage /></Suspense> },
+      { path: "*", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
     ],
   },
 ]);
