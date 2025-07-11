@@ -256,9 +256,9 @@ const ViewApplicationPage = () => {
     : applications;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-4 md:p-8">
+    <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl md:text-4xl font-bold text-[#040941] mb-8 tracking-tight">My Applications</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-[#040941] mb-8 tracking-tight">My Applications</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8">
           {/* Filters */}
           <div className="lg:col-span-3">
@@ -504,9 +504,8 @@ const ViewApplicationPage = () => {
                     {/* Creative: Progress bar */}
                  
                     <div className="mt-4 z-10">
-                      {/* Progress bar logic: 0=submitted, 1=offer sent, 2=offer accepted, 3=confirmed allocation */}
                       {(() => {
-                        // Determine progress step and label
+                        // progress step and label
                         let step = 0;
                         let label = 'Application submitted. Waiting for offer...';
                         let tip = '';
@@ -546,7 +545,6 @@ const ViewApplicationPage = () => {
                             tip = 'Accepting an offer will notify the coordinator instantly!';
                           }
                         }
-                        // Progress bar width per step
                         const progressPercents = [20, 50, 80, 100];
                         const percent = progressPercents[step];
                         // Progress bar steps
@@ -582,7 +580,15 @@ const ViewApplicationPage = () => {
                   );
                 })
               ) : (
-                <div className="col-span-full text-center text-gray-500 py-12 text-lg">No applications found based on filters</div>
+                <div className="col-span-full flex flex-col items-center justify-center py-12">
+                  <svg width="64" height="64" fill="none" viewBox="0 0 64 64" aria-hidden="true" className="mb-4">
+                    <rect width="64" height="64" rx="16" fill="#F3F4F6"/>
+                    <path d="M20 28h24M20 36h24M28 20h8" stroke="#A0AEC0" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                  <div className="text-gray-500 text-lg font-semibold mb-2">No applications found</div>
+                  <div className="text-gray-400 text-sm mb-4">&nbsp;&nbsp;&nbsp;No TA applications match your current filters.<br/>Adjust your filters or start a new application to see it here.</div>
+                  <a href="application" className="inline-block px-5 py-2 bg-[#040941] text-white rounded-lg font-semibold hover:bg-blue-700 transition">Start New Application</a>
+                </div>
               )}
             </div>
 

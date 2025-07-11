@@ -1,3 +1,7 @@
+
+x-global-env: &global-env
+  TZ: America/Vancouver
+  JAVA_TOOL_OPTIONS: -Duser.timezone=America/Vancouver
 services:
   frontend:
     container_name: frontend

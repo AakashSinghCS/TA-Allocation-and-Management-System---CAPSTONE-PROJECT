@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -22,7 +23,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "need_id", "year", "semester" }))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "need_id", "course_year", "semester" }))
 public class CourseNeed {
 
     @Id
@@ -37,6 +38,7 @@ public class CourseNeed {
     @JoinColumn(name = "need_id")
     private Need need;
 
+    @Column(name = "course_year")
     private Integer year;
 
     private String semester;
