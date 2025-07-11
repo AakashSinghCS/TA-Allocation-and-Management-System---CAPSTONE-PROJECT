@@ -9,11 +9,14 @@ import com.infinity.applicationservice.models.GlobalDeadline;
 public class ConfigMapper {
 
     public static DeadlineDto toDto(GlobalDeadline entity) {
-    return new DeadlineDto(
-        entity.getName(),
-        entity.getStartTime(),
-        entity.getEndTime()
-    );
+        if (entity == null) {
+            throw new IllegalArgumentException("GlobalDeadline entity cannot be null");
+        }
+        return new DeadlineDto(
+            entity.getName(),
+            entity.getStartTime(),
+            entity.getEndTime()
+        );
+    }
 }
 
-}

@@ -8,6 +8,8 @@ import { fetchExistingApplication } from '../../../api/application/FetchExisting
 import { useAuth } from '../../../context/AuthContext';
 import type { ApplicationDto, ApplicationRequest } from '../../../interfaces/application/Application';
 import mockSubjectList from '../../../mocked-objects/mockSubjects';
+import { fetchDeadlines } from "../../../api/admin/FetchDeadline";
+import type { DeadlineDto } from "../../../interfaces/admin/Deadline";
 
 type Day =
   | 'MONDAY'
@@ -80,6 +82,8 @@ const ApplicationPage: React.FC = () => {
 const calendarRef = useRef<FullCalendar>(null);
 const { token, userId, userRoles } = useAuth();
 const [isModalOpen, setIsModalOpen] = useState(false);
+const [applicationDeadline, setApplicationDeadline] = useState<DeadlineDto | null>(null);
+const [deadlineError, setDeadlineError] = useState("");
 
 useEffect(() => {
   async function loadExisting() {
@@ -92,6 +96,27 @@ useEffect(() => {
   if (userId !== null && token) loadExisting();
 }, [userId, token, userRoles]);
 
+useEffect(() => {
+  async function loadDeadline() {
+    setDeadlineError("");
+    try {
+      const allDeadlines = await fetchDeadlines(token || "");
+      const studentDeadline = allDeadlines.find(
+        (d) => d.name === "student_application_deadline"
+      );
+      setApplicationDeadline(studentDeadline || null);
+    } catch (err) {
+      console.error("Failed to load deadline:", err);
+      setDeadlineError("Could not load application deadline.");
+    }
+  }
+
+  if (token) loadDeadline();
+}, [token]);
+
+const deadlinePassed =
+    !! applicationDeadline &&
+    new Date(applicationDeadline.endTime) < new Date();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -303,6 +328,25 @@ useEffect(() => {
       <h1 className="text-4xl font-bold text-[#040941] mb-10">
         {savedApp ? 'Update Your TA Application' : 'TA Application Submission'}
       </h1>
+      {applicationDeadline && (
+      <p className="text-md text-gray-700 mb-6">
+        Deadline:{" "}
+        <span className="font-medium">
+          {new Date(applicationDeadline.endTime).toLocaleString()}
+        </span>
+      </p>
+      )}
+      {!applicationDeadline && !deadlineError && (
+        <p className="text-md text-gray-500 mb-6">
+          No application deadline found.
+        </p>
+      )}
+      {deadlineError && (
+        <p className="text-md text-red-500 mb-6">
+          {deadlineError}
+        </p>
+      )}
+
 
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_320px] gap-14">
           <div>
@@ -480,9 +524,19 @@ useEffect(() => {
               {/* Change button if prev exists */}
           <button
             type="submit"
-            className="px-6 py-2 bg-[#040941] text-white rounded hover:bg-[#030735]"
+            onClick={(e) => {
+              if (deadlinePassed) {
+                e.preventDefault(); // prevent form submission
+                alert("The application deadline has passed. You can no longer submit.");
+              }
+            }}
+            className={`px-6 py-2 rounded ${
+              deadlinePassed
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-[#040941] text-white hover:bg-[#030735]"
+            }`}
           >
-            {savedApp ? 'Update Application' : 'Submit Application'}
+            {savedApp ? "Update Application" : "Submit Application"}
           </button>
             </div>
           </form>
