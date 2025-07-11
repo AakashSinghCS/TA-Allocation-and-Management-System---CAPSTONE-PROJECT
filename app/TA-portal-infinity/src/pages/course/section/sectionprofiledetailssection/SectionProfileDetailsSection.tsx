@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import EditSectionProfileSection from "../edtionsectionprofilesection/EditSectionProfileSection";
 import type { SectionProfile } from "../../../../interfaces/section/Section";
 import { useAuth } from "../../../../context/AuthContext";
-import SectionProfileSection from "../sectionprofilesection/SectionProfileSection";
 import type Section from "../../../../interfaces/section/Section";
 import type SectionSchedule from "../../../../interfaces/section/SectionSchedule";
 import { fetchUpdateSectionSchedule } from "../../../../api/section/sectionschedule/fetchUpdateSectionSchedule";
@@ -11,6 +10,9 @@ import { fetchSectionIncludeInstructorId } from "../../../../api/section/fetchSe
 import { fetchUpdateSectionDetails } from "../../../../api/section/fetchUpdateSectionDetails";
 import { fetchDeleteSection } from "../../../../api/section/fetchDeleteSection";
 import { useNavigate } from "react-router-dom";
+import { validateSectionProfile } from "../../../../utility/validation/section/validateSectionProfile";
+import SectionProfileSection from "../sectionprofilesection/SectionProfileSection";
+import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
 interface Props {
   section: Section | null;
   fields: (keyof SectionProfile)[];
@@ -53,9 +55,22 @@ export default function SectionProfileDetailsSection({
   const startProfileEdit = () => setIsEditingProfile(true);
   const cancelProfileEdit = () => setIsEditingProfile(false);
   const deleteCourse = async () => {
-    //alert user here
+    const confirm = confirmDeletion("section","This will delete associated schedule and exam data");
+    if (!confirm) return;
     const ok = await fetchDeleteSection(section?.id ?? -1);
     if (ok) navigate(-1);
+  }
+
+  const onSave = async (updates: Partial<SectionProfile>) => {
+    if (!section) return;
+    const { ok, sanitized, errors } = validateSectionProfile(updates);
+    if (!ok) {
+      alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
+      return;
+    }
+    const success = await fetchUpdateSectionDetails(section?.id ?? -1, sanitized);
+    if (success) setSection(await fetchSectionIncludeInstructorId(section.course?.id ?? -1))
+    setIsEditingProfile(false);
   }
 
   return (
@@ -66,11 +81,7 @@ export default function SectionProfileDetailsSection({
           section={section!}
           fields={fields}
           labels={labels}
-          onSave={async updates => {
-            const ok = await fetchUpdateSectionDetails(section?.id ?? -1, updates);
-            if (ok) setSection(await fetchSectionIncludeInstructorId(section.course?.id ?? -1))
-            setIsEditingProfile(false);
-          }}
+          onSave={onSave}
           onCancel={cancelProfileEdit}
         />
       ) : (

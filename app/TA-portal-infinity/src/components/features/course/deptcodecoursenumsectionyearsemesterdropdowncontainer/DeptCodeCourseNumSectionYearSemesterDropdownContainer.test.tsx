@@ -31,20 +31,18 @@ describe('DeptCodeCourseNumSectionYearSemesterDropdownContainer', () => {
   it('disables dependent selects until parent is chosen and loads course numbers', async () => {
     render(
       <DeptCodeCourseNumSectionYearSemesterDropdownContainer
-        allExistingDeptCodes={['COSC', 'MATH']}
+        allExistingDeptCodesAndYears={{deptCodes:['COSC', 'MATH'], years:['2024','2023']}}
         mode="small"
         onChange={vi.fn()}
       />
     );
 
-    const [deptSelect, courseNumSelect, sectionSelect, yearSelect, semesterSelect] =
+    const [deptSelect, courseNumSelect, sectionSelect] =
       screen.getAllByRole('combobox');
 
     expect(deptSelect).toBeEnabled();
     expect(courseNumSelect).toBeDisabled();
     expect(sectionSelect).toBeDisabled();
-    expect(yearSelect).toBeDisabled();
-    expect(semesterSelect).toBeDisabled();
 
     fireEvent.change(deptSelect, { target: { value: 'COSC' } });
     expect(apiCourseNums.fetchAllExistingCourseNums).toHaveBeenCalledWith('COSC');

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import SectionProfileDetailsSection from "../../../components/features/section/sectionprofiledetailssection/SectionProfileDetailsSection";
+import SectionProfileDetailsSection from "../section/sectionprofiledetailssection/SectionProfileDetailsSection";
 import { sectionFieldLabels, sectionProfileFields } from "../../../interfaces/section/Section";
 import { GenericAPIContainer } from "../../../utility/genericapicontainer/GenericAPIContainer";
 import type Section from "../../../interfaces/section/Section";

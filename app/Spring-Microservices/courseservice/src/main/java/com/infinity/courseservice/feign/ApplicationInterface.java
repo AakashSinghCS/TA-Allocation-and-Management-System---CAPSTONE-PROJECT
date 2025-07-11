@@ -6,6 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import com.infinity.courseservice.config.FeignClientInterceptor;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
@@ -23,5 +24,8 @@ public interface ApplicationInterface {
 
     @GetMapping("/config/{name}")
     ResponseEntity<DeadlineDto> getDeadlineByName(@PathVariable String name);
+
+    @PutMapping("/allocations/{sectionId}/setSectionIdNull")
+    public ResponseEntity<Integer> setSectionIdNull(@PathVariable Long sectionId);
 
 }

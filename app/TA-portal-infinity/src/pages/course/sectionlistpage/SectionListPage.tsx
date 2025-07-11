@@ -7,6 +7,7 @@ import SectionFilter from '../../../components/features/course/coursefilter/Sect
 import SectionList from '../../../components/features/course/sectionlist/SectionList';
 import type Section from '../../../interfaces/section/Section';
 import { convertFilterSectionsToSections } from '../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
+import { confirmDeletion } from '../../../utility/confirmation/confirmDeletion';
 import Papa from 'papaparse';
 import { fetchImportAllocations } from '../../../api/allocation/fetchImportAllocations';
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
@@ -16,8 +17,8 @@ import type { Allocation } from '../../../interfaces/allocation/Allocation';
 export default function SectionListPage() {
   const navigate = useNavigate();
   const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
-  const [lastFilters, setLastFilters]         = useState<FilterSectionsProps | null>(null);
-  const [loading, setLoading]                 = useState(false);
+  const [lastFilters, setLastFilters] = useState<FilterSectionsProps | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleFilterChange = async (filters: FilterSectionsProps) => {
     setLoading(true);
@@ -34,11 +35,14 @@ export default function SectionListPage() {
   };
 
   // this will be passed down to <SectionList> and called after delete
-  const handleDeleted = async(id : number, isCourse : boolean) => {
-
-    if(isCourse){
+  const handleDeleted = async (id: number, isCourse: boolean) => {
+    if (isCourse) {
+      const confirm = confirmDeletion("course","This will delete all associated sections.");
+      if (!confirm) return;
       await fetchDeleteCourse(id);
-    }else{
+    } else {
+      const confirm = confirmDeletion("section","This will delete associated schedule and exam data");
+      if (!confirm) return;
       await fetchDeleteSection(id);
     }
     if (lastFilters) {
@@ -122,10 +126,10 @@ export default function SectionListPage() {
       {loading
         ? <p>Loading courses…</p>
         : <SectionList
-            sections={filteredSections}
-            onDeleted={handleDeleted}
-            // mode = 'coordinator'
-          />
+          sections={filteredSections}
+          onDeleted={handleDeleted}
+        // mode = 'coordinator'
+        />
       }
 
       

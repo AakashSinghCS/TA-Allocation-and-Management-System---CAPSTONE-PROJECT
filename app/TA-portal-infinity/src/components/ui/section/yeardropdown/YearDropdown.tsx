@@ -1,6 +1,5 @@
-
 interface Props {
-  years: number[] | null;
+  years: string[] | null;
   value: string | null;
   onChange: (val: string | null) => void;
   disabled? : boolean;
