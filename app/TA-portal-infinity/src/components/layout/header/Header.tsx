@@ -4,7 +4,7 @@ import capIcon from "../../../assets/grad-cap.png";
 
 export default function Header() {
   return (
-    <header className="flex flex-col sm:flex-row items-center justify-between bg-[#040941] text-white px-4 sm:px-9 py-2">
+    <header className="flex flex-col sm:flex-row items-center justify-between bg-[#040941] text-white px-4 sm:px-9 py-1">
       
       {/* UBC Logo and Name */}
       <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
