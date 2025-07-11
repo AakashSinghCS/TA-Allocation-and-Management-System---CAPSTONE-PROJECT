@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import type Section from '../../../../interfaces/section/Section';
 import ExportAllocationsCSV from '../../csv/exportallocationscsv/ExportAllocationsCSV';
+import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
 
 interface Props {
   sections: Section[] | null;
@@ -41,22 +42,10 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
   };
 
   const handleDeleteCourse = async (courseId: number) => {
-    if (
-      !window.confirm(
-        'Really delete entire course? This deletes all associated sections.'
-      )
-    )
-      return;
     onDeleted?.(courseId, true);
   };
 
   const handleDeleteSection = async (sectionId: number) => {
-    if (
-      !window.confirm(
-        'Really delete this section?'
-      )
-    )
-      return;
     onDeleted?.(sectionId, false);
   };
 

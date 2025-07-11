@@ -38,6 +38,11 @@ vi.mock('../../../api/course/fetchDeleteCourse', () => ({
   fetchDeleteCourse: (...args: any[]) => mockDelCourse(...args),
 }));
 
+const mockImportAllocations = vi.fn();
+vi.mock('../../../api/allocation/fetchImportAllocations', () => ({
+  fetchImportAllocations: (...args: any[]) => mockImportAllocations(...args),
+}));
+
 // ------------- ROUTER HELPER MOCK ----------------
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
@@ -97,6 +102,8 @@ describe('<SectionListPage />', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockFetchFiltered.mockResolvedValue([s1]); // what the filter returns
+    vi.spyOn(window, "confirm").mockReturnValue(true)
+    vi.spyOn(window, "prompt").mockReturnValue("DELETE")
   });
 
   it('filters, renders result, then deletes and refreshes', async () => {
@@ -124,5 +131,32 @@ describe('<SectionListPage />', () => {
     // we refresh filters after deletion → second call
     await waitFor(() => expect(mockFetchFiltered).toHaveBeenCalledTimes(2));
     expect(mockDelCourse).toHaveBeenCalledWith(1);
+  });
+
+  it('uploads CSV and shows success message', async () => {
+    render(
+      <MemoryRouter>
+        <SectionListPage />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByText(/Import Past Allocations/i));
+
+    const csvContent =
+      'firstName,lastName,studentNum,deptCode,courseNum,section,year,semester\nScoobert,Doobert,63260442,COSC,499,001,2025,W1';
+    const file = new File([csvContent], 'test.csv', { type: 'text/csv' });
+
+    mockImportAllocations.mockResolvedValueOnce([]);
+
+    const fileInput = screen.getByLabelText(/Select CSV file/i);
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() =>
+      expect(screen.getByText(/Allocations imported successfully/i)).toBeInTheDocument()
+    );
+
+    expect(screen.queryByLabelText(/Choose CSV file/i)).not.toBeInTheDocument();
+    expect(mockImportAllocations).toHaveBeenCalledTimes(1);
+  
   });
 });

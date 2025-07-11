@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,11 +36,13 @@ import com.infinity.applicationservice.enums.UserRole;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
+import com.infinity.applicationservice.feign.NotificationClient;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.services.ApplicationService;
 import com.infinity.applicationservice.utility.ApplicationMapper;
+import com.infinity.applicationservice.utility.EmailMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class ApplicationServiceTest {
@@ -52,6 +55,12 @@ public class ApplicationServiceTest {
 
     @Mock
     ApplicationMapper applicationMapper;
+
+    @Mock
+    NotificationClient notificationClient;
+
+    @Mock
+    EmailMapper emailMapper;
 
     @InjectMocks
     ApplicationService applicationService;
@@ -135,7 +144,10 @@ public class ApplicationServiceTest {
                 LocalDate.now().atStartOfDay(),
                 Set.of());
 
+        StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", "test@test.com", 1234567, "COSC", 2022, 3);
         when(applicationMapper.toDto(Mockito.any(Application.class))).thenReturn(mockedDto);
+        when(userInterface.getStudentById(1L)).thenReturn(ResponseEntity.ok(studentDto));
+        when(notificationClient.sendEmail(any())).thenReturn(null);
 
         ApplicationDto applicationDto = applicationService.submitApplication(applicationRequest, 1L,
                 List.of("ROLE_STUDENT"));

@@ -1,6 +1,6 @@
-// src/components/user/UserForm.tsx
 import React, { useState } from 'react';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
+import { validateUserFormData } from '../../../../utility/validation/user/validateUserFormData';
 
 export interface UserFormData {
     firstName: string;
@@ -18,7 +18,7 @@ interface UserFormProps {
     successMessage?: string;
 }
 
-const InputField = ({ label, name, type, value, onChange, ...rest }: any) => (
+const InputField = ({ label, name, type, value, onChange, error,...rest }: any) => (
     <div>
         <label htmlFor={name} className="text-sm block mb-1">{label}*</label>
         <input
@@ -31,6 +31,7 @@ const InputField = ({ label, name, type, value, onChange, ...rest }: any) => (
             required
             {...rest}
         />
+        {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
     </div>
 );
 
@@ -48,35 +49,40 @@ export default function CreateUserForm({
         password: '',
         confirmPassword: '',
     });
-    const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [formError, setFormError] = useState<string | null>(null);
     const [formSuccess, setFormSuccess] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
-
+    const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof UserFormData, string>>>({});
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-        setConfirmPasswordError('');
         setFormError(null);
         setFormSuccess(null);
     }
 
-    function validate() {
-        if (formData.password !== formData.confirmPassword) {
-            setConfirmPasswordError('Passwords do not match');
-            return false;
-        }
-        return true;
-    }
-
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        if (!validate()) return;
+        // if (!validate()) return;
+        const { ok, sanitized, fieldErrors } = validateUserFormData(formData);
+            if (!ok) {
+            setFieldErrors(fieldErrors);
+            setFormError("Please correct the highlighted fields.");
+            return;
+        }
+        setFieldErrors({});
+        setFormError(null);
         setSubmitting(true);
         try {
-            console.log(formData);
-            await onSubmit(formData);
+            await onSubmit({...formData, ...sanitized});
             setFormSuccess(successMessage);
             if (onSuccess) onSuccess();
+            setFormData({         
+                firstName: "",
+                lastName: "",
+                email: "",
+                role: [""],
+                password: "",
+                confirmPassword: "",
+            });
         } catch (err: any) {
             console.error('Signup error:', err);
             setFormError(err?.message || 'Server error. Please try again later.');
@@ -93,16 +99,16 @@ export default function CreateUserForm({
               type="text"
               value={formData.firstName}
               onChange={handleChange}
+              error={fieldErrors.firstName}
             />
-
             <InputField
               label="Last Name"
               name="lastName"
               type="text"
               value={formData.lastName}
               onChange={handleChange}
+              error={fieldErrors.lastName}
             />
-
             <InputField
               label="Email"
               name="email"
@@ -110,8 +116,8 @@ export default function CreateUserForm({
               value={formData.email}
               onChange={handleChange}
               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              error={fieldErrors.email}
             />
-
             <div>
               <label htmlFor="role" className="text-sm block mb-1">Role*</label>
               <select
@@ -127,8 +133,11 @@ export default function CreateUserForm({
                 <option value="INSTRUCTOR">Instructor</option>
                 <option value="COORDINATOR">TA Coordinator</option>
               </select>
+              {fieldErrors.role && (
+                <p className="text-red-600 text-sm">{fieldErrors.role}</p>
+                 )}
             </div>
-
+            
             <InputField
                 label="Password"
                 name="password"
@@ -136,16 +145,16 @@ export default function CreateUserForm({
                 value={formData.password}
                 onChange={handleChange}
                 pattern="^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-\\[\\]{}|;:',.<>?]).{8,}$"
+                error={fieldErrors.password}
             />
-
             <InputField
                 label="Confirm Password"
                 name="confirmPassword"
                 type="password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
+                error={fieldErrors.confirmPassword}
             />
-            {confirmPasswordError && (<p className="text-sm text-red-600 mt-1">{confirmPasswordError}</p>)}
 
             {formError && (
                 <div className="flex items-center space-x-2 border-l-4 border-red-500 bg-red-100 p-3 rounded-md mt-2 animate-fadeIn">

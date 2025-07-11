@@ -62,7 +62,7 @@ export default function SectionCard({
           
         </div>
         <p className={`${big?"text-sm":"text-xs"} ml-1 whitespace-nowrap 2xl:text-sm text-slate-600`}>
-          {section?.type} | {section?.year} | {section?.semester}
+          {section.type && `${section?.type} |`}  {section.year && `${section?.year} |`} {section?.semester}
         </p>
       </div>
 
@@ -77,9 +77,10 @@ export default function SectionCard({
             ))}
 
           </div>
-            <span className="ml-2 text-xs 2xl:text-sm whitespace-nowrap text-slate-600">
+            {(alloc || req) && <span className="ml-2 text-xs 2xl:text-sm whitespace-nowrap text-slate-600">
               {hoursBadge} hrs alloc.
             </span>
+            }
           </>
           }
         </div>

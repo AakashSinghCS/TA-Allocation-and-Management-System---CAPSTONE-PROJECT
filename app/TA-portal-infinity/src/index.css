@@ -39,7 +39,24 @@ a:hover {
   from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes slideDown {
+  from { transform: translateY(-30px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-down {
+  animation: slideDown 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes foldBar {
+  from { transform: translate(-50%, -20px); opacity: 0; }
+  to   { transform: translate(-50%, 0); opacity: 1; }
+}
+.animate-fold-bar {
+  animation: foldBar 0.5s cubic-bezier(0.4,0,0.2,1);
+}
 
+.animate-slide-down {
+  animation: slideDown 0.6s cubic-bezier(0.4,0,0.2,1);
+}
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
 }

@@ -13,9 +13,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
@@ -31,6 +33,7 @@ import com.infinity.applicationservice.enums.UserRole;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
+import com.infinity.applicationservice.feign.NotificationClient;
 import com.infinity.applicationservice.feign.SectionInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Allocation;
@@ -40,30 +43,32 @@ import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.services.AllocationService;
 import com.infinity.applicationservice.utility.AllocationMapper;
 import com.infinity.applicationservice.utility.ApplicationMapper;
+import com.infinity.applicationservice.utility.EmailMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 
+@ExtendWith(MockitoExtension.class)
 class AllocationServiceTest {
 
-        private AllocationService allocationService;
+        @Mock
         private AllocationRepository allocationRepository;
+        @Mock
         private ApplicationRepository applicationRepository;
+        @Mock
         private SectionInterface sectionInterface;
+        @Mock
         private UserInterface userInterface;
+        @Mock
         private ApplicationMapper applicationMapper;
+        @Mock
         private AllocationMapper allocationMapper;
+        @Mock
+        private NotificationClient notificationClient;
+        @Mock
+        private EmailMapper emailMapper;
 
-        @BeforeEach
-        void setup() {
-                allocationRepository = Mockito.mock(AllocationRepository.class);
-                sectionInterface = Mockito.mock(SectionInterface.class);
-                userInterface = Mockito.mock(UserInterface.class);
-                applicationRepository = Mockito.mock(ApplicationRepository.class);
-                applicationMapper = Mockito.mock(ApplicationMapper.class);
-                allocationMapper = Mockito.mock(AllocationMapper.class);
-                allocationService = new AllocationService(allocationRepository, applicationRepository, sectionInterface,
-                                userInterface, applicationMapper, allocationMapper);
-        }
+        @InjectMocks
+        AllocationService allocationService;
 
         @Test
         void getAllocationsByStudentId_returnsMappedDtoList() {
@@ -171,6 +176,7 @@ class AllocationServiceTest {
                 when(applicationMapper.toDto(application)).thenReturn(applicationDto);
                 when(allocationMapper.toDto(savedAllocation, studentDto, applicationDto, sectionDto))
                                 .thenReturn(expectedDto);
+                when(notificationClient.sendEmail(any())).thenReturn(null);
 
                 AllocationHistoryDto result = allocationService.allocateStudent(request);
 
@@ -285,6 +291,7 @@ class AllocationServiceTest {
                 a2.setSectionId(1L);
 
                 Application application = new Application();
+                application.setId(1L);
                 application.setStudentId(1L);
                 application.setSubmittedAt(LocalDateTime.now());
                 a1.setApplication(application);
@@ -336,6 +343,7 @@ class AllocationServiceTest {
                 a2.setStatus(ApplicationStatus.REJECTED);
 
                 Application application = new Application();
+                application.setId(1L);
                 application.setStudentId(1L);
                 application.setSubmittedAt(LocalDateTime.now());
                 a1.setApplication(application);
@@ -438,10 +446,12 @@ class AllocationServiceTest {
                 LocalDateTime now = LocalDateTime.of(2025, 7, 1, 10, 0);
 
                 Application app1 = new Application();
+                app1.setId(1L);
                 app1.setStudentId(1L);
                 app1.setSubmittedAt(now);
 
                 Application app2 = new Application();
+                app2.setId(2L);
                 app2.setStudentId(1L);
                 app2.setSubmittedAt(now.minusYears(2));
 
@@ -476,6 +486,50 @@ class AllocationServiceTest {
 
                 assertEquals(1, result.size());
                 assertEquals(2025, result.get(0).applicationDto().timeSubmitted().getYear());
+        }
+
+        @Test
+        void testGetAllocationsBySectionIdWithCourse() {
+                Long sectionId = 100L;
+
+                Allocation mockAllocation = new Allocation();
+                mockAllocation.setId(1L);
+                mockAllocation.setStudentId(10L);
+                mockAllocation.setSectionId(sectionId);
+
+                Application mockApplication = new Application();
+                mockApplication.setId(30L);
+                mockAllocation.setApplication(mockApplication);
+
+                StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", "scoob@test.com", null, null, null,
+                                null);
+                SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY,
+                                new CourseDto(1L, "COSC", "capstone", "499"));
+                ApplicationDto applicationDto = new ApplicationDto(30L, 1L, List.of(), ApplicationType.UNDERGRADUATE,
+                                false, 6, LocalDateTime.now(), Set.of());
+                AllocationHistoryDto historyDto = new AllocationHistoryDto(1L, studentDto, applicationDto,
+                                ApplicationStatus.CONFIRMED, 10, sectionDto);
+
+                when(allocationRepository.findAll()).thenReturn(List.of(mockAllocation));
+                when(userInterface.getStudentById(10L))
+                                .thenReturn(ResponseEntity.ok(studentDto));
+                when(sectionInterface.getSectionById(sectionId))
+                                .thenReturn(sectionDto);
+                when(applicationMapper.toDto(mockApplication))
+                                .thenReturn(applicationDto);
+                when(allocationMapper.toDto(mockAllocation, studentDto, applicationDto, sectionDto))
+                                .thenReturn(historyDto);
+
+                List<AllocationHistoryDto> result = allocationService.getAllocationsBySectionIdWithCourse(sectionId);
+
+                assertEquals(1, result.size());
+                assertEquals(historyDto, result.get(0));
+
+                verify(allocationRepository).findAll();
+                verify(userInterface).getStudentById(10L);
+                verify(sectionInterface).getSectionById(sectionId);
+                verify(applicationMapper).toDto(mockApplication);
+                verify(allocationMapper).toDto(mockAllocation, studentDto, applicationDto, sectionDto);
         }
 
         @Test
@@ -559,4 +613,25 @@ class AllocationServiceTest {
                 verify(allocationMapper).toDto(allocation, studentDto, null, sectionDto);
         }
 
+        @Test
+        void testSetSectionIdNullReturnsAffectedCount() {
+                long sectionId = 42L;
+                when(allocationRepository.clearSectionIdBySectionId(sectionId))
+                                .thenReturn(7);
+
+                Integer result = allocationService.setSectionIdNull(sectionId);
+
+                assertEquals(7, result);
+        }
+
+        @Test
+        void testSetSectionIdNullZeroWhenNothingToClear() {
+                long sectionId = 99L;
+                when(allocationRepository.clearSectionIdBySectionId(sectionId))
+                                .thenReturn(0);
+
+                Integer result = allocationService.setSectionIdNull(sectionId);
+
+                assertEquals(0, result);
+        }
 }
