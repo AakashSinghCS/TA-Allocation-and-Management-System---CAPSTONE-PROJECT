@@ -38,6 +38,7 @@
 | [#368](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/368) | Implement API Endpoint for CSV Import | CSV API endpoint | Seiya | In Progress |
 | [#370](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/370) | Create CSV Import Front-end UI | CSV frontend UI | Seiya | In progress |
 | [#373](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/373) | Update need hours when accepting an offer | Need table | Alex | In progress|
+| #155 | create frontend page for students to manually csv pdf input courses they completed | frontend csv courses | Mandeep | In progress |
 
 
 
@@ -106,6 +107,7 @@
 | [#368](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/368) | Implement API Endpoint for CSV Import | Seiya |
 | [#370](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/370) | Create CSV Import Front-end UI  | Seiya  |
 | [#373](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/373) | Update need hours when accepting an offer  | Alex |
+| #155 | create frontend page for students to manually csv pdf input courses they completed  | Mandeep  |
 
 ## Test Report / Testing Status:
 ![alt text](july_8-10_images/july_8-10_frontendtest.png)
