@@ -36,6 +36,8 @@ describe("CourseProfileDetails", () => {
     vi.clearAllMocks();
     // If your delete returns true:
     mockFetchDelete.mockResolvedValue(true);
+    vi.spyOn(window, "confirm").mockReturnValue(true)
+    vi.spyOn(window, "prompt").mockReturnValue("DELETE")
   });
 
   it("toggles to edit mode when Edit Details is clicked", async () => {

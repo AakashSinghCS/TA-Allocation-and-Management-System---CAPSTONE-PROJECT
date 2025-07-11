@@ -15,7 +15,7 @@ export async function fetchInstructorDetails<Instructor>(userId: number): Promis
     });
 
     const data = await res.json();
-
+    console.log(data);
     return data as Instructor;
     // return mockInstructorChed;
 

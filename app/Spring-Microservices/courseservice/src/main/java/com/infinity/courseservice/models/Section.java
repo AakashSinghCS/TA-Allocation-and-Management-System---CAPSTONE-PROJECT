@@ -37,7 +37,9 @@ public class Section {
     private Long id;
 
     private Integer year;
+
     private String semester;
+
     private String section;
 
     private Long instructorId;

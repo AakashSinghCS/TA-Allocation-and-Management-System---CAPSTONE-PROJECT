@@ -57,8 +57,6 @@ public class QualificationController {
         return ResponseEntity.ok(result);
     }
 
-    
-
     @PostMapping("/{studentId}/studentUpdateQualification")
     public ResponseEntity<List<QualificationDto>> studentUpdateQualification(@RequestBody StudentQualiRequest request, @PathVariable Long studentId) {
         List<QualificationDto> qualifications = qualificationService.studentUpdateQualifications(request, studentId);

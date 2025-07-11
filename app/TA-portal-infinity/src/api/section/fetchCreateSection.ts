@@ -4,9 +4,9 @@ import type SectionSchedule from "../../interfaces/section/SectionSchedule";
 const BASE = "http://localhost:8080/sections/add";
 
 export interface SectionAddDtoRequest{
-    deptCode : string;
-    name ?: string | null;
-    courseNum : string;
+    deptCode? : string | undefined;
+    name ?: string | undefined;
+    courseNum? : string | undefined;
     section?: string | null;
     type? : SectionType | null;
     year ?: number | null;

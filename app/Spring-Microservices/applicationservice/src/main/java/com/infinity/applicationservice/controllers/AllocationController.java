@@ -82,6 +82,11 @@ public class AllocationController {
         return ResponseEntity.ok(allocationService.getAllocationsByApplicationYear(year));
     }
 
+    @PutMapping("/{sectionId}/setSectionIdNull")
+    public ResponseEntity<Integer> setSectionIdNull(@PathVariable Long sectionId) {
+        Integer affected =allocationService.setSectionIdNull(sectionId);
+        return ResponseEntity.ok(affected);
+    }
     @PostMapping("/import")
     public ResponseEntity<List<AllocationHistoryDto>> importAllocations(@RequestBody ImportRequest request) {
         List<Map<String, String>> rows = request.rows();

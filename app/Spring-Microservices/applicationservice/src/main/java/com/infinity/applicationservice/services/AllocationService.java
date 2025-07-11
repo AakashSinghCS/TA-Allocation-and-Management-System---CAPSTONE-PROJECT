@@ -37,10 +37,13 @@ import feign.FeignException;
 import com.infinity.applicationservice.utility.EmailMapper;
 
 
+
 import com.infinity.applicationservice.exceptions.NotFoundException;
 
 
+
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -61,7 +64,13 @@ public class AllocationService {
         StudentDto student = studentInterface.getStudentById(studentId).getBody();
 
         return allocations.stream().map(allocation -> {
-            SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+            Long sectionId = allocation.getSectionId();
+
+            if (sectionId == null) {
+                throw new NotFoundException("Allocation ID " + allocation.getId() + " has no associated sectionId.");
+            }
+            
+            SectionDto section = sectionInterface.getSectionById(sectionId);
             ApplicationDto applicationDto = null;
             if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
                 applicationDto = applicationMapper.toDto(allocation.getApplication());
@@ -185,7 +194,7 @@ public class AllocationService {
             .collect(Collectors.toList());
         }
 
-        public List<AllocationHistoryDto> getAllocationsBySectionIdWithCourse(Long sectionId) {
+    public List<AllocationHistoryDto> getAllocationsBySectionIdWithCourse(Long sectionId) {
         return allocationRepository.findAll().stream()
             .filter(a -> a.getSectionId().equals(sectionId))
             .map(allocation -> {
@@ -201,7 +210,14 @@ public class AllocationService {
             .collect(Collectors.toList());
     }
 
+
+    @Transactional
+    public Integer setSectionIdNull(Long sectionId) {
+        return allocationRepository.clearSectionIdBySectionId(sectionId);
+    }
+
     public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList, boolean autoCreate) {
+
         List<AllocationHistoryDto> importedAllocations = new ArrayList<>();
 
         for (Map<String, String> data : allocationDataList) {

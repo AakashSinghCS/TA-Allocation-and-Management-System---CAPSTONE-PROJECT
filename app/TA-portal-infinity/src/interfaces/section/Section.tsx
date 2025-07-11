@@ -1,4 +1,5 @@
 import type { Allocation } from "../allocation/Allocation";
+import type { Course } from "../course/Course";
 import type { Need } from "../need/Need";
 import type { Instructor } from "../user/Instructor";
 import type { SectionType } from "./SectionDetails";
