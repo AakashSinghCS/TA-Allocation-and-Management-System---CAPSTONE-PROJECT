@@ -55,6 +55,8 @@ export default function SectionListPage() {
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const [autoCreateMissing, setAutoCreateMissing] = useState(false);
+  
   const handleCsvUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -82,7 +84,7 @@ export default function SectionListPage() {
             return;
           }
 
-          const response = await fetchImportAllocations(data, token ?? undefined);
+          const response = await fetchImportAllocations(data, autoCreateMissing, token ?? undefined);
           setImportResult(response);
           setSuccessMessage('Allocations imported successfully!');
           setTimeout(() => setSuccessMessage(null), 3000);
@@ -96,12 +98,18 @@ export default function SectionListPage() {
             const match = errorText.match(/User with student number (\d+) not found/);
             const studentNum = match ? match[1] : 'unknown';
             friendlyMessage = `❌ Failed to import allocations: Student with student number ${studentNum} not found. Please verify student details or add a new student.`;
-          } else if (errorText.includes('Course not found with')) {
-            const match = errorText.match(/Course not found with: ([A-Z]+ \d+)/);
+          } else if (errorText.includes('Course not found:')) {
+            const match = errorText.match(/Course not found:([A-Z]+ \d+)/);
             const courseInfo = match ? match[1] : 'unknown';
             friendlyMessage = `❌ Failed to import allocations: Course ${courseInfo} not found. Please create a new course.`;
-          } else if (errorText.includes('Section not found')) {
-            friendlyMessage = `❌ Failed to import allocations: Section not found. Please add a new section to the course.`;
+          } else if (errorText.includes('Section') && errorText.includes('not found for Course')) {
+            const match = errorText.match(/Section (\S+) (\d{4}) (\S+) not found for Course ([A-Z]+) (\d+)/);
+            if (match) {
+              const [, sectionName, year, semester, deptCode, courseNum] = match;
+              friendlyMessage = `❌ Failed to import allocations: Section ${sectionName} ${semester} ${year} not found for course ${deptCode} ${courseNum}. Please add a new section to the course.`;
+            } else {
+              friendlyMessage = `❌ Failed to import allocations: Section not found. Please add a new section to the course.`;
+            }
           }
 
           setErrorMsg(friendlyMessage);
@@ -173,6 +181,19 @@ export default function SectionListPage() {
               </p>
 
             </label>
+
+            <label className="flex items-center mt-2">
+              <input
+                type="checkbox"
+                checked={autoCreateMissing}
+                onChange={(e) => setAutoCreateMissing(e.target.checked)}
+                className="mr-2"
+              />
+              <span className="text-sm text-gray-700">
+                Create new courses or sections if they don't exist.
+              </span>
+            </label>
+
 
             <div className="flex justify-end gap-2">
               <button
