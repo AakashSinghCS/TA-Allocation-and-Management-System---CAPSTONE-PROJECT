@@ -71,7 +71,7 @@
 | Allen       | 08:18           |
 | Dup         | 26:07          |
 | Eddy        | 00:00        |
-| Mandeep     | 11:25          |
+| Mandeep     | 14:25          |
 | Seiya       | 21:42            |
 
 ![alt text](july_8-10_images/july_8-10_time.png)
