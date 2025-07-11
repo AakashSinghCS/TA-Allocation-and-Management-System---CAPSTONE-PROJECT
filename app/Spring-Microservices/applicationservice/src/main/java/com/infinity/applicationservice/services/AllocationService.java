@@ -21,6 +21,7 @@ import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
+import com.infinity.applicationservice.feign.NotificationClient;
 import com.infinity.applicationservice.feign.SectionInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Allocation;
@@ -30,9 +31,14 @@ import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.utility.AllocationMapper;
 import com.infinity.applicationservice.utility.ApplicationMapper;
 
+
 import feign.FeignException;
 
+import com.infinity.applicationservice.utility.EmailMapper;
+
+
 import com.infinity.applicationservice.exceptions.NotFoundException;
+
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +53,8 @@ public class AllocationService {
     private final UserInterface studentInterface;
     private final ApplicationMapper applicationMapper;
     private final AllocationMapper allocationMapper;
+    private final NotificationClient notificationClient;
+    private final EmailMapper emailMapper;
 
     public List<AllocationHistoryDto> getAllocationsByStudentId(Long studentId) {
         List<Allocation> allocations = allocationRepository.findByStudentId(studentId);
@@ -85,6 +93,7 @@ public class AllocationService {
         //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
         if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
             applicationDto = applicationMapper.toDto(allocation.getApplication());
+          notificationClient.sendEmail(emailMapper.allocationEmailRequest(student));
         }
 
         return allocationMapper.toDto(saved, student, applicationDto, section);

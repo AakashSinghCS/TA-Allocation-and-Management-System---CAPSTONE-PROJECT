@@ -65,7 +65,7 @@ public class ApplicationMapperTest {
 
     @Test
     void testToDtoWithStudent() {
-        StudentDto student = new StudentDto(2L, "Jane", "Doe", 1234567, "COSC", 2022, 3);
+        StudentDto student = new StudentDto(2L, "Jane", "Doe", "test@test.com", 1234567, "COSC", 2022, 3);
 
         Application app = new Application();
         app.setId(1L);
