@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.Course;
+import com.infinity.courseservice.enums.SectionType;
 
 @Repository
 public interface SectionRepository extends JpaRepository<Section, Long> {
@@ -15,6 +17,9 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
     List<Section> findAllByInstructorId(Long instructorId);
 
     Optional<Section> findByCourseIdAndYearAndSemester(Long courseId, Integer year, String semester);
+    
     Optional<Section> findByCourseIdAndSectionAndYearAndSemester(Long courseId, String section, Integer year, String semester);
-
+    
+    Optional<Section> findByCourseAndYearAndSemesterAndSectionAndType(
+        Course course, Integer year, String semester, String section, SectionType type);
 }

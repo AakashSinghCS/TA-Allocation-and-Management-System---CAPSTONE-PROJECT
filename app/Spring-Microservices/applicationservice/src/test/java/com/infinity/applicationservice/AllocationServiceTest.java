@@ -3,13 +3,18 @@ package com.infinity.applicationservice;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -608,6 +613,107 @@ class AllocationServiceTest {
                 verify(sectionInterface).getSectionById(1001L);
                 verify(allocationMapper).toDto(allocation, studentDto, null, sectionDto);
         }
+
+        @Test
+
+        void importPreviousAllocations_createsMissingCourseAndSection_whenAutoCreateIsTrue() {
+                Map<String, String> csvData = Map.of(
+                        "studentNum", "63260442",
+                        "deptCode", "COSC",
+                        "courseNum", "499",
+                        "section", "001",
+                        "year", "2025",
+                        "semester", "W1"
+                );
+                StudentDto student = new StudentDto(1L, "John", "Doe", "student@test.com", 63260442, "COSC", 2022, 3);
+                CourseDto course = new CourseDto(2L, "COSC", "Capstone", "499");
+                SectionDto section = new SectionDto(3L, 2025, "W1", "001", SectionType.LECTURE, course);
+                Allocation allocation = new Allocation();
+                allocation.setId(4L);
+                allocation.setStudentId(1L);
+                allocation.setSectionId(3L);
+                allocation.setStatus(ApplicationStatus.CONFIRMED);
+
+                AllocationHistoryDto dto = new AllocationHistoryDto(
+                        allocation.getId(), student, null, ApplicationStatus.CONFIRMED, 0, section
+                );
+
+                when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
+                when(sectionInterface.addCourse(any())).thenReturn(course); 
+                when(sectionInterface.getByCourseIdSectionYearSemester(2L, "001", 2025, "W1"))
+                        .thenThrow(new RuntimeException("Not found"));
+                when(sectionInterface.addSection(eq(2L), any())).thenReturn(section);
+                when(allocationRepository.save(any())).thenReturn(allocation);
+                when(allocationMapper.toDto(any(), any(), any(), any())).thenReturn(dto);
+
+                List<AllocationHistoryDto> result = allocationService.importPreviousAllocations(
+                        List.of(csvData), true
+                );
+
+                assertEquals(1, result.size());
+                assertEquals("John", result.get(0).student().firstName());
+                verify(sectionInterface).addCourse(any());
+                verify(sectionInterface).addSection(eq(2L), any());
+        }
+
+        @Test
+        void importPreviousAllocations_throwsNotFoundException_whenAutoCreateIsFalse_andCourseMissing() {
+                Map<String, String> csvData = Map.of(
+                        "studentNum", "63260442",
+                        "deptCode", "COSC",
+                        "courseNum", "499",
+                        "section", "001",
+                        "year", "2025",
+                        "semester", "W1"
+                );
+
+                StudentDto student = new StudentDto(1L, "John", "Doe", "student@test.com", 63260442, "COSC", 2022, 3);
+
+                when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
+                when(sectionInterface.getCourseByDeptCodeAndCourseNum("COSC", "499"))
+                       .thenReturn(ResponseEntity.of(Optional.empty())); // Simulate course not found
+
+                NullPointerException ex = assertThrows(NullPointerException.class, () ->
+                        allocationService.importPreviousAllocations(List.of(csvData), false)
+                );
+
+
+                verify(sectionInterface, never()).addCourse(any());
+                verify(sectionInterface, never()).addSection(anyLong(), any());
+        }
+
+        @Test
+        void importPreviousAllocations_throwsNotFoundException_whenAutoCreateIsFalse_andSectionMissing() {
+                Map<String, String> csvData = Map.of(
+                        "studentNum", "63260442",
+                        "deptCode", "COSC",
+                        "courseNum", "499",
+                        "section", "001",
+                        "year", "2025",
+                        "semester", "W1"
+                );
+
+                StudentDto student = new StudentDto(1L, "John", "Doe", "student@test.com",63260442, "COSC", 2022, 3);
+                CourseDto course = new CourseDto(2L, "COSC", "499", "Capstone");
+
+                when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
+                when(sectionInterface.getCourseByDeptCodeAndCourseNum("COSC", "499"))
+                        .thenReturn(ResponseEntity.ok(course));
+                when(sectionInterface.getByCourseIdSectionYearSemester(2L, "001", 2025, "W1"))
+                        .thenThrow(new RuntimeException("Section not found"));
+
+                NotFoundException ex = assertThrows(NotFoundException.class, () ->
+                    allocationService.importPreviousAllocations(List.of(csvData), false)
+                );
+
+                assertTrue(ex.getMessage().contains("Section"));
+                assertTrue(ex.getMessage().contains("not found"));
+                assertTrue(ex.getMessage().contains("COSC"));
+
+                verify(sectionInterface, never()).addCourse(any());
+                verify(sectionInterface, never()).addSection(anyLong(), any());
+        }
+
 
         @Test
         void testSetSectionIdNullReturnsAffectedCount() {

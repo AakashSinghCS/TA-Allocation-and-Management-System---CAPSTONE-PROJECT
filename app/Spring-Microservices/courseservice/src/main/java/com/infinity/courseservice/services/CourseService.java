@@ -54,7 +54,6 @@ public class CourseService {
     private final StudentTaughtCourseRepository stcRepository;
     // private final EnrollmentService enrollmentService;
 
-    @Transactional
     public CourseDto addCourse(CourseRequest request) {
         String deptCode = Optional.ofNullable(request.deptCode()).orElse("").trim();
         String name = Optional.ofNullable(request.name()).orElse("").trim();

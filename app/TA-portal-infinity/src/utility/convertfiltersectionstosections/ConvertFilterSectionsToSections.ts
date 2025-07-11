@@ -4,16 +4,33 @@ import type Section from "../../interfaces/section/Section";
 
 import type SectionSchedule from "../../interfaces/section/SectionSchedule";
 
+// Interface matching the backend CourseSectionScheduleDto
+interface CourseSectionScheduleDto {
+  sectionId: number;
+  courseId: number;
+  deptCode: string;
+  name: string;
+  courseNum: string;
+  section: string;
+  year: number;
+  semester: string;
+  type: string;
+  scheduleDay: string;
+  startTime: string;
+  endTime: string;
+  isCourse: boolean;
+}
+
 
 export function convertFilterSectionsToSections(
-  filters: FilterSectionsProps[]
+  filters: CourseSectionScheduleDto[]
 ): Section[] {
   // Use a Map keyed by sectionId (or a fallback key if null)
-  const bySection = new Map<number | string, Section>();
+  const bySection = new Map<number, Section>();
 
   for (const f of filters) {
     // key on sectionId if present, otherwise on a fixed string
-    const key = f.sectionId ?? "__NO_SECTION_ID__";
+    const key = f.sectionId;
 
     // if we haven't seen this section yet, create its container
     if (!bySection.has(key)) {
@@ -29,7 +46,7 @@ export function convertFilterSectionsToSections(
         id:  f.sectionId  ?? undefined,
         semester:   f.semester   ?? undefined,
         section:    f.section    ?? undefined,
-        type:       f.type       ?? undefined,
+        type:       f.type as any       ?? undefined,
         year:       f.year       ?? undefined,
       };
 
@@ -47,10 +64,10 @@ export function convertFilterSectionsToSections(
     // now push this row’s schedule info into that section’s schedule array
     const sec = bySection.get(key)!;
     const sched: SectionSchedule = {
-      day:       f.day       ?? undefined,
-      startTime: f.startTime ?? undefined,
-      endTime:   f.endTime   ?? undefined,
-      sectionId: f.sectionId ?? undefined,
+      day:       f.scheduleDay,
+      startTime: f.startTime,
+      endTime:   f.endTime,
+      sectionId: f.sectionId,
     };
     
     if(sec.sectionSchedule)sec.sectionSchedule.push(sched);
