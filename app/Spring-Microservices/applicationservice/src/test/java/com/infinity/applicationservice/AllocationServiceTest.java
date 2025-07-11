@@ -622,7 +622,7 @@ class AllocationServiceTest {
                         "year", "2025",
                         "semester", "W1"
                 );
-                StudentDto student = new StudentDto(1L, "John", "Doe", 63260442, "COSC", 2022, 3);
+                StudentDto student = new StudentDto(1L, "John", "Doe", "student@test.com", 63260442, "COSC", 2022, 3);
                 CourseDto course = new CourseDto(2L, "COSC", "Capstone", "499");
                 SectionDto section = new SectionDto(3L, 2025, "W1", "001", SectionType.LECTURE, course);
                 Allocation allocation = new Allocation();
@@ -664,7 +664,7 @@ class AllocationServiceTest {
                         "semester", "W1"
                 );
 
-                StudentDto student = new StudentDto(1L, "John", "Doe", 63260442, "COSC", 2022, 3);
+                StudentDto student = new StudentDto(1L, "John", "Doe", "student@test.com", 63260442, "COSC", 2022, 3);
 
                 when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
                 when(sectionInterface.getCourseByDeptCodeAndCourseNum("COSC", "499"))
@@ -690,7 +690,7 @@ class AllocationServiceTest {
                         "semester", "W1"
                 );
 
-                StudentDto student = new StudentDto(1L, "John", "Doe", 63260442, "COSC", 2022, 3);
+                StudentDto student = new StudentDto(1L, "John", "Doe", "student@test.com",63260442, "COSC", 2022, 3);
                 CourseDto course = new CourseDto(2L, "COSC", "499", "Capstone");
 
                 when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
