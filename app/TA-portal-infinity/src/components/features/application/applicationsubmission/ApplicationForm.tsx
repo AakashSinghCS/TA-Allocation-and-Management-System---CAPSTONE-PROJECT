@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { getAllDeptCodes } from '../../../../api/course/getAllDeptCodes';
 import { useAuth } from '../../../../context/AuthContext';
+import type { DeadlineDto } from '../../../../interfaces/admin/Deadline';
+import { fetchDeadlines } from '../../../../api/admin/FetchDeadline';
+import { toast } from "react-toastify";
+
 
 interface ApplicationFormProps {
   formData: any;
@@ -15,6 +19,9 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
   const [deptCodes, setDeptCodes] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { token, userId, userRoles } = useAuth();
+
+  const [applicationDeadline, setApplicationDeadline] = useState<DeadlineDto | null>(null);
+  const [deadlineError, setDeadlineError] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -36,6 +43,28 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
       isMounted = false;
     };
   }, [token, userId, userRoles]);
+
+  useEffect(() => {
+    async function loadDeadline() {
+      setDeadlineError("");
+      try {
+        const allDeadlines = await fetchDeadlines(token || "");
+        const studentDeadline = allDeadlines.find(
+          (d) => d.name === "student_application_deadline"
+        );
+        setApplicationDeadline(studentDeadline || null);
+      } catch (err) {
+        console.error("Failed to load deadline:", err);
+        setDeadlineError("Could not load application deadline.");
+      }
+    }
+  
+    if (token) loadDeadline();
+  }, [token]);
+  
+  const deadlinePassed =
+      !! applicationDeadline &&
+      new Date(applicationDeadline.endTime) < new Date();
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 md:space-y-10 lg:space-y-12" role="form">
@@ -209,7 +238,17 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
       </button>
       <button
         type="submit"
-        className="px-6 py-2 bg-[#040941] text-white rounded hover:bg-[#030735]"
+        onClick={(e) => {
+          if (deadlinePassed) {
+            e.preventDefault(); // prevent form submission
+            toast("The need update deadline has passed. You can no longer submit.");
+          }
+        }}
+        className={`px-6 py-2 rounded ${
+          deadlinePassed
+            ? "bg-gray-400 cursor-not-allowed"
+            : "px-6 py-2 bg-[#040941] text-white rounded hover:bg-[#030735]"
+        }`}
         disabled={loading}
       >
         {isUpdate ? 'Update Application' : 'Submit Application'}

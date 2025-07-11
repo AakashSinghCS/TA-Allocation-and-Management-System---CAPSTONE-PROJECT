@@ -40,10 +40,10 @@ public class NeedService {
         }
 
         if (LocalDateTime.now().isAfter(applicationInterface.getDeadlineByName("student_application_deadline").getBody().endTime())) {
-                throw new BadRequestException("The application deadline has passed.");
+                throw new BadRequestException("The need update deadline has passed.");
             }
         if (LocalDateTime.now().isBefore(applicationInterface.getDeadlineByName("student_application_deadline").getBody().startTime())) {
-            throw new BadRequestException("The application is not open yet.");
+            throw new BadRequestException("The need update is not open yet.");
         }
 
         Need need = new Need(request.description(), request.requiredGradingHours(), request.numHoursCurrentlyAllocated());

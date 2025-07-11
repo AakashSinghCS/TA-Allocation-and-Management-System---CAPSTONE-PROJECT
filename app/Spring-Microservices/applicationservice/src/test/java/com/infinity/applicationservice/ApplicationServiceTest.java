@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
@@ -113,6 +115,41 @@ public class ApplicationServiceTest {
         });
         assertEquals("You have already submitted an application for this year.", e.getMessage());
     }
+
+    @Test
+    void testSubmitApplication_DeadlinePassed_BadRequest() {
+        // Arrange
+        ApplicationRequest applicationRequest = new ApplicationRequest(
+            List.of(Subject.COSC),
+            ApplicationType.UNDERGRADUATE,
+            false,
+            6,
+            Set.of(new AvailabilityDto(Day.MONDAY, "09:00", "10:00"))
+        );
+
+        // Mock repository: no previous submission
+        when(applicationRepository.existsByStudentIdAndYear(anyLong(), anyInt()))
+            .thenReturn(false);
+
+        // Mock deadline that already expired
+        DeadlineDto expiredDeadline = new DeadlineDto(
+            "student_application_deadline",
+            LocalDateTime.now().minusDays(2),
+            LocalDateTime.now().minusDays(1)
+        );
+
+        // Mock configService
+        when(configService.getDeadlineByName(anyString()))
+            .thenReturn(expiredDeadline);
+
+        // Act + Assert
+        BadRequestException e = assertThrows(BadRequestException.class, () -> {
+            applicationService.submitApplication(applicationRequest, 1L, List.of("ROLE_STUDENT"));
+        });
+
+        assertEquals("The application deadline has passed.", e.getMessage());
+    }
+
 
     @Test
     void testSubmitApplication_MissingAvailabilityFields_BadRequest() {
@@ -284,6 +321,41 @@ public class ApplicationServiceTest {
         });
         assertEquals("Application with that student id and year doesn't exist", e.getMessage());
     }
+
+    @Test
+    void testUpdateApplication_DeadlinePassed_BadRequest() {
+        // Arrange
+        ApplicationRequest request = new ApplicationRequest(
+            List.of(Subject.COSC),
+            ApplicationType.UNDERGRADUATE,
+            false,
+            6,
+            Set.of(new AvailabilityDto(Day.MONDAY, "09:00", "10:00"))
+        );
+
+        // Mock configService returning expired deadline
+        DeadlineDto expiredDeadline = new DeadlineDto(
+            "student_application_deadline",
+            LocalDateTime.now().minusDays(2),
+            LocalDateTime.now().minusDays(1)
+        );
+
+        when(configService.getDeadlineByName(anyString()))
+            .thenReturn(expiredDeadline);
+
+        // Act + Assert
+        BadRequestException e = assertThrows(BadRequestException.class, () -> {
+            applicationService.updateApplication(
+                request,
+                1L, // studentId
+                1L, // userIdFromHeader (same user, so authorized)
+                List.of("ROLE_STUDENT")
+            );
+        });
+
+        assertEquals("The application deadline has passed.", e.getMessage());
+    }
+
 
     @Test
     void testUpdateApplication_Success() {

@@ -67,7 +67,8 @@ public class AllocationController {
     public ResponseEntity<List<AllocationHistoryDto>> getAllocationsBySectionId(@PathVariable Long sectionId) {
         return ResponseEntity.ok(allocationService.getAllocationsBySectionId(sectionId));
     }
-
+    
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'STUDENT')")
     @GetMapping("/filter/application/{applicationId}")
     public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByApplicationId(@PathVariable Long applicationId,
             @RequestHeader("X-User-Id") Long requesterId,

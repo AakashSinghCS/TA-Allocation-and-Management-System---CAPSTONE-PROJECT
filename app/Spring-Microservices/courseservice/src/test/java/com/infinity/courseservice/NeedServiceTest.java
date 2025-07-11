@@ -1,28 +1,34 @@
 package com.infinity.courseservice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.courseservice.dtos.DeadlineDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedRequest;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
+import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.CourseNeed;
 import com.infinity.courseservice.models.Need;
@@ -32,6 +38,7 @@ import com.infinity.courseservice.repositories.NeedRepository;
 import com.infinity.courseservice.repositories.PrereqRepository;
 import com.infinity.courseservice.services.NeedService;
 import com.infinity.courseservice.utility.NeedMapper;
+
 
 @ExtendWith(MockitoExtension.class)
 public class NeedServiceTest {
@@ -54,9 +61,25 @@ public class NeedServiceTest {
     @InjectMocks
     private NeedService needService;
 
+    @Mock
+    private ApplicationInterface applicationInterface;
+
     private Course mockCourse;
     private Need mockNeed;
     private CourseNeed mockCourseNeed;
+
+    @BeforeEach
+    void mockDeadline() {
+        DeadlineDto dto = new DeadlineDto(
+            "student_application_deadline",
+            LocalDateTime.now().minusDays(1),
+            LocalDateTime.now().plusDays(1)
+        );
+        ResponseEntity<DeadlineDto> responseEntity = ResponseEntity.ok(dto);
+
+        lenient().when(applicationInterface.getDeadlineByName(anyString()))
+            .thenReturn(responseEntity);
+    }
 
     @BeforeEach
     void setUp() {
@@ -88,6 +111,53 @@ public class NeedServiceTest {
         assertEquals("W1", result.semester());
         assertEquals("Capstone", result.prerequisites().get(0).name());
     }
+
+    @Test
+    void testAddNeed_DeadlinePassed_BadRequest() {
+        // Arrange
+        Long courseId = 1L;
+
+        NeedRequest request = new NeedRequest(
+            "Need description",
+            5,
+            2,
+            2025,
+            "Spring",
+            List.of()
+        );
+
+        Course mockCourse = new Course();
+        mockCourse.setId(courseId);
+
+        // Mock course repository returning the course
+        when(courseRepository.findById(courseId))
+            .thenReturn(Optional.of(mockCourse));
+
+        // Mock that no duplicate Need exists
+        when(courseNeedRepository.existsByCourseAndYearAndSemester(
+            any(Course.class), eq(2025), eq("Spring")))
+            .thenReturn(false);
+
+        // Mock expired deadline
+        DeadlineDto expiredDeadline = new DeadlineDto(
+            "instructor_need_update_deadline",
+            LocalDateTime.now().minusDays(2),
+            LocalDateTime.now().minusDays(1)
+        );
+
+        ResponseEntity<DeadlineDto> responseEntity = ResponseEntity.ok(expiredDeadline);
+
+        when(applicationInterface.getDeadlineByName(anyString()))
+            .thenReturn(responseEntity);
+
+        // Act + Assert
+        BadRequestException e = assertThrows(BadRequestException.class, () -> {
+            needService.addNeed(request, courseId);
+        });
+
+        assertEquals("The need update deadline has passed.", e.getMessage());
+    }
+
 
     @Test
     void testAddNeed_DuplicateThrowsBadRequest() {

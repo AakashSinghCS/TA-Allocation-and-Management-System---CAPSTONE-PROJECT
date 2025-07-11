@@ -5,6 +5,7 @@ import type { Course } from "../../../../interfaces/course/Course";
 import { fetchCreateQualification } from "../../../../api/instructor/fetchCreateQualification";
 import { fetchDeleteQualification } from "../../../../api/instructor/fetchDeleteQualification";
 import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
+import { toast } from "react-toastify";
 
 interface QualificationCardProps {
     initialQualifications?: Qualification[];
@@ -35,7 +36,7 @@ export default function InstructorQualificationCard({ initialQualifications, cou
      const onSaved = async (savedTempId : string, description: string) => {
         //TODO: ensure backend considers -1 and "" value and throw the request if they are empty.
         if (deadlinePassed) {
-          alert("The deadline has passed. You can no longer save.");
+          toast("The deadline has passed. You can no longer save.");
           return;
         }
         const created : Qualification | null= await fetchCreateQualification( description, course.deptCode ?? "", course.id ?? -1);
@@ -46,7 +47,7 @@ export default function InstructorQualificationCard({ initialQualifications, cou
 
     const onRemoved = async (removingq: TempQualification) => {
       if (deadlinePassed) {
-        alert("The deadline has passed. You can no longer delete.");
+        toast("The deadline has passed. You can no longer delete.");
         return;
       }
         if (removingq.id) {

@@ -19,6 +19,9 @@ import { fetchDeadlines } from "../../../../../api/admin/FetchDeadline";
 import type { DeadlineDto } from "../../../../../interfaces/admin/Deadline";
 import { useAuth } from "../../../../../context/AuthContext";
 
+import { toast } from "react-toastify";
+
+
 export default function InstructorAddNeedPage() {
   const { sectionId } = useParams<{ sectionId: string }>();
   const navigate = useNavigate();
@@ -218,7 +221,7 @@ export default function InstructorAddNeedPage() {
             onClick={(e) => {
               if (deadlinePassed) {
                 e.preventDefault(); // prevent form submission
-                alert("The need update deadline has passed. You can no longer submit.");
+                toast("The need update deadline has passed. You can no longer submit.");
               }
             }}
             className={`px-6 py-2 rounded ${
