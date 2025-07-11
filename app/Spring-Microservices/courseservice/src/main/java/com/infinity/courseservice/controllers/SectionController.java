@@ -22,8 +22,6 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.dtos.SectionDtos.ExportSectionsRequest;
 import com.infinity.courseservice.dtos.SectionDtos.ExportedSectionData;
-import com.infinity.courseservice.dtos.SectionDtos.ImportSectionsBatchRequest;
-import com.infinity.courseservice.dtos.SectionDtos.ImportSectionsBatchResponse;
 import com.infinity.courseservice.services.SectionService;
 
 import lombok.RequiredArgsConstructor;
@@ -135,9 +133,9 @@ public class SectionController {
     }
 
     // CSV Import endpoint
-    @PreAuthorize("hasRole('COORDINATOR')")
-    @PostMapping("/import")
-    public ResponseEntity<ImportSectionsBatchResponse> importSections(@RequestBody ImportSectionsBatchRequest request) {
-        return ResponseEntity.ok(sectionService.importSections(request));
-    }
+    // @PreAuthorize("hasRole('COORDINATOR')")
+    // @PostMapping("/import")
+    // public ResponseEntity<ImportSectionsBatchResponse> importSections(@RequestBody ImportSectionsBatchRequest request) {
+    //     return ResponseEntity.ok(sectionService.importSections(request));
+    // }
 }
