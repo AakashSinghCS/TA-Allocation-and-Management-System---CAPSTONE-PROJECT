@@ -4,6 +4,7 @@ import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -18,11 +19,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "sectionSchedule",
+@Table(name = "section_schedule",
        uniqueConstraints = {
            @UniqueConstraint(
                name = "uk_sectionSchedule_unique_row",
-               columnNames = {"day", "startTime", "endTime"})
+               columnNames = {"schedule_day", "startTime", "endTime"})
        })
 public class SectionSchedule {
 
@@ -30,6 +31,7 @@ public class SectionSchedule {
     @GeneratedValue
     private Long id;
 
+    @Column(name = "schedule_day")
     private String day;
 
     private LocalTime startTime;

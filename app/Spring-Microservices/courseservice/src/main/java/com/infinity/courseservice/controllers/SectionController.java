@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
+import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
+import com.infinity.courseservice.dtos.SectionDtos.ExportSectionsRequest;
+import com.infinity.courseservice.dtos.SectionDtos.ExportedSectionData;
 import com.infinity.courseservice.services.SectionService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,11 +38,6 @@ public class SectionController {
         return ResponseEntity.ok(sectionService.getSectionById(id));
     }
 
-
-    // @GetMapping("/get/{id}")
-    // public ResponseEntity<SectionDto> getSectionById(@PathVariable Long id) {
-    // return ResponseEntity.ok(sectionService.getSectionById(id));
-    // }
     @GetMapping("/getIncludeInstructorId/{id}")
     public ResponseEntity<SectionDtoWithInstructorId> getSectionWithInstructorIdById(@PathVariable Long id) {
         return ResponseEntity.ok(sectionService.getSectionWithInstructorIdById(id));
@@ -125,4 +123,31 @@ public class SectionController {
         return ResponseEntity.ok(sectionDto);
     }
 
+    // Legacy CSV Export endpoint (using complex ExportedSectionData)
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @PostMapping("/export")
+    public ResponseEntity<List<ExportedSectionData>> exportSections(@RequestBody ExportSectionsRequest request) {
+        return ResponseEntity.ok(sectionService.exportSections(request.sectionIds()));
+    }
+
+    // New CSV Export endpoint (using simple SectionCsvData for better import compatibility)
+    // @PreAuthorize("hasRole('COORDINATOR')") // Temporarily disabled for testing
+    @PostMapping("/export-csv")
+    public ResponseEntity<List<SectionCsvData>> exportSectionsAsCsv(@RequestBody ExportSectionsRequest request) {
+        return ResponseEntity.ok(sectionService.exportSectionsAsCsv(request.sectionIds()));
+    }
+
+    // Export all sections as CSV
+    // @PreAuthorize("hasRole('COORDINATOR')") // Temporarily disabled for testing
+    @GetMapping("/export-csv/all")
+    public ResponseEntity<List<SectionCsvData>> exportAllSectionsAsCsv() {
+        return ResponseEntity.ok(sectionService.exportAllSectionsAsCsv());
+    }
+
+    // CSV Import endpoint
+    // @PreAuthorize("hasRole('COORDINATOR')")
+    // @PostMapping("/import")
+    // public ResponseEntity<ImportSectionsBatchResponse> importSections(@RequestBody ImportSectionsBatchRequest request) {
+    //     return ResponseEntity.ok(sectionService.importSections(request));
+    // }
 }

@@ -24,5 +24,6 @@ public class StudentTaughtCourse {
     @Enumerated(EnumType.STRING)
     private Semester semester;
 
+    @Column(name = "student_year")
     private int year;
 }

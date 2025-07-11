@@ -13,7 +13,7 @@ public record CourseSectionScheduleDto(
         Integer year,
         String semester,
         SectionType type,
-        String day,
+        String scheduleDay,
         LocalTime startTime,
         LocalTime endTime,
         boolean isCourse
