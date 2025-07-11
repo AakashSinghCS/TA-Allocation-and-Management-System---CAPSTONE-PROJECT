@@ -498,7 +498,8 @@ class AllocationServiceTest {
                 mockAllocation.setSectionId(sectionId);
 
                 Application mockApplication = new Application();
-                mockApplication.setId(30L);
+
+                mockApplication.setId(1L);
                 mockAllocation.setApplication(mockApplication);
 
                 UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
