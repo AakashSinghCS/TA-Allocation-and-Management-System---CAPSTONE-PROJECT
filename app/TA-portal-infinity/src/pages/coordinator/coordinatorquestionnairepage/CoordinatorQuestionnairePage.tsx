@@ -20,6 +20,11 @@ export default function CoordinatorQuestionnaire({ initial }: { initial: Profile
 
     return (
         <div className="max-w-5xl mx-auto grid grid-cols-1 gap-3">
+            <div>
+                <h2 className="text-xl font-semibold mb-1">Questions for students to answer</h2>
+                <p className="text-xs text-slate-600 mb-1">Students will respond to these questions, and their answers will be reflected in their profiles.</p>
+                <p className="text-xs text-slate-600 mb-1">Updating a question will DELETE all previous students' responses to the question. Please create questions carefully, so that students don't have to respond again.</p>
+            </div>
             {questions.map((currentq) => (
                 <div key={currentq.id ?? (currentq as any).tempId} className="relative border-b-solid border-b-2 border-gray-200 py-2">
                     <QuestionItem

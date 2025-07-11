@@ -8,6 +8,8 @@ import { fetchDeleteQuestion } from "../../../../api/question/fetchDeleteQuestio
 import { fetchCreateQuestion } from "../../../../api/question/fetchCreateQuestion";
 import { fetchUpdateQuestion } from "../../../../api/question/fetchUpdateQuestion";
 import { useAuth } from "../../../../context/AuthContext";
+import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
+import { confirmUpdate } from "../../../../utility/confirmation/confirmUpdate";
 
 export type QuestionnaireMode = "respond" | "edit";
 
@@ -56,6 +58,8 @@ export default function QuestionItem({ initialQuestion, onRemoved, onSaved, resp
   const handleSave = async () => {
     let saved: ProfileQuestion | null;
     if (question.id != null) {
+      const confirm = confirmUpdate("question","This will DELETE all previous students' responses to the question!");
+      if(!confirm) return;
       saved = await fetchUpdateQuestion(toRequest(question));
     } else {
       saved = await fetchCreateQuestion(toRequest(question));
@@ -72,6 +76,8 @@ export default function QuestionItem({ initialQuestion, onRemoved, onSaved, resp
 
   const handleDelete = async () => {
     if (question.id != null) {
+      const confirm = confirmDeletion("question", "This will delete all students' responses to the question");
+      if(!confirm) return;
       const success = await fetchDeleteQuestion(question.id);
       if (success) {
         alert("Question deleted successfully");
