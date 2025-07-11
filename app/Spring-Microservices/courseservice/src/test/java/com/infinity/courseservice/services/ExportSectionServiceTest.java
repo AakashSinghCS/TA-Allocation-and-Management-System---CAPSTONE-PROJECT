@@ -22,7 +22,7 @@ import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
 
 @ExtendWith(MockitoExtension.class)
-class SectionServiceTest {
+public class ExportSectionServiceTest {
 
     @Mock
     private SectionRepository sectionRepository;
@@ -68,8 +68,8 @@ class SectionServiceTest {
         // Arrange
         List<Long> sectionIds = Arrays.asList(1L, 2L);
         when(sectionRepository.findAllById(anyList())).thenReturn(mockSections);
-        when(sectionScheduleRepository.findBySection(mockSections.get(0))).thenReturn(Arrays.asList());
-        when(sectionScheduleRepository.findBySection(mockSections.get(1))).thenReturn(Arrays.asList());
+        //when(sectionScheduleRepository.findBySection(mockSections.get(0))).thenReturn(Arrays.asList());
+        //when(sectionScheduleRepository.findBySection(mockSections.get(1))).thenReturn(Arrays.asList());
 
         // Act
         List<ExportedSectionData> result = sectionService.exportSections(sectionIds);
@@ -125,7 +125,7 @@ class SectionServiceTest {
         // Arrange - only one section exists
         List<Long> sectionIds = Arrays.asList(1L, 999L);
         when(sectionRepository.findAllById(anyList())).thenReturn(Arrays.asList(mockSections.get(0)));
-        when(sectionScheduleRepository.findBySection(mockSections.get(0))).thenReturn(Arrays.asList());
+        //when(sectionScheduleRepository.findBySection(mockSections.get(0))).thenReturn(Arrays.asList());
 
         // Act
         List<ExportedSectionData> result = sectionService.exportSections(sectionIds);

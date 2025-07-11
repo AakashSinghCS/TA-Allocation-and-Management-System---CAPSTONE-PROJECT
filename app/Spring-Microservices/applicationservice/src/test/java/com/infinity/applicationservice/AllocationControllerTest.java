@@ -285,7 +285,7 @@ public class AllocationControllerTest {
                .content(mapper.writeValueAsString(request)))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$", hasSize(1)))
-           .andExpect(jsonPath("$[0].student.firstName").value("Test"));
+           .andExpect(jsonPath("$[0].student.firstName").value("Alice"));
 
         verify(allocationService, times(1)).importPreviousAllocations(any(), eq(false));
      }
