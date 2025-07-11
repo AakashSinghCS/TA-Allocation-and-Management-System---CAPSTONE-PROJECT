@@ -37,7 +37,6 @@ import AddEnrolledCourse from "../pages/taprofilepage/coursestakenpage/addenroll
 import ViewApplicationPage from "../pages/studentpages/viewapplicationpage/ViewApplicationPage";
 import ApplicationViewPage from "../pages/coordinatorpages/applicationviewpage/ApplicationViewPage";
 import ExportToCSVPage from "../pages/csv/exportpage/ExportToCSVPage";
-import ImportFromCSVPage from "../pages/csv/importpage/ImportFromCSVPage";
 
 export const router = createBrowserRouter([
   {
@@ -109,7 +108,6 @@ export const router = createBrowserRouter([
           { path: "sections", element: < SectionListPage/> },
           { path: "sections/add", element: < AddSectionPage/> },
           { path: "sections/export", element: < ExportToCSVPage/> },
-          { path: "sections/import", element: < ImportFromCSVPage/> },
           { path: "applications", element: <ApplicationViewPage /> },
           {path: "allocation", element: <AllocationPage />},
           { path: "student/questions/:studentId", element: < TaQuestionnairePage/> }, //TEMPORARY for development
