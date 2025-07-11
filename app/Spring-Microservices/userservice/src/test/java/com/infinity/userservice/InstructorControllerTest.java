@@ -46,6 +46,6 @@ public class InstructorControllerTest {
                 .andExpect(jsonPath("$.id").value(instructorId))
                 .andExpect(jsonPath("$.firstName").value("Jane"))
                 .andExpect(jsonPath("$.employeeNum").value(1234))
-                .andExpect(jsonPath("$.dept").value("Math"));
+                .andExpect(jsonPath("$.department").value("Math"));
     }
 }

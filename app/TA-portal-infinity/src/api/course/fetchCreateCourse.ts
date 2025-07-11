@@ -3,9 +3,9 @@ import type { Course } from "../../interfaces/course/Course";
 const BASE = "http://localhost:8080/courses/addCourse";
 
 export interface CourseAddDtoRequest{
-    deptCode : string;
-    name ?: string | null;
-    courseNum : string;
+    deptCode? : string | undefined;
+    name ?: string | undefined;
+    courseNum? : string | undefined;
 }
 
 export async function fetchCreateCourse(req:CourseAddDtoRequest ): Promise<Course | null> {

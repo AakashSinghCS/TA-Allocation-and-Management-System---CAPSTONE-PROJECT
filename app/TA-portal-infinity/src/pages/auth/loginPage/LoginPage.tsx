@@ -6,6 +6,7 @@ import Navbar from '../../../components/layout/login_navbar/Navbar';
 import { useAuth, parseJwt } from '../../../context/AuthContext';
 import { UserRole } from '../../../interfaces/enum/UserRole';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
+import { looksLikeSqlInjection } from '../../../utility/validation/sqlinjection/looksLikeSqlInjection';
 
 interface RawJwt {
   sub: string;
@@ -26,6 +27,11 @@ const LoginPage: React.FC = () => {
   const [formError, setFormError] = useState('');
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (looksLikeSqlInjection(email) || looksLikeSqlInjection(password)) {
+      setFormError("Suspicious characters detected. Please revise your input.");
+      return;
+    }
 
     try {
       const response = await fetch("http://localhost:8080/auth/login", {
@@ -207,3 +213,4 @@ const LoginPage: React.FC = () => {
 };
 
 export default LoginPage;
+

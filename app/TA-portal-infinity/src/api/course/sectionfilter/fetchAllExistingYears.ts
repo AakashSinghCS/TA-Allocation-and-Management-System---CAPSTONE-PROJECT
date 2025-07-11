@@ -1,5 +1,5 @@
-export async function fetchAllExistingYears(deptCode:string, courseNum: string, section:string): Promise<number[] | null> {
-    const BASE = `http://localhost:8080/courses/allYears?deptCode=${deptCode}&courseNum=${courseNum}&section=${section}`;
+export async function fetchAllExistingYears(): Promise<string[] | null> {
+    const BASE = `http://localhost:8080/courses/allYears`;
     const token = localStorage.getItem("token");
 
     try {

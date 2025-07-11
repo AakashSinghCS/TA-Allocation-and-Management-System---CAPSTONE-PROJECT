@@ -47,22 +47,22 @@ import com.infinity.applicationservice.services.AllocationService;
 @AutoConfigureMockMvc(addFilters = false)
 public class AllocationControllerTest {
 
-    @Autowired
-    private MockMvc mvc;
+        @Autowired
+        private MockMvc mvc;
 
-    @Autowired
-    private ObjectMapper mapper;
+        @Autowired
+        private ObjectMapper mapper;
 
-    @MockitoBean
-    private AllocationService allocationService;
+        @MockitoBean
+        private AllocationService allocationService;
 
-    @MockitoBean
-    private UserInterface studentInterface;
-    
-    @MockitoBean
-    private SectionInterface sectionInterface;
+        @MockitoBean
+        private UserInterface studentInterface;
 
-    private AllocationHistoryDto sampleDto;
+        @MockitoBean
+        private SectionInterface sectionInterface;
+
+        private AllocationHistoryDto sampleDto;
 
     @BeforeEach
     void setup() {
@@ -85,10 +85,10 @@ public class AllocationControllerTest {
                         new CourseDto(1L, "COSC", "Capstone", "499")));
     }
 
-    @Test
-    void testGetStudentAllocationHistory() throws Exception {
-        Long sid = 1L;
-        when(allocationService.getAllocationsByStudentId(sid)).thenReturn(List.of(sampleDto));
+        @Test
+        void testGetStudentAllocationHistory() throws Exception {
+                Long sid = 1L;
+                when(allocationService.getAllocationsByStudentId(sid)).thenReturn(List.of(sampleDto));
 
         mvc.perform(get("/allocations/student/{sid}/history", sid))
                 .andExpect(status().isOk())
@@ -99,23 +99,23 @@ public class AllocationControllerTest {
                 .andExpect(jsonPath("$[0].status").value("SENT"));
     }
 
-    @Test
-    void allocateStudent_createsAllocationAndReturnsDto() throws Exception {
-        AllocationRequest request = new AllocationRequest(
-                1L,
-                1L,
-                ApplicationStatus.SENT,
-                10,
-                1001L);
-        ApplicationDto application = new ApplicationDto(
-                1L,
-                1L,
-                List.of(),
-                ApplicationType.UNDERGRADUATE,
-                false,
-                10,
-                LocalDateTime.now(),
-                Set.of());
+        @Test
+        void allocateStudent_createsAllocationAndReturnsDto() throws Exception {
+                AllocationRequest request = new AllocationRequest(
+                                1L,
+                                1L,
+                                ApplicationStatus.SENT,
+                                10,
+                                1001L);
+                ApplicationDto application = new ApplicationDto(
+                                1L,
+                                1L,
+                                List.of(),
+                                ApplicationType.UNDERGRADUATE,
+                                false,
+                                10,
+                                LocalDateTime.now(),
+                                Set.of());
 
         AllocationHistoryDto responseDto = new AllocationHistoryDto(
                 123L,
@@ -254,6 +254,5 @@ public class AllocationControllerTest {
            .andExpect(jsonPath("$[0].student.firstName").value("Test"));
 
         verify(allocationService, times(1)).importPreviousAllocations(any());
-     }
-
+     }            
 }

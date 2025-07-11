@@ -33,8 +33,9 @@ public class StudentCourse {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
     
+    //TODO: when deleting section, set this to null.
     @ManyToOne
-    @JoinColumn(name = "section_id")
+    @JoinColumn(name = "section_id", nullable = true)
     private Section section;
 
     @Enumerated(EnumType.STRING)

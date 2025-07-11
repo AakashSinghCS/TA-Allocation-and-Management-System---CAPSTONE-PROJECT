@@ -3,15 +3,37 @@ package com.infinity.courseservice.dtos.CourseDtos;
 import com.infinity.courseservice.enums.SectionType;
 
 import io.micrometer.common.lang.Nullable;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 
 public record CourseRequest(
-        @Nullable String deptCode,
+        @Nullable 
+        @Pattern(regexp = "^[A-Z]{4}$",
+             message = "Dept code must be 4 uppercase letters")
+        String deptCode,
+        
         @Nullable String name,
-        @Nullable String courseNum,
-        @Nullable String section,
+
+        @Nullable 
+        @Pattern(regexp = "^[0-9]{3}$",
+             message = "Course number must be 3 digits")
+        String courseNum,
+
+        @Nullable 
+        @Pattern(regexp = "^[A-Z0-9]{3}$",
+             message = "Section code must be 3 uppercase letters/digits")
+        String section,
         @Nullable SectionType type,
-        @Nullable Integer year,
-        @Nullable String semester,
+        @Nullable 
+        @Min(value = 1900, message = "Year must be ≥ 1900")
+        @Max(value = 2199, message = "Year must be ≤ 2199")
+        Integer year,
+
+        @Nullable 
+        @Pattern(regexp = "^[WS][12]$",
+             message = "Semester must be W1/W2/S1/S2")
+        String semester,
         @Nullable String day,
         @Nullable String startTime,
         @Nullable String endTime,
