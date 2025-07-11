@@ -36,13 +36,15 @@ public class SectionController {
     }
 
 
-
+    // @GetMapping("/get/{id}")
+    // public ResponseEntity<SectionDto> getSectionById(@PathVariable Long id) {
+    // return ResponseEntity.ok(sectionService.getSectionById(id));
+    // }
     @GetMapping("/getIncludeInstructorId/{id}")
     public ResponseEntity<SectionDtoWithInstructorId> getSectionWithInstructorIdById(@PathVariable Long id) {
         return ResponseEntity.ok(sectionService.getSectionWithInstructorIdById(id));
     }
 
-   
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addSection/{courseId}")
     public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId,
