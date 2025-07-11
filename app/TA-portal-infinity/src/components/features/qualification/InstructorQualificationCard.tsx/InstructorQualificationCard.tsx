@@ -4,6 +4,7 @@ import { fallbackTempId, toObjectWithTempId } from "../../../../utility/fallback
 import type { Course } from "../../../../interfaces/course/Course";
 import { fetchCreateQualification } from "../../../../api/instructor/fetchCreateQualification";
 import { fetchDeleteQualification } from "../../../../api/instructor/fetchDeleteQualification";
+import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
 
 interface QualificationCardProps {
     initialQualifications?: Qualification[];
@@ -39,7 +40,7 @@ export default function InstructorQualificationCard({ initialQualifications, cou
 
     const onRemoved = async (removingq: TempQualification) => {
         if (removingq.id) {
-            const confirmed = window.confirm("Really delete?")
+            const confirmed = confirmDeletion("Lab skill","");
             if(!confirmed) return;
             const ok = await fetchDeleteQualification(removingq.id);
     

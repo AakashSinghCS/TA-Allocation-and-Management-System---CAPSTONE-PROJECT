@@ -33,33 +33,36 @@ public class SectionController {
 
     private final SectionService sectionService;
 
-     @GetMapping("/get/{id}")
-     public ResponseEntity<SectionDto> getSectionById(@PathVariable Long id) {
-         return ResponseEntity.ok(sectionService.getSectionById(id));
-     }
+    @GetMapping("/get/{id}")
+    public ResponseEntity<SectionDto> getSectionById(@PathVariable Long id) {
+        return ResponseEntity.ok(sectionService.getSectionById(id));
+    }
 
-     @GetMapping("/getIncludeInstructorId/{id}")
-     public ResponseEntity<SectionDtoWithInstructorId> getSectionWithInstructorIdById(@PathVariable Long id) {
-         return ResponseEntity.ok(sectionService.getSectionWithInstructorIdById(id));
-     }
-    
-     @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/getIncludeInstructorId/{id}")
+    public ResponseEntity<SectionDtoWithInstructorId> getSectionWithInstructorIdById(@PathVariable Long id) {
+        return ResponseEntity.ok(sectionService.getSectionWithInstructorIdById(id));
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+
+   
     @PostMapping("/addSection/{courseId}")
-     public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId, @RequestBody SectionAddDtoRequest request) {
-         return ResponseEntity.ok(sectionService.addSection(courseId, request));
-     }
-    
-     @PreAuthorize("hasRole('COORDINATOR')")
-     @PutMapping("/updateSection/{sectionId}")
-     public ResponseEntity<SectionDto> updateSection(@PathVariable Long sectionId, @RequestBody CourseRequest request) {
-         return ResponseEntity.ok(sectionService.updateSection(sectionId, request));
-     }
+    public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId,
+            @RequestBody SectionAddDtoRequest request) {
+        return ResponseEntity.ok(sectionService.addSection(courseId, request));
+    }
 
-     @PreAuthorize("hasRole('COORDINATOR')")
-     @DeleteMapping("/deleteSection/{sectionId}")
-     public ResponseEntity<String> deleteSection(@PathVariable Long sectionId) {
-         return ResponseEntity.ok(sectionService.deleteSection(sectionId));
-     }
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @PutMapping("/updateSection/{sectionId}")
+    public ResponseEntity<SectionDto> updateSection(@PathVariable Long sectionId, @RequestBody CourseRequest request) {
+        return ResponseEntity.ok(sectionService.updateSection(sectionId, request));
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @DeleteMapping("/deleteSection/{sectionId}")
+    public ResponseEntity<String> deleteSection(@PathVariable Long sectionId) {
+        return ResponseEntity.ok(sectionService.deleteSection(sectionId));
+    }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addSectionSchedule/{sectionId}")
@@ -105,10 +108,21 @@ public class SectionController {
         return ResponseEntity.ok(sectionService.getInstructorSections(instructorId));
     }
 
-     @PreAuthorize("hasRole('COORDINATOR')")
+    @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/add")
-    public ResponseEntity<Boolean> add( @RequestBody SectionAddDtoRequest request) {      
+    public ResponseEntity<Boolean> add(@RequestBody SectionAddDtoRequest request) {
         return ResponseEntity.ok(sectionService.add(request));
+    }
+
+    @GetMapping("/getByCourseIdSectionYearSemester/{courseId}/{section}/{year}/{semester}")
+    public ResponseEntity<SectionDto> getByCourseIdSectionYearSemester(
+            @PathVariable Long courseId,
+            @PathVariable String section,
+            @PathVariable Integer year,
+            @PathVariable String semester) {
+
+        SectionDto sectionDto = sectionService.getByCourseIdSectionYearSemester(courseId, section, year, semester);
+        return ResponseEntity.ok(sectionDto);
     }
 
     // Legacy CSV Export endpoint (using complex ExportedSectionData)

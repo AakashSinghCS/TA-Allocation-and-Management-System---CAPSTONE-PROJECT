@@ -1,6 +1,5 @@
 import type { Course } from "../../interfaces/course/Course";
 import type Qualification from "../../interfaces/qualification/Qualification";
-import type Section from "../../interfaces/section/Section";
 
 // export interface QualificationResponse {
 //     section: Section;
@@ -27,7 +26,9 @@ export async function fetchCreateQualification(description : string, deptCode : 
     //     id: Math.floor(Math.random() * 10000),
     //     description: description,
     //     deptCode: deptCode
-
+    console.log(description);
+    console.log(deptCode);
+    console.log(courseId);
     const request:QualificationRequest = {
         courseId: courseId,
         description: description,

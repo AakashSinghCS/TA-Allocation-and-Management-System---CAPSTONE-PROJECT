@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { sendOffer as apiSendOffer } from '../../api/allocation/sendOffer';
 import type { CreateOfferRequest } from '../../api/allocation/sendOffer';
+import { sendOffer as apiSendOffer } from '../../api/allocation/sendOffer';
 import type { ApplicationDto } from '../../interfaces/application/Application';
 import type { Need } from '../../interfaces/need/Need';
 
 /** Compute remaining hours for a section */
 function getRemainingHours(need: Need): number {
   const required = need.requiredGradingHours ?? 0;
-  const allocated = need.numOfHoursCurrentlyAllocated ?? 0;
+  const allocated = need.numHoursCurrentlyAllocated ?? 0;
   return Math.max(required - allocated, 0);
 }
 

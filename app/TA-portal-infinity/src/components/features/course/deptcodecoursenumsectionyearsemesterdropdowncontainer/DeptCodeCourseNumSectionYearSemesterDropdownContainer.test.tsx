@@ -1,21 +1,21 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import DeptCodeCourseNumSectionYearSemesterDropdownContainer from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
-import * as apiCourseNums from '../../../../api/sectionfilter/fetchAllExistingCourseNums';
-import * as apiSections from '../../../../api/sectionfilter/fetchAllExistingSections';
-import * as apiYears from '../../../../api/sectionfilter/fetchAllExistingYears';
-import * as apiSemesters from '../../../../api/sectionfilter/fetchAllExistingSemesters';
+import * as apiCourseNums from '../../../../api/course/sectionfilter/fetchAllExistingCourseNums';
+import * as apiSections from '../../../../api/course/sectionfilter/fetchAllExistingSections';
+import * as apiYears from '../../../../api/course/sectionfilter/fetchAllExistingYears';
+import * as apiSemesters from '../../../../api/course/sectionfilter/fetchAllExistingSemesters';
 
-vi.mock('../../../../api/sectionfilter/fetchAllExistingCourseNums', () => ({
+vi.mock('../../../../api/course/sectionfilter/fetchAllExistingCourseNums', () => ({
   fetchAllExistingCourseNums: vi.fn(),
 }));
-vi.mock('../../../../api/sectionfilter/fetchAllExistingSections', () => ({
+vi.mock('../../../../api/course/sectionfilter/fetchAllExistingSections', () => ({
   fetchAllExistingSections: vi.fn(),
 }));
-vi.mock('../../../../api/sectionfilter/fetchAllExistingYears', () => ({
+vi.mock('../../../../api/course/sectionfilter/fetchAllExistingYears', () => ({
   fetchAllExistingYears: vi.fn(),
 }));
-vi.mock('../../../../api/sectionfilter/fetchAllExistingSemesters', () => ({
+vi.mock('../../../../api/course/sectionfilter/fetchAllExistingSemesters', () => ({
   fetchAllExistingSemesters: vi.fn(),
 }));
 
@@ -31,20 +31,18 @@ describe('DeptCodeCourseNumSectionYearSemesterDropdownContainer', () => {
   it('disables dependent selects until parent is chosen and loads course numbers', async () => {
     render(
       <DeptCodeCourseNumSectionYearSemesterDropdownContainer
-        allExistingDeptCodes={['COSC', 'MATH']}
+        allExistingDeptCodesAndYears={{deptCodes:['COSC', 'MATH'], years:['2024','2023']}}
         mode="small"
         onChange={vi.fn()}
       />
     );
 
-    const [deptSelect, courseNumSelect, sectionSelect, yearSelect, semesterSelect] =
+    const [deptSelect, courseNumSelect, sectionSelect] =
       screen.getAllByRole('combobox');
 
     expect(deptSelect).toBeEnabled();
     expect(courseNumSelect).toBeDisabled();
     expect(sectionSelect).toBeDisabled();
-    expect(yearSelect).toBeDisabled();
-    expect(semesterSelect).toBeDisabled();
 
     fireEvent.change(deptSelect, { target: { value: 'COSC' } });
     expect(apiCourseNums.fetchAllExistingCourseNums).toHaveBeenCalledWith('COSC');

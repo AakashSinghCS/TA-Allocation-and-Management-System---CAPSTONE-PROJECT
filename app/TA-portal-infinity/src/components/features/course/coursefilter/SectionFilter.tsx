@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
-import DaySelector from '../../../ui/dayselector/DaySelector';
-import TimeSelector from '../../../ui/timeselector/TimeSelector';
-import { GenericAPIContainer } from '../../../../utility/genericapicontainer/GenericAPIContainer';
-import { fetchAllExistingDeptCodes } from '../../../../api/sectionfilter/fetchAllExsitingDeptCodes';
+import { useState } from 'react';
+import { fetchAllExistingDeptCodes } from '../../../../api/course/sectionfilter/fetchAllExistingDeptCodes';
+import { type FilterSectionsProps } from '../../../../api/course/sectionfilter/fetchFilteredSections';
 import { sectionTypeOptions, type SectionType } from '../../../../interfaces/section/SectionDetails';
-import DeptCodeCourseNumSectionYearSemesterDropdownContainer from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
-import { type FilterSectionsProps } from '../../../../api/sectionfilter/fetchFilteredSections';
+import { GenericAPIContainer } from '../../../../utility/genericapicontainer/GenericAPIContainer';
+import DaySelector from '../../../ui/section/dayselector/DaySelector';
+import TimeSelector from '../../../ui/section/timeselector/TimeSelector';
+import DeptCodeCourseNumSectionYearSemesterDropdownContainer, { type AllExistingDeptCodesAndYears } from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
+import { fetchAllExistingYears } from '../../../../api/course/sectionfilter/fetchAllExistingYears';
 type Mode = 'small' | 'large';
 
 interface CourseFilterProps {
@@ -73,11 +74,20 @@ export default function SectionFilter({
 
       <div className={mode === 'small' ? "grid grid-cols-2 gap-2" : "grid grid-rows-2 gap-4"}>
         <div className="">
-          <GenericAPIContainer<string[] | null>
-            fetchFunction={fetchAllExistingDeptCodes}
-            render={(allDeptCodes) => (
+          <GenericAPIContainer<AllExistingDeptCodesAndYears | null>
+            fetchFunction={async () =>{
+              const deptCodes = await fetchAllExistingDeptCodes();
+
+              const years = await fetchAllExistingYears();
+              const returnVal : AllExistingDeptCodesAndYears = {
+                deptCodes:deptCodes ?? [],
+                years:years ??[]
+              };
+              return returnVal;
+            }}
+            render={(allDeptCodesAndYears) => (
               <DeptCodeCourseNumSectionYearSemesterDropdownContainer
-                allExistingDeptCodes={allDeptCodes}
+                allExistingDeptCodesAndYears={allDeptCodesAndYears}
                 mode={mode}
                 onChange={(partial) => setdCCNSYS(prev => ({ ...prev, ...partial }))}
               />
@@ -105,7 +115,7 @@ export default function SectionFilter({
       </div>
 
       <button
-      type="button"
+        type="button"
         onClick={handleFilter}
         className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#040491] transition-colors text-white w-full"
       >

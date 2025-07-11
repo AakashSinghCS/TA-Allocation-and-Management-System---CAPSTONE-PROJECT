@@ -40,21 +40,17 @@ export async function fetchGetInstructorSections(
     const dtos: SectionDto[] = await res.json();
 
     return dtos.map((d) => ({
-      sectionDetails: {
-        // course-level fields
-        id:        d.course.id,
-        deptCode:  d.course.deptCode,
-        name:      d.course.name,
+      id: d.id,
+      year: d.year,
+      semester: d.semester,
+      section: d.section,
+      type: d.type as SectionType,
+      course: {
+        id: d.course.id,
+        deptCode: d.course.deptCode,
+        name: d.course.name,
         courseNum: d.course.courseNum,
-
-        // section-level fields
-        sectionId: d.id,
-        year:      d.year,
-        semester:  d.semester,
-        section:   d.section,
-        type:      d.type as SectionType,  
-      },
-      // leave the rest undefined
+      }
     }));
   } catch (err) {
     console.error("Failed to fetch instructor sections:", err);

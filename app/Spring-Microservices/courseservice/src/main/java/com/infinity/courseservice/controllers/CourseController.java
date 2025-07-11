@@ -104,21 +104,19 @@ public class CourseController {
     }
 
     @GetMapping("/allYears")
-    public ResponseEntity<List<String>> getAllYears(
-            @RequestParam String deptCode,
-            @RequestParam String courseNum,
-            @RequestParam String section) {
-        return ResponseEntity.ok(courseService.getAllYears(deptCode, courseNum, section));
+    public ResponseEntity<List<String>> getAllYears() {
+        return ResponseEntity.ok(courseService.getAllYears());
     }
 
-    @GetMapping("/allSemesters")
-    public ResponseEntity<List<String>> getAllSemesters(
-            @RequestParam String deptCode,
-            @RequestParam String courseNum,
-            @RequestParam String section,
-            @RequestParam String year) {
-        return ResponseEntity.ok(courseService.getAllSemester(deptCode, courseNum, section, year));
-    }
+    // Change of Plan: I think I don't need this.
+    // @GetMapping("/allSemesters")
+    // public ResponseEntity<List<String>> getAllSemesters(
+    //         @RequestParam String deptCode,
+    //         @RequestParam String courseNum,
+    //         @RequestParam String section,
+    //         @RequestParam String year) {
+    //     return ResponseEntity.ok(courseService.getAllSemester(deptCode, courseNum, section, year));
+    // }
 
 
     @PreAuthorize("hasAnyRole('COORDINATOR', 'STUDENT')")
@@ -143,6 +141,16 @@ public class CourseController {
     public ResponseEntity<List<StudentTaughtCourseDto>> getStudentTaughtCourses(@PathVariable Long studentId) {
         return ResponseEntity.ok(courseService.getCoursesTaughtByStudent(studentId));
     }
+
+    @GetMapping("/getByDeptCodeAndCourseNum/{deptCode}/{courseNum}")
+    public ResponseEntity<CourseDto> getByDeptCodeAndCourseNum(
+            @PathVariable String deptCode,
+            @PathVariable String courseNum) {
+    
+        CourseDto dto = courseService.getByDeptCodeAndCourseNum(deptCode, courseNum);
+        return ResponseEntity.ok(dto);
+    }
+
 
     // @GetMapping("/getEnrolledCourses/{studentId}")
     // public ResponseEntity<List<CourseDto>> getMethodName(@PathVariable Integer

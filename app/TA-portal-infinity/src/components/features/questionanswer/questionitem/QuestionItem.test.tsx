@@ -22,6 +22,8 @@ describe('<QuestionItem /> — respond-mode', () => {
  
       beforeEach(() => {
           vi.clearAllMocks();
+          vi.spyOn(window, "confirm").mockReturnValue(true)
+          vi.spyOn(window, "prompt").mockReturnValue("UPDATE")
       });
   
       function setupAuth(userId: number, userRoles: string[]) {

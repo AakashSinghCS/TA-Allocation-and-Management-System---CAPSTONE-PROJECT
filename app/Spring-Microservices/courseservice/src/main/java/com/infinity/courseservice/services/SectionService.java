@@ -20,14 +20,18 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
 import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
+import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.models.SectionSchedule;
+import com.infinity.courseservice.models.StudentCourse;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
+import com.infinity.courseservice.utility.SectionMapper;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +43,9 @@ public class SectionService {
     private final CourseRepository courseRepository;
     private final SectionScheduleRepository sectionScheduleRepository;
     private final UserInterface userInterface;
+    private final ApplicationInterface applicationInterface;
+    private final EnrollmentService enrollmentService;
+    private final SectionMapper sectionMapper;
 
     public SectionDto getSectionById(Long id) {
 
@@ -56,7 +63,9 @@ public class SectionService {
                         course.getId(),
                         course.getDeptCode(),
                         course.getName(),
-                        course.getCourseNum()));
+                        course.getCourseNum()
+                )
+        );
     }
 
     @Transactional
@@ -102,7 +111,10 @@ public class SectionService {
             throw new NotFoundException("No section with id " + sectionId);
         }
         sectionRepository.deleteById(sectionId);
-        return "Section deleted";
+
+        Integer allocationsAffected = applicationInterface.setSectionIdNull(sectionId).getBody();
+        Integer enrollmentsAffected = enrollmentService.clearSectionFromStudentCourses(sectionId);
+        return "Section deleted. "+allocationsAffected+" allocations cleared. "+enrollmentsAffected+" enrollments affected.";
     }
 
     @Transactional
@@ -253,6 +265,16 @@ public class SectionService {
         }
 
         return true;
+    }
+
+    public SectionDto getByCourseIdSectionYearSemester(Long courseId, String section, Integer year, String semester) {
+        Optional<Section> optionalSection = sectionRepository
+            .findByCourseIdAndSectionAndYearAndSemester(courseId, section, year, semester);
+
+        Section entity = optionalSection
+            .orElseThrow(() -> new EntityNotFoundException("Section not found"));
+
+        return sectionMapper.sectionToDto(entity);
     }
 
     // CSV Export functionality

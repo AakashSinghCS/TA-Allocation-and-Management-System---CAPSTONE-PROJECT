@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import type Section from "../../../../interfaces/section/Section";
 
 interface SectionCardProps {
@@ -25,8 +25,7 @@ export default function SectionCard({
 
   return (
     <div
-      data-testid={`section-card-${section.sectionDetails?.id}`}
-      className={`${className} relative w-full overflow-hidden rounded-lg border border-slate-200 p-2 bg-slate-50`}
+      data-testid={`section-card-${section?.id}`}
       className={`${className} relative w-full overflow-hidden rounded-lg border border-slate-200 p-2 bg-slate-50`}
     >
       {onDelete && (
@@ -43,27 +42,27 @@ export default function SectionCard({
       <div className="flex flex-wrap items-center">
         <div className="truncate max-w-full">
           {
-            section.sectionDetails?.sectionId ? <Link
-            to={`/user/sectionprofile/${section.sectionDetails?.sectionId}`}
-            data-testid={`section-link-${section.sectionDetails?.id}`}
+            section?.id ? <Link
+            to={`/user/sectionprofile/${section?.id}`}
+            data-testid={`section-link-${section?.id}`}
             title="Go to course profile page"
             className={`${big?"text-md":"text-sm"} font-medium whitespace-nowrap 2xl:text-base hover:text-blue-600`}
           >
-            {section.sectionDetails?.deptCode}{" "}
-            {section.sectionDetails?.courseNum}{" "}
-            {section.sectionDetails?.section} –{" "}
-            {section.sectionDetails?.name}
+            {section.course?.deptCode}{" "}
+            {section.course?.courseNum}{" "}
+            {section?.section} –{" "}
+            {section.course?.name}
           </Link>: <span className={`${big?"text-md":"text-sm"} font-medium whitespace-nowrap 2xl:text-base`}>
-            {section.sectionDetails?.deptCode}{" "}
-            {section.sectionDetails?.courseNum}{" "}
-            {section.sectionDetails?.section} –{" "}
-            {section.sectionDetails?.name}
+            {section.course?.deptCode}{" "}
+            {section.course?.courseNum}{" "}
+            {section?.section} –{" "}
+            {section.course?.name}
           </span>
           }
           
         </div>
         <p className={`${big?"text-sm":"text-xs"} ml-1 whitespace-nowrap 2xl:text-sm text-slate-600`}>
-          {section.sectionDetails?.type} | {section.sectionDetails?.year} | {section.sectionDetails?.semester}
+          {section.type && `${section?.type} |`}  {section.year && `${section?.year} |`} {section?.semester}
         </p>
       </div>
 
@@ -78,9 +77,10 @@ export default function SectionCard({
             ))}
 
           </div>
-            <span className="ml-2 text-xs 2xl:text-sm whitespace-nowrap text-slate-600">
+            {(alloc || req) && <span className="ml-2 text-xs 2xl:text-sm whitespace-nowrap text-slate-600">
               {hoursBadge} hrs alloc.
             </span>
+            }
           </>
           }
         </div>

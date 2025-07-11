@@ -12,7 +12,7 @@ public record InstructorDto(
     String lastName,
     String email,
     Integer employeeNum,
-    String dept,
+    String department,
     LocalDateTime createdAt
 ) implements BaseUserDto{}
 

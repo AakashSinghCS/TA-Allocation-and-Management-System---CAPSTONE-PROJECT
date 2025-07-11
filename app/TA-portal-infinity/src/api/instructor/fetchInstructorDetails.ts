@@ -1,4 +1,3 @@
-import { mockInstructorChed } from "../../mocked-objects/user/mockInstructorChed";
 
 const BASE = "http://localhost:8080/instructors";
 
@@ -16,7 +15,7 @@ export async function fetchInstructorDetails<Instructor>(userId: number): Promis
     });
 
     const data = await res.json();
-
+    console.log(data);
     return data as Instructor;
     // return mockInstructorChed;
 

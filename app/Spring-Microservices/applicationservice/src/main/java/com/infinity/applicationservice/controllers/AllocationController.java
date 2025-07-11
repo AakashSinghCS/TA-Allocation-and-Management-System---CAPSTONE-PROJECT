@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @RestController
@@ -78,6 +79,17 @@ public class AllocationController {
     @GetMapping("/filter/year/{year}")
     public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByYear(@PathVariable int year) {
         return ResponseEntity.ok(allocationService.getAllocationsByApplicationYear(year));
+    }
+
+    @PutMapping("/{sectionId}/setSectionIdNull")
+    public ResponseEntity<Integer> setSectionIdNull(@PathVariable Long sectionId) {
+        Integer affected =allocationService.setSectionIdNull(sectionId);
+        return ResponseEntity.ok(affected);
+    }
+    @PostMapping("/import")
+    public ResponseEntity<List<AllocationHistoryDto>> importAllocations(@RequestBody List<Map<String, String>> allocationList) {
+        List<AllocationHistoryDto> result = allocationService.importPreviousAllocations(allocationList);
+        return ResponseEntity.ok(result);
     }
 
 }

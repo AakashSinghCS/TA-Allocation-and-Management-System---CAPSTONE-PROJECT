@@ -1,19 +1,25 @@
 package com.infinity.applicationservice.services;
 
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
+import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Users.StudentDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
+import com.infinity.applicationservice.feign.NotificationClient;
 import com.infinity.applicationservice.feign.SectionInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Allocation;
@@ -22,8 +28,12 @@ import com.infinity.applicationservice.repositories.AllocationRepository;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.utility.AllocationMapper;
 import com.infinity.applicationservice.utility.ApplicationMapper;
+import com.infinity.applicationservice.utility.EmailMapper;
+
+
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -36,14 +46,25 @@ public class AllocationService {
     private final UserInterface studentInterface;
     private final ApplicationMapper applicationMapper;
     private final AllocationMapper allocationMapper;
+    private final NotificationClient notificationClient;
+    private final EmailMapper emailMapper;
 
     public List<AllocationHistoryDto> getAllocationsByStudentId(Long studentId) {
         List<Allocation> allocations = allocationRepository.findByStudentId(studentId);
         StudentDto student = studentInterface.getStudentById(studentId).getBody();
 
         return allocations.stream().map(allocation -> {
-            SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
-            ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
+            Long sectionId = allocation.getSectionId();
+
+            if (sectionId == null) {
+                throw new NotFoundException("Allocation ID " + allocation.getId() + " has no associated sectionId.");
+            }
+            
+            SectionDto section = sectionInterface.getSectionById(sectionId);
+            ApplicationDto applicationDto = null;
+            if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
+                applicationDto = applicationMapper.toDto(allocation.getApplication());
+            }
             return allocationMapper.toDto(allocation, student, applicationDto, section);
         }).collect(Collectors.toList());
     }
@@ -67,7 +88,12 @@ public class AllocationService {
         StudentDto student = studentInterface.getStudentById(request.studentId()).getBody();
         SectionDto section = sectionInterface.getSectionById(request.sectionId());
 
-        ApplicationDto applicationDto = applicationMapper.toDto(application);
+        ApplicationDto applicationDto = null;
+        //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
+        if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
+            applicationDto = applicationMapper.toDto(allocation.getApplication());
+          notificationClient.sendEmail(emailMapper.allocationEmailRequest(student));
+        }
 
         return allocationMapper.toDto(saved, student, applicationDto, section);
     }
@@ -95,7 +121,11 @@ public class AllocationService {
             .map(allocation -> {
                 StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
-                ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
+                ApplicationDto applicationDto = null;
+                //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
+                if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
+                    applicationDto = applicationMapper.toDto(allocation.getApplication());
+                }
                 return allocationMapper.toDto(allocation, student, applicationDto, section);
             })
             .collect(Collectors.toList());
@@ -107,7 +137,11 @@ public class AllocationService {
             .map(allocation -> {
                 StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
-                ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
+                ApplicationDto applicationDto = null;
+                //If application is not null, the TA requirements (needs) page does not work after importing allocations through csv.
+                if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
+                    applicationDto = applicationMapper.toDto(allocation.getApplication());
+                }
                 return allocationMapper.toDto(allocation, student, applicationDto, section);
             })
             .collect(Collectors.toList());
@@ -123,7 +157,11 @@ public class AllocationService {
             .map(allocation -> {
                 StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
-                ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
+                ApplicationDto applicationDto = null;
+                //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
+                if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
+                    applicationDto = applicationMapper.toDto(allocation.getApplication());
+                }
                 return allocationMapper.toDto(allocation, student, applicationDto, section);
             })
             .collect(Collectors.toList());
@@ -136,21 +174,67 @@ public class AllocationService {
             .map(allocation -> {
                 StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
-                ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
+                ApplicationDto applicationDto = null;
+                //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
+                if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
+                    applicationDto = applicationMapper.toDto(allocation.getApplication());
+                }
                 return allocationMapper.toDto(allocation, student, applicationDto, section);
             })
             .collect(Collectors.toList());
         }
 
-        public List<AllocationHistoryDto> getAllocationsBySectionIdWithCourse(Long sectionId) {
+    public List<AllocationHistoryDto> getAllocationsBySectionIdWithCourse(Long sectionId) {
         return allocationRepository.findAll().stream()
             .filter(a -> a.getSectionId().equals(sectionId))
             .map(allocation -> {
                 StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
-                ApplicationDto applicationDto = applicationMapper.toDto(allocation.getApplication());
+                ApplicationDto applicationDto = null;
+                //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
+                if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
+                    applicationDto = applicationMapper.toDto(allocation.getApplication());
+                }
                 return allocationMapper.toDto(allocation, student, applicationDto, section );
             })
             .collect(Collectors.toList());
     }
+
+    @Transactional
+    public Integer setSectionIdNull(Long sectionId) {
+        return allocationRepository.clearSectionIdBySectionId(sectionId);
+    }
+
+    public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList) {
+        List<AllocationHistoryDto> importedAllocations = new ArrayList<>();
+
+        for (Map<String, String> data : allocationDataList) {
+            Integer studentNum = Integer.parseInt(data.get("studentNum").trim());
+            String deptCode = data.get("deptCode").trim();
+            String courseNum = data.get("courseNum").trim();
+            String sectionName = data.get("section").trim();
+            int year = Integer.parseInt(data.get("year").trim());
+            String semester = data.get("semester").trim();
+
+            StudentDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
+            if (studentDto == null) throw new NotFoundException("Student not found: " + studentNum);
+
+            CourseDto courseDto = sectionInterface.getCourseByDeptCodeAndCourseNum(deptCode, courseNum).getBody();
+            if (courseDto == null) throw new NotFoundException("Course not found: " + deptCode + " " + courseNum);
+
+            SectionDto sectionDto = sectionInterface.getByCourseIdSectionYearSemester(courseDto.id(), sectionName, year, semester);
+
+            Allocation allocation = new Allocation();
+            allocation.setStudentId(studentDto.id());
+            allocation.setSectionId(sectionDto.id());
+            allocation.setStatus(ApplicationStatus.CONFIRMED);
+
+            Allocation saved = allocationRepository.save(allocation);
+
+            importedAllocations.add(allocationMapper.toDto(saved, studentDto, null, sectionDto));
+        }
+
+        return importedAllocations;
+    }
+
 }

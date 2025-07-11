@@ -6,10 +6,10 @@ import { mockCourseCOSC111 } from '../../../../mocked-objects/course/mockCourseC
 import { fetchCreateQualification } from '../../../../api/instructor/fetchCreateQualification';
 import { fetchDeleteQualification } from '../../../../api/instructor/fetchDeleteQualification';
 
-const renderer =() => render(<InstructorQualificationCard
-        initialQualifications={mockQualificationCOSC111}
-        course={mockCourseCOSC111}
-      />)
+const renderer = () => render(<InstructorQualificationCard
+  initialQualifications={mockQualificationCOSC111}
+  course={mockCourseCOSC111}
+/>)
 
 vi.mock('../../../../api/instructor/fetchCreateQualification', () => ({
   fetchCreateQualification: vi.fn(),
@@ -30,8 +30,10 @@ vi.mock('../../../../utility/fallbackTempId/fallbackTempId', () => {
 
 
 describe('<InstructorQualificationCard />', () => {
-    beforeEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(window, "confirm").mockReturnValue(true)
+    vi.spyOn(window, "prompt").mockReturnValue("DELETE")
   });
 
   afterEach(() => {
@@ -75,22 +77,22 @@ describe('<InstructorQualificationCard />', () => {
 
 
   it('handles deletion of existing qualification', async () => {
-  renderer();
+    renderer();
 
-  // let window.confirm return true
-  vi.spyOn(window, 'confirm').mockReturnValue(true);
-  // mock the delete call to succeed
-  (fetchDeleteQualification as unknown as Mock).mockResolvedValueOnce(true);
+    // let window.confirm return true
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    // mock the delete call to succeed
+    (fetchDeleteQualification as unknown as Mock).mockResolvedValueOnce(true);
 
-  const deleteBtn = screen.getAllByRole('button', { name: /delete/i })[0];
-  fireEvent.click(deleteBtn);
+    const deleteBtn = screen.getAllByRole('button', { name: /delete/i })[0];
+    fireEvent.click(deleteBtn);
 
-  await waitFor(() => {
-    expect(
-      screen.queryByText(mockQualificationCOSC111[0].description ?? '')
-    ).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByText(mockQualificationCOSC111[0].description ?? '')
+      ).not.toBeInTheDocument();
+    });
   });
-});
 
   it('cancels edit row when closing editor', () => {
     renderer();

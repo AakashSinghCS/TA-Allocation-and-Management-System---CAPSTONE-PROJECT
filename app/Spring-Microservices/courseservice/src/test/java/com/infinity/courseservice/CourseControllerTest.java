@@ -2,10 +2,10 @@ package com.infinity.courseservice;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,8 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.courseservice.controllers.CourseController;
-// import com.infinity.courseservice.dtos.AllocationDtos.AllocationDto;
-import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.AllocationDtos.OfferDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
@@ -31,15 +29,14 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseNeedAndAllocations;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
-import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
-import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
-import com.infinity.courseservice.dtos.SectionDtos.SectionDtoNoCourse;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
-import com.infinity.courseservice.enums.SectionType;
-import com.infinity.courseservice.services.CourseService;
 import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
+import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.Semester;
+import com.infinity.courseservice.services.CourseService;
 
 @WebMvcTest(CourseController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -267,29 +264,40 @@ public class CourseControllerTest {
         }
 
         @Test
-        void testGetAllYears() throws Exception {
-                when(courseService.getAllYears("COSC", "310", "001")).thenReturn(List.of("2023", "2024"));
+        void testGetAllYearsEndpoint() throws Exception {
+                List<String> mockYears = List.of("2023", "2024");
+                when(courseService.getAllYears()).thenReturn(mockYears);
 
-                mockMvc.perform(get("/courses/allYears")
-                                .param("deptCode", "COSC")
-                                .param("courseNum", "310")
-                                .param("section", "001"))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$[0]").value("2023"))
-                                .andExpect(jsonPath("$[1]").value("2024"));
-        }
+                mockMvc.perform(get("/courses/allYears"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0]").value("2023"))
+                .andExpect(jsonPath("$[1]").value("2024"));
+    }
+
+        // @Test
+        // void testGetAllSemesters() throws Exception {
+        //         when(courseService.getAllSemester("COSC", "310", "001", "2024")).thenReturn(List.of("W1", "W2"));
+
+        //         mockMvc.perform(get("/courses/allSemesters")
+        //                         .param("deptCode", "COSC")
+        //                         .param("courseNum", "310")
+        //                         .param("section", "001")
+        //                         .param("year", "2024"))
+        //                         .andExpect(status().isOk())
+        //                         .andExpect(jsonPath("$[0]").value("W1"))
+        //                         .andExpect(jsonPath("$[1]").value("W2"));
+        // }
 
         @Test
-        void testGetAllSemesters() throws Exception {
-                when(courseService.getAllSemester("COSC", "310", "001", "2024")).thenReturn(List.of("W1", "W2"));
+        void shouldReturnCourseByDeptCodeAndCourseNum() throws Exception {
+                CourseDto courseDto = new CourseDto(1L, "COSC", "CAPSTONE","499");
 
-                mockMvc.perform(get("/courses/allSemesters")
-                                .param("deptCode", "COSC")
-                                .param("courseNum", "310")
-                                .param("section", "001")
-                                .param("year", "2024"))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$[0]").value("W1"))
-                                .andExpect(jsonPath("$[1]").value("W2"));
+                when(courseService.getByDeptCodeAndCourseNum("COSC", "499"))
+                        .thenReturn(courseDto);
+
+                mockMvc.perform(get("/courses/getByDeptCodeAndCourseNum/COSC/499"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.deptCode").value("COSC"))
+                        .andExpect(jsonPath("$.courseNum").value("499"));
         }
 }

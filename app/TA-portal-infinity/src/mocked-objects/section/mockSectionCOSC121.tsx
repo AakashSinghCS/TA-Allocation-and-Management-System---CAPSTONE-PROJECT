@@ -1,5 +1,5 @@
 import type Section from '../../interfaces/section/Section';
-import type {SectionDetails} from '../../interfaces/section/SectionDetails';
+import type SectionDetails from '../../interfaces/section/SectionDetails';
 import type SectionSchedule from '../../interfaces/section/SectionSchedule';
 import { mockCourseCOSC121 } from '../course/mockCourseCOSC121';
 import type { Need } from '../../interfaces/need/Need';
@@ -9,15 +9,17 @@ import { mockAllocationEmmaDoe, mockAllocationJohnDoe } from '../allocation/mock
 import { mockInstructorChed } from '../user/mockInstructorChed';
 
 export const mockSectionCOSC121Details : SectionDetails = {
-    id: mockCourseCOSC121.id,
-    sectionId: 1,
-    name: mockCourseCOSC121.name,
-    deptCode : mockCourseCOSC121.deptCode,
-    courseNum : mockCourseCOSC121.courseNum,
+    id: 1,
     section: "001",
     semester : "W1",
     type : "LECTURE",
-    year: 2025
+    year: 2025,
+    course:{
+            id: mockCourseCOSC121.id,
+        name: mockCourseCOSC121.name,
+        deptCode : mockCourseCOSC121.deptCode,
+        courseNum : mockCourseCOSC121.courseNum,
+    }
 }
 
 export const mockSectionScheduleCOSC121ForWed : SectionSchedule = {
@@ -43,7 +45,7 @@ export const mockSectionNeedCOSC121 :Need = {
 
 
 export const mockSectionCOSC121 : Section = {
-    sectionDetails : mockSectionCOSC121Details,
+    ...mockSectionCOSC121Details,
     sectionSchedule : [mockSectionScheduleCOSC121ForWed,mockSectionScheduleCOSC121ForThu],
     need: mockSectionNeedCOSC121,
     allocations: [mockAllocationJohnDoe,mockAllocationEmmaDoe,mockAllocationEmmaDoe,mockAllocationEmmaDoe],
