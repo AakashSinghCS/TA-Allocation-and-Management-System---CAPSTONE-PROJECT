@@ -144,7 +144,8 @@ public class ApplicationServiceTest {
                 LocalDate.now().atStartOfDay(),
                 Set.of());
 
-        StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", "test@test.com", 1234567, "COSC", 2022, 3);
+        UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
+                12345678, "COSC", 2025, 3, null, null, null);
         when(applicationMapper.toDto(Mockito.any(Application.class))).thenReturn(mockedDto);
         when(userInterface.getStudentById(1L)).thenReturn(ResponseEntity.ok(studentDto));
         when(notificationClient.sendEmail(any())).thenReturn(null);

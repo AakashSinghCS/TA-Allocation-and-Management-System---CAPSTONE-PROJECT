@@ -2,7 +2,6 @@ package com.infinity.courseservice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -303,12 +302,12 @@ public class CourseServiceTest {
 
                 when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1, section2));
                 when(needService.getNeed(1L, 2025, "W1")).thenReturn(need);
-                when(applicationInterface.getAllocationsBySectionId(10L)).thenReturn(ResponseEntity.ok(List.of(dto)));
+                when(applicationInterface.getAllocationsBySectionId(any())).thenReturn(ResponseEntity.ok(List.of(dto)));
 
                 List<CourseNeedAndAllocations> result = courseService
                                 .getInstructorCourseNeedsAndAllocations(instructorId);
 
-                assertEquals(1, result.size());
+                assertEquals(2, result.size());
                 assertEquals("Security", result.get(0).section().course().name());
                 assertEquals("Labs", result.get(0).need().description());
                 assertEquals("Alice", result.get(0).allocations().get(0).student().firstName());
@@ -362,20 +361,9 @@ public class CourseServiceTest {
         @Test
         void testGetAllYears() {
                 List<String> mock = List.of("2023", "2024");
-                when(courseRepository.findYearsByDeptCodeAndCourseNumAndSection("COSC", "310", "001")).thenReturn(mock);
+                when(courseRepository.findAllDistinctYearStrings()).thenReturn(mock);
 
-                List<String> result = courseService.getAllYears("COSC", "310", "001");
-                assertEquals(mock, result);
-        }
-
-        @Test
-        void testGetAllSemesters() {
-                List<String> mock = List.of("W1", "W2");
-                when(courseRepository.findSemestersByDeptCodeAndCourseNumAndSectionAndYear("COSC", "310", "001",
-                                "2024"))
-                                .thenReturn(mock);
-
-                List<String> result = courseService.getAllSemester("COSC", "310", "001", "2024");
+                List<String> result = courseService.getAllYears();
                 assertEquals(mock, result);
         }
 
