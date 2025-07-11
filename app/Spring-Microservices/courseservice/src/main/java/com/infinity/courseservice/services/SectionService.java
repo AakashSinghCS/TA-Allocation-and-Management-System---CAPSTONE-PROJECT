@@ -3,6 +3,7 @@ package com.infinity.courseservice.services;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
+import com.infinity.courseservice.dtos.SectionDtos.ExportedSectionData;
+import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
@@ -274,4 +277,77 @@ public class SectionService {
         return sectionMapper.sectionToDto(entity);
     }
 
+    // CSV Export functionality
+    public List<ExportedSectionData> exportSections(List<Long> sectionIds) {
+        List<Section> sections = sectionRepository.findAllById(sectionIds);
+        
+        return sections.stream()
+                .map(section -> new ExportedSectionData(
+                        section.getId(),
+                        section.getYear(),
+                        section.getSemester(),
+                        section.getSection(),
+                        section.getType().toString(),
+                        section.getCourse().getId(),
+                        section.getCourse().getDeptCode(),
+                        section.getCourse().getCourseNum(),
+                        section.getCourse().getName(),
+                        null, // needId - would need additional query
+                        null, // needDescription
+                        null, // requiredGradingHours
+                        null, // numHoursCurrentlyAllocated
+                        null, // allocationId
+                        null, // studentId
+                        null, // studentFirstName
+                        null, // studentLastName
+                        null, // isConfirmed
+                        null  // numberOfHours
+                ))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Export sections as CSV data format that matches ImportSectionRequest structure.
+     * This enables seamless export -> edit -> import workflow.
+     */
+    public List<SectionCsvData> exportSectionsAsCsv(List<Long> sectionIds) {
+        List<Section> sections = sectionRepository.findAllById(sectionIds);
+        
+        return sections.stream()
+                .map(this::convertToSectionCsvData)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Export all sections as CSV data format.
+     */
+    public List<SectionCsvData> exportAllSectionsAsCsv() {
+        List<Section> sections = sectionRepository.findAll();
+        
+        return sections.stream()
+                .map(this::convertToSectionCsvData)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Convert Section entity to SectionCsvData DTO.
+     */
+    private SectionCsvData convertToSectionCsvData(Section section) {
+        // Get the first schedule for this section (if exists)
+        List<SectionSchedule> schedules = sectionScheduleRepository.findBySection(section);
+        SectionSchedule schedule = schedules.isEmpty() ? null : schedules.get(0);
+        
+        return new SectionCsvData(
+                section.getCourse().getDeptCode(),
+                section.getCourse().getCourseNum(),
+                section.getCourse().getName(),
+                section.getYear(),
+                section.getSemester(),
+                section.getSection(),
+                section.getType().toString(),
+                schedule != null ? schedule.getDay() : "",
+                schedule != null && schedule.getStartTime() != null ? schedule.getStartTime().toString() : "",
+                schedule != null && schedule.getEndTime() != null ? schedule.getEndTime().toString() : ""
+        );
+    }
 }

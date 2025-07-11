@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.applicationservice.controllers.AllocationController;
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
+import com.infinity.applicationservice.dtos.Allocations.ImportRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
@@ -250,15 +251,55 @@ public class AllocationControllerTest {
                 "semester", "W1"
         ));
 
-        when(allocationService.importPreviousAllocations(any())).thenReturn(List.of(sampleDto));
+        ImportRequest request = new ImportRequest(requestList, true);
+
+        when(allocationService.importPreviousAllocations(any(), eq(true))).thenReturn(List.of(sampleDto));
 
         mvc.perform(post("/allocations/import")
                .contentType(MediaType.APPLICATION_JSON)
-               .content(mapper.writeValueAsString(requestList)))
+               .content(mapper.writeValueAsString(request)))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$", hasSize(1)))
            .andExpect(jsonPath("$[0].student.firstName").value("Alice"));
 
-        verify(allocationService, times(1)).importPreviousAllocations(any());
-     }            
+        verify(allocationService, times(1)).importPreviousAllocations(any(), eq(true));
+     }
+
+     @Test
+     void importAllocations_receivesJsonAndReturnsDtoListFalseAutoCreateCase() throws Exception {
+        List<Map<String, String>> requestList = List.of(Map.of(
+                "studentNum", "63260442",
+                "deptCode", "COSC",
+                "courseNum", "499",
+                "section", "001",
+                "year", "2025",
+                "semester", "W1"
+        ));
+
+        ImportRequest request = new ImportRequest(requestList, false);
+
+        when(allocationService.importPreviousAllocations(any(), eq(false))).thenReturn(List.of(sampleDto));
+
+        mvc.perform(post("/allocations/import")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(mapper.writeValueAsString(request)))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$", hasSize(1)))
+           .andExpect(jsonPath("$[0].student.firstName").value("Test"));
+
+        verify(allocationService, times(1)).importPreviousAllocations(any(), eq(false));
+     }
+
+        @Test
+        void testSetSectionIdNullEndpointReturnsCount() throws Exception {
+                long sectionId = 17L;
+                when(allocationService.setSectionIdNull(sectionId))
+                                .thenReturn(4);
+
+                mvc.perform(put("/allocations/{sectionId}/setSectionIdNull", sectionId)
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$").value(4));
+        }
+
 }

@@ -2,6 +2,7 @@ package com.infinity.applicationservice.controllers;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
+import com.infinity.applicationservice.dtos.Allocations.ImportRequest;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.services.AllocationService;
 
@@ -87,9 +88,10 @@ public class AllocationController {
         return ResponseEntity.ok(affected);
     }
     @PostMapping("/import")
-    public ResponseEntity<List<AllocationHistoryDto>> importAllocations(@RequestBody List<Map<String, String>> allocationList) {
-        List<AllocationHistoryDto> result = allocationService.importPreviousAllocations(allocationList);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<List<AllocationHistoryDto>> importAllocations(@RequestBody ImportRequest request) {
+        List<Map<String, String>> rows = request.rows();
+        boolean autoCreate = request.autoCreateMissing();
+        return ResponseEntity.ok(allocationService.importPreviousAllocations(rows, autoCreate));
     }
 
 }
