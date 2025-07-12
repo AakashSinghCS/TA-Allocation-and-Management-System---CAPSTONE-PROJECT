@@ -131,7 +131,8 @@ public class UserService {
         return users.stream()
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
-    }    
+    }
+        
 
     @Transactional
     public UserDto changeRole(Long id, RoleChangeRequest request) {

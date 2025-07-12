@@ -3,7 +3,9 @@ package com.infinity.applicationservice.config;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.core.context.SecurityContextHolder;
+
 
 @Configuration
 public class FeignClientInterceptor implements RequestInterceptor {

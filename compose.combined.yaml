@@ -17,6 +17,9 @@ services:
     environment:
       VITE_HOST: "0.0.0.0"
       NODE_ENV: "development"
+      CHOKIDAR_USEPOLLING: false
+      #CHOKIDAR_USEPOLLING: true
+      #CHOKIDAR_INTERVAL: "15000"
   gateway-service:
     build: 
       context: ./app/Spring-Microservices/gatewayservice
@@ -129,5 +132,43 @@ services:
       interval: 2s
       timeout: 3s
       retries: 10
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml 
+    #only expose port when developing. Don't expose in production
+    #ports:
+    # - "9090:9090"
+    depends_on:
+      - user-service
+      - application-service
+      - profile-service
+      - notification-service
+      - course-service
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: grafana
+    depends_on: 
+      mysql:
+        condition: service_healthy
+    environment:
+      # GF_SECURITY_ALLOW_EMBEDDING: "true"     # optional, for <iframe> later
+      GF_SECURITY_ADMIN_USER: "admin"
+      GF_SECURITY_ADMIN_PASSWORD: "VERYSTRONGPASSWORD"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_PATHS_PROVISIONING_DASHBOARDS: /etc/grafana/provisioning/dashboards
+    ports:
+     - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana          
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/dashboards-json:/etc/grafana/provisioning/dashboards-json
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./monitoring/grafana/grafana.ini:/etc/grafana/grafana.ini
+
 volumes:
   node_modules:
+  grafana-data:

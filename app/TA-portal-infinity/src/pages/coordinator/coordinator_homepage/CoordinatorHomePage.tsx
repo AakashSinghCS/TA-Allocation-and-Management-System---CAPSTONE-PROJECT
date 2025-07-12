@@ -9,6 +9,9 @@ export default function CoordinatorHomePage() {
       <p className="text-gray-600">
         You will be able to view TA applications, assign TAs to sections, and monitor progress here.
       </p>
+      <a href="http://localhost:3000" target="_blank" rel="noopener">
+        Open Grafana
+      </a>
     </section>
   );
 }
