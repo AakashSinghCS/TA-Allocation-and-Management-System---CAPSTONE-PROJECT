@@ -249,4 +249,14 @@ public class UserService {
         }
     }
 
+    public void addRolesToUser(String email, UserRole... roles) {
+        User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        for (UserRole r : roles) {
+            Role roleEntity = roleRepository.findByName(r)
+                                .orElseThrow(() -> new IllegalStateException("Role " + r + " missing"));
+            user.getRoles().add(roleEntity);
+        }
+        userRepository.save(user);
+    }
 }
