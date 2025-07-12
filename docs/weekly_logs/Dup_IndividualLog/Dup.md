@@ -2190,3 +2190,91 @@ Tommorrow I have to
 - enrollment for student works
 - section profile shows needs
 - reflect the changes in User Role in backend in frontend
+
+## Thursday 7/10 (7/08~7/011)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July10.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#358](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/358)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I completed grafana. I couldn't make grafana work behind localhost:8080, authenticated through a token that has ADMIN role. But it still works with normal grafana credentials.
+- next, I will help Alex with refactoring the frontend after he finishes user role refactoring.
+I did the team logs today.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- enrollment for student works
+- section profile shows needs
+- reflect the changes in User Role in backend in frontend
+
+
+## Friday 7/11 (7/08~7/011)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July11.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#374](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/374)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I completed reworking the profile details section. It now works with the changes Alex made to the User Roles.
+I did a project discussion with others and had a meeting with Scott.
+I plan to 
+- complete the PR by making the sidebar be in accord with the changes Alex made.
+- prepare for the UX testing on tuesday.
+- If I have time, I will start on finishing up UR1.5, which I expected to finish, but turned out I didn't.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- enrollment for student works
+- section profile shows needs
+- Need to create a seperate logging table in backend and making logging happen manually, not through grafana.
