@@ -5,12 +5,13 @@ import RoleGuard from "../components/features/roleguard/RoleGuard";
 import { UserRole } from "../interfaces/enum/UserRole";
 import PublicLayout from "../components/layout/publicLayout/PublicLayout";
 
-import { TaQuestionnairePage } from "../pages/student/taquestionnairepage/TaQuestionnairePage";
-import { CoordinatorQuestionnairePage } from "../pages/coordinator/coordinatorquestionnairepage/CoordinatorQuestionnairePage";
-import ProfilePage from "../pages/auth/profilepage/ProfilePage";
-import AllocationHistoryPage from "../pages/student/allocationhistorypage/AllocationHistoryPage";
 
-const TaProfilePage = lazy(() => import("../pages/student/taprofilepage/TaProfilePage"));
+const CoordinatorQuestionnairePage = lazy(()=> import("../pages/coordinator/coordinatorquestionnairepage/CoordinatorQuestionnairePage"));
+const TaQuestionnairePage = lazy(()=>import("../pages/student/taquestionnairepage/TaQuestionnairePage"));
+const ProfilePage = lazy(()=> import("../pages/auth/profilepage/ProfilePage"));
+const AllocationHistoryPage = lazy(()=>import("../pages/student/allocationhistorypage/AllocationHistoryPage"));
+const ViewProfileQuestionsPage = lazy(()=> import("../pages/student/viewprofilequestionspage/ViewProfileQuestionsPage"));
+
 const CoursesTakenPage = lazy(() => import("../pages/student/taprofilepage/coursestakenpage/CoursesTakenPage"));
 const StudentComparerPage = lazy(() => import("../pages/student/taprofilepage/comparerpage/StudentComparerPage"));
 const StudentQualificationPage = lazy(() => import("../pages/student/taprofilepage/qualificationpage/StudentQualificationPage"));
@@ -57,6 +58,7 @@ export const router = createBrowserRouter([
       // { path: "taprofile/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaProfilePage /></Suspense> },
       // { path: "taprofile/:userId/coursesTaken", element: <Suspense fallback={<div>Loading...</div>}><CoursesTakenPage /></Suspense> },
       { path: "taprofile/:userId/allocationHistory", element: <Suspense fallback={<div>Loading...</div>}><AllocationHistoryPage /></Suspense> },
+      { path: "taprofile/:userId/profileQuestions", element: <Suspense fallback={<div>Loading...</div>}><ViewProfileQuestionsPage /></Suspense> },
       // { path: "taprofile/:userId/compare", element: <Suspense fallback={<div>Loading...</div>}><StudentComparerPage /></Suspense> },
       { path: "taprofile/:userId/qualifications", element: <Suspense fallback={<div>Loading...</div>}><StudentQualificationPage /></Suspense> },
       // { path: "instructorprofile/:instructorId", element: <Suspense fallback={<div>Loading...</div>}><InstructorProfilePage /></Suspense> },
@@ -77,7 +79,7 @@ export const router = createBrowserRouter([
           { path: "home", element: <Suspense fallback={<div>Loading...</div>}><StudentHomePage /></Suspense> },
           { path: "application", element: <Suspense fallback={<div>Loading...</div>}><ApplicationPage /></Suspense> },
           { path: "view-applications", element: <Suspense fallback={<div>Loading...</div>}><ViewApplicationPage /></Suspense> },
-          { path: "questions/:studentId", element: <TaQuestionnairePage /> },
+          { path: "questions/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaQuestionnairePage /></Suspense> },
           { path: "addallocation", element: <Suspense fallback={<div>Loading...</div>}><AddAllocationHistory /></Suspense> },
           { path: "addenrollment", element: <Suspense fallback={<div>Loading...</div>}><AddEnrolledCourse /></Suspense> },
           { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
@@ -117,8 +119,7 @@ export const router = createBrowserRouter([
           { path: "sections/add", element: <Suspense fallback={<div>Loading...</div>}><AddSectionPage /></Suspense> },
           { path: "sections/export", element: <Suspense fallback={<div>Loading...</div>}><ExportToCSVPage /></Suspense> },
           { path: "applications", element: <Suspense fallback={<div>Loading...</div>}><ApplicationViewPage /></Suspense> },
-          {  path: "allocation", element: <Suspense fallback={<div>Loading...</div>}><AllocationPage /></Suspense> },
-          { path: "student/questions/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaQuestionnairePage /></Suspense> },
+          { path: "allocation", element: <Suspense fallback={<div>Loading...</div>}><AllocationPage /></Suspense> },
           { path: "deadlines", element: <Suspense fallback={<div>Loading...</div>}><DeadlineManagementPage /></Suspense> },
           { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
         ],

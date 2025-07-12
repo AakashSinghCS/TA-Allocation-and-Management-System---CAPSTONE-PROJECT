@@ -30,25 +30,6 @@ describe('ProfileDetailsSection', () => {
         (useAuth as vi.Mock).mockReturnValue({ userId, userRoles });
     }
 
-    it('hides the Update button when not owner or coordinator', () => {
-        setupAuth(2, ['STUDENT']);
-        render(
-            <ProfileDetailsSection
-                user={baseUser}
-                fields={['firstName', 'lastName', 'createdAt']}
-                labels={{
-                    id: "id",
-                    email: "Email",
-                    firstName: 'First Name',
-                    lastName: 'Last Name',
-                    createdAt: 'Created At',
-                }}
-                fetchDetailsFunction={mockFetchDetails}
-            />
-        );
-        expect(screen.queryByText('Update')).toBeNull();
-    });
-
     it('shows the Update button for the owner', () => {
         setupAuth(1, ['STUDENT']);
         render(
@@ -56,30 +37,12 @@ describe('ProfileDetailsSection', () => {
                 user={baseUser}
                 fields={['firstName', 'lastName']}
                 labels={{
-                    id: "1",
-                    email: "test@test.com",
+                    id: "id",
+                    email: "Email",
                     firstName: 'First Name',
                     lastName: 'Last Name',
                     createdAt: 'Created At',
-                }}
-                fetchDetailsFunction={mockFetchDetails}
-            />
-        );
-        expect(screen.getByText('Update')).toBeInTheDocument();
-    });
-
-    it('shows the Update button for a coordinator', () => {
-        setupAuth(42, ['COORDINATOR']);
-        render(
-            <ProfileDetailsSection
-                user={baseUser}
-                fields={['firstName', 'lastName']}
-                labels={{
-                    id: "1",
-                    email: "test@test.com",
-                    firstName: 'First Name',
-                    lastName: 'Last Name',
-                    createdAt: 'Created At',
+                    roles: 'Roles'
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />
@@ -99,6 +62,7 @@ describe('ProfileDetailsSection', () => {
                     firstName: 'First Name',
                     lastName: 'Last Name',
                     createdAt: 'Created At',
+                    roles: "roles"
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />

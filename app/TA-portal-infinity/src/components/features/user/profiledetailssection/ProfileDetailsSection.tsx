@@ -26,7 +26,6 @@ export default function ProfileDetailsSection<T extends User>({
 
     useEffect(() => setRecord(user), [user]);
 
-
     const baseFields = fields.filter((k) => k !== "createdAt");
     const displayFields = filterFieldsByRole(baseFields, record.roles ?? []);
 
@@ -36,7 +35,7 @@ export default function ProfileDetailsSection<T extends User>({
         ...displayFields.filter(k => k !== "roles"),
     ];
 
-    const isEditable = loggedInUserId === record.id || loggedInUserRoles.includes("COORDINATOR");
+    const isEditable = loggedInUserId === record.id;
 
     return (
         <div>
@@ -52,7 +51,7 @@ export default function ProfileDetailsSection<T extends User>({
                                     fieldLabels={labels}
                                     big
                                 />
-                                {isEditable && (<button
+                                {isEditable &&(<button
                                     className="absolute top-2 right-2 bg-[#040941] text-white px-2 py-1 rounded hover:bg-[#040491] transition-colors"
                                     onClick={() => setIsEdit(true)}
                                 >

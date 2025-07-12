@@ -12,7 +12,7 @@ type ResponseState = {
   [questionId: number]: StudentResponseDto;
 }
 
-export default function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null }) {
+function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null }) {
   const studentId = useAuth().userId;
   const [responses, setResponses] = useState<ResponseState>({});
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ export default function TaQuestionnaire({ questions }: { questions: ProfileQuest
     alert(res
       ? 'All answers submitted successfully.'
       : 'Some answers failed to save. Please try again.');
-    navigate(`/user/taprofile/${studentId}`);
+    navigate(`/user/student/home`);
   }
 
   return (
@@ -99,7 +99,7 @@ export default function TaQuestionnaire({ questions }: { questions: ProfileQuest
   );
 }
 
-export function TaQuestionnairePage() {
+export default function TaQuestionnairePage() {
 
   return (
     <GenericAPIContainer<ProfileQuestion[] | null>

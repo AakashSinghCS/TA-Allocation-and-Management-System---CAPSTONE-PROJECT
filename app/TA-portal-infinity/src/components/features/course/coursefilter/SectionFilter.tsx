@@ -5,7 +5,7 @@ import { sectionTypeOptions, type SectionType } from '../../../../interfaces/sec
 import { GenericAPIContainer } from '../../../../utility/genericapicontainer/GenericAPIContainer';
 import DaySelector from '../../../ui/section/dayselector/DaySelector';
 import TimeSelector from '../../../ui/section/timeselector/TimeSelector';
-import DeptCodeCourseNumSectionYearSemesterDropdownContainer, { type AllExistingDeptCodesAndYears } from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
+import DropdownContainer, { type AllExistingDeptCodesAndYears } from '../dropdowncontainer/DropdownContainer';
 import { fetchAllExistingYears } from '../../../../api/course/sectionfilter/fetchAllExistingYears';
 type Mode = 'small' | 'large';
 
@@ -69,7 +69,7 @@ export default function SectionFilter({
         placeholder="Search course name (e.g. 'Introduction to ...') "
         value={name ?? ""}
         onChange={(e) => setName(e.target.value)}
-        className={mode === "small" ? "px-2 py-1 border rounded-md w-full" : "px-3 py-2 border rounded-md w-full"}
+        className={mode === "small" ? "px-2 py-1 border border-gray-400 rounded-md w-full" : "px-3 py-2 border border-gray-400 rounded-md w-full"}
       />
 
       <div className={mode === 'small' ? "grid grid-cols-2 gap-2" : "grid grid-rows-2 gap-4"}>
@@ -86,7 +86,7 @@ export default function SectionFilter({
               return returnVal;
             }}
             render={(allDeptCodesAndYears) => (
-              <DeptCodeCourseNumSectionYearSemesterDropdownContainer
+              <DropdownContainer
                 allExistingDeptCodesAndYears={allDeptCodesAndYears}
                 mode={mode}
                 onChange={(partial) => setdCCNSYS(prev => ({ ...prev, ...partial }))}
