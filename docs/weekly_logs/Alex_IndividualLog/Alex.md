@@ -1,3 +1,314 @@
+## Monday (July 4-7)
+
+### Timesheet
+Clockify report
+![alt text](./jul4-7.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Sending notifications when application is sent, accepted, and rejected
+  * #2: Debugging why the frontend takes so much CPU to run in Docker
+  * #3: Promoting/demoting users
+
+### Progress Update (since July 3rd 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Sending notifications when application is sent, accepted, and rejected
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Debugging why the frontend takes so much CPU to run in Docker
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Promoting/demoting users
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+   
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I was able to debug the frontend CPU this weekend which was great. Basically, the Chokidar polling for HMR was eating a huge amount of CPU power to just track the folders, and since our frontend directory is really modular, it was taking a lot of CPU. I've turned it off, and added an option in the viteconfig.ts to add it back with a lower time interval for people working on frontend, but at least this way it won't idly take a bunch of power. Also, I made the pages in the router be lazily loaded since before the App.tsx was calling the router and the router had all the pages, so it was making over 200 get requests to itself for all the files. Now it just loads what it needs when it needs it, and has improved the load times significantly.
+
+I also just completed notifications for when applications are sent and when an allocation offer is made to the student.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * I will do the user management (promoting, demoting, etc), and this may come with a refactor of the way users are currently stored in the system. If so, then this could take a while to accomplish, and hopefully can be done this upcoming cycle.
+
+## Thursday (July 1-3)
+
+### Timesheet
+Clockify report
+![alt text](./jul1-3.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Sending notifications when application is sent, accepted, and rejected
+  * #2: Debugging why the frontend takes so much CPU to run in Docker
+
+### Progress Update (since June 30th 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Added prerequisite course to the needs of instructors
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Refactored applications to store the status of application rather than boolean isConfirmed
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Handling student enrollment in the intermediate table for students and courses
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Creating a notification service for emailing and having it work with forgot password
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+A number of PR's from last cycle got merged, and I spent most of this week helping prepare for MVP by creating endpoints that were missing or needed, sometimes in other people's branches. I also finished the prerequisite course handling and tied it to needs of an instructor so they can input what they prefer a student to have taken before being allocated.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * At the moment I plan to use the notification service when receiving an offer for an application to a student, and vice versa the coordinator receiving one when they accept/reject the offer. Also the frontend takes a lot of CPU and it really probably shouldn't, so I want that to be fixed ASAP.
+
+
+## Monday (June 27-30)
+
+### Timesheet
+Clockify report
+![alt text](./jun27-30.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Creating a notification service for emailing and having it work with forgot password
+
+### Progress Update (since June 26 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Patching the needs and teacher controller to return sections rather than only courses
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Adding missing methods and endpoints for the applications and courses
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Handling student enrollment in the intermediate table for students and courses
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Creating a notification service for emailing and having it work with forgot password
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I accomplished a number of things this weekend, some small some large. I patched the way teacher allocations worked, and then added course filter functions for Dup's frontend that he requested. Then I also added missing CRUD operations for courses, sections, and section schedules. This was part of the same PR that I handled student enrollment through the intermediate StudentCourse to help determine what courses student's have taken before or whether they are currently enrolled or not. Then after that I built the new notification microservice and with the java mail sender library connected an SMTP gmail account I made for sending out emails. This was used in conjunction with the resetting password workflow which was accomplished in the same PR.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Since it wasn't clear if I would get these 4 things done this weekend, I don't have a next task lined up yet. We have a meeting on Tuesday where we'll go over the last things needed to finish for the MVP on Friday, and I will get whatever tasks are needed to be finished.
+
+## Thursday (June 24-26)
+
+### Timesheet
+Clockify report
+![alt text](./jun24-26.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Patching the needs and teacher controller to return sections rather than only courses
+  * #2: Adding missing methods and endpoints for the applications and courses
+  * #3: Handling student enrollment in the intermediate table for students and courses
+  * #4: Creating a notification service for emailing and having it work with forgot password
+
+### Progress Update (since June 23 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>CRUD operations needs and submitting
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Assign instructors to sections
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Get sections, needs, and allocations for teachers
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I ended up starting with just the needs, and then it became clear there was a lot more that needed to work for it when retrieving it, so the PR also handled assigning instructors, and getting feign working to retrieve the allocation history. Ended up being a fair bit of work and I think it works relatively well.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * There's a lot of things to do for the next cycle and some are quick (like the patches), the enrollment stuff is medium and shouldn't take too long, and the notification mailer is undetermined. I will have to create a new microservice with the java mailer from spring which is probably pretty easy to do, then connect an email to it. The forgot password workflow is simple, it's just unclear exactly how long/hard this will be.
+
+## Monday (June 20-23)
+
+### Timesheet
+Clockify report
+![alt text](./jun20-23.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: CRUD operations for the application objects
+
+### Progress Update (since June 19 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Add availability to application
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Admin role extension
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>CRUD operations needs and submitting
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I added the availability table and allowed it to stored the times there for applications, and that's now also linked with the frontend. I also completed the admin role with an extension to allow numerous roles through a many-to-many relationship with users. I'm now starting to work on the needs of an instructor and the crud operations for that.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Finishing up the needs for this cycle will be great, and if I get that done I'll also look towards another feature for MVP, maybe CSV exporting or qualifications, depending on what other team members are doing.
+
+
+## Thursday (June 17-19)
+
+### Timesheet
+Clockify report
+![alt text](./jun17-19.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: CRUD operations for the application objects
+
+### Progress Update (since June 16 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>CRUD operations for application object
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I finished up the rest of the CRUD for applications so that's nice - there were a lot of distractions this week that made this slower, but I'm still happy it got finished.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Discussing with team members today about next steps - I believe that it will be working on CRUD for offers, or maybe adding the admin role as a possible option to coordinators.
+
 ## Monday (June 13-16)
 
 ### Timesheet

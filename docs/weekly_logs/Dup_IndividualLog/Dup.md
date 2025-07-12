@@ -1175,6 +1175,7 @@ Clockify report
         </td>
         <!-- Status -->
         <td>In progress
+        <td>In progress
         </td>
     </tr>
     <tr>

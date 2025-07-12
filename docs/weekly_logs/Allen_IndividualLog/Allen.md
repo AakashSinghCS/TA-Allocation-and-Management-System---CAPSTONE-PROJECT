@@ -272,3 +272,221 @@ adding features to the backend of course filter, brainstorming about the enrollm
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * building enrollment table to enable frontend comparer
   * building backend for instructor pages
+
+
+## June 17 - 19
+
+### Timesheet
+Clockify report
+![alt text](./clockify/6.19.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: finished course filtering
+  * #2: building erollment table with feign
+
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>finished course filtering
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>building erollment table with feign
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+finished the backend of course filter, enrollment table building with feign to request another service.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * building enrollment table to enable frontend comparer
+
+
+
+## June 19 - 30
+
+### Timesheet
+Clockify report
+![alt text](./clockify/6.30.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: the whole qualification service backend
+  * #2: testing and integrating
+
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>the whole qualification service backend
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>testing and integrating
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+finished the backend of qualification service, had a final at 25th, didn't really contributed at that week.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * building enrollment table to enable frontend comparer
+
+
+## July 01 - 04
+
+### Timesheet
+Clockify report
+![alt text](./clockify/7.04.png)
+
+
+### Current Tasks (Provide sufficient detail)
+  * #1: the whole qualification service backend
+  * #2: testing and integrating
+
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>the whole qualification service backend
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>testing and integrating
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+mainly testing and modifying based on teammates's reflections
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * building the deadline page for admin and the corresponding backend service
+
+
+## July 05 - 07
+
+### Timesheet
+Clockify report
+![alt text](./clockify/7.07.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: the deadline service backend
+  * #2: deadline page
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>the deadline service backend
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>deadline page
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+built the deadline page for admin and the corresponding backend service, frontend test not writen yet.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * testing the deadline page
+  * add deadline limitations to other services
+
+
+## July 08 - 10
+
+### Timesheet
+Clockify report
+![alt text](./clockify/7.10.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: deadline page
+  * #2: add deadline blocks to other services
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>deadline page
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>add deadline blocks to other services
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+built the deadline page for admin, adding deadline restrictions to student application, student accept offer, and instructor update needs, blocks on both front end and back end.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * finish deadline restrictions
+  * notification service
+
