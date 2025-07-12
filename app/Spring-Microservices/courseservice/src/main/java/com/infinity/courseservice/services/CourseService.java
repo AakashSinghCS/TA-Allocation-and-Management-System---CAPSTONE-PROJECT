@@ -33,7 +33,6 @@ import com.infinity.courseservice.repositories.StudentTaughtCourseRepository;
 import com.infinity.courseservice.utility.CourseMapper;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

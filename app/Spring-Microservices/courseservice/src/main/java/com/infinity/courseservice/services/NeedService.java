@@ -96,4 +96,13 @@ public NeedDto getNeed(Long courseId, Integer year, String semester) {
         return "Need deleted";
     }
 
+
+    public String updateAllocatedHours(Long needId, Integer numHoursAllocated) {
+        if (!needRepository.existsById(needId)) {
+            throw new NotFoundException("No need with id " + needId);
+        }
+        needRepository.updateNeedAllocatedHours(needId, numHoursAllocated);
+        return "Need updated";
+    }
+
 }

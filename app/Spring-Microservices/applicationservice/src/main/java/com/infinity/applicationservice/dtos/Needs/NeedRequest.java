@@ -1,4 +1,4 @@
-package com.infinity.courseservice.dtos.NeedDtos;
+package com.infinity.applicationservice.dtos.Needs;
 
 import java.util.List;
 

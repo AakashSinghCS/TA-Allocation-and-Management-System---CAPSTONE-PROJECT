@@ -37,8 +37,8 @@ import com.infinity.applicationservice.enums.SectionType;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
+import com.infinity.applicationservice.feign.CourseInterface;
 import com.infinity.applicationservice.feign.NotificationClient;
-import com.infinity.applicationservice.feign.SectionInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Allocation;
 import com.infinity.applicationservice.models.Application;
@@ -59,7 +59,7 @@ class AllocationServiceTest {
         @Mock
         private ApplicationRepository applicationRepository;
         @Mock
-        private SectionInterface sectionInterface;
+        private CourseInterface sectionInterface;
         @Mock
         private UserInterface userInterface;
         @Mock

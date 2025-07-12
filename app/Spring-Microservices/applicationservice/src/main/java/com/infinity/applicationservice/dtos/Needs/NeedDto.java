@@ -1,8 +1,8 @@
-package com.infinity.courseservice.dtos.NeedDtos;
+package com.infinity.applicationservice.dtos.Needs;
 
 import java.util.List;
 
-import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.applicationservice.dtos.Courses.CourseDto;
 
 public record NeedDto(
         Long id,

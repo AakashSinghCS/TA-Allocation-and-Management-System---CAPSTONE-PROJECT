@@ -3,26 +3,29 @@ package com.infinity.applicationservice.feign;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.infinity.applicationservice.dtos.Allocations.ImportCourseRequest;
 import com.infinity.applicationservice.dtos.Allocations.ImportSectionRequest;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
+import com.infinity.applicationservice.dtos.Needs.NeedDto;
 
 @FeignClient(name = "COURSE-SERVICE")
-public interface SectionInterface {
+public interface CourseInterface {
     @GetMapping("/sections/get/{id}")
     SectionDto getSectionById(@PathVariable Long id);
 
     @GetMapping("/sections/getByCourseIdSectionYearSemester/{courseId}/{section}/{year}/{semester}")
     SectionDto getByCourseIdSectionYearSemester(
-        @PathVariable("courseId") Long courseId,
-        @PathVariable("section") String section,
-        @PathVariable("year") Integer year,
-        @PathVariable("semester") String semester
+        @PathVariable Long courseId,
+        @PathVariable String section,
+        @PathVariable Integer year,
+        @PathVariable String semester
     );
 
     @GetMapping("/courses/getByDeptCodeAndCourseNum/{deptCode}/{courseNum}")
@@ -36,4 +39,12 @@ public interface SectionInterface {
 
     @PostMapping("/sections/addSection/{courseId}")
     SectionDto addSection(@PathVariable Long courseId, @RequestBody ImportSectionRequest request);
+
+    @GetMapping("/needs/get/{courseId}/{year}/{semester}")
+    public NeedDto getNeed(@PathVariable Long courseId,
+            @PathVariable Integer year, @PathVariable String semester);
+    
+    @PutMapping("/needs/updateAllocatedHours/{needId}")
+    public ResponseEntity<String> updateNeedAllocatedHours(@PathVariable Long needId,
+            @RequestParam int numAllocatedHours);
 }
