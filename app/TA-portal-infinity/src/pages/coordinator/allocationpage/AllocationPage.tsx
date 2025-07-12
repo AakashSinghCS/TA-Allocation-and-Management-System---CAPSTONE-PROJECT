@@ -67,6 +67,8 @@ const TAAllocationPage: React.FC = () => {
     });
   } catch (err) {
     console.error("Failed to load section:", err);
+    //Temporary UX helper here:
+    window.alert("Are you sure instructor has set the requirements for this section?");
   }
 };
   const onSend = () => {

@@ -70,7 +70,7 @@ export default function AddAllocationHistory() {
   const handleSaveHistory = async () => {
     const ok = await fetchPostAllocationHistory(studentId, selectedSections, initialSections);
     alert(ok ? "History updated!" : "Failed to update history.");
-    navigate(`/user/taprofile/${studentId}`);
+    navigate(`/user/taprofile/${studentId}/allocationHistory`);
   };
 
   return (

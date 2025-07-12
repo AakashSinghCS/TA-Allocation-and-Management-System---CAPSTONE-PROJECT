@@ -159,6 +159,12 @@ public class UserService {
 
     //Student methods
 
+    public UserDto getUserDetailsById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found with id " + id));
+        return userMapper.toDto(user);
+    }
+
     public UserDto getStudentById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found with id " + id));

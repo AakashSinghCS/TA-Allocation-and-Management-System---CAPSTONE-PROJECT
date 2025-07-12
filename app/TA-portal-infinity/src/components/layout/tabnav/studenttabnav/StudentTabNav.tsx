@@ -8,16 +8,9 @@ export default function StudentTabNav() {
 
     const tabs = isCoordinator ? [
         { to: `${base}`, label: 'Profile' },
-        { to: `${base}/application`, label: 'Application' },
-        { to: `${base}/coursesTaken`, label: 'Courses Taken' },
-        { to: `${base}/compare`, label: 'Compare' },
         { to: `${base}/qualifications`, label: 'Qualifications' },
-    ]:[
-        { to: `${base}`, label: 'Profile' },
-        { to: `${base}/application`, label: 'Application' },
-        { to: `${base}/coursesTaken`, label: 'Courses Taken' },
-        { to: `${base}/qualifications`, label: 'Qualifications' },
-    ];
+        { to: `${base}/allocationHistory`, label: 'Allocation History' },
+    ]:[];
 
     return (
         <nav className="sticky top-0 bg-white z-10 border-b border-slate-200">

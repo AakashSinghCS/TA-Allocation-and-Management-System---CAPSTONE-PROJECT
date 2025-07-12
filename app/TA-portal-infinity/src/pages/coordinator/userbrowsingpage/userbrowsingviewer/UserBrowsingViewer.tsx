@@ -81,7 +81,8 @@ export default function UserBrowsingViewer({
                                         display = formatDateForDisplay(d);
                                     }
                                     if (col === 'name' && lastCriteria.role !== 'Coordinator' && user.id) {
-                                        const path = lastCriteria.role === 'Student' ? `/user/taprofile/${user.id}` : `/user/instructorprofile/${user.id}`;
+                                        const path = `/user/profile/${user.id}`;
+                                        // const path = lastCriteria.role === 'Student' ? `/user/taprofile/${user.id}` : `/user/instructorprofile/${user.id}`;
                                         return <td key={col as string} className="border border-gray-300 px-3 py-1"><Link to={path} className="hover:text-[#00b5bc] text-[#0089b2]">{display}</Link></td>;
                                     }
                                     return <td key={col as string} className="border border-gray-300 px-3 py-1">{display}</td>;

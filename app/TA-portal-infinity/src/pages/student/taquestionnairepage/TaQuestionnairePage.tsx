@@ -16,7 +16,7 @@ export default function TaQuestionnaire({ questions }: { questions: ProfileQuest
   const studentId = useAuth().userId;
   const [responses, setResponses] = useState<ResponseState>({});
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (!questions) return;
     const initial: ResponseState = {};
@@ -74,6 +74,10 @@ export default function TaQuestionnaire({ questions }: { questions: ProfileQuest
     }}
       className="space-y-6 max-w-5xl mx-auto grid grid-cols-1 gap-3"
     >
+      <div>
+        <h2 className="text-xl font-semibold mb-1">Questions about you</h2>
+        <p className="text-xs text-slate-600 mb-1">Respond to these questions so the Coordinator understands more about you.</p>
+      </div>
       {questions && questions.map(q => (
         typeof q.id === 'number' ?
           (<div className="border-b-solid border-b-2 border-gray-200 py-2">
