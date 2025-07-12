@@ -21,14 +21,6 @@ export async function fetchUpdateUserDetails<T extends User>(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  // if (loggedInUserId) {
-  //   headers["X-User-Id"] = String(loggedInUserId);
-  // }
-
-  // if (loggedInUserRoles.length > 0) {
-  //   headers["X-User-Roles"] = roles.join(","); // comma-separated for Spring
-  // }
-  console.log(updates);
   const res = await fetch(`${BASE}/${id}`, {
     method: "PUT",
     headers,
@@ -38,9 +30,8 @@ export async function fetchUpdateUserDetails<T extends User>(
   if (!res.ok) {
     const text = await res.text();
     console.error("Update failed", res.status, text);
-    throw new Error(`Update failed: ${res.status}`);
+    throw new Error(`Update failed: ${res.status} : ${text}`);
   }
 
-  // return (await res.json()) as T;
   return await res.text();
 }

@@ -13,7 +13,7 @@ export default function ManualCreateUserPage() {
         firstName: data.firstName,
         lastName: data.lastName,
         password: data.password,
-        userType: data.role,
+        userType: Array.isArray(data.role) ? data.role : [data.role],
       }),
     });
     if (!res.ok) {

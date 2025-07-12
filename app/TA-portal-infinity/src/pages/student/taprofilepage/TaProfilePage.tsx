@@ -9,7 +9,7 @@ import StudentTabNav from '../../../components/layout/tabnav/studenttabnav/Stude
 import { useAuth } from '../../../context/AuthContext';
 import { type ProfileQuestion } from '../../../interfaces/question/ProfileQuestion';
 import type Section from '../../../interfaces/section/Section';
-import { type Student, studentFieldLabels, studentProfileFields } from '../../../interfaces/user/Student';
+import {userFieldLabels, userProfileFields, type StudentOrInstructorOrCoordinator} from '../../../interfaces/user/User';
 import { GenericAPIContainer } from '../../../utility/genericapicontainer/GenericAPIContainer';
 import ProfileQuestionsSection from './profilequestionssection/ProfileQuestionsSection';
 
@@ -40,7 +40,7 @@ export default function TaProfilePage() {
   const { studentId } = useParams();
   const sId = Number(studentId);
   const isStudent = useAuth().userRoles.includes('STUDENT');
-  const filteredFields = studentProfileFields.filter(
+  const filteredFields = userProfileFields.filter(
     key => key !== 'id' && key !== 'firstName' && key !== 'lastName'
   );
 
@@ -49,13 +49,13 @@ export default function TaProfilePage() {
       <StudentTabNav />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
         <div className="lg:col-span-1 max-h-[40vh]">
-          <GenericAPIContainer<Student>
+          <GenericAPIContainer<StudentOrInstructorOrCoordinator>
             fetchFunction={() => fetchStudentDetails(sId)}
             render={(stu) => (
               <ProfileDetailsSection
                 user= {stu}
                 fields={filteredFields}
-                labels={studentFieldLabels}
+                labels={userFieldLabels}
                 fetchDetailsFunction = {fetchStudentDetails}
               />
             )}

@@ -4,12 +4,13 @@ import EditProfileSection from "../editprofilesection/EditProfileSection";
 import { fetchUpdateUserDetails } from "../../../../api/user/fetchUpdateUserDetails";
 import type User from "../../../../interfaces/user/User";
 import { useAuth } from "../../../../context/AuthContext";
+import type { UserRole } from "../../../../interfaces/enum/UserRole";
 
 interface Props<T extends User> {
     user: T;
     fields: (keyof T)[];
     labels: Record<keyof T, string>;
-    fetchDetailsFunction : <T>(userId:number) => Promise<T>;
+    fetchDetailsFunction: <T>(userId: number) => Promise<T>;
 }
 
 export default function ProfileDetailsSection<T extends User>({
@@ -25,11 +26,13 @@ export default function ProfileDetailsSection<T extends User>({
     useEffect(() => setRecord(user), [user]);
 
 
-    const filterFields = fields.filter((k) => k !== "createdAt");
+    const baseFields = fields.filter((k) => k !== "createdAt");
+    const displayFields = filterFieldsByRole(baseFields, record.roles ?? []);
+
     const editFields = [
         "firstName" as keyof T,
         "lastName" as keyof T,
-        ...filterFields,
+        ...displayFields.filter(k => k !== "roles"),
     ];
 
     const isEditable = loggedInUserId === record.id || loggedInUserRoles.includes("COORDINATOR");
@@ -40,7 +43,7 @@ export default function ProfileDetailsSection<T extends User>({
                 <>
                     <ProfileSection
                         user={record}
-                        profileFields={fields}
+                        profileFields={displayFields}
                         fieldLabels={labels}
                         big
                     />
@@ -65,7 +68,7 @@ export default function ProfileDetailsSection<T extends User>({
                             console.error("Unexpected update response:", updateResult);
                             return;
                         }
-                        if (updateResult === "User updated"){
+                        if (updateResult === "User updated") {
                             alert("Profile details updated!");
                         }
                         const fresh = await fetchDetailsFunction<T>(record.id);
@@ -78,4 +81,23 @@ export default function ProfileDetailsSection<T extends User>({
             )}
         </div>
     );
+}
+
+function filterFieldsByRole<T>(baseFields: (keyof T)[], recordRoles: UserRole[]): (keyof T)[] {
+    let displayFields = [...baseFields];
+    if (!recordRoles.includes("INSTRUCTOR")) {
+        displayFields = displayFields.filter(
+            (k) => k !== ("employeeNum" as keyof T) && k !== ("dept" as keyof T)
+        );
+    } else if (!recordRoles.includes("STUDENT")) {
+        displayFields = displayFields.filter(
+            (k) =>
+                k !== ("studentNum" as keyof T) &&
+                k !== ("program" as keyof T) &&
+                k !== ("enrollmentYear" as keyof T) &&
+                k !== ("schoolYear" as keyof T)
+        );
+    }
+
+    return displayFields;
 }

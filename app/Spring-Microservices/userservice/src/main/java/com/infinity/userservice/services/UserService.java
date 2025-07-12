@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -93,10 +94,19 @@ public class UserService {
 
         if (req.employeeNum() != null)
             user.setEmployeeNum(req.employeeNum());
-        if (req.department() != null)
-            user.setDepartment(req.department());
+        if (req.dept() != null)
+            user.setDepartment(req.dept());
 
+        try {
         userRepository.save(user);
+        } catch (DataIntegrityViolationException ex) {
+            if (ex.getMessage().contains("Duplicate entry")) {
+                throw new BadRequestException(
+                    "That student or employee number is already in use."
+                );
+            }
+            throw new BadRequestException("Invalid data: " + ex.getMessage());
+        }
     }
 
     public String deleteUserById(Long id, Long userIdFromHeader, List<String> headerRoles) {
