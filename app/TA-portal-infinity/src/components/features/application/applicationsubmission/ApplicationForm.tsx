@@ -241,7 +241,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
         onClick={(e) => {
           if (deadlinePassed) {
             e.preventDefault(); // prevent form submission
-            toast("The need update deadline has passed. You can no longer submit.");
+            toast.error("The application deadline has passed. You can no longer submit.");
           }
         }}
         className={`px-6 py-2 rounded ${

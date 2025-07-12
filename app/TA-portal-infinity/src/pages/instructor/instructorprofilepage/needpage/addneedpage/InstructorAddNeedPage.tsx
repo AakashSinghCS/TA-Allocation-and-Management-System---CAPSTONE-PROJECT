@@ -221,7 +221,7 @@ export default function InstructorAddNeedPage() {
             onClick={(e) => {
               if (deadlinePassed) {
                 e.preventDefault(); // prevent form submission
-                toast("The need update deadline has passed. You can no longer submit.");
+                toast.error("The need update deadline has passed. You can no longer submit.");
               }
             }}
             className={`px-6 py-2 rounded ${

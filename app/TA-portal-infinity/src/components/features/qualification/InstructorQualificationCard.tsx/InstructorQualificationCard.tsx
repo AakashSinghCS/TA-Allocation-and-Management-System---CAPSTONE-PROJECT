@@ -36,7 +36,7 @@ export default function InstructorQualificationCard({ initialQualifications, cou
      const onSaved = async (savedTempId : string, description: string) => {
         //TODO: ensure backend considers -1 and "" value and throw the request if they are empty.
         if (deadlinePassed) {
-          toast("The deadline has passed. You can no longer save.");
+          toast.error("The deadline has passed. You can no longer save.");
           return;
         }
         const created : Qualification | null= await fetchCreateQualification( description, course.deptCode ?? "", course.id ?? -1);
@@ -47,7 +47,7 @@ export default function InstructorQualificationCard({ initialQualifications, cou
 
     const onRemoved = async (removingq: TempQualification) => {
       if (deadlinePassed) {
-        toast("The deadline has passed. You can no longer delete.");
+        toast.error("The deadline has passed. You can no longer delete.");
         return;
       }
         if (removingq.id) {

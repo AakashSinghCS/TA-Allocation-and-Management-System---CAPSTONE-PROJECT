@@ -13,7 +13,7 @@ import { fetchSectionInfo } from "../../../api/section/fetchSectionInfo";
 
 import type { DeadlineDto } from '../../../interfaces/admin/Deadline';
 import { fetchDeadlines } from '../../../api/admin/FetchDeadline';
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 
 type ApplicationWithAllocation = ApplicationDto & { allocation?: Allocation };
@@ -372,11 +372,11 @@ const ViewApplicationPage = () => {
                         <span>Offer pending confirmation</span>
                         <button
                           onClick={(e) => {
-                            // if (deadlinePassed) {
-                            //   e.preventDefault();
-                            //   toast("The need update deadline has passed. You can no longer submit.");
-                            //   return;
-                            // }
+                            if (deadlinePassed) {
+                              e.preventDefault();
+                              toast.error("The application deadline has passed. You can no longer submit.");
+                              return;
+                            } 
                             if (
                               app.allocation &&
                               typeof app.allocation.id === 'number' &&
@@ -391,8 +391,12 @@ const ViewApplicationPage = () => {
                             typeof (app.id ?? app.applicationId) !== 'number' ||
                             actionLoading === app.allocation.id
                           }
-                          
-                          className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
+                          className={`px-3 py-1 rounded ${
+                            deadlinePassed
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
+                          }`}
+                          // className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
                         >
                           {actionLoading === app.allocation?.id ? 'Accepting...' : 'Accept Offer'}
                         </button>
@@ -595,6 +599,7 @@ const ViewApplicationPage = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
