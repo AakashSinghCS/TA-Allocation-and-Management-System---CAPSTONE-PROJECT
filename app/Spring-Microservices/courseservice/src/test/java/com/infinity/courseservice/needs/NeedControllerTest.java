@@ -1,4 +1,4 @@
-package com.infinity.courseservice;
+package com.infinity.courseservice.needs;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;

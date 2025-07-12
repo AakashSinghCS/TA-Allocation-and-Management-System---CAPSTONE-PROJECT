@@ -1,6 +1,5 @@
-package com.infinity.courseservice;
+package com.infinity.courseservice.sections;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -11,8 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,7 +20,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.courseservice.controllers.SectionController;
 import com.infinity.courseservice.dtos.SectionDtos.ExportedSectionData;
 import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
@@ -36,9 +34,6 @@ public class SectionCSVControllerTest {
 
     @MockitoBean
     private SectionService sectionService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     @WithMockUser(roles = "COORDINATOR")
