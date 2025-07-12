@@ -1,5 +1,4 @@
 import { Link, useParams } from "react-router-dom";
-// import { fetchStudentAllocationHistory } from "../../../api/allocation/fetchStudentAllocationHistory";
 import SectionsColumn from "../../../components/features/section/sectionscolumn/SectionsColumn";
 import { useAuth } from "../../../context/AuthContext";
 import type Section from "../../../interfaces/section/Section";
