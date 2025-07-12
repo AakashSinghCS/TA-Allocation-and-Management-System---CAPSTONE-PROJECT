@@ -35,7 +35,6 @@ public class Course {
 
     private String deptCode;
 
-    @NotBlank @Size(max = 100)
     private String name;
 
 
