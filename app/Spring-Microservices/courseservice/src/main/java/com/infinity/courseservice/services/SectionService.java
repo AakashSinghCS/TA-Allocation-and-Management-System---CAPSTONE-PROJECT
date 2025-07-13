@@ -25,7 +25,7 @@ import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.models.SectionSchedule;
-import com.infinity.courseservice.models.StudentCourse;
+// ...existing code...
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
@@ -42,6 +42,7 @@ public class SectionService {
     private final SectionRepository sectionRepository;
     private final CourseRepository courseRepository;
     private final SectionScheduleRepository sectionScheduleRepository;
+
     private final UserInterface userInterface;
     private final ApplicationInterface applicationInterface;
     private final EnrollmentService enrollmentService;
@@ -349,5 +350,152 @@ public class SectionService {
                 schedule != null && schedule.getStartTime() != null ? schedule.getStartTime().toString() : "",
                 schedule != null && schedule.getEndTime() != null ? schedule.getEndTime().toString() : ""
         );
+    }
+    
+    /**
+     * Import sections from a CSV file.
+     * This method parses the CSV, validates data, and saves sections to the database.
+     * @param file CSV file containing section data
+     * @return Import result summary (success/failure count, errors)
+     */
+    public String importSectionsFromCsv(org.springframework.web.multipart.MultipartFile file) {
+        // Parse CSV file and validate each row
+        int successCount = 0;
+        int errorCount = 0;
+        StringBuilder errorMessages = new StringBuilder();
+
+        try (java.io.Reader reader = new java.io.InputStreamReader(file.getInputStream());
+             com.opencsv.CSVReader csvReader = new com.opencsv.CSVReader(reader)) {
+            String[] headers = csvReader.readNext(); // Read header row
+            if (headers == null) {
+                return "CSV file is empty.";
+            }
+
+            String[] row;
+            int rowNum = 1;
+            while ((row = csvReader.readNext()) != null) {
+                rowNum++;
+                // Basic validation: check required columns
+                if (row.length < 10) {
+                    errorCount++;
+                    errorMessages.append("Row ").append(rowNum).append(": Not enough columns.\n");
+                    continue;
+                }
+                // Map CSV row to SectionCsvData
+                SectionCsvData sectionCsvData = new SectionCsvData(
+                    row[0], // deptCode
+                    row[1], // courseNum
+                    row[2], // name
+                    parseIntSafe(row[3]), // year
+                    row[4], // semester
+                    row[5], // section
+                    row[6], // type
+                    row[7], // day
+                    row[8], // startTime
+                    row[9]  // endTime
+                );
+                // Validate required fields
+                if (sectionCsvData.deptCode() == null || sectionCsvData.deptCode().isEmpty() ||
+                    sectionCsvData.courseNum() == null || sectionCsvData.courseNum().isEmpty() ||
+                    sectionCsvData.name() == null || sectionCsvData.name().isEmpty() ||
+                    sectionCsvData.year() == null || sectionCsvData.semester() == null || sectionCsvData.semester().isEmpty() ||
+                    sectionCsvData.section() == null || sectionCsvData.section().isEmpty() ||
+                    sectionCsvData.type() == null || sectionCsvData.type().isEmpty()) {
+                    errorCount++;
+                    errorMessages.append("Row ").append(rowNum).append(": Missing required fields.\n");
+                    continue;
+                }
+
+                try {
+                    // Find or create Course
+                    java.util.Optional<com.infinity.courseservice.models.Course> courseOpt = courseRepository.findByDeptCodeAndCourseNum(sectionCsvData.deptCode(), sectionCsvData.courseNum());
+                    com.infinity.courseservice.models.Course course;
+                    if (courseOpt.isPresent()) {
+                        course = courseOpt.get();
+                        // Update course name if needed
+                        if (!course.getName().equals(sectionCsvData.name())) {
+                            course.setName(sectionCsvData.name());
+                            courseRepository.save(course);
+                        }
+                    } else {
+                        course = new com.infinity.courseservice.models.Course(sectionCsvData.deptCode(), sectionCsvData.name(), sectionCsvData.courseNum());
+                        course = courseRepository.save(course);
+                    }
+
+                    // Convert type string to SectionType enum
+                    com.infinity.courseservice.enums.SectionType sectionType;
+                    try {
+                        sectionType = com.infinity.courseservice.enums.SectionType.valueOf(sectionCsvData.type().toUpperCase());
+                    } catch (Exception e) {
+                        errorCount++;
+                        errorMessages.append("Row ").append(rowNum).append(": Invalid section type.\n");
+                        continue;
+                    }
+
+                    // Check for duplicate Section
+                    java.util.Optional<com.infinity.courseservice.models.Section> sectionOpt = sectionRepository.findByCourseAndYearAndSemesterAndSectionAndType(
+                        course, sectionCsvData.year(), sectionCsvData.semester(), sectionCsvData.section(), sectionType);
+                    com.infinity.courseservice.models.Section section;
+                    if (sectionOpt.isPresent()) {
+                        section = sectionOpt.get();
+                        // Optionally update section fields here
+                    } else {
+                        section = new com.infinity.courseservice.models.Section(
+                            sectionCsvData.year(),
+                            sectionCsvData.semester(),
+                            sectionCsvData.section(),
+                            sectionType,
+                            course,
+                            null // instructorId (not in CSV)
+                        );
+                        section = sectionRepository.save(section);
+                    }
+
+                    // Parse schedule times
+                    java.time.LocalTime startTime = null;
+                    java.time.LocalTime endTime = null;
+                    try {
+                        if (sectionCsvData.startTime() != null && !sectionCsvData.startTime().isEmpty()) {
+                            startTime = java.time.LocalTime.parse(sectionCsvData.startTime());
+                        }
+                        if (sectionCsvData.endTime() != null && !sectionCsvData.endTime().isEmpty()) {
+                            endTime = java.time.LocalTime.parse(sectionCsvData.endTime());
+                        }
+                    } catch (Exception e) {
+                        errorCount++;
+                        errorMessages.append("Row ").append(rowNum).append(": Invalid time format.\n");
+                        continue;
+                    }
+
+                    // Save SectionSchedule if day is present
+                    if (sectionCsvData.day() != null && !sectionCsvData.day().isEmpty()) {
+                        com.infinity.courseservice.models.SectionSchedule schedule = new com.infinity.courseservice.models.SectionSchedule(
+                            sectionCsvData.day(), startTime, endTime, section
+                        );
+                        sectionScheduleRepository.save(schedule);
+                    }
+
+                    successCount++;
+                } catch (Exception ex) {
+                    errorCount++;
+                    errorMessages.append("Row ").append(rowNum).append(": Exception during save: ").append(ex.getMessage()).append("\n");
+                }
+            }
+        } catch (Exception e) {
+            return "CSV import failed: " + e.getMessage();
+        }
+
+        // Return summary
+        return "CSV import completed. Success: " + successCount + ", Errors: " + errorCount +
+            (errorCount > 0 ? "\nError details:\n" + errorMessages.toString() : "");
+    }
+
+    // Helper method to safely parse integer
+    private Integer parseIntSafe(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
