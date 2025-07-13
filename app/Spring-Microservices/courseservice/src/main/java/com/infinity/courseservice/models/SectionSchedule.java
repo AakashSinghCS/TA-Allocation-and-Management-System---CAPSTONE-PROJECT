@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
        uniqueConstraints = {
            @UniqueConstraint(
                name = "uk_sectionSchedule_unique_row",
-               columnNames = {"schedule_day", "startTime", "endTime"})
+               columnNames = {"section_id", "schedule_day", "startTime", "endTime"})
        })
 public class SectionSchedule {
 

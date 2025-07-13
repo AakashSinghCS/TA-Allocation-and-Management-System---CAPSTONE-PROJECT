@@ -45,18 +45,29 @@ export default function SectionCsvImport() {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const res = await fetch("/sections/import-csv", {
+      const token = localStorage.getItem('token');
+      const res = await fetch("http://localhost:8080/sections/import-csv", {
         method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
         body: formData,
       });
-      const text = await res.text();
+      let errorDetail = "";
+      let text = "";
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const json = await res.json();
+        text = json.message || JSON.stringify(json);
+      } else {
+        text = await res.text();
+      }
       if (!res.ok) {
-        setError(text || "Import failed.");
+        errorDetail = text ? `Import failed: ${text}` : `Import failed (status ${res.status})`;
+        setError(errorDetail);
       } else {
         setResult(text);
       }
     } catch (err: any) {
-      setError("Import failed.");
+      setError(err?.message ? `Import failed: ${err.message}` : "Import failed.");
     } finally {
       setLoading(false);
     }
