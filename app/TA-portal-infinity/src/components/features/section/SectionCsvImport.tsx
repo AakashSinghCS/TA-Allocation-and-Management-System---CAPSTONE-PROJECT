@@ -1,0 +1,113 @@
+import React, { useState } from "react";
+import Papa from "papaparse";
+
+export default function SectionCsvImport() {
+  const [file, setFile] = useState<File | null>(null);
+  const [result, setResult] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [csvPreview, setCsvPreview] = useState<Array<Record<string, string>> | null>(null);
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const selectedFile = e.target.files[0];
+      setFile(selectedFile);
+      Papa.parse(selectedFile, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          const data = results.data as Record<string, string>[];
+          setCsvPreview(data.slice(0, 10)); // Show only the first 10 rows
+          setCsvHeaders(results.meta.fields || []);
+        },
+        error: (err) => {
+          setError("CSV parse error: " + err.message);
+          setCsvPreview(null);
+        }
+      });
+    } else {
+      setCsvPreview(null);
+      setCsvHeaders([]);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setResult("");
+    if (!file) {
+      setError("Please select a CSV file.");
+      setLoading(false);
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const res = await fetch("/sections/import-csv", {
+        method: "POST",
+        body: formData,
+      });
+      const text = await res.text();
+      if (!res.ok) {
+        setError(text || "Import failed.");
+      } else {
+        setResult(text);
+      }
+    } catch (err: any) {
+      setError("Import failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-2xl min-w-[600px] mx-auto p-4 bg-white rounded shadow">
+      <h2 className="text-lg font-bold mb-2">Import Sections from CSV</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="file"
+          accept=".csv"
+          onChange={handleFileChange}
+          className="mb-2"
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-4 py-2 bg-blue-600 text-white rounded"
+        >
+          {loading ? "Importing..." : "Import CSV"}
+        </button>
+      </form>
+      {/* CSV preview display */}
+      {csvPreview && csvPreview.length > 0 && (
+        <div className="mt-4">
+          <div className="font-semibold mb-2">CSV Preview (first 10 rows):</div>
+          <div className="overflow-auto max-h-64 border rounded">
+            <table className="min-w-[600px] w-full text-xs">
+              <thead>
+                <tr>
+                  {csvHeaders.map((header) => (
+                    <th key={header} className="px-2 py-1 border-b bg-gray-100 text-left">{header}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {csvPreview.map((row, idx) => (
+                  <tr key={idx}>
+                    {csvHeaders.map((header) => (
+                      <td key={header} className="px-2 py-1 border-b">{row[header]}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      {error && <div className="mt-2 text-red-600">{error}</div>}
+      {result && <div className="mt-2 text-green-600 whitespace-pre-line">{result}</div>}
+    </div>
+  );
+}
