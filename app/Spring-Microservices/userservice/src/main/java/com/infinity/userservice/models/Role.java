@@ -44,4 +44,8 @@ public class Role {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+    public Role (UserRole name){
+        this.name = name;
+    }
 }

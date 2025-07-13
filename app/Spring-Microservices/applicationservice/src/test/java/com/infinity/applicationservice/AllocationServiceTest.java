@@ -493,6 +493,7 @@ class AllocationServiceTest {
                 assertEquals(2025, result.get(0).applicationDto().timeSubmitted().getYear());
         }
 
+
         @Test
         void testGetAllocationsBySectionIdWithCourse() {
                 Long sectionId = 100L;
