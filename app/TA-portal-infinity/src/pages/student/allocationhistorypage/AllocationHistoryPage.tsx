@@ -11,7 +11,7 @@ import TabNav from "../../../components/layout/tabnav/TabNav";
 export default function AllocationHistoryPage() {
     const { userId } = useParams();
     const sId = Number(userId);
-    const isStudent = useAuth().userRoles.includes('STUDENT');
+    const isLoggedInUser = sId === useAuth().userId;
     // const isCoordinator = useAuth().userRoles.includes('COORDINATOR')
     return (
         <div className="grid grid-cols-1 gap-4 items-start mx-auto space-y-6 p-4">
@@ -33,7 +33,7 @@ export default function AllocationHistoryPage() {
                     </div>
                 )}
             />
-            {isStudent && <Link to="/user/student/addallocation">
+            {isLoggedInUser && <Link to="/user/student/addallocation">
                 <div className="cursor-pointer italic text-slate-500 border border-dashed border-slate-200 rounded-lg p-2">
                     Add a section
                 </div>
