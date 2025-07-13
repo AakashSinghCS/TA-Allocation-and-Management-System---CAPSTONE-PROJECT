@@ -6,7 +6,7 @@ export interface UserFormData {
     firstName: string;
     lastName: string;
     email: string;
-    role: string;
+    role: string[];
     password: string;
     confirmPassword: string;
 }
@@ -45,7 +45,7 @@ export default function CreateUserForm({
         firstName: '',
         lastName: '',
         email: '',
-        role: '',
+        role: [],
         password: '',
         confirmPassword: '',
     });
@@ -79,7 +79,7 @@ export default function CreateUserForm({
                 firstName: "",
                 lastName: "",
                 email: "",
-                role: "",
+                role: [""],
                 password: "",
                 confirmPassword: "",
             });

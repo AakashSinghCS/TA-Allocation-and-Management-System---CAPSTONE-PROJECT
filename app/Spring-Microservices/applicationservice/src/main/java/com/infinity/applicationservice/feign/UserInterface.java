@@ -9,20 +9,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.infinity.applicationservice.config.FeignClientInterceptor;
-import com.infinity.applicationservice.dtos.Users.StudentDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
 
 @FeignClient(name = "USER-SERVICE", configuration = FeignClientInterceptor.class)
 public interface UserInterface {
 
-    @GetMapping("/students/{studentId}")
-    public ResponseEntity<StudentDto> getStudentById(@PathVariable Long studentId);
+    @GetMapping("/users/students/{studentId}")
+    public ResponseEntity<UserDto> getStudentById(@PathVariable Long studentId);
     
     @GetMapping("/users/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id,  @RequestHeader("X-User-Id") Long requesterId,
             @RequestHeader("X-User-Roles") List<String> roles);
     
-    @GetMapping("/students/num/{studentNum}")
-    public ResponseEntity<StudentDto> getStudentByNum(@PathVariable Integer studentNum);
+    @GetMapping("/users/studentNum/{studentNum}")
+    public ResponseEntity<UserDto> getStudentByNum(@PathVariable Integer studentNum);
 
 }

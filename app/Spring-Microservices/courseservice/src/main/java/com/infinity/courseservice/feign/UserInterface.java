@@ -5,19 +5,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.infinity.courseservice.config.FeignClientInterceptor;
-import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 
 @FeignClient(name="USER-SERVICE", configuration = FeignClientInterceptor.class)
 public interface UserInterface {
 
-    @GetMapping("/students/{studentId}")
+    @GetMapping("/users/students/{studentId}")
+    UserDto getStudentById(@PathVariable Long studentId);
 
 
-    StudentDto getStudentById(@PathVariable Long studentId);
-
-
-    @GetMapping("/instructors/{instructorId}")
-    InstructorDto getInstructorById(@PathVariable Long instructorId);
+    @GetMapping("/users/instructors/{instructorId}")
+    UserDto getInstructorById(@PathVariable Long instructorId);
 
 }

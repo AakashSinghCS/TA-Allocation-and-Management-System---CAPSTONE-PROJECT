@@ -23,9 +23,10 @@ import com.infinity.courseservice.dtos.EnrollmentDtos.CompletedCourseDto;
 import com.infinity.courseservice.dtos.EnrollmentDtos.EnrollmentRequest;
 import com.infinity.courseservice.dtos.EnrollmentDtos.StudentEnrollmentOverviewDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoNoCourse;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.enums.EnrollmentStatus;
 import com.infinity.courseservice.enums.SectionType;
+import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.UserInterface;
@@ -171,7 +172,8 @@ public class EnrollmentServiceTest {
 
     @Test
     void getFullEnrollmentOverview_aggregatesBothTypes() {
-        StudentDto studentDto = new StudentDto(1L, "John", "Smith", 12345678, "COSC", 2021, 4);
+        UserDto studentDto = new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
+                null, null);
         StudentCourse enrolled = mock(StudentCourse.class);
         StudentCourse completed = mock(StudentCourse.class);
         StudentEnrollmentOverviewDto overview = new StudentEnrollmentOverviewDto(

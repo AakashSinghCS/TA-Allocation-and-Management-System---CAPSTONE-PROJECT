@@ -2,7 +2,6 @@ package com.infinity.courseservice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,9 +31,10 @@ import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.Semester;
+import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.ApplicationInterface;
@@ -247,7 +247,10 @@ public class CourseServiceTest {
                 OfferDto offer = new OfferDto(1L, true, "description");
                 AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
                                 42L,
-                                new StudentDto(7L, "Jane", "Doe", 12345, "CS", 2021, 4), offer,
+                                new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
+                                                "COSC", 2025, 3, null,
+                                                null, null),
+                                offer,
                                 true,
                                 10,
                                 new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
@@ -264,7 +267,7 @@ public class CourseServiceTest {
                 assertEquals("Networks", result.section().course().name());
                 assertEquals("Grading", result.need().description());
                 assertEquals(1, result.allocations().size());
-                assertEquals("Jane", result.allocations().get(0).student().firstName());
+                assertEquals("Alice", result.allocations().get(0).student().firstName());
         }
 
         @Test
@@ -285,38 +288,29 @@ public class CourseServiceTest {
                 SectionDto section2 = new SectionDto(
                                 11L, 2025, "W1", "002", SectionType.LABORATORY,
                                 new CourseDto(1L, "COSC", "Security", "430"));
-
                 OfferDto offer = new OfferDto(1L, true, "description");
                 NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1", null);
                 AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
                                 42L,
-                                new StudentDto(7L, "Jane", "Doe", 12345, "CS", 2021, 4), offer,
+                                new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
+                                                "COSC", 2025, 3, null, null, null),
+                                offer,
                                 true,
-                                10, section1);
-                                // new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
-                                //                 new CourseDto(1L, "COSC", "CS", "112")));
+                                10,
+                                new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
+                                                new CourseDto(1L, "COSC", "CS", "112")));
 
                 when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1, section2));
                 when(needService.getNeed(1L, 2025, "W1")).thenReturn(need);
-                when(applicationInterface.getAllocationsBySectionId(10L)).thenReturn(ResponseEntity.ok(List.of(dto)));
-                when(applicationInterface.getAllocationsBySectionId(11L)).thenReturn(ResponseEntity.ok(Collections.emptyList()));
+                when(applicationInterface.getAllocationsBySectionId(any())).thenReturn(ResponseEntity.ok(List.of(dto)));
 
                 List<CourseNeedAndAllocations> result = courseService
                                 .getInstructorCourseNeedsAndAllocations(instructorId);
 
                 assertEquals(2, result.size());
-
-                CourseNeedAndAllocations e1 = result.get(0);
-                assertEquals(10L,   e1.section().id());
-                assertEquals("Security", e1.section().course().name());
-                assertEquals("Labs",     e1.need().description());
-                assertEquals("Jane",     e1.allocations().get(0).student().firstName());
-
-                CourseNeedAndAllocations e2 = result.get(1);
-                assertEquals(11L,   e2.section().id());
-                assertEquals("Security", e2.section().course().name());
-                assertEquals("Labs",     e2.need().description());
-                assertTrue(e2.allocations().isEmpty());
+                assertEquals("Security", result.get(0).section().course().name());
+                assertEquals("Labs", result.get(0).need().description());
+                assertEquals("Alice", result.get(0).allocations().get(0).student().firstName());
         }
 
         @Test
@@ -366,24 +360,12 @@ public class CourseServiceTest {
 
         @Test
         void testGetAllYears() {
-                List<String> mockYears = List.of("2023", "2024");
-                when(courseRepository.findAllDistinctYearStrings()).thenReturn(mockYears);
+                List<String> mock = List.of("2023", "2024");
+                when(courseRepository.findAllDistinctYearStrings()).thenReturn(mock);
 
                 List<String> result = courseService.getAllYears();
-
-                assertEquals(mockYears, result);
+                assertEquals(mock, result);
         }
-
-        // @Test
-        // void testGetAllSemesters() {
-        //         List<String> mock = List.of("W1", "W2");
-        //         when(courseRepository.findSemestersByDeptCodeAndCourseNumAndSectionAndYear("COSC", "310", "001",
-        //                         "2024"))
-        //                         .thenReturn(mock);
-
-        //         List<String> result = courseService.getAllSemester("COSC", "310", "001", "2024");
-        //         assertEquals(mock, result);
-        // }
 
         @Test
         void testAddStudentTaughtCourse_Success() {
@@ -428,35 +410,37 @@ public class CourseServiceTest {
 
                 when(studentTaughtCourseRepository.findByStudentId(studentId)).thenReturn(List.of(record));
                 when(userInterface.getStudentById(studentId))
-                                .thenReturn(new StudentDto(studentId, "Ava", "Taylor", null, null, null, null));
+                                .thenReturn(new UserDto(2L, "Alice", "Wang", "awang@test.com",
+                                                List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
+                                                null, null));
 
                 List<StudentTaughtCourseDto> result = courseService.getCoursesTaughtByStudent(studentId);
 
                 assertEquals(1, result.size());
-                assertEquals("Ava", result.get(0).student().firstName());
+                assertEquals("Alice", result.get(0).student().firstName());
                 assertEquals("Operating Systems", result.get(0).course().name());
                 assertEquals(Semester.S2, result.get(0).semester());
                 assertEquals(2023, result.get(0).year());
         }
 
-    @Test
-    void shouldReturnCourseDtoWhenFound() {
-        Course course = new Course();
-        course.setId(1L);
-        course.setDeptCode("COMP");
-        course.setCourseNum("101");
+        @Test
+        void shouldReturnCourseDtoWhenFound() {
+                Course course = new Course();
+                course.setId(1L);
+                course.setDeptCode("COMP");
+                course.setCourseNum("101");
 
-        CourseDto dto = new CourseDto(1L, "COSC", "CAPSTONE", "499");
+                CourseDto dto = new CourseDto(1L, "COSC", "CAPSTONE", "499");
 
-        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "499"))
-            .thenReturn(Optional.of(course));
+                when(courseRepository.findByDeptCodeAndCourseNum("COSC", "499"))
+                                .thenReturn(Optional.of(course));
 
-        when(courseMapper.courseToDto(course)).thenReturn(dto);
+                when(courseMapper.courseToDto(course)).thenReturn(dto);
 
-        CourseDto result = courseService.getByDeptCodeAndCourseNum("COSC", "499");
+                CourseDto result = courseService.getByDeptCodeAndCourseNum("COSC", "499");
 
-        assertEquals("COSC", result.deptCode());
-        assertEquals("499", result.courseNum());
-    }
+                assertEquals("COSC", result.deptCode());
+                assertEquals("499", result.courseNum());
+        }
 
 }

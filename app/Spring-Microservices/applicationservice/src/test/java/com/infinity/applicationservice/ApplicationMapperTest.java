@@ -15,10 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
 import com.infinity.applicationservice.dtos.Applications.AvailabilityDto;
-import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.Day;
 import com.infinity.applicationservice.enums.Subject;
+import com.infinity.applicationservice.enums.UserRole;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.models.Availability;
 import com.infinity.applicationservice.utility.ApplicationMapper;
@@ -65,7 +66,8 @@ public class ApplicationMapperTest {
 
     @Test
     void testToDtoWithStudent() {
-        StudentDto student = new StudentDto(2L, "Jane", "Doe", "test@test.com", 1234567, "COSC", 2022, 3);
+        UserDto student = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
+                                12345678, "COSC", 2025, 3, null, null, null);
 
         Application app = new Application();
         app.setId(1L);

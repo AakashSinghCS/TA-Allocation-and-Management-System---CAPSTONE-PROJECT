@@ -14,9 +14,10 @@ import com.infinity.courseservice.dtos.EnrollmentDtos.ActiveEnrollmentDto;
 import com.infinity.courseservice.dtos.EnrollmentDtos.CompletedCourseDto;
 import com.infinity.courseservice.dtos.EnrollmentDtos.StudentEnrollmentOverviewDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoNoCourse;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.enums.EnrollmentStatus;
 import com.infinity.courseservice.enums.SectionType;
+import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.models.StudentCourse;
@@ -123,11 +124,12 @@ public class EnrollmentMapperTest {
         StudentCourse enrolled = new StudentCourse(1L, course1, EnrollmentStatus.ENROLLED, section, null, 80);
         StudentCourse completed = new StudentCourse(1L, course2, EnrollmentStatus.COMPLETED, null, 90, 85);
 
-        StudentDto student = new StudentDto(1L, "Alex", "Warg", 123456, "COSC", 2021, 4);
+        UserDto student = new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
+                null, null);
 
         StudentEnrollmentOverviewDto overview = mapper.toOverviewDto(student, List.of(enrolled), List.of(completed));
 
-        assertEquals("Alex", overview.student().firstName());
+        assertEquals("Alice", overview.student().firstName());
         assertEquals(1, overview.currentCourses().size());
         assertEquals(1, overview.completedCourses().size());
         assertEquals("Intro", overview.currentCourses().get(0).course().name());

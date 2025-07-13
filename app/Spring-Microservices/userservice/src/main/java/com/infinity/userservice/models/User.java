@@ -10,13 +10,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.infinity.userservice.enums.UserRole;
+
 import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -26,30 +26,42 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@Inheritance
-@DiscriminatorColumn(name = "user_type")
-public abstract class User implements UserDetails{
-    
+public class User implements UserDetails {
+
     @Id
     @GeneratedValue
-    @Column(nullable = false)
     private Long id;
-    
+
     @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String firstName;
+
     @Column(nullable = false)
     private String lastName;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    @Column(unique = true)
+    private Integer studentNum;
+
+    private String program;
+    private Integer enrollmentYear;
+    private Integer schoolYear;
+
+    @Column(unique = true)
+    private Integer employeeNum;
+
+    private String department;
 
     public User(String email, String firstName, String lastName, String password) {
         this.email = email;
@@ -70,12 +82,27 @@ public abstract class User implements UserDetails{
         return this.email;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles", 
-            joinColumns = @JoinColumn(name = "user_id"), 
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles = new HashSet<>();
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public boolean hasRole(UserRole role) {
+        return roles.stream().anyMatch(r -> r.getName() == role);
+    }
 }
