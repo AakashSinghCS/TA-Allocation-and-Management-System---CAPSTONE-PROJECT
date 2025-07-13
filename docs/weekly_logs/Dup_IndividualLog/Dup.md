@@ -2279,3 +2279,49 @@ I plan to
 - enrollment for student works
 - section profile shows needs
 - Need to create a seperate logging table in backend and making logging happen manually, not through grafana.
+
+
+## Saturday 7/12 (7/11~7/15)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July12.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#374](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/374)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I unified the taprofile and instructor profile into one profile. It was necessary because of the backend changes concerning roles. Since a user can now be a instructor AND a student at the same time, a profile could not stay as just a ta profile.
+Fixed bugs in sectionFilter and section creation.
+Generally made the website look more presentable for July 15, when the testing will happen
+
+To do next time:
+- Need to create a seperate logging table in backend and making logging happen manually, not through grafana.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- enrollment for student works
+- section profile shows needs
+
