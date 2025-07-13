@@ -64,7 +64,7 @@ const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
             setHistory([]);
           });
       }, [selApp, token]);
-  const studentProfilePath = generatePath("/user/profile/:userId", { userId: String(selApp?.student.id) });
+
   
   return (
     <div className={`${colSpanClass} bg-white p-6 rounded shadow space-y-4 text-sm`}>
@@ -165,10 +165,9 @@ const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
           <section>
             <h2 className="font-bold text-lg">Applicant Details</h2>
             <div className="space-y-1 pl-2">
-              <p><strong>Name:</strong> <a href={studentProfilePath} target="_blank" rel="noopener noreferrer"
-                className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden">
+              <p><strong>Name:</strong>
                   {selApp.student.firstName} {selApp.student.lastName}
-                </a></p>
+                </p>
               <p><strong>User ID:</strong> {selApp.student.id}</p>
               <p><strong>Student Number:</strong> {selApp.student.studentNum || 'N/A'}</p>
             </div>

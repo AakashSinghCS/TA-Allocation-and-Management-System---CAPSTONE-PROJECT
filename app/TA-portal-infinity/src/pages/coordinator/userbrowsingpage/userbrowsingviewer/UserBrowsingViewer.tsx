@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { generatePath, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext";
 import type User from "../../../../interfaces/user/User";
 import { studentFieldLabels, studentProfileFields } from "../../../../interfaces/user/Student";
@@ -74,6 +74,7 @@ export default function UserBrowsingViewer({
                                 {columns.map(col => {
                                     let raw = (user as any)[col];
                                     let display = raw;
+
                                     if (col === 'name') {
                                         display = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim();
                                     } else if (col === 'createdAt' && raw != null) {
@@ -81,9 +82,14 @@ export default function UserBrowsingViewer({
                                         display = formatDateForDisplay(d);
                                     }
                                     if (col === 'name' && lastCriteria.role !== 'Coordinator' && user.id) {
-                                        const path = `/user/profile/${user.id}`;
+                                        const userProfilePath = generatePath(`/user/profile/:userId`, { userId: String(user.id) });
                                         // const path = lastCriteria.role === 'Student' ? `/user/taprofile/${user.id}` : `/user/instructorprofile/${user.id}`;
-                                        return <td key={col as string} className="border border-gray-300 px-3 py-1"><Link to={path} className="hover:text-[#00b5bc] text-[#0089b2]">{display}</Link></td>;
+                                        return <td key={col as string} className="border border-gray-300 px-3 py-1">
+                                            <a href={userProfilePath} target="_blank" rel="noopener noreferrer"
+                                                className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden">
+                                            {display}
+                                            </a>
+                                        </td>;
                                     }
                                     return <td key={col as string} className="border border-gray-300 px-3 py-1">{display}</td>;
                                 })}

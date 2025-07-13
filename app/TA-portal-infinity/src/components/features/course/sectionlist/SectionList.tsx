@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { generatePath, Link } from 'react-router-dom';
 import type Section from '../../../../interfaces/section/Section';
 import ExportAllocationsCSV from '../../csv/exportallocationscsv/ExportAllocationsCSV';
 import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
@@ -82,7 +82,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
 
           // Course header info
           const { deptCode, courseNum, name } = group[0].course || {};
-
+          const courseProfilePath = generatePath(`/user/courseprofile/:courseId`, { courseId: String(courseId) });
           return (
             <React.Fragment key={courseId}>
               <tr className="bg-gray-100">
@@ -92,13 +92,10 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                 >
                   {/* Left: course link */}
                   {courseId ? (
-                    
-                    <Link
-                      to={`/user/courseprofile/${courseId}`}
-                      className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden"
-                    >
+                       <a href={courseProfilePath} target="_blank" rel="noopener noreferrer"
+                className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden">
                       {deptCode} {courseNum} — {name}
-                    </Link>
+                      </a>
                   ) : (
                     <span className="border-gray-300 truncate inline whitespace-nowrap overflow-hidden ">
                       {deptCode} {courseNum} — {name}
@@ -148,18 +145,16 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                   .join(', ');
 
                 const sid = sec?.id;
-
+                  const sectionProfilePath = generatePath(`/user/sectionprofile/:sid`, { sid: String(sid) });
                 return (
                   <tr key={`${sid}-${times}`}>
                     <td className="border border-gray-300 px-3 py-2 truncate">
                       {sid ? (
-                        <Link
-                          to={`/user/sectionprofile/${sid}`}
-                          className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden"
-                        >
+                        <a href={sectionProfilePath} target="_blank" rel="noopener noreferrer"
+                className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden">
                           {sec.course?.deptCode} {sec.course?.courseNum}{' '}
                           {sec?.section} – {sec.course?.name}
-                        </Link>
+                        </a>
                       ) : (
                         <span className="truncate inline whitespace-nowrap overflow-hidden">
                           {sec.course?.deptCode} {sec.course?.courseNum}{' '}
