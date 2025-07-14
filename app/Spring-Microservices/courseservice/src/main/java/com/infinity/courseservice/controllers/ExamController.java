@@ -86,7 +86,7 @@ public class ExamController {
         return examService.assignStudentToExam(examId, assignmentDto.studentId(), assignmentDto.task());
     }
 
-    @GetMapping("/{studentId}/assignments")
+    @GetMapping("/assignments/{studentId}")
     public List<ExamAssignmentDto> getAssignments(
             @PathVariable Long studentId) {
         return examService.getAssignmentsByStudentId(studentId);
