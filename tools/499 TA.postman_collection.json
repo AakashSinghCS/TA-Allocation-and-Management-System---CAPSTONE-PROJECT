@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "e448564d-3efb-43a0-9387-f3140919cb9c",
+		"_postman_id": "747853f9-77a5-46b3-9771-ce3a52517c3b",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45690522"
+		"_exporter_id": "36957617"
 	},
 	"item": [
 		{
@@ -19,7 +19,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\":\"student@test.com\",\r\n    \"firstName\": \"Scoobert\",\r\n    \"lastName\": \"Doobert\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": \"STUDENT\",\r\n    \"isAdmin\": false\r\n}",
+									"raw": "{\r\n    \"email\":\"student@test.com\",\r\n    \"firstName\": \"Scoobert\",\r\n    \"lastName\": \"Doobert\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": [\"STUDENT\"]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -47,7 +47,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\":\"coordinator@test.com\",\r\n    \"firstName\": \"Ched\",\r\n    \"lastName\": \"Devis\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": \"COORDINATOR\",\r\n    \"isAdmin\": true\r\n}",
+									"raw": "{\r\n    \"email\":\"coordinator@test.com\",\r\n    \"firstName\": \"Ched\",\r\n    \"lastName\": \"Devis\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": [\"COORDINATOR\", \"ADMIN\"]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -75,7 +75,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\":\"instructor@test.com\",\r\n    \"firstName\": \"Scawt\",\r\n    \"lastName\": \"Fawz\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": \"INSTRUCTOR\",\r\n    \"isAdmin\": false\r\n}",
+									"raw": "{\r\n    \"email\":\"instructor@test.com\",\r\n    \"firstName\": \"Scawt\",\r\n    \"lastName\": \"Fawz\",\r\n    \"password\": \"P@ssword1\",\r\n    \"userType\": [\"INSTRUCTOR\"]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -312,7 +312,7 @@
 									}
 								},
 								"url": {
-									"raw": "localhost:8080/users/update/1",
+									"raw": "localhost:8080/users/update/3",
 									"host": [
 										"localhost"
 									],
@@ -320,7 +320,7 @@
 									"path": [
 										"users",
 										"update",
-										"1"
+										"3"
 									]
 								}
 							},
@@ -342,13 +342,53 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "localhost:8080/instructors/1",
+									"raw": "localhost:8080/users/instructors/3",
 									"host": [
 										"localhost"
 									],
 									"port": "8080",
 									"path": [
+										"users",
 										"instructors",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change Role",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"roles\": [\"INSTRUCTOR\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/users/changeRole/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"changeRole",
 										"1"
 									]
 								}
@@ -2611,7 +2651,7 @@
 									"raw": ""
 								},
 								"url": {
-									"raw": "localhost:8080/allocations/filter/confirmed/false",
+									"raw": "localhost:8080/allocations/filter/status/SENT",
 									"host": [
 										"localhost"
 									],
@@ -2619,8 +2659,8 @@
 									"path": [
 										"allocations",
 										"filter",
-										"confirmed",
-										"false"
+										"status",
+										"SENT"
 									]
 								}
 							},

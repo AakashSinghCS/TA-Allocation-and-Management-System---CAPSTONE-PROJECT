@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
 import com.infinity.applicationservice.dtos.Applications.AvailabilityDto;
-import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.models.Application;
 
@@ -34,7 +34,7 @@ public class ApplicationMapper {
         );
     }
 
-    public ApplicationWithStudentDto toDtoWithStudent(Application app, StudentDto student) {
+    public ApplicationWithStudentDto toDtoWithStudent(Application app, UserDto student) {
         return new ApplicationWithStudentDto(
                 app.getId(),
                 student,

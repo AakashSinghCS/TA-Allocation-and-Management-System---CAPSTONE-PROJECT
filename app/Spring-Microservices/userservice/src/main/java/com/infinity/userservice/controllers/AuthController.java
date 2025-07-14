@@ -2,11 +2,9 @@ package com.infinity.userservice.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.userservice.dtos.EmailRequest;
@@ -15,7 +13,6 @@ import com.infinity.userservice.dtos.Registration.LoginRequest;
 import com.infinity.userservice.dtos.Registration.LoginResponse;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
 import com.infinity.userservice.dtos.Registration.ResetRequest;
-import com.infinity.userservice.security.JwtUtil;
 import com.infinity.userservice.services.AuthService;
 import com.infinity.userservice.services.UserService;
 

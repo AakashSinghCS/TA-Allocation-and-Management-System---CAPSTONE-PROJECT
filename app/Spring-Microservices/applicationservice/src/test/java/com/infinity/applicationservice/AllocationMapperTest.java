@@ -14,11 +14,12 @@ import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
-import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.SectionType;
 import com.infinity.applicationservice.enums.Subject;
+import com.infinity.applicationservice.enums.UserRole;
 import com.infinity.applicationservice.models.Allocation;
 import com.infinity.applicationservice.utility.AllocationMapper;
 
@@ -34,7 +35,9 @@ public class AllocationMapperTest {
         allocation.setStatus(ApplicationStatus.CONFIRMED);
         allocation.setNumberOfHours(8);
 
-        StudentDto student = new StudentDto(2L, "Alice", "Smith", "alice@test.com", 12345, "MATH", 2020, 4);
+        UserDto student = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
+                                                "COSC", 2025, 3, null,
+                                                null, null);
 
         ApplicationDto applicationDto = new ApplicationDto(
                 3L, 2L,

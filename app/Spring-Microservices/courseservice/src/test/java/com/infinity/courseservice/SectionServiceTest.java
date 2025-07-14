@@ -26,8 +26,9 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
-import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.enums.SectionType;
+import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.ApplicationInterface;
@@ -288,7 +289,8 @@ public class SectionServiceTest {
     void testAssignInstructor_Success() {
         AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L);
 
-        InstructorDto instructorDto = new InstructorDto(99L, "Jane", "Doe", 1234, "COSC", null);
+        UserDto instructorDto = new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.INSTRUCTOR), null, null, null, null, 12345678,
+                "COSC", null);
         Course course = new Course("COSC", "AI", "310");
         Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course,null);
         section.setId(101L);
@@ -299,13 +301,14 @@ public class SectionServiceTest {
 
         String result = sectionService.assignInstructor(request);
         assertEquals("Instructor assigned to section 101", result);
-        assertEquals(99L, section.getInstructorId());
+        assertEquals(2L, section.getInstructorId());
     }
 
     @Test
     void testAssignInstructor_SectionNotFound() {
         AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L);
-        InstructorDto instructorDto = new InstructorDto(99L, "Jane", "Doe", 1234, "COSC", null);
+        UserDto instructorDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.INSTRUCTOR),
+                null, null, null, null, 12345678,"COSC", null);
 
         when(userInterface.getInstructorById(99L)).thenReturn(instructorDto);
         when(sectionRepository.findById(101L)).thenReturn(Optional.empty());

@@ -17,7 +17,7 @@ export default function SignUpPage() {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 password: data.password,
-                userType: data.role,
+                userType:[data.role].flat(),
             }),
         });
 

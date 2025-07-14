@@ -23,6 +23,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
            @NonNull FilterChain filterChain) throws ServletException, IOException {
+            String path = request.getServletPath();
+                if (path.startsWith("/auth/")) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+
         String userId = request.getHeader("X-User-Id");
         String rolesHeader = request.getHeader("X-User-Roles");
 

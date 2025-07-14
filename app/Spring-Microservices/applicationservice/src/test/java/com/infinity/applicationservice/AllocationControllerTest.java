@@ -36,10 +36,11 @@ import com.infinity.applicationservice.dtos.Allocations.ImportRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
-import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.SectionType;
+import com.infinity.applicationservice.enums.UserRole;
 import com.infinity.applicationservice.feign.SectionInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.services.AllocationService;
@@ -78,7 +79,9 @@ public class AllocationControllerTest {
                 Set.of());
         sampleDto = new AllocationHistoryDto(
                 101L,
-                new StudentDto(1L, "Test", "User", "test@example.com", 63260442, "BSC", 2022, 4),
+                new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
+                                                "COSC", 2025, 3, null,
+                                                null, null),
                 application,
                 ApplicationStatus.SENT,
                 10,
@@ -95,7 +98,7 @@ public class AllocationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(101))
-                .andExpect(jsonPath("$[0].student.firstName").value("Test"))
+                .andExpect(jsonPath("$[0].student.firstName").value("Alice"))
                 .andExpect(jsonPath("$[0].section.section").value("T01"))
                 .andExpect(jsonPath("$[0].status").value("SENT"));
     }
@@ -120,7 +123,10 @@ public class AllocationControllerTest {
 
         AllocationHistoryDto responseDto = new AllocationHistoryDto(
                 123L,
-                new StudentDto(1L, "Test", "User", "test@example.com", 63260442, "BSC", 2022, 4),
+                        new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
+                                        "COSC", 2025, 3, null,
+                                        null,
+                                        null),
                 application,
                 ApplicationStatus.SENT,
                 10,
@@ -134,7 +140,7 @@ public class AllocationControllerTest {
                 .content(mapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(123))
-                .andExpect(jsonPath("$.student.firstName").value("Test"))
+                .andExpect(jsonPath("$.student.firstName").value("Alice"))
                 .andExpect(jsonPath("$.numberOfHours").value(10))
                 .andExpect(jsonPath("$.section.section").value("T01"))
                 .andExpect(jsonPath("$.status").value("SENT"));
@@ -254,7 +260,7 @@ public class AllocationControllerTest {
                .content(mapper.writeValueAsString(request)))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$", hasSize(1)))
-           .andExpect(jsonPath("$[0].student.firstName").value("Test"));
+           .andExpect(jsonPath("$[0].student.firstName").value("Alice"));
 
         verify(allocationService, times(1)).importPreviousAllocations(any(), eq(true));
      }
@@ -279,7 +285,7 @@ public class AllocationControllerTest {
                .content(mapper.writeValueAsString(request)))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$", hasSize(1)))
-           .andExpect(jsonPath("$[0].student.firstName").value("Test"));
+           .andExpect(jsonPath("$[0].student.firstName").value("Alice"));
 
         verify(allocationService, times(1)).importPreviousAllocations(any(), eq(false));
      }

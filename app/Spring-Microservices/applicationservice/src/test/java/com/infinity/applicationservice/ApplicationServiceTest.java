@@ -35,10 +35,11 @@ import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
 import com.infinity.applicationservice.dtos.Applications.AvailabilityDto;
-import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.Day;
 import com.infinity.applicationservice.enums.Subject;
+import com.infinity.applicationservice.enums.UserRole;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
@@ -213,7 +214,8 @@ public class ApplicationServiceTest {
                 LocalDate.now().atStartOfDay(),
                 Set.of());
 
-        StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", "test@test.com", 1234567, "COSC", 2022, 3);
+        UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
+                12345678, "COSC", 2025, 3, null, null, null);
         when(applicationMapper.toDto(Mockito.any(Application.class))).thenReturn(mockedDto);
         when(userInterface.getStudentById(1L)).thenReturn(ResponseEntity.ok(studentDto));
         when(notificationClient.sendEmail(any())).thenReturn(null);
@@ -455,7 +457,8 @@ public class ApplicationServiceTest {
         Application app = new Application(1L, List.of(Subject.COSC, Subject.MATH), ApplicationType.UNDERGRADUATE, false, 6);
         app.setSubmittedAt(LocalDateTime.of(2024, 1, 1, 12, 0));
 
-        StudentDto studentDto = new StudentDto(1L, "Scoobert", "Doobert", "test@test.com", 1234567, "COSC", 2022, 3);
+        UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
+                                12345678, "COSC", 2025, 3, null, null, null);
 
         ApplicationWithStudentDto expectedDto = new ApplicationWithStudentDto(
                 1L,

@@ -16,7 +16,7 @@ import com.infinity.applicationservice.dtos.Allocations.ImportSectionRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
-import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
@@ -62,7 +62,7 @@ public class AllocationService {
 
     public List<AllocationHistoryDto> getAllocationsByStudentId(Long studentId) {
         List<Allocation> allocations = allocationRepository.findByStudentId(studentId);
-        StudentDto student = studentInterface.getStudentById(studentId).getBody();
+        UserDto student = studentInterface.getStudentById(studentId).getBody();
 
         return allocations.stream().map(allocation -> {
             Long sectionId = allocation.getSectionId();
@@ -96,7 +96,7 @@ public class AllocationService {
         allocation.setSectionId(request.sectionId());
 
         Allocation saved = allocationRepository.save(allocation);
-        StudentDto student = studentInterface.getStudentById(request.studentId()).getBody();
+        UserDto student = studentInterface.getStudentById(request.studentId()).getBody();
         SectionDto section = sectionInterface.getSectionById(request.sectionId());
 
         ApplicationDto applicationDto = null;
@@ -135,7 +135,7 @@ public class AllocationService {
         return allocationRepository.findAll().stream()
             .filter(a -> a.getStatus() == status)
             .map(allocation -> {
-                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = null;
                 //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
@@ -151,7 +151,7 @@ public class AllocationService {
         return allocationRepository.findAll().stream()
             .filter(a -> a.getSectionId().equals(sectionId))
             .map(allocation -> {
-                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = null;
                 //If application is not null, the TA requirements (needs) page does not work after importing allocations through csv.
@@ -171,7 +171,7 @@ public class AllocationService {
         return allocationRepository.findAll().stream()
             .filter(a -> a.getApplication() != null && a.getApplication().getId().equals(appId))
             .map(allocation -> {
-                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = null;
                 //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
@@ -188,7 +188,7 @@ public class AllocationService {
             .filter(a -> a.getApplication() != null &&
                         a.getApplication().getSubmittedAt().getYear() == year)
             .map(allocation -> {
-                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = null;
                 //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
@@ -204,7 +204,7 @@ public class AllocationService {
         return allocationRepository.findAll().stream()
             .filter(a -> a.getSectionId().equals(sectionId))
             .map(allocation -> {
-                StudentDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = null;
                 //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
@@ -234,7 +234,7 @@ public class AllocationService {
             int year = Integer.parseInt(data.get("year").trim());
             String semester = data.get("semester").trim();
 
-            StudentDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
+            UserDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
             if (studentDto == null) {
                 throw new NotFoundException("Student not found: " + studentNum);
             }

@@ -13,7 +13,7 @@ import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
 import com.infinity.applicationservice.dtos.Applications.AvailabilityDto;
-import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
@@ -61,7 +61,7 @@ public class ApplicationService {
 
         applicationRepository.save(application);
         
-        StudentDto student = userInterface.getStudentById(userIdFromHeader).getBody();
+        UserDto student = userInterface.getStudentById(userIdFromHeader).getBody();
         notificationClient.sendEmail(emailMapper.applicationReceivedEmailRequest(student));
 
         return applicationMapper.toDto(application);

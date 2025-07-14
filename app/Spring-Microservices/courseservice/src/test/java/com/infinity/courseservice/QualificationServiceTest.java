@@ -28,8 +28,9 @@ import com.infinity.courseservice.dtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.StudentQualiRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.enums.SectionType;
+import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.UserInterface;
@@ -241,14 +242,8 @@ class QualificationServiceTest {
         when(courseService.findCourse(10L)).thenReturn(courseDto1);
         when(courseService.findCourse(20L)).thenReturn(courseDto2);
 
-        StudentDto studentDto = new StudentDto(
-                studentId,
-                "John",
-                "Doe",
-                123456,
-                "Computer Science",
-                2020,
-                4);
+        UserDto studentDto = new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
+                null, null);
         when(studentClient.getStudentById(studentId)).thenReturn(studentDto);
 
         // Act

@@ -1,4 +1,4 @@
-const BASE = "http://localhost:8080/students";
+const BASE = "http://localhost:8080/users/students";
 
 export async function fetchStudentDetails<Student>(userId: number): Promise<Student> {
   const url = `${BASE}/${userId}`;
