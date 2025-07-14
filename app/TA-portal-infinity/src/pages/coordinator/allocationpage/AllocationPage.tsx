@@ -34,7 +34,7 @@ const TAAllocationPage: React.FC = () => {
     setLoadingSections(true);
     try {
       const raw = await fetchFilteredSections(filters);
-      setFilteredSections(convertFilterSectionsToSections(raw || []));
+      setFilteredSections(convertFilterSectionsToSections(raw as any[] || []));
     } catch (err) {
       console.error(err);
     } finally {

@@ -67,7 +67,7 @@ const ViewApplicationPage = () => {
                 delete allocation.isConfirmed;
               }
               // Fetch instructor details if instructor is an ID (number or string)
-              // Always fetch instructor details for the section if possible
+              // fetch instructor details for the section if possible
               let instructorId: number | undefined = undefined;
               if (allocation?.section) {
                 if (typeof allocation.section.instructor === 'number') {
@@ -302,8 +302,8 @@ const ViewApplicationPage = () => {
                       <div className="mt-2 z-10">
                         <strong>Offer Status:</strong>
                     {app.allocation.status === 'CONFIRMED' && (
-                      <div className="mt-1 flex flex-col gap-2 p-4 bg-green-50 border border-[#040941] rounded-lg">
-                        <span className="text-green-700 font-semibold text-lg">Allocation Confirmed</span>
+                      <div className="mt-1 flex flex-col gap-2 p-4 bg-blue-50 border border-[#040941] rounded-lg">
+                        <span className="text-green-800 font-semibold text-lg">Success! Your allocation is now confirmed!</span>
                         <span>
                           <strong>Section:</strong> {app.allocation.section?.course?.deptCode || 'N/A'}
                           {app.allocation.section?.course?.courseNum ? ` ${app.allocation.section.course.courseNum}` : ''}
@@ -442,7 +442,7 @@ const ViewApplicationPage = () => {
                         </div>
                       )}
 
-                    {/* Creative: Progress bar */}
+                    {/* Progress bar */}
                  
                     <div className="mt-4 z-10">
                       {(() => {
