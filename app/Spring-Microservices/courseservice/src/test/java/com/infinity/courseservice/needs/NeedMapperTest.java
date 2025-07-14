@@ -1,4 +1,4 @@
-package com.infinity.courseservice;
+package com.infinity.courseservice.needs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;

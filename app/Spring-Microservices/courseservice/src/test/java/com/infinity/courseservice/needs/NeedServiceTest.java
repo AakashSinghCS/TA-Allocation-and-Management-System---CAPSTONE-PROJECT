@@ -1,4 +1,4 @@
-package com.infinity.courseservice;
+package com.infinity.courseservice.needs;
 
 import java.time.LocalDateTime;
 import java.util.List;
