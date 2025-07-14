@@ -9,11 +9,14 @@ export async function fetchDeadlines(
 ): Promise<DeadlineDto[]> {
 //   const rolesHeader = roles.map(r => r.startsWith("ROLE_") ? r : `ROLE_${r}`).join(",");
 
+  const headers: Record<string, string> = {};
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const resp = await fetch(`http://localhost:8080/config`, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-    //   "X-User-Roles": rolesHeader
-    }
+    headers,
   });
 
   if (!resp.ok) {
