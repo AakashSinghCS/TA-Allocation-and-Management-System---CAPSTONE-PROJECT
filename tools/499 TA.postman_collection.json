@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "747853f9-77a5-46b3-9771-ce3a52517c3b",
+		"_postman_id": "502aa6f4-4070-4bd9-a258-9d271322c05b",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "36957617"
@@ -3059,6 +3059,51 @@
 								"1",
 								"2025",
 								"W1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update allocated hours Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/needs/updateAllocatedHours/1?numAllocatedHours=6",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"needs",
+								"updateAllocatedHours",
+								"1"
+							],
+							"query": [
+								{
+									"key": "numAllocatedHours",
+									"value": "6"
+								}
 							]
 						}
 					},
