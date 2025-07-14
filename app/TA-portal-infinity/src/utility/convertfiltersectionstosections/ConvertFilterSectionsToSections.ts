@@ -65,7 +65,7 @@ export function convertFilterSectionsToSections(
     // now push this row’s schedule info into that section’s schedule array
     const sec = bySection.get(key)!;
     const sched: SectionSchedule = {
-      day:       f.day ??"",
+      day: f.day ?? (f as any).scheduleDay ?? "",
       startTime: f.startTime ?? "",
       endTime:   f.endTime ?? "",
       sectionId: f.sectionId,
