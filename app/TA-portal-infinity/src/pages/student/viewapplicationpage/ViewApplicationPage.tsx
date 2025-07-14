@@ -9,7 +9,6 @@ import type { ApplicationDto } from "../../../interfaces/application/Application
 import type { Student } from "../../../interfaces/user/Student";
 import { decodeToken } from "../../../utility/decodeToken";
 
-import { fetchSection } from "../../../api/student/section/fetchSection";
 import { fetchSectionInfo } from "../../../api/section/fetchSectionInfo";
 
 
@@ -71,21 +70,15 @@ const ViewApplicationPage = () => {
               }
               if (sectionId) {
                 try {
-                  // Fetch year/semester/basic info
-                  const sectionBasic = await fetchSection(sectionId, token);
-                  // Fetch schedule and extra details
                   const sectionDetails = await fetchSectionInfo(sectionId, token);
-                  // Merge details: prefer schedule from sectionDetails, but year/semester from sectionBasic
-                  const mergedSection = {
-                    ...sectionDetails,
-                    year: sectionBasic.year,
-                    semester: sectionBasic.semester,
-                  };
+                  console.log('DEBUG: sectionDetails fetched for sectionId', sectionId, sectionDetails);
                   if (allocation) {
-                    allocation.section = mergedSection;
+                    allocation.section = sectionDetails;
+                    console.log('DEBUG: allocation.section after assignment', allocation.section);
                   }
                 } catch (e) {
                   // If fetch fails, just skip
+                  console.error('DEBUG: fetchSectionInfo failed for sectionId', sectionId, e);
                 }
               }
               // Fetch instructor details if instructor is an ID (number or string)
@@ -141,7 +134,6 @@ const ViewApplicationPage = () => {
     try {
       const resp = await acceptOffer(allocationId);
       if (resp && (resp.ok === true || resp.status === 200)) {
-        setSuccess("You have accepted the offer.");
         // Update allocation status in local state
         setApplications(apps =>
           apps.map(app => {
@@ -442,7 +434,6 @@ const ViewApplicationPage = () => {
                  
                     <div className="mt-4 z-10">
                       {(() => {
-                        // progress step and label
                         let step = 0;
                         let label = 'Application submitted. Waiting for offer...';
                         let tip = '';

@@ -35,13 +35,15 @@ const dayMap: Record<string, number> = {
   "Saturday": 6,
 };
 
-// Semester date ranges (for now added to each semester later can be moved to config)
-const semesterRanges: Record<string, { start: string; end: string }> = {
-  W1: { start: "2026-01-05", end: "2026-04-09" },
-  S1: { start: "2026-05-11", end: "2026-06-18" },
-  S2: { start: "2026-07-06", end: "2026-08-13" },
-  W2: { start: "2026-09-02", end: "2026-12-05" },
-};
+// Dynamic semester date ranges per year
+function getSemesterRanges(year: number): Record<string, { start: string; end: string }> {
+  return {
+    W1: { start: `${year}-01-05`, end: `${year}-04-09` },
+    S1: { start: `${year}-05-11`, end: `${year}-06-18` },
+    S2: { start: `${year}-07-06`, end: `${year}-08-13` },
+    W2: { start: `${year}-09-02`, end: `${year}-12-05` },
+  };
+}
 
 function getFirstWeekdayInRange(weekday: string, rangeStart: string) {
   const dayNum = dayMap[weekday];
@@ -93,14 +95,6 @@ function exportCSV(scheduleRows: ScheduleRow[]) {
 
 // ICS Export for schedule
 function exportICS(scheduleRows: ScheduleRow[]) {
-  // Semester date ranges
-  const semesterRanges: Record<string, { start: string; end: string }> = {
-    W1: { start: "2025-09-02", end: "2025-12-05" },
-    W2: { start: "2026-01-05", end: "2026-04-09" },
-    S1: { start: "2026-05-11", end: "2026-06-18" },
-    S2: { start: "2026-07-06", end: "2026-08-13" },
-  };
-
   function getFirstWeekdayInRange(weekday: string, rangeStart: string) {
     const dayNum = dayMap[weekday];
     if (typeof dayNum !== "number") return null;
@@ -127,7 +121,7 @@ function exportICS(scheduleRows: ScheduleRow[]) {
   const events = scheduleRows
     .filter(a => a.day && a.startTime && a.endTime)
     .flatMap(a => {
-      const semesterRange = semesterRanges[a.semester];
+      const semesterRange = getSemesterRanges(a.year)[a.semester];
       if (!semesterRange) return [];
       let normalizedDay = a.day;
       if (normalizedDay.length === 3) {
@@ -208,7 +202,7 @@ function allocationsToEvents(scheduleRows: ScheduleRow[]) {
         };
         normalizedDay = dayFullNames[normalizedDay] || normalizedDay;
       }
-      const semesterRange = semesterRanges[a.semester];
+      const semesterRange = getSemesterRanges(a.year)[a.semester];
       if (!semesterRange) return;
       const allDates = getAllWeekdaysInRange(normalizedDay, semesterRange.start, semesterRange.end);
       const [startHour, startMinute] = a.startTime.split(":").map(Number);
@@ -463,8 +457,8 @@ const ScheduleViewer: React.FC<{ scheduleRows: ScheduleRow[] }> = ({ scheduleRow
                             )}
                           </td>
                           <td className="px-4 py-2 text-blue-900">{a.semester}</td>
-                          <td className="px-4 py-2 text-gray-700">{semesterRanges[a.semester]?.start || "N/A"}</td>
-                          <td className="px-4 py-2 text-gray-700">{semesterRanges[a.semester]?.end || "N/A"}</td>
+                          <td className="px-4 py-2 text-gray-700">{getSemesterRanges(a.year)[a.semester]?.start || "N/A"}</td>
+                          <td className="px-4 py-2 text-gray-700">{getSemesterRanges(a.year)[a.semester]?.end || "N/A"}</td>
                           <td className="px-4 py-2">
                             <span className={`px-2 py-1 rounded-full text-xs font-bold shadow-sm ${a.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                               {a.status}
