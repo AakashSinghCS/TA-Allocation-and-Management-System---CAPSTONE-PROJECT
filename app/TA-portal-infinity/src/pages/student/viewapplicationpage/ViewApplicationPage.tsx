@@ -442,7 +442,7 @@ const ViewApplicationPage = () => {
                         </div>
                       )}
 
-                    {/* Creative: Progress bar */}
+                    {/* Progress bar */}
                  
                     <div className="mt-4 z-10">
                       {(() => {

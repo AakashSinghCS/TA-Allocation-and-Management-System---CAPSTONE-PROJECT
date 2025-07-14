@@ -78,6 +78,18 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
         )}
       </section>
 
+    {/* Calendar Error Handling */}
+    {(errors.availability || errors.calendar || errors.startTime || errors.endTime) && (
+      <div className="text-sm text-red-600 mt-2">
+        {errors.availability && <div>{errors.availability}</div>}
+        {errors.calendar && <div>{errors.calendar}</div>}
+        {errors.startTime && <div>{errors.startTime}</div>}
+        {errors.endTime && <div>{errors.endTime}</div>}
+        {errors.invalidTime && <div>{errors.invalidTime}</div>}
+        {errors.timeOrder && <div>{errors.timeOrder}</div>}
+      </div>
+    )}
+
     {/* Hours Requested */}
     <section>
       <label className="block mb-2 font-semibold text-base md:text-lg" htmlFor="wantWorkingHours">Hours Requested*</label>
@@ -94,8 +106,8 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
         required
       />
       {errors.wantWorkingHours && <p className="text-sm text-red-600 mt-1">{errors.wantWorkingHours}</p>}
-      {formData.wantWorkingHours && Number(formData.wantWorkingHours) > 30 && (
-        <p className="text-sm text-red-600 mt-1">The value must be less than or equal to 30</p>
+      {formData.wantWorkingHours && Number(formData.wantWorkingHours) > 12 && (
+        <p className="text-sm text-red-600 mt-1">The value must be less than or equal to 12</p>
       )}
       {formData.wantWorkingHours && Number(formData.wantWorkingHours) < 2 && (
         <p className="text-sm text-red-600 mt-1">The value must be greater than or equal to 2</p>
