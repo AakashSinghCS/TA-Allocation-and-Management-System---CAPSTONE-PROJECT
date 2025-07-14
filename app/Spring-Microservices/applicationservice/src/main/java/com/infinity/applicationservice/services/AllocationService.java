@@ -1,6 +1,7 @@
 package com.infinity.applicationservice.services;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class AllocationService {
     private final ApplicationRepository applicationRepository;
     private final CourseInterface courseInterface;
     private final UserInterface studentInterface;
+    private final ConfigService configService;
     private final ApplicationMapper applicationMapper;
     private final AllocationMapper allocationMapper;
     private final NotificationClient notificationClient;
@@ -115,6 +117,11 @@ public class AllocationService {
             NeedDto need = courseInterface.getNeed(allocation.getApplication().getId(), section.year(),
                     section.semester());
             courseInterface.updateNeedAllocatedHours(need.id(), need.numHoursCurrentlyAllocated() + allocation.getNumberOfHours());
+        }        if (LocalDateTime.now().isAfter(configService.getDeadlineByName("student_offer_accept_deadline").endTime())) {
+            throw new BadRequestException("The application deadline has passed.");
+        }
+        if (LocalDateTime.now().isBefore(configService.getDeadlineByName("student_offer_accept_deadline").startTime())) {
+            throw new BadRequestException("The application is not open yet.");
         }
         allocation.setStatus(status);
         allocationRepository.save(allocation);

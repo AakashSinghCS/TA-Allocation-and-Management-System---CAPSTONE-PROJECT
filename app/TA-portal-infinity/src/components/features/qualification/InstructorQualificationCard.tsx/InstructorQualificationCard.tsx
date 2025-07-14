@@ -5,11 +5,13 @@ import type { Course } from "../../../../interfaces/course/Course";
 import { fetchCreateQualification } from "../../../../api/instructor/fetchCreateQualification";
 import { fetchDeleteQualification } from "../../../../api/instructor/fetchDeleteQualification";
 import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
+import { toast } from "react-toastify";
 
 interface QualificationCardProps {
     initialQualifications?: Qualification[];
     course : Course;
     className?: string;
+    deadlinePassed : Boolean;
 }
 
 interface TempQualification extends Qualification {
@@ -17,7 +19,8 @@ interface TempQualification extends Qualification {
 }
 
 
-export default function InstructorQualificationCard({ initialQualifications, course, className = "" }: QualificationCardProps) {
+  
+export default function InstructorQualificationCard({ initialQualifications, course, deadlinePassed,  className = "" }: QualificationCardProps) {
     if (!initialQualifications)
         return (
             <div className="p-2 italic text-slate-400 border border-dashed border-slate-200 rounded-lg">
@@ -32,6 +35,10 @@ export default function InstructorQualificationCard({ initialQualifications, cou
 
      const onSaved = async (savedTempId : string, description: string) => {
         //TODO: ensure backend considers -1 and "" value and throw the request if they are empty.
+        if (deadlinePassed) {
+          toast.error("The deadline has passed. You can no longer save.");
+          return;
+        }
         const created : Qualification | null= await fetchCreateQualification( description, course.deptCode ?? "", course.id ?? -1);
         if (created) {
         setQualifications((q) =>
@@ -39,6 +46,10 @@ export default function InstructorQualificationCard({ initialQualifications, cou
     };
 
     const onRemoved = async (removingq: TempQualification) => {
+      if (deadlinePassed) {
+        toast.error("The deadline has passed. You can no longer delete.");
+        return;
+      }
         if (removingq.id) {
             const confirmed = confirmDeletion("Lab skill","");
             if(!confirmed) return;

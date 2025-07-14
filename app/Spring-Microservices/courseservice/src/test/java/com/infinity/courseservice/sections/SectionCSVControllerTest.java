@@ -1,4 +1,4 @@
-package com.infinity.courseservice;
+package com.infinity.courseservice.sections;
 
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
@@ -20,7 +20,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.courseservice.controllers.SectionController;
 import com.infinity.courseservice.dtos.SectionDtos.ExportedSectionData;
 import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
@@ -35,9 +34,6 @@ public class SectionCSVControllerTest {
 
     @MockitoBean
     private SectionService sectionService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     @WithMockUser(roles = "COORDINATOR")

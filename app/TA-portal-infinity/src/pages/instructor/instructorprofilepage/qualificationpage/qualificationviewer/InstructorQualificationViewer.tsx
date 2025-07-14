@@ -7,8 +7,10 @@ import { GenericAPIContainer } from "../../../../../utility/genericapicontainer/
 
 export default function InstructorQualificationViewer({
   instructorId,
+  deadlinePassed,
 }: {
   instructorId: number;
+  deadlinePassed : Boolean;
 }) {
   return (
     <GenericAPIContainer<QualificationResponse[] | null>
@@ -66,6 +68,7 @@ export default function InstructorQualificationViewer({
                     deptCode: sd.course?.deptCode,
                   }}
                   initialQualifications={resp.qualifications}
+                  deadlinePassed={deadlinePassed}
                 />
               </div>
             );

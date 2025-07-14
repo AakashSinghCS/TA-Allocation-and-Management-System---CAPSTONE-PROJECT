@@ -8,6 +8,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -18,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import com.infinity.applicationservice.dtos.DeadlineDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
@@ -46,7 +50,9 @@ import com.infinity.applicationservice.models.Allocation;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.repositories.AllocationRepository;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
+import com.infinity.applicationservice.repositories.ConfigRepository;
 import com.infinity.applicationservice.services.AllocationService;
+import com.infinity.applicationservice.services.ConfigService;
 import com.infinity.applicationservice.utility.AllocationMapper;
 import com.infinity.applicationservice.utility.ApplicationMapper;
 import com.infinity.applicationservice.utility.EmailMapper;
@@ -58,6 +64,8 @@ class AllocationServiceTest {
         private AllocationRepository allocationRepository;
         @Mock
         private ApplicationRepository applicationRepository;
+        @Mock
+        ConfigRepository configRepository;
         @Mock
         private CourseInterface courseInterface;
         @Mock
@@ -73,6 +81,20 @@ class AllocationServiceTest {
 
         @InjectMocks
         AllocationService allocationService;
+        @Mock
+        ConfigService configService;
+
+        @BeforeEach
+        void mockDeadline() {
+                DeadlineDto dto = new DeadlineDto(
+                "student_application_deadline",
+                LocalDateTime.now().minusDays(1),
+                LocalDateTime.now().plusDays(1)
+                );
+
+                lenient().when(configService.getDeadlineByName(anyString()))
+                .thenReturn(dto);
+        }
 
         @Test
         void getAllocationsByStudentId_returnsMappedDtoList() {
@@ -235,6 +257,36 @@ class AllocationServiceTest {
                 assertEquals(allocation.getStatus(), ApplicationStatus.CONFIRMED);
                 verify(allocationRepository).save(allocation);
         }
+
+        @Test
+        void testUpdateConfirmationStatus_DeadlinePassed_BadRequest() {
+        // Arrange
+        Long allocationId = 1L;
+
+        Allocation allocation = new Allocation();
+        allocation.setId(allocationId);
+        allocation.setStatus(ApplicationStatus.SENT);
+
+        // Mock repository returning allocation
+        when(allocationRepository.findById(allocationId)).thenReturn(Optional.of(allocation));
+
+        // Mock expired deadline
+        DeadlineDto expiredDeadline = new DeadlineDto(
+                "student_offer_accept_deadline",
+                LocalDateTime.now().minusDays(2),
+                LocalDateTime.now().minusDays(1)
+        );
+
+        when(configService.getDeadlineByName(anyString())).thenReturn(expiredDeadline);
+
+        // Act + Assert
+        BadRequestException e = assertThrows(BadRequestException.class, () -> {
+                allocationService.updateConfirmationStatus(allocationId, ApplicationStatus.CONFIRMED);
+        });
+
+        assertEquals("The application deadline has passed.", e.getMessage());
+        }
+
 
         @Test
         void denyOffer_setsConfirmedFalse() {

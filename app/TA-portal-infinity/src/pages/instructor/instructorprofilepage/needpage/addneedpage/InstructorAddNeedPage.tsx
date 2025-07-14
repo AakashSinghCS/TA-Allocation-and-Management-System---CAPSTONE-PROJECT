@@ -15,6 +15,13 @@ import { fetchSectionIncludeInstructorId } from "../../../../../api/section/fetc
 // And an API util for creating the need on the server
 import { fetchAddNeed } from "../../../../../api/need/fetchAddNeed";
 
+import { fetchDeadlines } from "../../../../../api/admin/FetchDeadline";
+import type { DeadlineDto } from "../../../../../interfaces/admin/Deadline";
+import { useAuth } from "../../../../../context/AuthContext";
+
+import { toast } from "react-toastify";
+
+
 export default function InstructorAddNeedPage() {
   const { sectionId } = useParams<{ sectionId: string }>();
   const navigate = useNavigate();
@@ -28,6 +35,11 @@ export default function InstructorAddNeedPage() {
   const [prereqCourses, setPrereqCourses] = useState<Course[]>([]);
   const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
 
+  const [needDeadline, setNeedDeadline] = useState<DeadlineDto | null>(null);
+  const [deadlineError, setDeadlineError] = useState("");
+
+  const { token, userId, userRoles } = useAuth();
+
   useEffect(() => {
     if (!sectionId) return;
     setLoading(true);
@@ -38,6 +50,28 @@ export default function InstructorAddNeedPage() {
       )
       .finally(() => setLoading(false));
   }, [sectionId, navigate]);
+
+  useEffect(() => {
+    async function loadDeadline() {
+      setDeadlineError("");
+      try {
+        const allDeadlines = await fetchDeadlines(token || "");
+        const needDeadline = allDeadlines.find(
+          (d) => d.name === "instructor_need_update_deadline"
+        );
+        setNeedDeadline(needDeadline || null);
+      } catch (err) {
+        console.error("Failed to load deadline:", err);
+        setDeadlineError("Could not load need update deadline.");
+      }
+    }
+  
+    if (token) loadDeadline();
+  }, [token]);
+  
+  const deadlinePassed =
+      !! needDeadline &&
+      new Date(needDeadline.endTime) < new Date();
 
   const handleFilterChange = async (filters: FilterSectionsProps) => {
     setLoading(true);
@@ -91,6 +125,25 @@ export default function InstructorAddNeedPage() {
           ? `${section.course?.deptCode} ${section.course?.courseNum} – ${section.course?.name}`
           : "Loading section..."}
       </h2>
+
+      {needDeadline && (
+      <p className="text-md text-gray-700 mb-6">
+        Deadline:{" "}
+        <span className="font-medium">
+          {new Date(needDeadline.endTime).toLocaleString()}
+        </span>
+      </p>
+      )}
+      {!needDeadline && !deadlineError && (
+        <p className="text-md text-gray-500 mb-6">
+          No application deadline found.
+        </p>
+      )}
+      {deadlineError && (
+        <p className="text-md text-red-500 mb-6">
+          {deadlineError}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
@@ -165,7 +218,17 @@ export default function InstructorAddNeedPage() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded"
+            onClick={(e) => {
+              if (deadlinePassed) {
+                e.preventDefault(); // prevent form submission
+                toast.error("The need update deadline has passed. You can no longer submit.");
+              }
+            }}
+            className={`px-6 py-2 rounded ${
+              deadlinePassed
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded"
+            }`}
           >
             Save Need
           </button>
