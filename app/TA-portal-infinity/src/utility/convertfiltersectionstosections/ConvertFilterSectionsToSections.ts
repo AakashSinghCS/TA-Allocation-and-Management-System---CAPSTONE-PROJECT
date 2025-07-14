@@ -15,7 +15,7 @@ interface CourseSectionScheduleDto {
   year: number;
   semester: string;
   type: string;
-  scheduleDay: string;
+  day: string;
   startTime: string;
   endTime: string;
   isCourse: boolean;
@@ -23,13 +23,14 @@ interface CourseSectionScheduleDto {
 
 
 export function convertFilterSectionsToSections(
-  filters: CourseSectionScheduleDto[]
+  filters: FilterSectionsProps[]
 ): Section[] {
   // Use a Map keyed by sectionId (or a fallback key if null)
   const bySection = new Map<number, Section>();
 
   for (const f of filters) {
     // key on sectionId if present, otherwise on a fixed string
+    if(!f.sectionId) continue;
     const key = f.sectionId;
 
     // if we haven't seen this section yet, create its container
@@ -64,9 +65,9 @@ export function convertFilterSectionsToSections(
     // now push this row’s schedule info into that section’s schedule array
     const sec = bySection.get(key)!;
     const sched: SectionSchedule = {
-      day:       f.scheduleDay,
-      startTime: f.startTime,
-      endTime:   f.endTime,
+      day:       f.day ??"",
+      startTime: f.startTime ?? "",
+      endTime:   f.endTime ?? "",
       sectionId: f.sectionId,
     };
     

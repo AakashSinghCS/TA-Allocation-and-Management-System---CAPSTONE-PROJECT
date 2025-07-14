@@ -1,8 +1,10 @@
-import type User from "../../interfaces/user/User";
+import type { StudentOrInstructorOrCoordinator } from "../../interfaces/user/User";
 
-const BASE = "http://localhost:8080/users";
+//TODO: when backend unifies the two mappings, instructor and student, change the mapping here as well.
+const BASE = "http://localhost:8080/users/profile";
 
-export async function fetchUserDetails<T extends User>(userId: number): Promise<T> {
+
+export async function fetchUserDetails<StudentOrInstructorOrCoordinator>(userId: number): Promise<StudentOrInstructorOrCoordinator> {
   const url = `${BASE}/${userId}`;
   const token = localStorage.getItem("token");
 
@@ -16,10 +18,11 @@ export async function fetchUserDetails<T extends User>(userId: number): Promise<
     });
 
     const data = await res.json();
-    return data as T;
+    // console.log(data);
+    return data as StudentOrInstructorOrCoordinator;
 
   } catch (err) {
     console.error("Failed to fetch user details:", err);
-    return ({} as T);
+    return ({} as StudentOrInstructorOrCoordinator);
   }
 }

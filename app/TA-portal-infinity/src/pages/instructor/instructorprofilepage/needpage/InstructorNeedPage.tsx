@@ -1,23 +1,31 @@
 import { useParams } from "react-router-dom";
-
-import InstructorTabNav from "../../../../components/layout/tabnav/instructortabnav/InstructorTabNav";
 import NeedViewer from "./needviewer/NeedViewer";
 import { fetchAllSectionsAndNeedAndAllocations } from "../../../../api/instructor/fetchAllSectionsAndNeedAndAllocations";
 import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
 import type Section from "../../../../interfaces/section/Section";
+import TabNav from "../../../../components/layout/tabnav/TabNav";
+import { fetchUserDetails } from "../../../../api/user/fetchUserDetails";
+import type { StudentOrInstructorOrCoordinator } from "../../../../interfaces/user/User";
 
 
 export default function InstructorNeedPage (){
-    const { instructorId } = useParams();
-
+    const { userId } = useParams();
+    const iId = Number(userId);
     return(
         <div className='mx-auto space-y-6 p-4'>
-            <InstructorTabNav/>
-            <h2 className="text-xl font-semibold mb-4">Needs of the instructor</h2>
+            <GenericAPIContainer<StudentOrInstructorOrCoordinator>
+                fetchFunction={() => fetchUserDetails(iId)}
+                render={(record) => (
+                    <TabNav
+                    roles={record.roles ?? []}
+                    />
+                )}
+            />
+            <h2 className="text-xl font-semibold mb-4">TA Information</h2>
             <GenericAPIContainer<Section[] | null>
-                  fetchFunction={() => fetchAllSectionsAndNeedAndAllocations(Number(instructorId))}
+                  fetchFunction={() => fetchAllSectionsAndNeedAndAllocations(iId)}
                   render={(sections) => (
-            <NeedViewer instructorId={Number(instructorId)} initial={sections}/>
+            <NeedViewer instructorId={iId} initial={sections}/>
                   )}/>
         </div>
     )
