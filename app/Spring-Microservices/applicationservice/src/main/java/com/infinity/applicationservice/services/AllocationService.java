@@ -112,17 +112,19 @@ public class AllocationService {
     public void updateConfirmationStatus(Long allocationId, ApplicationStatus status) {
         Allocation allocation = allocationRepository.findById(allocationId)
             .orElseThrow(() -> new NotFoundException("Allocation not found"));
+        if (LocalDateTime.now()
+                .isBefore(configService.getDeadlineByName("student_offer_accept_deadline").startTime())) {
+            throw new BadRequestException("The application is not open yet.");
+        }
+        if (LocalDateTime.now().isAfter(configService.getDeadlineByName("student_offer_accept_deadline").endTime())) {
+            throw new BadRequestException("The application deadline has passed.");
+        }
         if (status == ApplicationStatus.CONFIRMED) {
             SectionDto section = courseInterface.getSectionById(allocation.getSectionId());
             NeedDto need = courseInterface.getNeed(allocation.getApplication().getId(), section.year(),
                     section.semester());
             courseInterface.updateNeedAllocatedHours(need.id(), need.numHoursCurrentlyAllocated() + allocation.getNumberOfHours());
-        }        if (LocalDateTime.now().isAfter(configService.getDeadlineByName("student_offer_accept_deadline").endTime())) {
-            throw new BadRequestException("The application deadline has passed.");
-        }
-        if (LocalDateTime.now().isBefore(configService.getDeadlineByName("student_offer_accept_deadline").startTime())) {
-            throw new BadRequestException("The application is not open yet.");
-        }
+        }        
         allocation.setStatus(status);
         allocationRepository.save(allocation);
     }

@@ -266,6 +266,7 @@ class AllocationServiceTest {
         Allocation allocation = new Allocation();
         allocation.setId(allocationId);
         allocation.setStatus(ApplicationStatus.SENT);
+        allocation.setApplication(new Application());
 
         // Mock repository returning allocation
         when(allocationRepository.findById(allocationId)).thenReturn(Optional.of(allocation));
