@@ -150,7 +150,6 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
 
               {mode !== 'instructorPrereqCourse' && sortedSections.map((sec) => {
                 if (!sec?.id) return;
-                console.log(sec.sectionSchedule);
                 const times = (sec.sectionSchedule ?? [])
                   .map((s) =>
                     s.day && s.startTime && s.endTime
@@ -159,7 +158,6 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                   )
                   .filter((t) => t)
                   .join(', ');
-                  console.log(times);
                 const sid = sec?.id;
                   // const sectionProfilePath = generatePath(`/user/sectionprofile/:sid`, { sid: String(sid) });
                 return (

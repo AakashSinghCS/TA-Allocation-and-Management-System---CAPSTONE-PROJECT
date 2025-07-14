@@ -24,11 +24,8 @@ export default function SectionListPage() {
     setLoading(true);
     setLastFilters(filters);
     try {
-      
       const raw = await fetchFilteredSections(filters);
-      console.log(raw);
       const sections = convertFilterSectionsToSections(raw || []);
-      console.log(sections);
       setFilteredSections(sections);
     } catch (e) {
       navigate('/error', { replace: true, state: { message: (e as Error).message } });
