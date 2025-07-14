@@ -8,8 +8,10 @@ import { GenericAPIContainer } from "../../../../../utility/genericapicontainer/
 
 export default function InstructorQualificationViewer({
   instructorId,
+  deadlinePassed,
 }: {
   instructorId: number;
+  deadlinePassed : Boolean;
 }) {
   const isInstructor = useAuth().userRoles.includes('INSTRUCTOR');
   return (
@@ -69,6 +71,7 @@ export default function InstructorQualificationViewer({
                   }}
                   initialQualifications={resp.qualifications}
                   authenticated = {isInstructor}
+                  deadlinePassed={deadlinePassed}
                 />
               </div>
             );

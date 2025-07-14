@@ -11,6 +11,10 @@ import { decodeToken } from "../../../utility/decodeToken";
 
 import { fetchSectionInfo } from "../../../api/section/fetchSectionInfo";
 
+import type { DeadlineDto } from '../../../interfaces/admin/Deadline';
+import { fetchDeadlines } from '../../../api/admin/FetchDeadline';
+import { toast, ToastContainer } from "react-toastify";
+
 
 type ApplicationWithAllocation = ApplicationDto & { allocation?: Allocation };
 
@@ -25,6 +29,8 @@ const ViewApplicationPage = () => {
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [filtersApplied, setFiltersApplied] = useState(false);
   const [expandedCard, setExpandedCard] = useState<number | null>(null);
+  const [offerDeadline, setOfferDeadline] = useState<DeadlineDto | null>(null);
+  const [deadlineError, setDeadlineError] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -137,6 +143,29 @@ const ViewApplicationPage = () => {
       .catch((e: Error) => setError(e.message))
       .finally((): void => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+      async function loadDeadline() {
+        setDeadlineError("");
+        try {
+          const allDeadlines = await fetchDeadlines(token || "");
+          const offerDeadline = allDeadlines.find(
+            (d) => d.name === "student_offer_accept_deadline"
+          );
+          setOfferDeadline(offerDeadline || null);
+        } catch (err) {
+          console.error("Failed to load deadline:", err);
+          setDeadlineError("Could not load application deadline.");
+        }
+      }
+    
+      if (token) loadDeadline();
+    }, []);
+
+  const deadlinePassed =
+    !!offerDeadline &&
+    new Date(offerDeadline.endTime) < new Date();
 
   // Accept/Deny handlers: just check response, no fetching allocation history
   const handleAccept = async (allocationId: number, appId: number) => {
@@ -296,6 +325,24 @@ const ViewApplicationPage = () => {
                         <span><strong>Hours Requested:</strong> {app.wantWorkingHours}</span>
                         <span><strong>Submitted:</strong> {new Date(app.timeSubmitted).toLocaleString()}</span>
                       </div>
+                      {offerDeadline && (
+                        <p className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition">
+                          Deadline:{" "}
+                          <span className="bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition">
+                            {new Date(offerDeadline.endTime).toLocaleString()}
+                          </span>
+                        </p>
+                        )}
+                        {!offerDeadline && !deadlineError && (
+                          <p className="text-md text-gray-500 mb-6">
+                            No application deadline found.
+                          </p>
+                        )}
+                        {deadlineError && (
+                          <p className="text-md text-red-500 mb-6">
+                            {deadlineError}
+                          </p>
+                        )}
                       
                     {/* Offer/Allocation Info */}
                     {app.allocation ? (
@@ -324,19 +371,32 @@ const ViewApplicationPage = () => {
                       <div className="mt-1 flex items-center gap-2">
                         <span>Offer pending confirmation</span>
                         <button
-                          onClick={() =>
-                            app.allocation &&
-                            typeof app.allocation.id === 'number' &&
-                            typeof (app.id ?? app.applicationId) === 'number' &&
-                            typeof app.allocation.id === 'number' && typeof (app.id ?? app.applicationId) === 'number' && handleAccept(app.allocation.id as number, (app.id ?? app.applicationId) as number)
-                          }
+                          onClick={(e) => {
+                            if (deadlinePassed) {
+                              e.preventDefault();
+                              toast.error("The application deadline has passed. You can no longer submit.");
+                              return;
+                            } 
+                            if (
+                              app.allocation &&
+                              typeof app.allocation.id === 'number' &&
+                              typeof (app.id ?? app.applicationId) === 'number'
+                            ) {
+                              handleAccept(app.allocation.id as number, (app.id ?? app.applicationId) as number);
+                            }
+                          }}
                           disabled={
                             !app.allocation ||
                             typeof app.allocation.id !== 'number' ||
                             typeof (app.id ?? app.applicationId) !== 'number' ||
                             actionLoading === app.allocation.id
                           }
-                          className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
+                          className={`px-3 py-1 rounded ${
+                            deadlinePassed
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
+                          }`}
+                          // className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
                         >
                           {actionLoading === app.allocation?.id ? 'Accepting...' : 'Accept Offer'}
                         </button>
@@ -357,9 +417,12 @@ const ViewApplicationPage = () => {
                         >
                           {actionLoading === app.allocation.id ? 'Declining...' : 'Decline Offer'}
                         </button>
-                      </div>
-                    )}
-                      </div>
+                        
+                  </div>
+                )}
+
+              </div>
+
                     ) : (
                       <>
                         {app.offers && app.offers.length > 0 ? (
@@ -536,6 +599,7 @@ const ViewApplicationPage = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

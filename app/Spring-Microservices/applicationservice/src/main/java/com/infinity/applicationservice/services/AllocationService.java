@@ -1,6 +1,7 @@
 package com.infinity.applicationservice.services;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,7 @@ public class AllocationService {
     private final ApplicationRepository applicationRepository;
     private final SectionInterface sectionInterface;
     private final UserInterface studentInterface;
+    private final ConfigService configService;
     private final ApplicationMapper applicationMapper;
     private final AllocationMapper allocationMapper;
     private final NotificationClient notificationClient;
@@ -119,7 +121,12 @@ public class AllocationService {
     public void updateConfirmationStatus(Long allocationId, ApplicationStatus status) {
         Allocation allocation = allocationRepository.findById(allocationId)
             .orElseThrow(() -> new EntityNotFoundException("Allocation not found"));
-
+        if (LocalDateTime.now().isAfter(configService.getDeadlineByName("student_offer_accept_deadline").endTime())) {
+            throw new BadRequestException("The application deadline has passed.");
+        }
+        if (LocalDateTime.now().isBefore(configService.getDeadlineByName("student_offer_accept_deadline").startTime())) {
+            throw new BadRequestException("The application is not open yet.");
+        }
         allocation.setStatus(status);
         allocationRepository.save(allocation);
     }

@@ -18,6 +18,8 @@ import { dayMap, getDateForDay, colorByDay } from '../../../components/features/
 import { validateForm, buildPayload } from '../../../components/features/application/applicationsubmission/formValidation';
 import { getApplicationUrls, getCommonHeaders } from '../../../components/features/application/applicationsubmission/apiHelpers';
 import { updateApplication } from '../../../api/application/UpdateApplication';
+import type { DeadlineDto } from '../../../interfaces/admin/Deadline';
+import { fetchDeadlines } from '../../../api/admin/FetchDeadline';
 
 interface Availability {
   id: string;
@@ -45,6 +47,8 @@ const ApplicationPage: React.FC = () => {
 const calendarRef = useRef<FullCalendar>(null);
 const { token, userId, userRoles } = useAuth();
 const [showDetails, setShowDetails] = useState(false);
+const [applicationDeadline, setApplicationDeadline] = useState<DeadlineDto | null>(null);
+const [deadlineError, setDeadlineError] = useState("");
 
 useEffect(() => {
   async function loadExisting() {
@@ -57,6 +61,27 @@ useEffect(() => {
   if (userId !== null && token) loadExisting();
 }, [userId, token, userRoles]);
 
+useEffect(() => {
+  async function loadDeadline() {
+    setDeadlineError("");
+    try {
+      const allDeadlines = await fetchDeadlines(token || "");
+      const studentDeadline = allDeadlines.find(
+        (d) => d.name === "student_application_deadline"
+      );
+      setApplicationDeadline(studentDeadline || null);
+    } catch (err) {
+      console.error("Failed to load deadline:", err);
+      setDeadlineError("Could not load application deadline.");
+    }
+  }
+
+  if (token) loadDeadline();
+}, [token]);
+
+const deadlinePassed =
+    !! applicationDeadline &&
+    new Date(applicationDeadline.endTime) < new Date();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -206,6 +231,25 @@ useEffect(() => {
       <h1 className="text-3xl font-bold text-[#040941] mb-10">
         {savedApp ? 'Update Your TA Application' : 'TA Application Submission'}
       </h1>
+      {applicationDeadline && (
+      <p className="text-md text-gray-700 mb-6">
+        Deadline:{" "}
+        <span className="font-medium">
+          {new Date(applicationDeadline.endTime).toLocaleString()}
+        </span>
+      </p>
+      )}
+      {!applicationDeadline && !deadlineError && (
+        <p className="text-md text-gray-500 mb-6">
+          No application deadline found.
+        </p>
+      )}
+      {deadlineError && (
+        <p className="text-md text-red-500 mb-6">
+          {deadlineError}
+        </p>
+      )}
+
 
         <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr_320px] gap-8 md:gap-12 lg:gap-14">
           <div className="w-full">
