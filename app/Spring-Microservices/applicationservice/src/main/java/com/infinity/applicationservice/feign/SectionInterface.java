@@ -12,6 +12,7 @@ import com.infinity.applicationservice.dtos.Allocations.ImportCourseRequest;
 import com.infinity.applicationservice.dtos.Allocations.ImportSectionRequest;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
+import org.springframework.http.ResponseEntity;
 
 @FeignClient(name = "COURSE-SERVICE", configuration = FeignClientInterceptor.class)
 public interface SectionInterface {
@@ -20,17 +21,15 @@ public interface SectionInterface {
 
     @GetMapping("/sections/getByCourseIdSectionYearSemester/{courseId}/{section}/{year}/{semester}")
     SectionDto getByCourseIdSectionYearSemester(
-        @PathVariable("courseId") Long courseId,
-        @PathVariable("section") String section,
-        @PathVariable("year") Integer year,
-        @PathVariable("semester") String semester
-    );
+            @PathVariable("courseId") Long courseId,
+            @PathVariable("section") String section,
+            @PathVariable("year") Integer year,
+            @PathVariable("semester") String semester);
 
     @GetMapping("/courses/getByDeptCodeAndCourseNum/{deptCode}/{courseNum}")
     ResponseEntity<CourseDto> getCourseByDeptCodeAndCourseNum(
-        @PathVariable String deptCode,
-        @PathVariable String courseNum
-    );
+            @PathVariable String deptCode,
+            @PathVariable String courseNum);
 
     @PostMapping("/courses/addCourse")
     CourseDto addCourse(@RequestBody ImportCourseRequest request);

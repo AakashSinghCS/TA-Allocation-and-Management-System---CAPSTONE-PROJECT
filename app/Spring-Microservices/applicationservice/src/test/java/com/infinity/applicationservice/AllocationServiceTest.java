@@ -8,6 +8,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -18,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import com.infinity.applicationservice.dtos.DeadlineDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
@@ -45,7 +49,9 @@ import com.infinity.applicationservice.models.Allocation;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.repositories.AllocationRepository;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
+import com.infinity.applicationservice.repositories.ConfigRepository;
 import com.infinity.applicationservice.services.AllocationService;
+import com.infinity.applicationservice.services.ConfigService;
 import com.infinity.applicationservice.utility.AllocationMapper;
 import com.infinity.applicationservice.utility.ApplicationMapper;
 import com.infinity.applicationservice.utility.EmailMapper;
@@ -59,6 +65,8 @@ class AllocationServiceTest {
         private AllocationRepository allocationRepository;
         @Mock
         private ApplicationRepository applicationRepository;
+        @Mock
+        ConfigRepository configRepository;
         @Mock
         private SectionInterface sectionInterface;
         @Mock
@@ -74,6 +82,20 @@ class AllocationServiceTest {
 
         @InjectMocks
         AllocationService allocationService;
+        @Mock
+        ConfigService configService;
+
+        @BeforeEach
+        void mockDeadline() {
+                DeadlineDto dto = new DeadlineDto(
+                "student_application_deadline",
+                LocalDateTime.now().minusDays(1),
+                LocalDateTime.now().plusDays(1)
+                );
+
+                lenient().when(configService.getDeadlineByName(anyString()))
+                .thenReturn(dto);
+        }
 
         @Test
         void getAllocationsByStudentId_returnsMappedDtoList() {
@@ -229,6 +251,36 @@ class AllocationServiceTest {
                 assertEquals(allocation.getStatus(), ApplicationStatus.CONFIRMED);
                 verify(allocationRepository).save(allocation);
         }
+
+        @Test
+        void testUpdateConfirmationStatus_DeadlinePassed_BadRequest() {
+        // Arrange
+        Long allocationId = 1L;
+
+        Allocation allocation = new Allocation();
+        allocation.setId(allocationId);
+        allocation.setStatus(ApplicationStatus.SENT);
+
+        // Mock repository returning allocation
+        when(allocationRepository.findById(allocationId)).thenReturn(Optional.of(allocation));
+
+        // Mock expired deadline
+        DeadlineDto expiredDeadline = new DeadlineDto(
+                "student_offer_accept_deadline",
+                LocalDateTime.now().minusDays(2),
+                LocalDateTime.now().minusDays(1)
+        );
+
+        when(configService.getDeadlineByName(anyString())).thenReturn(expiredDeadline);
+
+        // Act + Assert
+        BadRequestException e = assertThrows(BadRequestException.class, () -> {
+                allocationService.updateConfirmationStatus(allocationId, ApplicationStatus.CONFIRMED);
+        });
+
+        assertEquals("The application deadline has passed.", e.getMessage());
+        }
+
 
         @Test
         void denyOffer_setsConfirmedFalse() {
@@ -493,7 +545,6 @@ class AllocationServiceTest {
                 assertEquals(2025, result.get(0).applicationDto().timeSubmitted().getYear());
         }
 
-
         @Test
         void testGetAllocationsBySectionIdWithCourse() {
                 Long sectionId = 100L;
@@ -624,13 +675,12 @@ class AllocationServiceTest {
 
         void importPreviousAllocations_createsMissingCourseAndSection_whenAutoCreateIsTrue() {
                 Map<String, String> csvData = Map.of(
-                        "studentNum", "63260442",
-                        "deptCode", "COSC",
-                        "courseNum", "499",
-                        "section", "001",
-                        "year", "2025",
-                        "semester", "W1"
-                );
+                                "studentNum", "63260442",
+                                "deptCode", "COSC",
+                                "courseNum", "499",
+                                "section", "001",
+                                "year", "2025",
+                                "semester", "W1");
                 UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
                                 63260442, "COSC", 2022, 3, null, null, null);
                 CourseDto course = new CourseDto(2L, "COSC", "Capstone", "499");
@@ -642,20 +692,18 @@ class AllocationServiceTest {
                 allocation.setStatus(ApplicationStatus.CONFIRMED);
 
                 AllocationHistoryDto dto = new AllocationHistoryDto(
-                        allocation.getId(), student, null, ApplicationStatus.CONFIRMED, 0, section
-                );
+                                allocation.getId(), student, null, ApplicationStatus.CONFIRMED, 0, section);
 
                 when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
-                when(sectionInterface.addCourse(any())).thenReturn(course); 
+                when(sectionInterface.addCourse(any())).thenReturn(course);
                 when(sectionInterface.getByCourseIdSectionYearSemester(2L, "001", 2025, "W1"))
-                        .thenThrow(new RuntimeException("Not found"));
+                                .thenThrow(new RuntimeException("Not found"));
                 when(sectionInterface.addSection(eq(2L), any())).thenReturn(section);
                 when(allocationRepository.save(any())).thenReturn(allocation);
                 when(allocationMapper.toDto(any(), any(), any(), any())).thenReturn(dto);
 
                 List<AllocationHistoryDto> result = allocationService.importPreviousAllocations(
-                        List.of(csvData), true
-                );
+                                List.of(csvData), true);
 
                 assertEquals(1, result.size());
                 assertEquals("John", result.get(0).student().firstName());
@@ -666,25 +714,22 @@ class AllocationServiceTest {
         @Test
         void importPreviousAllocations_throwsNotFoundException_whenAutoCreateIsFalse_andCourseMissing() {
                 Map<String, String> csvData = Map.of(
-                        "studentNum", "63260442",
-                        "deptCode", "COSC",
-                        "courseNum", "499",
-                        "section", "001",
-                        "year", "2025",
-                        "semester", "W1"
-                );
+                                "studentNum", "63260442",
+                                "deptCode", "COSC",
+                                "courseNum", "499",
+                                "section", "001",
+                                "year", "2025",
+                                "semester", "W1");
 
                 UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
                                 63260442, "COSC", 2022, 3, null, null, null);
 
                 when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
                 when(sectionInterface.getCourseByDeptCodeAndCourseNum("COSC", "499"))
-                       .thenReturn(ResponseEntity.of(Optional.empty())); // Simulate course not found
+                                .thenReturn(ResponseEntity.of(Optional.empty())); // Simulate course not found
 
-                NullPointerException ex = assertThrows(NullPointerException.class, () ->
-                        allocationService.importPreviousAllocations(List.of(csvData), false)
-                );
-
+                NullPointerException ex = assertThrows(NullPointerException.class,
+                                () -> allocationService.importPreviousAllocations(List.of(csvData), false));
 
                 verify(sectionInterface, never()).addCourse(any());
                 verify(sectionInterface, never()).addSection(anyLong(), any());
@@ -693,26 +738,24 @@ class AllocationServiceTest {
         @Test
         void importPreviousAllocations_throwsNotFoundException_whenAutoCreateIsFalse_andSectionMissing() {
                 Map<String, String> csvData = Map.of(
-                        "studentNum", "63260442",
-                        "deptCode", "COSC",
-                        "courseNum", "499",
-                        "section", "001",
-                        "year", "2025",
-                        "semester", "W1"
-                );
+                                "studentNum", "63260442",
+                                "deptCode", "COSC",
+                                "courseNum", "499",
+                                "section", "001",
+                                "year", "2025",
+                                "semester", "W1");
                 UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
                                 63260442, "COSC", 2022, 3, null, null, null);
                 CourseDto course = new CourseDto(2L, "COSC", "499", "Capstone");
 
                 when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
                 when(sectionInterface.getCourseByDeptCodeAndCourseNum("COSC", "499"))
-                        .thenReturn(ResponseEntity.ok(course));
+                                .thenReturn(ResponseEntity.ok(course));
                 when(sectionInterface.getByCourseIdSectionYearSemester(2L, "001", 2025, "W1"))
-                        .thenThrow(new RuntimeException("Section not found"));
+                                .thenThrow(new RuntimeException("Section not found"));
 
-                NotFoundException ex = assertThrows(NotFoundException.class, () ->
-                    allocationService.importPreviousAllocations(List.of(csvData), false)
-                );
+                NotFoundException ex = assertThrows(NotFoundException.class,
+                                () -> allocationService.importPreviousAllocations(List.of(csvData), false));
 
                 assertTrue(ex.getMessage().contains("Section"));
                 assertTrue(ex.getMessage().contains("not found"));
@@ -721,7 +764,6 @@ class AllocationServiceTest {
                 verify(sectionInterface, never()).addCourse(any());
                 verify(sectionInterface, never()).addSection(anyLong(), any());
         }
-
 
         @Test
         void testSetSectionIdNullReturnsAffectedCount() {

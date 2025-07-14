@@ -9,7 +9,7 @@ export default defineConfig({
     watch: {
       ignored: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
       //usePolling: true,
-      //interval: 10000,
+      //interval: 1000,
     }
   },
   optimizeDeps: {
