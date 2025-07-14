@@ -9,6 +9,7 @@ import type { ApplicationDto } from "../../../interfaces/application/Application
 import type { Student } from "../../../interfaces/user/Student";
 import { decodeToken } from "../../../utility/decodeToken";
 
+import { fetchSection } from "../../../api/student/section/fetchSection";
 import { fetchSectionInfo } from "../../../api/section/fetchSectionInfo";
 
 
@@ -36,12 +37,10 @@ const ViewApplicationPage = () => {
   
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-        console.log('Decoded JWT payload:', payload);
-
     } catch (e) {
       console.warn('Could not decode JWT:', e);
     }
-    console.log('Token used for allocation fetch:', token);
+
 
     const decoded = decodeToken(token);
     const userIdFromToken = decoded?.userId;
@@ -53,21 +52,43 @@ const ViewApplicationPage = () => {
     setLoading(true);
     fetchApplicationsByStudent(userIdFromToken, token)
       .then(async (data: ApplicationDto[]) => {
-        console.log("Fetched applications:", data);
-        // For each application, fetch allocation, section schedule, and student info if needed
+        // For each application, fetch allocation, section info, and student info if needed
         const appsWithDetails = await Promise.all(
           data.map(async (app) => {
             let allocation: Allocation | null = null;
+            let sectionInfo: any = null;
             try {
-            
               const allocations = await fetchAllocationByApplicationId(app.id ?? app.applicationId ?? 0, token);
               allocation = allocations && allocations.length > 0 ? allocations[0] : null;
               if (allocation && 'isConfirmed' in allocation) {
                 // @ts-ignore
                 delete allocation.isConfirmed;
               }
+              // Always fetch section info if allocation.section exists and has id
+              let sectionId: number | undefined = undefined;
+              if (allocation && allocation.section && allocation.section.id) {
+                sectionId = allocation.section.id;
+              }
+              if (sectionId) {
+                try {
+                  // Fetch year/semester/basic info
+                  const sectionBasic = await fetchSection(sectionId, token);
+                  // Fetch schedule and extra details
+                  const sectionDetails = await fetchSectionInfo(sectionId, token);
+                  // Merge details: prefer schedule from sectionDetails, but year/semester from sectionBasic
+                  const mergedSection = {
+                    ...sectionDetails,
+                    year: sectionBasic.year,
+                    semester: sectionBasic.semester,
+                  };
+                  if (allocation) {
+                    allocation.section = mergedSection;
+                  }
+                } catch (e) {
+                  // If fetch fails, just skip
+                }
+              }
               // Fetch instructor details if instructor is an ID (number or string)
-              // fetch instructor details for the section if possible
               let instructorId: number | undefined = undefined;
               if (allocation?.section) {
                 if (typeof allocation.section.instructor === 'number') {
@@ -85,31 +106,6 @@ const ViewApplicationPage = () => {
                   allocation.section.instructor = instructor;
                 } catch {
                   // If fetch fails, leave as is (will show N/A)
-                }
-              }
-              // Fetch full section info (year, semester, schedule, etc.) if sectionId is present
-              let sectionId: number | undefined = undefined;
-              if (allocation && allocation.section ) {
-                sectionId = (allocation.section.id as number | undefined)
-                  || (allocation.section.course?.id as number | undefined);
-              }
-              if (
-                allocation &&
-                allocation.section &&
-                sectionId &&
-                (
-                  !allocation.section ||
-                  !allocation.section.year ||
-                  !allocation.section.semester ||
-                  !allocation.section.sectionSchedule
-                )
-              ) {
-                try {
-                  const sectionInfo = await fetchSectionInfo(sectionId, token);
-                  allocation.section = sectionInfo;
-                  allocation.section.sectionSchedule = sectionInfo.sectionSchedule;
-                } catch (e) {
-                  // If fetch fails, just skip
                 }
               }
             } catch (err) {
@@ -416,8 +412,8 @@ const ViewApplicationPage = () => {
                               <div><strong>Course:</strong> {sectionDetails.course?.deptCode || 'N/A'} {sectionDetails.course?.courseNum || ''}</div>
                               <div><strong>Section:</strong> {sectionDetails.section || 'N/A'}</div>
                               <div><strong>Type:</strong> {sectionDetails.type || 'N/A'}</div>
-                              <div><strong>Semester:</strong> {sectionDetails.semester || 'N/A'}</div>
-                              <div><strong>Year:</strong> {sectionDetails.year || 'N/A'}</div>
+                               <div><strong>Semester:</strong> {app.allocation?.section?.semester ?? sectionDetails.semester ?? 'N/A'}</div>
+                               <div><strong>Year:</strong> {app.allocation?.section?.year ?? sectionDetails.year ?? 'N/A'}</div>
                               {/* Show schedule from sectionSchedule array if present, else fallback to schedule string, else show message */}
                               {app.allocation?.section?.sectionSchedule && app.allocation.section.sectionSchedule.length > 0 ? (
                                 <div>
