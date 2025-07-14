@@ -1,20 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 import type AuditEvent from '../../../../interfaces/admin/audit/AuditEvent';
 
-type Props = {
-  id: number | null;
-  onClose: () => void;
-};
 
-/** Fetch a single AuditEvent by ID */
-function useAuditEvent(
-  id: number,
-  enabled: boolean
-) {
+type Props = { id: number | null; onClose: () => void };
+
+function useAuditEvent(id: number, enabled: boolean) {
+  const token = localStorage.getItem("token");
   return useQuery<AuditEvent, Error>({
     queryKey: ['auditEvent', id],
     queryFn: () =>
-      fetch(`/api/audit-events/${id}`)
+      fetch(`http://localhost:8080/users/audit/${id}`, {
+        method: "GET",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      })
         .then(res => {
           if (!res.ok) throw new Error(res.statusText);
           return res.json() as Promise<AuditEvent>;
@@ -26,8 +26,8 @@ function useAuditEvent(
 export default function AuditDetailModal({ id, onClose }: Props) {
   const { data, isLoading, error } = useAuditEvent(id!, id != null);
 
-  // nothing to render if no ID
-  if (id === null) return null;
+  // nothing to show if there's no ID
+  if (id == null) return null;
 
   return (
     <div
@@ -52,34 +52,32 @@ export default function AuditDetailModal({ id, onClose }: Props) {
           <p>Loading…</p>
         ) : error ? (
           <p className="text-red-600">Error: {error.message}</p>
-        ) : (
+        ) : data ? (
           <>
             <p className="mb-4 text-sm text-gray-600">
-              <strong>{data!.service}</strong> – <strong>{data!.actor}</strong>{' '}
-              {data!.action.toLowerCase()}{' '}
-              {data!.entityType} #{data!.entityId} at{' '}
-              {new Date(data!.timestamp).toLocaleString()}
+              <strong>{data.service}</strong> – <strong>{data.actor}</strong>{' '}
+              {data.action.toLowerCase()}{' '}
+              {data.entityType} #{data.entityId} at{' '}
+              {new Date(data.timestamp).toLocaleString()}
             </p>
 
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
                 <h3 className="font-semibold mb-1">Before</h3>
                 <pre className="bg-gray-100 rounded p-2 max-h-64 overflow-auto">
-                  {data!.before
-                    ? JSON.stringify(data!.before, null, 2)
-                    : 'N/A'}
+                  {data.beforeJson ?? 'N/A'}
                 </pre>
               </div>
               <div>
                 <h3 className="font-semibold mb-1">After</h3>
                 <pre className="bg-gray-100 rounded p-2 max-h-64 overflow-auto">
-                  {data!.after
-                    ? JSON.stringify(data!.after, null, 2)
-                    : 'N/A'}
+                  {data.afterJson ?? 'N/A'}
                 </pre>
               </div>
             </div>
           </>
+        ) : (
+          <p className="text-gray-600">No details available.</p>
         )}
       </div>
     </div>

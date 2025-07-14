@@ -32,8 +32,9 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AuditService auditService;
 
-    public UserDto register(RegisterRequest request) {
+    public UserDto register(RegisterRequest request, Long userIdFromHeader) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new BadRequestException("An account with this email already exists");
         }
@@ -49,8 +50,18 @@ public class UserService {
 
         User user = userMapper.registerToUser(request, roles);
         user.setPassword(passwordEncoder.encode(request.password()));
-        userRepository.save(user);
-
+        User saved = userRepository.save(user);
+        Long actorId = (userIdFromHeader != null && userIdFromHeader > 0)
+            ? userIdFromHeader
+            : saved.getId();
+        auditService.record(
+            actorId,
+            "CREATE",
+            "User",
+            null,
+            saved,
+            saved.getId()
+        );
         return userMapper.toDto(user);
     }    
 
@@ -96,17 +107,36 @@ public class UserService {
         if (req.department() != null)
             user.setDepartment(req.department());
 
-        userRepository.save(user);
+        User after = userRepository.save(user);
+
+        auditService.record(
+            userIdFromHeader,
+            "UPDATE",
+            "User",
+            user,   
+            after,
+            id
+        );
     }
 
     public String deleteUserById(Long id, Long userIdFromHeader, List<String> headerRoles) {
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_ADMIN")) {
             throw new AuthorizationException("Not allowed");
         }
-        if (!userRepository.existsById(id)) {
-            throw new NotFoundException("User with id " + id + " doesn't exist");
-        }
-        userRepository.deleteById(id);
+
+        User before = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with id " + id + " doesn't exist"));
+        
+        userRepository.delete(before);
+
+        auditService.record(
+            userIdFromHeader,
+            "DELETE",
+            "User",
+            before,
+            null,
+            id
+        );
         return "User deleted successfully";
     }
 
@@ -135,7 +165,7 @@ public class UserService {
         
 
     @Transactional
-    public UserDto changeRole(Long id, RoleChangeRequest request) {
+    public UserDto changeRole(Long id, RoleChangeRequest request, Long userIdFromHeader) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
@@ -145,7 +175,18 @@ public class UserService {
                 .collect(Collectors.toSet());
 
         user.setRoles(newRoles);
-        return userMapper.toDto(userRepository.save(user));
+        User saved = userRepository.save(user);
+
+        auditService.record(
+            userIdFromHeader,
+            "UPDATE",
+            "User",
+            user,
+            saved,
+            id
+        );
+
+        return userMapper.toDto(saved);
     }
 
     //Student methods

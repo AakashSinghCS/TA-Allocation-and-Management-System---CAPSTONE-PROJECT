@@ -1,0 +1,45 @@
+package com.infinity.userservice.models;
+
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "audit_event")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class AuditEvent {
+
+    @Id @GeneratedValue
+    private Long id;
+
+    @CreatedBy
+    @Column(updatable = false, nullable = false)
+    private Long actorId;
+
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    private LocalDateTime timestamp;
+
+    @Column(nullable = false)
+    private String service;       // e.g. "user-service"
+
+    @Column(nullable = false)
+    private String action;        // "CREATE", "UPDATE", "DELETE"
+
+    @Column(nullable = false)
+    private String entityType;    // e.g. "User"
+
+    @Column(nullable = false)
+    private String entityId;      // stringified id
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String beforeJson;    // JSON snapshot before change
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String afterJson;     // JSON snapshot after change
+}

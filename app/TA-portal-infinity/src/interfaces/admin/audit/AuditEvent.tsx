@@ -7,6 +7,8 @@ export default interface AuditEvent {
   entityId: string | number;
   summary: string;            // short description
   service: string;
-  before?: Record<string, any>; // optional diff
-  after?: Record<string, any>;
+  beforeJson?: string;   // raw JSON blobs stored in the DB
+  afterJson?: string;
+  // before?: Record<string, any>; // optional diff
+  // after?: Record<string, any>;
 }

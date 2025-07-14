@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +33,7 @@ import com.infinity.userservice.models.Role;
 import com.infinity.userservice.models.User;
 import com.infinity.userservice.repositories.RoleRepository;
 import com.infinity.userservice.repositories.UserRepository;
+import com.infinity.userservice.services.AuditService;
 import com.infinity.userservice.services.UserService;
 import com.infinity.userservice.utility.UserMapper;
 
@@ -52,7 +54,8 @@ public class UserServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private Validator validator;
-
+    @Mock 
+    private AuditService auditService; 
     @InjectMocks
     private UserService userService;
 
@@ -62,14 +65,14 @@ void testRegister_UserAlreadyExists() {
     RegisterRequest req = new RegisterRequest("test@example.com", "John", "Doe", "P@ssword1", List.of(UserRole.STUDENT));
     when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(new User()));
 
-    assertThrows(BadRequestException.class, () -> userService.register(req));
+    assertThrows(BadRequestException.class, () -> userService.register(req,null));
 }
 
 @Test
 void testRegister_AdminRoleInRequest_ThrowsBadRequest() {
     RegisterRequest req = new RegisterRequest("admin@example.com", "Alice", "Admin", "P@ssword1", List.of(UserRole.ADMIN));
 
-    assertThrows(BadRequestException.class, () -> userService.register(req));
+    assertThrows(BadRequestException.class, () -> userService.register(req,null));
 }
 
 @Test
@@ -84,9 +87,19 @@ void testRegister_SuccessSingleRole() {
     when(roleRepository.findByName(UserRole.STUDENT)).thenReturn(Optional.of(studentRole));
     when(userMapper.registerToUser(eq(req), anySet())).thenReturn(mockUser);
     when(passwordEncoder.encode("P@ssword1")).thenReturn("hashed");
+    when(userRepository.save(mockUser)).thenReturn(mockUser);
     when(userMapper.toDto(mockUser)).thenReturn(expectedDto);
+    Long fakeActor = 42L;
+    UserDto result = userService.register(req,fakeActor);
 
-    UserDto result = userService.register(req);
+    verify(auditService).record(
+            eq(fakeActor),
+            eq("CREATE"),
+            eq("User"),
+            isNull(),
+            eq(mockUser),
+            eq(mockUser.getId())
+        );
 
     assertEquals("Alice", result.firstName());
     assertEquals(List.of(UserRole.STUDENT), result.roles());
@@ -106,9 +119,10 @@ void testRegister_SuccessMultipleRoles() {
     when(roleRepository.findByName(UserRole.COORDINATOR)).thenReturn(Optional.of(coordinatorRole));
     when(userMapper.registerToUser(eq(req), anySet())).thenReturn(mockUser);
     when(passwordEncoder.encode("P@ssword1")).thenReturn("encoded");
+    when(userRepository.save(mockUser)).thenReturn(mockUser);
     when(userMapper.toDto(mockUser)).thenReturn(expectedDto);
 
-    UserDto result = userService.register(req);
+    UserDto result = userService.register(req,null);
 
     assertEquals("Jane", result.firstName());
     assertEquals(List.of(UserRole.STUDENT, UserRole.COORDINATOR), result.roles());
@@ -168,18 +182,29 @@ void testRegister_SuccessMultipleRoles() {
     @Test
     void testUpdateUserById_SuccessfulSelfUpdate() {
         User user = new User("old@test.com", "Old", "Name", "oldpw");
+        User newUser = new User("new@test.com", "New", "Name", "oldpw");
         user.setId(1L);
+        newUser.setId(1L);
         UserUpdateRequest req = new UserUpdateRequest("new@test.com", "New", "Name", null, null, null, null, null, null,
                 null);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
+        when(userRepository.save(newUser)).thenReturn(newUser);
         userService.updateUserById(1L, 1L, List.of("ROLE_STUDENT"), req);
 
         assertEquals("new@test.com", user.getEmail());
         assertEquals("New", user.getFirstName());
         assertEquals("Name", user.getLastName());
         verify(userRepository).save(user);
+
+        verify(auditService).record(
+            eq(1L),
+            eq("UPDATE"),
+            eq("User"),
+            any(User.class),
+            any(User.class),
+            eq(1L)
+        );
     }
 
     @Test
@@ -255,17 +280,28 @@ void testRegister_SuccessMultipleRoles() {
 
     @Test
     void deleteUserById_throws_whenNotExists() {
-        when(userRepository.existsById(1L)).thenReturn(false);
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
-                () -> userService.deleteUserById(1L, 1L, List.of("ROLE_STUDENT")));
+            () -> userService.deleteUserById(1L, 1L, List.of("ROLE_STUDENT"))
+        );
     }
 
     @Test
     void deleteUserById_success() {
-        when(userRepository.existsById(1L)).thenReturn(true);
+        User user = new User("student@test.com", "S", "T", "pw");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        // when(userRepository.existsById(1L)).thenReturn(true);
         String result = userService.deleteUserById(1L, 1L, List.of("ROLE_STUDENT"));
         assertEquals("User deleted successfully", result);
-        verify(userRepository).deleteById(1L);
+        verify(userRepository).delete(user);
+        verify(auditService).record(
+            eq(1L),
+            eq("DELETE"),
+            eq("User"),
+            eq(user),
+            isNull(),
+            eq(1L)
+        );
     }
 
     @Test
@@ -279,8 +315,17 @@ void testRegister_SuccessMultipleRoles() {
                 null, null, null, null);
         when(userMapper.toDto(user)).thenReturn(dto);
 
-        UserDto result = userService.changeRole(1L, new RoleChangeRequest(List.of(UserRole.STUDENT)));
+        UserDto result = userService.changeRole(1L, new RoleChangeRequest(List.of(UserRole.STUDENT)),1L);
         assertEquals(List.of(UserRole.STUDENT), result.roles());
+        verify(userRepository).save(user);
+        verify(auditService).record(
+            eq(1L),
+            eq("UPDATE"),
+            eq("User"),
+            any(User.class),
+            eq(user),
+            eq(1L)
+        );
     }
 
     @Test

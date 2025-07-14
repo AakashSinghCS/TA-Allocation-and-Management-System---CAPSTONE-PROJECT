@@ -69,8 +69,8 @@ public class UserController {
     
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/changeRole/{id}")
-    public ResponseEntity<UserDto> changeRole(@PathVariable Long id, @RequestBody RoleChangeRequest request) {
-        return ResponseEntity.ok(userService.changeRole(id, request));
+    public ResponseEntity<UserDto> changeRole(@PathVariable Long id, @RequestBody RoleChangeRequest request,@RequestHeader("X-User-Id") Long userIdFromHeader) {
+        return ResponseEntity.ok(userService.changeRole(id, request,userIdFromHeader));
     }
 
     @GetMapping("/studentNum/{studentNum}")

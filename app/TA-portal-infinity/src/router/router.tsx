@@ -8,6 +8,7 @@ import PublicLayout from "../components/layout/publicLayout/PublicLayout";
 import { TaQuestionnairePage } from "../pages/student/taquestionnairepage/TaQuestionnairePage";
 import { CoordinatorQuestionnairePage } from "../pages/coordinator/coordinatorquestionnairepage/CoordinatorQuestionnairePage";
 
+const AuditLogsPage = lazy(()=> import("../pages/admin/audit/auditlogspage/AuditLogsPage"));
 const TaProfilePage = lazy(() => import("../pages/student/taprofilepage/TaProfilePage"));
 const CoursesTakenPage = lazy(() => import("../pages/student/taprofilepage/coursestakenpage/CoursesTakenPage"));
 const StudentComparerPage = lazy(() => import("../pages/student/taprofilepage/comparerpage/StudentComparerPage"));
@@ -113,9 +114,10 @@ export const router = createBrowserRouter([
           { path: "sections/add", element: <Suspense fallback={<div>Loading...</div>}><AddSectionPage /></Suspense> },
           { path: "sections/export", element: <Suspense fallback={<div>Loading...</div>}><ExportToCSVPage /></Suspense> },
           { path: "applications", element: <Suspense fallback={<div>Loading...</div>}><ApplicationViewPage /></Suspense> },
-          {  path: "allocation", element: <Suspense fallback={<div>Loading...</div>}><AllocationPage /></Suspense> },
+          { path: "allocation", element: <Suspense fallback={<div>Loading...</div>}><AllocationPage /></Suspense> },
           { path: "student/questions/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaQuestionnairePage /></Suspense> },
           { path: "deadlines", element: <Suspense fallback={<div>Loading...</div>}><DeadlineManagementPage /></Suspense> },
+          { path: "audit", element: <Suspense fallback={<div>Loading...</div>}><AuditLogsPage /></Suspense> },
           { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
         ],
       },

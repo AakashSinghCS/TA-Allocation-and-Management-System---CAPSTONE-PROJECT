@@ -249,9 +249,11 @@ public class UserControllerTest {
                                 UserRole.COORDINATOR),
                                 null, null, null, null, null, null, null);
 
-                when(userService.changeRole(eq(1L), eq(request))).thenReturn(updatedUser);
+                when(userService.changeRole(eq(1L), eq(request), eq(1L))).thenReturn(updatedUser);
 
                 mockMvc.perform(put("/users/changeRole/1")
+                                // .with(user("admin").roles("ADMIN"))  
+                                .header("X-User-Id", "1") 
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
                                 .andExpect(status().isOk())
