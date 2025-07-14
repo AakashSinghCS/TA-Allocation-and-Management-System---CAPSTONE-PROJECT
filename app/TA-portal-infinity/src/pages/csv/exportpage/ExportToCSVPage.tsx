@@ -213,6 +213,7 @@ export default function ExportToCSVPage() {
               sections={sections}
               mode="instructorAddSection"
               onSelect={handleSectionSelect}
+              askForConfirmation={true}
             />
           )}
         </div>

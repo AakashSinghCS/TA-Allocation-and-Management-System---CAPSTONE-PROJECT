@@ -120,6 +120,7 @@ export default function AddAllocationHistory() {
           sections={filteredSections}
           mode="studentAddHistory"
           onSelect={onSelect}
+          askForConfirmation={true}
         />
       )}
 
