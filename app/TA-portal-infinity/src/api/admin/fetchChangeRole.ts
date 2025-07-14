@@ -1,16 +1,21 @@
+import type { UserRole } from "../../interfaces/enum/UserRole";
+import type { StudentOrInstructorOrCoordinator } from "../../interfaces/user/User";
 
 
-export async function changeRole(
+export async function fetchChangeRole(
   userId: number,
-  token: string,
-): Promise<Boolean[]> {
+  roles: UserRole[]
+): Promise<StudentOrInstructorOrCoordinator> {
 
-  const resp = await fetch(`http://localhost:8080//users/changeRole/${userId}`, {
+  const token = localStorage.getItem("token");
+  const resp = await fetch(`http://localhost:8080/users/changeRole/${userId}`, {
+    method: "PUT",
     headers: {
+      "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
-    }
+    },
+    body: JSON.stringify({ roles })
   });
-
   if (!resp.ok) {
     throw new Error(`Failed to fetch change roles: ${resp.status}`);
   }
