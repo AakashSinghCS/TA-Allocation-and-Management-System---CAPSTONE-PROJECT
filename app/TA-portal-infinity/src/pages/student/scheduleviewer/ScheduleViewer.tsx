@@ -11,7 +11,7 @@ import { CalendarX2 , CalendarClock } from "lucide-react";
 import type { Allocation } from "../../../interfaces/allocation/Allocation";
 import { fetchSectionIncludeInstructorId } from "../../../api/section/fetchSectionIncludeInstructorId";
 
-// Flat schedule row for UI/table/calendar
+//  schedule row 
 type ScheduleRow = {
   id: number;
   course: string;
@@ -36,7 +36,7 @@ const dayMap: Record<string, number> = {
   "Saturday": 6,
 };
 
-// Dynamic semester date ranges per year
+// semester date ranges per year
 function getSemesterRanges(year: number): Record<string, { start: string; end: string }> {
   return {
     W1: { start: `${year}-01-05`, end: `${year}-04-09` },

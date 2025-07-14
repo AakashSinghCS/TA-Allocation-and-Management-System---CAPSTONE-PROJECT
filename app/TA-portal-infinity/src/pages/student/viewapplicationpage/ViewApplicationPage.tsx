@@ -289,7 +289,7 @@ const ViewApplicationPage = () => {
                     {app.allocation.status === 'SENT' && (
                       <div className="mt-1 flex items-center gap-2">
                         <span>Offer pending confirmation</span>
-                        <button
+                        <button 
                           onClick={() =>
                             app.allocation &&
                             typeof app.allocation.id === 'number' &&
@@ -302,7 +302,7 @@ const ViewApplicationPage = () => {
                             typeof (app.id ?? app.applicationId) !== 'number' ||
                             actionLoading === app.allocation.id
                           }
-                          className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
+                          className="px-3 py-2 bg-green-800 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
                         >
                           {actionLoading === app.allocation?.id ? 'Accepting...' : 'Accept Offer'}
                         </button>
@@ -319,7 +319,7 @@ const ViewApplicationPage = () => {
                             typeof (app.id ?? app.applicationId) !== 'number' ||
                             actionLoading === app.allocation.id
                           }
-                          className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition"
+                          className="px-3 py-2 bg-red-800 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition"
                         >
                           {actionLoading === app.allocation.id ? 'Declining...' : 'Decline Offer'}
                         </button>
