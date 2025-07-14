@@ -170,6 +170,20 @@ public class NeedServiceTest {
     }
 
     @Test
+    void testUpdateAllocatedHours_NotFound() {
+        when(needRepository.existsById(any())).thenReturn(false);
+        assertThrows(NotFoundException.class, () -> needService.updateAllocatedHours(1L, 6));
+    }
+
+    @Test
+    void testUpdateAllocatedHours_Success() {
+        when(needRepository.existsById(any())).thenReturn(true);
+        String result = needService.updateAllocatedHours(1L, 6);
+        assertEquals(result, "Need updated");
+        verify(needRepository).updateNeedAllocatedHours(1L, 6);
+    }
+
+    @Test
     void testDeleteNeed_NotFound() {
         when(courseNeedRepository.findByCourseIdAndYearAndSemester(1L, 2025, "W1")).thenReturn(Optional.empty());
 
