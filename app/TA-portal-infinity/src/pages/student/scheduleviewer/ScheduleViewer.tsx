@@ -9,6 +9,7 @@ import type SectionSchedule from "../../../interfaces/section/SectionSchedule";
 import { createEvents } from "ics";
 import { CalendarX2 , CalendarClock } from "lucide-react";
 import type { Allocation } from "../../../interfaces/allocation/Allocation";
+import { fetchSectionIncludeInstructorId } from "../../../api/section/fetchSectionIncludeInstructorId";
 
 // Flat schedule row for UI/table/calendar
 type ScheduleRow = {
@@ -70,7 +71,7 @@ function getAllWeekdaysInRange(weekday: string, rangeStart: string, rangeEnd: st
 
 // CSV Export schedule
 function exportCSV(scheduleRows: ScheduleRow[]) {
-  const header = ["Course", "Section", "Instructor", "Day", "Start Time", "End Time", "Semester", "Year", "Status", "Number Of Hours"];
+  const header = ["Course", "Section", "Instructor", "Day", "Start Time", "End Time", "Semester", "Year", "Number Of Hours"];
   const rows = scheduleRows.map(a => [
     a.course,
     a.section,
@@ -80,7 +81,6 @@ function exportCSV(scheduleRows: ScheduleRow[]) {
     a.endTime,
     a.semester,
     a.year,
-    a.status,
     a.numberOfHours,
   ]);
   const csvContent = [header, ...rows].map(r => r.join(",")).join("\n");
@@ -531,30 +531,60 @@ const StudentSchedulePage: React.FC = () => {
       setLoading(true);
       try {
         const all = await fetchStudentAllocationHistory(Number(userId), token);
-        console.log("All allocations fetched:", all);
         const confirmed = all.filter(a => a.status === "CONFIRMED");
-        console.log("Confirmed allocations:", confirmed);
         const allocationsWithSchedule = await Promise.all(
           confirmed.map(async (alloc: any) => {
             if (!alloc.section || typeof alloc.section.id !== "number") {
               return [flattenAllocation(alloc)];
             }
-            let sectionSchedule: SectionSchedule[] = [];
+            // Fetch section details including instructorId
+            let sectionDetails = null;
             try {
-              const rawSectionSchedule = await fetchSectionSchedule(alloc.section.id, token);
-              sectionSchedule = Array.isArray(rawSectionSchedule)
-                ? rawSectionSchedule
-                : [];
-            } catch {
-              // no schedule
+              sectionDetails = await fetchSectionIncludeInstructorId(alloc.section.id);
+            } catch (err) {
+              console.error("Error fetching section details:", err);
             }
+            let sectionSchedule: SectionSchedule[] = [];
+            if (sectionDetails && Array.isArray(sectionDetails.sectionSchedule)) {
+              sectionSchedule = sectionDetails.sectionSchedule;
+            } else {
+              try {
+                const rawSectionSchedule = await fetchSectionSchedule(alloc.section.id, token);
+                sectionSchedule = Array.isArray(rawSectionSchedule)
+                  ? rawSectionSchedule
+                  : [];
+              } catch {
+                // no schedule
+              }
+            }
+            // Fetch instructor details using instructorId from sectionDetails
+            let instructorName = "N/A";
+            if (sectionDetails && sectionDetails.instructor && sectionDetails.instructor.firstName && sectionDetails.instructor.lastName) {
+              instructorName = `${sectionDetails.instructor.firstName} ${sectionDetails.instructor.lastName}`;
+            } else {
+              console.warn("No instructor info found in sectionDetails", sectionDetails);
+            }
+            // Use instructorName in ScheduleRow
+            const makeRow = (sch?: { day: string; startTime: string; endTime: string }) => ({
+              id: typeof alloc.id === "number" ? alloc.id : 0,
+              course: sectionDetails && sectionDetails.course ? `${sectionDetails.course.deptCode} ${sectionDetails.course.courseNum}` : "N/A",
+              section: sectionDetails && sectionDetails.section ? sectionDetails.section : "N/A",
+              instructor: instructorName,
+              day: sch?.day || "",
+              startTime: sch?.startTime || "",
+              endTime: sch?.endTime || "",
+              status: alloc.status ?? "",
+              semester: sectionDetails && sectionDetails.semester ? sectionDetails.semester : "N/A",
+              year: sectionDetails && typeof sectionDetails.year === "number" ? sectionDetails.year : 0,
+              numberOfHours: alloc.numberOfHours ?? 0,
+            });
             return sectionSchedule.length > 0
-              ? sectionSchedule.map(sch => flattenAllocation(alloc, {
-      day: sch.day ?? "",
-      startTime: sch.startTime ?? "",
-      endTime: sch.endTime ?? ""
-    }))
-  : [flattenAllocation(alloc)];
+              ? sectionSchedule.map(sch => makeRow({
+                  day: sch.day ?? "",
+                  startTime: sch.startTime ?? "",
+                  endTime: sch.endTime ?? ""
+                }))
+              : [makeRow()];
           })
         );
         setScheduleRows(allocationsWithSchedule.flat());
