@@ -65,7 +65,7 @@ const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
       }, [selApp, token]);
 
   return (
-    <div className={`${colSpanClass} bg-white p-6 rounded shadow space-y-4 text-sm`}>
+    <div className={`${colSpanClass} bg-white p-3 rounded shadow space-y-4 text-sm`}>
       <h1 className="font-semibold text-xl">Application Filter</h1>
 
       {/* Filter controls */}
