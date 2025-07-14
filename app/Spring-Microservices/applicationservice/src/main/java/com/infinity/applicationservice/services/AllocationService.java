@@ -85,7 +85,7 @@ public class AllocationService {
 
         Allocation saved = allocationRepository.save(allocation);
         UserDto student = studentInterface.getStudentById(request.studentId()).getBody();
-        SectionDto section = sectionInterface.getSectionById(request.sectionId());
+        SectionDto section = courseInterface.getSectionById(request.sectionId());
 
         ApplicationDto applicationDto = null;
         //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
@@ -125,7 +125,7 @@ public class AllocationService {
             .filter(a -> a.getStatus() == status)
             .map(allocation -> {
                 UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
-                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+                SectionDto section = courseInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = null;
                 //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
                 if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
@@ -141,7 +141,7 @@ public class AllocationService {
             .filter(a -> a.getSectionId().equals(sectionId))
             .map(allocation -> {
                 UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
-                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+                SectionDto section = courseInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = null;
                 //If application is not null, the TA requirements (needs) page does not work after importing allocations through csv.
                 if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
@@ -161,7 +161,7 @@ public class AllocationService {
             .filter(a -> a.getApplication() != null && a.getApplication().getId().equals(appId))
             .map(allocation -> {
                 UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
-                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+                SectionDto section = courseInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = null;
                 //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
                 if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
@@ -178,7 +178,7 @@ public class AllocationService {
                         a.getApplication().getSubmittedAt().getYear() == year)
             .map(allocation -> {
                 UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
-                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+                SectionDto section = courseInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = null;
                 //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
                 if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
@@ -194,7 +194,7 @@ public class AllocationService {
             .filter(a -> a.getSectionId().equals(sectionId))
             .map(allocation -> {
                 UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
-                SectionDto section = sectionInterface.getSectionById(allocation.getSectionId());
+                SectionDto section = courseInterface.getSectionById(allocation.getSectionId());
                 ApplicationDto applicationDto = null;
                 //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
                 if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {

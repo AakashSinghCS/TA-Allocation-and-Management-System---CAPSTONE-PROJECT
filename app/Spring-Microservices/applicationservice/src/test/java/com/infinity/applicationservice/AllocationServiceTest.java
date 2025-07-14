@@ -51,8 +51,6 @@ import com.infinity.applicationservice.utility.AllocationMapper;
 import com.infinity.applicationservice.utility.ApplicationMapper;
 import com.infinity.applicationservice.utility.EmailMapper;
 
-import jakarta.persistence.EntityNotFoundException;
-
 @ExtendWith(MockitoExtension.class)
 class AllocationServiceTest {
 
