@@ -17,7 +17,9 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
-import com.infinity.courseservice.dtos.UserDtos.InstructorDto;
+import com.infinity.courseservice.dtos.SectionDtos.ExportedSectionData;
+import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.ApplicationInterface;
@@ -165,7 +167,7 @@ public class SectionService {
     }
 
     public String assignInstructor(AssignInstructorRequest request) {
-        InstructorDto instructorDto = userInterface.getInstructorById(request.instructorId());
+        UserDto instructorDto = userInterface.getInstructorById(request.instructorId());
         Section section = sectionRepository.findById(request.sectionId())
                 .orElseThrow(() -> new NotFoundException("No section with id " + request.sectionId()));
         section.setInstructorId(instructorDto.id());

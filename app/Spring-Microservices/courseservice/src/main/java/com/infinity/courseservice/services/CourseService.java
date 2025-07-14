@@ -18,7 +18,7 @@ import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.ApplicationInterface;
@@ -176,7 +176,7 @@ public class CourseService {
     }
 
     public List<StudentTaughtCourseDto> getCoursesTaughtByStudent(Long studentId) {
-        StudentDto student = userInterface.getStudentById(studentId);
+        UserDto student = userInterface.getStudentById(studentId);
 
         return stcRepository.findByStudentId(studentId).stream()
                 .map(record -> new StudentTaughtCourseDto(

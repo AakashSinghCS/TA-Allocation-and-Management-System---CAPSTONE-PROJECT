@@ -3,12 +3,12 @@ package com.infinity.applicationservice.utility;
 import org.springframework.stereotype.Component;
 
 import com.infinity.applicationservice.dtos.Notifications.EmailRequest;
-import com.infinity.applicationservice.dtos.Users.StudentDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
 
 @Component
 public class EmailMapper {
     
-    public EmailRequest allocationEmailRequest(StudentDto student) {
+    public EmailRequest allocationEmailRequest(UserDto student) {
         String htmlContent = String.format("""
                         Hi %s,
                                 
@@ -18,7 +18,7 @@ public class EmailMapper {
                 "TA Offer Received", htmlContent);
     }
     
-    public EmailRequest applicationReceivedEmailRequest(StudentDto student) {
+    public EmailRequest applicationReceivedEmailRequest(UserDto student) {
         String htmlContent = String.format("""
                         Hi %s,
                                 

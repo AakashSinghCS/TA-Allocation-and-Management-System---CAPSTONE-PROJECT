@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.infinity.applicationservice.config.FeignClientInterceptor;
 import com.infinity.applicationservice.dtos.Allocations.ImportCourseRequest;
 import com.infinity.applicationservice.dtos.Allocations.ImportSectionRequest;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Needs.NeedDto;
 
-@FeignClient(name = "COURSE-SERVICE")
+@FeignClient(name = "COURSE-SERVICE", configuration = FeignClientInterceptor.class)
 public interface CourseInterface {
     @GetMapping("/sections/get/{id}")
     SectionDto getSectionById(@PathVariable Long id);

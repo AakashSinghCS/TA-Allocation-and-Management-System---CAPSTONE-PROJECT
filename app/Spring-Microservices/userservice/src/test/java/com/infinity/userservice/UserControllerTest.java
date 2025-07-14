@@ -13,11 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,11 +24,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.userservice.controllers.UserController;
-import com.infinity.userservice.dtos.BaseUserDto;
+import com.infinity.userservice.dtos.RoleChangeRequest;
 import com.infinity.userservice.dtos.UserDto;
-import com.infinity.userservice.dtos.Instructors.InstructorDto;
-import com.infinity.userservice.dtos.Students.StudentDto;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.BadRequestException;
@@ -50,6 +47,9 @@ public class UserControllerTest {
 
         @MockitoBean
         private JwtUtil jwtUtil;
+
+        @Autowired
+        private ObjectMapper objectMapper;
 
         @MockitoBean
         private AuthenticationManager authenticationManager;
@@ -82,7 +82,8 @@ public class UserControllerTest {
 
         @Test
         void testGetUserById_Success() throws Exception {
-                UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.STUDENT));
+                UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.STUDENT),
+                                null, null, null, null, null, null, null);
 
                 when(userService.getUserById(any(), any(), any())).thenReturn(mockResponse);
 
@@ -201,10 +202,13 @@ public class UserControllerTest {
         @Test
         void whenSearchStudentsByNumber_thenReturnsMatchingList() throws Exception {
                 LocalDateTime fixedTime = LocalDateTime.of(2023, 1, 1, 12, 0);
-                BaseUserDto student = new StudentDto(1L, "Alice", "Smith", "alice@example.com", 12345678,
-                                "computer science", 2023, 1, fixedTime);
-                List<BaseUserDto> results = Arrays.asList(student);
-                when(userService.search("STUDENT", "", 12345678)).thenReturn(results);
+                UserDto student = new UserDto(
+                                1L, "Alice", "Smith", "alice@example.com",
+                                List.of(UserRole.STUDENT),
+                                12345678, "computer science", 2023, 1,
+                                null, null, fixedTime);
+
+                when(userService.search("STUDENT", "", 12345678)).thenReturn(List.of(student));
 
                 mockMvc.perform(get("/users/search")
                                 .param("role", "STUDENT")
@@ -212,15 +216,21 @@ public class UserControllerTest {
                                 .accept(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.length()").value(1))
-                                .andExpect(jsonPath("$[0].firstName").value("Alice"));
+                                .andExpect(jsonPath("$[0].firstName").value("Alice"))
+                                .andExpect(jsonPath("$[0].studentNum").value(12345678))
+                                .andExpect(jsonPath("$[0].program").value("computer science"));
         }
 
         @Test
         void whenSearchInstructorsByName_thenReturnsMatchingList() throws Exception {
                 LocalDateTime fixedTime = LocalDateTime.of(2023, 1, 1, 12, 0);
-                BaseUserDto instr = new InstructorDto(1L, "Bob", "Jones", "bob@example.com", 12345678,
-                                "computerscience", fixedTime);
-                when(userService.search("INSTRUCTOR", "Bob", 0)).thenReturn(Arrays.asList(instr));
+                UserDto instructor = new UserDto(
+                                2L, "Bob", "Jones", "bob@example.com",
+                                List.of(UserRole.INSTRUCTOR),
+                                null, null, null, null,
+                                87654321, "computerscience", fixedTime);
+
+                when(userService.search("INSTRUCTOR", "Bob", 0)).thenReturn(List.of(instructor));
 
                 mockMvc.perform(get("/users/search")
                                 .param("role", "INSTRUCTOR")
@@ -228,6 +238,63 @@ public class UserControllerTest {
                                 .accept(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.length()").value(1))
-                                .andExpect(jsonPath("$[0].lastName").value("Jones"));
+                                .andExpect(jsonPath("$[0].lastName").value("Jones"))
+                                .andExpect(jsonPath("$[0].employeeNum").value(87654321));
         }
+
+        @Test
+        void changeRole_returnsUpdatedUser() throws Exception {
+                RoleChangeRequest request = new RoleChangeRequest(List.of(UserRole.STUDENT, UserRole.COORDINATOR));
+                UserDto updatedUser = new UserDto(1L, "Alice", "Smith", "alice@example.com", List.of(UserRole.STUDENT,
+                                UserRole.COORDINATOR),
+                                null, null, null, null, null, null, null);
+
+                when(userService.changeRole(eq(1L), eq(request))).thenReturn(updatedUser);
+
+                mockMvc.perform(put("/users/changeRole/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(1))
+                                .andExpect(jsonPath("$.roles[0]").value("STUDENT"))
+                                .andExpect(jsonPath("$.roles[1]").value("COORDINATOR"));
+        }
+
+        @Test
+        void getStudentByNum_returnsUserDto() throws Exception {
+                UserDto sampleUser = new UserDto(1L, "Alice", "Smith", "alice@example.com",
+                                List.of(UserRole.STUDENT), null, null, null, null, null, null, null);
+                when(userService.getStudentByNum(12345678)).thenReturn(sampleUser);
+
+                mockMvc.perform(get("/users//studentNum/12345678"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.email").value("alice@example.com"))
+                                .andExpect(jsonPath("$.roles[0]").value("STUDENT"));
+        }
+
+        @Test
+        void getStudentById_returnsUserDto() throws Exception {
+                UserDto sampleUser = new UserDto(1L, "Alice", "Smith", "alice@example.com",
+                                List.of(UserRole.STUDENT), null, null, null, null, null, null, null);
+                when(userService.getStudentById(1L)).thenReturn(sampleUser);
+
+                mockMvc.perform(get("/users/students/1"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(1))
+                                .andExpect(jsonPath("$.firstName").value("Alice"));
+        }
+
+        @Test
+        void getInstructorById_returnsUserDto() throws Exception {
+                UserDto instructorDto = new UserDto(2L, "Bob", "Instructor", "bob@example.com",
+                                List.of(UserRole.INSTRUCTOR), null, null, null, null, null, null, null);
+                when(userService.getInstructorById(2L)).thenReturn(instructorDto);
+
+                mockMvc.perform(get("/users/instructors/2"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.email").value("bob@example.com"))
+                                .andExpect(jsonPath("$.roles[0]").value("INSTRUCTOR"));
+        }
+
+
 }

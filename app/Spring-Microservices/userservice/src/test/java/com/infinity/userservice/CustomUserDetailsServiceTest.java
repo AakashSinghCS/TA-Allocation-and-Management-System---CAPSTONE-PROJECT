@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.infinity.userservice.models.Student;
 import com.infinity.userservice.models.User;
 import com.infinity.userservice.repositories.UserRepository;
 import com.infinity.userservice.security.CustomUserDetailsService;
@@ -30,7 +29,7 @@ public class CustomUserDetailsServiceTest {
 
     @Test
     void loadUserByUsername_Success() {
-        User mockUser = new Student("test@example.com", "John", "Doe", "hashedPassword");
+        User mockUser = new User("test@example.com", "John", "Doe", "hashedPassword");
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(mockUser));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername("test@example.com");

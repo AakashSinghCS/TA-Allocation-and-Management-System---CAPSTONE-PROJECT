@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'TA Portal Dashboards'
+    orgId: 1
+    folder: 'TA Portal'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 60      # re-scan every minute
+    options:
+      path: /etc/grafana/provisioning/dashboards-json

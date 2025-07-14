@@ -13,7 +13,7 @@ import com.infinity.courseservice.dtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.StudentQualiRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
-import com.infinity.courseservice.dtos.UserDtos.StudentDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.UserInterface;
@@ -122,7 +122,7 @@ public class QualificationService {
         studentQualificationRepository.deleteAllByStudentId(stuId);
         List<Qualification> qualifications = qualificationRepository.findAllByIds(request.qualificationIds());
         List<QualificationDto> qualificationDtos = new ArrayList<QualificationDto>();
-        StudentDto studentDto = studentClient.getStudentById(stuId);
+        UserDto studentDto = studentClient.getStudentById(stuId);
         for (Qualification qualification : qualifications) {
             CourseDto courseDto = courseService.findCourse(qualification.getCourse().getId());
             StudentQualification studentQualification = new StudentQualification(qualification, stuId);
