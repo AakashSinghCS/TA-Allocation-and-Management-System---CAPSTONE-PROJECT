@@ -500,7 +500,6 @@ class AllocationServiceTest {
                 assertEquals(2025, result.get(0).applicationDto().timeSubmitted().getYear());
         }
 
-
         @Test
         void testGetAllocationsBySectionIdWithCourse() {
                 Long sectionId = 100L;
@@ -631,13 +630,12 @@ class AllocationServiceTest {
 
         void importPreviousAllocations_createsMissingCourseAndSection_whenAutoCreateIsTrue() {
                 Map<String, String> csvData = Map.of(
-                        "studentNum", "63260442",
-                        "deptCode", "COSC",
-                        "courseNum", "499",
-                        "section", "001",
-                        "year", "2025",
-                        "semester", "W1"
-                );
+                                "studentNum", "63260442",
+                                "deptCode", "COSC",
+                                "courseNum", "499",
+                                "section", "001",
+                                "year", "2025",
+                                "semester", "W1");
                 UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
                                 63260442, "COSC", 2022, 3, null, null, null);
                 CourseDto course = new CourseDto(2L, "COSC", "Capstone", "499");
@@ -649,8 +647,7 @@ class AllocationServiceTest {
                 allocation.setStatus(ApplicationStatus.CONFIRMED);
 
                 AllocationHistoryDto dto = new AllocationHistoryDto(
-                        allocation.getId(), student, null, ApplicationStatus.CONFIRMED, 0, section
-                );
+                                allocation.getId(), student, null, ApplicationStatus.CONFIRMED, 0, section);
 
                 when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
                 when(courseInterface.addCourse(any())).thenReturn(course); 
@@ -661,8 +658,7 @@ class AllocationServiceTest {
                 when(allocationMapper.toDto(any(), any(), any(), any())).thenReturn(dto);
 
                 List<AllocationHistoryDto> result = allocationService.importPreviousAllocations(
-                        List.of(csvData), true
-                );
+                                List.of(csvData), true);
 
                 assertEquals(1, result.size());
                 assertEquals("John", result.get(0).student().firstName());
@@ -673,13 +669,12 @@ class AllocationServiceTest {
         @Test
         void importPreviousAllocations_throwsNotFoundException_whenAutoCreateIsFalse_andCourseMissing() {
                 Map<String, String> csvData = Map.of(
-                        "studentNum", "63260442",
-                        "deptCode", "COSC",
-                        "courseNum", "499",
-                        "section", "001",
-                        "year", "2025",
-                        "semester", "W1"
-                );
+                                "studentNum", "63260442",
+                                "deptCode", "COSC",
+                                "courseNum", "499",
+                                "section", "001",
+                                "year", "2025",
+                                "semester", "W1");
 
                 UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
                                 63260442, "COSC", 2022, 3, null, null, null);
@@ -688,9 +683,8 @@ class AllocationServiceTest {
                 when(courseInterface.getCourseByDeptCodeAndCourseNum("COSC", "499"))
                        .thenReturn(ResponseEntity.of(Optional.empty())); // Simulate course not found
 
-                NullPointerException ex = assertThrows(NullPointerException.class, () ->
-                        allocationService.importPreviousAllocations(List.of(csvData), false)
-                );
+                NullPointerException ex = assertThrows(NullPointerException.class,
+                                () -> allocationService.importPreviousAllocations(List.of(csvData), false));
 
 
                 verify(courseInterface, never()).addCourse(any());
@@ -700,13 +694,12 @@ class AllocationServiceTest {
         @Test
         void importPreviousAllocations_throwsNotFoundException_whenAutoCreateIsFalse_andSectionMissing() {
                 Map<String, String> csvData = Map.of(
-                        "studentNum", "63260442",
-                        "deptCode", "COSC",
-                        "courseNum", "499",
-                        "section", "001",
-                        "year", "2025",
-                        "semester", "W1"
-                );
+                                "studentNum", "63260442",
+                                "deptCode", "COSC",
+                                "courseNum", "499",
+                                "section", "001",
+                                "year", "2025",
+                                "semester", "W1");
                 UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
                                 63260442, "COSC", 2022, 3, null, null, null);
                 CourseDto course = new CourseDto(2L, "COSC", "499", "Capstone");
@@ -717,9 +710,8 @@ class AllocationServiceTest {
                 when(courseInterface.getByCourseIdSectionYearSemester(2L, "001", 2025, "W1"))
                         .thenThrow(new RuntimeException("Section not found"));
 
-                NotFoundException ex = assertThrows(NotFoundException.class, () ->
-                    allocationService.importPreviousAllocations(List.of(csvData), false)
-                );
+                NotFoundException ex = assertThrows(NotFoundException.class,
+                                () -> allocationService.importPreviousAllocations(List.of(csvData), false));
 
                 assertTrue(ex.getMessage().contains("Section"));
                 assertTrue(ex.getMessage().contains("not found"));
@@ -728,7 +720,6 @@ class AllocationServiceTest {
                 verify(courseInterface, never()).addCourse(any());
                 verify(courseInterface, never()).addSection(anyLong(), any());
         }
-
 
         @Test
         void testSetSectionIdNullReturnsAffectedCount() {

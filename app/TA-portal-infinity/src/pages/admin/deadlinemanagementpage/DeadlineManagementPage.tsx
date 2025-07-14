@@ -32,7 +32,7 @@ const DeadlineManagementPage: React.FC = () => {
     const updated = [...deadlines];
     updated[index] = {
       ...updated[index],
-      [field]: value ? new Date(value).toISOString() : ""
+      [field]: value ? value + ":00" : ""
     } as DeadlineDto;
     setDeadlines(updated);
   };

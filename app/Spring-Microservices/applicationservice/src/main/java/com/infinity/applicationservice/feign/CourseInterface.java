@@ -31,9 +31,8 @@ public interface CourseInterface {
 
     @GetMapping("/courses/getByDeptCodeAndCourseNum/{deptCode}/{courseNum}")
     ResponseEntity<CourseDto> getCourseByDeptCodeAndCourseNum(
-        @PathVariable String deptCode,
-        @PathVariable String courseNum
-    );
+            @PathVariable String deptCode,
+            @PathVariable String courseNum);
 
     @PostMapping("/courses/addCourse")
     CourseDto addCourse(@RequestBody ImportCourseRequest request);

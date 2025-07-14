@@ -9,6 +9,7 @@ import type { ApplicationDto } from '../../../interfaces/application/Application
 import { fetchApplications } from '../../../api/application/FetchApplications';
 import ApplicationFilterPanel from '../../../components/features/application/applicationfilterpanel/ApplicationFilterPanel';
 import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useSendOffer } from '../../../hooks/sendoffer/useSendOffer';
 import SectionFilter from '../../../components/features/course/coursefilter/SectionFilter';
 import { fetchFilteredSections, type FilterSectionsProps } from '../../../api/course/sectionfilter/fetchFilteredSections';
@@ -17,6 +18,7 @@ import { fetchSectionInfo } from '../../../api/section/fetchSectionInfo';
 import { Link } from 'react-router-dom';
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
 import { fetchAllocationsByStudent } from '../../../api/allocation/fetchAllocationByStudent';
+import { deallocateAllocation } from '../../../api/allocation/deallocateAllocation';
 
 const TAAllocationPage: React.FC = () => {
   const { token } = useAuth();
@@ -69,9 +71,19 @@ const TAAllocationPage: React.FC = () => {
     console.error("Failed to load section:", err);
   }
 };
-  const onSend = () => {
+  // Helper to fetch allocation history for the selected student
+  const refreshHistory = async (studentId: number, token: string) => {
+    try {
+      const data = await fetchAllocationsByStudent(studentId, token);
+      setHistory(data);
+    } catch {
+      setHistory([]);
+    }
+  };
+
+
+const onSend = () => {
     if (!selApp || !selCourse?.id || !selCourse.need) return;
-    
     sendOffer(
       selApp,
       selCourse.id,
@@ -79,6 +91,10 @@ const TAAllocationPage: React.FC = () => {
       hasAvailabilityMatch,
       async () => {
         await loadCourse(selCourse!);
+        // allocation history so Revoke works 
+        if (selApp.student.id && token) {
+          await refreshHistory(selApp.student.id, token);
+        }
         setShowBanner(true);
       }
     );
@@ -86,7 +102,7 @@ const TAAllocationPage: React.FC = () => {
 
   const loadApp = (a: ApplicationDto) => setSelApp(a);
 
-  const courseEvents = (selCourse?.sectionSchedule || []).map((slot, i) => {
+   const courseEvents = (selCourse?.sectionSchedule || []).map((slot, i) => {
     const dayNum = getDayNumber(slot.day);
     const isMatched = selApp?.availabilities.every(av =>
       dayNum === getDayNumber(av.day) &&
@@ -112,38 +128,52 @@ const TAAllocationPage: React.FC = () => {
     backgroundColor: 'rgba(35, 38, 39, 0.3)',
   }));
 
-// Compute only the segments of student availability that overlap with course slots
-function getIntersectionSegments(
+// Convert "HH:mm" to minutes since midnight
+function timeToMinutes(t: string) {
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+
+// Check if a course slot is fully covered by any student availability (numerical time comparison)
+function isSlotFullyCovered(
   slot: { day: string; startTime: string; endTime: string },
   avails: { day: string; startTime: string; endTime: string }[]
 ) {
   const dayNum = getDayNumber(slot.day);
-  return avails
-    .filter(a => getDayNumber(a.day) === dayNum)
-    .map(a => {
-      const start = a.startTime > slot.startTime ? a.startTime : slot.startTime;
-      const end = a.endTime < slot.endTime ? a.endTime : slot.endTime;
-      return start < end ? { start, end } : null;
-    })
-    .filter((x): x is { start: string; end: string } => x !== null); 
+  const slotStart = timeToMinutes(slot.startTime);
+  const slotEnd = timeToMinutes(slot.endTime);
+  return avails.some(a => {
+    if (getDayNumber(a.day) !== dayNum) return false;
+    const availStart = timeToMinutes(a.startTime);
+    const availEnd = timeToMinutes(a.endTime);
+    return availStart <= slotStart && availEnd >= slotEnd;
+  });
 }
 
-// Compute segments of student availability that match course slots
+// Compute overlays: green if fully covered, red if not
 const bgMatchedEvents = useMemo(() => {
-   return (selCourse?.sectionSchedule || []).flatMap((slot, i) => {
-     if (!slot.day || !slot.startTime || !slot.endTime) return [];
-     return getIntersectionSegments(
-       { day: slot.day, startTime: slot.startTime, endTime: slot.endTime },
-       selApp?.availabilities || []
-     ).map((seg, j) => ({
-       id: `matched-${i}-${j}`,
-       daysOfWeek: [getDayNumber(slot.day)],
-       startTime: seg.start,
-       endTime: seg.end,
-       title: 'Matched Avail',
-       backgroundColor: 'rgb(5, 168, 81)',
-     }));
-   });
+  return (selCourse?.sectionSchedule || []).flatMap((slot, i) => {
+    if (!slot.day || !slot.startTime || !slot.endTime) return [];
+    if (isSlotFullyCovered({ day: slot.day, startTime: slot.startTime, endTime: slot.endTime }, selApp?.availabilities || [])) {
+      return [{
+        id: `matched-${i}`,
+        daysOfWeek: [getDayNumber(slot.day)],
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        title: 'Matched Avail',
+        backgroundColor: 'rgb(5, 168, 81)',
+      }];
+    } else {
+      return [{
+        id: `unmatched-${i}`,
+        daysOfWeek: [getDayNumber(slot.day)],
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        title: 'Unmatched Slot',
+        backgroundColor: 'rgba(239,68,68,0.8)', // red
+      }];
+    }
+  });
 }, [selCourse, selApp?.availabilities]);
 
 // Combine all events into a single list
@@ -158,7 +188,12 @@ const events = [
   const allocated = selCourse?.need?.numHoursCurrentlyAllocated ?? 0;
   const remaining = Math.max(required - allocated, 0);
   const hoursOK = allocated >= required;
-  const hasAvailabilityMatch = bgMatchedEvents.length > 0;
+  // All course slots must be fully covered by student availability
+  const hasAvailabilityMatch = (selCourse?.sectionSchedule || [])
+    .filter(slot => slot.day && slot.startTime && slot.endTime)
+    .every(slot =>
+      isSlotFullyCovered({ day: slot.day!, startTime: slot.startTime!, endTime: slot.endTime! }, selApp?.availabilities || [])
+    );
 
   // Check if we have a selected application and course before fetching history
   const [history, setHistory] = useState<Allocation[]>([]);
@@ -181,10 +216,10 @@ const events = [
       }, [history, selApp, selCourse]);
 
   return (
-    <div className="p-8 min-h-screen space-y-8">
-      <h1 className="text-4xl font-bold">TA Allocations</h1>
+    <div className="p-2 min-h-screen space-y-8">
+      <h1 className="text-4xl md:text-4xl font-bold text-[#040941] mb-8 tracking-tight">TA Allocations</h1>
       <div className="grid lg:grid-cols-24 gap-6">
-        <div className="lg:col-span-5 bg-white p-6 rounded shadow space-y-4">
+        <div className="lg:col-span-5 bg-white p-3 rounded shadow space-y-4">
           <h1 className="font-semibold text-xl">Course Filter</h1>
           <SectionFilter
             mode="small"
@@ -269,10 +304,13 @@ const events = [
               <span className="text-sm">Matched Slot</span>
             </div>
             <div className="flex items-center space-x-1">
+              <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(239,68,68,0.8)' }} />
+              <span className="text-sm">UnMatched Slot</span>
+            </div>
+            <div className="flex items-center space-x-1">
               <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(35, 38, 39, 0.3)' }} />
               <span className="text-sm">Student Availability</span>
             </div>
-
           </div>
           <FullCalendar
             key={selCourse?.id ?? 'none'}
@@ -359,20 +397,31 @@ const events = [
 
           {/* actions */}
           <div className="mt-2 md:mt-0 flex items-center space-x-3">
-            <Link
-              to="/applications"
-              className="text-sm bg-[#040941] text-white px-3 py-1 rounded hover:bg-[#03072a] transition"
-            >
-              View
-            </Link>
             <button
-              onClick={() => {
-                setSelApp(null);
-                setShowBanner(false);
+              onClick={async () => {
+                if (!selApp || !selCourse) return;
+                // Find the allocation for this app+section
+                const allocation = history.find(h =>
+                  h.application?.applicationId === selApp.applicationId &&
+                  h.section?.id === selCourse.id
+                );
+                if (!allocation || allocation.id == null) return;
+                try {
+                  const ok = await deallocateAllocation(allocation.id, token || undefined);
+                  if (!ok) throw new Error('Failed to deallocate');
+                  setShowBanner(false);
+                  setSelApp(null);
+                  toast.success('Offer revoked successfully.');
+                  if (selApp.student.id && token) {
+                    await refreshHistory(selApp.student.id, token);
+                  }
+                } catch (e) {
+                  toast.error('Failed to revoke Offer.');
+                }
               }}
               className="text-sm bg-[#040941] text-white px-3 py-1 rounded hover:bg-[#03072a] transition"
             >
-              Revoke  {/* Will be implement when we got delete allocation ready */}
+              Revoke Offer
             </button>
           </div>
         </div>
