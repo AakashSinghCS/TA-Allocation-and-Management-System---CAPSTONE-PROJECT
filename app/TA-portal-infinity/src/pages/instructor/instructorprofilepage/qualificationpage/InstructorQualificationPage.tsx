@@ -17,7 +17,7 @@ export default function InstructorQualificationPage (){
     const [needDeadline, setNeedDeadline] = useState<DeadlineDto | null>(null);
     const [deadlineError, setDeadlineError] = useState("");
 
-    const { token, userId, userRoles } = useAuth();
+    const { token } = useAuth();
     
     useEffect(() => {
         async function loadDeadline() {

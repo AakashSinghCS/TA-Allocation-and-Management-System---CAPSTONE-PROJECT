@@ -18,7 +18,7 @@ export default function InstructorNeedPage (){
     const [needDeadline, setNeedDeadline] = useState<DeadlineDto | null>(null);
     const [deadlineError, setDeadlineError] = useState("");
 
-    const { token, userId, userRoles } = useAuth();
+    const { token, userRoles } = useAuth();
     
     useEffect(() => {
         async function loadDeadline() {
