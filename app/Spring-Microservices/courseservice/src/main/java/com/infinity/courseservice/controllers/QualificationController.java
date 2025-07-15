@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.infinity.courseservice.dtos.QualificationDto;
-import com.infinity.courseservice.dtos.QualificationDtoWithId;
-import com.infinity.courseservice.dtos.QualificationRequest;
-import com.infinity.courseservice.dtos.QualificationWithSectionDto;
-import com.infinity.courseservice.dtos.StudentQualiRequest;
+import com.infinity.courseservice.dtos.QualificationDtos.QualificationDto;
+import com.infinity.courseservice.dtos.QualificationDtos.QualificationDtoWithId;
+import com.infinity.courseservice.dtos.QualificationDtos.QualificationRequest;
+import com.infinity.courseservice.dtos.QualificationDtos.QualificationWithSectionDto;
+import com.infinity.courseservice.dtos.QualificationDtos.StudentQualiRequest;
 import com.infinity.courseservice.services.QualificationService;
 
 import lombok.RequiredArgsConstructor;
