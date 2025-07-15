@@ -1338,9 +1338,9 @@ Increased system stability and user satisfaction with improved cancellation flow
 ## Progress Update
 | TASK/ISSUE # | DESCRIPTION                         | STATUS     |
 |---------------|-------------------------------------|------------|
-| #095          | Student dashboard and Docker fix    | Completed  |
-| #096          | PR reviews and feedback            | Completed  |
-| #097          | Parsing logic prototype           | In progress |
+| #1         | Student dashboard and Docker fix    | Completed  |
+| #2         | PR reviews and feedback            | Completed  |
+| #3          | Parsing logic prototype           | In progress |
 
 ## Cycle Goal Review
 
@@ -1371,9 +1371,9 @@ Effective focus on UI and backend issues increased confidence in system readines
 ## Progress Update
 | TASK/ISSUE # | DESCRIPTION                         | STATUS     |
 |---------------|-------------------------------------|------------|
-| #101          | Update allocations logic            | Completed  |
-| #102          | Revoke offer feature                | In progress  |
-| #103          | Integration testing                | In progress |
+| #1         | Update allocations logic            | Completed  |
+| #2        | Revoke offer feature                | In progress  |
+| #3        | Integration testing                | In progress |
 
 ## Cycle Goal Review
 
@@ -1389,3 +1389,102 @@ Simplified flows and resolved potential edge cases; next step is to finalize int
 - Update allocation documentation and user guide
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 11 July, Friday
+
+**Clockify:**  ![alt text](clockify_images/image-54.png)
+
+## Time Slot
+- **10:54 AM – 12:49 PM:** Team meeting  
+
+## Current Tasks
+-  Reviewed overall progress and assigned tasks
+- Worked with allen to see how deadlines work
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                            | STATUS    |
+|--------------|--------------------------------------------------------|-----------|
+| #1           |  Reviewed overall progress and assigned tasks          | Completed |
+| #2           |   Checked how deadlines feature works                  | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Aligned on feedback and set clear deliverables for upcoming tasks.
+
+### Retrospective
+Improved meeting structure; documentation of decisions needs enhancement.
+
+## Next Cycle Goals
+- Schedule viewer for student and other improvements
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 13 July, Sunday
+
+**Clockify:**  ![alt text](clockify_images/image-55.png)
+
+## Time Slot
+- **1:59 PM – 7:22 PM:** Built Scheduler Viewer for student  
+
+## Current Tasks
+- Created student schedule‑viewer component  
+- Integrated FullCalendar with fetched allocations  
+- Styled calendar to match UI  
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                            | STATUS    |
+|--------------|----------------------------------------|-----------|
+| #1           | Develop basic Scheduler Viewer         | Completed |
+| #2           | Connect FullCalendar with real data    | Completed |
+| #3           | Apply UI styling to schedule viewer    | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Laid the foundation for the student schedule viewer; calendar integration is functional.
+
+### Retrospective
+Next, export features and the upcoming‑schedule section need implementation.
+
+## Next Cycle Goals
+- Add CSV and ICS export functionality  
+- Implement upcoming‑schedule section  
+- Write tests for export features 
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 14 July, Monday
+
+**Clockify:**  ![alt text](clockify_images/image-55.png)
+
+## Time Slot
+- **1:09 PM – 4:44 PM:** Testing for schedule viewer and fixing allocation‑view bug  
+- **10:03 PM – 11:16 PM:** Team meeting to discuss peer‑feedback event  
+- **2:16 PM – 7:34 PM:** Implement fetchInstructor name on all pages, rewrite tests, and refactor schedule viewer  
+- **7:34 PM – 8:38 PM:** PR reviewed  
+
+## Current Tasks
+- Fixed schedule viewer and allocation‑view bugs  
+- Conducted peer‑feedback team meeting  
+- Implemented instructor‑name fetching across all pages  
+- Rewrote schedule‑viewer tests  
+- Refactored schedule‑viewer code  
+- Reviewed and merged PRs  
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                           | STATUS    |
+|--------------|-------------------------------------------------------|-----------|
+| #1           | Fix schedule‑viewer & allocation‑view bug             | Completed |
+| #2           | Implement instructor‑name fetching                    | Completed |
+| #3           | Rewrite schedule‑viewer tests                         | Completed |
+| #4           | Refactor schedule‑viewer code                         | Completed |
+| #5           | Review and merge open PRs                             | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Streamlined schedule‑viewer functionality, ensured accurate instructor data, and improved test coverage.
+
+### Retrospective
+Refactoring and test rewrites made the codebase more maintainable; next focus is export features and upcoming‑schedule display.
+
+## Next Cycle Goals
+- Dashboards for all remaining users (instructor and co-ordinator) 
