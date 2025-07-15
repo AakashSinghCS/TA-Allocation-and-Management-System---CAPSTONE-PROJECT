@@ -1370,7 +1370,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Import past allocation : Backend - handle the backend for importing past allocations
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 05/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1408,7 +1408,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Import past allocation : Backend - handle the backend for importing past allocations
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 06/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1445,7 +1445,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Import past allocation : Frontend 
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 07/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1481,7 +1481,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Import past allocation : Frontend 
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 08/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1517,7 +1517,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Import past allocation : Frontend 
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 09/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1544,6 +1544,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Meet with team and begin next assigned coding task.
 
+
 ## Saturday 7/12 (7/07- 7/16)
 
 ### Timesheet
@@ -1553,7 +1554,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Frontend: GTA - Availability during final exams
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 10/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1589,7 +1590,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Frontend: GTA - Availability during final exams
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 12/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1625,7 +1626,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Frontend: GTA - Availability during final exams
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 13/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1651,4 +1652,3 @@ Retrospective: Process is going well. Team members are working hard to get their
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin frontend and backend integration for GTA final exam availability.
-
