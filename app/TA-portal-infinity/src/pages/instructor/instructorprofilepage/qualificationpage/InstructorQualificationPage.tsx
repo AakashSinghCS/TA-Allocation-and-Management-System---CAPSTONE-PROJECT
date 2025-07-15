@@ -1,19 +1,23 @@
 import { useParams } from "react-router-dom";
-import InstructorTabNav from "../../../../components/layout/tabnav/instructortabnav/InstructorTabNav";
+
 import InstructorQualificationViewer from "./qualificationviewer/InstructorQualificationViewer";
+import TabNav from "../../../../components/layout/tabnav/TabNav";
+import { fetchUserDetails } from "../../../../api/user/fetchUserDetails";
+import type { StudentOrInstructorOrCoordinator } from "../../../../interfaces/user/User";
+import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
 import { useEffect, useState } from "react";
 import type { DeadlineDto } from "../../../../interfaces/admin/Deadline";
 import { useAuth } from "../../../../context/AuthContext";
 import { fetchDeadlines } from "../../../../api/admin/FetchDeadline";
 
 export default function InstructorQualificationPage (){
-    const { instructorId } = useParams();
-    const iId = Number(instructorId);
+    const { userId } = useParams();
+    const iId = Number(userId);
 
     const [needDeadline, setNeedDeadline] = useState<DeadlineDto | null>(null);
     const [deadlineError, setDeadlineError] = useState("");
 
-    const { token, userId, userRoles } = useAuth();
+    const { token } = useAuth();
     
     useEffect(() => {
         async function loadDeadline() {
@@ -39,7 +43,14 @@ export default function InstructorQualificationPage (){
 
     return(
         <div className='mx-auto space-y-6 p-4'>
-            <InstructorTabNav/>
+            <GenericAPIContainer<StudentOrInstructorOrCoordinator>
+                fetchFunction={() => fetchUserDetails(iId)}
+                render={(record) => (
+                    <TabNav
+                    roles={record.roles ?? []}
+                    />
+                )}
+            />
             <h2 className="text-xl font-semibold mb-4">Instructor's required lab skills (qualifications)</h2>
             {needDeadline && (
             <p className="text-md text-gray-700 mb-6">

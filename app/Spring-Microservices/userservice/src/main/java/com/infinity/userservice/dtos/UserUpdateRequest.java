@@ -24,5 +24,5 @@ public record UserUpdateRequest(
         @Min(10000000) 
         @Max(99999999) 
         Integer employeeNum,
-        String department) {
+        String dept) {
 }

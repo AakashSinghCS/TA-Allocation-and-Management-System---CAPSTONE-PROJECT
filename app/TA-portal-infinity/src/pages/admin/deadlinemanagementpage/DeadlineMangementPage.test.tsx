@@ -47,7 +47,9 @@ describe("DeadlineManagementPage", () => {
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
     // Wait for deadlines to load
-    expect(await screen.findByText(/student_application_deadline/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/STUDENT APPLICATION DEADLINE/i)
+    ).toBeInTheDocument();
 
     // There should be input fields with the original datetime values
     const startInput = screen.getByDisplayValue("2025-08-01T00:00");
@@ -67,7 +69,9 @@ describe("DeadlineManagementPage", () => {
       expect(FetchDeadline.updateDeadline).toHaveBeenCalledWith(
         "student_application_deadline",
         expect.objectContaining({
-          endTime: expect.stringContaining("2025-09-30"),
+          name: "student_application_deadline",
+          startTime: expect.stringContaining("2025-08-01"),
+          endTime: expect.any(String),
         }),
         "test-token"
       );
@@ -83,5 +87,29 @@ describe("DeadlineManagementPage", () => {
 
     // Wait for error to show
     expect(await screen.findByText(/failed to load deadlines/i)).toBeInTheDocument();
+  });
+  
+  it("alerts when update fails", async () => {
+    const mockDeadline: DeadlineDto = {
+      name: "student_application_deadline",
+      startTime: "2025-08-01T00:00:00",
+      endTime: "2025-08-31T23:59:59",
+    };
+    // Mock fetchDeadlines and failing updateDeadline
+    vi.spyOn(FetchDeadline, "fetchDeadlines").mockResolvedValue([mockDeadline]);
+    vi.spyOn(FetchDeadline, "updateDeadline").mockRejectedValue(new Error("Update failed"));
+    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+
+    render(<DeadlineManagementPage />);
+    // Wait for deadlines to load
+    expect(await screen.findByText(/student_application_deadline/i)).toBeInTheDocument();
+    // Change end date and click save
+    const endInput = screen.getByDisplayValue("2025-08-31T23:59");
+    fireEvent.change(endInput, { target: { value: "2025-09-30T23:59" } });
+    fireEvent.click(screen.getByRole("button", { name: /save/i }));
+
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith("Error updating deadline");
+    });
   });
 });

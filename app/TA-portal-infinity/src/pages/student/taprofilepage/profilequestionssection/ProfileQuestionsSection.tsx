@@ -14,8 +14,6 @@ export default function ProfileQuestionsSection({
     <section
       className={`bg-white border border-slate-200 rounded-2xl shadow-sm p-4 flex flex-col h-full min-h-0 ${className}`}
     >
-      <h2 className="text-lg font-bold mb-4">Answers to Profile Questions</h2>
-
       {profileQuestions && profileQuestions.length ? (
         <div className="flex-1 overflow-y-auto space-y-2">
           {profileQuestions.map((que) => (

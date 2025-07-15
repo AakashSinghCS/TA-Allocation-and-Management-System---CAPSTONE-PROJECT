@@ -5,7 +5,14 @@ import type Section from '../../../../../interfaces/section/Section';
 import InstructorAddNeedPage from './InstructorAddNeedPage';
 
 // --- Mocks ---
-
+vi.mock('../../../../../context/AuthContext', () => ({
+  useAuth: vi.fn(() => ({
+    token: 'fake-token',
+    userId: 42,
+    userRoles: ['INSTRUCTOR'],
+    // if your component also reads logout or other fields, include them here too
+  })),
+}));
 // react-router hooks
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {

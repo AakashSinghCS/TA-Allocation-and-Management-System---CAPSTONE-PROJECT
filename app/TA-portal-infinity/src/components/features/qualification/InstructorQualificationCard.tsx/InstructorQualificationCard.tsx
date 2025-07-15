@@ -11,6 +11,7 @@ interface QualificationCardProps {
     initialQualifications?: Qualification[];
     course : Course;
     className?: string;
+    authenticated? : boolean
     deadlinePassed : Boolean;
 }
 
@@ -20,7 +21,7 @@ interface TempQualification extends Qualification {
 
 
   
-export default function InstructorQualificationCard({ initialQualifications, course, deadlinePassed,  className = "" }: QualificationCardProps) {
+export default function InstructorQualificationCard({ initialQualifications, course, deadlinePassed,  className = "", authenticated = false}: QualificationCardProps) {
     if (!initialQualifications)
         return (
             <div className="p-2 italic text-slate-400 border border-dashed border-slate-200 rounded-lg">
@@ -83,15 +84,16 @@ export default function InstructorQualificationCard({ initialQualifications, cou
           isEdit={!q.id}
           onSaved={onSaved}
           onRemoved={onRemoved}
+          authenticated={authenticated}
         />
       ))}
 
-      <button
+      {authenticated && <button
         onClick={addEditingRow}
         className="mt-2 italic text-slate-400 border border-dashed border-slate-200 p-2 rounded hover:bg-slate-100 w-full"
       >
         + Add a qualification
-      </button>
+      </button>}
     </div>
   );
 }
@@ -101,9 +103,10 @@ interface QualificationRowProps {
     qualification: TempQualification;
     onSaved: (tempId : string, description : string) => void;
     onRemoved: (removedq: TempQualification) => void;
+    authenticated : boolean
 }
 
-function QualificationRow({ isEdit = false, qualification, onSaved, onRemoved }: QualificationRowProps) {
+function QualificationRow({ isEdit = false, qualification, onSaved, onRemoved, authenticated=false }: QualificationRowProps) {
     const [description, setDescription] = useState<string>(qualification.description ?? "");
 
     const handleSave = () => {
@@ -128,9 +131,10 @@ function QualificationRow({ isEdit = false, qualification, onSaved, onRemoved }:
         <>
           <input type="checkbox" checked disabled className="w-4 h-4" />
           <span className="flex-1 ">{qualification.description}</span>
-          <button onClick={() => onRemoved(qualification)} className="text-red-600 text-xs 2xl:text-sm hover:text-red-300" >
+          {authenticated &&<button onClick={() => onRemoved(qualification)} className="text-red-600 text-xs 2xl:text-sm hover:text-red-300" >
             Delete
-          </button>
+          </button> }
+          
         </>
       )}
     </div>
