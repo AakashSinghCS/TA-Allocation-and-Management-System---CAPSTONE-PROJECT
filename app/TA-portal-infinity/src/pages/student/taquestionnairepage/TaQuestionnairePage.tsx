@@ -12,11 +12,11 @@ type ResponseState = {
   [questionId: number]: StudentResponseDto;
 }
 
-function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null }) {
+export default function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null }) {
   const studentId = useAuth().userId;
   const [responses, setResponses] = useState<ResponseState>({});
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     if (!questions) return;
     const initial: ResponseState = {};
@@ -64,7 +64,7 @@ function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null })
     alert(res
       ? 'All answers submitted successfully.'
       : 'Some answers failed to save. Please try again.');
-    navigate(`/user/student/home`);
+    navigate(`/user/taprofile/${studentId}`);
   }
 
   return (
@@ -74,10 +74,6 @@ function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null })
     }}
       className="space-y-6 max-w-5xl mx-auto grid grid-cols-1 gap-3"
     >
-      <div>
-        <h2 className="text-xl font-semibold mb-1">Questions about you</h2>
-        <p className="text-xs text-slate-600 mb-1">Respond to these questions so the Coordinator understands more about you.</p>
-      </div>
       {questions && questions.map(q => (
         typeof q.id === 'number' ?
           (<div className="border-b-solid border-b-2 border-gray-200 py-2">
@@ -99,7 +95,7 @@ function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null })
   );
 }
 
-export default function TaQuestionnairePage() {
+export function TaQuestionnairePage() {
 
   return (
     <GenericAPIContainer<ProfileQuestion[] | null>

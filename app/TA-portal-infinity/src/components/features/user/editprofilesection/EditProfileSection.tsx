@@ -66,8 +66,8 @@ export default function EditProfileSection<T extends User>({
         let props: Partial<InputHTMLAttributes<HTMLInputElement>> = {};
 
         switch (field) {
-          case "studentNum":
-          case "employeeNum":
+          case "studentNumber":
+          case "employeeNumber":
             props = { inputMode: "numeric", maxLength: 8, placeholder: "e.g. 12345678" };
             break;
 
@@ -81,7 +81,7 @@ export default function EditProfileSection<T extends User>({
           case "program":
             props = { inputMode: "text", placeholder: "e.g. B.Sc., Major in ..." };
             break;
-          case "dept":
+          case "department":
             props = { inputMode: "text", placeholder: "e.g. Computer Science, Data Science, Mathematics" };
             break;
           default:
@@ -110,7 +110,7 @@ export default function EditProfileSection<T extends User>({
         );
       })}
 
-      {error && <div className="text-red-500 text-xs">{error}</div>}
+      {error && <div className="text-red-500">{error}</div>}
 
       <div className="grid grid-cols-2 gap-2">
         <button

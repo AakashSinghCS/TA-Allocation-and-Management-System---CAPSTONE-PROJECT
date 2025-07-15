@@ -1,8 +1,6 @@
-import type { StudentOrInstructorOrCoordinator } from "../../interfaces/user/User";
-
 const BASE = "http://localhost:8080/users/students";
 
-export async function fetchStudentDetails<StudentOrInstructorOrCoordinator>(userId: number): Promise<StudentOrInstructorOrCoordinator> {
+export async function fetchStudentDetails<Student>(userId: number): Promise<Student> {
   const url = `${BASE}/${userId}`;
   const token = localStorage.getItem("token");
 
@@ -16,11 +14,10 @@ export async function fetchStudentDetails<StudentOrInstructorOrCoordinator>(user
     });
 
     const data = await res.json();
-
-    return data as StudentOrInstructorOrCoordinator;
+    return data as Student;
 
   } catch (err) {
     console.error("Failed to fetch user details:", err);
-    return ({} as StudentOrInstructorOrCoordinator);
+    return ({} as Student);
   }
 }

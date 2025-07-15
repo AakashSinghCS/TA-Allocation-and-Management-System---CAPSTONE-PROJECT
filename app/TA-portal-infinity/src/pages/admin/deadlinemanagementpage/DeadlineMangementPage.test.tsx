@@ -47,9 +47,7 @@ describe("DeadlineManagementPage", () => {
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
     // Wait for deadlines to load
-    expect(
-      await screen.findByText(/STUDENT APPLICATION DEADLINE/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/student_application_deadline/i)).toBeInTheDocument();
 
     // There should be input fields with the original datetime values
     const startInput = screen.getByDisplayValue("2025-08-01T00:00");

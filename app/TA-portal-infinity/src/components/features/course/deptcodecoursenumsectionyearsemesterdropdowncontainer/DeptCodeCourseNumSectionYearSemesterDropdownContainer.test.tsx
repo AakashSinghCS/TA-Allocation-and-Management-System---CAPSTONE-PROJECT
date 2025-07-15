@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import DeptCodeCourseNumSectionYearSemesterDropdownContainer from './DropdownContainer';
+import DeptCodeCourseNumSectionYearSemesterDropdownContainer from '../deptcodecoursenumsectionyearsemesterdropdowncontainer/DeptCodeCourseNumSectionYearSemesterDropdownContainer';
 import * as apiCourseNums from '../../../../api/course/sectionfilter/fetchAllExistingCourseNums';
 import * as apiSections from '../../../../api/course/sectionfilter/fetchAllExistingSections';
 import * as apiYears from '../../../../api/course/sectionfilter/fetchAllExistingYears';

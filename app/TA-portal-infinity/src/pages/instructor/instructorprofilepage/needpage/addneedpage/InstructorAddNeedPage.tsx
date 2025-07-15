@@ -209,7 +209,7 @@ export default function InstructorAddNeedPage() {
           {loading ? (
             <p>Loading courses…</p>
           ) : (
-            <SectionList sections={filteredSections} onSelectCourse={onSelectCourse} mode='instructorPrereqCourse' askForConfirmation={true}/>
+            <SectionList sections={filteredSections} onSelectCourse={onSelectCourse} mode='instructorPrereqCourse'/>
           )}
         </div>
 

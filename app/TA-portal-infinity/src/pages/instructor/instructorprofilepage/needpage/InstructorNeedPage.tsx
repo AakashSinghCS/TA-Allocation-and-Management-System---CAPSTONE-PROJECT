@@ -1,11 +1,10 @@
 import { useParams } from "react-router-dom";
+
+import InstructorTabNav from "../../../../components/layout/tabnav/instructortabnav/InstructorTabNav";
 import NeedViewer from "./needviewer/NeedViewer";
 import { fetchAllSectionsAndNeedAndAllocations } from "../../../../api/instructor/fetchAllSectionsAndNeedAndAllocations";
 import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
 import type Section from "../../../../interfaces/section/Section";
-import TabNav from "../../../../components/layout/tabnav/TabNav";
-import { fetchUserDetails } from "../../../../api/user/fetchUserDetails";
-import type { StudentOrInstructorOrCoordinator } from "../../../../interfaces/user/User";
 import { useEffect, useState } from "react";
 import type { DeadlineDto } from "../../../../interfaces/admin/Deadline";
 import { fetchDeadlines } from "../../../../api/admin/FetchDeadline";
@@ -13,12 +12,12 @@ import { useAuth } from "../../../../context/AuthContext";
 
 
 export default function InstructorNeedPage (){
-    const { userId } = useParams();
-    const iId = Number(userId);
+    const { instructorId } = useParams();
+
     const [needDeadline, setNeedDeadline] = useState<DeadlineDto | null>(null);
     const [deadlineError, setDeadlineError] = useState("");
 
-    const { token, userRoles } = useAuth();
+    const { token, userId, userRoles } = useAuth();
     
     useEffect(() => {
         async function loadDeadline() {
@@ -40,15 +39,8 @@ export default function InstructorNeedPage (){
 
     return(
         <div className='mx-auto space-y-6 p-4'>
-            <GenericAPIContainer<StudentOrInstructorOrCoordinator>
-                fetchFunction={() => fetchUserDetails(iId)}
-                render={(record) => (
-                    <TabNav
-                    roles={record.roles ?? []}
-                    />
-                )}
-            />
-            <h2 className="text-xl font-semibold mb-4">TA Information</h2>
+            <InstructorTabNav/>
+            <h2 className="text-xl font-semibold mb-4">Needs of the instructor</h2>
             {needDeadline && (
             <p className="text-md text-gray-700 mb-6">
                 Deadline:{" "}
@@ -68,9 +60,9 @@ export default function InstructorNeedPage (){
                 </p>
             )}
             <GenericAPIContainer<Section[] | null>
-                  fetchFunction={() => fetchAllSectionsAndNeedAndAllocations(iId)}
+                  fetchFunction={() => fetchAllSectionsAndNeedAndAllocations(Number(instructorId))}
                   render={(sections) => (
-            <NeedViewer instructorId={iId} initial={sections}/>
+            <NeedViewer instructorId={Number(instructorId)} initial={sections}/>
                   )}/>
         </div>
     )

@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
 import { validateUserFormData } from '../../../../utility/validation/user/validateUserFormData';
-import type { UserRole } from '../../../../interfaces/enum/UserRole';
 
 export interface UserFormData {
     firstName: string;
     lastName: string;
     email: string;
-    role: UserRole | "";
+    role: string[];
     password: string;
     confirmPassword: string;
 }
@@ -46,7 +45,7 @@ export default function CreateUserForm({
         firstName: '',
         lastName: '',
         email: '',
-        role: "",
+        role: [],
         password: '',
         confirmPassword: '',
     });
@@ -63,7 +62,6 @@ export default function CreateUserForm({
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         // if (!validate()) return;
-        console.log(formData);
         const { ok, sanitized, fieldErrors } = validateUserFormData(formData);
             if (!ok) {
             setFieldErrors(fieldErrors);
@@ -81,7 +79,7 @@ export default function CreateUserForm({
                 firstName: "",
                 lastName: "",
                 email: "",
-                role: "",
+                role: [""],
                 password: "",
                 confirmPassword: "",
             });
@@ -130,7 +128,7 @@ export default function CreateUserForm({
                 required
                 className="w-full border border-gray-400 rounded px-3 py-2"
               >
-                <option value="" >Select Role</option>
+                <option value="">Select Role</option>
                 <option value="STUDENT">Student</option>
                 <option value="INSTRUCTOR">Instructor</option>
                 <option value="COORDINATOR">TA Coordinator</option>

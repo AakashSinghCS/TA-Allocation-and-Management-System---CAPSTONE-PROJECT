@@ -99,7 +99,6 @@ export function validateProfileData<T extends Record<string, any>>(
       // free-text fields
       case "program":
       case "department":
-      case "dept":
         if (str.length > 100) {
           fieldErrors[field] = "Too long";
         } else {

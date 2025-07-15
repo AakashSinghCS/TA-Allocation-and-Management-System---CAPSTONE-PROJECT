@@ -23,7 +23,7 @@ interface Props {
   onChange: (val: Partial<DeptCodeCourseNumSectionYearSemesterProps>) => void;
 }
 
-export default function DropdownContainer({ allExistingDeptCodesAndYears, mode, onChange }: Props) {
+export default function DeptCodeCourseNumSectionYearSemesterDropdownContainer({ allExistingDeptCodesAndYears, mode, onChange }: Props) {
   const [selectedDeptCode, setSelectedDeptCode] = useState<string | null>(null);
   const [selectedCourseNum, setSelectedCourseNum] = useState<string | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
@@ -40,12 +40,9 @@ export default function DropdownContainer({ allExistingDeptCodesAndYears, mode, 
     setCourseNumData(null);
     setSelectedSection(null);
     setSectionData(null);
-    onChange({
-      deptCode: selectedDeptCode,
-      courseNum: null,
-      section: null
-    });
+
     if (!selectedDeptCode) return;
+    onChange({ deptCode: selectedDeptCode })
     fetchAllExistingCourseNums(selectedDeptCode)
       .then((data) => setCourseNumData(data))
       .catch(() => setCourseNumData([]));
@@ -54,16 +51,17 @@ export default function DropdownContainer({ allExistingDeptCodesAndYears, mode, 
   useEffect(() => {
     setSelectedSection(null);
     setSectionData(null);
-    onChange({ deptCode: selectedDeptCode, courseNum: selectedCourseNum , section: null});
 
     if (!selectedDeptCode || !selectedCourseNum) return;
+    onChange({ courseNum: selectedCourseNum });
     fetchAllExistingSections(selectedDeptCode, selectedCourseNum)
       .then((data) => setSectionData(data))
       .catch(() => setSectionData([]));
   }, [selectedDeptCode, selectedCourseNum]);
 
   useEffect(() => {
-     onChange({ deptCode: selectedDeptCode, courseNum: selectedCourseNum , section: selectedSection});
+    if (!selectedDeptCode || !selectedCourseNum || !selectedSection) return;
+    onChange({ section: selectedSection });
   }, [selectedDeptCode, selectedCourseNum, selectedSection]);
 
   //Not erased because it's possible we allow coordinators to create more semesters than W1 W2 S1 S2.
@@ -88,13 +86,9 @@ export default function DropdownContainer({ allExistingDeptCodesAndYears, mode, 
   //     .then((data) => setSemesterData(data))
   //     .catch(() => setSemesterData([]));
   // }, [selectedDeptCode, selectedCourseNum, selectedSection, selectedYear]);
-useEffect(() => {
-  onChange({
-    year: selectedYear !== null ? Number(selectedYear) : null
-  });
-}, [selectedYear]);
 
   useEffect(() => {
+    if (!selectedSemester) return;
     onChange({ semester: selectedSemester });
   }, [selectedSemester]);
 

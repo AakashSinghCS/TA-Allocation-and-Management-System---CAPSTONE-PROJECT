@@ -8,10 +8,9 @@ interface NeedCardProps {
   className?: string;
   onUpdate?: (updated: Need) => void;
   onDelete?: (deleted: Need) => void;
-  authenticated? :boolean
 }
 
-export default function NeedCard({ need, className = "", onUpdate, onDelete, authenticated=false }: NeedCardProps) {
+export default function NeedCard({ need, className = "", onUpdate, onDelete }: NeedCardProps) {
 
   const navigate = useNavigate();
   const [editMode, setEditMode] = useState(false);
@@ -86,8 +85,8 @@ export default function NeedCard({ need, className = "", onUpdate, onDelete, aut
           </>
         ) : (
           need && (
-            <>{authenticated && <> 
-            <Edit2 className="cursor-pointer" size={16} onClick={() => setEditMode(true)} />
+            <>
+              <Edit2 className="cursor-pointer" size={16} onClick={() => setEditMode(true)} />
               <span title="Update course prerequisites">
                 <BookOpen
                   className="cursor-pointer"
@@ -99,7 +98,7 @@ export default function NeedCard({ need, className = "", onUpdate, onDelete, aut
                 className="cursor-pointer hover:text-red-600"
                 size={16}
                 onClick={() => onDelete?.(need)}
-              /></>}
+              />
             </>
           )
         )}

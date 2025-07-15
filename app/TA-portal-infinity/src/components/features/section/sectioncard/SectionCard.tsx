@@ -8,7 +8,6 @@ interface SectionCardProps {
   onDelete?: (s: Section) => void;
   isStudentView?: boolean
   big? : boolean
-  authenticated? : boolean
 }
 
 export default function SectionCard({
@@ -16,8 +15,7 @@ export default function SectionCard({
   className = "",
   onDelete,
   isStudentView = false,
-  big = false,
-  authenticated = false
+  big = false
 }: SectionCardProps) {
   const alloc = section.need?.numHoursCurrentlyAllocated;
   const req = section.need?.requiredGradingHours;
@@ -30,7 +28,7 @@ export default function SectionCard({
       data-testid={`section-card-${section?.id}`}
       className={`${className} relative w-full overflow-hidden rounded-lg border border-slate-200 p-2 bg-slate-50`}
     >
-      {onDelete && authenticated &&(
+      {onDelete && (
         <div title="Delete section from list">
           <Trash2
             size={16}
