@@ -81,7 +81,7 @@ export const router = createBrowserRouter([
           { path: "application", element: <Suspense fallback={<div>Loading...</div>}><ApplicationPage /></Suspense> },
           { path: "view-applications", element: <Suspense fallback={<div>Loading...</div>}><ViewApplicationPage /></Suspense> },
 
-          { path: "schedule", element: <Suspense fallback={<div>Loading...</div>}><ScheduleViewer allocations={[]} /></Suspense> },
+          { path: "schedule", element: <Suspense fallback={<div>Loading...</div>}><ScheduleViewer  /></Suspense> },
           { path: "questions/:studentId", element: <TaQuestionnairePage /> },
           { path: "questions/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaQuestionnairePage /></Suspense> },
 

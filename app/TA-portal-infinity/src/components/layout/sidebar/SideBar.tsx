@@ -14,6 +14,7 @@ import {
   FileQuestionMark,
   ShieldCheck,
   type LucideProps,
+  CalendarDays,
 } from 'lucide-react';
 import { useState } from 'react';
 import { UserRole } from '../../../interfaces/enum/UserRole';
@@ -60,6 +61,7 @@ export default function SideNav() {
     { label: 'Student Lab Skills', to: `/user/taprofile/${userId}/qualifications`, icon: <ShieldCheck size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Profile Questions', to: `/user/student/questions/${userId}`, icon: <FileQuestionMark size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Allocation History', to: `/user/taprofile/${userId}/allocationHistory`, icon: <FileQuestionMark size={22} />, roles: [UserRole.STUDENT] },
+    { label: 'Schedule', to: `/user/student/schedule`, icon: <CalendarDays size={22} />, roles: [UserRole.STUDENT] },
     //Profile
     { label: 'Profile', to: `/user/profile/${userId}`, icon: <User size={22} />, roles: [UserRole.STUDENT,UserRole.INSTRUCTOR,UserRole.COORDINATOR] },
 
