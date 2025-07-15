@@ -46,6 +46,28 @@ const TAAllocationPage: React.FC = () => {
     }
   };
 
+  // Convert "HH:mm" to minutes since midnight
+  function timeToMinutes(t: string) {
+    const [h, m] = t.split(":").map(Number);
+    return h * 60 + m;
+  }
+
+  // Check if a course slot is fully covered by any student availability (numerical time comparison)
+  function isSlotFullyCovered(
+    slot: { day: string; startTime: string; endTime: string },
+    avails: { day: string; startTime: string; endTime: string }[]
+  ) {
+    const dayNum = getDayNumber(slot.day);
+    const slotStart = timeToMinutes(slot.startTime);
+    const slotEnd = timeToMinutes(slot.endTime);
+    return avails.some(a => {
+      if (getDayNumber(a.day) !== dayNum) return false;
+      const availStart = timeToMinutes(a.startTime);
+      const availEnd = timeToMinutes(a.endTime);
+      return availStart <= slotStart && availEnd >= slotEnd;
+    });
+  }
+
   const [allApps, setAllApps] = useState<ApplicationDto[]>([]);
   useEffect(() => {
     if (!token) return;
@@ -81,11 +103,11 @@ const TAAllocationPage: React.FC = () => {
   const refreshHistory = async (studentId: number, token: string) => {
     try {
       //  using fetchSectionIncludeInstructorId to get section with instructorId
-      let section = await fetchSectionIncludeInstructorId(details.id);
+      let section = await fetchSectionIncludeInstructorId(studentId);
       // If 'need' is missing, fetch it from fetchSectionInfo
       if (section && !section.need) {
         try {
-          const sectionWithNeed = await fetchSectionInfo(details.id, token || "");
+          const sectionWithNeed = await fetchSectionInfo(studentId, token || "");
           if (sectionWithNeed && sectionWithNeed.need) {
             section = { ...section, need: sectionWithNeed.need };
           }
