@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { fetchDeleteNeed } from "../../../../../api/need/fetchDeleteNeed";
 import { fetchUnassignInstructor } from "../../../../../api/section/instructor/fetchUnassignInstructor";
 import { confirmDeletion } from "../../../../../utility/confirmation/confirmDeletion";
+import { useAuth } from "../../../../../context/AuthContext";
 
 interface NeedViewerProps {
   instructorId: number;
@@ -18,6 +19,7 @@ interface NeedViewerProps {
 
 export default function NeedViewer({ instructorId, className = "", initial }: NeedViewerProps) {
   const [sections, setSections] = useState<Section[]>(initial ?? []);
+  const isInstructor = useAuth().userRoles.includes('INSTRUCTOR')
 
   useEffect(() => {
     setSections(initial ?? []);
@@ -69,14 +71,14 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
       {/* Header row for large screens */}
       <div className="hidden lg:grid lg:grid-cols-3 font-medium text-lg text-slate-600">
         <span>Sections Teaching</span>
-        <span>Needs of Course</span>
+        <span>TA Requirements of Course</span>
         <span>Students Allocated</span>
       </div>
 
       {/* Section rows */}
       {sections.map((sec) => (
         <div key={sec?.id} className="grid gap-2 sm:grid-cols-1 lg:grid-cols-3">
-          <SectionCard section={sec} className="" onDelete={onDeleteSection} />
+          <SectionCard section={sec} className="" authenticated={isInstructor} onDelete={onDeleteSection} />
 
           {/* Need column */}
           {sec.need ? (
@@ -85,12 +87,13 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
               className=""
               onDelete={onDeleteNeed}
               onUpdate={onUpdateNeed}
+              authenticated={isInstructor}
             />
           ) : (
             <div
               className="w-full overflow-hidden rounded-lg text-sm italic text-slate-500 border border-dashed border-slate-400 p-2"
             >
-              <Link to={`/user/instructor/addneed/${sec?.id}`}>Add a need</Link>
+              {isInstructor && <Link to={`/user/instructor/addneed/${sec?.id}`}>Add a need</Link>}
             </div>
           )}
 
@@ -100,13 +103,13 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
       ))}
 
       {/* Add section link */}
-      <div className="flex w-full">
+      {isInstructor && <div className="flex w-full">
         <Link to="/user/instructor/addsection" className="w-full">
           <div className="w-full cursor-pointer p-2 italic text-slate-500 border border-dashed border-slate-400 rounded-lg text-center">
             Add a section
           </div>
         </Link>
-      </div>
+      </div>}
     </div>
   );
 }

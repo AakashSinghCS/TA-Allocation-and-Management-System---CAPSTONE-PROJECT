@@ -59,8 +59,26 @@ const TAAllocationPage: React.FC = () => {
   const [selApp, setSelApp] = useState<ApplicationDto | null>(null);
 
   const loadCourse = async (details: SectionDetails) => {
-    if (!details.id) return;
-    setInstructor(null); 
+
+  if (!details.id) return;
+  try {
+    const full = await fetchSectionInfo(details.id, token!);
+    setSelCourse({
+      ...full,
+      hasCompleted: !!(
+        full.need?.numHoursCurrentlyAllocated != null &&
+        full.need?.requiredGradingHours != null &&
+        full.need.numHoursCurrentlyAllocated >= full.need.requiredGradingHours
+      ),
+    });
+  } catch (err) {
+    console.error("Failed to load section:", err);
+    //Temporary UX helper here:
+    window.alert("Are you sure instructor has set the requirements for this section?");
+  }
+};
+  // Helper to fetch allocation history for the selected student
+  const refreshHistory = async (studentId: number, token: string) => {
     try {
       //  using fetchSectionIncludeInstructorId to get section with instructorId
       let section = await fetchSectionIncludeInstructorId(details.id);
