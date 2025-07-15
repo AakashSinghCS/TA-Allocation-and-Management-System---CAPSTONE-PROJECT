@@ -23,7 +23,7 @@ import com.infinity.courseservice.repositories.SectionScheduleRepository;
 import com.infinity.courseservice.services.SectionService;
 
 @ExtendWith(MockitoExtension.class)
-class SectionServiceCSVTest {
+class ExportSectionServiceCSVTest {
 
     @Mock
     private SectionRepository sectionRepository;
