@@ -11,7 +11,8 @@ export default function AuditLogsPage() {
   const [entityFilter, setEntityFilter] = useState('');
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  const { data, isLoading } = useAuditEvents(page, 25, {
+  //increase 10 to 25 when Production starts. 
+  const { data, isLoading } = useAuditEvents(page, 10, {
     service: serviceFilter || undefined,
     entityType: entityFilter || undefined,
   });
@@ -39,7 +40,7 @@ export default function AuditLogsPage() {
           setPage(p => Math.min((data?.totalPages || 1) - 1, p + 1))
         }
       />
-      <AuditDetailModal id={selectedId} onClose={() => setSelectedId(null)} />
+      <AuditDetailModal id={selectedId} onClose={() => setSelectedId(null)} serviceFilter={serviceFilter}/>
      
     </div>
   );

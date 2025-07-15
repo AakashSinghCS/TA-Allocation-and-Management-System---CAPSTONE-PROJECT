@@ -1,32 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
-import type AuditEvent from '../../../../interfaces/admin/audit/AuditEvent';
+import { useAuditEvent } from '../../../../api/admin/audit/useAuditEvent';
 
 
-type Props = { id: number | null; onClose: () => void };
+type Props = { 
+  id: number | null; 
+  onClose: () => void;
+  serviceFilter :string; 
+};
 
-function useAuditEvent(id: number, enabled: boolean) {
-  const token = localStorage.getItem("token");
-  return useQuery<AuditEvent, Error>({
-    queryKey: ['auditEvent', id],
-    queryFn: () =>
-      fetch(`http://localhost:8080/users/audit/${id}`, {
-        method: "GET",
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      })
-        .then(res => {
-          if (!res.ok) throw new Error(res.statusText);
-          return res.json() as Promise<AuditEvent>;
-        }),
-    enabled,
-  });
-}
+export default function AuditDetailModal({ id, onClose, serviceFilter="" }: Props) {
+  const { data, isLoading, error } = useAuditEvent(id!, id != null, serviceFilter);
 
-export default function AuditDetailModal({ id, onClose }: Props) {
-  const { data, isLoading, error } = useAuditEvent(id!, id != null);
-
-  // nothing to show if there's no ID
   if (id == null) return null;
 
   return (
@@ -55,7 +38,7 @@ export default function AuditDetailModal({ id, onClose }: Props) {
         ) : data ? (
           <>
             <p className="mb-4 text-sm text-gray-600">
-              <strong>{data.service}</strong> – <strong>{data.actor}</strong>{' '}
+              <strong>{data.service}</strong> – <strong>{data.actorId}</strong>{' '}
               {data.action.toLowerCase()}{' '}
               {data.entityType} #{data.entityId} at{' '}
               {new Date(data.timestamp).toLocaleString()}

@@ -2,10 +2,14 @@ package com.infinity.userservice.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.models.AuditEvent;
 import com.infinity.userservice.repositories.AuditEventRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -44,5 +48,23 @@ public class AuditService {
         } catch (JsonProcessingException e) {
             // log or rethrow as needed
         }
+    }
+
+    public Page<AuditEvent> search(Pageable pageable, String service, String entityType) {
+        if (service != null) {
+            return auditRepo.findByServiceIgnoreCase(service, pageable);
+        }
+        if (entityType != null) {
+            return auditRepo.findByEntityTypeIgnoreCase(entityType, pageable);
+        }
+        return auditRepo.findAll(pageable);
+    }
+
+    /**
+     * Lookup a single AuditEvent by its id, or throw 404
+     */
+    public AuditEvent getById(Long id) {
+        return auditRepo.findById(id)
+            .orElseThrow(() -> new NotFoundException("AuditEvent not found with id " + id));
     }
 }

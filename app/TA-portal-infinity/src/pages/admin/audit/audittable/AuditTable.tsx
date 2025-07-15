@@ -14,7 +14,7 @@ export default function AuditTable({ events, loading, onSelect }: Props) {
         <tr>
           <th className="px-3 py-2">When</th>
           <th className="px-3 py-2">Service</th>
-          <th className="px-3 py-2">Actor</th>
+          <th className="px-3 py-2">Actor Id</th>
           <th className="px-3 py-2">Action</th>
           <th className="px-3 py-2">Entity</th>
         </tr>
@@ -28,10 +28,10 @@ export default function AuditTable({ events, loading, onSelect }: Props) {
           >
             <td className="px-3 py-2">{new Date(ev.timestamp).toLocaleString()}</td>
             <td className="px-3 py-2">{ev.service}</td>
-            <td className="px-3 py-2">{ev.actor}</td>
+            <td className="px-3 py-2">{ev.actorId}</td>
             <td className="px-3 py-2">{ev.action}</td>
             <td className="px-3 py-2">
-              {ev.entityType} #{ev.entityId}
+              {ev.entityType}, ID: {ev.entityId}
             </td>
           </tr>
         ))}
