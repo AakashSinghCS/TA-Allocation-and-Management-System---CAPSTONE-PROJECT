@@ -1,3 +1,47 @@
+## Thursday (July 11-14)
+
+### Timesheet
+Clockify report
+![alt text](./jul11-14.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Promoting/demoting users frontend
+  * #2: Updating need allocated time when accepting an offer
+
+### Progress Update (since July 10th 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Updating allocated hours in the course need when offer is accepted
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Promoting/demoting users
+        </td>
+        <!-- Status -->
+        <td>Backend complete and merged, frontend waiting to create PR
+        </td>
+    </tr>
+   
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The two tasks I wanted to do (updating the need allocated time and promote frontend) were both finished, but one PR is waiting to be reviewed and the other PR is waiting until another PR that I built my branch off is merged as well. Ultimately this cycle went well as I was able to complete both tasks, but of course they aren't merged yet. The other issues with updating roles messing up the frontend ended up not being a huge deal.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * First thing will be to see if these features need changes, and if not then I will probably add endpoints for deactivating accounts rather than deleting them, and make that change in the front and back end.
+
 ## Thursday (July 8-10)
 
 ### Timesheet
