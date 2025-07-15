@@ -201,13 +201,13 @@ const ApplicationPage: React.FC = () => {
   }, [filterTrigger]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-4 md:p-8">
+    <div className="min-h-screen p-4 md:p-8 ">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl md:text-4xl font-bold text-[#040941] mb-8 tracking-tight">Applications Overview</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-18 gap-8">
           {/* Application Filters */}
-          <div className="lg:col-span-2">
-            <div className="sticky top-8 bg-white rounded-2xl shadow-lg p-4 border border-blue-100 flex flex-col gap-4">
+          <div className="lg:col-span-4">
+            <div className="relative bg-white rounded-2xl shadow-lg p-4 border border-blue-100 flex flex-col gap-4">
               <h3 className="font-semibold text-[#040941] text-lg mb-2">Application Filters</h3>
               <div className="flex flex-col gap-4">
                 <div>
@@ -235,7 +235,7 @@ const ApplicationPage: React.FC = () => {
             </div>
           </div>
           {/* Stats and Results */}
-          <div className="lg:col-span-8 flex flex-col gap-8">
+          <div className="lg:col-span-10 flex flex-col gap-8">
             {/* TA Application Stats */}
             <div className="bg-white rounded-2xl shadow-lg border border-blue-100 p-6">
               <h3 className="font-semibold text-[#040941] mb-4 text-lg flex items-center gap-2">
@@ -263,9 +263,9 @@ const ApplicationPage: React.FC = () => {
               </div>
             </div>
             {/* Results Cards and Details Panel */}
-            <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 relative">
+            <div className="grid grid-cols-3 md:grid-cols-2 xl:grid-cols-3 gap-4 relative">
               {/* Application Cards */}
-              <div className="col-span-2 grid md:grid-cols-2 xl:grid-cols-2 gap-8 justify-items-stretch items-stretch">
+              <div className="col-span-3 grid md:grid-cols-2 xl:grid-cols-2 gap-8 justify-items-stretch items-stretch">
                 {filteredApps.length > 0 ? (
                   filteredApps.map((app) => {
                     const allocations = allocationHistory.filter((alloc) => alloc.application?.applicationId === app.applicationId);
@@ -299,7 +299,7 @@ const ApplicationPage: React.FC = () => {
             </div>
           </div>
           {/* Allocation Filters */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-4">
             <div className="sticky top-8 bg-white rounded-2xl shadow-lg p-4 border border-blue-100 flex flex-col gap-4">
               <h3 className="font-semibold text-[#040941] text-lg mb-2">Allocation & Offer Related Filters</h3>
               <div className="flex flex-col gap-4">
