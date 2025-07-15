@@ -14,7 +14,6 @@ export default function AddSectionPage() {
   const handleCreateSection = async (data: CreateSectionData) => {
     const courseProfile = extractCourseProfile(data);
     const { ok, sanitized, errors } = validateCourseProfile(courseProfile);
-
     if (!ok) {
       alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
       return;
@@ -31,7 +30,7 @@ export default function AddSectionPage() {
         alert("Course is created!");
         navigate('/user/coordinator/sections', { replace: true });
       } else {
-        alert("Failed to create course")
+        alert("Failed to create course. Are you sure it's not a duplicate?")
       }
     } else if (!data.isCourse) {
       const sectionProfile = extractSectionProfile(data);
@@ -52,7 +51,7 @@ export default function AddSectionPage() {
         alert("Section is created!");
         navigate('/user/coordinator/sections', { replace: true });
       } else {
-        alert("Failed to create section")
+        alert("Failed to create section. Are you sure it's not a duplicate?")
       }
     }
   };

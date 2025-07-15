@@ -341,7 +341,7 @@ export default function StudentHomePage() {
                   ))}
                 </ul>
               )}
-              <Link to={`/user/taprofile/${userId}`} className="mt-4 inline-block text-yellow-700 hover:underline text-sm">Edit Profile Questions</Link>
+              <Link to={`/user/student/questions/${userId}`} className="mt-4 inline-block text-yellow-700 hover:underline text-sm">Edit Profile Questions</Link>
             </div>
           </section>
 

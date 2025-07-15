@@ -5,14 +5,14 @@ import { sendOffer as apiSendOffer } from '../../api/allocation/sendOffer';
 import type { ApplicationDto } from '../../interfaces/application/Application';
 import type { Need } from '../../interfaces/need/Need';
 
-/** Compute remaining hours for a section */
+/** Computing remaining hours for a section */
 function getRemainingHours(need: Need): number {
   const required = need.requiredGradingHours ?? 0;
   const allocated = need.numHoursCurrentlyAllocated ?? 0;
   return Math.max(required - allocated, 0);
 }
 
-/** Validate all preconditions; return an error string or null. */
+/** Validating all preconditions; return an error string or null. */
 function validate(app: ApplicationDto, need: Need, hasAvailabilityMatch: boolean): string | null {
   const remaining = getRemainingHours(need);
   if (remaining <= 0) {
@@ -56,8 +56,6 @@ export function useSendOffer() {
       numberOfHours: app.wantWorkingHours,
       sectionId,
     };
-
-    console.log('sendOffer payload:', payload);
     setLoading(true);
 
     const promise = apiSendOffer(payload);

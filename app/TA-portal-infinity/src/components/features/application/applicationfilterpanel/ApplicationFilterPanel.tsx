@@ -3,6 +3,7 @@ import { fetchAllocationsByStudent } from '../../../../api/allocation/fetchAlloc
 import { useAuth } from '../../../../context/AuthContext';
 import type { Allocation } from '../../../../interfaces/allocation/Allocation';
 import type { ApplicationDto } from '../../../../interfaces/application/Application';
+import { generatePath, Link } from 'react-router-dom';
 
 interface ApplicationFilterPanelProps {
   appQ: {
@@ -64,6 +65,7 @@ const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
           });
       }, [selApp, token]);
 
+  
   return (
     <div className={`${colSpanClass} bg-white p-3 rounded shadow space-y-4 text-sm`}>
       <h1 className="font-semibold text-xl">Application Filter</h1>
@@ -163,7 +165,9 @@ const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
           <section>
             <h2 className="font-bold text-lg">Applicant Details</h2>
             <div className="space-y-1 pl-2">
-              <p><strong>Name:</strong> {selApp.student.firstName} {selApp.student.lastName}</p>
+              <p><strong>Name:</strong>
+                  {selApp.student.firstName} {selApp.student.lastName}
+                </p>
               <p><strong>User ID:</strong> {selApp.student.id}</p>
               <p><strong>Student Number:</strong> {selApp.student.studentNum || 'N/A'}</p>
             </div>

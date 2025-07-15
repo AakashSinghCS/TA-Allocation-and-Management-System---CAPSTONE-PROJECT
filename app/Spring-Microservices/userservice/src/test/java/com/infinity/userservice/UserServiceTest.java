@@ -483,4 +483,31 @@ void testRegister_SuccessMultipleRoles() {
         assertEquals("User is not an instructor", ex.getMessage());
     }
 
+        @Test
+    void testGetUserDetailsById_Success() {
+        User user = new User("emma@example.com", "Emma", "Stone", "P@ssword1");
+        user.setId(1L);
+        user.setRoles(Set.of(new Role(1L, UserRole.INSTRUCTOR)));
+
+        UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.INSTRUCTOR), 
+                null, null, null, null, null, null, null);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userMapper.toDto(user)).thenReturn(dto);
+
+        UserDto result = userService.getUserDetailsById(1L);
+        assertEquals("Emma", result.firstName());
+    }
+
+    @Test
+    void testGetUserDetailsById_NotFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> {
+            userService.getUserDetailsById(1L);
+        });
+
+        assertEquals("User not found with id 1", ex.getMessage());
+    }
+
 }

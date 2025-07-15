@@ -9,6 +9,7 @@ import { fetchDeleteQualification } from '../../../../api/instructor/fetchDelete
 const renderer = () => render(<InstructorQualificationCard
   initialQualifications={mockQualificationCOSC111}
   course={mockCourseCOSC111}
+  authenticated={true}
 />)
 
 vi.mock('../../../../api/instructor/fetchCreateQualification', () => ({

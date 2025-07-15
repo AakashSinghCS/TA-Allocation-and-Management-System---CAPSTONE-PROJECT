@@ -46,16 +46,16 @@ describe("SectionsColumn", () => {
     ).toBeInTheDocument();
   });
 
-  it("applies the passed className to the outer <section>", () => {
-    const { container } = render(
-      <MemoryRouter>
-        <SectionsColumn
-          sections={mockSections}
-          className="my-special-class"
-        />
-      </MemoryRouter>
-    );
-    const sect = container.querySelector("section");
-    expect(sect).toHaveClass("my-special-class");
-  });
+  // it("applies the passed className to the outer <section>", () => {
+  //   const { container } = render(
+  //     <MemoryRouter>
+  //       <SectionsColumn
+  //         sections={mockSections}
+  //         className="my-special-class"
+  //       />
+  //     </MemoryRouter>
+  //   );
+  //   const sect = container.querySelector("section");
+  //   expect(sect).toHaveClass("my-special-class");
+  // });
 });

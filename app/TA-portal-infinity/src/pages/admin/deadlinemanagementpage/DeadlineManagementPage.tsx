@@ -3,6 +3,13 @@ import { useAuth } from '../../../context/AuthContext';
 import { fetchDeadlines, updateDeadline } from "../../../api/admin/FetchDeadline";
 import type { DeadlineDto } from "../../../interfaces/admin/Deadline";
 
+function formatDeadlineName(name: string): string {
+  return name
+    .split("_")
+    .map((word) => word.toUpperCase())
+    .join(" ");
+}
+
 const DeadlineManagementPage: React.FC = () => {
   const { token } = useAuth();
   const [deadlines, setDeadlines] = useState<DeadlineDto[]>([]);
@@ -53,7 +60,7 @@ const DeadlineManagementPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold text-[#040941] mb-6">Deadline Management</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-[#040941] mb-6">Deadlines</h1>
 
         {loading && <p className="text-gray-600">Loading...</p>}
         {error && <p className="text-red-500">{error}</p>}
@@ -70,7 +77,9 @@ const DeadlineManagementPage: React.FC = () => {
                 className="bg-white p-4 rounded-xl shadow border border-blue-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
               >
                 <div>
-                  <h2 className="font-semibold text-lg text-[#040941]">{d.name}</h2>
+                  <h2 className="font-semibold text-lg text-[#040941]">
+                    {formatDeadlineName(d.name)}
+                  </h2>
                   <p className="text-sm text-gray-500">Edit start and end times below:</p>
                 </div>
                 <div className="flex flex-col md:flex-row gap-2 md:items-center">

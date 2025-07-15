@@ -28,5 +28,6 @@ export const studentFieldLabels: Record<keyof Student, string> = {
   program:         "Program",
   enrollmentYear:  "Enrollment Year",
   schoolYear:      "School Year",
+  roles :          "Roles",
   createdAt:       "Registered",
 };
