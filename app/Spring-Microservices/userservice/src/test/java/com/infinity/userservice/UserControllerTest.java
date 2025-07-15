@@ -298,5 +298,17 @@ public class UserControllerTest {
                                 .andExpect(jsonPath("$.roles[0]").value("INSTRUCTOR"));
         }
 
+        @Test
+        void getUserDetailsById_returnsUserDto() throws Exception {
+                UserDto instructorDto = new UserDto(2L, "Bob", "Instructor", "bob@example.com",
+                                List.of(UserRole.INSTRUCTOR), null, null, null, null, null, null, null);
+                when(userService.getUserDetailsById(2L)).thenReturn(instructorDto);
+
+                mockMvc.perform(get("/users/profile/2"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.email").value("bob@example.com"))
+                                .andExpect(jsonPath("$.roles[0]").value("INSTRUCTOR"));
+        }
+
 
 }

@@ -87,4 +87,8 @@ public class UserController {
     public ResponseEntity<UserDto> getInstructorById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getInstructorById(id));
     }
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<UserDto> getUserDetailsById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserDetailsById(id));
+    }
 }

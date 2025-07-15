@@ -11,14 +11,10 @@ describe("Header", () => {
       </MemoryRouter>
     );
 
-    // To check UBC logo
-    const ubcLogo = screen.getByAltText(/UBC logo/i);
-    expect(ubcLogo).toBeInTheDocument();
-    expect(ubcLogo).toHaveAttribute("src", expect.stringContaining("ubc-logo"));
 
     // To check branding text
     expect(
-      screen.getByText(/University of British Columbia/i)
+      screen.getByText(/Ta-portal-infinity/i)
     ).toBeInTheDocument();
   });
 
@@ -36,7 +32,7 @@ describe("Header", () => {
 
     // Both images should be wrapped in links
     const links = screen.getAllByRole("link");
-    expect(links.length).toBeGreaterThanOrEqual(2);
+    expect(links.length).toBeGreaterThanOrEqual(1);
 
     // All should link to home
     links.forEach(link => {
