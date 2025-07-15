@@ -20,6 +20,7 @@ const AddEnrolledCourse = lazy(() => import("../pages/student/taprofilepage/cour
 const StudentHomePage = lazy(() => import("../pages/student/student_homepage/StudentHomePage"));
 const ApplicationPage = lazy(() => import("../pages/student/applicationpage/ApplicationPage"));
 const ViewApplicationPage = lazy(() => import("../pages/student/viewapplicationpage/ViewApplicationPage"));
+const ScheduleViewer = lazy(() => import("../pages/student/scheduleviewer/ScheduleViewer"));
 
 const InstructorProfilePage = lazy(() => import("../pages/instructor/instructorprofilepage/InstructorProfilePage"));
 const InstructorNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/InstructorNeedPage"));
@@ -79,7 +80,11 @@ export const router = createBrowserRouter([
           { path: "home", element: <Suspense fallback={<div>Loading...</div>}><StudentHomePage /></Suspense> },
           { path: "application", element: <Suspense fallback={<div>Loading...</div>}><ApplicationPage /></Suspense> },
           { path: "view-applications", element: <Suspense fallback={<div>Loading...</div>}><ViewApplicationPage /></Suspense> },
+
+          { path: "schedule", element: <Suspense fallback={<div>Loading...</div>}><ScheduleViewer  /></Suspense> },
+          { path: "questions/:studentId", element: <TaQuestionnairePage /> },
           { path: "questions/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaQuestionnairePage /></Suspense> },
+
           { path: "addallocation", element: <Suspense fallback={<div>Loading...</div>}><AddAllocationHistory /></Suspense> },
           { path: "addenrollment", element: <Suspense fallback={<div>Loading...</div>}><AddEnrolledCourse /></Suspense> },
           { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },

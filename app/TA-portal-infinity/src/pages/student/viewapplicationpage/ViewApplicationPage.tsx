@@ -8,7 +8,6 @@ import type { Allocation } from "../../../interfaces/allocation/Allocation";
 import type { ApplicationDto } from "../../../interfaces/application/Application";
 import type { Student } from "../../../interfaces/user/Student";
 import { decodeToken } from "../../../utility/decodeToken";
-
 import { fetchSectionInfo } from "../../../api/section/fetchSectionInfo";
 
 import type { DeadlineDto } from '../../../interfaces/admin/Deadline';
@@ -42,12 +41,10 @@ const ViewApplicationPage = () => {
   
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-        console.log('Decoded JWT payload:', payload);
-
     } catch (e) {
       console.warn('Could not decode JWT:', e);
     }
-    console.log('Token used for allocation fetch:', token);
+
 
     const decoded = decodeToken(token);
     const userIdFromToken = decoded?.userId;
@@ -59,70 +56,40 @@ const ViewApplicationPage = () => {
     setLoading(true);
     fetchApplicationsByStudent(userIdFromToken, token)
       .then(async (data: ApplicationDto[]) => {
-        console.log("Fetched applications:", data);
-        // For each application, fetch allocation, section schedule, and student info if needed
+        // For each application, fetch allocation, section info, and student info if needed
         const appsWithDetails = await Promise.all(
           data.map(async (app) => {
             let allocation: Allocation | null = null;
+            let sectionInfo: any = null;
             try {
-            
               const allocations = await fetchAllocationByApplicationId(app.id ?? app.applicationId ?? 0, token);
               allocation = allocations && allocations.length > 0 ? allocations[0] : null;
               if (allocation && 'isConfirmed' in allocation) {
-                // @ts-ignore
                 delete allocation.isConfirmed;
               }
-              // Fetch instructor details if instructor is an ID (number or string)
-              // Always fetch instructor details for the section if possible
-              let instructorId: number | undefined = undefined;
-              if (allocation?.section) {
-                if (typeof allocation.section.instructor === 'number') {
-                  instructorId = allocation.section.instructor;
-                } else if (
-                  allocation.section &&
-                  typeof (allocation.section as any).instructorId === 'number'
-                ) {
-                  instructorId = (allocation.section as any).instructorId;
-                }
-              }
-              if (instructorId && allocation?.section) {
-                try {
-                  const instructor = await fetchUserDetails(instructorId);
-                  allocation.section.instructor = instructor;
-                } catch {
-                  // If fetch fails, leave as is (will show N/A)
-                }
-              }
-              // Fetch full section info (year, semester, schedule, etc.) if sectionId is present
+              // Always fetch section info (with instructor) if allocation.section exists and has id
               let sectionId: number | undefined = undefined;
-              if (allocation && allocation.section ) {
-                sectionId = (allocation.section.id as number | undefined)
-                  || (allocation.section.course?.id as number | undefined);
+              if (allocation && allocation.section && allocation.section.id) {
+                sectionId = allocation.section.id;
               }
-              if (
-                allocation &&
-                allocation.section &&
-                sectionId &&
-                (
-                  !allocation.section ||
-                  !allocation.section.year ||
-                  !allocation.section.semester ||
-                  !allocation.section.sectionSchedule
-                )
-              ) {
+              if (sectionId) {
                 try {
-                  const sectionInfo = await fetchSectionInfo(sectionId, token);
-                  allocation.section = sectionInfo;
-                  allocation.section.sectionSchedule = sectionInfo.sectionSchedule;
+                  // Use fetchSectionIncludeInstructorId to get section details with instructor
+                  const { fetchSectionIncludeInstructorId } = await import("../../../api/section/fetchSectionIncludeInstructorId");
+                  const sectionDetails = await fetchSectionIncludeInstructorId(sectionId);
+                  if (allocation && sectionDetails) {
+                    allocation.section = sectionDetails;
+                    
+                  }
                 } catch (e) {
-                  // If fetch fails, just skip
+                  console.error('DEBUG: fetchSectionIncludeInstructorId failed for sectionId', sectionId, e);
                 }
               }
             } catch (err) {
               console.error('Allocation fetch error:', err);
               allocation = null;
             }
-            // If student info is missing or incomplete, try to fetch it using student.id
+            // If student info is missing or incomplete, trying to fetch it using student.id
             if (!app.student || !app.student.firstName) {
               const studentId = app.student?.id ?? (app as any).studentId;
               if (studentId) {
@@ -174,7 +141,6 @@ const ViewApplicationPage = () => {
     try {
       const resp = await acceptOffer(allocationId);
       if (resp && (resp.ok === true || resp.status === 200)) {
-        setSuccess("You have accepted the offer.");
         // Update allocation status in local state
         setApplications(apps =>
           apps.map(app => {
@@ -349,8 +315,8 @@ const ViewApplicationPage = () => {
                       <div className="mt-2 z-10">
                         <strong>Offer Status:</strong>
                     {app.allocation.status === 'CONFIRMED' && (
-                      <div className="mt-1 flex flex-col gap-2 p-4 bg-green-50 border border-[#040941] rounded-lg">
-                        <span className="text-green-700 font-semibold text-lg">Allocation Confirmed</span>
+                      <div className="mt-1 flex flex-col gap-2 p-4 bg-gray-50 border-[#040941] rounded-lg">
+                        <span className="text-green-800 font-semibold text-lg">Success! Your allocation is now confirmed!</span>
                         <span>
                           <strong>Section:</strong> {app.allocation.section?.course?.deptCode || 'N/A'}
                           {app.allocation.section?.course?.courseNum ? ` ${app.allocation.section.course.courseNum}` : ''}
@@ -413,7 +379,7 @@ const ViewApplicationPage = () => {
                             typeof (app.id ?? app.applicationId) !== 'number' ||
                             actionLoading === app.allocation.id
                           }
-                          className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition"
+                          className="px-3 py-2 bg-red-800 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition"
                         >
                           {actionLoading === app.allocation.id ? 'Declining...' : 'Decline Offer'}
                         </button>
@@ -462,15 +428,15 @@ const ViewApplicationPage = () => {
                     )}
 
 
-                    {/* Expandable Details Button */}
+                    {/* details Button */}
                       <button
-                        className="self-end px-3 py-1 text-xs rounded-lg font-semibold border border-blue-200 bg-[#040941] hover:bg-blue-100 text-white transition"
+                        className="self-end px-3 py-2 text-xs rounded-lg font-semibold border border-blue-50 bg-[#040941] hover:bg-blue-100 text-white transition"
                         onClick={() => setExpandedCard(expanded ? null : cardId)}
                         aria-expanded={expanded}
                       >
                         {expanded ? 'Hide Details' : 'View Details'}
                       </button>
-                      {/* Expandable Details Section */}
+                      {/* details Section */}
                       {expanded && (
                         <div className="mt-2 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm animate-fade-in">
                           <div className="mb-2 font-semibold text-blue-900">Section Details</div>
@@ -479,8 +445,8 @@ const ViewApplicationPage = () => {
                               <div><strong>Course:</strong> {sectionDetails.course?.deptCode || 'N/A'} {sectionDetails.course?.courseNum || ''}</div>
                               <div><strong>Section:</strong> {sectionDetails.section || 'N/A'}</div>
                               <div><strong>Type:</strong> {sectionDetails.type || 'N/A'}</div>
-                              <div><strong>Semester:</strong> {sectionDetails.semester || 'N/A'}</div>
-                              <div><strong>Year:</strong> {sectionDetails.year || 'N/A'}</div>
+                               <div><strong>Semester:</strong> {app.allocation?.section?.semester ?? sectionDetails.semester ?? 'N/A'}</div>
+                               <div><strong>Year:</strong> {app.allocation?.section?.year ?? sectionDetails.year ?? 'N/A'}</div>
                               {/* Show schedule from sectionSchedule array if present, else fallback to schedule string, else show message */}
                               {app.allocation?.section?.sectionSchedule && app.allocation.section.sectionSchedule.length > 0 ? (
                                 <div>
@@ -509,7 +475,6 @@ const ViewApplicationPage = () => {
                  
                     <div className="mt-4 z-10">
                       {(() => {
-                        // progress step and label
                         let step = 0;
                         let label = 'Application submitted. Waiting for offer...';
                         let tip = '';

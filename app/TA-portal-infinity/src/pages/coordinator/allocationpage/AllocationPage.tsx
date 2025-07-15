@@ -18,6 +18,8 @@ import { fetchSectionInfo } from '../../../api/section/fetchSectionInfo';
 import { Link } from 'react-router-dom';
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
 import { fetchAllocationsByStudent } from '../../../api/allocation/fetchAllocationByStudent';
+import { fetchSectionIncludeInstructorId } from '../../../api/section/fetchSectionIncludeInstructorId';
+import { fetchInstructorById } from '../../../api/section/instructor/fetchInstructorById';
 import { deallocateAllocation } from '../../../api/allocation/deallocateAllocation';
 
 const TAAllocationPage: React.FC = () => {
@@ -36,7 +38,7 @@ const TAAllocationPage: React.FC = () => {
     setLoadingSections(true);
     try {
       const raw = await fetchFilteredSections(filters);
-      setFilteredSections(convertFilterSectionsToSections(raw || []));
+      setFilteredSections(convertFilterSectionsToSections(raw as any[] || []));
     } catch (err) {
       console.error(err);
     } finally {
@@ -53,9 +55,11 @@ const TAAllocationPage: React.FC = () => {
   }, [token]);
 
   const [selCourse, setSelCourse] = useState<Section | null>(null);
+  const [instructor, setInstructor] = useState<{ firstName: string; lastName: string } | null>(null);
   const [selApp, setSelApp] = useState<ApplicationDto | null>(null);
 
   const loadCourse = async (details: SectionDetails) => {
+
   if (!details.id) return;
   try {
     const full = await fetchSectionInfo(details.id, token!);
@@ -76,15 +80,51 @@ const TAAllocationPage: React.FC = () => {
   // Helper to fetch allocation history for the selected student
   const refreshHistory = async (studentId: number, token: string) => {
     try {
-      const data = await fetchAllocationsByStudent(studentId, token);
-      setHistory(data);
-    } catch {
-      setHistory([]);
+      //  using fetchSectionIncludeInstructorId to get section with instructorId
+      let section = await fetchSectionIncludeInstructorId(details.id);
+      // If 'need' is missing, fetch it from fetchSectionInfo
+      if (section && !section.need) {
+        try {
+          const sectionWithNeed = await fetchSectionInfo(details.id, token || "");
+          if (sectionWithNeed && sectionWithNeed.need) {
+            section = { ...section, need: sectionWithNeed.need };
+          }
+        } catch (err) {
+          console.error("Failed to fetch section need:", err);
+        }
+      }
+      setSelCourse({
+        ...section,
+        hasCompleted: !!(
+          section?.need?.numHoursCurrentlyAllocated != null &&
+          section?.need?.requiredGradingHours != null &&
+          section.need?.numHoursCurrentlyAllocated >= section.need?.requiredGradingHours
+        ),
+      });
+      // Prefer section.instructor if present, otherwise use instructorId
+      if (section && section.instructor && section.instructor.firstName && section.instructor.lastName) {
+        setInstructor({ firstName: section.instructor.firstName, lastName: section.instructor.lastName });
+      } else if (section && section.instructorId !== undefined && section.instructorId !== null) {
+        try {
+          const instructorObj = await fetchInstructorById(section.instructorId);
+          if (instructorObj && instructorObj.firstName && instructorObj.lastName) {
+            setInstructor({ firstName: instructorObj.firstName, lastName: instructorObj.lastName });
+          } else {
+            setInstructor(null);
+          }
+        } catch (err) {
+          setInstructor(null);
+          console.error("Failed to fetch instructor details:", err);
+        }
+      } else {
+        setInstructor(null);
+      }
+    } catch (err) {
+      console.error("Failed to load section:", err);
+      setInstructor(null);
     }
   };
-
-
-const onSend = () => {
+  const onSend = () => {
     if (!selApp || !selCourse?.id || !selCourse.need) return;
     sendOffer(
       selApp,
@@ -130,14 +170,8 @@ const onSend = () => {
     backgroundColor: 'rgba(35, 38, 39, 0.3)',
   }));
 
-// Convert "HH:mm" to minutes since midnight
-function timeToMinutes(t: string) {
-  const [h, m] = t.split(":").map(Number);
-  return h * 60 + m;
-}
-
-// Check if a course slot is fully covered by any student availability (numerical time comparison)
-function isSlotFullyCovered(
+// Computing only the segments of student availability that overlap with course slots
+function getIntersectionSegments(
   slot: { day: string; startTime: string; endTime: string },
   avails: { day: string; startTime: string; endTime: string }[]
 ) {
@@ -152,7 +186,7 @@ function isSlotFullyCovered(
   });
 }
 
-// Compute overlays: green if fully covered, red if not
+// Computing segments of student availability that match course slots
 const bgMatchedEvents = useMemo(() => {
   return (selCourse?.sectionSchedule || []).flatMap((slot, i) => {
     if (!slot.day || !slot.startTime || !slot.endTime) return [];
@@ -197,7 +231,7 @@ const events = [
       isSlotFullyCovered({ day: slot.day!, startTime: slot.startTime!, endTime: slot.endTime! }, selApp?.availabilities || [])
     );
 
-  // Check if we have a selected application and course before fetching history
+  // Checking if we have a selected application and course before fetching history
   const [history, setHistory] = useState<Allocation[]>([]);
     useEffect(() => {
       if (!selApp || !token) {
@@ -254,44 +288,45 @@ const events = [
             </>
           )}
          
-          {selCourse?.need && selCourse && (
-              <div className="mt-6 border-t pt-6 space-y-6">
-                {/* section details */}
-                <section>
-                  <h2 className="font-bold text-lg">Section Details</h2>
-                  <div className="space-y-1 pl-2 text-sm">
-                    <p><strong>Year &amp; Semester:</strong> {selCourse.semester} {selCourse.year}</p>
-                    <p><strong>Section:</strong> {selCourse.section}</p>
-                    <p><strong>Type:</strong> {selCourse.type}</p>
-                  </div>
-                </section>
+          {selCourse && (
+            <div className="mt-6 border-t pt-6 space-y-6">
+              {/* section details */}
+              <section>
+                <h2 className="font-bold text-lg">Section Details</h2>
+                <div className="space-y-1 pl-2 text-sm">
+                  <p><strong>Year &amp; Semester:</strong> {selCourse.semester ?? 'N/A'} {selCourse.year ?? 'N/A'}</p>
+                  <p><strong>Section:</strong> {selCourse.section ?? 'N/A'}</p>
+                  <p><strong>Type:</strong> {selCourse.type ?? 'N/A'}</p>
+                  <p><strong>Instructor:</strong> {instructor && instructor.firstName && instructor.lastName ? `${instructor.firstName} ${instructor.lastName}` : 'N/A'}</p>
+                </div>
+              </section>
 
-                {/* course need */}
-                <section>
-                  <h2 className="font-bold text-lg">Course Need</h2>
-                  <div className="space-y-1 pl-2 text-sm">
-                    <p><strong>Description:</strong> {selCourse.need.description}</p>
-                    <p><strong>Allocated Hours:</strong> {selCourse.need.numHoursCurrentlyAllocated}</p>
-                    <p><strong>Required Hours:</strong> {selCourse.need.requiredGradingHours}</p>
-                  </div>
-                </section>
+              {/* course need */}
+              <section>
+                <h2 className="font-bold text-lg">Course Need</h2>
+                <div className="space-y-1 pl-2 text-sm">
+                  <p><strong>Description:</strong> {selCourse.need?.description ?? 'N/A'}</p>
+                  <p><strong>Allocated Hours:</strong> {selCourse.need?.numHoursCurrentlyAllocated ?? 'N/A'}</p>
+                  <p><strong>Required Hours:</strong> {selCourse.need?.requiredGradingHours ?? 'N/A'}</p>
+                </div>
+              </section>
 
-                {/* prerequisites */}
-                <section>
-                  <h2 className="font-bold text-lg">Prerequisites</h2>
-                  <div className="pl-2 text-sm">
-                    {(selCourse.need.prerequisites ?? []).length > 0
-                      ? <ul className="list-disc pl-4 space-y-1">
-                          {selCourse.need.prerequisites!.map((c, i) => (
-                            <li key={i}>{c.deptCode} {c.courseNum}</li>
-                          ))}
-                        </ul>
-                      : <p>None</p>
-                    }
-                  </div>
-                </section>
-              </div>
-            )}
+              {/* prerequisites */}
+              <section>
+                <h2 className="font-bold text-lg">Prerequisites</h2>
+                <div className="pl-2 text-sm">
+                  {(selCourse.need?.prerequisites && selCourse.need.prerequisites.length > 0)
+                    ? <ul className="list-disc pl-4 space-y-1">
+                        {selCourse.need.prerequisites.map((c, i) => (
+                          <li key={i}>{c.deptCode} {c.courseNum}</li>
+                        ))}
+                      </ul>
+                    : <p>None</p>
+                  }
+                </div>
+              </section>
+            </div>
+          )}
 
         </div>
         <div className="lg:col-span-14 bg-white p-6 rounded shadow space-y-4">
@@ -423,7 +458,7 @@ const events = [
               }}
               className="text-sm bg-[#040941] text-white px-3 py-1 rounded hover:bg-[#03072a] transition"
             >
-              Revoke Offer
+              Revoke  
             </button>
           </div>
         </div>
