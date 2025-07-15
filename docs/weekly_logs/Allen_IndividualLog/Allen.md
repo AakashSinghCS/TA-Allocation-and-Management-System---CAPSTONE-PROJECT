@@ -490,3 +490,46 @@ built the deadline page for admin, adding deadline restrictions to student appli
   * finish deadline restrictions
   * notification service
 
+
+## July 11 - 14
+
+### Timesheet
+Clockify report
+![alt text](./clockify/7.14.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: add deadline blocks to other services
+  * #2: exam service backend
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>add deadline blocks to other services
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>exam service backend
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+added deadline restrictions to student application, student accept offer, and instructor update needs, blocks on both front end and back end. built exam service backend.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * finish exam service(frontend and integration)
+  * work on exception handling
+
