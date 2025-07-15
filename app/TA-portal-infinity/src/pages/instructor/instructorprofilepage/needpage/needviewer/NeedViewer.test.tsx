@@ -7,6 +7,10 @@ import { mockSectionCOSC121 as s121 } from '../../../../../mocked-objects/sectio
 
 const instructorId = 10;
 
+vi.mock('../../../../../context/AuthContext', () => ({
+  useAuth: () => ({ userRoles: ['INSTRUCTOR'] as const }),
+}));
+
 const renderer = () =>
   render(
     <MemoryRouter>

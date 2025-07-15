@@ -2,45 +2,36 @@ import { useAuth } from "./context/AuthContext";
 import { Navigate, Outlet } from "react-router-dom";
 import Header from "./components/layout/header/Header";
 import Footer from "./components/layout/footer/Footer";
-import { UserRole } from './interfaces/enum/UserRole';
-import SideNavStudent from "./components/layout/sidebar_student/SidebarStudent";
-import SideNavInstructor from "./components/layout/sidebar_instructor/SidebarInstructor";
-import SideNavCoordinator from "./components/layout/sidebar_coordinator/SidebarCoordinator";
+import SideNav from "./components/layout/sidebar/SideBar";
 
 export default function App() {
-  const { isAuthenticated, userRoles } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  const role = userRoles[0]; 
-
-  const renderSidebar = () => {
-    switch (role) {
-      case UserRole.STUDENT:
-        return <SideNavStudent />;
-      case UserRole.INSTRUCTOR:
-        return <SideNavInstructor />;
-      case UserRole.COORDINATOR:
-        return <SideNavCoordinator />;
-      case UserRole.ADMIN:
-        return <SideNavCoordinator />;
-      default:
-        return null;
-    }
-  };
-
   return (
-    <div className="flex flex-col h-screen">
-      <Header />
-      <div className="flex flex-1 overflow-hidden">
-        {renderSidebar()}
-        <main className="flex-1 overflow-y-auto bg-white p-6">
+    // ensure entire app is at least screen-height
+    <div className="flex min-h-screen">
+      {/* fixed sidebar always on the left */}
+      <div className="fixed top-0 left-0 h-screen z-20">
+        <SideNav />
+      </div>
+
+      {/* push everything right by sidebar width */}
+      <div className="flex flex-col flex-1 pl-20">
+        {/* header scrolls away with page */}
+        <Header />
+
+        {/* make main take up remaining space, scroll its children, and prevent outer gray gap */}
+        <main className="flex-1 overflow-y-auto p-6 bg-white min-h-0">
           <Outlet />
         </main>
+
+        {/* footer follows content, no fixed positioning */}
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 }

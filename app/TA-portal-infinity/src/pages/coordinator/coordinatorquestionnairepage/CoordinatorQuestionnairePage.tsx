@@ -10,7 +10,7 @@ import { GenericAPIContainer } from "../../../utility/genericapicontainer/Generi
 //That any preexisting questions that have been updated or deleted will have all students' answers deleted in the database. And students will be notified that the questions changed and they must update it again.
 //In summary: updaing or deleting does a CASCADE delete on ProfileAnswers.
 //TODO: CoordinatorQuestionnaire will need a seperate testing file, as it has too much functionality to not get tested.
-export default function CoordinatorQuestionnaire({ initial }: { initial: ProfileQuestion[] | null }) {
+export function CoordinatorQuestionnaire({ initial }: { initial: ProfileQuestion[] | null }) {
     //TODO: make a toTempProfileQuestion function for decoupling and clearer code.
     const [questions, setQuestions] = useState<TempProfileQuestion[]>(
         () => toObjectWithTempId(initial) 
@@ -70,7 +70,7 @@ interface TempProfileQuestion extends ProfileQuestion {
     tempId: string;
 }
 
-export function CoordinatorQuestionnairePage() {
+export default function CoordinatorQuestionnairePage() {
     return (
         <GenericAPIContainer<ProfileQuestion[] | null>
             fetchFunction={fetchAllProfileQuestions}

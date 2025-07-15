@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
        uniqueConstraints = {
            @UniqueConstraint(
                name = "uk_section_unique_row",
-               columnNames = {"section_year", "semester", "section", "type"})
+               columnNames = {"course_id","section_year", "semester", "section", "type"})
        })
 public class Section {
     @Id
