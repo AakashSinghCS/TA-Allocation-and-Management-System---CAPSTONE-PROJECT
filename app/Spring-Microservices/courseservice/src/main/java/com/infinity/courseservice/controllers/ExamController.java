@@ -91,4 +91,10 @@ public class ExamController {
             @PathVariable Long studentId) {
         return examService.getAssignmentsByStudentId(studentId);
     }
+
+    @DeleteMapping("/{studentId}/availability")
+    public void deleteAvailability(@PathVariable Long studentId) {
+        examService.deleteAvailabilityByStudentId(studentId);
+    }
+
 }
