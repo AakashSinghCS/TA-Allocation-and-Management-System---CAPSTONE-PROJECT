@@ -17,9 +17,8 @@ services:
     environment:
       VITE_HOST: "0.0.0.0"
       NODE_ENV: "development"
-      #CHOKIDAR_USEPOLLING: true
-      #CHOKIDAR_USEPOLLING: true
-      #CHOKIDAR_INTERVAL: "10000"
+      CHOKIDAR_USEPOLLING: true
+      CHOKIDAR_INTERVAL: "10000"
   gateway-service:
     build: 
       context: ./app/Spring-Microservices/gatewayservice
