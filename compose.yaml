@@ -13,8 +13,8 @@ services:
     environment:
       VITE_HOST: "0.0.0.0"
       NODE_ENV: "development"
-      CHOKIDAR_USEPOLLING: true
-      CHOKIDAR_INTERVAL: "1000"
+      #CHOKIDAR_USEPOLLING: true
+      #CHOKIDAR_INTERVAL: "1000"
   mysql:
     image: 'mysql:latest'
     container_name: mysql
