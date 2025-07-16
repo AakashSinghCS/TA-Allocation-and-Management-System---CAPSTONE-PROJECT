@@ -173,7 +173,6 @@ const ViewApplicationPage = () => {
     try {
       const resp = await denyOffer(allocationId);
       if (resp && (resp.ok === true || resp.status === 200)) {
-        setSuccess("You have declined the offer.");
         // Update allocation status in local state
         setApplications(apps =>
           apps.map(app => {
