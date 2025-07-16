@@ -102,7 +102,7 @@ describe("DeadlineManagementPage", () => {
 
     render(<DeadlineManagementPage />);
     // Wait for deadlines to load
-    expect(await screen.findByText(/student_application_deadline/i)).toBeInTheDocument();
+    expect(await screen.findByText(/student application deadline/i)).toBeInTheDocument();
     // Change end date and click save
     const endInput = screen.getByDisplayValue("2025-08-31T23:59");
     fireEvent.change(endInput, { target: { value: "2025-09-30T23:59" } });
