@@ -76,7 +76,7 @@ export default function SearchUserBar({ onSearch, loading,allowedRoles }: Search
       <select
         value={criteria.role}
         onChange={e => setCriteria(c => ({ ...c, role: e.target.value as SearchCriteria['role'] }))}
-        className="border px-2 py-1 rounded"
+        className="border px-2 py-1 border-gray-400 rounded-md"
       >
         {roles.map(r => (
           <option key={r} value={r}>{r}</option>
@@ -88,7 +88,7 @@ export default function SearchUserBar({ onSearch, loading,allowedRoles }: Search
         value={criteria.name}
         onChange={e => setCriteria(c => ({ ...c, name: e.target.value }))}
         disabled={isUniversityNumberEntered}
-        className="border px-2 py-1 rounded"
+        className="border px-2 py-1 border-gray-400 rounded-md"
       />
       <input
         type="text"
@@ -100,7 +100,7 @@ export default function SearchUserBar({ onSearch, loading,allowedRoles }: Search
           const digits = e.target.value.replace(/\D/g, "").slice(0, 8);
           setCriteria(c => ({ ...c, universityNumber: digits, name: digits.length > 0 ? "" : c.name }));
         }}
-        className="border px-2 py-1 rounded w-40"
+        className="border px-2 py-1 border-gray-400 rounded-md w-40"
       />
       <button
         type="button"

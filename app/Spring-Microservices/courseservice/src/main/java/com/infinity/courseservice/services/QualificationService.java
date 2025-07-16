@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import com.infinity.courseservice.dtos.QualificationDto;
-import com.infinity.courseservice.dtos.QualificationDtoWithId;
-import com.infinity.courseservice.dtos.QualificationRequest;
-import com.infinity.courseservice.dtos.QualificationWithSectionDto;
-import com.infinity.courseservice.dtos.StudentQualiRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.courseservice.dtos.QualificationDtos.QualificationDto;
+import com.infinity.courseservice.dtos.QualificationDtos.QualificationDtoWithId;
+import com.infinity.courseservice.dtos.QualificationDtos.QualificationRequest;
+import com.infinity.courseservice.dtos.QualificationDtos.QualificationWithSectionDto;
+import com.infinity.courseservice.dtos.QualificationDtos.StudentQualiRequest;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;

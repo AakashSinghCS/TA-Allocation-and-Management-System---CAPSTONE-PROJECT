@@ -11,6 +11,10 @@ vi.mock('../../../../../utility/genericapicontainer/GenericAPIContainer', () => 
   };
 });
 
+vi.mock('../../../../../context/AuthContext', () => ({
+  useAuth: () => ({ userRoles: ['COORDINATOR'] as const }),
+}));
+
 const arbitaryId = 10;
 
 const renderer = () =>

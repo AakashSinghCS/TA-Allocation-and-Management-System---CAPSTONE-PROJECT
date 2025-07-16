@@ -243,6 +243,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
                 mode="select"
                 onSelect={u => setSelectedInstructor(u)}
                 allowedRoles={["Instructor"]}
+                askForConfirmation={true}
               />
               <div className="h-4" />
             </div>

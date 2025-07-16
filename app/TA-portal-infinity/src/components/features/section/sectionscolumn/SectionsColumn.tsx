@@ -18,7 +18,7 @@ export default function SectionsColumn({ sections = [], className = "", highligh
   const exactMatchExists = sections.filter((sec)=> exactMatchId === sec.course?.id).length > 0;
 
   return (
-    <section className={"min-h-[30vh] "+className}>
+    <section className={"min-h-[30vh] border border-slate-200 rounded-2xl shadow-sm p-4"+className}>
       {highlightCourseIds.length > 0 && missing.length > 0 && neededCourses.length >0 && (
        <p className="text-xs text-red-600 mt-1 mb-1">
           Missing in section needs:&nbsp;
