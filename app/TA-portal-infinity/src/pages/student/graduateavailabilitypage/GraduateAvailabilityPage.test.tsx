@@ -41,6 +41,7 @@ vi.mock('@fullcalendar/react', () => {
 });
 
 
+
 vi.mock('../../../api/application/FetchApplicationsByStudent', () => ({
   fetchApplicationsByStudent: vi.fn(() =>
     Promise.resolve([
@@ -106,6 +107,7 @@ describe('GraduateAvailabilityPage', () => {
       expect(screen.getByText(/Only graduate students with a current year application can access this page./i)).toBeInTheDocument();
     });
   });
+
 
   it('adds an event when mock select is clicked', async () => {
     renderWithProviders();
@@ -253,3 +255,4 @@ describe("ExamAvailability API", () => {
     await expect(deleteExamAvailability(studentId, mockToken)).rejects.toThrow("Failed to delete exam availability");
   });
 });
+

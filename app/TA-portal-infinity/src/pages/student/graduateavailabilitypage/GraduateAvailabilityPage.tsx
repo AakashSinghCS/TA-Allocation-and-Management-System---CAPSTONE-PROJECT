@@ -5,11 +5,13 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
 import { fetchApplicationsByStudent } from "../../../api/application/FetchApplicationsByStudent";
+
 import { fetchExamAvailability, submitExamAvailability } from "../../../api/exam/ExamAvailability";
 import { useAuth } from "../../../context/AuthContext";
 import type { EventInput } from '@fullcalendar/core';
 import type { ExamAvailabilityDto } from "../../../interfaces/exam/ExamAvailability";
 import { deleteExamAvailability } from "../../../api/exam/ExamAvailability";
+
 
 
 const GraduateAvailabilityPage = () => {
@@ -30,7 +32,9 @@ const GraduateAvailabilityPage = () => {
 
 
   useEffect(() => {
+
     const checkGraduateStatusAndLoadAvailability = async () => {
+
       try {
         const applications = await fetchApplicationsByStudent(userId, token!);
         const thisYearApp = applications.find(app => new Date(app.timeSubmitted).getFullYear() === currentYear);
@@ -38,6 +42,7 @@ const GraduateAvailabilityPage = () => {
 
         if (thisYearApp?.applicationType === "GRADUATE") {
           setIsGraduate(true);
+
           const saved = await fetchExamAvailability(userId, token!);
           const formatted = saved.map((a: ExamAvailabilityDto) => ({
             title: "Available",
@@ -46,16 +51,21 @@ const GraduateAvailabilityPage = () => {
             backgroundColor: getRandomColor(),
           }));
           setEvents(formatted);
+
         } else {
           setIsGraduate(false);
         }
       } catch (error) {
+
         console.error("Failed to load page data: ", error);
+
         navigate("/user/student/home");
       }
     };
 
+
     checkGraduateStatusAndLoadAvailability();
+
 
 
   }, [userId, token, navigate, currentYear]);
@@ -96,6 +106,7 @@ const GraduateAvailabilityPage = () => {
           customButtons={{
             clearAll: {
               text: 'Reset',
+
               click: async () => {
                 const confirmed = window.confirm("Are you sure you want to delete all your availability?");
                 if (!confirmed) return;
@@ -112,6 +123,7 @@ const GraduateAvailabilityPage = () => {
             },
           }}
 
+
           headerToolbar={{
             left: "prev,next",
             center: "title",
@@ -120,6 +132,7 @@ const GraduateAvailabilityPage = () => {
           allDaySlot={false}
         />
       </div>
+
       <div className="flex justify-center mt-6">
         <button
           onClick={async () => {
@@ -135,6 +148,7 @@ const GraduateAvailabilityPage = () => {
           Submit Availability
         </button>
       </div>
+
     </div>
   );
   
