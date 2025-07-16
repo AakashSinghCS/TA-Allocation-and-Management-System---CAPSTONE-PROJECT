@@ -10,6 +10,12 @@ import ScheduleExport from "../../../components/features/scheduleviewer/Schedule
 import ScheduleCalendar from "../../../components/features/scheduleviewer/ScheduleCalendar";
 import ScheduleViewerTable from "../../../components/features/scheduleviewer/ScheduleViewerTable";
 import { CalendarX2 } from "lucide-react";
+import { fetchExamAssignmentsByStudentId } from "../../../api/exam/fetchExamAssignmentsByStudentId";
+import type ExamAssignmentDto from "../../../interfaces/exam/ExamAssignment";
+import { fetchExamById } from "../../../api/exam/fetchExamById";
+import { fetchCourse } from "../../../api/course/fetchCourse";
+import type { ExamDto } from "../../../interfaces/exam/Exam";
+import type { Course } from "../../../interfaces/course/Course";
 
 const ScheduleViewer: React.FC<{ scheduleRows: ScheduleRow[] }> = ({ scheduleRows }) => {
   // Week selector state
@@ -145,7 +151,33 @@ const StudentSchedulePage: React.FC = () => {
               : [makeRow()];
           })
         );
-        setScheduleRows(allocationsWithSchedule.flat());
+        const examAssignments: ExamAssignmentDto[] = await fetchExamAssignmentsByStudentId(Number(userId), token);
+        const examRows: ScheduleRow[] = [];
+        for (const assign of examAssignments) {
+          const exam = await fetchExamById(assign.examId, token);
+          if (!exam) continue;
+
+          const course = await fetchCourse(exam.courseId);
+          const courseLabel = course ? `${course.deptCode} ${course.courseNum}` : "Unknown Course";
+
+          examRows.push({
+            id: assign.id,
+            course: `Exam - ${assign.task} (${courseLabel})`,
+            section: "N/A",
+            instructor: "N/A",
+            day: new Date(assign.date).toLocaleDateString("en-US", { weekday: "long" }),
+            startTime: assign.startTime,
+            endTime: assign.endTime,
+            status: "CONFIRMED",
+            semester: "Finals",
+            year: new Date(assign.date).getFullYear(),
+            numberOfHours: 0,
+            date: assign.date,
+          });
+        }
+
+        setScheduleRows([...allocationsWithSchedule.flat(), ...examRows]);
+
       } catch (err) {
         console.error("Error loading schedule:", err);
         setScheduleRows([]);
