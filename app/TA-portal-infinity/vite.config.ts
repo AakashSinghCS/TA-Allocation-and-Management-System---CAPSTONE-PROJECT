@@ -8,8 +8,8 @@ export default defineConfig({
   server: {
     watch: {
       ignored: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
-      usePolling: true,
-      interval: 1000,
+      //usePolling: true,
+      //interval: 1000,
     }
   },
   optimizeDeps: {
