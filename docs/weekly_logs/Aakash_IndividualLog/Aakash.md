@@ -1652,3 +1652,39 @@ Retrospective: Process is going well. Team members are working hard to get their
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin frontend and backend integration for GTA final exam availability.
+
+## Tuesday 7/15 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.15.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Backend Frontend Integration - GTA exam availability
+
+### Progress Update (since 13/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Added new endpoint in examController to delete availabilities by studentId. Added respective service method and tests as well. Modified reset button in calendar to use this delete endpoint so that students can change their availabilities during busy exam periods. Integrated backend with the submit button so that students can add their availabilities. Added front end tests as well.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin coding for UR 4.6 - Must be able to view final assignments in a calendar view (lab, marking, prep coordination) and GTA must be able to see their exam assignments.
