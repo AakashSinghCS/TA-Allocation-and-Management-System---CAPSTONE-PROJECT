@@ -14,8 +14,9 @@ import {
   FileQuestionMark,
   ShieldCheck,
   type LucideProps,
+  CalendarDays,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type Dispatch, type SetStateAction } from 'react';
 import { UserRole } from '../../../interfaces/enum/UserRole';
 import ubcLogo from '../../../assets/ubc-logo.png';
 
@@ -26,11 +27,14 @@ interface navItem {
     roles: UserRole[];
 }
 
-export default function SideNav() {
+interface SideNavProps {
+  expanded: boolean;
+  setExpanded: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function SideNav({expanded, setExpanded}:SideNavProps) {
   const { pathname } = useLocation();
   const { logout, userRoles, userId } = useAuth();
-  const [hovered, setHovered] = useState(false);
-  const expanded = hovered;
 
   const navItems:navItem[] = [
 
@@ -60,6 +64,7 @@ export default function SideNav() {
     { label: 'Student Lab Skills', to: `/user/taprofile/${userId}/qualifications`, icon: <ShieldCheck size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Profile Questions', to: `/user/student/questions/${userId}`, icon: <FileQuestionMark size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Allocation History', to: `/user/taprofile/${userId}/allocationHistory`, icon: <FileQuestionMark size={22} />, roles: [UserRole.STUDENT] },
+    { label: 'Schedule', to: `/user/student/schedule`, icon: <CalendarDays size={22} />, roles: [UserRole.STUDENT] },
     //Profile
     { label: 'Profile', to: `/user/profile/${userId}`, icon: <User size={22} />, roles: [UserRole.STUDENT,UserRole.INSTRUCTOR,UserRole.COORDINATOR] },
 
@@ -73,17 +78,17 @@ export default function SideNav() {
 
   return (
     <aside
-      className={`h-full bg-[#040941] text-white flex flex-col transition-all duration-300 shadow-lg ${
+      className={`fixed top-0 left-0 z-20 h-screen bg-[#040941] text-white flex flex-col transition-all duration-300 shadow-lg ${
         expanded ? 'w-56' : 'w-20'
       }`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => setExpanded(true)}
+      onMouseLeave={() => setExpanded(false)}
     >
     <Link to="/" className="flex items-center">
         <img
         src={ubcLogo}
         alt="UBC logo"
-        className="h-20 sm:h-20 w-auto transition hover:drop-shadow-[0_0_1em_#FFFFFF]"
+        className="h-20 sm:h-20 w-auto transition hover:drop-shadow-[0_0_1em_#FFFFFF] mb-3"
         />
     </Link>
       <div className="flex-1 flex flex-col px-2 space-y-2">
@@ -109,7 +114,7 @@ export default function SideNav() {
           );
         })}
       </div>
-      <div className="border-t border-white/20 w-full px-8 py-4">
+      <div className="border-t border-white/20 w-full px-8 py-6">
         <button
           onClick={logout}
           className="flex items-center gap-5 text-sm text-white hover:text-[#a0ffe6] hover:scale-105 hover:drop-shadow-[0_0_10px_#a0ffe6] transition-all duration-300"

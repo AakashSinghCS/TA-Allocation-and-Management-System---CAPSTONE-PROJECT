@@ -44,15 +44,25 @@ export async function fetchSectionInfo(
   }
   const courseData: Course = await courseRes.json();
 
-  // Fetch need
-  const needRes = await fetch(
-    `http://localhost:8080/needs/get/${courseId}/${year}/${semester}`,
-    { headers }
-  );
-  if (!needRes.ok) {
-    throw new Error(`Failed to fetch need: ${needRes.status} ${needRes.statusText}`);
+  // Fetch need (handle 404)
+  let needData: Need | undefined = undefined;
+  try {
+    const needRes = await fetch(
+      `http://localhost:8080/needs/get/${courseId}/${year}/${semester}`,
+      { headers }
+    );
+    if (needRes.ok) {
+      needData = await needRes.json();
+    } else if (needRes.status !== 404) {
+      throw new Error(`Failed to fetch need: ${needRes.status} ${needRes.statusText}`);
+    }
+    // If 404, needData as undefined
+  } catch (err) {
+    if (!(err instanceof Response && err.status === 404)) {
+      throw err;
+    }
+    // else, ignore 404
   }
-  const needData: Need = await needRes.json();
 
   // Assemble SectionDetails
   const sectionDetails: SectionDetails = {
