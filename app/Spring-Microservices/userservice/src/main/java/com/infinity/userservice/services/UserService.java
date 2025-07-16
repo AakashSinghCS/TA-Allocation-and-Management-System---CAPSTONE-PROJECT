@@ -12,6 +12,7 @@ import com.infinity.userservice.dtos.RoleChangeRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.UserUpdateRequest;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
+import com.infinity.userservice.enums.ActionOptions;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.BadRequestException;
@@ -57,7 +58,7 @@ public class UserService {
             : saved.getId();
         auditService.record(
             actorId,
-            "CREATE",
+            ActionOptions.CREATE,
             "User",
             null,
             saved,
@@ -113,7 +114,7 @@ public class UserService {
 
         auditService.record(
             userIdFromHeader,
-            "UPDATE",
+            ActionOptions.UPDATE,
             "User",
             user,   
             after,
@@ -141,7 +142,7 @@ public class UserService {
 
         auditService.record(
             userIdFromHeader,
-            "DELETE",
+            ActionOptions.DELETE,
             "User",
             before,
             null,
@@ -189,7 +190,7 @@ public class UserService {
 
         auditService.record(
             userIdFromHeader,
-            "UPDATE",
+            ActionOptions.UPDATE,
             "User",
             user,
             saved,

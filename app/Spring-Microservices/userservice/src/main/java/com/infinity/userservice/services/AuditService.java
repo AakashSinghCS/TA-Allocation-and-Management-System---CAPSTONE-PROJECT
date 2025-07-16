@@ -2,6 +2,7 @@ package com.infinity.userservice.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.userservice.enums.ActionOptions;
 import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.models.AuditEvent;
 import com.infinity.userservice.repositories.AuditEventRepository;
@@ -10,8 +11,10 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -25,7 +28,7 @@ public class AuditService {
 
     public void record(
         Long actorId,
-        String action,
+        ActionOptions action,
         String entityType,
         Object before,
         Object after,
@@ -39,7 +42,7 @@ public class AuditService {
                 .service(SERVICE_NAME)
                 .action(action)
                 .entityType(entityType)
-                .entityId(entityId == null ? null : entityId.toString())
+                .entityId(entityId == null ? null : entityId)
                 .beforeJson(beforeJson)
                 .afterJson(afterJson)
                 .timestamp(LocalDateTime.now()) // also set by @CreatedDate
@@ -50,14 +53,55 @@ public class AuditService {
         }
     }
 
-    public Page<AuditEvent> search(Pageable pageable, String service, String entityType) {
+    public Page<AuditEvent> search(
+        Pageable pageable,
+        String   service,
+        String   entityType,
+        Long     entityId,
+        ActionOptions   action,
+        Long     actorId,
+        String   dateOnly
+    ) {
+        
+        Specification<AuditEvent> spec = (root, query, cb) -> cb.conjunction();
+
         if (service != null) {
-            return auditRepo.findByServiceIgnoreCase(service, pageable);
+            spec = spec.and((root, query, cb) ->
+                cb.equal(cb.lower(root.get("service")), service.toLowerCase()));
         }
+
         if (entityType != null) {
-            return auditRepo.findByEntityTypeIgnoreCase(entityType, pageable);
+            spec = spec.and((root, query, cb) ->
+                cb.equal(cb.lower(root.get("entityType")), entityType.toUpperCase()));
         }
-        return auditRepo.findAll(pageable);
+
+        if (entityId != null) {
+            // stored as String in the DB
+            spec = spec.and((root, query, cb) ->
+                cb.equal(root.get("entityId"), entityId));
+        }
+
+        if (action != null) {
+            spec = spec.and((root, query, cb) ->
+                cb.equal(root.get("action"), action));
+        }
+
+        if (actorId != null) {
+            spec = spec.and((root, query, cb) ->
+                cb.equal(root.get("actorId"), actorId));
+        }
+
+        if (dateOnly != null) {
+            // parse the YYYY-MM-DD date and build the day’s bounds
+            LocalDate day = LocalDate.parse(dateOnly);
+            LocalDateTime startOfDay = day.atStartOfDay();
+            LocalDateTime startOfNext = startOfDay.plusDays(1);
+
+            spec = spec.and((root, query, cb) ->
+                cb.between(root.get("timestamp"), startOfDay, startOfNext));
+        }
+
+        return auditRepo.findAll(spec, pageable);
     }
 
     /**

@@ -5,6 +5,8 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
+import com.infinity.userservice.enums.ActionOptions;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,14 +28,15 @@ public class AuditEvent {
     @Column(nullable = false)
     private String service;       // e.g. "user-service"
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String action;        // "CREATE", "UPDATE", "DELETE"
+    private ActionOptions action;        // "CREATE", "UPDATE", "DELETE"
 
     @Column(nullable = false)
     private String entityType;    // e.g. "User"
 
     @Column(nullable = false)
-    private String entityId;      // stringified id
+    private Long entityId;      // stringified id
 
     @Lob
     @Column(columnDefinition = "TEXT")

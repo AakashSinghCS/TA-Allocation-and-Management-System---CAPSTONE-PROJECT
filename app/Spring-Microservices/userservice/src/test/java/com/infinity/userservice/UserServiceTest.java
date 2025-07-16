@@ -25,6 +25,7 @@ import com.infinity.userservice.dtos.RoleChangeRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.UserUpdateRequest;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
+import com.infinity.userservice.enums.ActionOptions;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.BadRequestException;
@@ -94,7 +95,7 @@ void testRegister_SuccessSingleRole() {
 
     verify(auditService).record(
             eq(fakeActor),
-            eq("CREATE"),
+            eq(ActionOptions.CREATE),
             eq("User"),
             isNull(),
             eq(mockUser),
@@ -199,7 +200,7 @@ void testRegister_SuccessMultipleRoles() {
 
         verify(auditService).record(
             eq(1L),
-            eq("UPDATE"),
+            eq(ActionOptions.UPDATE),
             eq("User"),
             any(User.class),
             any(User.class),
@@ -296,7 +297,7 @@ void testRegister_SuccessMultipleRoles() {
         verify(userRepository).delete(user);
         verify(auditService).record(
             eq(1L),
-            eq("DELETE"),
+            eq(ActionOptions.DELETE),
             eq("User"),
             eq(user),
             isNull(),
@@ -320,7 +321,7 @@ void testRegister_SuccessMultipleRoles() {
         verify(userRepository).save(user);
         verify(auditService).record(
             eq(1L),
-            eq("UPDATE"),
+            eq(ActionOptions.UPDATE),
             eq("User"),
             any(User.class),
             eq(user),
