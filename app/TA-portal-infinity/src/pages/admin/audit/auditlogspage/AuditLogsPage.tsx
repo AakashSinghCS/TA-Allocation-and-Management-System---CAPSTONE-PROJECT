@@ -6,23 +6,19 @@ import AuditFilters from '../auditfilters/AuditFilters';
 import AuditDetailModal from '../auditdetailmodal/AuditDetailModal';
 import { ToastContainer, toast } from 'react-toastify';
 
-const SERVICE_ERROR_ID = 'service-required';
-
 export default function AuditLogsPage() {
   const [page, setPage] = useState(0);
 
-  // filter state
   const [serviceFilter, setServiceFilter] = useState('');
   const [entityFilter, setEntityFilter] = useState('');
   const [entityIdFilter, setEntityIdFilter] = useState(0);
   const [actionFilter, setActionFilter] = useState('');
   const [actorIdFilter, setActorIdFilter] = useState(0);
-  const [whenFilter, setWhenFilter] = useState(''); // ISO string for datetime-local
+  const [whenFilter, setWhenFilter] = useState(''); 
 
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  // fetch audit events with all filters
-  const { data, isLoading } = useAuditEvents(page, 10, {
+  const { data, isLoading, refetch } = useAuditEvents(page, 10, {
     service: serviceFilter || undefined,
     entityType: entityFilter || undefined,
     entityId: entityIdFilter > 0 ? entityIdFilter : undefined,
@@ -31,19 +27,10 @@ export default function AuditLogsPage() {
     dateOnly: whenFilter,
   });
 
-  // whenever you apply new filters, reset to page 0
+
   const handleApply = () => {
-    if (!serviceFilter) {
-      if (!toast.isActive(SERVICE_ERROR_ID)) {
-        toast.error('Please pick a service before applying filters.', {
-          toastId: SERVICE_ERROR_ID,
-        });
-      }
-      return;
-    }
-    // user has now picked a service, so clear any lingering “pick service” toast
-    toast.dismiss(SERVICE_ERROR_ID);
     setPage(0);
+    refetch();
   };
 
   return (

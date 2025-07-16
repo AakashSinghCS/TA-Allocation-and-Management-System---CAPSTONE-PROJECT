@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 type Props = {
   service: string;
@@ -64,6 +65,10 @@ export default function AuditFilters({
   }, [service, entity, entityId, action, actorId, when]);
 
   const handleApply = () => {
+    if (!draftService) {
+      toast.error('Please pick a service before applying filters.');
+      return;
+    }
     onServiceChange(draftService);
     onEntityChange(draftEntity);
     onEntityIdChange(draftEntityId);
