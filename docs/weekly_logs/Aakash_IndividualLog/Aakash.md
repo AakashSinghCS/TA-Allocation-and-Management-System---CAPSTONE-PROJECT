@@ -1370,7 +1370,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Import past allocation : Backend - handle the backend for importing past allocations
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 05/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1408,7 +1408,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Import past allocation : Backend - handle the backend for importing past allocations
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 06/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1445,7 +1445,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Import past allocation : Frontend 
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 07/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1481,7 +1481,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Import past allocation : Frontend 
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 08/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1517,7 +1517,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Current Tasks (Provide sufficient detail)
   * #1: Import past allocation : Frontend 
 
-### Progress Update (since 03/7/2025)
+### Progress Update (since 09/7/2025)
 <table>
     <tr>
         <td><strong>TASK/ISSUE #</strong>
@@ -1544,3 +1544,111 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Meet with team and begin next assigned coding task.
 
+
+## Saturday 7/12 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.12.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Frontend: GTA - Availability during final exams
+
+### Progress Update (since 10/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 20% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Created initial availability page with a basic calendar. Have to modify layout a bit and add role based access.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete front end for GTA final exam availability and begin next coding task.
+
+## Sunday 7/13 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.13.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Frontend: GTA - Availability during final exams
+
+### Progress Update (since 12/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 70% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Calendar now supports multiple time slots to be selected. Page is only accessible to graduate students now, this is fetched from the application the student submitted. Have to add tests and make slight modifications next.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete front end for GTA final exam availability and begin backend integration.
+
+## Monday 7/14 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.14.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Frontend: GTA - Availability during final exams
+
+### Progress Update (since 13/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Added tests for the page. Added a reset button to the calendar, forward and backward buttons to change the week. Waiting for Allen to complete the backend so i can work on the integration next.  
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin frontend and backend integration for GTA final exam availability.
