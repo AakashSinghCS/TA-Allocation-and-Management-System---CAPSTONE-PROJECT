@@ -77,8 +77,6 @@ public class Application {
     @OneToMany(mappedBy = "application")
     private List<Allocation> allocations = new ArrayList<>();
 
-    
-
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Availability> availabilities = new HashSet<>();
 

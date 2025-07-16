@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "072756ce-7d70-4c36-b025-fb2ca4f5c0a2",
+		"_postman_id": "9cea68ba-90ec-453a-a6ca-7072571454e6",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45669202",
-		"_collection_link": "https://allen-9145341.postman.co/workspace/Allen's-Workspace~5d13c9f6-ede4-4301-81d3-649ab495ae62/collection/45669202-072756ce-7d70-4c36-b025-fb2ca4f5c0a2?action=share&source=collection_link&creator=45669202"
+		"_exporter_id": "36957617"
 	},
 	"item": [
 		{
@@ -2855,7 +2854,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUxMjMwODI1LCJleHAiOjE3NTEyMzQ0MjV9.0ddVcfQZvyVUlSMV7ShtTZXwPC1kWM1NDqYdIdG5PgX6W28pCW7MUsJuE05BjoTX",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzQ5MzE5ODQzfQ.82a0w2lLdGi1JJClzYMI_oM1_-k2gMsdY_oec8Y4Kq8bnBfX6fNGKBZhfyb2twgL",
 											"type": "string"
 										}
 									]
@@ -3403,6 +3402,51 @@
 								"1",
 								"2025",
 								"W1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update allocated hours",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/needs/updateAllocatedHours/1?numAllocatedHours=6",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"needs",
+								"updateAllocatedHours",
+								"1"
+							],
+							"query": [
+								{
+									"key": "numAllocatedHours",
+									"value": "6"
+								}
 							]
 						}
 					},
