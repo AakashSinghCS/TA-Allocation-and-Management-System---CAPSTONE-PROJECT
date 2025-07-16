@@ -224,13 +224,34 @@ class AllocationServiceTest {
 
         @Test
         void deallocateStudent_NotFound() {
-                when(allocationRepository.existsById(any())).thenReturn(false);
+                when(allocationRepository.findById(any())).thenReturn(Optional.empty());
                 assertThrows(NotFoundException.class, () -> allocationService.deallocateStudent(1L));
         }
 
         @Test
         void deallocateStudent_Success() {
-                when(allocationRepository.existsById(any())).thenReturn(true);
+                Long studentId = 2L;
+                Long sectionId = 1001L;
+                Long applicationId = 1L;
+                Application application = new Application();
+                application.setId(applicationId);
+                application.setStudentId(studentId);
+                application.setSubmittedAt(LocalDateTime.now());
+
+                Allocation allocation = new Allocation();
+                allocation.setId(500L);
+                allocation.setStudentId(studentId);
+                allocation.setStatus(ApplicationStatus.CONFIRMED);
+                allocation.setNumberOfHours(5);
+                allocation.setSectionId(sectionId);
+                allocation.setApplication(application);
+                SectionDto sectionDto = new SectionDto(1L, 2025, "Fall", "T01", SectionType.TUTORIAL,
+                                new CourseDto(1L, "COSC", "Capstone", "499"));
+                NeedDto needDto = new NeedDto(1L, 1L, "description", 12, 0, 2025, "W1", null);
+
+                when(courseInterface.getSectionById(any())).thenReturn(sectionDto);
+                when(courseInterface.getNeed(1L, sectionDto.year(), sectionDto.semester())).thenReturn(needDto);
+                when(allocationRepository.findById(any())).thenReturn(Optional.of(allocation));
                 String message = allocationService.deallocateStudent(1L);
                 verify(allocationRepository).deleteById(1L);
                 assertEquals(message, "Student deallocated");

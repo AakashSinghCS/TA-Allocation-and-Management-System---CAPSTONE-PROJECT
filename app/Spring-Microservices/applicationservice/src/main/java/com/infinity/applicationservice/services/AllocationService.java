@@ -100,8 +100,14 @@ public class AllocationService {
     }
     
     public String deallocateStudent(Long allocationId) {
-        if (!allocationRepository.existsById(allocationId)) {
-            throw new NotFoundException("No allocation with id " + allocationId);
+        Allocation allocation = allocationRepository.findById(allocationId)
+        .orElseThrow(() -> new NotFoundException("Allocation not found"));
+        if (allocation.getStatus() == ApplicationStatus.CONFIRMED) {
+            SectionDto section = courseInterface.getSectionById(allocation.getSectionId());
+            NeedDto need = courseInterface.getNeed(allocation.getApplication().getId(), section.year(),
+                    section.semester());
+            courseInterface.updateNeedAllocatedHours(need.id(),
+                    need.numHoursCurrentlyAllocated() - allocation.getNumberOfHours());
         }
         allocationRepository.deleteById(allocationId);
         return "Student deallocated";
