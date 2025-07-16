@@ -1,4 +1,4 @@
-package com.infinity.courseservice.dtos;
+package com.infinity.courseservice.dtos.QualificationDtos;
 
 import java.util.List;
 

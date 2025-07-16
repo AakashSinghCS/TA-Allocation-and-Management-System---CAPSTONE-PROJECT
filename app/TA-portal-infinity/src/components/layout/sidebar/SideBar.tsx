@@ -60,6 +60,7 @@ export default function SideNav({expanded, setExpanded}:SideNavProps) {
     // { label: 'My Courses', to: '/user/student/courses', icon: <BookOpen size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Start Application', to: '/user/student/application', icon: <FileUser size={22} />, roles: [UserRole.STUDENT] },
     { label: 'View Applications', to: '/user/student/view-applications', icon: <GraduationCap size={22} />, roles: [UserRole.STUDENT] },
+    { label: "Exam Availability", to: "/user/student/availability", icon: <BookOpen size={22} />, roles: [UserRole.STUDENT] },
     // { label: 'Student Profile', to: `/user/taprofile/${userId}`, icon: <User size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Student Lab Skills', to: `/user/taprofile/${userId}/qualifications`, icon: <ShieldCheck size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Profile Questions', to: `/user/student/questions/${userId}`, icon: <FileQuestionMark size={22} />, roles: [UserRole.STUDENT] },
