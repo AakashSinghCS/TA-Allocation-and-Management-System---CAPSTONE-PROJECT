@@ -1,5 +1,8 @@
 package com.infinity.courseservice.models;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import com.infinity.courseservice.enums.ExamTask;
 
 import jakarta.persistence.Entity;
@@ -29,4 +32,10 @@ public class ExamAssignment {
 
     @Enumerated(EnumType.STRING)
     private ExamTask task;
+
+    private LocalDate date;
+
+    private LocalTime startTime;
+
+    private LocalTime endTime; 
 }

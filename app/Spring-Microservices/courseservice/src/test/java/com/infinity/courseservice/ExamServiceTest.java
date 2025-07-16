@@ -224,36 +224,91 @@ public class ExamServiceTest {
 
     @Test
     void testAssignStudentToExam_NotFound() {
+        LocalDate date = LocalDate.of(2025, 12, 15);
+        LocalTime startTime = LocalTime.of(9, 0);
+        LocalTime endTime = LocalTime.of(12, 0);
+
+        ExamAssignmentDto dto = new ExamAssignmentDto(
+            null,
+            10L,
+            1L,
+            ExamTask.Marking,
+            date,
+            startTime,
+            endTime
+        );
+
         when(examRepository.findById(10L)).thenReturn(Optional.empty());
+
         assertThrows(NotFoundException.class, () ->
-            examService.assignStudentToExam(10L, 1L, ExamTask.INVIGILATE)
+            examService.assignStudentToExam(10L, dto)
         );
     }
 
+
     @Test
     void testAssignStudentToExam_Success() {
+        LocalDate date = LocalDate.of(2025, 12, 15);
+        LocalTime startTime = LocalTime.of(9, 0);
+        LocalTime endTime = LocalTime.of(12, 0);
+
         Exam exam = new Exam();
         exam.setId(10L);
 
         ExamAssignment saved = new ExamAssignment();
         saved.setId(20L);
+        saved.setExam(exam);
+        saved.setStudentId(1L);
+        saved.setTask(ExamTask.Marking);
+        saved.setDate(date);
+        saved.setStartTime(startTime);
+        saved.setEndTime(endTime);
+
+        ExamAssignmentDto inputDto = new ExamAssignmentDto(
+            null,
+            10L,
+            1L,
+            ExamTask.Marking,
+            date,
+            startTime,
+            endTime
+        );
+
+        ExamAssignmentDto mapped = new ExamAssignmentDto(
+            20L,
+            10L,
+            1L,
+            ExamTask.Marking,
+            date,
+            startTime,
+            endTime
+        );
 
         when(examRepository.findById(10L)).thenReturn(Optional.of(exam));
         when(assignmentRepository.save(any(ExamAssignment.class))).thenReturn(saved);
-
-        ExamAssignmentDto mapped = new ExamAssignmentDto(20L, 10L, 1L, ExamTask.INVIGILATE);
         when(examMapper.mapAssignment(saved)).thenReturn(mapped);
 
-        ExamAssignmentDto result = examService.assignStudentToExam(10L, 1L, ExamTask.INVIGILATE);
+        ExamAssignmentDto result = examService.assignStudentToExam(10L, inputDto);
+
         assertEquals(20L, result.id());
+        assertEquals(10L, result.examId());
+        assertEquals(1L, result.studentId());
+        assertEquals(ExamTask.Marking, result.task());
+        assertEquals(date, result.date());
+        assertEquals(startTime, result.startTime());
+        assertEquals(endTime, result.endTime());
     }
+
 
     @Test
     void testGetAssignmentsByStudentId() {
+        LocalDate date = LocalDate.of(2025, 12, 15);
+        LocalTime startTime = LocalTime.of(9, 0);
+        LocalTime endTime = LocalTime.of(12, 0);
         ExamAssignment entity = new ExamAssignment();
         entity.setId(1L);
 
-        ExamAssignmentDto mapped = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.INVIGILATE);
+        ExamAssignmentDto mapped = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.Marking, date, startTime, endTime);
 
         when(assignmentRepository.findByStudentId(1L)).thenReturn(List.of(entity));
         when(examMapper.mapAssignment(entity)).thenReturn(mapped);

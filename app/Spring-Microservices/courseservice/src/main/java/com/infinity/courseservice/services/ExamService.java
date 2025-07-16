@@ -134,12 +134,18 @@ public class ExamService {
 
     // --- Assignments ---
 
-    public ExamAssignmentDto assignStudentToExam(Long examId, Long studentId, ExamTask task) {
-        Exam exam = examRepository.findById(examId).orElseThrow(() -> new NotFoundException("Exam not found"));
+    public ExamAssignmentDto assignStudentToExam(Long examId, ExamAssignmentDto dto) {
+        Exam exam = examRepository.findById(examId)
+            .orElseThrow(() -> new NotFoundException("Exam not found"));
+
         ExamAssignment assignment = new ExamAssignment();
         assignment.setExam(exam);
-        assignment.setStudentId(studentId);
-        assignment.setTask(task);
+        assignment.setStudentId(dto.studentId());
+        assignment.setTask(dto.task());
+        assignment.setDate(dto.date());
+        assignment.setStartTime(dto.startTime());
+        assignment.setEndTime(dto.endTime());
+
         ExamAssignment saved = assignmentRepository.save(assignment);
         return examMapper.mapAssignment(saved);
     }

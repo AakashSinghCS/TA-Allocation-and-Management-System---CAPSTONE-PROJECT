@@ -24,7 +24,10 @@ public class ExamMapper {
             a.getId(),
             a.getExam().getId(),
             a.getStudentId(),
-            a.getTask()
+            a.getTask(),
+            a.getDate(),
+            a.getStartTime(),
+            a.getEndTime()
         );
     }
 }

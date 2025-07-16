@@ -2,6 +2,7 @@ package com.infinity.courseservice;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -155,14 +156,20 @@ public class ExamControllerTest {
 
     @Test
     void testAssignStudentToExam() throws Exception {
-        ExamAssignmentDto dto = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.INVIGILATE);
-        when(examService.assignStudentToExam(10L, 1L, ExamTask.INVIGILATE)).thenReturn(dto);
+        LocalDate date = LocalDate.of(2025, 12, 15);
+        LocalTime startTime = LocalTime.of(9, 0);
+        LocalTime endTime = LocalTime.of(12, 0);
+        ExamAssignmentDto dto = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.Marking, date, startTime, endTime);
+        when(examService.assignStudentToExam(eq(10L), any(ExamAssignmentDto.class))).thenReturn(dto);
 
         ExamAssignmentDto request = new ExamAssignmentDto(
             null,
             10L,
             1L,
-            ExamTask.INVIGILATE
+            ExamTask.Marking,
+            date,
+            startTime,
+            endTime
         );
 
         mockMvc.perform(post("/exams/10/assignments")
@@ -172,18 +179,29 @@ public class ExamControllerTest {
             .andExpect(jsonPath("$.id").value(1))
             .andExpect(jsonPath("$.examId").value(10))
             .andExpect(jsonPath("$.studentId").value(1))
-            .andExpect(jsonPath("$.task").value("INVIGILATE"));
+            .andExpect(jsonPath("$.task").value("Marking"))
+            .andExpect(jsonPath("$.date").value(date.toString()))
+            .andExpect(jsonPath("$.startTime").value("09:00:00"))
+            .andExpect(jsonPath("$.endTime").value("12:00:00"));
     }
 
 
     @Test
     void testGetAssignments() throws Exception {
-        ExamAssignmentDto dto = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.INVIGILATE);
+        LocalDate date = LocalDate.of(2025, 12, 15);
+        LocalTime startTime = LocalTime.of(9, 0);
+        LocalTime endTime = LocalTime.of(12, 0);
+
+        ExamAssignmentDto dto = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.Marking, date, startTime, endTime);
         when(examService.getAssignmentsByStudentId(1L)).thenReturn(List.of(dto));
 
         mockMvc.perform(get("/exams/assignments/1"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].examId").value(10))
-            .andExpect(jsonPath("$[0].task").value("INVIGILATE"));
+            .andExpect(jsonPath("$[0].task").value("Marking"))
+            .andExpect(jsonPath("$[0].date").value(date.toString()))
+            .andExpect(jsonPath("$[0].startTime").value(startTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))))
+            .andExpect(jsonPath("$[0].endTime").value(endTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))));
+
     }
 }
