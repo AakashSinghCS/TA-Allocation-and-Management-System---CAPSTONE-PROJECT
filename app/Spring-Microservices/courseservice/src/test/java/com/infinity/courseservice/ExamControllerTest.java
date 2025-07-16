@@ -5,8 +5,11 @@ import java.time.LocalTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -134,6 +137,16 @@ public class ExamControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].studentId").value(1))
             .andExpect(jsonPath("$[0].date").value("2025-08-10"));
+    }
+
+    @Test
+    void testDeleteAvailabilityByStudentId() throws Exception {
+        Long studentId = 1L;
+
+        mockMvc.perform(delete("/exams/{studentId}/availability", studentId))
+               .andExpect(status().isOk());
+
+        Mockito.verify(examService, times(1)).deleteAvailabilityByStudentId(studentId);
     }
 
     // -------------------

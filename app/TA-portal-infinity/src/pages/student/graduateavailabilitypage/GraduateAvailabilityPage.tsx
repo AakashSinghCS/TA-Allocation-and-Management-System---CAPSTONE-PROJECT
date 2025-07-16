@@ -5,8 +5,14 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
 import { fetchApplicationsByStudent } from "../../../api/application/FetchApplicationsByStudent";
+
+import { fetchExamAvailability, submitExamAvailability } from "../../../api/exam/ExamAvailability";
 import { useAuth } from "../../../context/AuthContext";
 import type { EventInput } from '@fullcalendar/core';
+import type { ExamAvailabilityDto } from "../../../interfaces/exam/ExamAvailability";
+import { deleteExamAvailability } from "../../../api/exam/ExamAvailability";
+
+
 
 const GraduateAvailabilityPage = () => {
   const navigate = useNavigate();
@@ -26,7 +32,9 @@ const GraduateAvailabilityPage = () => {
 
 
   useEffect(() => {
-    const checkGraduateStatus = async () => {
+
+    const checkGraduateStatusAndLoadAvailability = async () => {
+
       try {
         const applications = await fetchApplicationsByStudent(userId, token!);
         const thisYearApp = applications.find(app => new Date(app.timeSubmitted).getFullYear() === currentYear);
@@ -34,16 +42,30 @@ const GraduateAvailabilityPage = () => {
 
         if (thisYearApp?.applicationType === "GRADUATE") {
           setIsGraduate(true);
+
+          const saved = await fetchExamAvailability(userId, token!);
+          const formatted = saved.map((a: ExamAvailabilityDto) => ({
+            title: "Available",
+            start: `${a.date}T${a.startTime}`,
+            end: `${a.date}T${a.endTime}`,
+            backgroundColor: getRandomColor(),
+          }));
+          setEvents(formatted);
+
         } else {
           setIsGraduate(false);
         }
       } catch (error) {
-        console.error("Failed to fetch applications", error);
+
+        console.error("Failed to load page data: ", error);
+
         navigate("/user/student/home");
       }
     };
 
-    checkGraduateStatus();
+
+    checkGraduateStatusAndLoadAvailability();
+
 
 
   }, [userId, token, navigate, currentYear]);
@@ -84,9 +106,24 @@ const GraduateAvailabilityPage = () => {
           customButtons={{
             clearAll: {
               text: 'Reset',
-              click: () => setEvents([]),
+
+              click: async () => {
+                const confirmed = window.confirm("Are you sure you want to delete all your availability?");
+                if (!confirmed) return;
+
+                try {
+                  await deleteExamAvailability(userId, token!);
+                  setEvents([]);
+                  alert("All availability has been cleared.");
+                } catch (error) {
+                  console.error(error);
+                  alert("Failed to clear availability. Please try again.");
+                }
+              },
             },
           }}
+
+
           headerToolbar={{
             left: "prev,next",
             center: "title",
@@ -95,6 +132,23 @@ const GraduateAvailabilityPage = () => {
           allDaySlot={false}
         />
       </div>
+
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={async () => {
+            try {
+              await submitExamAvailability(userId, events, token!);
+              alert("Availability submitted successfully!");
+            } catch (error) {
+              alert("Please click the reset button if you want to update your availability.");
+            }
+          }}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+        >
+          Submit Availability
+        </button>
+      </div>
+
     </div>
   );
   

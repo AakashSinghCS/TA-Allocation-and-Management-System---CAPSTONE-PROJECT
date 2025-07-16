@@ -12,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -207,6 +209,15 @@ public class ExamServiceTest {
         List<ExamAvailabilityDto> result = examService.getAvailabilityByStudentId(1L);
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).studentId());
+    }
+
+    @Test
+    void deleteAvailabilityByStudentId_shouldCallRepositoryOnce() {
+        Long studentId = 1L;
+
+        examService.deleteAvailabilityByStudentId(studentId);
+
+        verify(availabilityRepository, times(1)).deleteByStudentId(studentId);
     }
 
     // --- Assignments ---

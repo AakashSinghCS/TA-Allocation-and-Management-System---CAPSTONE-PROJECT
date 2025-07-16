@@ -3,6 +3,7 @@ package com.infinity.courseservice.services;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.infinity.courseservice.dtos.ExamDtos.ExamAssignmentDto;
 import com.infinity.courseservice.dtos.ExamDtos.ExamAvailabilityDto;
@@ -124,6 +125,12 @@ public class ExamService {
                 ))
                 .toList();
     }
+
+    @Transactional
+    public void deleteAvailabilityByStudentId(Long studentId) {
+        availabilityRepository.deleteByStudentId(studentId);
+    }
+
 
     // --- Assignments ---
 
