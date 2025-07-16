@@ -4,10 +4,11 @@ import * as auditHook from '../../../../api/admin/audit/useAuditEvent';
 import { vi } from 'vitest';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type AuditEvent from '../../../../interfaces/admin/audit/AuditEvent';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 describe('AuditDetailModal', () => {
     const onCloseMock = vi.fn();
-    
+    const queryClient = new QueryClient();
     beforeEach(() => {
         vi.restoreAllMocks();
         onCloseMock.mockClear();
@@ -15,7 +16,9 @@ describe('AuditDetailModal', () => {
 
     it('renders nothing when id is null', () => {
         const { container } = render(
-            <AuditDetailModal id={null} onClose={onCloseMock} serviceFilter="" />
+            <QueryClientProvider client={queryClient}>
+                <AuditDetailModal id={null} onClose={onCloseMock} serviceFilter="" />
+            </QueryClientProvider>
         );
         expect(container.firstChild).toBeNull();
     });
@@ -38,7 +41,8 @@ describe('AuditDetailModal', () => {
 
         const errorMock = {
         data: undefined,
-        isLoading: true,
+        isLoading: false ,
+        isError: true,
         error: new Error('Test error'),
     } as unknown as UseQueryResult<AuditEvent, Error>
 

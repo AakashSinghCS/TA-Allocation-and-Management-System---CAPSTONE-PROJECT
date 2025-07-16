@@ -84,9 +84,10 @@ export default function AuditFilters({
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3 text-sm">
   {/* Service */}
   <div className="flex flex-col">
-    <label className="text-xs font-medium mb-1">Service</label>
+    <label htmlFor="service-choose" className="text-xs font-medium mb-1">Service</label>
     <select
       className="border border-gray-300 rounded-sm px-2 py-1 focus:ring-1 focus:ring-blue-500"
+      id="service-choose"
       value={draftService}
       onChange={e => setDraftService(e.target.value)}
     >
@@ -99,9 +100,10 @@ export default function AuditFilters({
 
   {/* Entity Name */}
   <div className="flex flex-col">
-    <label className="text-xs font-medium mb-1">Entity</label>
+    <label htmlFor="audit-entity" className="text-xs font-medium mb-1">Entity</label>
     <input
       type="text"
+      id="audit-entity"
       className="border border-gray-300 rounded-sm px-2 py-1 focus:ring-1 focus:ring-blue-500"
       placeholder="Entity Name"
       value={draftEntity}
@@ -111,11 +113,12 @@ export default function AuditFilters({
 
   {/* Entity ID */}
   <div className="flex flex-col">
-    <label className="text-xs font-medium mb-1">Entity ID</label>
+    <label htmlFor="audit-entity-id" className="text-xs font-medium mb-1">Entity ID</label>
     <input
       type="number"
+      id="audit-entity-id"
       className="border border-gray-300 rounded-sm px-2 py-1 focus:ring-1 focus:ring-blue-500"
-      placeholder="ID"
+      placeholder="Entity ID"
       value={draftEntityId}
       onChange={e => setDraftEntityId(+e.target.value)}
     />
@@ -123,9 +126,10 @@ export default function AuditFilters({
 
   {/* Action */}
   <div className="flex flex-col">
-    <label className="text-xs font-medium mb-1">Action</label>
+    <label htmlFor="audit-action" className="text-xs font-medium mb-1">Action</label>
     <select
       className="border border-gray-300 rounded-sm px-2 py-1 focus:ring-1 focus:ring-blue-500"
+      id="audit-action"
       value={draftAction}
       onChange={e => setDraftAction(e.target.value)}
     >
@@ -138,11 +142,12 @@ export default function AuditFilters({
 
   {/* Actor ID */}
   <div className="flex flex-col">
-    <label className="text-xs font-medium mb-1">Actor ID</label>
+    <label htmlFor="audit-actor-id" className="text-xs font-medium mb-1">Actor ID</label>
     <input
       type="number"
+      id="audit-actor-id"
       className="border border-gray-300 rounded-sm px-2 py-1 focus:ring-1 focus:ring-blue-500"
-      placeholder="ID"
+      placeholder="Actor ID"
       value={draftActorId}
       onChange={e => setDraftActorId(+e.target.value)}
     />
@@ -150,9 +155,10 @@ export default function AuditFilters({
 
   {/* When */}
   <div className="flex flex-col">
-    <label className="text-xs font-medium mb-1">Date</label>
+    <label  htmlFor="audit-date" className="text-xs font-medium mb-1">Date</label>
     <input
       type="date"
+      id="audit-date"
       className="border border-gray-300 rounded-sm px-2 py-1 focus:ring-1 focus:ring-blue-500"
       value={draftWhen}
       onChange={e => setDraftWhen(e.target.value)}
@@ -162,7 +168,7 @@ export default function AuditFilters({
   {/* Apply Button spans full width on small, auto-size on large */}
   <div className="flex items-end">
     <button
-      className="bg-blue-600 text-white text-sm px-3 py-1 rounded-sm hover:bg-blue-700 transition-colors w-full sm:w-auto"
+      className="bg-[#040941] text-white text-sm px-3 py-1 rounded-sm hover:bg-[#040491] transition-colors w-full sm:w-auto"
       onClick={handleApply}
     >
       Apply

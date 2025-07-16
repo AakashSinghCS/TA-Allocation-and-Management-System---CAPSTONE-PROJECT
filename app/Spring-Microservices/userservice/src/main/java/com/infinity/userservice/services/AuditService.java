@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.infinity.userservice.enums.ActionOptions;
 import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.models.AuditEvent;
-import com.infinity.userservice.repositories.AuditEventRepository;
+import com.infinity.userservice.repositories.AuditRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class AuditService {
 
-    private final AuditEventRepository auditRepo;
+    private final AuditRepository auditRepo;
     private final ObjectMapper objectMapper;
 
     private static final String SERVICE_NAME = "user-service";

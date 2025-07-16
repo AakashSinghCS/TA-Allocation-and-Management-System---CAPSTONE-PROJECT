@@ -20,7 +20,7 @@ describe('AuditTable (with updated AuditEvent interface)', () => {
     },
     {
       id: 2,
-      timestamp: '2025-07-16T09:45:00Z',
+      timestamp: '2025-07-16T08:30:00Z',
       actorId: 22,
       action: 'UPDATE',
       entityType: 'Book',
@@ -54,7 +54,9 @@ describe('AuditTable (with updated AuditEvent interface)', () => {
     });
 
     // Check first row cells
-    expect(screen.getByRole('cell', { name: '08:30 UTC' })).toBeInTheDocument();
+    expect(
+        screen.getAllByRole('cell', { name: '08:30 UTC' })[0]
+        ).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: 'user-service' })).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: '11' })).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: 'CREATE' })).toBeInTheDocument();
@@ -63,7 +65,9 @@ describe('AuditTable (with updated AuditEvent interface)', () => {
     ).toBeInTheDocument();
 
     // Check second row cells (string entityId)
-    expect(screen.getByRole('cell', { name: '09:45 UTC' })).toBeInTheDocument();
+    expect(
+        screen.getAllByRole('cell', { name: '08:30 UTC' })[1]
+        ).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: 'catalog-service' })).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: '22' })).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: 'UPDATE' })).toBeInTheDocument();

@@ -8,13 +8,12 @@ import org.springframework.web.bind.annotation.*;
 
 import com.infinity.userservice.enums.ActionOptions;
 import com.infinity.userservice.models.AuditEvent;
-import com.infinity.userservice.repositories.AuditEventRepository;
 import com.infinity.userservice.services.AuditService;
 
 @RestController
 @RequestMapping("/users/audit")
 @RequiredArgsConstructor
-public class AuditEventController {
+public class AuditController {
 
     private final AuditService auditService;
 

@@ -41,7 +41,7 @@ describe('AuditFilters', () => {
     expect(screen.getByPlaceholderText(/entity name/i)).toHaveValue('');
 
     // Entity ID input
-    expect(screen.getByPlaceholderText(/^ID$/i)).toHaveValue(0);
+    expect(screen.getByPlaceholderText(/^Entity ID$/i)).toHaveValue(0);
 
     // Action select has empty selection and options
     const actionSelect = screen.getByLabelText(/action/i);
@@ -51,7 +51,7 @@ describe('AuditFilters', () => {
     });
 
     // Actor ID input
-    expect(screen.getAllByPlaceholderText(/^ID$/i)[1]).toHaveValue(0);
+    expect(screen.getByPlaceholderText(/^Actor ID$/i)).toHaveValue(0);
 
     // Date input
     expect(screen.getByLabelText(/date/i)).toHaveValue('2025-07-16');
@@ -83,7 +83,7 @@ describe('AuditFilters', () => {
       target: { value: 'MyEntity' },
     });
     // Change entityId
-    fireEvent.change(screen.getByPlaceholderText(/^ID$/i), {
+    fireEvent.change(screen.getByPlaceholderText(/^Entity ID$/i), {
       target: { value: '123' },
     });
     // Change action
@@ -91,7 +91,7 @@ describe('AuditFilters', () => {
       target: { value: ACTION_OPTIONS[1] }, // DELETE
     });
     // Change actorId (second ID input)
-    fireEvent.change(screen.getAllByPlaceholderText(/^ID$/i)[1], {
+    fireEvent.change(screen.getByPlaceholderText(/^Actor ID$/i), {
       target: { value: '77' },
     });
     // Change date
