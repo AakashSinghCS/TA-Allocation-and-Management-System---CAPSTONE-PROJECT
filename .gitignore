@@ -35,3 +35,6 @@ app/TA-portal-infinity/my-custom-coverage
 
 # Maven
 **/target/
+
+#remove package-lock.json from gitignore when develop ends and production starts.
+**/package-lock.json
