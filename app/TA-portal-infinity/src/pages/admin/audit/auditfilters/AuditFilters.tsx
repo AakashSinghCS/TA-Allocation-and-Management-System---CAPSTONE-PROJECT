@@ -76,95 +76,93 @@ export default function AuditFilters({
 
 
   return (
-    <div className="flex flex-wrap gap-4 items-end">
-      {/* Service */}
-      <div>
-        <label className="block text-sm font-medium mb-1">Service</label>
-        <select
-          className="select select-bordered w-full"
-          value={draftService}
-          onChange={e => setDraftService(e.target.value)}
-        >
-          <option value="">Pick a service</option>
-          {SERVICE_OPTIONS.map(svc => (
-            <option key={svc} value={svc}>
-              {svc}
-            </option>
-          ))}
-        </select>
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3 text-sm">
+  {/* Service */}
+  <div className="flex flex-col">
+    <label className="text-xs font-medium mb-1">Service</label>
+    <select
+      className="border border-gray-300 rounded-sm px-2 py-1 focus:ring-1 focus:ring-blue-500"
+      value={draftService}
+      onChange={e => setDraftService(e.target.value)}
+    >
+      <option value="">Pick service…</option>
+      {SERVICE_OPTIONS.map(svc => (
+        <option key={svc} value={svc}>{svc}</option>
+      ))}
+    </select>
+  </div>
 
-      {/* Entity Name */}
-      <div>
-        <label className="block text-sm font-medium mb-1">Entity Name</label>
-        <input
-          type="text"
-          className="input input-bordered w-full"
-          placeholder="Entity Name"
-          value={draftEntity}
-          onChange={e => setDraftEntity(e.target.value)}
-        />
-      </div>
+  {/* Entity Name */}
+  <div className="flex flex-col">
+    <label className="text-xs font-medium mb-1">Entity</label>
+    <input
+      type="text"
+      className="border border-gray-300 rounded-sm px-2 py-1 focus:ring-1 focus:ring-blue-500"
+      placeholder="Entity Name"
+      value={draftEntity}
+      onChange={e => setDraftEntity(e.target.value)}
+    />
+  </div>
 
-      {/* Entity Id */}
-      <div>
-        <label className="block text-sm font-medium mb-1">Entity ID</label>
-        <input
-          type="number"
-          className="input input-bordered w-full"
-          placeholder="Entity Id"
-          value={draftEntityId}
-          onChange={e => setDraftEntityId(Number(e.target.value))}
-        />
-      </div>
+  {/* Entity ID */}
+  <div className="flex flex-col">
+    <label className="text-xs font-medium mb-1">Entity ID</label>
+    <input
+      type="number"
+      className="border border-gray-300 rounded-sm px-2 py-1 focus:ring-1 focus:ring-blue-500"
+      placeholder="ID"
+      value={draftEntityId}
+      onChange={e => setDraftEntityId(+e.target.value)}
+    />
+  </div>
 
-      {/* Action */}
-      <div>
-        <label className="block text-sm font-medium mb-1">Action</label>
-        <select
-          className="select select-bordered w-full"
-          value={draftAction}
-          onChange={e => setDraftAction(e.target.value)}
-        >
-            <option value="">Pick an Action</option>
-            {ACTION_OPTIONS.map(ac => (
-              <option key={ac} value={ac}>
-                {ac}
-              </option>
-            ))}
-        </select>
-      </div>
+  {/* Action */}
+  <div className="flex flex-col">
+    <label className="text-xs font-medium mb-1">Action</label>
+    <select
+      className="border border-gray-300 rounded-sm px-2 py-1 focus:ring-1 focus:ring-blue-500"
+      value={draftAction}
+      onChange={e => setDraftAction(e.target.value)}
+    >
+      <option value="">Pick action…</option>
+      {ACTION_OPTIONS.map(a => (
+        <option key={a} value={a}>{a}</option>
+      ))}
+    </select>
+  </div>
 
-      {/* Actor Id */}
-      <div>
-        <label className="block text-sm font-medium mb-1">Actor ID</label>
-        <input
-          type="number"
-          className="input input-bordered w-full"
-          placeholder="Actor Id"
-          value={draftActorId}
-          onChange={e => setDraftActorId(Number(e.target.value))}
-        />
-      </div>
+  {/* Actor ID */}
+  <div className="flex flex-col">
+    <label className="text-xs font-medium mb-1">Actor ID</label>
+    <input
+      type="number"
+      className="border border-gray-300 rounded-sm px-2 py-1 focus:ring-1 focus:ring-blue-500"
+      placeholder="ID"
+      value={draftActorId}
+      onChange={e => setDraftActorId(+e.target.value)}
+    />
+  </div>
 
-      {/* When */}
-      <div>
-        <label className="block text-sm font-medium mb-1">When</label>
-        <input
-          type="date"
-          className="input input-bordered w-full"
-          value={draftWhen}
-          onChange={e => setDraftWhen(e.target.value)}
-        />
-      </div>
+  {/* When */}
+  <div className="flex flex-col">
+    <label className="text-xs font-medium mb-1">Date</label>
+    <input
+      type="date"
+      className="border border-gray-300 rounded-sm px-2 py-1 focus:ring-1 focus:ring-blue-500"
+      value={draftWhen}
+      onChange={e => setDraftWhen(e.target.value)}
+    />
+  </div>
 
-      {/* Apply */}
-      <button
-        className="btn btn-primary h-10 self-center"
-        onClick={handleApply}
-      >
-        Apply
-      </button>
-    </div>
+  {/* Apply Button spans full width on small, auto-size on large */}
+  <div className="flex items-end">
+    <button
+      className="bg-blue-600 text-white text-sm px-3 py-1 rounded-sm hover:bg-blue-700 transition-colors w-full sm:w-auto"
+      onClick={handleApply}
+    >
+      Apply
+    </button>
+  </div>
+</div>
   );
 }

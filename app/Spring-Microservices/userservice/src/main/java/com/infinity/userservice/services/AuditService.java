@@ -1,7 +1,9 @@
 package com.infinity.userservice.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.infinity.userservice.enums.ActionOptions;
 import com.infinity.userservice.exceptions.NotFoundException;
 import com.infinity.userservice.models.AuditEvent;
@@ -35,8 +37,8 @@ public class AuditService {
         Long entityId
     ) {
         try {
-            String beforeJson = before == null ? null : objectMapper.writeValueAsString(before);
-            String afterJson  = after  == null ? null : objectMapper.writeValueAsString(after);
+            String beforeJson = before == null ? null : filterPassword(before);
+            String afterJson  = after  == null ? null : filterPassword(after);
             AuditEvent ev = AuditEvent.builder()
                 .actorId(actorId)
                 .service(SERVICE_NAME)
@@ -111,4 +113,17 @@ public class AuditService {
         return auditRepo.findById(id)
             .orElseThrow(() -> new NotFoundException("AuditEvent not found with id " + id));
     }
+
+    private String filterPassword(Object obj) throws JsonProcessingException {
+    if (obj == null) return null;
+
+    // Convert the object into a mutable JSON tree
+    JsonNode tree = objectMapper.valueToTree(obj);
+    if (tree.isObject()) {
+        ((ObjectNode) tree).remove("password");
+    }
+
+    // Write back to string
+    return objectMapper.writeValueAsString(tree);
+}
 }

@@ -9,7 +9,7 @@ type Props = {
 export default function AuditTable({ events, loading, onSelect }: Props) {
   if (loading) return <div>Loading…</div>;
   return (
-    <table className="min-w-full text-sm border rounded-lg">
+    <table className="min-w-full text-sm border border-gray-400 rounded-lg">
       <thead className="bg-slate-100 text-left text-xs uppercase">
         <tr>
           <th className="px-3 py-2">When</th>

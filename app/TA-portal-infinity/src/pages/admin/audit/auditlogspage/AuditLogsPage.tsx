@@ -6,6 +6,7 @@ import AuditFilters from '../auditfilters/AuditFilters';
 import AuditDetailModal from '../auditdetailmodal/AuditDetailModal';
 import { ToastContainer, toast } from 'react-toastify';
 
+const SERVICE_ERROR_ID = 'service-required';
 
 export default function AuditLogsPage() {
   const [page, setPage] = useState(0);
@@ -33,9 +34,15 @@ export default function AuditLogsPage() {
   // whenever you apply new filters, reset to page 0
   const handleApply = () => {
     if (!serviceFilter) {
-      toast.error('Please pick a service before applying filters.');
+      if (!toast.isActive(SERVICE_ERROR_ID)) {
+        toast.error('Please pick a service before applying filters.', {
+          toastId: SERVICE_ERROR_ID,
+        });
+      }
       return;
     }
+    // user has now picked a service, so clear any lingering “pick service” toast
+    toast.dismiss(SERVICE_ERROR_ID);
     setPage(0);
   };
 
@@ -49,7 +56,7 @@ export default function AuditLogsPage() {
         closeOnClick
         pauseOnHover
       />
-      
+
       <h1 className="text-2xl font-semibold">Audit Logs</h1>
 
       <AuditFilters

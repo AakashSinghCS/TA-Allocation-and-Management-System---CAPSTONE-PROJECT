@@ -80,6 +80,8 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
+        User before = new User(user);
+
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_ADMIN")) {
             throw new AuthorizationException("Not allowed");
         }
@@ -116,7 +118,7 @@ public class UserService {
             userIdFromHeader,
             ActionOptions.UPDATE,
             "User",
-            user,   
+            before,   
             after,
             id
         );
@@ -180,6 +182,8 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
+        User before = new User(user);
+
         Set<Role> newRoles = request.roles().stream()
                 .map(roleEnum -> roleRepository.findByName(roleEnum)
                         .orElseThrow(() -> new NotFoundException("Role not found: " + roleEnum)))
@@ -192,7 +196,7 @@ public class UserService {
             userIdFromHeader,
             ActionOptions.UPDATE,
             "User",
-            user,
+            before,
             saved,
             id
         );
