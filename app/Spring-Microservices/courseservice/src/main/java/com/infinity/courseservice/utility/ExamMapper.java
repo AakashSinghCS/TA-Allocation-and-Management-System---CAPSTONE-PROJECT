@@ -21,11 +21,12 @@ public class ExamMapper {
     public ExamDto mapExam(Exam exam) {
         Section section = sectionRepository.findById(exam.getSectionId())
                 .orElseThrow(() -> new NotFoundException("Section not found"));
-
+        
         String term = section.getSemester() + " " + section.getYear();
 
         return new ExamDto(
             exam.getId(),
+            section.getCourse().getId(),
             exam.getSectionId(),
             term,
             exam.getDate(),

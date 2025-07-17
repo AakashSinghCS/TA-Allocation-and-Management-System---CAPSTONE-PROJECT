@@ -61,7 +61,7 @@ public class ExamServiceTest {
 
     @Test
     void testCreateExam_Success() {
-        ExamDto dto = new ExamDto(null, 1L, "W1 2025", LocalDate.now(), LocalTime.of(9,0), LocalTime.of(12,0));
+        ExamDto dto = new ExamDto(null, 1L, 1L,"W1 2025", LocalDate.now(), LocalTime.of(9,0), LocalTime.of(12,0));
 
         Course course = new Course();
         Section section = new Section();
@@ -80,7 +80,7 @@ public class ExamServiceTest {
 
         when(examRepository.save(any(Exam.class))).thenReturn(saved);
 
-        ExamDto mapped = new ExamDto(10L, 1L, "W1 2025", dto.date(), dto.startTime(), dto.endTime());
+        ExamDto mapped = new ExamDto(10L, 1L, 1L, "W1 2025", dto.date(), dto.startTime(), dto.endTime());
         when(examMapper.mapExam(saved)).thenReturn(mapped);
 
         ExamDto result = examService.createExam(dto);
@@ -91,7 +91,7 @@ public class ExamServiceTest {
 
     @Test
     void testCreateExam_DuplicateThrows() {
-        ExamDto dto = new ExamDto(null, 1L, "W1 2025", LocalDate.now(), LocalTime.of(9,0), LocalTime.of(12,0));
+        ExamDto dto = new ExamDto(null, 1L, 1L, "W1 2025", LocalDate.now(), LocalTime.of(9,0), LocalTime.of(12,0));
 
         Course course = new Course();
         Section section = new Section();
@@ -113,7 +113,7 @@ public class ExamServiceTest {
 
     @Test
     void testCreateExam_CourseNotFound() {
-        ExamDto dto = new ExamDto(null, 1L, "W1 2025", LocalDate.now(), LocalTime.of(9,0), LocalTime.of(12,0));
+        ExamDto dto = new ExamDto(null, 1L, 1L, "W1 2025", LocalDate.now(), LocalTime.of(9,0), LocalTime.of(12,0));
         when(courseRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> examService.createExam(dto));
@@ -122,7 +122,7 @@ public class ExamServiceTest {
     @Test
     void testUpdateExam_NotFound() {
         when(examRepository.findById(10L)).thenReturn(Optional.empty());
-        ExamDto dto = new ExamDto(null, 1L, "W1 2025", LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
+        ExamDto dto = new ExamDto(null, 1L, 1L, "W1 2025", LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
 
         assertThrows(NotFoundException.class, () -> examService.updateExam(10L, dto));
     }
@@ -135,7 +135,7 @@ public class ExamServiceTest {
         when(examRepository.findById(10L)).thenReturn(Optional.of(existing));
         when(examRepository.save(any(Exam.class))).thenReturn(existing);
 
-        ExamDto mapped = new ExamDto(10L, 1L, "W1 2025", LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
+        ExamDto mapped = new ExamDto(10L, 1L, 1L, "W1 2025", LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
         when(examMapper.mapExam(existing)).thenReturn(mapped);
 
         ExamDto result = examService.updateExam(10L, mapped);
@@ -161,7 +161,7 @@ public class ExamServiceTest {
         exam.setId(10L);
         when(examRepository.findById(10L)).thenReturn(Optional.of(exam));
 
-        ExamDto mapped = new ExamDto(10L, 1L, "W1 2025", LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
+        ExamDto mapped = new ExamDto(10L, 1L, 1L, "W1 2025", LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
         when(examMapper.mapExam(exam)).thenReturn(mapped);
 
         ExamDto result = examService.getExamById(10L);
@@ -173,7 +173,7 @@ public class ExamServiceTest {
         Exam exam = new Exam();
         exam.setId(10L);
         when(examRepository.findAll()).thenReturn(List.of(exam));
-        ExamDto mapped = new ExamDto(10L, 1L, "W1 2025", LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
+        ExamDto mapped = new ExamDto(10L, 1L, 1L, "W1 2025", LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
         when(examMapper.mapExam(exam)).thenReturn(mapped);
 
         List<ExamDto> result = examService.getAllExams();

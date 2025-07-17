@@ -4,6 +4,7 @@ import java.time.LocalTime;
 
 public record ExamDto(
     Long id,
+    Long courseId,
     Long sectionId,
     String term,
     LocalDate date,
