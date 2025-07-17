@@ -4,18 +4,22 @@ import { mockStudentEmmaDoe, mockStudentJohnDoe } from "../../mocked-objects/use
 const BASE = "http://localhost:8080/users/search";
 
 interface UserSearchRequest {
-  role: string;
-  name: string;
-  universityNumber: number;
+  role?: string;
+  firstname?: string;
+  lastname?: string;
+  universityNumber?: number;
+  userId? : string;
 }
 
 export async function fetchAllSearchedUsers<T extends User>(req: UserSearchRequest): Promise<T[] | null> {
   const token = localStorage.getItem("token");
 
   const params = new URLSearchParams({
-    role: req.role,
-    name: req.name,
-    universityNumber: req.universityNumber.toString(),
+    ...(req.role ? { role: req.role }: {}),
+    ...(req.firstname ? { firstname: req.firstname }: {}),
+    ...(req.lastname ? { lastname: req.lastname }: {}),
+    ...(req.universityNumber ? { universityNumber: req.universityNumber.toString() }: {}),
+    ...(req.userId ? { userId: req.userId }: {})
   });
 
   try {

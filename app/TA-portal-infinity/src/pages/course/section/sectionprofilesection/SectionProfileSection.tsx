@@ -63,7 +63,7 @@ export default function SectionProfileSection({
           >
             <span className="font-medium text-slate-700 break-words">Instructor:</span>
             <span className="ml-2 break-words">
-              <Link to={`/user/instructorprofile/${section.instructor?.id}`} className="hover:text-blue-600">
+              <Link to={`/user/profile/${section.instructor?.id}`} className="hover:text-blue-600">
                 {section.instructor?.firstName} {section.instructor?.lastName}
               </Link>
             </span>

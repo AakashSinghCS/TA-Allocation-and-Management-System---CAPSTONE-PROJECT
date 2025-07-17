@@ -57,10 +57,10 @@ export default function UserBrowsingViewer({
 };
 
     return (
-        <div>
+        <>
             <div className="flex justify-between items-stretch mb-4">
                 <div className="flex-1">
-                    <SearchUserBar onSearch={search} loading={loading} allowedRoles={allowedRoles}/>
+                    <SearchUserBar onSearch={search} loading={loading} allowedRoles={allowedRoles} mode={mode}/>
                 </div>
                 {userRoles.includes('COORDINATOR') && mode=='view' && (
                     <button onClick={() => navigate('/user/coordinator/browseuser/newuser')} className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors">
@@ -77,6 +77,7 @@ export default function UserBrowsingViewer({
             {error && <div className="text-red-500 mb-2">{error}</div>}
 
             {searchedUsers && searchedUsers.length > 0 ? (
+                <div className="overflow-x-auto w-full">
                 <table className="min-w-full border-collapse">
                     <thead><tr>
                         {columns.map(col => <th key={String(col)} className="border border-gray-300 px-3 py-1 text-left bg-gray-100">{labels[col]}</th>)}
@@ -130,7 +131,8 @@ export default function UserBrowsingViewer({
                         ))}
                     </tbody>
                 </table>
+                </div>
             ) : searchedUsers !== null ? (<div>No users found.</div>) : null}
-        </div>
+        </>
     );
 }

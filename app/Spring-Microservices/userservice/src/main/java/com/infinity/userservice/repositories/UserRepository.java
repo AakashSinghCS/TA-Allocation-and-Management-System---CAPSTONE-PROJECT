@@ -17,22 +17,32 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByRoles_Name(UserRole name);
 
-    List<User> findByRoles_NameAndStudentNum(UserRole role, Integer studentNum);
+    // List<User> findByRoles_NameAndStudentNum(UserRole role, Integer studentNum);
 
-    List<User> findByRoles_NameAndEmployeeNum(UserRole role, Integer employeeNum);
+    // List<User> findByRoles_NameAndEmployeeNum(UserRole role, Integer employeeNum);
     
-    @Query("SELECT u FROM User u WHERE :role MEMBER OF u.roles AND (LOWER(u.firstName) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :name, '%')))")
-    List<User> findByRoles_NameAndNameContaining(@Param("role") UserRole role, @Param("name") String name);
+    // @Query("SELECT u FROM User u WHERE :role MEMBER OF u.roles AND (LOWER(u.firstName) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :name, '%')))")
+    // List<User> findByRoles_NameAndNameContaining(@Param("role") UserRole role, @Param("name") String name);
 
     Optional<User> findByStudentNum(Integer studentNum);
 
-    @Query("""
-            SELECT u FROM User u
-            JOIN u.roles r
-            WHERE r.name = :role
-              AND (LOWER(u.firstName) LIKE LOWER(CONCAT('%', :name, '%'))
-                   OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :name, '%')))
-            """)
-    List<User> findByRoleAndName(@Param("role") UserRole role, @Param("name") String name);
+    // @Query("""
+    //         SELECT u FROM User u
+    //         JOIN u.roles r
+    //         WHERE r.name = :role
+    //           AND (LOWER(u.firstName) LIKE LOWER(CONCAT('%', :name, '%'))
+    //                OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :name, '%')))
+    //         """)
+    // List<User> findByRoleAndName(@Param("role") UserRole role, @Param("name") String name);
 
+    List<User> findByRoles_NameAndFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
+        UserRole role,
+        String firstname,
+        String lastname
+    );
+
+    // 2) Look up by employeeNum column
+    Optional<User> findByEmployeeNum(Integer employeeNum);
+
+  
 }

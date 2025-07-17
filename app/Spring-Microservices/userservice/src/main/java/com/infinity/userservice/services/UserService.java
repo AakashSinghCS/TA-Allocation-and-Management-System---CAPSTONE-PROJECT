@@ -1,5 +1,7 @@
 package com.infinity.userservice.services;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -153,27 +155,47 @@ public class UserService {
         return "User deleted successfully";
     }
 
-    public List<UserDto> search(String role, String name, int universityNumber) {
-        UserRole targetRole;
-        try {
-            targetRole = UserRole.valueOf(role.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new BadRequestException("Invalid role specified: " + role);
-        }
-
+    public List<UserDto> search(
+        String role,
+        String firstname,
+        String lastname,
+        int    universityNumber,
+        Long   userId
+    ) {
         List<User> users;
 
-        if (targetRole == UserRole.STUDENT && universityNumber > 0) {
-            users = userRepository.findByRoles_NameAndStudentNum(targetRole, universityNumber);
-        } else if (targetRole == UserRole.INSTRUCTOR && universityNumber > 0) {
-            users = userRepository.findByRoles_NameAndEmployeeNum(targetRole, universityNumber);
+        // 1) userId search takes absolute priority
+        if (userId != null && userId > 0) {
+            users = userRepository.findById(userId)
+                                  .map(Collections::singletonList)
+                                  .orElse(Collections.emptyList());
+
+        // 2) universityNumber search next
+        } else if (universityNumber > 0) {
+            users = new ArrayList<>();
+            userRepository.findByStudentNum(universityNumber)
+                          .ifPresent(users::add);
+            userRepository.findByEmployeeNum(universityNumber)
+                          .ifPresent(users::add);
+
+        // 3) finally, role + name search
         } else {
-            users = userRepository.findByRoleAndName(targetRole, name.toLowerCase());
+            if (role == null || role.isBlank()) {
+                return Collections.emptyList();  // no mode selected
+            }
+            UserRole targetRole = UserRole.valueOf(role.trim().toUpperCase());
+            String fn = firstname == null ? "" : firstname.trim();
+            String ln = lastname  == null ? "" : lastname.trim();
+
+            users = userRepository
+                .findByRoles_NameAndFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
+                    targetRole, fn, ln
+                );
         }
 
         return users.stream()
-                .map(userMapper::toDto)
-                .collect(Collectors.toList());
+                    .map(userMapper::toDto)
+                    .collect(Collectors.toList());
     }
         
 

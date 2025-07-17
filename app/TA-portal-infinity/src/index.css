@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import 'react-toastify/dist/ReactToastify.css';
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -19,13 +20,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-input, select {
-  border: 1px solid #cbd5e0; 
-  border-radius: 0.375rem;   
-  padding: 0.5rem 0.75rem;   
-  box-sizing: border-box;
-}
 
+
+/* — your global defaults go into the “base” layer: */
+@layer base {
+  input,
+  select {
+    border: 1px solid #cbd5e0;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;    /* default for un‑layered inputs */
+    box-sizing: border-box;
+  }
+}
 
 
 /* a {
@@ -102,3 +108,5 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+/* third‑party */
+@import 'react-toastify/dist/ReactToastify.css';

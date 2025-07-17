@@ -60,10 +60,12 @@ public class UserController {
     @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/search")
     public ResponseEntity<List<UserDto>> searchUsers(
-            @RequestParam String role,
-            @RequestParam(required = false, defaultValue = "") String name,
-            @RequestParam(required = false, defaultValue = "0") int universityNumber) {
-        List<UserDto> results = userService.search(role, name, universityNumber);
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false, defaultValue = "") String firstname,
+             @RequestParam(required = false, defaultValue = "") String lastname,
+            @RequestParam(required = false, defaultValue = "0") int universityNumber,
+            @RequestParam(required = false) Long userId) {
+        List<UserDto> results = userService.search(role, firstname, lastname, universityNumber,userId);
         return ResponseEntity.ok(results);
     }
     
