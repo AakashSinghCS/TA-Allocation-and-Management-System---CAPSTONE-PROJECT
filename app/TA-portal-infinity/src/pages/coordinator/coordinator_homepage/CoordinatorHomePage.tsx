@@ -157,15 +157,15 @@ export default function CoordinatorHomePage() {
   const sectionsNeedingTAs = sectionsNeedingTAsCount;
 
   return (
-    <section className="px-4 py-6 bg-white min-h-full">
+    <section className="px-2 sm:px-4 py-4 sm:py-6 bg-white min-h-full">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl md:text-3xl font-bold text-[#040941] mb-2">My Dashboard</h1>
-        <p className="text-lg text-gray-700 mb-4">Welcome, {fullName}</p>
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#040941] mb-2">My Dashboard</h1>
+        <p className="text-base sm:text-lg text-gray-700 mb-4">Welcome, {fullName}</p>
         {/* Main Content & Sidebar */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-y-4 lg:gap-x-8">
-          <main className="lg:col-span-3 space-y-6">
+        <div className="flex flex-col lg:flex-row gap-y-6 lg:gap-y-0 lg:gap-x-8">
+          <main className="w-full lg:w-3/4 space-y-6">
             {/* Summary Metrics */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
           {/* Total Applications */}
           <div className="bg-blue-50 rounded-lg p-4 flex justify-between items-center">
             <div>
@@ -328,9 +328,9 @@ export default function CoordinatorHomePage() {
               </div>
             </div>
           </main>
-          <aside className="flex justify-center">
+          <aside className="flex justify-center w-full lg:w-1/4 mt-6 lg:mt-0">
             {/* Combined Tasks & Profile Setup Card */}
-            <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center w-full max-w-sm">
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center w-full max-w-xs sm:max-w-sm">
               <h2 className="font-semibold text-gray-700 mt-1">Tasks Overview</h2>
               <div className="flex flex-col items-center space-y-6">
                  <hr className="my-6 w-full border-gray-300" />
