@@ -12,6 +12,9 @@ import { fetchAllocationByApplicationId } from '../../../api/allocation/fetchAll
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
 import { fetchDeadlines } from '../../../api/config/fetchDeadlines';
 
+// Deadline config type
+type Deadline = { name: string; startTime: string; endTime: string };
+
 export default function CoordinatorHomePage() {
   const { token, userId } = useAuth();
   // Fetch user profile for welcome message
@@ -31,29 +34,30 @@ export default function CoordinatorHomePage() {
   const [sectionsCount, setSectionsCount] = useState(0);
   const [questionsCount, setQuestionsCount] = useState(0);
   const [sectionsNeedingTAsCount, setSectionsNeedingTAsCount] = useState(0);
-  const [appStatusMap, setAppStatusMap] = useState<Record<number, string>>({});
+  const [recentAppAllocations, setRecentAppAllocations] = useState<Record<number, Allocation[]>>({});
   const [topAllocations, setTopAllocations] = useState<Allocation[]>([]);
-  // Map raw allocation statuses to user-friendly text
-  const getAppStatusText = (id: number): string => {
-    const s = appStatusMap[id];
-    if (!s || s === 'None') return 'Not Allocated';
-    if (s === 'SENT') return 'Offer Sent';
-    if (s === 'CONFIRMED') return 'Allocated';
-    if (s === 'REJECTED') return 'Offer Rejected';
-    return s;
-  };
   // Tasks progress: deadlines set out of total
   const totalDeadlines = 3;
-  const [deadlines, setDeadlines] = useState<Allocation[]>([]);
-  const tasksProgress = Math.floor((deadlines.length / totalDeadlines) * 100);
-  // Ensure ring is visible at 0%: full dash when no progress
+  const [deadlines, setDeadlines] = useState<Deadline[]>([]);
+  // Only count deadlines whose endTime is in the future
+  const now = new Date();
+  const activeDeadlines = deadlines.filter(d => new Date(d.endTime) > now);
+  const tasksProgress = Math.floor((activeDeadlines.length / totalDeadlines) * 100);
   const tasksDash1 = tasksProgress > 0 ? tasksProgress : 100;
   const tasksDash2 = tasksProgress > 0 ? 100 - tasksProgress : 0;
+  // Compute days until each deadline
+  const daysUntilList = deadlines.map(d => {
+    const date = new Date(d.endTime);
+    return Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  });
+  // Helper to convert snake_case to Title Case
+  const formatDeadlineName = (name: string) =>
+    name.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   // Color: 0-65% red, 66-99% yellow, 100% green
   const progressColor =
-    tasksProgress >= 100 ? 'text-green-500' :
-    tasksProgress >= 66 ? 'text-yellow-500' :
-    'text-red-500';
+    tasksProgress >= 100 ? 'text-green-700' :
+    tasksProgress >= 66 ? 'text-yellow-700' :
+    'text-red-600';
   // Profile questions setup progress: target 5
   const profileThreshold = 5;
   const profileProgress = Math.min(Math.floor((questionsCount / profileThreshold) * 100), 100);
@@ -61,9 +65,9 @@ export default function CoordinatorHomePage() {
   const profileDash2 = profileProgress > 0 ? 100 - profileProgress : 0;
   // Color: 0-2 red, 3-4 yellow, >=5 green
   const profileColor =
-    questionsCount >= profileThreshold ? 'text-green-500' :
-    questionsCount >= 3 ? 'text-yellow-500' :
-    'text-red-500';
+    questionsCount >= profileThreshold ? 'text-green-700' :
+    questionsCount >= 3 ? 'text-yellow-700' :
+    'text-red-700';
 
   useEffect(() => {
     if (!token) return;
@@ -75,17 +79,15 @@ export default function CoordinatorHomePage() {
         );
         const topApps = sorted.slice(0, 5);
         setRecentApps(topApps);
-        // fetch and map allocation statuses for recent apps
+        // fetch allocations for each recent app
         Promise.all(topApps.map(app => fetchAllocationByApplicationId(app.id ?? 0, token)))
           .then(results => {
-            const statusMap: Record<number, string> = {};
+            const allocMap: Record<number, Allocation[]> = {};
             results.forEach((allocs, idx) => {
               const appId = topApps[idx].id ?? 0;
-              statusMap[appId] = allocs.length
-                ? allocs[0].status || 'Unknown'
-                : 'None';
+              allocMap[appId] = allocs;
             });
-            setAppStatusMap(statusMap);
+            setRecentAppAllocations(allocMap);
           })
           .catch(() => {});
       })
@@ -143,7 +145,15 @@ export default function CoordinatorHomePage() {
   useEffect(() => {
     if (!token) return;
     fetchDeadlines(token)
-      .then(res => setDeadlines(res ?? []))
+      .then(res => {
+        const raw = res ?? [];
+        const list = raw.map(d => ({
+          name: (d as any).name,
+          startTime: (d as any).startTime,
+          endTime: (d as any).endTime,
+        }));
+        setDeadlines(list);
+      })
       .catch(() => setDeadlines([]));
   }, [token]);
   // Compute task summaries
@@ -156,8 +166,13 @@ export default function CoordinatorHomePage() {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-2xl md:text-3xl font-bold text-[#040941] mb-2">My Dashboard</h1>
         <p className="text-lg text-gray-700 mb-4">Welcome, {fullName}</p>
-        {/* Summary Metrics (8 cards) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        
+       
+        {/* Main Content & Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-y-4 lg:gap-x-8">
+          <main className="lg:col-span-3 space-y-6">
+            {/* Summary Metrics (8 cards) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
           {/* Total Applications */}
           <div className="bg-blue-50 rounded-lg p-4 flex justify-between items-center">
             <div>
@@ -200,24 +215,7 @@ export default function CoordinatorHomePage() {
               <p className="text-xl font-semibold text-gray-900">{sectionsInSystem}</p>
             </div>
           </div>
-          {/* Courses Requiring TAs */}
-          <div className="bg-green-50 rounded-lg p-4 flex justify-between items-center">
-            <div>
-              <p className="text-sm text-gray-600">Courses Requiring TAs</p>
-              <p className="text-xl font-semibold text-gray-900">{sectionsNeedingTAs}</p>
-            </div>
           </div>
-          {/* Profile Questions */}
-          <div className="bg-red-50 rounded-lg p-4 flex justify-between items-center">
-            <div>
-              <p className="text-sm text-gray-600">Profile Questions</p>
-              <p className="text-xl font-semibold text-gray-900">{questionsCount}</p>
-            </div>
-          </div>
-        </div>
-        {/* Main Content & Sidebar */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-y-8 lg:gap-x-16">
-          <main className="lg:col-span-3 space-y-6">
             {/* Recent Applications */}
             <div className="bg-white rounded-lg shadow w-full">
               <div className="px-4 py-2 border-b"><h2 className="font-semibold text-gray-700">Recent Applications</h2></div>
@@ -231,7 +229,14 @@ export default function CoordinatorHomePage() {
                         <div className="grid grid-cols-3 gap-x-6">
                           <div>
                             <p className="font-medium text-gray-800">
-                              {app.student.firstName} {app.student.lastName}
+                              <a
+                                href={`http://localhost:5173/user/profile/${app.student.id}`}
+                                className="text-blue-900 hover:underline"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {app.student.firstName} {app.student.lastName}
+                              </a>
                             </p>
                             <p className="text-xs text-gray-500">
                               Submitted: {new Date(app.timeSubmitted).toLocaleString()}
@@ -250,7 +255,28 @@ export default function CoordinatorHomePage() {
                               Hours Requested: {app.wantWorkingHours}
                             </p>
                             <p className="text-sm font-semibold text-gray-700">
-                              Status: {getAppStatusText(app.id ?? 0)}
+                              Status: {
+                                (() => {
+                                  // all allocations for this application 
+                                  const allocs = recentAppAllocations[app.id ?? 0];
+                                  if (allocs && allocs.length > 0) {
+                                    // Priority: CONFIRMED > SENT > REJECTED > fallback
+                                    if (allocs.some(a => a.status === 'CONFIRMED')) return 'Allocated';
+                                    if (allocs.some(a => a.status === 'SENT')) return 'Offer Sent';
+                                    if (allocs.some(a => a.status === 'REJECTED')) return 'Offer Rejected';
+                                    return allocs[0].status || 'Unknown';
+                                  }
+                                  // If not found, check all topAllocations for this application
+                                  const allocs2 = topAllocations.filter(a => a.application?.id === app.id);
+                                  if (allocs2.length > 0) {
+                                    if (allocs2.some(a => a.status === 'CONFIRMED')) return 'Allocated';
+                                    if (allocs2.some(a => a.status === 'SENT')) return 'Offer Sent';
+                                    if (allocs2.some(a => a.status === 'REJECTED')) return 'Offer Rejected';
+                                    return allocs2[0].status || 'Unknown';
+                                  }
+                                  return 'Not Allocated';
+                                })()
+                              }
                             </p>
                           </div>
                         </div>
@@ -274,7 +300,14 @@ export default function CoordinatorHomePage() {
                         <div className="grid grid-cols-3 gap-x-6 p-2 rounded">
                           <div>
                             <p className="font-medium text-gray-800">
-                              {a.student?.firstName} {a.student?.lastName}
+                              <a
+                                href={`http://localhost:5173/user/profile/${a.student?.id}`}
+                                className="text-blue-900 hover:underline"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {a.student?.firstName} {a.student?.lastName}
+                              </a>
                             </p>
                             <p className="text-xs text-gray-500">{a.student?.email}</p>
                           </div>
@@ -309,6 +342,7 @@ export default function CoordinatorHomePage() {
               <div className="flex flex-col items-center space-y-6">
                 {/* Deadline(s) Tasks */}
                 <div className="flex flex-col items-center">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Deadline(s)</p>
                   <div className="relative w-32 h-32">
                     <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                       <circle className="text-gray-200" strokeWidth="6" stroke="currentColor" fill="none" cx="18" cy="18" r="15" />
@@ -324,19 +358,85 @@ export default function CoordinatorHomePage() {
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center text-lg font-semibold">
-                      {deadlines.length}/{totalDeadlines}
+                      {activeDeadlines.length}/{totalDeadlines}
                     </div>
                   </div>
-                  {deadlines.length < totalDeadlines ? (
+                  <ul className="mt-2 space-y-4 w-full">
+                    {deadlines.map((d, idx) => {
+                      const days = daysUntilList[idx];
+                      const due = new Date(d.endTime).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                      const textColor = days <= 7 ? 'text-red-700' : days <= 14 ? 'text-yellow-700' : 'text-green-700';
+                      const formatted = formatDeadlineName(d.name);
+                      const displayName = d.name === 'instructor_need_update_deadline'
+                        ? 'Instructor Need Deadline'
+                        : formatted;
+                      return (
+                        <li key={d.name}>
+                          <Link
+                            to="/user/coordinator/deadlines"
+                            className={`text-sm font-medium ${textColor} hover:underline`}
+                          >
+                            {displayName} - {due}
+                          </Link>
+                          <p className="text-xs text-gray-500">{days} days left</p>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  {deadlines.length < totalDeadlines && (
                     <Link to="/user/coordinator/deadlines" className="mt-2 text-sm text-blue-600 hover:underline">
                       {totalDeadlines - deadlines.length} deadline(s) missing
                     </Link>
-                  ) : (
-                    <p className="mt-2 text-sm text-gray-600">All deadlines set</p>
                   )}
+                </div>
+                {/* Courses Requiring TAs Circle */}
+                <div className="flex flex-col items-center">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Courses Requiring TAs</p>
+                  <div className="relative w-32 h-32">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                      <circle className="text-gray-200" strokeWidth="6" stroke="currentColor" fill="none" cx="18" cy="18" r="15" />
+                      {(() => {
+                        let color = 'text-green-700';
+                        let dash1 = 0;
+                        let dash2 = 100;
+                        if (sectionsNeedingTAs === 0) {
+                          color = 'text-green-700';
+                          dash1 = 100;
+                          dash2 = 0;
+                        } else if (sectionsNeedingTAs > 0 && sectionsNeedingTAs < 10) {
+                          color = 'text-yellow-500';
+                          dash1 = Math.min(100, Math.round((sectionsNeedingTAs / 10) * 100));
+                          dash2 = 100 - dash1;
+                        } else if (sectionsNeedingTAs >= 10) {
+                          color = 'text-red-700';
+                          dash1 = 100;
+                          dash2 = 0;
+                        }
+                        return (
+                          <circle
+                            className={color}
+                            strokeWidth="6"
+                            strokeDasharray={`${dash1},${dash2}`}
+                            stroke="currentColor"
+                            fill="none"
+                            cx="18"
+                            cy="18"
+                            r="15"
+                          />
+                        );
+                      })()}
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center text-lg font-semibold">
+                      {sectionsNeedingTAs}
+                    </div>
+                  </div>
+                  <Link to="/user/coordinator/allocation" className="mt-2 text-sm text-blue-800 font-medium hover:underline">
+                    View Sections Needing TAs
+                  </Link>
                 </div>
                 {/* Profile Questions Setup */}
                 <div className="flex flex-col items-center">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Profile Question(s)</p>
                   <div className="relative w-32 h-32">
                     <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                       <circle className="text-gray-200" strokeWidth="6" stroke="currentColor" fill="none" cx="18" cy="18" r="15" />
@@ -355,13 +455,15 @@ export default function CoordinatorHomePage() {
                       {questionsCount}
                     </div>
                   </div>
-                  <p className="mt-2 text-sm text-gray-600">Profile Questions Setup</p>
+                  <Link to="/user/coordinator/questions" className="mt-2 text-sm text-blue-800 font-medium hover:underline">
+                    Manage Profile Questions
+                  </Link>
                 </div>
               </div>
             </div>
           </aside>
         </div>
-      </div>
+         </div>
     </section>
   );
 }
