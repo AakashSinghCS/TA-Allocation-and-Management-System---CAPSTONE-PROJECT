@@ -2412,3 +2412,60 @@ Tommorrow I will work on the tests.
 - student Allocation history needs to make sure the student is creating entries only for himself.
 - section profile shows needs
 
+
+## Wednesday 7/16 (7/15~7/18)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July16.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#390](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/390)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#415](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/415)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I completed the tests for the audit PR. Only the user-service was included in the audit cycle. Doing the others is a whole seperate PR.
+
+I decided to do the following in this PR:
+- make userBrowsing work with ids because of new auditing feature(Need Viewer PR) (Done)
+- and make profiles show ids (since now we know only coords and instruct will see it)
+- fixed editSectionProfile bugs (Done)
+- make sidebar divided into coord, instruct, etc.
+- fix needviewer icon transparency
+- make needViewer have a dropdown that filters by course.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- more security fixes in backend concerning reading of headers (x-user-id)
+
