@@ -338,8 +338,9 @@ export default function CoordinatorHomePage() {
           <aside className="flex justify-center">
             {/* Combined Tasks & Profile Setup Card */}
             <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center w-full max-w-sm">
-              <h2 className="font-semibold text-gray-700 mb-4">Tasks Overview</h2>
+              <h2 className="font-semibold text-gray-700 mt-1">Tasks Overview</h2>
               <div className="flex flex-col items-center space-y-6">
+                 <hr className="my-6 w-full border-gray-300" />
                 {/* Deadline(s) Tasks */}
                 <div className="flex flex-col items-center">
                   <p className="text-sm font-medium text-gray-700 mb-2">Deadline(s)</p>
@@ -389,6 +390,7 @@ export default function CoordinatorHomePage() {
                     </Link>
                   )}
                 </div>
+                <hr className="my-6 -mt-2 w-full border-gray-300" />
                 {/* Courses Requiring TAs Circle */}
                 <div className="flex flex-col items-center">
                   <p className="text-sm font-medium text-gray-700 mb-2">Courses Requiring TAs</p>
@@ -430,10 +432,11 @@ export default function CoordinatorHomePage() {
                       {sectionsNeedingTAs}
                     </div>
                   </div>
-                  <Link to="/user/coordinator/allocation" className="mt-2 text-sm text-blue-800 font-medium hover:underline">
+                  <Link to="/user/coordinator/allocation" className="mt-4 text-sm text-blue-800 font-medium hover:underline">
                     View Sections Needing TAs
                   </Link>
                 </div>
+                <hr className="my-6 -mt-2 w-full border-gray-300" />
                 {/* Profile Questions Setup */}
                 <div className="flex flex-col items-center">
                   <p className="text-sm font-medium text-gray-700 mb-2">Profile Question(s)</p>
@@ -455,7 +458,7 @@ export default function CoordinatorHomePage() {
                       {questionsCount}
                     </div>
                   </div>
-                  <Link to="/user/coordinator/questions" className="mt-2 text-sm text-blue-800 font-medium hover:underline">
+                  <Link to="/user/coordinator/questions" className="mt-2 mb-2 text-sm text-blue-800 font-medium hover:underline">
                     Manage Profile Questions
                   </Link>
                 </div>
