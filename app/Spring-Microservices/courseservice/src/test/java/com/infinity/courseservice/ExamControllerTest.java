@@ -52,8 +52,8 @@ public class ExamControllerTest {
 
     @Test
     void testCreateExam() throws Exception {
-        ExamDto request = new ExamDto(null, 1L, LocalDate.of(2025, 8, 1), LocalTime.of(9, 0), LocalTime.of(12, 0));
-        ExamDto response = new ExamDto(10L, 1L, request.date(), request.startTime(), request.endTime());
+        ExamDto request = new ExamDto(null, 1L, "W1 2025", LocalDate.of(2025, 8, 1), LocalTime.of(9, 0), LocalTime.of(12, 0));
+        ExamDto response = new ExamDto(10L, 1L, "W1 2025", request.date(), request.startTime(), request.endTime());
 
         when(examService.createExam(any(ExamDto.class))).thenReturn(response);
 
@@ -68,7 +68,7 @@ public class ExamControllerTest {
 
     @Test
     void testGetAllExams() throws Exception {
-        ExamDto dto = new ExamDto(10L, 1L, LocalDate.of(2025, 8, 1), LocalTime.of(9, 0), LocalTime.of(12, 0));
+        ExamDto dto = new ExamDto(10L, 1L, "W1 2025", LocalDate.of(2025, 8, 1), LocalTime.of(9, 0), LocalTime.of(12, 0));
 
         when(examService.getAllExams()).thenReturn(List.of(dto));
 
@@ -80,7 +80,7 @@ public class ExamControllerTest {
 
     @Test
     void testGetExamById() throws Exception {
-        ExamDto dto = new ExamDto(10L, 1L, LocalDate.of(2025, 8, 1), LocalTime.of(9, 0), LocalTime.of(12, 0));
+        ExamDto dto = new ExamDto(10L, 1L, "W1 2025", LocalDate.of(2025, 8, 1), LocalTime.of(9, 0), LocalTime.of(12, 0));
 
         when(examService.getExamById(10L)).thenReturn(dto);
 
@@ -92,8 +92,8 @@ public class ExamControllerTest {
 
     @Test
     void testUpdateExam() throws Exception {
-        ExamDto request = new ExamDto(null, 2L, LocalDate.of(2025, 9, 1), LocalTime.of(14, 0), LocalTime.of(16, 0));
-        ExamDto response = new ExamDto(10L, 2L, request.date(), request.startTime(), request.endTime());
+        ExamDto request = new ExamDto(null, 2L, "W2 2025", LocalDate.of(2025, 9, 1), LocalTime.of(14, 0), LocalTime.of(16, 0));
+        ExamDto response = new ExamDto(10L, 2L, "W2 2025", request.date(), request.startTime(), request.endTime());
 
         when(examService.updateExam(eq(10L), any(ExamDto.class))).thenReturn(response);
 

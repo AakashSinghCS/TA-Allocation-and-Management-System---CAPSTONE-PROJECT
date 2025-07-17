@@ -51,7 +51,7 @@ public class CourseController {
             @PathVariable Long courseId) {
         return ResponseEntity.ok(courseService.updateCourse(request, courseId));
     }
-    
+
     @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("/deleteCourse/{courseId}")
     public ResponseEntity<String> deleteCourse(@PathVariable Long courseId) {
