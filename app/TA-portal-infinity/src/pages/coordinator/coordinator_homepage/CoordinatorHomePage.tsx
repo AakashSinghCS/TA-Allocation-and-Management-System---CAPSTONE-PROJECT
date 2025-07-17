@@ -10,6 +10,7 @@ import { fetchAllProfileQuestions } from '../../../api/question/fetchAllProfileQ
 import { fetchAllocationBySectionId } from '../../../api/allocation/fetchAllocationBySectionId';
 import { fetchAllocationByApplicationId } from '../../../api/allocation/fetchAllocationByApplicationId';
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
+import { fetchDeadlines } from '../../../api/config/fetchDeadlines';
 
 export default function CoordinatorHomePage() {
   const { token, userId } = useAuth();
@@ -43,8 +44,8 @@ export default function CoordinatorHomePage() {
   };
   // Tasks progress: deadlines set out of total
   const totalDeadlines = 3;
-  const deadlinesSetCount = 0; // TODO: replace with actual count from API
-  const tasksProgress = Math.floor((deadlinesSetCount / totalDeadlines) * 100);
+  const [deadlines, setDeadlines] = useState<Allocation[]>([]);
+  const tasksProgress = Math.floor((deadlines.length / totalDeadlines) * 100);
   // Ensure ring is visible at 0%: full dash when no progress
   const tasksDash1 = tasksProgress > 0 ? tasksProgress : 100;
   const tasksDash2 = tasksProgress > 0 ? 100 - tasksProgress : 0;
@@ -137,6 +138,13 @@ export default function CoordinatorHomePage() {
     fetchAllProfileQuestions()
       .then(qs => setQuestionsCount(qs?.length ?? 0))
       .catch(() => setQuestionsCount(0));
+  }, [token]);
+  // fetch deadlines
+  useEffect(() => {
+    if (!token) return;
+    fetchDeadlines(token)
+      .then(res => setDeadlines(res ?? []))
+      .catch(() => setDeadlines([]));
   }, [token]);
   // Compute task summaries
   const pendingApplications = Math.max(0, totalApps - offerCount);
@@ -304,22 +312,28 @@ export default function CoordinatorHomePage() {
                   <div className="relative w-32 h-32">
                     <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                       <circle className="text-gray-200" strokeWidth="6" stroke="currentColor" fill="none" cx="18" cy="18" r="15" />
-                  <circle
-                    className={progressColor}
-                    strokeWidth="6"
-                    strokeDasharray={`${tasksDash1},${tasksDash2}`}
-                    stroke="currentColor"
-                    fill="none"
-                    cx="18"
-                    cy="18"
-                    r="15"
-                  />
+                      <circle
+                        className={progressColor}
+                        strokeWidth="6"
+                        strokeDasharray={`${tasksDash1},${tasksDash2}`}
+                        stroke="currentColor"
+                        fill="none"
+                        cx="18"
+                        cy="18"
+                        r="15"
+                      />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center text-lg font-semibold">
-                      {deadlinesSetCount}/{totalDeadlines}
+                      {deadlines.length}/{totalDeadlines}
                     </div>
                   </div>
-                  <p className="mt-2 text-sm text-gray-600">Deadline(s) Tasks</p>
+                  {deadlines.length < totalDeadlines ? (
+                    <Link to="/user/coordinator/deadlines" className="mt-2 text-sm text-blue-600 hover:underline">
+                      {totalDeadlines - deadlines.length} deadline(s) missing
+                    </Link>
+                  ) : (
+                    <p className="mt-2 text-sm text-gray-600">All deadlines set</p>
+                  )}
                 </div>
                 {/* Profile Questions Setup */}
                 <div className="flex flex-col items-center">
