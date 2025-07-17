@@ -133,8 +133,8 @@ const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
       {/* Filter Button */}
       <div className="flex justify-end">
         <button
-          onClick={filterApplications}  
-          className="px-6 py-2 bg-[#040941] text-white rounded w-full"
+          onClick={filterApplications}
+          className="px-6 py-2 bg-[#040941] text-white hover:bg-blue-900 rounded w-full"
         >
           Filter
         </button>

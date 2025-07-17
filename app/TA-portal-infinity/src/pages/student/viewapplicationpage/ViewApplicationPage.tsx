@@ -173,7 +173,6 @@ const ViewApplicationPage = () => {
     try {
       const resp = await denyOffer(allocationId);
       if (resp && (resp.ok === true || resp.status === 200)) {
-        setSuccess("You have declined the offer.");
         // Update allocation status in local state
         setApplications(apps =>
           apps.map(app => {
@@ -291,14 +290,18 @@ const ViewApplicationPage = () => {
                         <span><strong>Hours Requested:</strong> {app.wantWorkingHours}</span>
                         <span><strong>Submitted:</strong> {new Date(app.timeSubmitted).toLocaleString()}</span>
                       </div>
+                      
                       {offerDeadline && (
-                        <p className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition">
+                         <div className="w-fit">
+                         <p className="inline-block px-2 py-1 bg-red-500 text-white rounded text-xs font-medium hover:bg-red-600 transition">
                           Deadline:{" "}
                           <span className="bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition">
                             {new Date(offerDeadline.endTime).toLocaleString()}
                           </span>
                         </p>
+                         </div>
                         )}
+                       
                         {!offerDeadline && !deadlineError && (
                           <p className="text-md text-gray-500 mb-6">
                             No application deadline found.
@@ -360,9 +363,8 @@ const ViewApplicationPage = () => {
                           className={`px-3 py-1 rounded ${
                             deadlinePassed
                               ? "bg-gray-400 cursor-not-allowed"
-                              : "px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
+                              : "px-3 py-2 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
                           }`}
-                          // className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition mr-2"
                         >
                           {actionLoading === app.allocation?.id ? 'Accepting...' : 'Accept Offer'}
                         </button>
@@ -430,7 +432,7 @@ const ViewApplicationPage = () => {
 
                     {/* details Button */}
                       <button
-                        className="self-end px-3 py-2 text-xs rounded-lg font-semibold border border-blue-50 bg-[#040941] hover:bg-blue-100 text-white transition"
+                        className="self-end px-3 py-2 text-xs rounded-lg font-semibold border border-blue-50 bg-[#040941] hover:bg-blue-800 text-white transition"
                         onClick={() => setExpandedCard(expanded ? null : cardId)}
                         aria-expanded={expanded}
                       >

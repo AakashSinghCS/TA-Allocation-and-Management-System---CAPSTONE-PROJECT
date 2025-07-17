@@ -96,7 +96,33 @@ const TAAllocationPage: React.FC = () => {
   } catch (err) {
     console.error("Failed to load section:", err);
     //Temporary UX helper here:
-    window.alert("Are you sure instructor has set the requirements for this section?");
+    toast.error("Are you sure instructor has set the requirements for this section?");
+  }
+
+  // Fetch instructor info using section id
+  try {
+    const sec = await fetchSectionIncludeInstructorId(details.id);
+    if (!sec) {
+      setInstructor(null);
+      return;
+    } else if (sec.instructor && sec.instructor.firstName && sec.instructor.lastName) {
+      setInstructor({
+        firstName: sec.instructor.firstName,
+        lastName: sec.instructor.lastName,
+      });
+    } else if (sec.instructorId != null) {
+      const inst = await fetchInstructorById(sec.instructorId);
+      setInstructor(
+        inst && inst.firstName && inst.lastName
+          ? { firstName: inst.firstName, lastName: inst.lastName }
+          : null
+      );
+    } else {
+      setInstructor(null);
+    }
+  } catch (err) {
+    console.error("Failed to fetch instructor details:", err);
+    setInstructor(null);
   }
 };
   // Helper to fetch allocation history for the selected student
@@ -192,22 +218,6 @@ const TAAllocationPage: React.FC = () => {
     backgroundColor: 'rgba(35, 38, 39, 0.3)',
   }));
 
-// Computing only the segments of student availability that overlap with course slots
-function getIntersectionSegments(
-  slot: { day: string; startTime: string; endTime: string },
-  avails: { day: string; startTime: string; endTime: string }[]
-) {
-  const dayNum = getDayNumber(slot.day);
-  const slotStart = timeToMinutes(slot.startTime);
-  const slotEnd = timeToMinutes(slot.endTime);
-  return avails.some(a => {
-    if (getDayNumber(a.day) !== dayNum) return false;
-    const availStart = timeToMinutes(a.startTime);
-    const availEnd = timeToMinutes(a.endTime);
-    return availStart <= slotStart && availEnd >= slotEnd;
-  });
-}
-
 // Computing segments of student availability that match course slots
 const bgMatchedEvents = useMemo(() => {
   return (selCourse?.sectionSchedule || []).flatMap((slot, i) => {
@@ -228,7 +238,7 @@ const bgMatchedEvents = useMemo(() => {
         startTime: slot.startTime,
         endTime: slot.endTime,
         title: 'Unmatched Slot',
-        backgroundColor: 'rgba(239,68,68,0.8)', // red
+        backgroundColor: 'rgba(239,68,68,0.8)', 
       }];
     }
   });
