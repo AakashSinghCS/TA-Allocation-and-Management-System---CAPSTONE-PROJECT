@@ -1653,6 +1653,7 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin frontend and backend integration for GTA final exam availability.
 
+
 ## Tuesday 7/15 (7/07- 7/16)
 
 ### Timesheet
@@ -1688,3 +1689,4 @@ Retrospective: Process is going well. Team members are working hard to get their
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin coding for UR 4.6 - Must be able to view final assignments in a calendar view (lab, marking, prep coordination) and GTA must be able to see their exam assignments.
+
