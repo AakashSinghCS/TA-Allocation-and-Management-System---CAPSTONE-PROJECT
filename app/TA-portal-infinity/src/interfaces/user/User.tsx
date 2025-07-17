@@ -34,7 +34,7 @@ export const userProfileFields: (keyof StudentOrInstructorOrCoordinator)[] = [
 ];
 
 export const userFieldLabels: Record<keyof StudentOrInstructorOrCoordinator, string> = {
-  id:              "User Id",
+  id:              "ID",
   firstName:       "First Name",
   lastName:        "Last Name",
   email:           "Email",

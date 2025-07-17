@@ -5,6 +5,7 @@ import { studentFieldLabels, studentProfileFields } from "../../../../interfaces
 import { instructorFieldLabels, instructorProfileFields } from "../../../../interfaces/user/Instructor";
 import formatDateForDisplay from "../../../../utility/formatdatefordisplay/formatDateForDisplay";
 import SearchUserBar, { useUserSearch, type SearchCriteria } from "../../../../components/ui/user/searchuserbar/SearchUserBar";
+import { UserRole } from "../../../../interfaces/enum/UserRole";
 
 interface UserBrowsingViewerProps {
     mode?: 'view' | 'select';
@@ -23,23 +24,27 @@ export default function UserBrowsingViewer({
     const { userRoles } = useAuth();
     const { searchedUsers = [], loading, error, search, deleteUser, lastCriteria } = useUserSearch();
     const navigate = useNavigate();
-
+    const isCoordinatorOrAdmin = userRoles.includes(UserRole.COORDINATOR || UserRole.ADMIN);
     // choose columns & labels based on selected role
     let columns: (keyof User | 'name')[] = [];
     let labels: Record<string, string> = {};
     if (lastCriteria.role === "Student") {
-        columns = studentProfileFields.filter(f => f !== 'id' && f !== 'firstName' && f !== 'lastName') as (keyof User)[];
+        columns = studentProfileFields.filter(f => isCoordinatorOrAdmin ? f !== 'firstName' && f !== 'lastName'
+            : f !== 'firstName' && f !== 'lastName' && f !=='id'
+        ) as (keyof User)[];
         columns.unshift('name');
         labels = { name: 'Name', ...studentFieldLabels };
-        delete labels.id;
+        if(!isCoordinatorOrAdmin) delete labels.id;
     } else if (lastCriteria.role === "Instructor") {
-        columns = instructorProfileFields.filter(f => f !== 'id' && f !== 'firstName' && f !== 'lastName') as (keyof User)[];
+        columns = instructorProfileFields.filter(f => isCoordinatorOrAdmin ? f !== 'firstName' && f !== 'lastName'
+            : f !== 'firstName' && f !== 'lastName' && f !=='id'
+        ) as (keyof User)[];
         columns.unshift('name');
         labels = { name: 'Name', ...instructorFieldLabels };
-        delete labels.id;
+        if(!isCoordinatorOrAdmin) delete labels.id;
     } else {
-        columns = ['name', 'email', 'createdAt'];
-        labels = { name: 'Name', email: 'Email', createdAt: 'Registered' };
+        columns = ['name', "id",'email', 'createdAt'];
+        labels = { name: 'Name', id: "ID", email: 'Email', createdAt: 'Registered' };
     }
 
     const handleDelete = (id?: number) => deleteUser(id);
@@ -63,7 +68,9 @@ export default function UserBrowsingViewer({
                     <SearchUserBar onSearch={search} loading={loading} allowedRoles={allowedRoles} mode={mode}/>
                 </div>
                 {userRoles.includes('COORDINATOR') && mode=='view' && (
-                    <button onClick={() => navigate('/user/coordinator/browseuser/newuser')} className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors">
+                    <button onClick={() => navigate('/user/coordinator/browseuser/newuser')} 
+                    className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] 
+                        cursor-pointer hover:text-[#0089b2] transition-colors">
                         Add User
                     </button>
                 )}
@@ -96,11 +103,8 @@ export default function UserBrowsingViewer({
                                         const d = typeof raw === 'string' ? new Date(raw) : raw;
                                         display = formatDateForDisplay(d);
                                     }
-                                    if (col === 'name' && lastCriteria.role !== 'Coordinator' && user.id) {
-                                        const userProfilePath = generatePath(`/user/profile/:userId`, { userId: String(user.id) });
-                                        // const path = lastCriteria.role === 'Student' ? `/user/taprofile/${user.id}` : `/user/instructorprofile/${user.id}`;
+                                    if (col === 'name' && user.id) {
                                         return <td key={col as string} className="border border-gray-300 px-3 py-1">
-                                            
                                             <Link to ={`/user/profile/${user.id}`} onClick={(e) => handleAskForConfirmation(e, user.id ?? -1)}
                                             className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden">
                                             {display}

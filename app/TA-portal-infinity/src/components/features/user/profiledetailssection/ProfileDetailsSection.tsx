@@ -4,7 +4,7 @@ import EditProfileSection from "../editprofilesection/EditProfileSection";
 import { fetchUpdateUserDetails } from "../../../../api/user/fetchUpdateUserDetails";
 import type User from "../../../../interfaces/user/User";
 import { useAuth } from "../../../../context/AuthContext";
-import type { UserRole } from "../../../../interfaces/enum/UserRole";
+import { UserRole } from "../../../../interfaces/enum/UserRole";
 import TabNav from "../../../layout/tabnav/TabNav";
 
 interface Props<T extends User> {
@@ -23,16 +23,18 @@ export default function ProfileDetailsSection<T extends User>({
     const { userId: loggedInUserId, userRoles: loggedInUserRoles } = useAuth();
     const [record, setRecord] = useState<T>(user);
     const [isEdit, setIsEdit] = useState(false);
+    const isCoordinatorOrAdmin = loggedInUserRoles.includes(UserRole.ADMIN || UserRole.COORDINATOR);
 
     useEffect(() => setRecord(user), [user]);
 
-    const baseFields = fields.filter((k) => k !== "createdAt");
+    const baseFields = fields.filter((k) => isCoordinatorOrAdmin ?k !== "createdAt" :k !== "createdAt"&& k!=="id");
     const displayFields = filterFieldsByRole(baseFields, record.roles ?? []);
 
     const editFields = [
         "firstName" as keyof T,
         "lastName" as keyof T,
         ...displayFields.filter(k => k !== "roles"),
+        ...displayFields.filter(k => k !== "id"),
     ];
 
     const isEditable = loggedInUserId === record.id;

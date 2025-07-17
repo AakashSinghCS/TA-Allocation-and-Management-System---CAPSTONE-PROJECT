@@ -208,7 +208,7 @@ public class UserControllerTest {
                                 12345678, "computer science", 2023, 1,
                                 null, null, fixedTime);
 
-                when(userService.search("STUDENT", "", 12345678)).thenReturn(List.of(student));
+                when(userService.search("STUDENT", "","", 12345678,null)).thenReturn(List.of(student));
 
                 mockMvc.perform(get("/users/search")
                                 .param("role", "STUDENT")
@@ -230,11 +230,11 @@ public class UserControllerTest {
                                 null, null, null, null,
                                 87654321, "computerscience", fixedTime);
 
-                when(userService.search("INSTRUCTOR", "Bob", 0)).thenReturn(List.of(instructor));
+                when(userService.search("INSTRUCTOR", "Bob","", 0,null)).thenReturn(List.of(instructor));
 
                 mockMvc.perform(get("/users/search")
                                 .param("role", "INSTRUCTOR")
-                                .param("name", "Bob")
+                                .param("firstname", "Bob")
                                 .accept(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.length()").value(1))

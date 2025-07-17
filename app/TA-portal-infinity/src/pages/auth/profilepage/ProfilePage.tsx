@@ -11,7 +11,7 @@ export default function ProfilePage() {
   const uId = Number(userId);
 //   const isStudent = useAuth().userRoles.includes('STUDENT');
   const filteredFields = userProfileFields.filter(
-    key => key !== 'id' && key !== 'firstName' && key !== 'lastName'
+    key =>  key !== 'firstName' && key !== 'lastName'
   );
 
   return (

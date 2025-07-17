@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -59,6 +60,8 @@ public class UserServiceTest {
     private AuditService auditService; 
     @InjectMocks
     private UserService userService;
+    @InjectMocks
+    private UserMapper userToDto;
 
 
     @Test
@@ -329,83 +332,127 @@ void testRegister_SuccessMultipleRoles() {
         );
     }
 
+    private User makeUser(String email, String first, String last, int studentNum, int employeeNum, UserRole role) {
+        User u = new User(email, first, last, "P@ssword1");
+        if (studentNum > 0)  u.setStudentNum(studentNum);
+        if (employeeNum > 0) u.setEmployeeNum(employeeNum);
+        u.setRoles(Set.of(new Role(1L, role)));
+        return u;
+    }
+    @Test
+    void testSearch_ByUserId_takesPriority() {
+        User found = makeUser("a@x.com","A","X", 0, 0, UserRole.COORDINATOR);
+        when(userRepository.findById(42L))
+            .thenReturn(Optional.of(found));
+        found.setId(42L);
+        UserDto dto = userToDto.toDto(found);
+        when(userMapper.toDto(found)).thenReturn(dto);
+
+        var results = userService.search(
+            /*role*/       null,
+            /*firstName*/  null,
+            /*lastName*/   null,
+            /*univNum*/     0,
+            /*userId*/      42L
+        );
+
+        assertEquals(1, results.size());
+        assertEquals("A", results.get(0).firstName());
+        verify(userRepository).findById(42L);
+        verifyNoMoreInteractions(userRepository);
+    }
+
     @Test
     void testSearch_StudentByNumber() {
-        User student = new User("emma@example.com", "Emma", "Stone", "P@ssword1");
-        student.setStudentNum(12345678);
-        student.setRoles(Set.of(new Role(1L, UserRole.STUDENT)));
-
-        UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.STUDENT),
-                null, null, null, null, null, null, null);;
-
-        when(userRepository.findByRoles_NameAndStudentNum(UserRole.STUDENT, 12345678))
-                .thenReturn(List.of(student));
+        int num = 12345678;
+        User student = makeUser("emma@example.com","Emma","Stone", num, 0, UserRole.STUDENT);
+        when(userRepository.findByStudentNum(num))
+            .thenReturn(Optional.of(student));
+        when(userRepository.findByEmployeeNum(num))
+            .thenReturn(Optional.empty());
+        student.setId(1L);
+        UserDto dto = userToDto.toDto(student);
         when(userMapper.toDto(student)).thenReturn(dto);
 
-        List<UserDto> results = userService.search("STUDENT", "", 12345678);
+        var results = userService.search(
+            /*role*/       null,
+            /*firstName*/  null,
+            /*lastName*/   null,
+            /*univNum*/     num,
+            /*userId*/      null
+        );
+
         assertEquals(1, results.size());
         assertEquals("Emma", results.get(0).firstName());
+        verify(userRepository).findByStudentNum(num);
+        verify(userRepository).findByEmployeeNum(num);
     }
 
     @Test
     void testSearch_InstructorByNumber() {
-        User instructor = new User("emma@example.com", "Emma", "Stone", "P@ssword1");
-        instructor.setEmployeeNum(987654);
-        instructor.setRoles(Set.of(new Role(1L, UserRole.INSTRUCTOR)));
+        int num = 987654;
+        User instr = makeUser("emma@example.com","Emma","Stone", 0, num, UserRole.INSTRUCTOR);
+        when(userRepository.findByStudentNum(num))
+            .thenReturn(Optional.empty());
+        when(userRepository.findByEmployeeNum(num))
+            .thenReturn(Optional.of(instr));
+        instr.setId(1L);
+        UserDto dto = userToDto.toDto(instr);
+        when(userMapper.toDto(instr)).thenReturn(dto);
 
-        UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.INSTRUCTOR),
-                null, null, null, null, null, null, null);
+        var results = userService.search(
+            /*role*/       null,
+            /*firstName*/  null,
+            /*lastName*/   null,
+            /*univNum*/     num,
+            /*userId*/      null
+        );
 
-        when(userRepository.findByRoles_NameAndEmployeeNum(UserRole.INSTRUCTOR, 987654))
-                .thenReturn(List.of(instructor));
-        when(userMapper.toDto(instructor)).thenReturn(dto);
-
-        List<UserDto> results = userService.search("INSTRUCTOR", "", 987654);
         assertEquals(1, results.size());
         assertEquals("Emma", results.get(0).firstName());
+        verify(userRepository).findByStudentNum(num);
+        verify(userRepository).findByEmployeeNum(num);
     }
 
     @Test
     void testSearch_ByName_NoNumber() {
-        User user = new User("emma@example.com", "Emma", "Stone", "P@ssword1");
-        user.setRoles(Set.of(new Role(1L, UserRole.COORDINATOR)));
-
-        UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.COORDINATOR),
-                null, null, null, null, null, null, null);
-
-        when(userRepository.findByRoleAndName(UserRole.COORDINATOR, "emma")).thenReturn(List.of(user));
+        User user = makeUser("emma@example.com","Emma","Stone", 0, 0, UserRole.COORDINATOR);
+        when(userRepository
+             .findByRoles_NameAndFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
+                UserRole.COORDINATOR, "Emma", "Stone"
+             ))
+            .thenReturn(List.of(user));
+        user.setId(1L);
+        UserDto dto = userToDto.toDto(user);
         when(userMapper.toDto(user)).thenReturn(dto);
 
-        List<UserDto> results = userService.search("COORDINATOR", "Emma", 0);
+        var results = userService.search(
+            /*role*/       "CoOrDInaTor",
+            /*firstName*/  "Emma",
+            /*lastName*/   "Stone",
+            /*univNum*/     0,
+            /*userId*/      null
+        );
+
         assertEquals(1, results.size());
         assertEquals("Emma", results.get(0).firstName());
+        verify(userRepository).findByRoles_NameAndFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
+            UserRole.COORDINATOR, "Emma", "Stone"
+        );
     }
 
     @Test
-    void testSearch_InvalidRole() {
-        BadRequestException ex = assertThrows(BadRequestException.class, () -> {
-            userService.search("UNKNOWN", "", 0);
+    void testSearch_InvalidRole_ThrowsIllegalArgument() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            userService.search(
+                /*role*/       "UNKNOWN",
+                /*firstName*/  "",
+                /*lastName*/   "",
+                /*univNum*/     0,
+                /*userId*/      null
+            );
         });
-
-        assertEquals("Invalid role specified: UNKNOWN", ex.getMessage());
     }
-
-    @Test
-    void testSearch_RoleCaseInsensitive() {
-        User user = new User("emma@example.com", "Emma", "Stone", "P@ssword1");
-        user.setRoles(Set.of(new Role(1L, UserRole.COORDINATOR)));
-
-        UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.COORDINATOR),
-                null, null, null, null, null, null, null);
-
-        when(userRepository.findByRoleAndName(UserRole.COORDINATOR, "emma")).thenReturn(List.of(user));
-        when(userMapper.toDto(user)).thenReturn(dto);
-
-        List<UserDto> results = userService.search("coordinator", "Emma", 0);
-        assertEquals(1, results.size());
-        assertEquals("Emma", results.get(0).firstName());
-    }
-    
     @Test
     void testGetStudentById_Success() {
         User user = new User("alice@example.com", "Alice", "Smith", "P@ssword1");

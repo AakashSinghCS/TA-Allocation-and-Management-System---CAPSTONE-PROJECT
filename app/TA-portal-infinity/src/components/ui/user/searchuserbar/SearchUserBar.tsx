@@ -20,7 +20,7 @@ interface SearchUserBarProps {
   onSearch: (criteria: SearchCriteria) => Promise<void>;
   loading: boolean;
   allowedRoles?: SearchCriteria['role'][];
-  mode: string;
+  mode?: string;
 }
 
 export function useUserSearch<T extends User>() {
@@ -74,7 +74,8 @@ export function useUserSearch<T extends User>() {
 
 export default function SearchUserBar({ onSearch, loading, allowedRoles, mode = "view" }: SearchUserBarProps) {
   const roles = allowedRoles ?? ["Student", "Instructor", "Coordinator"];
-  const [criteria, setCriteria] = useState<SearchCriteria>({ role: "", firstname: "", lastname: "", universityNumber: "", userId: "" });
+  const [criteria, setCriteria] = useState<SearchCriteria>({ role: allowedRoles?allowedRoles[0]:
+    "", firstname: "", lastname: "", universityNumber: "", userId: "" });
   const loggedInRoles = useAuth().userRoles;
   const isAdminOrCoordinator = loggedInRoles.includes(UserRole.ADMIN || UserRole.COORDINATOR);
   const handleSearch = async () => {
@@ -162,7 +163,8 @@ export default function SearchUserBar({ onSearch, loading, allowedRoles, mode = 
           type="button"
           onClick={handleSearch}
           disabled={loading}
-          className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#040491] transition-colors disabled:opacity-50 "
+          className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#040491] 
+            cursor-pointer transition-colors disabled:opacity-50 "
         >
           {loading ? "Searching…" : "Search"}
         </button>

@@ -56,7 +56,6 @@ public class UserController {
         return ResponseEntity.ok("User deleted");
     }
 
-    //users/search?role=STUDENT&name=Alice&universityNumber=12345678
     @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/search")
     public ResponseEntity<List<UserDto>> searchUsers(

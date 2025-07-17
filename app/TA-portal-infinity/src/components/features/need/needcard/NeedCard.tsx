@@ -166,7 +166,7 @@ export default function NeedCard({ need, className = "", onUpdate, onDelete, aut
                     <Link to={`/user/courseprofile/${course.id}`} className="hover:text-blue-600">
                       {course.deptCode} {course.courseNum}
                     </Link>
-                    {need.prerequisites && idx < need.prerequisites.length - 1 && <span>,</span>}
+                    {need.prerequisites && idx < need.prerequisites.length - 1 && <span>,&nbsp;</span>}
                   </span>
                 ))}
               </div>
