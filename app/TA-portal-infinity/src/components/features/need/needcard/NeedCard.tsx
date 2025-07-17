@@ -74,11 +74,13 @@ export default function NeedCard({ need, className = "", onUpdate, onDelete, aut
       <div className="absolute top-2 right-2 flex space-x-2">
         {editMode ? (
           <>
-            <Check className="cursor-pointer" size={16} onClick={handleSave} />
-            <X className="cursor-pointer" size={16} onClick={handleCancel} />
+            <Check className="cursor-pointer opacity-50 hover:opacity-100 hover:stroke-2 transition-all duration-150" 
+              size={16} onClick={handleSave} />
+            <X className="cursor-pointer opacity-50 hover:opacity-100 hover:stroke-2 transition-all duration-150" 
+             size={16} onClick={handleCancel} />
             <span title="Update course prerequisites">
               <BookOpen
-                className="cursor-pointer"
+                className="cursor-pointer opacity-50 hover:opacity-100 hover:stroke-2 transition-all duration-150" 
                 size={16}
                 onClick={handlePrereqNavigation}
               />
@@ -87,16 +89,17 @@ export default function NeedCard({ need, className = "", onUpdate, onDelete, aut
         ) : (
           need && (
             <>{authenticated && <> 
-            <Edit2 className="cursor-pointer" size={16} onClick={() => setEditMode(true)} />
+            <Edit2 className="cursor-pointer opacity-50 hover:opacity-100 hover:stroke-2 transition-all duration-150" 
+             size={16} onClick={() => setEditMode(true)} />
               <span title="Update course prerequisites">
                 <BookOpen
-                  className="cursor-pointer"
+                  className="cursor-pointer opacity-50 hover:opacity-100 hover:stroke-2 transition-all duration-150" 
                   size={16}
                   onClick={handlePrereqNavigation}
                 />
               </span>
               <Trash2
-                className="cursor-pointer hover:text-red-600"
+               className="cursor-pointer opacity-50 hover:opacity-100 hover:stroke-2 transition-all duration-150 hover:text-red-600" 
                 size={16}
                 onClick={() => onDelete?.(need)}
               /></>}
@@ -147,14 +150,15 @@ export default function NeedCard({ need, className = "", onUpdate, onDelete, aut
         <>
           <p className="mb-1">
             <span className="text-slate-600">Additional Comments: </span>
+            <br />
             <span className="font-medium">{need?.description}</span>
           </p>
           <NeedHoursDisplay
             allocated={need?.numHoursCurrentlyAllocated}
             required={need?.requiredGradingHours}
           />
-          <div className="flex">
-            <span className="text-slate-600">Course Prerequisites: </span>
+          <div className="flex gap-x-1">
+            <span className="text-slate-600">Course Prerequisites:{" "}</span>
             {need?.prerequisites?.length ? (
               <div className="flex flex-wrap text-slate-800">
                 {need.prerequisites.map((course, idx) => (
@@ -162,7 +166,7 @@ export default function NeedCard({ need, className = "", onUpdate, onDelete, aut
                     <Link to={`/user/courseprofile/${course.id}`} className="hover:text-blue-600">
                       {course.deptCode} {course.courseNum}
                     </Link>
-                    {need.prerequisites && idx < need.prerequisites.length - 1 && <span>,&nbsp;</span>}
+                    {need.prerequisites && idx < need.prerequisites.length - 1 && <span>,</span>}
                   </span>
                 ))}
               </div>
@@ -184,11 +188,11 @@ function NeedHoursDisplay({ allocated, required }: { allocated?: number | null; 
     allocated / required > 1;
 
   return (
-    <div className="flex mb-1">
-      <span className="text-slate-600">Allocated hours: </span>
+    <div className="flex mb-1 gap-x-1">
+      <span className="text-slate-600">Allocated hours:{" "}</span>
       <span className="font-medium">{allocated ?? "-"}</span>
       <span>&nbsp;/&nbsp;</span>
-      <span className="text-slate-600">Required hours: </span>
+      <span className="text-slate-600">Required hours:{" "}</span>
       <span className="font-medium">{required ?? "-"}</span>
       {isOverbooked && (
         <span className="text-red-600 ml-2">This section is overbooked!</span>

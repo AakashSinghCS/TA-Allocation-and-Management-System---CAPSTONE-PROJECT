@@ -23,26 +23,15 @@ interface NeedViewerProps {
 export default function NeedViewer({ instructorId, className = "", initial }: NeedViewerProps) {
   const [sections, setSections] = useState<Section[]>(initial?.sections ?? []);
   const isInstructor = useAuth().userRoles.includes('INSTRUCTOR')
-  const [courseList, setCourseList] = useState<Course[]>([]);
+  const [courseList] = useState<Course[]>(initial?.allAssignedCourses ?? []);
   const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
   const [selectedYear, setSelectedYear] = useState<number>(
-    initial ?Math.max(...initial.existingYears.map(Number)): -1
+    initial ? Math.max(...initial.existingYears.map(Number)) : -1
   );
   const [selectedSemester, setSelectedSemester] = useState<string>("W1");
 
-  useEffect(() => {
-    const unique: Record<number, Course> = {};
-    initial?.sections.forEach((sec) => {
-      if (sec.course?.id && !unique[sec.course.id]) {
-        unique[sec.course.id] = sec.course;
-      }
-    });
-    setCourseList(Object.values(unique));
-
-  }, [initial?.sections]);
-
   const onDeleteNeed = async (need: Need) => {
-    const confirm = confirmDeletion("TA requirement","This will erase all the TA requirements for other sections of the associated course");
+    const confirm = confirmDeletion("TA requirement", "This will erase all the TA requirements for other sections of the associated course");
     if (confirm) {
       const success = await fetchDeleteNeed(need);
       if (success) {
@@ -90,10 +79,18 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
     );
     setSections(result ?? []);
   };
-  
+
+  const isMainSection = (section:Section) =>{
+    if(section.type === "LECTURE" || section.type == "EXPERENTIAL" || section.type=== "SEMINAR"){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
   return (
     <div className={"grid gap-3 " + className}>
-      <div className="flex gap-2 items-end">
+      <div className="flex gap-2 items-end w-full">
         <select
           value={selectedCourse ?? ""}
           onChange={(e) =>
@@ -135,10 +132,19 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
         <button
           type="button"
           onClick={onSearch}
-          className="px-3 py-1 bg-blue-600 text-white rounded"
+          className="px-3 py-1 h-full bg-[#040941] hover:bg-[#040491] text-white rounded transition-colors cursor-pointer"
         >
           Search
         </button>
+        {isInstructor && (
+          <Link
+            to="/user/instructor/addsection"
+            className=" ml-auto inline-flex items-center justify-center px-3 py-1 
+              h-full bg-[#00c89c] text-white rounded hover:bg-[#c7fcec] transition"
+          >
+            + Add section
+          </Link>
+        )}
       </div>
       {/* Header row for large screens */}
       <div className="hidden lg:grid lg:grid-cols-3 font-medium text-lg text-slate-600">
@@ -153,7 +159,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
           <SectionCard section={sec} className="" authenticated={isInstructor} onDelete={onDeleteSection} />
 
           {/* Need column */}
-          {sec.need ? (
+          {isMainSection(sec) ? (sec.need ? (
             <NeedCard
               need={sec.need}
               className=""
@@ -163,25 +169,19 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
             />
           ) : (
             <div
-              className="w-full overflow-hidden rounded-lg text-sm italic text-slate-500 border border-dashed border-slate-400 p-2"
+              className="block w-full text-center rounded-lg border-2 border-dashed border-slate-400 px-4 py-3
+                text-sm font-medium text-slate-700 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition cursor-pointer"
             >
-              {isInstructor && <Link to={`/user/instructor/addneed/${sec?.id}`}>Add a need</Link>}
+              {isInstructor && <Link to={`/user/instructor/addneed/${sec?.id}`}>Click Me to Add a TA Requirement</Link>}
             </div>
-          )}
+          )):<div className="p-2 italic text-slate-400 border border-dashed border-slate-200 rounded-lg">
+              This is a Tutorial, Laboratory, Discussion, Workshop, or Independent Study.
+            </div>}
 
           {/* Allocation column */}
           <AllocationCard allocations={sec.allocations} className="" />
         </div>
       ))}
-
-      {/* Add section link */}
-      {isInstructor && <div className="flex w-full">
-        <Link to="/user/instructor/addsection" className="w-full">
-          <div className="w-full cursor-pointer p-2 italic text-slate-500 border border-dashed border-slate-400 rounded-lg text-center">
-            Add a section
-          </div>
-        </Link>
-      </div>}
     </div>
   );
 }

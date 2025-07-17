@@ -163,7 +163,14 @@ public class CourseController {
         return ResponseEntity.ok(dto);
     }
 
-
+    @GetMapping("/allCourses/{instructorId}")
+    public ResponseEntity<List<CourseDto>> getInstructorCourses(
+        @PathVariable Long instructorId
+    ) {
+        return ResponseEntity.ok(
+        courseService.getCoursesForInstructor(instructorId)
+        );
+    }
     // @GetMapping("/getEnrolledCourses/{studentId}")
     // public ResponseEntity<List<CourseDto>> getMethodName(@PathVariable Integer
     // studentId) {

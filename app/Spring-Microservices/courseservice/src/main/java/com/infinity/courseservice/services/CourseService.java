@@ -266,6 +266,14 @@ public class CourseService {
         return courseMapper.courseToDto(course);
     }
 
+    public List<CourseDto> getCoursesForInstructor(Long instructorId) {
+        return courseRepository
+        .findDistinctCoursesByInstructorId(instructorId)
+        .stream()
+        .map(courseMapper::courseToDto)   // or build new CourseDto(...)
+        .toList();
+    }
+
     // public List<CourseDto> getEnrolledCourses(Integer studentId) {
     // UserDto user = userInterface.getStudentById(studentId).getBody();
     // if(user == null){

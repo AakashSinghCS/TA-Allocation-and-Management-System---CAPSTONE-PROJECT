@@ -28,7 +28,7 @@
   select {
     border: 1px solid #cbd5e0;
     border-radius: 0.375rem;
-    padding: 0.5rem 0.75rem;    /* default for un‑layered inputs */
+    padding: 0.35rem 0.60rem;    /* default for un‑layered inputs */
     box-sizing: border-box;
   }
 }

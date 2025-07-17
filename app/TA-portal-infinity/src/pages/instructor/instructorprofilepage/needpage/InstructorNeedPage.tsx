@@ -13,90 +13,92 @@ import { useAuth } from "../../../../context/AuthContext";
 import { fetchAllExistingDeptCodes } from "../../../../api/course/sectionfilter/fetchAllExistingDeptCodes";
 import { fetchAllExistingYears } from "../../../../api/course/sectionfilter/fetchAllExistingYears";
 import { fetchSectionNeedAndAllocations } from "../../../../api/instructor/fetchSectionNeedAndAllocations";
+import type { Course } from "../../../../interfaces/course/Course";
+import { fetchAllInstructorCourses } from "../../../../api/instructor/fetchAllInstructorCourses";
 
 export interface NeedViewerResponse {
-  sections: Section[];
-  existingYears : string[];
+  sections: Section[] | null;
+  existingYears: string[];
+  allAssignedCourses: Course[];
 }
 
-export default function InstructorNeedPage (){
-    const { userId } = useParams();
-    const iId = Number(userId);
-    const [needDeadline, setNeedDeadline] = useState<DeadlineDto | null>(null);
-    const [deadlineError, setDeadlineError] = useState("");
+export default function InstructorNeedPage() {
+  const { userId } = useParams();
+  const iId = Number(userId);
+  const [needDeadline, setNeedDeadline] = useState<DeadlineDto | null>(null);
+  const [deadlineError, setDeadlineError] = useState("");
 
-    const { token, userRoles } = useAuth();
-    
-    useEffect(() => {
-        async function loadDeadline() {
-          setDeadlineError("");
-          try {
-            const allDeadlines = await fetchDeadlines(token || "");
-            const needDeadline = allDeadlines.find(
-              (d) => d.name === "instructor_need_update_deadline"
-            );
-            setNeedDeadline(needDeadline || null);
-          } catch (err) {
-            console.error("Failed to load deadline:", err);
-            setDeadlineError("Could not load need update deadline.");
+  const { token, userRoles } = useAuth();
+
+  useEffect(() => {
+    async function loadDeadline() {
+      setDeadlineError("");
+      try {
+        const allDeadlines = await fetchDeadlines(token || "");
+        const needDeadline = allDeadlines.find(
+          (d) => d.name === "instructor_need_update_deadline"
+        );
+        setNeedDeadline(needDeadline || null);
+      } catch (err) {
+        console.error("Failed to load deadline:", err);
+        setDeadlineError("Could not load need update deadline.");
+      }
+    }
+
+    if (token) loadDeadline();
+  }, [token]);
+
+  return (
+    <div className='mx-auto space-y-6 p-4'>
+      <GenericAPIContainer<StudentOrInstructorOrCoordinator>
+        fetchFunction={() => fetchUserDetails(iId)}
+        render={(record) => (
+          <TabNav
+            roles={record.roles ?? []}
+          />
+        )}
+      />
+      <h2 className="text-xl font-semibold mb-4">TA Information</h2>
+      {needDeadline && (
+        <p className="text-md text-gray-700 mb-6">
+          Deadline:{" "}
+          <span className="font-medium">
+            {new Date(needDeadline.endTime).toLocaleString()}
+          </span>
+        </p>
+      )}
+      {!needDeadline && !deadlineError && (
+        <p className="text-md text-gray-500 mb-6">
+          No application deadline found.
+        </p>
+      )}
+      {deadlineError && (
+        <p className="text-md text-red-500 mb-6">
+          {deadlineError}
+        </p>
+      )}
+      <GenericAPIContainer<NeedViewerResponse | null>
+        fetchFunction={async () => {
+          const years = await fetchAllExistingYears();
+          const mostRecent = years ? Math.max(...years.map(Number)) : -1;
+          const defaultSemester = "W1";
+
+          const [sections, allAssignedCourses] = await Promise.all([
+            fetchSectionNeedAndAllocations( iId,  null,  mostRecent, defaultSemester) ?? [],
+            fetchAllInstructorCourses(iId)
+          ]);
+
+          const response: NeedViewerResponse = {
+            sections,
+            existingYears: years ?? [""],
+            allAssignedCourses
           }
+          return response;
         }
-      
-        if (token) loadDeadline();
-      }, [token]);
-
-    return(
-        <div className='mx-auto space-y-6 p-4'>
-            <GenericAPIContainer<StudentOrInstructorOrCoordinator>
-                fetchFunction={() => fetchUserDetails(iId)}
-                render={(record) => (
-                    <TabNav
-                    roles={record.roles ?? []}
-                    />
-                )}
-            />
-            <h2 className="text-xl font-semibold mb-4">TA Information</h2>
-            {needDeadline && (
-            <p className="text-md text-gray-700 mb-6">
-                Deadline:{" "}
-                <span className="font-medium">
-                {new Date(needDeadline.endTime).toLocaleString()}
-                </span>
-            </p>
-            )}
-            {!needDeadline && !deadlineError && (
-                <p className="text-md text-gray-500 mb-6">
-                No application deadline found.
-                </p>
-            )}
-            {deadlineError && (
-                <p className="text-md text-red-500 mb-6">
-                {deadlineError}
-                </p>
-            )}
-            <GenericAPIContainer<NeedViewerResponse | null>
-                  fetchFunction={async () => {
-                    const years  = await fetchAllExistingYears();
-                    const mostRecent = years ? Math.max(...years.map(Number)): -1;
-                    const defaultSemester = "W1";
-
-                    const sections =
-                      (await fetchSectionNeedAndAllocations(
-                        iId,
-                        null,
-                        mostRecent,
-                        defaultSemester
-                      )) ?? [];
-                      const response :NeedViewerResponse={
-                      sections,
-                      existingYears: years ?? [""],
-                    }
-                    return response;
-                  }
-                  }
-                  render={(sections) => (
-            <NeedViewer instructorId={iId} initial={sections}/>
-                  )}/>
-        </div>
-    )
+        }
+        render={(sections) => (
+          <NeedViewer instructorId={iId} initial={sections} />
+        )} />
+    </div>
+  )
 }
