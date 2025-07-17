@@ -82,7 +82,19 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getInstructorCourseNeedsAndAllocations(instructorId));
     }
 
-    
+     @GetMapping("/needAndAllocations/specific/{instructorId}")
+    public ResponseEntity<List<CourseNeedAndAllocations>> getSpecific(
+        @PathVariable Long instructorId,
+        @RequestParam(required = false) Long courseId,
+        @RequestParam Integer year,
+        @RequestParam String semester
+    ) {
+        List<CourseNeedAndAllocations> data =
+            courseService.getInstructorSpecificCourseNeedsAndAllocations(
+                instructorId, courseId, year, semester
+            );
+        return ResponseEntity.ok(data);
+    }
     
     @GetMapping("/allDeptCodes")
     public ResponseEntity<List<String>> getAllDeptCodes() {

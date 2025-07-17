@@ -10,7 +10,14 @@ import { useEffect, useState } from "react";
 import type { DeadlineDto } from "../../../../interfaces/admin/Deadline";
 import { fetchDeadlines } from "../../../../api/admin/FetchDeadline";
 import { useAuth } from "../../../../context/AuthContext";
+import { fetchAllExistingDeptCodes } from "../../../../api/course/sectionfilter/fetchAllExistingDeptCodes";
+import { fetchAllExistingYears } from "../../../../api/course/sectionfilter/fetchAllExistingYears";
+import { fetchSectionNeedAndAllocations } from "../../../../api/instructor/fetchSectionNeedAndAllocations";
 
+export interface NeedViewerResponse {
+  sections: Section[];
+  existingYears : string[];
+}
 
 export default function InstructorNeedPage (){
     const { userId } = useParams();
@@ -67,8 +74,26 @@ export default function InstructorNeedPage (){
                 {deadlineError}
                 </p>
             )}
-            <GenericAPIContainer<Section[] | null>
-                  fetchFunction={() => fetchAllSectionsAndNeedAndAllocations(iId)}
+            <GenericAPIContainer<NeedViewerResponse | null>
+                  fetchFunction={async () => {
+                    const years  = await fetchAllExistingYears();
+                    const mostRecent = years ? Math.max(...years.map(Number)): -1;
+                    const defaultSemester = "W1";
+
+                    const sections =
+                      (await fetchSectionNeedAndAllocations(
+                        iId,
+                        null,
+                        mostRecent,
+                        defaultSemester
+                      )) ?? [];
+                      const response :NeedViewerResponse={
+                      sections,
+                      existingYears: years ?? [""],
+                    }
+                    return response;
+                  }
+                  }
                   render={(sections) => (
             <NeedViewer instructorId={iId} initial={sections}/>
                   )}/>
