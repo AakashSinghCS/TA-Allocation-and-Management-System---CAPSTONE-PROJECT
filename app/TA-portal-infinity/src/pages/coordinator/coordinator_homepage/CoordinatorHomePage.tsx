@@ -11,13 +11,12 @@ import { fetchAllocationBySectionId } from '../../../api/allocation/fetchAllocat
 import { fetchAllocationByApplicationId } from '../../../api/allocation/fetchAllocationByApplicationId';
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
 import { fetchDeadlines } from '../../../api/config/fetchDeadlines';
+import type { Deadline } from '../../../interfaces/config/Deadline';
 
-// Deadline config type
-type Deadline = { name: string; startTime: string; endTime: string };
 
 export default function CoordinatorHomePage() {
   const { token, userId } = useAuth();
-  // Fetch user profile for welcome message
+  // welcome message
   const [userProfile, setUserProfile] = useState<{ firstName: string; lastName: string }>({ firstName: 'User', lastName: '' });
   useEffect(() => {
     if (!token) return;
@@ -36,7 +35,7 @@ export default function CoordinatorHomePage() {
   const [sectionsNeedingTAsCount, setSectionsNeedingTAsCount] = useState(0);
   const [recentAppAllocations, setRecentAppAllocations] = useState<Record<number, Allocation[]>>({});
   const [topAllocations, setTopAllocations] = useState<Allocation[]>([]);
-  // Tasks progress: deadlines set out of total
+  // deadlines set out of total
   const totalDeadlines = 3;
   const [deadlines, setDeadlines] = useState<Deadline[]>([]);
   // Only count deadlines whose endTime is in the future
@@ -45,25 +44,21 @@ export default function CoordinatorHomePage() {
   const tasksProgress = Math.floor((activeDeadlines.length / totalDeadlines) * 100);
   const tasksDash1 = tasksProgress > 0 ? tasksProgress : 100;
   const tasksDash2 = tasksProgress > 0 ? 100 - tasksProgress : 0;
-  // Compute days until each deadline
+  // days until each deadline
   const daysUntilList = deadlines.map(d => {
     const date = new Date(d.endTime);
     return Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
   });
-  // Helper to convert snake_case to Title Case
   const formatDeadlineName = (name: string) =>
     name.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-  // Color: 0-65% red, 66-99% yellow, 100% green
   const progressColor =
     tasksProgress >= 100 ? 'text-green-700' :
     tasksProgress >= 66 ? 'text-yellow-700' :
     'text-red-600';
-  // Profile questions setup progress: target 5
   const profileThreshold = 5;
   const profileProgress = Math.min(Math.floor((questionsCount / profileThreshold) * 100), 100);
   const profileDash1 = profileProgress > 0 ? profileProgress : 100;
   const profileDash2 = profileProgress > 0 ? 100 - profileProgress : 0;
-  // Color: 0-2 red, 3-4 yellow, >=5 green
   const profileColor =
     questionsCount >= profileThreshold ? 'text-green-700' :
     questionsCount >= 3 ? 'text-yellow-700' :
@@ -156,7 +151,7 @@ export default function CoordinatorHomePage() {
       })
       .catch(() => setDeadlines([]));
   }, [token]);
-  // Compute task summaries
+  // task summaries
   const pendingApplications = Math.max(0, totalApps - offerCount);
   const sectionsInSystem = sectionsCount;
   const sectionsNeedingTAs = sectionsNeedingTAsCount;
@@ -166,12 +161,10 @@ export default function CoordinatorHomePage() {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-2xl md:text-3xl font-bold text-[#040941] mb-2">My Dashboard</h1>
         <p className="text-lg text-gray-700 mb-4">Welcome, {fullName}</p>
-        
-       
         {/* Main Content & Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-y-4 lg:gap-x-8">
           <main className="lg:col-span-3 space-y-6">
-            {/* Summary Metrics (8 cards) */}
+            {/* Summary Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
           {/* Total Applications */}
           <div className="bg-blue-50 rounded-lg p-4 flex justify-between items-center">
