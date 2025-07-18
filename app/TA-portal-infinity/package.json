@@ -15,7 +15,6 @@
     "@fullcalendar/interaction": "^6.1.17",
     "@fullcalendar/react": "^6.1.17",
     "@fullcalendar/timegrid": "^6.1.17",
-    "axios": "^1.10.0",
     "ics": "^3.8.1",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.518.0",
