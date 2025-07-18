@@ -140,7 +140,7 @@ export default function CoordinatorHomePage() {
       .then(qs => setQuestionsCount(qs?.length ?? 0))
       .catch(() => setQuestionsCount(0));
   }, [token]);
-  // fetch deadlines
+  // fetch deadline
   useEffect(() => {
     if (!token) return;
     fetchDeadlines(token)
