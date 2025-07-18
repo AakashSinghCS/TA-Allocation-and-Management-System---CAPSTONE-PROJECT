@@ -1690,3 +1690,87 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin coding for UR 4.6 - Must be able to view final assignments in a calendar view (lab, marking, prep coordination) and GTA must be able to see their exam assignments.
 
+
+## Wednesday 7/16 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.16.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Page - View Exam Assignments
+  * #2: Coordinator Page - Create exam and assign student to exam
+
+### Progress Update (since 15/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 80% Complete.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress. 30% Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Update schedule page for students so that they can view their exam assignments in a calendar view. Have to make few modifications once I get the updated backend from Allen. Created initial coordinator exams page where they can create an exam using a form. Have to add assigning a student to the exam with a form next.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete exam assignment feature and begin next assigned coding task.
+
+## Thursday 7/17 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.17.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Page - View Exam Assignments
+  * #2: Coordinator Page - Create exam and assign student to exam
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Students can now view their exam assignments in a calendar view along with a schedule row at the bottom with more details. Added assign student to exam form on coordinators exam page. Once student is assigned to an exam, the students schedule calendar is successfully updated as well. Wrote tests as well. All are passing.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
