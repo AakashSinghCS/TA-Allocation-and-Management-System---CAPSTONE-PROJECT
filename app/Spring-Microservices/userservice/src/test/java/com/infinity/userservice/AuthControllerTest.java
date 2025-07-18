@@ -114,7 +114,7 @@ public class AuthControllerTest {
         RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", List.of(UserRole.STUDENT));
         UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.STUDENT), null, null, null, null, null, null, null);
 
-        when(userService.register(any())).thenReturn(mockResponse);
+        when(userService.register(any(),eq(null))).thenReturn(mockResponse);
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -132,7 +132,7 @@ public class AuthControllerTest {
         UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.INSTRUCTOR), null, null,
                         null, null, null, null, null);
 
-        when(userService.register(any())).thenReturn(mockResponse);
+        when(userService.register(any(),eq(null))).thenReturn(mockResponse);
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -151,7 +151,7 @@ public class AuthControllerTest {
         UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.COORDINATOR), null, null,
                         null, null, null, null, null);
 
-        when(userService.register(any())).thenReturn(mockResponse);
+        when(userService.register(any(),eq(null))).thenReturn(mockResponse);
 
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)

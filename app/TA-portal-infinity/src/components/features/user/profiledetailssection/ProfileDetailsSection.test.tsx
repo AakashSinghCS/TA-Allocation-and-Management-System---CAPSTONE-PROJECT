@@ -30,25 +30,6 @@ describe('ProfileDetailsSection', () => {
         (useAuth as vi.Mock).mockReturnValue({ userId, userRoles });
     }
 
-    it('hides the Update button when not owner or coordinator', () => {
-        setupAuth(2, ['STUDENT']);
-        render(
-            <ProfileDetailsSection
-                user={baseUser}
-                fields={['firstName', 'lastName', 'createdAt']}
-                labels={{
-                    id: "id",
-                    email: "Email",
-                    firstName: 'First Name',
-                    lastName: 'Last Name',
-                    createdAt: 'Created At',
-                }}
-                fetchDetailsFunction={mockFetchDetails}
-            />
-        );
-        expect(screen.queryByText('Update')).toBeNull();
-    });
-
     it('shows the Update button for the owner', () => {
         setupAuth(1, ['STUDENT']);
         render(
@@ -56,30 +37,12 @@ describe('ProfileDetailsSection', () => {
                 user={baseUser}
                 fields={['firstName', 'lastName']}
                 labels={{
-                    id: "1",
-                    email: "test@test.com",
+                    id: "id",
+                    email: "Email",
                     firstName: 'First Name',
                     lastName: 'Last Name',
                     createdAt: 'Created At',
-                }}
-                fetchDetailsFunction={mockFetchDetails}
-            />
-        );
-        expect(screen.getByText('Update')).toBeInTheDocument();
-    });
-
-    it('shows the Update button for a coordinator', () => {
-        setupAuth(42, ['COORDINATOR']);
-        render(
-            <ProfileDetailsSection
-                user={baseUser}
-                fields={['firstName', 'lastName']}
-                labels={{
-                    id: "1",
-                    email: "test@test.com",
-                    firstName: 'First Name',
-                    lastName: 'Last Name',
-                    createdAt: 'Created At',
+                    roles: 'Roles'
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />
@@ -99,6 +62,7 @@ describe('ProfileDetailsSection', () => {
                     firstName: 'First Name',
                     lastName: 'Last Name',
                     createdAt: 'Created At',
+                    roles: "roles"
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />
@@ -107,4 +71,76 @@ describe('ProfileDetailsSection', () => {
         fireEvent.click(screen.getByText('Update'));
         expect(screen.getByTestId('edit-section')).toBeInTheDocument();
     });
+
+    vi.mock('../changerolemodal/ChangeRolesModal', () => ({
+        default: (props: any) => (
+            <div data-testid="change-roles-modal">
+                <button onClick={() => props.onSave(["INSTRUCTOR"])}>Mock Save</button>
+                <button onClick={props.onClose}>Mock Cancel</button>
+            </div>
+        ),
+    }));
+
+    it('shows Change Roles button for admin', () => {
+        setupAuth(999, ['ADMIN']);
+        render(
+            <ProfileDetailsSection
+                user={{ ...baseUser, roles: ['STUDENT'] }}
+                fields={['firstName', 'lastName']}
+                labels={{
+                    id: "ID",
+                    firstName: 'First Name',
+                    lastName: 'Last Name',
+                    email: 'Test@test.com',
+                    createdAt: 'Created At',
+                    roles: 'Roles',
+                }}
+                fetchDetailsFunction={mockFetchDetails}
+            />
+        );
+        expect(screen.getByText('Change Roles')).toBeInTheDocument();
+    });
+
+    it('does not show Change Roles button for non-admin', () => {
+        setupAuth(999, ['COORDINATOR']);
+        render(
+            <ProfileDetailsSection
+                user={{ ...baseUser, roles: ['STUDENT'] }}
+                fields={['firstName', 'lastName']}
+                labels={{
+                    id: "ID",
+                    firstName: 'First Name',
+                    lastName: 'Last Name',
+                    email: 'test@test.com',
+                    createdAt: 'Created At',
+                    roles: 'Roles',
+                }}
+                fetchDetailsFunction={mockFetchDetails}
+            />
+        );
+        expect(screen.queryByText('Change Roles')).not.toBeInTheDocument();
+    });
+
+    it('opens Change Roles modal when button is clicked', () => {
+        setupAuth(999, ['ADMIN']);
+        render(
+            <ProfileDetailsSection
+                user={{ ...baseUser, roles: ['STUDENT'] }}
+                fields={['firstName', 'lastName']}
+                labels={{
+                    id: "ID",
+                    firstName: 'First Name',
+                    lastName: 'Last Name',
+                    email: 'test@test.com',
+                    createdAt: 'Created At',
+                    roles: 'Roles',
+                }}
+                fetchDetailsFunction={mockFetchDetails}
+            />
+        );
+
+        fireEvent.click(screen.getByText('Change Roles'));
+        expect(screen.getByTestId('change-roles-modal')).toBeInTheDocument();
+    });
+
 });

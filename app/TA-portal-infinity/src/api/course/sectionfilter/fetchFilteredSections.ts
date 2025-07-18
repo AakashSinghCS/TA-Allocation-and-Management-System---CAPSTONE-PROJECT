@@ -20,7 +20,7 @@ export async function fetchFilteredSections(filters: FilterSectionsProps): Promi
     const BASE = "http://localhost:8080/courses/filterCourses";
     const token = localStorage.getItem("token");
 
-    console.log(filters);
+    // console.log(filters);
     try {
         const res = await fetch(BASE, {
             method: "POST",

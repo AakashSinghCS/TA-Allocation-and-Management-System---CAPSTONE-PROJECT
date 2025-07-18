@@ -183,6 +183,7 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
           mode={mode === 'add' ? 'instructorAddSection' : 'instructorPrereqCourse'}
           onSelect={mode === 'add' ? onSelect : undefined}
           onSelectCourse={mode === 'update' ? onSelectCourseForPrereq : undefined}
+          askForConfirmation={true}
         />
       )}
 

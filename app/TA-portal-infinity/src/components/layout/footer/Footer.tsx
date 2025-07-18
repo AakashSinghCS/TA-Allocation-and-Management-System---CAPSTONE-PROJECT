@@ -6,7 +6,7 @@ import twitterIcon from "../../../assets/icons/facebook_logo.png";
 
 export default function Footer() {
   return (
-    <footer className="flex flex-col sm:flex-row items-center sm:justify-between bg-white border-t border-[#d1d5db] text-[#040941] px-2 sm:px-6 py-0.5 sm:py-1 gap-y-1">
+    <footer className="flex flex-col sm:flex-row items-center sm:justify-between bg-white border-t border-[#d1d5db] text-[#040941] px-2 sm:px-6 sm:py-1 gap-y-1">
       {/* UBC Logo and Navigation Links */}
       <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
         <img src={ubcLogo} alt="UBC logo" className="h-12 sm:h-16 w-auto hover:drop-shadow-[0_0_1em_#040941]" />

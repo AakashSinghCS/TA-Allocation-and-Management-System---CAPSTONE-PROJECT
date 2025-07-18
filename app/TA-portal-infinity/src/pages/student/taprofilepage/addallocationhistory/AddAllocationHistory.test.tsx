@@ -120,6 +120,6 @@ describe('<AddAllocationHistory />', () => {
     );
 
     // and that we navigated away
-    expect(mockNavigate).toHaveBeenCalledWith('/user/taprofile/42');
+    expect(mockNavigate).toHaveBeenCalledWith('/user/taprofile/42/allocationHistory');
   });
 });

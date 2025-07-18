@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.userservice.controllers.UserController;
 import com.infinity.userservice.dtos.RoleChangeRequest;
 import com.infinity.userservice.dtos.UserDto;
+import com.infinity.userservice.dtos.Registration.RegisterRequest;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.BadRequestException;
@@ -249,9 +251,11 @@ public class UserControllerTest {
                                 UserRole.COORDINATOR),
                                 null, null, null, null, null, null, null);
 
-                when(userService.changeRole(eq(1L), eq(request))).thenReturn(updatedUser);
+                when(userService.changeRole(eq(1L), eq(request), eq(1L))).thenReturn(updatedUser);
 
                 mockMvc.perform(put("/users/changeRole/1")
+                                // .with(user("admin").roles("ADMIN"))
+                                .header("X-User-Id", "1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
                                 .andExpect(status().isOk())
@@ -296,5 +300,34 @@ public class UserControllerTest {
                                 .andExpect(jsonPath("$.roles[0]").value("INSTRUCTOR"));
         }
 
+        @Test
+        void getUserDetailsById_returnsUserDto() throws Exception {
+                UserDto instructorDto = new UserDto(2L, "Bob", "Instructor", "bob@example.com",
+                                List.of(UserRole.INSTRUCTOR), null, null, null, null, null, null, null);
+                when(userService.getUserDetailsById(2L)).thenReturn(instructorDto);
 
+                mockMvc.perform(get("/users/profile/2"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.email").value("bob@example.com"))
+                                .andExpect(jsonPath("$.roles[0]").value("INSTRUCTOR"));
+        }
+
+        @Test
+        void succesfullyRegisterStudent_thenReturns201() throws Exception {
+                RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1",
+                                List.of(UserRole.STUDENT));
+                UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.STUDENT),
+                                null, null, null, null, null, null, null);
+
+                when(userService.register(any(), eq(null))).thenReturn(mockResponse);
+
+                mockMvc.perform(post("/users/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(new ObjectMapper().writeValueAsString(request)))
+                                .andExpect(status().isCreated())
+                                .andExpect(jsonPath("$.firstName").value("John"))
+                                .andExpect(jsonPath("$.roles").isArray())
+                                .andExpect(jsonPath("$.roles[0]").value("STUDENT"));
+
+        }
 }

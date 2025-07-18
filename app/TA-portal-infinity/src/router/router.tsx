@@ -5,10 +5,13 @@ import RoleGuard from "../components/features/roleguard/RoleGuard";
 import { UserRole } from "../interfaces/enum/UserRole";
 import PublicLayout from "../components/layout/publicLayout/PublicLayout";
 
-import { TaQuestionnairePage } from "../pages/student/taquestionnairepage/TaQuestionnairePage";
-import { CoordinatorQuestionnairePage } from "../pages/coordinator/coordinatorquestionnairepage/CoordinatorQuestionnairePage";
 
-const TaProfilePage = lazy(() => import("../pages/student/taprofilepage/TaProfilePage"));
+const CoordinatorQuestionnairePage = lazy(()=> import("../pages/coordinator/coordinatorquestionnairepage/CoordinatorQuestionnairePage"));
+const TaQuestionnairePage = lazy(()=>import("../pages/student/taquestionnairepage/TaQuestionnairePage"));
+const ProfilePage = lazy(()=> import("../pages/auth/profilepage/ProfilePage"));
+const AllocationHistoryPage = lazy(()=>import("../pages/student/allocationhistorypage/AllocationHistoryPage"));
+const ViewProfileQuestionsPage = lazy(()=> import("../pages/student/viewprofilequestionspage/ViewProfileQuestionsPage"));
+const AuditLogsPage = lazy(()=> import("../pages/admin/audit/auditlogspage/AuditLogsPage"));
 const CoursesTakenPage = lazy(() => import("../pages/student/taprofilepage/coursestakenpage/CoursesTakenPage"));
 const StudentComparerPage = lazy(() => import("../pages/student/taprofilepage/comparerpage/StudentComparerPage"));
 const StudentQualificationPage = lazy(() => import("../pages/student/taprofilepage/qualificationpage/StudentQualificationPage"));
@@ -17,6 +20,7 @@ const AddEnrolledCourse = lazy(() => import("../pages/student/taprofilepage/cour
 const StudentHomePage = lazy(() => import("../pages/student/student_homepage/StudentHomePage"));
 const ApplicationPage = lazy(() => import("../pages/student/applicationpage/ApplicationPage"));
 const ViewApplicationPage = lazy(() => import("../pages/student/viewapplicationpage/ViewApplicationPage"));
+const ScheduleViewer = lazy(() => import("../pages/student/scheduleviewer/ScheduleViewer"));
 
 const InstructorProfilePage = lazy(() => import("../pages/instructor/instructorprofilepage/InstructorProfilePage"));
 const InstructorNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/InstructorNeedPage"));
@@ -45,20 +49,25 @@ const ErrorPage = lazy(() => import("../pages/auth/errorpage/ErrorPage"));
 
 const ExportToCSVPage = lazy(() => import("../pages/csv/exportpage/ExportToCSVPage"));
 
+const GraduateAvailabilityPage = lazy(() => import("../pages/student/graduateavailabilitypage/GraduateAvailabilityPage"));
+
 export const router = createBrowserRouter([
   {
     path: "/user",
     element: <App />,
     errorElement: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense>,
     children: [
-      { path: "taprofile/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaProfilePage /></Suspense> },
-      { path: "taprofile/:studentId/coursesTaken", element: <Suspense fallback={<div>Loading...</div>}><CoursesTakenPage /></Suspense> },
-      { path: "taprofile/:studentId/compare", element: <Suspense fallback={<div>Loading...</div>}><StudentComparerPage /></Suspense> },
-      { path: "taprofile/:studentId/qualifications", element: <Suspense fallback={<div>Loading...</div>}><StudentQualificationPage /></Suspense> },
-      { path: "instructorprofile/:instructorId", element: <Suspense fallback={<div>Loading...</div>}><InstructorProfilePage /></Suspense> },
-      { path: "instructorprofile/:instructorId/need", element: <Suspense fallback={<div>Loading...</div>}><InstructorNeedPage /></Suspense> },
-      { path: "instructorprofile/:instructorId/compare", element: <Suspense fallback={<div>Loading...</div>}><InstructorComparerPage /></Suspense> },
-      { path: "instructorprofile/:instructorId/qualifications", element: <Suspense fallback={<div>Loading...</div>}><InstructorQualificationPage /></Suspense> },
+      { path : "profile/:userId", element: <Suspense fallback={<div>Loading...</div>}><ProfilePage /></Suspense> },
+      // { path: "taprofile/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaProfilePage /></Suspense> },
+      // { path: "taprofile/:userId/coursesTaken", element: <Suspense fallback={<div>Loading...</div>}><CoursesTakenPage /></Suspense> },
+      { path: "taprofile/:userId/allocationHistory", element: <Suspense fallback={<div>Loading...</div>}><AllocationHistoryPage /></Suspense> },
+      { path: "taprofile/:userId/profileQuestions", element: <Suspense fallback={<div>Loading...</div>}><ViewProfileQuestionsPage /></Suspense> },
+      // { path: "taprofile/:userId/compare", element: <Suspense fallback={<div>Loading...</div>}><StudentComparerPage /></Suspense> },
+      { path: "taprofile/:userId/qualifications", element: <Suspense fallback={<div>Loading...</div>}><StudentQualificationPage /></Suspense> },
+      // { path: "instructorprofile/:instructorId", element: <Suspense fallback={<div>Loading...</div>}><InstructorProfilePage /></Suspense> },
+      { path: "instructorprofile/:userId/need", element: <Suspense fallback={<div>Loading...</div>}><InstructorNeedPage /></Suspense> },
+      // { path: "instructorprofile/:instructorId/compare", element: <Suspense fallback={<div>Loading...</div>}><InstructorComparerPage /></Suspense> },
+      { path: "instructorprofile/:userId/qualifications", element: <Suspense fallback={<div>Loading...</div>}><InstructorQualificationPage /></Suspense> },
       { path: "sectionprofile/:sectionId", element: <Suspense fallback={<div>Loading...</div>}><CourseProfilePage /></Suspense> },
       { path: "courseprofile/:courseId", element: <Suspense fallback={<div>Loading...</div>}><CourseProfilePage /></Suspense> },
 
@@ -73,10 +82,15 @@ export const router = createBrowserRouter([
           { path: "home", element: <Suspense fallback={<div>Loading...</div>}><StudentHomePage /></Suspense> },
           { path: "application", element: <Suspense fallback={<div>Loading...</div>}><ApplicationPage /></Suspense> },
           { path: "view-applications", element: <Suspense fallback={<div>Loading...</div>}><ViewApplicationPage /></Suspense> },
+
+          { path: "schedule", element: <Suspense fallback={<div>Loading...</div>}><ScheduleViewer  /></Suspense> },
           { path: "questions/:studentId", element: <TaQuestionnairePage /> },
+          { path: "questions/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaQuestionnairePage /></Suspense> },
+
           { path: "addallocation", element: <Suspense fallback={<div>Loading...</div>}><AddAllocationHistory /></Suspense> },
           { path: "addenrollment", element: <Suspense fallback={<div>Loading...</div>}><AddEnrolledCourse /></Suspense> },
           { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
+          { path: "availability", element: <Suspense fallback={<div>Loading...</div>}><GraduateAvailabilityPage /></Suspense>},
         ],
       },
 
@@ -113,9 +127,9 @@ export const router = createBrowserRouter([
           { path: "sections/add", element: <Suspense fallback={<div>Loading...</div>}><AddSectionPage /></Suspense> },
           { path: "sections/export", element: <Suspense fallback={<div>Loading...</div>}><ExportToCSVPage /></Suspense> },
           { path: "applications", element: <Suspense fallback={<div>Loading...</div>}><ApplicationViewPage /></Suspense> },
-          {  path: "allocation", element: <Suspense fallback={<div>Loading...</div>}><AllocationPage /></Suspense> },
-          { path: "student/questions/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaQuestionnairePage /></Suspense> },
+          { path: "allocation", element: <Suspense fallback={<div>Loading...</div>}><AllocationPage /></Suspense> },
           { path: "deadlines", element: <Suspense fallback={<div>Loading...</div>}><DeadlineManagementPage /></Suspense> },
+          { path: "audit", element: <Suspense fallback={<div>Loading...</div>}><AuditLogsPage /></Suspense> },
           { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
         ],
       },

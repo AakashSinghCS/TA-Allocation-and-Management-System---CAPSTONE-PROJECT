@@ -8,8 +8,8 @@ public record NeedDto(
         Long id,
         Long courseId,
         String description,
-        Integer requiredGradingHours,
-        Integer numHoursCurrentlyAllocated,
+        int requiredGradingHours,
+        int numHoursCurrentlyAllocated,
         Integer year,
         String semester,
         List<CourseDto> prerequisites

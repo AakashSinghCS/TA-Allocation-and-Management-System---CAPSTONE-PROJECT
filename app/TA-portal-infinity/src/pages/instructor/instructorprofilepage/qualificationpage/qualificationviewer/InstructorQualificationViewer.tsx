@@ -2,14 +2,18 @@ import { fetchAllInstructorQualifications, type QualificationResponse } from "..
 import { fetchGetInstructorSections } from "../../../../../api/instructor/fetchGetInstructorSections";
 import InstructorQualificationCard from "../../../../../components/features/qualification/InstructorQualificationCard.tsx/InstructorQualificationCard";
 import SectionCard from "../../../../../components/features/section/sectioncard/SectionCard";
+import { useAuth } from "../../../../../context/AuthContext";
 import type Section from "../../../../../interfaces/section/Section";
 import { GenericAPIContainer } from "../../../../../utility/genericapicontainer/GenericAPIContainer";
 
 export default function InstructorQualificationViewer({
   instructorId,
+  deadlinePassed,
 }: {
   instructorId: number;
+  deadlinePassed : Boolean;
 }) {
+  const isInstructor = useAuth().userRoles.includes('INSTRUCTOR');
   return (
     <GenericAPIContainer<QualificationResponse[] | null>
       fetchFunction={async () => {
@@ -66,6 +70,8 @@ export default function InstructorQualificationViewer({
                     deptCode: sd.course?.deptCode,
                   }}
                   initialQualifications={resp.qualifications}
+                  authenticated = {isInstructor}
+                  deadlinePassed={deadlinePassed}
                 />
               </div>
             );

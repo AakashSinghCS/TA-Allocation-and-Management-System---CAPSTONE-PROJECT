@@ -5,17 +5,23 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +30,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import com.infinity.applicationservice.dtos.DeadlineDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
@@ -39,16 +46,24 @@ import com.infinity.applicationservice.exceptions.NotFoundException;
 import com.infinity.applicationservice.feign.NotificationClient;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Application;
+import com.infinity.applicationservice.models.GlobalDeadline;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
+import com.infinity.applicationservice.repositories.ConfigRepository;
 import com.infinity.applicationservice.services.ApplicationService;
+import com.infinity.applicationservice.services.ConfigService;
 import com.infinity.applicationservice.utility.ApplicationMapper;
+import com.infinity.applicationservice.utility.ConfigMapper;
 import com.infinity.applicationservice.utility.EmailMapper;
+import com.netflix.discovery.converters.Auto;
 
 @ExtendWith(MockitoExtension.class)
 public class ApplicationServiceTest {
 
     @Mock
     ApplicationRepository applicationRepository;
+
+    @Mock
+    ConfigRepository configRepository;
 
     @Mock
     UserInterface userInterface;
@@ -65,6 +80,9 @@ public class ApplicationServiceTest {
     @InjectMocks
     ApplicationService applicationService;
 
+    @Mock
+    ConfigService configService;
+
     static Set<AvailabilityDto> availabilities;
 
     @BeforeAll
@@ -72,6 +90,19 @@ public class ApplicationServiceTest {
         availabilities = new HashSet<>();
         availabilities.add(new AvailabilityDto(Day.MONDAY, "09:00", "10:00"));
     }
+
+    @BeforeEach
+    void mockDeadline() {
+        DeadlineDto dto = new DeadlineDto(
+            "student_application_deadline",
+            LocalDateTime.now().minusDays(1),
+            LocalDateTime.now().plusDays(1)
+        );
+
+        lenient().when(configService.getDeadlineByName(anyString()))
+            .thenReturn(dto);
+    }
+
 
     @Test
     void testSubmitApplication_AlreadySubmitted_BadRequest() {
@@ -87,6 +118,41 @@ public class ApplicationServiceTest {
     }
 
     @Test
+    void testSubmitApplication_DeadlinePassed_BadRequest() {
+        // Arrange
+        ApplicationRequest applicationRequest = new ApplicationRequest(
+            List.of(Subject.COSC),
+            ApplicationType.UNDERGRADUATE,
+            false,
+            6,
+            Set.of(new AvailabilityDto(Day.MONDAY, "09:00", "10:00"))
+        );
+
+        // Mock repository: no previous submission
+        when(applicationRepository.existsByStudentIdAndYear(anyLong(), anyInt()))
+            .thenReturn(false);
+
+        // Mock deadline that already expired
+        DeadlineDto expiredDeadline = new DeadlineDto(
+            "student_application_deadline",
+            LocalDateTime.now().minusDays(2),
+            LocalDateTime.now().minusDays(1)
+        );
+
+        // Mock configService
+        when(configService.getDeadlineByName(anyString()))
+            .thenReturn(expiredDeadline);
+
+        // Act + Assert
+        BadRequestException e = assertThrows(BadRequestException.class, () -> {
+            applicationService.submitApplication(applicationRequest, 1L, List.of("ROLE_STUDENT"));
+        });
+
+        assertEquals("The application deadline has passed.", e.getMessage());
+    }
+
+
+    @Test
     void testSubmitApplication_MissingAvailabilityFields_BadRequest() {
         Set<AvailabilityDto> badAvailabilities = new HashSet<>();
         badAvailabilities.add(new AvailabilityDto(null, "10:00", "9:00"));
@@ -94,8 +160,12 @@ public class ApplicationServiceTest {
                 ApplicationType.UNDERGRADUATE, false, 6,
                 badAvailabilities);
 
-        when(applicationRepository.existsByStudentIdAndYear(1L, 2025)).thenReturn(false);
 
+        GlobalDeadline testEntity2 = configRepository.findByName("student_application_deadline");
+        System.out.println("REPO RETURN TEST in TEST: " + testEntity2);
+        System.out.println("CONFIG SERVICE CLASS: " + configService.getClass());
+
+        when(applicationRepository.existsByStudentIdAndYear(1L, 2025)).thenReturn(false);
         BadRequestException e = assertThrows(BadRequestException.class, () -> {
             applicationService.submitApplication(applicationRequest, 1L, List.of("ROLE_STUDENT"));
         });
@@ -253,6 +323,41 @@ public class ApplicationServiceTest {
         });
         assertEquals("Application with that student id and year doesn't exist", e.getMessage());
     }
+
+    @Test
+    void testUpdateApplication_DeadlinePassed_BadRequest() {
+        // Arrange
+        ApplicationRequest request = new ApplicationRequest(
+            List.of(Subject.COSC),
+            ApplicationType.UNDERGRADUATE,
+            false,
+            6,
+            Set.of(new AvailabilityDto(Day.MONDAY, "09:00", "10:00"))
+        );
+
+        // Mock configService returning expired deadline
+        DeadlineDto expiredDeadline = new DeadlineDto(
+            "student_application_deadline",
+            LocalDateTime.now().minusDays(2),
+            LocalDateTime.now().minusDays(1)
+        );
+
+        when(configService.getDeadlineByName(anyString()))
+            .thenReturn(expiredDeadline);
+
+        // Act + Assert
+        BadRequestException e = assertThrows(BadRequestException.class, () -> {
+            applicationService.updateApplication(
+                request,
+                1L, // studentId
+                1L, // userIdFromHeader (same user, so authorized)
+                List.of("ROLE_STUDENT")
+            );
+        });
+
+        assertEquals("The application deadline has passed.", e.getMessage());
+    }
+
 
     @Test
     void testUpdateApplication_Success() {

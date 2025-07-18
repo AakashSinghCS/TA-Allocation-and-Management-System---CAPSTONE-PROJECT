@@ -163,7 +163,7 @@ export default function SectionListPage() {
         : <SectionList
           sections={filteredSections}
           onDeleted={handleDeleted}
-        // mode = 'coordinator'
+        mode = 'coordinator'
         />
       }
 

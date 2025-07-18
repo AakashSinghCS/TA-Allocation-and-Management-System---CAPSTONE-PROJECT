@@ -1,3 +1,7 @@
+let deleteApplicationMock: any = vi.fn();
+vi.mock('../../../api/application/DeleteApplication', () => ({
+  deleteApplication: (...args: any[]) => deleteApplicationMock(...args),
+}));
 vi.mock('../../../api/course/getAllDeptCodes', () => ({
   getAllDeptCodes: vi.fn(() => Promise.resolve(['COSC', 'MATH', 'PHYS'])),
 }));
@@ -44,6 +48,80 @@ const renderWithProviders = () =>
   );
 
 describe('ApplicationPage', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // Reset global fetch to default mock (with saved application)
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({
+          studentId: 123,
+          student: { studentNum: 'S12345678' },
+          preferences: ['COSC111', 'COSC121'],
+          wantRemote: true,
+          wantWorkingHours: 10,
+          timeSubmitted: new Date().toISOString(),
+          availabilities: [],
+          applicationType: 'UNDERGRADUATE',
+        }),
+      })
+    ) as unknown as typeof fetch;
+    // Reset deleteApplicationMock for each test
+    deleteApplicationMock = vi.fn();
+  });
+
+  it('allows deleting an application and resets state', async () => {
+    // Mock deleteApplication API for this test
+    deleteApplicationMock.mockResolvedValueOnce(undefined);
+
+    renderWithProviders();
+    await waitFor(() => expect(screen.queryByText(/Loading department codes/i)).not.toBeInTheDocument());
+    // Open details to ensure savedApp is present
+    fireEvent.click(await screen.findByRole('button', { name: /view application/i }));
+    expect(screen.getByText(/Student ID:/i)).toBeInTheDocument();
+
+    // Click delete button
+    fireEvent.click(screen.getByRole('button', { name: /delete application/i }));
+    // Confirm toast appears
+    expect(await screen.findByText(/Delete Application\?/i)).toBeInTheDocument();
+    // Click Delete in toast (find correct button)
+    const deleteButtons = screen.getAllByRole('button', { name: /delete/i });
+    // The toast's delete button should have textContent 'Delete'
+    const confirmDeleteBtn = deleteButtons.find(btn => btn.textContent?.trim() === 'Delete');
+    expect(confirmDeleteBtn).toBeDefined();
+    fireEvent.click(confirmDeleteBtn!);
+
+    // Wait for success toast and state reset
+    await waitFor(() => {
+      expect(deleteApplicationMock).toHaveBeenCalled();
+      expect(screen.queryByText(/Application deleted successfully/i)).toBeInTheDocument();
+      // The view application button should disappear
+      expect(screen.queryByRole('button', { name: /view application/i })).not.toBeInTheDocument();
+    });
+  });
+
+  it('shows error toast if delete fails due to permission', async () => {
+    // Mock deleteApplication API to throw 403 error for this test
+    deleteApplicationMock.mockRejectedValueOnce(new Error('403 Forbidden'));
+
+    renderWithProviders();
+    await waitFor(() => expect(screen.queryByText(/Loading department codes/i)).not.toBeInTheDocument());
+    // Wait for the view application button to appear before clicking
+    const viewBtn = await screen.findByRole('button', { name: /view application/i });
+    fireEvent.click(viewBtn);
+    fireEvent.click(screen.getByRole('button', { name: /delete application/i }));
+    expect(await screen.findByText(/Delete Application\?/i)).toBeInTheDocument();
+    const deleteButtons = screen.getAllByRole('button', { name: /delete/i });
+    const confirmDeleteBtn = deleteButtons.find(btn => btn.textContent?.trim() === 'Delete');
+    fireEvent.click(confirmDeleteBtn!);
+
+    await waitFor(() => {
+      expect(deleteApplicationMock).toHaveBeenCalled();
+      expect(screen.queryByText(/do not have permission to delete/i)).toBeInTheDocument();
+    }, { timeout: 2000 });
+    // Now check for the view application button separately
+    expect(screen.queryByRole('button', { name: /view application/i })).not.toBeInTheDocument();
+  });
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -74,6 +152,9 @@ describe('ApplicationPage', () => {
 
   it('shows details when savedApp is fetched', async () => {
     renderWithProviders();
+    // Wait for department codes to load (removes loading message)
+    await waitFor(() => expect(screen.queryByText(/Loading department codes/i)).not.toBeInTheDocument());
+    // Now the savedApp should be loaded and the button should appear
     expect(await screen.findByRole('button', { name: /view application/i })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /view application/i }));
     expect(await screen.findByText(/Student ID:/i)).toBeInTheDocument();

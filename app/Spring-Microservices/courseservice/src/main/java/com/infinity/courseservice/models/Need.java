@@ -25,9 +25,9 @@ public class Need {
 
     private String description;
 
-    private Integer requiredGradingHours;
+    private int requiredGradingHours;
 
-    private Integer numHoursCurrentlyAllocated;
+    private int numHoursCurrentlyAllocated;
 
     @OneToMany(mappedBy = "need", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseNeed> courseNeeds;

@@ -10,11 +10,11 @@ const navItems = [
   { label: "TA Allocations", to: "/user/coordinator/allocation", icon: <Presentation size={22} /> },
   { label: "Profile", to: "/user/coordinator/profile", icon: <UserRoundPen size={22} /> },
   { label: "TA Questions", to: "/user/coordinator/questions", icon: <Users size={22} /> }, 
-
+  { label: "Audit", to: "/user/coordinator/audit", icon: <Users size={22} /> }, 
   { label: "Courses", to: "/user/coordinator/sections", icon: <Users size={22} /> }, 
 
   { label: "Users", to: "/user/coordinator/browseuser", icon: <Users size={22} /> }, 
-  { label: "deadline management", to: "/user/coordinator/deadlines", icon: <BookOpen size={22} /> },
+  { label: "Deadlines", to: "/user/coordinator/deadlines", icon: <BookOpen size={22} /> },
 ];
 
 export default function SideNavCoordinator() {

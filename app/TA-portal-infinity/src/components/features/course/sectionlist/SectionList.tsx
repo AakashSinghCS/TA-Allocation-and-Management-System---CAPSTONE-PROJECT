@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { generatePath, Link, useNavigate } from 'react-router-dom';
 import type Section from '../../../../interfaces/section/Section';
 import ExportAllocationsCSV from '../../csv/exportallocationscsv/ExportAllocationsCSV';
 import { sectionTypeOptions } from '../../../../interfaces/section/SectionDetails';
@@ -10,14 +10,15 @@ interface Props {
   onSelect?: (u: Section) => void;
   onSelectCourse?: (cId: number, deptCode: string, courseNum: string, name: string) => void;
   mode?: 'coordinator' | 'instructorAddSection' | 'instructorPrereqCourse' | 'studentAddHistory' | 'studentAddEnrollment';
+  askForConfirmation? : boolean;
 }
 
 
-export default function SectionList({ sections, onDeleted, onSelect, onSelectCourse, mode = 'coordinator' }: Props) {
+export default function SectionList({ sections, onDeleted, onSelect, onSelectCourse, mode = 'coordinator',askForConfirmation=false }: Props) {
   if (!sections || sections.length === 0) {
     return <p className="p-4 text-center text-gray-500">No section found.</p>;
   }
-
+  const navigate = useNavigate();
   // Group sections by course ID
   const groups = sections.reduce<Record<number, Section[]>>((acc, sec) => {
     const cid = sec.course?.id ?? 0;
@@ -53,6 +54,18 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
 
   }
 
+  const  handleAskForConfirmation = (e: React.MouseEvent<HTMLAnchorElement>, address:string) =>{
+    if (!askForConfirmation) {
+      return;
+    }
+    e.preventDefault();
+    const ok = window.confirm(
+      'Would you really like to navigate away from this page? You will lose all changes.'
+    );
+    if (ok) {
+      navigate(address);
+    }
+  }
   return (<>
     <table className="min-w-full table-auto border-collapse">
       <thead>
@@ -82,7 +95,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
 
           // Course header info
           const { deptCode, courseNum, name } = group[0].course || {};
-
+          // const courseProfilePath = generatePath(`/user/courseprofile/:courseId`, { courseId: String(courseId) });
           return (
             <React.Fragment key={courseId}>
               <tr className="bg-gray-100">
@@ -92,13 +105,13 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                 >
                   {/* Left: course link */}
                   {courseId ? (
-                    
-                    <Link
-                      to={`/user/courseprofile/${courseId}`}
-                      className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden"
-                    >
+                       
+                  <Link to={`/user/courseprofile/${courseId}`}
+                  onClick={(e) => handleAskForConfirmation(e, `/user/courseprofile/${courseId}`)}
+                    className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden">
                       {deptCode} {courseNum} — {name}
-                    </Link>
+                  </Link>
+
                   ) : (
                     <span className="border-gray-300 truncate inline whitespace-nowrap overflow-hidden ">
                       {deptCode} {courseNum} — {name}
@@ -137,26 +150,22 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
 
               {mode !== 'instructorPrereqCourse' && sortedSections.map((sec) => {
                 if (!sec?.id) return;
-
                 const times = (sec.sectionSchedule ?? [])
                   .map((s) =>
                     s.day && s.startTime && s.endTime
-                      ? `${abbreviateDay(s.day)}-${s.startTime}-${s.endTime}`
+                      ? `${abbreviateDay(s.day) ?? "?"}-${s.startTime}-${s.endTime}`
                       : ''
                   )
                   .filter((t) => t)
                   .join(', ');
-
                 const sid = sec?.id;
-
+                  // const sectionProfilePath = generatePath(`/user/sectionprofile/:sid`, { sid: String(sid) });
                 return (
                   <tr key={`${sid}-${times}`}>
                     <td className="border border-gray-300 px-3 py-2 truncate">
                       {sid ? (
-                        <Link
-                          to={`/user/sectionprofile/${sid}`}
-                          className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden"
-                        >
+                        <Link to={`/user/sectionprofile/${sid}`} onClick={(e) => handleAskForConfirmation(e, `/user/sectionprofile/${sid}`)}
+                        className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden">
                           {sec.course?.deptCode} {sec.course?.courseNum}{' '}
                           {sec?.section} – {sec.course?.name}
                         </Link>

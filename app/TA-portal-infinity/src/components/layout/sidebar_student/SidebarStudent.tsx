@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
-import { Home, BookOpen, GraduationCap, User, LogOut, FileUser, FileQuestionMark, ShieldCheck } from "lucide-react";
+import { Home, BookOpen, GraduationCap, User, LogOut, FileUser, FileQuestionMark, ShieldCheck , CalendarDays} from "lucide-react";
 import { useState } from "react";
 
 
@@ -13,6 +13,8 @@ export default function SideNavStudent() {
     { label: "My Courses", to: "/user/student/courses", icon: <BookOpen size={22} /> },
     { label: "Start Application", to: "/user/student/application", icon: <FileUser size={22} /> },
     { label: "View Applications", to: "/user/student/view-applications", icon: <GraduationCap size={22} /> },
+    { label: "Exam Availability", to: "/user/student/availability", icon: <BookOpen size={22} /> },
+    { label: "Schedule", to: "/user/student/schedule", icon: <CalendarDays size={22} /> },
     { label: "Profile", to: `/user/taprofile/${useAuth().userId}`, icon: <User size={22} /> },
     { label: "Qualifications", to: `taprofile/${useAuth().userId}/qualifications`, icon: <ShieldCheck size={22} /> },
     { label: "Questions", to: `/user/student/questions/${useAuth().userId}`, icon: <FileQuestionMark size={22} /> },
