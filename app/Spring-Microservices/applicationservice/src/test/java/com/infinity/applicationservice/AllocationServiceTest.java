@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -112,7 +112,7 @@ class AllocationServiceTest {
                 allocation.setApplication(application);
 
                 UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null);
+                                12345678, "COSC", 2025, 3, null, null, null, true);
                 SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
                                 new CourseDto(1L, "COSC", "Capstone", "499"));
                 ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE,
@@ -184,7 +184,7 @@ class AllocationServiceTest {
                 savedAllocation.setApplication(application);
 
                 UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null);
+                                12345678, "COSC", 2025, 3, null, null, null, true);
                 ;
                 SectionDto sectionDto = new SectionDto(sectionId, 2025, "Fall", "T01", SectionType.TUTORIAL,
                                 new CourseDto(1L, "COSC", "Capstone", "499"));
@@ -385,7 +385,7 @@ class AllocationServiceTest {
 
                 UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
                                 12345678, "COSC", 2025, 3, null,
-                                null, null);
+                                null, null, true);
                 SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY,
                                 new CourseDto(1L, "COSC", "capstone", "499"));
                 ApplicationDto applicationDto = new ApplicationDto(1l, 1L, List.of(), ApplicationType.UNDERGRADUATE,
@@ -436,7 +436,7 @@ class AllocationServiceTest {
                 a2.setApplication(application);
 
                 UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null);
+                                12345678, "COSC", 2025, 3, null, null, null, true);
                 ;
                 SectionDto sectionDto = new SectionDto(100L, 2025, "Winter", "001", SectionType.LABORATORY,
                                 new CourseDto(1L, "COSC", "capstone", "499"));
@@ -504,7 +504,7 @@ class AllocationServiceTest {
                 a2.setSectionId(1L);
 
                 UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null);
+                                12345678, "COSC", 2025, 3, null, null, null, true);
                 ;
                 SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY,
                                 new CourseDto(1L, "COSC", "capstone", "499"));
@@ -554,7 +554,7 @@ class AllocationServiceTest {
                 a2.setSectionId(1L);
 
                 UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null);
+                                12345678, "COSC", 2025, 3, null, null, null, true);
                 SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY,
                                 new CourseDto(1L, "COSC", "capstone", "499"));
                 ApplicationDto applicationDto = new ApplicationDto(1L, 1L, List.of(), ApplicationType.UNDERGRADUATE,
@@ -589,7 +589,7 @@ class AllocationServiceTest {
                 mockAllocation.setApplication(mockApplication);
 
                 UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null);
+                                12345678, "COSC", 2025, 3, null, null, null, true);
                 SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY,
                                 new CourseDto(1L, "COSC", "capstone", "499"));
                 ApplicationDto applicationDto = new ApplicationDto(30L, 1L, List.of(), ApplicationType.UNDERGRADUATE,
@@ -636,7 +636,7 @@ class AllocationServiceTest {
                 allocation.setApplication(application);
 
                 UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null);
+                                12345678, "COSC", 2025, 3, null, null, null, true);
                 SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
                                 new CourseDto(1L, "COSC", "Capstone", "499"));
                 ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE,
@@ -677,7 +677,7 @@ class AllocationServiceTest {
                 allocation.setApplication(null);
 
                 UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null);
+                                12345678, "COSC", 2025, 3, null, null, null, true);
                 SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
                                 new CourseDto(1L, "COSC", "Capstone", "499"));
 
@@ -711,7 +711,7 @@ class AllocationServiceTest {
                                 "year", "2025",
                                 "semester", "W1");
                 UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
-                                63260442, "COSC", 2022, 3, null, null, null);
+                                63260442, "COSC", 2022, 3, null, null, null, true);
                 CourseDto course = new CourseDto(2L, "COSC", "Capstone", "499");
                 SectionDto section = new SectionDto(3L, 2025, "W1", "001", SectionType.LECTURE, course);
                 Allocation allocation = new Allocation();
@@ -751,7 +751,7 @@ class AllocationServiceTest {
                                 "semester", "W1");
 
                 UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
-                                63260442, "COSC", 2022, 3, null, null, null);
+                                63260442, "COSC", 2022, 3, null, null, null, true);
 
                 when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
                 when(courseInterface.getCourseByDeptCodeAndCourseNum("COSC", "499"))
@@ -775,7 +775,7 @@ class AllocationServiceTest {
                                 "year", "2025",
                                 "semester", "W1");
                 UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
-                                63260442, "COSC", 2022, 3, null, null, null);
+                                63260442, "COSC", 2022, 3, null, null, null, true);
                 CourseDto course = new CourseDto(2L, "COSC", "499", "Capstone");
 
                 when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));

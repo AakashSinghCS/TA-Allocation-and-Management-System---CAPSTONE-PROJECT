@@ -243,7 +243,7 @@ class QualificationServiceTest {
         when(courseService.findCourse(20L)).thenReturn(courseDto2);
 
         UserDto studentDto = new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
-                null, null);
+                null, null, true);
         when(studentClient.getStudentById(studentId)).thenReturn(studentDto);
 
         // Act

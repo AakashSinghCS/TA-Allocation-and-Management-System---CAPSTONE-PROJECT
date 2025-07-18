@@ -37,7 +37,7 @@ public class AllocationMapperTest {
 
         UserDto student = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null,
-                                                null, null);
+                                                null, null, true);
 
         ApplicationDto applicationDto = new ApplicationDto(
                 3L, 2L,

@@ -17,5 +17,6 @@ public record UserDto(
         Integer schoolYear,
         Integer employeeNum,
         String dept,
-        LocalDateTime createdAt) {
+        LocalDateTime createdAt,
+        boolean active) {
 }

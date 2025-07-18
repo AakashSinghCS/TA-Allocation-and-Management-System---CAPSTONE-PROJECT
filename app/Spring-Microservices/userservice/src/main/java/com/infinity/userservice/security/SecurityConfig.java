@@ -5,8 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -27,78 +28,59 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    
-    @Bean
-    UserDetailsService prometheusUser(PasswordEncoder encoder) {
-        UserDetails u = User.withUsername("prometheus")
-                            .password(encoder.encode("prompass"))
-                            .roles("ADMIN")
-                            .build();
-        return new InMemoryUserDetailsManager(u);
-    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+    @Bean
+    DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
 
     @Bean
-    @Order(1)                                     // must run before the “catch-all” chain
-    SecurityFilterChain actuatorChain(HttpSecurity http, @Qualifier("prometheusUser") UserDetailsService prometheusUser) throws Exception {
-        AuthenticationManagerBuilder authBuilder =
-        http.getSharedObject(AuthenticationManagerBuilder.class);
-    
-        authBuilder
-        .userDetailsService(prometheusUser)
-        .passwordEncoder(passwordEncoder());
-        
-        AuthenticationManager authManager = authBuilder.build();
-
+    @Order(1)
+    SecurityFilterChain actuatorChain(HttpSecurity http,
+            @Qualifier("prometheusUser") UserDetailsService prometheusUser) throws Exception {
         http
-            .securityMatcher("/actuator/**")      // only /actuator/…
-            .authenticationManager(authManager)
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/actuator/health", "/actuator/info").permitAll()
-                    .anyRequest().hasRole("ADMIN"))
-            .httpBasic(Customizer.withDefaults())            // Prometheus will use this
-            .csrf(csrf -> csrf.disable());
+                .securityMatcher("/actuator/**")
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/actuator/health", "/actuator/info").permitAll()
+                        .anyRequest().hasRole("ADMIN"))
+                .userDetailsService(prometheusUser)
+                .httpBasic(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }
 
     @Bean
     @Order(2)
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        AuthenticationManagerBuilder apiAuthManager =
-        http.getSharedObject(AuthenticationManagerBuilder.class);
-    
-        apiAuthManager
-        .userDetailsService(userDetailsService)
-        .passwordEncoder(passwordEncoder());
-        
-        AuthenticationManager authManager = apiAuthManager.build();
-
-        return http
-                .authenticationManager(authManager)
-                .csrf(csrf -> csrf.disable())
+    SecurityFilterChain apiChain(HttpSecurity http) throws Exception {
+        http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated())
+                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .csrf(csrf -> csrf.disable());
+
+        return http.build();
     }
 
-    // @Autowired
-    // public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    //     auth
-    //     .userDetailsService(userDetailsService)
-    //     .passwordEncoder(passwordEncoder());
-    // }
-
-    // @Bean
-    // AuthenticationManager authenticationManager(
-    //         AuthenticationConfiguration config) throws Exception {
-    //     return config.getAuthenticationManager();
-    // }
+    @Bean
+    @Qualifier("prometheusUser")
+    UserDetailsService prometheusUser() {
+        UserDetails prometheus = User.withUsername("prometheus")
+                .password(passwordEncoder().encode("prompass"))
+                .roles("ADMIN")
+                .build();
+        return new InMemoryUserDetailsManager(prometheus);
+    }
 }

@@ -97,8 +97,21 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/register")
-     public ResponseEntity<UserDto> manualAddUser(@RequestBody @Valid RegisterRequest request,@RequestHeader(name="X-User-Id", required = false) Long userIdFromHeader) {
-         UserDto userDto = userService.register(request,userIdFromHeader);
-         return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
-     }
+    public ResponseEntity<UserDto> manualAddUser(@RequestBody @Valid RegisterRequest request,
+            @RequestHeader(name = "X-User-Id", required = false) Long userIdFromHeader) {
+        UserDto userDto = userService.register(request, userIdFromHeader);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
+    }
+     
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/activate/{id}")
+    public ResponseEntity<String> activateUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.activateUser(id));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/deactivate/{id}")
+    public ResponseEntity<String> deactivateUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.deactivateUser(id));
+    }
 }

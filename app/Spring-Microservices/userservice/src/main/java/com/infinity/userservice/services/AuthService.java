@@ -4,10 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +22,6 @@ import com.infinity.userservice.models.PasswordResetToken;
 import com.infinity.userservice.models.User;
 import com.infinity.userservice.repositories.PasswordResetTokenRepository;
 import com.infinity.userservice.repositories.UserRepository;
-import com.infinity.userservice.security.CustomUserDetailsService;
 import com.infinity.userservice.security.JwtUtil;
 
 import jakarta.transaction.Transactional;
@@ -33,38 +30,27 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final CustomUserDetailsService userDetailsService;
     private final UserRepository userRepository;
-    // private final AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenRepository tokenRepository;
     private final NotificationClient notificationClient;
 
     public LoginResponse login(LoginRequest request) {
-        var userDetails = userDetailsService
-                              .loadUserByUsername(request.email());
-        // 2) verify password
-        if (!passwordEncoder.matches(request.password(),
-                                     userDetails.getPassword())) {
-            throw new BadCredentialsException(
-                "Invalid email or password"
-            );
-        }
-        // 3) collect roles and generate token
-        var roles = userDetails.getAuthorities().stream()
-                       .map(GrantedAuthority::getAuthority)
-                       .toList();
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.email(),
+                        request.password()));
 
-        // Assuming you need the DB user to embed the ID:
-        var user = userRepository.findByEmail(request.email())
-                      .orElseThrow();
+        User user = (User) authentication.getPrincipal();
+
+        List<String> roles = user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
 
         return new LoginResponse(
-          jwtUtil.generateToken(request.email(),
-                                user.getId(),
-                                roles)
-        );
+                jwtUtil.generateToken(user.getEmail(), user.getId(), roles));
     }
 
     @Transactional

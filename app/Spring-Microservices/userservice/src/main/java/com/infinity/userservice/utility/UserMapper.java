@@ -33,7 +33,8 @@ public class UserMapper {
                 user.getSchoolYear(),
                 user.getEmployeeNum(),
                 user.getDepartment(),
-                user.getCreatedAt());
+                user.getCreatedAt(),
+                user.isActive());
     }
 
     public User registerToUser(RegisterRequest request, Set<Role> roles) {

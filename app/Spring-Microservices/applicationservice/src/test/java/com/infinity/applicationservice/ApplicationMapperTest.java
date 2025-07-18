@@ -67,7 +67,7 @@ public class ApplicationMapperTest {
     @Test
     void testToDtoWithStudent() {
         UserDto student = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null);
+                                12345678, "COSC", 2025, 3, null, null, null, true);
 
         Application app = new Application();
         app.setId(1L);

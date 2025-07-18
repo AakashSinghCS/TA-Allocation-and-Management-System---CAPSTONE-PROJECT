@@ -249,7 +249,8 @@ public class CourseServiceTest {
                                 42L,
                                 new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null,
-                                                null, null),
+                                                null, null,
+                                                true),
                                 offer,
                                 true,
                                 10,
@@ -293,7 +294,7 @@ public class CourseServiceTest {
                 AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
                                 42L,
                                 new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
-                                                "COSC", 2025, 3, null, null, null),
+                                                "COSC", 2025, 3, null, null, null,true),
                                 offer,
                                 true,
                                 10,
@@ -412,7 +413,7 @@ public class CourseServiceTest {
                 when(userInterface.getStudentById(studentId))
                                 .thenReturn(new UserDto(2L, "Alice", "Wang", "awang@test.com",
                                                 List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
-                                                null, null));
+                                                null, null, true));
 
                 List<StudentTaughtCourseDto> result = courseService.getCoursesTaughtByStudent(studentId);
 
