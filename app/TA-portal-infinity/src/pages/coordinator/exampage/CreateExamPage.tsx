@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
@@ -430,9 +429,9 @@ const CreateExamPage = () => {
                 className="w-full mb-4 p-2 border rounded"
             >
                 <option value="">Select task</option>
-                <option value="Marking">Marking</option>
-                <option value="Preparation">Preparation</option>
-                <option value="Coordination">Coordination</option>
+                <option value="MARKING">Marking</option>
+                <option value="PREPARATION">Preparation</option>
+                <option value="COORDINATION">Coordination</option>
             </select>
 
             <label className="block mb-2">Start Time</label>

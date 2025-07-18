@@ -1,21 +1,21 @@
 package com.infinity.courseservice;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.infinity.courseservice.dtos.ExamDtos.ExamAssignmentDto;
@@ -236,7 +236,7 @@ public class ExamServiceTest {
             null,
             10L,
             1L,
-            ExamTask.Marking,
+            ExamTask.MARKING,
             date,
             startTime,
             endTime
@@ -263,7 +263,7 @@ public class ExamServiceTest {
         saved.setId(20L);
         saved.setExam(exam);
         saved.setStudentId(1L);
-        saved.setTask(ExamTask.Marking);
+        saved.setTask(ExamTask.MARKING);
         saved.setDate(date);
         saved.setStartTime(startTime);
         saved.setEndTime(endTime);
@@ -272,7 +272,7 @@ public class ExamServiceTest {
             null,
             10L,
             1L,
-            ExamTask.Marking,
+            ExamTask.MARKING,
             date,
             startTime,
             endTime
@@ -282,7 +282,7 @@ public class ExamServiceTest {
             20L,
             10L,
             1L,
-            ExamTask.Marking,
+            ExamTask.MARKING,
             date,
             startTime,
             endTime
@@ -297,7 +297,7 @@ public class ExamServiceTest {
         assertEquals(20L, result.id());
         assertEquals(10L, result.examId());
         assertEquals(1L, result.studentId());
-        assertEquals(ExamTask.Marking, result.task());
+        assertEquals(ExamTask.MARKING, result.task());
         assertEquals(date, result.date());
         assertEquals(startTime, result.startTime());
         assertEquals(endTime, result.endTime());
@@ -312,7 +312,7 @@ public class ExamServiceTest {
         ExamAssignment entity = new ExamAssignment();
         entity.setId(1L);
 
-        ExamAssignmentDto mapped = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.Marking, date, startTime, endTime);
+        ExamAssignmentDto mapped = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.MARKING, date, startTime, endTime);
 
         when(assignmentRepository.findByStudentId(1L)).thenReturn(List.of(entity));
         when(examMapper.mapAssignment(entity)).thenReturn(mapped);

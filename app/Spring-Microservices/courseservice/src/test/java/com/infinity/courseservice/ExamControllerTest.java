@@ -1,5 +1,16 @@
 package com.infinity.courseservice;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -7,23 +18,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.courseservice.controllers.ExamController;
@@ -159,14 +159,14 @@ public class ExamControllerTest {
         LocalDate date = LocalDate.of(2025, 12, 15);
         LocalTime startTime = LocalTime.of(9, 0);
         LocalTime endTime = LocalTime.of(12, 0);
-        ExamAssignmentDto dto = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.Marking, date, startTime, endTime);
+        ExamAssignmentDto dto = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.MARKING, date, startTime, endTime);
         when(examService.assignStudentToExam(eq(10L), any(ExamAssignmentDto.class))).thenReturn(dto);
 
         ExamAssignmentDto request = new ExamAssignmentDto(
             null,
             10L,
             1L,
-            ExamTask.Marking,
+            ExamTask.MARKING,
             date,
             startTime,
             endTime
@@ -179,7 +179,7 @@ public class ExamControllerTest {
             .andExpect(jsonPath("$.id").value(1))
             .andExpect(jsonPath("$.examId").value(10))
             .andExpect(jsonPath("$.studentId").value(1))
-            .andExpect(jsonPath("$.task").value("Marking"))
+            .andExpect(jsonPath("$.task").value("MARKING"))
             .andExpect(jsonPath("$.date").value(date.toString()))
             .andExpect(jsonPath("$.startTime").value("09:00:00"))
             .andExpect(jsonPath("$.endTime").value("12:00:00"));
@@ -192,13 +192,13 @@ public class ExamControllerTest {
         LocalTime startTime = LocalTime.of(9, 0);
         LocalTime endTime = LocalTime.of(12, 0);
 
-        ExamAssignmentDto dto = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.Marking, date, startTime, endTime);
+        ExamAssignmentDto dto = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.MARKING, date, startTime, endTime);
         when(examService.getAssignmentsByStudentId(1L)).thenReturn(List.of(dto));
 
         mockMvc.perform(get("/exams/assignments/1"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].examId").value(10))
-            .andExpect(jsonPath("$[0].task").value("Marking"))
+            .andExpect(jsonPath("$[0].task").value("MARKING"))
             .andExpect(jsonPath("$[0].date").value(date.toString()))
             .andExpect(jsonPath("$[0].startTime").value(startTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))))
             .andExpect(jsonPath("$[0].endTime").value(endTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))));
