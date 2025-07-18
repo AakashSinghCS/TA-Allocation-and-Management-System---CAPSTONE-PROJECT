@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
@@ -351,4 +352,11 @@ public class SectionService {
                 schedule != null && schedule.getEndTime() != null ? schedule.getEndTime().toString() : ""
         );
     }
+
+    public SectionDto getByCourseIdAndSectionName(Long courseId, String section) {
+        Section entity = sectionRepository.findByCourseIdAndSection(courseId, section)
+            .orElseThrow(() -> new NotFoundException("Section not found"));
+        return sectionMapper.sectionToDto(entity);
+    }
+
 }

@@ -15,10 +15,12 @@ import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Exam;
 import com.infinity.courseservice.models.ExamAssignment;
 import com.infinity.courseservice.models.ExamAvailability;
+import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.ExamAssignmentRepository;
 import com.infinity.courseservice.repositories.ExamAvailabilityRepository;
 import com.infinity.courseservice.repositories.ExamRepository;
+import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.utility.ExamMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class ExamService {
     private final ExamAvailabilityRepository availabilityRepository;
     private final ExamAssignmentRepository assignmentRepository;
     private final CourseRepository courseRepository;
+    private final SectionRepository sectionRepository;
     private final ExamMapper examMapper;
 
 
@@ -38,13 +41,15 @@ public class ExamService {
 
     public ExamDto createExam(ExamDto dto) {
         Exam exam = new Exam();
-        Course course = courseRepository.findById(dto.courseId())
-                .orElseThrow(() -> new NotFoundException("Course not found"));
-        Long sectionId = course.getSections().get(0).getId();
+        Section section = sectionRepository.findById(dto.sectionId())
+                .orElseThrow(() -> new NotFoundException("Section not found"));
+        // Course course = courseRepository.findById(dto.courseId())
+        //         .orElseThrow(() -> new NotFoundException("Course not found"));
+        // Long sectionId = course.getSections().get(0).getId();
 
         // Check for duplicate exam
         boolean exists = examRepository.findAll().stream().anyMatch(e ->
-            e.getSectionId().equals(sectionId) &&
+            e.getSectionId().equals(section.getId()) &&
             e.getDate().equals(dto.date()) &&
             e.getStartTime().equals(dto.startTime()) &&
             e.getEndTime().equals(dto.endTime())
@@ -53,7 +58,7 @@ public class ExamService {
             throw new BadRequestException("Duplicate exam entry exists for this section, date, and time.");
         }
 
-        exam.setSectionId(sectionId);
+        exam.setSectionId(section.getId());
         exam.setDate(dto.date());
         exam.setStartTime(dto.startTime());
         exam.setEndTime(dto.endTime());
@@ -134,12 +139,18 @@ public class ExamService {
 
     // --- Assignments ---
 
-    public ExamAssignmentDto assignStudentToExam(Long examId, Long studentId, ExamTask task) {
-        Exam exam = examRepository.findById(examId).orElseThrow(() -> new NotFoundException("Exam not found"));
+    public ExamAssignmentDto assignStudentToExam(Long examId, ExamAssignmentDto dto) {
+        Exam exam = examRepository.findById(examId)
+            .orElseThrow(() -> new NotFoundException("Exam not found"));
+
         ExamAssignment assignment = new ExamAssignment();
         assignment.setExam(exam);
-        assignment.setStudentId(studentId);
-        assignment.setTask(task);
+        assignment.setStudentId(dto.studentId());
+        assignment.setTask(dto.task());
+        assignment.setDate(dto.date());
+        assignment.setStartTime(dto.startTime());
+        assignment.setEndTime(dto.endTime());
+
         ExamAssignment saved = assignmentRepository.save(assignment);
         return examMapper.mapAssignment(saved);
     }

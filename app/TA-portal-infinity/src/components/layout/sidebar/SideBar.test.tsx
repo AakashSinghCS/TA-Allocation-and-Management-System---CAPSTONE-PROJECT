@@ -64,8 +64,9 @@ describe('SideNav Component', () => {
     const aside = document.querySelector('aside')!;
     // Expand to show all items
     fireEvent.mouseEnter(aside);
-    // Coordinator Dashboard should be present
-    expect(screen.getByText('Coordinator Dashboard')).toBeInTheDocument();
+    // There should be 3 Dashboards (one for each role: COORDINATOR, INSTRUCTOR, STUDENT)
+    const dashboards = screen.getAllByText('Dashboard');
+    expect(dashboards.length).toBe(3);
     // Deadline Management is ADMIN-only, so it should not be rendered
     expect(screen.queryByText('Deadline Management')).toBeNull();
   });

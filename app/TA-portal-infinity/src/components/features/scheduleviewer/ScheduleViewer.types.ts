@@ -11,4 +11,5 @@ export type ScheduleRow = {
   semester: string;
   year: number;
   numberOfHours: number;
+  date?: string;
 };
