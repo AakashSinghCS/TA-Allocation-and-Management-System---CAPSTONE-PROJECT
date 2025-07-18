@@ -102,7 +102,7 @@ public class ExamControllerTest {
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(10))
-            .andExpect(jsonPath("$.courseId").value(2))
+            .andExpect(jsonPath("$.courseId").value(1))
             .andExpect(jsonPath("$.date").value("2025-09-01"));
     }
 

@@ -38,6 +38,7 @@ import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.Semester;
 import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.services.CourseService;
+import com.infinity.courseservice.services.SectionService;
 
 @WebMvcTest(CourseController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -48,6 +49,8 @@ public class CourseControllerTest {
 
         @MockitoBean
         private CourseService courseService;
+
+        @MockitoBean SectionService SectionService;
 
         @Autowired
         private ObjectMapper objectMapper;

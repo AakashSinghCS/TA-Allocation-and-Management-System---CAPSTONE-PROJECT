@@ -33,6 +33,7 @@ import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.ExamAssignmentRepository;
 import com.infinity.courseservice.repositories.ExamAvailabilityRepository;
 import com.infinity.courseservice.repositories.ExamRepository;
+import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.services.ExamService;
 import com.infinity.courseservice.utility.ExamMapper;
 
@@ -54,6 +55,9 @@ public class ExamServiceTest {
     @Mock
     private ExamMapper examMapper;
 
+    @Mock
+    private SectionRepository sectionRepository;
+
     @InjectMocks
     private ExamService examService;
 
@@ -65,20 +69,20 @@ public class ExamServiceTest {
 
         Course course = new Course();
         Section section = new Section();
-        section.setId(100L);
+        section.setId(1L);
         course.setSections(List.of(section));
 
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
         when(examRepository.findAll()).thenReturn(List.of());
 
         Exam saved = new Exam();
         saved.setId(10L);
-        saved.setSectionId(100L);
+        saved.setSectionId(1L);
         saved.setDate(dto.date());
         saved.setStartTime(dto.startTime());
         saved.setEndTime(dto.endTime());
 
         when(examRepository.save(any(Exam.class))).thenReturn(saved);
+        when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
 
         ExamDto mapped = new ExamDto(10L, 1L, 1L, "W1 2025", dto.date(), dto.startTime(), dto.endTime());
         when(examMapper.mapExam(saved)).thenReturn(mapped);
@@ -98,7 +102,6 @@ public class ExamServiceTest {
         section.setId(100L);
         course.setSections(List.of(section));
 
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
 
         Exam existing = new Exam();
         existing.setSectionId(100L);
@@ -107,6 +110,8 @@ public class ExamServiceTest {
         existing.setEndTime(dto.endTime());
 
         when(examRepository.findAll()).thenReturn(List.of(existing));
+        when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
+
 
         assertThrows(BadRequestException.class, () -> examService.createExam(dto));
     }
@@ -114,7 +119,6 @@ public class ExamServiceTest {
     @Test
     void testCreateExam_CourseNotFound() {
         ExamDto dto = new ExamDto(null, 1L, 1L, "W1 2025", LocalDate.now(), LocalTime.of(9,0), LocalTime.of(12,0));
-        when(courseRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> examService.createExam(dto));
     }
