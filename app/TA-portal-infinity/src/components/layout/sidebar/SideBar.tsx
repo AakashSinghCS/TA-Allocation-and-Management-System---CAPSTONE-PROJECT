@@ -71,6 +71,7 @@ export default function SideNav({expanded, setExpanded}:SideNavProps) {
 
     //Admin
     { label: 'Deadline Management', to: '/user/coordinator/deadlines', icon: <BookOpen size={22} />, roles: [UserRole.ADMIN] },
+    { label: 'Audit', to: `/user/coordinator/audit`, icon: <BookOpen size={22} />, roles: [UserRole.ADMIN] },
 ];
 
   const filteredNavItems = navItems.filter(item =>

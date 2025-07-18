@@ -29,14 +29,14 @@ public class UserSeeder {
             try{
             RegisterRequest studentRequest = new RegisterRequest("student@test.com", "Scoobert", "Doobert", "P@ssword1",
                     List.of(UserRole.STUDENT));
-            userService.register(studentRequest);
+            userService.register(studentRequest, null);
             RegisterRequest coordinatorRequest = new RegisterRequest("coordinator@test.com", "Ched", "Devis",
                     "P@ssword1", List.of(UserRole.COORDINATOR));
-            userService.register(coordinatorRequest);
-            userService.changeRole(2L, new RoleChangeRequest(List.of(UserRole.ADMIN, UserRole.COORDINATOR)));
+            userService.register(coordinatorRequest, null);
+            userService.changeRole(2L, new RoleChangeRequest(List.of(UserRole.ADMIN, UserRole.COORDINATOR)),2L);
             RegisterRequest instructorRequest = new RegisterRequest("instructor@test.com", "Scawt", "Fawz", "P@ssword1",
                     List.of(UserRole.INSTRUCTOR));
-            userService.register(instructorRequest);
+            userService.register(instructorRequest, null);
         } catch (Exception e) {
             System.err.println("User seed error: " + e.getMessage());
           }

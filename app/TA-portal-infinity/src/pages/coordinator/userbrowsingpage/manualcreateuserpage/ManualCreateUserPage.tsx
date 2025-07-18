@@ -5,9 +5,13 @@ export default function ManualCreateUserPage() {
   const navigate = useNavigate();
 
   async function handleCreate(data: UserFormData) {
-    const res = await fetch('http://localhost:8080/auth/register', {
+    const token = localStorage.getItem("token");
+    const res = await fetch('http://localhost:8080/users/register', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       body: JSON.stringify({
         email: data.email,
         firstName: data.firstName,

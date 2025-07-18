@@ -105,4 +105,22 @@ public class User implements UserDetails {
     public boolean hasRole(UserRole role) {
         return roles.stream().anyMatch(r -> r.getName() == role);
     }
+
+    public User(User other) {
+        this.id             = other.id;
+        this.email          = other.email;
+        this.firstName      = other.firstName;
+        this.lastName       = other.lastName;
+        this.password       = other.password;
+        this.createdAt      = other.createdAt;
+        this.studentNum     = other.studentNum;
+        this.program        = other.program;
+        this.enrollmentYear = other.enrollmentYear;
+        this.schoolYear     = other.schoolYear;
+        this.employeeNum    = other.employeeNum;
+        this.department     = other.department;
+        this.roles = other.roles == null
+            ? new HashSet<>()
+            : new HashSet<>(other.roles);
+    }
 }
