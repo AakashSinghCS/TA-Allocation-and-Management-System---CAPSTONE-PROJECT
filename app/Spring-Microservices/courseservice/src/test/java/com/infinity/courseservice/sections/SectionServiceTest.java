@@ -299,7 +299,7 @@ public class SectionServiceTest {
         AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L);
 
         UserDto instructorDto = new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.INSTRUCTOR), null, null, null, null, 12345678,
-                "COSC", null);
+                "COSC", null,true);
         Course course = new Course("COSC", "AI", "310");
         Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course,null);
         section.setId(101L);
@@ -317,7 +317,7 @@ public class SectionServiceTest {
     void testAssignInstructor_SectionNotFound() {
         AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L);
         UserDto instructorDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.INSTRUCTOR),
-                null, null, null, null, 12345678,"COSC", null);
+                null, null, null, null, 12345678,"COSC", null,true);
 
         when(userInterface.getInstructorById(99L)).thenReturn(instructorDto);
         when(sectionRepository.findById(101L)).thenReturn(Optional.empty());
