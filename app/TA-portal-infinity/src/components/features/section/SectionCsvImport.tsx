@@ -125,7 +125,15 @@ export default function SectionCsvImport() {
                   ))}
                 </tr>
               </thead>
-              {/* ...existing code for table body... */}
+              <tbody>
+                {csvPreview && csvPreview.length > 0 && csvPreview.map((row, idx) => (
+                  <tr key={idx}>
+                    {csvHeaders.map((header) => (
+                      <td key={header} className="px-2 py-1 border-b">{row[header]}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
         </div>
