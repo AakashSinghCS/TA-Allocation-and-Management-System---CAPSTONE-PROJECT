@@ -1,6 +1,7 @@
 package com.infinity.courseservice.courses;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -85,13 +86,11 @@ public class CourseServiceTest {
         @Mock
         private StudentTaughtCourseRepository studentTaughtCourseRepository;
 
-        
         @Mock
         private SectionMapper sectionMapper;
-        
+
         @InjectMocks
         private CourseService courseService;
-
 
         @Test
         void testAddCourse_Duplicate() {
@@ -357,15 +356,14 @@ public class CourseServiceTest {
                 when(sectionEntity.getId()).thenReturn(10L);
 
                 Course dummyCourse = mock(Course.class);
-    when(dummyCourse.getId()).thenReturn(courseId);
-    when(sectionEntity.getCourse()).thenReturn(dummyCourse);
-    when(sectionEntity.getYear()).thenReturn(year);
-    when(sectionEntity.getSemester()).thenReturn(semester);
+                when(dummyCourse.getId()).thenReturn(courseId);
+                when(sectionEntity.getCourse()).thenReturn(dummyCourse);
+                when(sectionEntity.getYear()).thenReturn(year);
+                when(sectionEntity.getSemester()).thenReturn(semester);
 
                 SectionDto sectionDto = new SectionDto(
-                        10L, year, semester, "001", SectionType.LECTURE,
-                        new CourseDto(courseId, "COSC", "Security", "430")
-                );
+                                10L, year, semester, "001", SectionType.LECTURE,
+                                new CourseDto(courseId, "COSC", "Security", "430"));
 
                 // — a NeedDto and one allocation
                 NeedDto needDto = new NeedDto(10L, courseId, "Labs", 25, 10, year, semester, null);
@@ -414,7 +412,7 @@ public class CourseServiceTest {
                 Long instructorId = 77L;
                 Integer year = 2025;
                 String semester = "W1";
-                Long courseId     = 1L;  
+                Long courseId = 1L;
                 // — one Section, but no course filter (courseId == null)
                 Section sectionEntity = mock(Section.class);
                 when(sectionEntity.getId()).thenReturn(11L);
@@ -568,4 +566,46 @@ public class CourseServiceTest {
                 assertEquals("499", result.courseNum());
         }
 
+        @Test
+        void testGetCoursesForInstructor() {
+                Long instructorId = 7L;
+
+                // 1. Prepare two Course entities
+                Course course1 = new Course();
+                course1.setId(11L);
+                course1.setDeptCode("COSC");
+                course1.setName("Distributed Systems");
+                course1.setCourseNum("455");
+
+                Course course2 = new Course();
+                course2.setId(22L);
+                course2.setDeptCode("MATH");
+                course2.setName("Calculus");
+                course2.setCourseNum("101");
+
+                List<Course> courses = List.of(course1, course2);
+
+                when(courseRepository.findDistinctCoursesByInstructorId(instructorId))
+                                .thenReturn(courses);
+
+                CourseDto dto1 = new CourseDto(11L, "COSC", "Distributed Systems", "455");
+                CourseDto dto2 = new CourseDto(22L, "MATH", "Calculus", "101");
+                when(courseMapper.courseToDto(course1)).thenReturn(dto1);
+                when(courseMapper.courseToDto(course2)).thenReturn(dto2);
+
+                List<CourseDto> result = courseService.getCoursesForInstructor(instructorId);
+
+                assertNotNull(result);
+                assertEquals(2, result.size(), "Should return two course dtos");
+
+                assertEquals(11L, result.get(0).id());
+                assertEquals("COSC", result.get(0).deptCode());
+                assertEquals("Distributed Systems", result.get(0).name());
+                assertEquals("455", result.get(0).courseNum());
+
+                assertEquals(22L, result.get(1).id());
+                assertEquals("MATH", result.get(1).deptCode());
+                assertEquals("Calculus", result.get(1).name());
+                assertEquals("101", result.get(1).courseNum());
+        }
 }

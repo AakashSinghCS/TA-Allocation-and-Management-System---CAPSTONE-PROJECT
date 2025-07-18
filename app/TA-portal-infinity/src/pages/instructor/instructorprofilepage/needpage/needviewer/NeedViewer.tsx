@@ -140,7 +140,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
           <Link
             to="/user/instructor/addsection"
             className=" ml-auto inline-flex items-center justify-center px-3 py-1 
-              h-full bg-[#00c89c] text-white rounded hover:bg-[#c7fcec] transition"
+              h-full bg-[#00c89c] text-white rounded hover:bg-[#c7fcec] hover:text-[#0089b2] transition"
           >
             + Add section
           </Link>

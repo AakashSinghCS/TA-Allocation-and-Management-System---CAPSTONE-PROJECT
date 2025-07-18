@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalTime;
 import java.util.List;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -357,4 +358,29 @@ public class CourseControllerTest {
                                 .andExpect(jsonPath("$.deptCode").value("COSC"))
                                 .andExpect(jsonPath("$.courseNum").value("499"));
         }
+
+        @Test
+//     @DisplayName("GET /allCourses/{instructorId} returns list of CourseDto")
+    void testGetInstructorCourses() throws Exception {
+        Long instructorId = 42L;
+        List<CourseDto> courseDtos = List.of(
+            new CourseDto(1L, "COSC", "Distributed Systems", "455"),
+            new CourseDto(2L, "MATH", "Calculus", "101")
+        );
+
+        // 3. Stub service call
+        when(courseService.getCoursesForInstructor(instructorId))
+            .thenReturn(courseDtos);
+
+        // 4. Perform request and assert JSON array and fields
+        mockMvc.perform(get("/courses/allCourses/{instructorId}", instructorId))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$",        org.hamcrest.Matchers.hasSize(2)))
+            .andExpect(jsonPath("$[0].deptCode").value("COSC"))
+            .andExpect(jsonPath("$[0].name").value("Distributed Systems"))
+            .andExpect(jsonPath("$[0].courseNum").value("455"))
+            .andExpect(jsonPath("$[1].deptCode").value("MATH"))
+            .andExpect(jsonPath("$[1].name").value("Calculus"))
+            .andExpect(jsonPath("$[1].courseNum").value("101"));
+    }
 }
