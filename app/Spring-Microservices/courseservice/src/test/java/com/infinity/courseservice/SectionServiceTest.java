@@ -3,10 +3,13 @@ package com.infinity.courseservice;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import org.mockito.Mockito;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -451,5 +454,49 @@ public class SectionServiceTest {
     void testGetSectionWithInstructorIdById_NotFound() {
         when(sectionRepository.findById(99L)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> sectionService.getSectionWithInstructorIdById(99L));
+    }
+
+    // --- CSV Import/Export tests ---
+    @Test
+    void importSectionsFromJson_success() {
+        var data = new com.infinity.courseservice.dtos.SectionDtos.SectionCsvData(
+                "COSC", "111", "Intro to CS", 2025, "Winter", "001", "LECTURE", "Mon", "09:00", "10:00"
+        );
+        Course course = new Course("COSC", "Intro to CS", "111");
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
+        when(sectionRepository.findByCourseAndYearAndSemesterAndSectionAndType(course, 2025, "Winter", "001", SectionType.LECTURE)).thenReturn(Optional.empty());
+        when(sectionRepository.save(any())).thenReturn(Mockito.mock(Section.class));
+        String result = sectionService.importSectionsFromJson(List.of(data));
+        assertTrue(result.contains("Success: 1"));
+        assertFalse(result.contains("Errors: 1"));
+    }
+
+    @Test
+    void importSectionsFromJson_missingRequiredFields() {
+        var data = new com.infinity.courseservice.dtos.SectionDtos.SectionCsvData("", "", "", null, "", "", "", "", "", "");
+        String result = sectionService.importSectionsFromJson(List.of(data));
+        assertTrue(result.contains("Errors: 1"));
+        assertTrue(result.contains("Missing required fields"));
+    }
+
+    @Test
+    void importSectionsFromJson_invalidType() {
+        var data = new com.infinity.courseservice.dtos.SectionDtos.SectionCsvData("COSC", "111", "Intro to CS", 2025, "Winter", "001", "INVALID", "Mon", "09:00", "10:00");
+        Course course = new Course("COSC", "Intro to CS", "111");
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
+        String result = sectionService.importSectionsFromJson(List.of(data));
+        assertTrue(result.contains("Errors: 1"));
+        assertTrue(result.contains("Invalid section type"));
+    }
+
+    @Test
+    void importSectionsFromJson_invalidTimeFormat() {
+        var data = new com.infinity.courseservice.dtos.SectionDtos.SectionCsvData("COSC", "111", "Intro to CS", 2025, "Winter", "001", "LECTURE", "Mon", "invalid", "invalid");
+        Course course = new Course("COSC", "Intro to CS", "111");
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
+        when(sectionRepository.findByCourseAndYearAndSemesterAndSectionAndType(course, 2025, "Winter", "001", SectionType.LECTURE)).thenReturn(Optional.empty());
+        String result = sectionService.importSectionsFromJson(List.of(data));
+        assertTrue(result.contains("Errors: 1"));
+        assertTrue(result.contains("Invalid time format"));
     }
 }

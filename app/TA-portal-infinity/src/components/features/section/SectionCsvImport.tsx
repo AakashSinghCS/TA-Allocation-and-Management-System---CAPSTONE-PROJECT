@@ -96,7 +96,9 @@ export default function SectionCsvImport() {
     <div className="max-w-2xl min-w-[600px] mx-auto p-4 bg-white rounded shadow">
       <h2 className="text-lg font-bold mb-2">Import Sections from CSV</h2>
       <form onSubmit={handleSubmit}>
+        <label htmlFor="csv-file">File</label>
         <input
+          id="csv-file"
           type="file"
           accept=".csv"
           onChange={handleFileChange}
@@ -123,15 +125,7 @@ export default function SectionCsvImport() {
                   ))}
                 </tr>
               </thead>
-              <tbody>
-                {csvPreview.map((row, idx) => (
-                  <tr key={idx}>
-                    {csvHeaders.map((header) => (
-                      <td key={header} className="px-2 py-1 border-b">{row[header]}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
+              {/* ...existing code for table body... */}
             </table>
           </div>
         </div>
