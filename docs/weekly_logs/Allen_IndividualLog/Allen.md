@@ -533,3 +533,45 @@ added deadline restrictions to student application, student accept offer, and in
   * finish exam service(frontend and integration)
   * work on exception handling
 
+
+## July 15 - 17
+
+### Timesheet
+Clockify report
+![alt text](./clockify/7.17.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: integrating exam service
+  * #2: exception handling
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>integrating exam service
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>exception handling
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+finish exam service intgration, add more exception and validations on backend services
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * finish exam service(frontend and integration)
+  * work on exception handling
