@@ -59,8 +59,8 @@ const ScheduleViewerTable: React.FC<{ scheduleRows: ScheduleRow[]; startOfWeek: 
               )}
             </td>
             <td className="px-4 py-2 text-blue-900">{a.semester}</td>
-            <td className="px-4 py-2 text-gray-700">{getSemesterRanges(a.year)[a.semester]?.start || "N/A"}</td>
-            <td className="px-4 py-2 text-gray-700">{getSemesterRanges(a.year)[a.semester]?.end || "N/A"}</td>
+            <td className="px-4 py-2 text-gray-700">{a.date ?? getSemesterRanges(a.year)[a.semester]?.start ?? "N/A"}</td>
+            <td className="px-4 py-2 text-gray-700">{a.date ?? getSemesterRanges(a.year)[a.semester]?.end ?? "N/A"}</td>
             <td className="px-4 py-2">
               <span className={`px-2 py-1 rounded-full text-xs font-bold shadow-sm ${a.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                 {a.status}

@@ -1,0 +1,1 @@
+export type Deadline = { name: string; startTime: string; endTime: string };

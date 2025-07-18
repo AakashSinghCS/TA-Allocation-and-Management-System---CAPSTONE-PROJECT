@@ -1,6 +1,7 @@
 package com.infinity.courseservice.enums;
 
 public enum ExamTask {
-    INVIGILATE,
-    MARK
+    MARKING,
+    PREPARATION,
+    COORDINATION
 }

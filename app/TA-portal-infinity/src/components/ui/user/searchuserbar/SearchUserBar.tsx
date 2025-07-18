@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { fetchAllSearchedUsers } from "../../../../api/user/fetchAllSearchedUsers";
-import { fetchDeleteUser } from "../../../../api/user/fetchDeleteUser";
+import { fetchActivate } from "../../../../api/admin/fetchActivation";
+import { fetchDeactivate } from "../../../../api/admin/fetchActivation";
 import type { Instructor } from "../../../../interfaces/user/Instructor";
 import type { Student } from "../../../../interfaces/user/Student";
 import type User from "../../../../interfaces/user/User";
@@ -46,19 +47,29 @@ export function useUserSearch<T extends User>() {
     }
   }, []);
 
-  const deleteUser = useCallback(async (id?: number) => {
-    if (!id) return;
-    const confirm = confirmDeletion("user","This will delete associated .....");
-    if(!confirm) return;
-    const success = await fetchDeleteUser(id);
+  const toggleActivation = useCallback(async (id?: number, currentlyActive?: boolean) => {
+    if (!id || currentlyActive === undefined) return;
+
+    const action = currentlyActive ? "deactivate" : "activate";
+    const confirmed = window.confirm(`Are you sure you want to ${action} this user?`);
+    if (!confirmed) return;
+
+    const success = currentlyActive
+      ? await fetchDeactivate(id)
+      : await fetchActivate(id);
+
     if (success) {
-      setSearchedUsers(prev => prev?.filter(u => u.id !== id) ?? []);
+      setSearchedUsers(prev =>
+        prev?.map(u =>
+          u.id === id ? { ...u, active: !currentlyActive } : u
+        ) ?? []
+      );
     } else {
-      alert("Failed to delete user");
+      alert(`Failed to ${action} user`);
     }
   }, []);
 
-  return { searchedUsers, loading, error, search, deleteUser, lastCriteria };
+  return { searchedUsers, loading, error, search, toggleActivation, lastCriteria };
 }
 
 export default function SearchUserBar({ onSearch, loading,allowedRoles }: SearchUserBarProps) {

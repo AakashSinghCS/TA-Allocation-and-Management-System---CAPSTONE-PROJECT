@@ -4,6 +4,26 @@ import type { ScheduleRow } from "./ScheduleViewer.types";
 export function allocationsToEvents(scheduleRows: ScheduleRow[]) {
   const events: any[] = [];
   scheduleRows.forEach(a => {
+    if (a.date && a.startTime && a.endTime) {
+      const eventStart = new Date(`${a.date}T${a.startTime}`);
+      const eventEnd = new Date(`${a.date}T${a.endTime}`);
+
+      events.push({
+        id: `${a.id}-${a.date}-${a.startTime}`,
+        title: a.course,
+        start: eventStart,
+        end: eventEnd,
+        extendedProps: {
+          instructor: a.instructor,
+          status: a.status ?? "",
+          course: a.course,
+          section: a.section,
+        },
+      });
+
+      return;
+    }
+    
     if (a.day && a.startTime && a.endTime) {
       let normalizedDay = a.day;
       if (normalizedDay.length === 3) {

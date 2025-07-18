@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -82,7 +83,7 @@ void testRegister_SuccessSingleRole() {
     Role studentRole = new Role(1L, UserRole.STUDENT);
     User mockUser = new User("student@example.com", "Alice", "Student", "hashed");
     UserDto expectedDto = new UserDto(1L, "Alice", "Student", "student@example.com", List.of(UserRole.STUDENT),
-            null, null, null, null, null, null, null);
+            null, null, null, null, null, null, null, true);
 
     when(userRepository.findByEmail("student@example.com")).thenReturn(Optional.empty());
     when(roleRepository.findByName(UserRole.STUDENT)).thenReturn(Optional.of(studentRole));
@@ -113,7 +114,7 @@ void testRegister_SuccessMultipleRoles() {
     Role coordinatorRole = new Role(2L, UserRole.COORDINATOR);
     User mockUser = new User("multi@example.com", "Jane", "Doe", "encoded");
     UserDto expectedDto = new UserDto(2L, "Jane", "Doe", "multi@example.com", List.of(UserRole.STUDENT, UserRole.COORDINATOR),
-        null, null, null, null, null, null, null);
+        null, null, null, null, null, null, null, true);
 
     when(userRepository.findByEmail("multi@example.com")).thenReturn(Optional.empty());
     when(roleRepository.findByName(UserRole.STUDENT)).thenReturn(Optional.of(studentRole));
@@ -149,7 +150,7 @@ void testRegister_SuccessMultipleRoles() {
         User user = new User();
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         UserDto dto = new UserDto(1L, "Jane", "Doe", "j@example.com", List.of(UserRole.STUDENT), null, null, null,
-                null, null, null, null);
+                null, null, null, null, true);
         when(userMapper.toDto(user)).thenReturn(dto);
         UserDto result = userService.getUserById(1L, 1L, List.of("ROLE_STUDENT"));
         assertEquals("Jane", result.firstName());
@@ -313,7 +314,7 @@ void testRegister_SuccessMultipleRoles() {
         when(roleRepository.findByName(UserRole.STUDENT)).thenReturn(Optional.of(studentRole));
         when(userRepository.save(any())).thenReturn(user);
         UserDto dto = new UserDto(1L, "Jane", "Doe", "j@example.com", List.of(UserRole.STUDENT), null, null, null,
-                null, null, null, null);
+                null, null, null, null, true);
         when(userMapper.toDto(user)).thenReturn(dto);
 
         UserDto result = userService.changeRole(1L, new RoleChangeRequest(List.of(UserRole.STUDENT)),1L);
@@ -336,7 +337,7 @@ void testRegister_SuccessMultipleRoles() {
         student.setRoles(Set.of(new Role(1L, UserRole.STUDENT)));
 
         UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.STUDENT),
-                null, null, null, null, null, null, null);;
+                null, null, null, null, null, null, null, true);;
 
         when(userRepository.findByRoles_NameAndStudentNum(UserRole.STUDENT, 12345678))
                 .thenReturn(List.of(student));
@@ -354,7 +355,7 @@ void testRegister_SuccessMultipleRoles() {
         instructor.setRoles(Set.of(new Role(1L, UserRole.INSTRUCTOR)));
 
         UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.INSTRUCTOR),
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null, true);
 
         when(userRepository.findByRoles_NameAndEmployeeNum(UserRole.INSTRUCTOR, 987654))
                 .thenReturn(List.of(instructor));
@@ -371,7 +372,7 @@ void testRegister_SuccessMultipleRoles() {
         user.setRoles(Set.of(new Role(1L, UserRole.COORDINATOR)));
 
         UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.COORDINATOR),
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null, true);
 
         when(userRepository.findByRoleAndName(UserRole.COORDINATOR, "emma")).thenReturn(List.of(user));
         when(userMapper.toDto(user)).thenReturn(dto);
@@ -396,7 +397,7 @@ void testRegister_SuccessMultipleRoles() {
         user.setRoles(Set.of(new Role(1L, UserRole.COORDINATOR)));
 
         UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.COORDINATOR),
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null, true);
 
         when(userRepository.findByRoleAndName(UserRole.COORDINATOR, "emma")).thenReturn(List.of(user));
         when(userMapper.toDto(user)).thenReturn(dto);
@@ -413,7 +414,7 @@ void testRegister_SuccessMultipleRoles() {
         user.setRoles(Set.of(new Role(1L, UserRole.STUDENT)));
 
         UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.STUDENT),
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null, true);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userMapper.toDto(user)).thenReturn(dto);
@@ -454,7 +455,7 @@ void testRegister_SuccessMultipleRoles() {
         user.setRoles(Set.of(new Role(1L, UserRole.STUDENT)));
 
         UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.STUDENT),
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null, true);
 
         when(userRepository.findByStudentNum(123456)).thenReturn(Optional.of(user));
         when(userMapper.toDto(user)).thenReturn(dto);
@@ -495,7 +496,7 @@ void testRegister_SuccessMultipleRoles() {
         user.setRoles(Set.of(new Role(1L, UserRole.INSTRUCTOR)));
 
         UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.INSTRUCTOR), 
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null, true);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userMapper.toDto(user)).thenReturn(dto);
@@ -536,7 +537,7 @@ void testRegister_SuccessMultipleRoles() {
         user.setRoles(Set.of(new Role(1L, UserRole.INSTRUCTOR)));
 
         UserDto dto = new UserDto(1L, "Emma", "Stone", "emma@example.com", List.of(UserRole.INSTRUCTOR), 
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null, true);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userMapper.toDto(user)).thenReturn(dto);
@@ -554,6 +555,54 @@ void testRegister_SuccessMultipleRoles() {
         });
 
         assertEquals("User not found with id 1", ex.getMessage());
+    }
+
+     @Test
+    void testActivateUser_success() {
+        Long userId = 1L;
+        when(userRepository.existsById(userId)).thenReturn(true);
+
+        String result = userService.activateUser(userId);
+
+        verify(userRepository).activateUser(userId);
+        assertEquals("User activated", result);
+    }
+
+    @Test
+    void testActivateUser_userNotFound() {
+        Long userId = 999L;
+        when(userRepository.existsById(userId)).thenReturn(false);
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            userService.activateUser(userId);
+        });
+
+        assertEquals("Not user with id " + userId, exception.getMessage());
+        verify(userRepository, never()).activateUser(any());
+    }
+
+    @Test
+    void testDeactivateUser_success() {
+        Long userId = 2L;
+        when(userRepository.existsById(userId)).thenReturn(true);
+
+        String result = userService.deactivateUser(userId);
+
+        verify(userRepository).deactivateUser(userId);
+        assertEquals("User deactivated", result);
+    }
+
+    @Test
+    void testDeactivateUser_userNotFound() {
+        Long userId = 888L;
+        when(userRepository.existsById(userId)).thenReturn(false);
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            userService.deactivateUser(userId);
+        });
+
+        assertEquals("Not user with id " + userId, exception.getMessage());
+        verify(userRepository, never()).deactivateUser(any());
     }
 
 }

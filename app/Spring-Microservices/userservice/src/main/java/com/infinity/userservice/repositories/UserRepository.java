@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -34,5 +35,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
                    OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :name, '%')))
             """)
     List<User> findByRoleAndName(@Param("role") UserRole role, @Param("name") String name);
+
+        @Modifying
+        @Query("UPDATE User u SET u.active = true WHERE u.id = :userId")
+        void activateUser(@Param("userId") Long userId);
+
+        @Modifying
+        @Query("UPDATE User u SET u.active = false WHERE u.id = :userId")
+        void deactivateUser(@Param("userId") Long userId);
+
+        List<User> findByActiveTrue();
+        List<User> findByActiveFalse();
 
 }

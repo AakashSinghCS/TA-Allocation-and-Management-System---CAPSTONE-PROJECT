@@ -6,15 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -24,9 +21,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.infinity.userservice.dtos.EmailRequest;
@@ -75,34 +69,23 @@ public class AuthServiceTest {
         String email = "user@example.com";
         String password = "password";
         Long userId = 1L;
-
         LoginRequest request = new LoginRequest(email, password);
 
-        UserDetails userDetails = mock(UserDetails.class);
-        when(userDetails.getPassword()).thenReturn("hashedPassword");
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
-        Collection<GrantedAuthority> authorities = List.of(authority);
-        doReturn(authorities)
-        .when(userDetails)
-        .getAuthorities();
-
         User user = mock(User.class);
+        when(user.getEmail()).thenReturn(email);
         when(user.getId()).thenReturn(userId);
 
-        when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
-        when(passwordEncoder.matches(password, "hashedPassword")).thenReturn(true);
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(user);
+
+        when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(jwtUtil.generateToken(eq(email), eq(userId), anyList())).thenReturn("jwt-token");
 
-        // Act
         LoginResponse response = authService.login(request);
 
-        // Assert
         assertEquals("jwt-token", response.token());
-        verify(userDetailsService).loadUserByUsername(email);
-        verify(passwordEncoder).matches(password, "hashedPassword");
-        verify(userRepository).findByEmail(email);
-        verify(jwtUtil).generateToken(eq(email), eq(userId), eq(List.of("ROLE_USER")));
+        verify(authenticationManager).authenticate(any());
+        verify(jwtUtil).generateToken(eq(email), eq(userId), anyList());
     }
 
     @Test

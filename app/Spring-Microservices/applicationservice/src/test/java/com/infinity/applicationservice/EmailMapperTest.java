@@ -18,7 +18,7 @@ public class EmailMapperTest {
     @Test
     void toAllocationEmail() {
         UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null);
+                                12345678, "COSC", 2025, 3, null, null, null, true);
         EmailRequest email = emailMapper.allocationEmailRequest(studentDto);
         assertEquals(studentDto.email(), email.email());
         assertEquals("TA Offer Received", email.subject());
@@ -27,7 +27,7 @@ public class EmailMapperTest {
     @Test
     void toApplicationEmail() {
         UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                12345678, "COSC", 2025, 3, null, null, null);
+                12345678, "COSC", 2025, 3, null, null, null, true);
         EmailRequest email = emailMapper.applicationReceivedEmailRequest(studentDto);
         assertEquals(studentDto.email(), email.email());
         assertEquals("Application Submitted", email.subject());

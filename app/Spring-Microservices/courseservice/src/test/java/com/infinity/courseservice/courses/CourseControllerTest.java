@@ -38,6 +38,7 @@ import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.Semester;
 import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.services.CourseService;
+import com.infinity.courseservice.services.SectionService;
 
 @WebMvcTest(CourseController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -48,6 +49,8 @@ public class CourseControllerTest {
 
         @MockitoBean
         private CourseService courseService;
+
+        @MockitoBean SectionService SectionService;
 
         @Autowired
         private ObjectMapper objectMapper;
@@ -155,7 +158,7 @@ public class CourseControllerTest {
         SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
     AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
     new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
-    null, null),offer,
+    null, null,true),offer,
                     true, 10,
         new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
     );
@@ -182,7 +185,7 @@ public class CourseControllerTest {
                 AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
                                 new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null,
-                                                null, null),offer,
+                                                null, null,true),offer,
                     true, 10,
         new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
     );
@@ -221,7 +224,7 @@ public class CourseControllerTest {
     void testGetStudentTaughtCourses() throws Exception {
         UserDto student = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                         "COSC", 2025, 3, null,
-                        null, null);
+                        null, null, true);
         CourseDto course = new CourseDto(1L, "COSC", "Algorithms", "320");
 
         StudentTaughtCourseDto dto = new StudentTaughtCourseDto(student, course, Semester.S2, 2022);

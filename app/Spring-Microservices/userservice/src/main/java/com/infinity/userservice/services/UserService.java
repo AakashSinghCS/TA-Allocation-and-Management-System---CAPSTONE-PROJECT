@@ -204,6 +204,24 @@ public class UserService {
         return userMapper.toDto(saved);
     }
 
+    @Transactional
+    public String activateUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException("Not user with id " + id);
+        }
+        userRepository.activateUser(id);
+        return "User activated";
+    }
+
+    @Transactional
+    public String deactivateUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException("Not user with id " + id);
+        }
+        userRepository.deactivateUser(id);
+        return "User deactivated";
+    }
+
     //Student methods
 
     public UserDto getUserDetailsById(Long id) {

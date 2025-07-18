@@ -83,7 +83,7 @@ public class ExamController {
     public ExamAssignmentDto assignStudentToExam(
             @PathVariable Long examId,
             @RequestBody ExamAssignmentDto assignmentDto) {
-        return examService.assignStudentToExam(examId, assignmentDto.studentId(), assignmentDto.task());
+        return examService.assignStudentToExam(examId, assignmentDto);
     }
 
     @GetMapping("/assignments/{studentId}")
