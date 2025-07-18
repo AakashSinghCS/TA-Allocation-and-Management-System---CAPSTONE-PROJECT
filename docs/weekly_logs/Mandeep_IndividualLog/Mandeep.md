@@ -1488,3 +1488,68 @@ Refactoring and test rewrites made the codebase more maintainable; next focus is
 
 ## Next Cycle Goals
 - Dashboards for all remaining users (instructor and co-ordinator) 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 16 July, Wednesday
+
+**Clockify:**  ![alt text](clockify_images/july_16.png)
+
+## Time Slot
+- **1:05 PM – 3:18 PM:** Tested Functionality again and fixed some bugs after feedback event  
+- **5:40 PM – 9:44 PM:** Created dashboard for co-ordinator with backend integration  
+- **11:03 PM – 3:41 AM:** Wrote tests for the co-ordinator and approved ##405 PR  
+
+## Current Tasks
+- Developed coordinator dashboard with backend data  
+- Wrote and approved tests for PR #405  
+- Fixed issues based on feedback from team session  
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                       | STATUS    |
+|--------------|---------------------------------------------------|-----------|
+| #420         | Co-ordinator dashboard with backend integration   | Completed |
+| #420           | Write & approve tests for co-ordinator (PR #405)  | Completed |
+| #417           | Fix bugs after feedback session                   | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Major progress made on co-ordinator view and testing. Feedback-driven revisions enhanced stability and usability.
+
+### Retrospective
+Backend integration for dashboards is now stable. PR testing ensured robustness. Ready to move on to instructor-side interfaces.
+
+## Next Cycle Goals
+- Finalize instructor dashboard and ensure cross-role testing  
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 17 July, Thursday
+
+**Clockify:**  ![alt text](clockify_images/july_17.png)
+
+## Time Slot
+- **1:46 PM – 2:45 PM:** Team Meeting for feedback event and planning for global config  
+- **10:58 PM – 11:59 PM:** Team logs and meeting prep  
+
+## Current Tasks
+- Participated in feedback event meeting and global config planning  
+- Documented team logs and prepped for upcoming coordination tasks  
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                      | STATUS    |
+|--------------|--------------------------------------------------|-----------|
+| #NA           | Feedback event meeting + global config planning  | Completed |
+| #NA           | Team log documentation and prep work             | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Refined global configuration strategies and synced up on team-wide progress through focused discussion and log updates.
+
+### Retrospective
+Meetings were productive and helped align the entire team on next steps for backend integration and testing goals.
+
+## Next Cycle Goals
+- Complete Instrcutor dashboard testing and finalize documentation
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
