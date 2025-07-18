@@ -8,6 +8,7 @@ export default function SectionCsvImport() {
   const [error, setError] = useState<string>("");
   const [csvPreview, setCsvPreview] = useState<Array<Record<string, string>> | null>(null);
   const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+  const [parsedData, setParsedData] = useState<Array<Record<string, string>> | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -20,15 +21,18 @@ export default function SectionCsvImport() {
           const data = results.data as Record<string, string>[];
           setCsvPreview(data.slice(0, 10)); // Show only the first 10 rows
           setCsvHeaders(results.meta.fields || []);
+          setParsedData(data);
         },
         error: (err) => {
           setError("CSV parse error: " + err.message);
           setCsvPreview(null);
+          setParsedData(null);
         }
       });
     } else {
       setCsvPreview(null);
       setCsvHeaders([]);
+      setParsedData(null);
     }
   };
 
@@ -37,19 +41,34 @@ export default function SectionCsvImport() {
     setLoading(true);
     setError("");
     setResult("");
-    if (!file) {
-      setError("Please select a CSV file.");
+    if (!parsedData || parsedData.length === 0) {
+      setError("Please select a valid CSV file and make sure it is not empty.");
       setLoading(false);
       return;
     }
-    const formData = new FormData();
-    formData.append("file", file);
     try {
+      // Map CSV headers to SectionCsvData fields
+      const mapCsvRowToSection = (row: Record<string, string>) => ({
+        deptCode: row["Dept Code"] || "",
+        courseNum: row["Course Number"] || "",
+        name: row["Course Name"] || "",
+        year: row["Year"] ? parseInt(row["Year"]) : null,
+        semester: row["Semester"] || "",
+        section: row["Section"] || "",
+        type: row["Type"] || "",
+        day: row["Day"] || "",
+        startTime: row["Start Time"] || "",
+        endTime: row["End Time"] || ""
+      });
+      const mappedData = parsedData.map(mapCsvRowToSection);
       const token = localStorage.getItem('token');
       const res = await fetch("http://localhost:8080/sections/import-csv", {
         method: "POST",
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(mappedData),
       });
       let errorDetail = "";
       let text = "";

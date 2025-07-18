@@ -5,8 +5,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestBody;
+import java.util.List;
+import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,9 +25,9 @@ public class SectionCSVImportController {
      */
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/import-csv")
-    public ResponseEntity<String> importSectionsFromCsv(@RequestParam("file") MultipartFile file) {
-        // Call service to handle CSV import
-        String result = sectionService.importSectionsFromCsv(file);
+    public ResponseEntity<String> importSectionsFromJson(@RequestBody List<SectionCsvData> sections) {
+        // Call service to handle JSON import
+        String result = sectionService.importSectionsFromJson(sections);
         return ResponseEntity.ok(result);
     }
 }
