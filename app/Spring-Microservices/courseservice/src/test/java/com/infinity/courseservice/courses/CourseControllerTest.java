@@ -160,7 +160,7 @@ public class CourseControllerTest {
                 AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
                                 new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null,
-                                                null, null),
+                                                null, null,true),
                                 offer,
                                 true, 10,
                                 new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course));
@@ -223,15 +223,22 @@ public class CourseControllerTest {
 
                 NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, year, semester, null);
 
-                UserDto student = new UserDto(
-                                2L, "Alice", "Wang", "awang@test.com",
-                                List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3,
-                                null, null, null);
+                // UserDto student = new UserDto(
+                //                 2L, "Alice", "Wang", "awang@test.com",
+                //                 List.of(UserRole.STUDENT),
+                //                 12345678, "COSC", 2025, 3,
+                //                 null, null, null,true);
                 OfferDto offer = new OfferDto(1L, true, "description");
-                AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(
-                                42L, student, offer, true, 10,
-                                new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE, course));
+                // CourseDto course = new CourseDto(1L, "COSC", "Networks", "329");
+                // NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2", null);
+                // SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
+                AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
+                                new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
+                                                "COSC", 2025, 3, null,
+                                                null, null,true),offer,
+                    true, 10,
+        new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
+    );
 
                 CourseNeedAndAllocations entry = new CourseNeedAndAllocations(sectionDto, need, List.of(alloc));
 
@@ -256,25 +263,24 @@ public class CourseControllerTest {
         void testAddStudentTaughtCourse() throws Exception {
                 StudentTaughtCourseRequest request = new StudentTaughtCourseRequest(1001L, 2023, Semester.W1);
 
-                mockMvc.perform(post("/courses/studentTaught/add/1")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
-                                .andExpect(status().isOk());
-        }
-
-        @Test
-        void testDeleteStudentTaughtCourse() throws Exception {
-                mockMvc.perform(delete("/courses/studentTaught/delete/1/1"))
-                                .andExpect(status().isOk());
-        }
-
-        @Test
-        void testGetStudentTaughtCourses() throws Exception {
-                UserDto student = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678,
-                                "COSC", 2025, 3, null,
-                                null, null);
-                CourseDto course = new CourseDto(1L, "COSC", "Algorithms", "320");
+        mockMvc.perform(post("/courses/studentTaught/add/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+    }
+    
+    @Test
+    void testDeleteStudentTaughtCourse() throws Exception {
+        mockMvc.perform(delete("/courses/studentTaught/delete/1/1"))
+                .andExpect(status().isOk());
+    }
+    
+    @Test
+    void testGetStudentTaughtCourses() throws Exception {
+        UserDto student = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
+                        "COSC", 2025, 3, null,
+                        null, null,true);
+        CourseDto course = new CourseDto(1L, "COSC", "Algorithms", "320");
 
                 StudentTaughtCourseDto dto = new StudentTaughtCourseDto(student, course, Semester.S2, 2022);
 

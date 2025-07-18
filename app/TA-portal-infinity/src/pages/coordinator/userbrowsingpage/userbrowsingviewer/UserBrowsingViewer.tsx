@@ -22,7 +22,7 @@ export default function UserBrowsingViewer({
 }: UserBrowsingViewerProps) {
 
     const { userRoles } = useAuth();
-    const { searchedUsers = [], loading, error, search, deleteUser, lastCriteria } = useUserSearch();
+    const { searchedUsers = [], loading, error, search, toggleActivation, lastCriteria } = useUserSearch();
     const navigate = useNavigate();
     const isCoordinatorOrAdmin = userRoles.includes(UserRole.COORDINATOR || UserRole.ADMIN);
     // choose columns & labels based on selected role
@@ -47,7 +47,10 @@ export default function UserBrowsingViewer({
         labels = { name: 'Name', id: "ID", email: 'Email', createdAt: 'Registered' };
     }
 
-    const handleDelete = (id?: number) => deleteUser(id);
+    const handleToggleActivation = (id?: number, currentlyActive?: boolean) => {
+        toggleActivation(id, currentlyActive);
+    };
+
 
     const handleAskForConfirmation = (e: React.MouseEvent<HTMLAnchorElement>, uId:number) => {
     if (!askForConfirmation) {
@@ -123,12 +126,20 @@ export default function UserBrowsingViewer({
                                             Select
                                         </button>
                                     ) : (
-                                        <button
-                                            onClick={() => handleDelete(user.id)}
-                                            className="text-red-600 hover:text-red-300"
-                                        >
-                                            Delete
-                                        </button>
+                                            <button
+                                                onClick={() => handleToggleActivation(user.id, user.active)}
+                                                disabled={!userRoles.includes("ADMIN")}
+                                                className={`px-3 py-1 rounded text-white text-sm font-medium transition-colors
+                                                    ${!userRoles.includes("ADMIN")
+                                                        ? "bg-gray-300 cursor-not-allowed"
+                                                        : user.active
+                                                            ? "bg-red-500 hover:bg-red-600"
+                                                            : "bg-green-500 hover:bg-green-600"
+                                                    }`}
+                                            >
+                                                {user.active ? "Deactivate" : "Activate"}
+                                            </button>
+
                                     )}
                                 </td>
                             </tr>

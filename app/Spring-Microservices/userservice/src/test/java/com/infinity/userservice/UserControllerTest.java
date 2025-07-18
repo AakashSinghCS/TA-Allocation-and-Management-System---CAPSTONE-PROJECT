@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -85,7 +86,7 @@ public class UserControllerTest {
         @Test
         void testGetUserById_Success() throws Exception {
                 UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.STUDENT),
-                                null, null, null, null, null, null, null);
+                                null, null, null, null, null, null, null, true);
 
                 when(userService.getUserById(any(), any(), any())).thenReturn(mockResponse);
 
@@ -208,7 +209,7 @@ public class UserControllerTest {
                                 1L, "Alice", "Smith", "alice@example.com",
                                 List.of(UserRole.STUDENT),
                                 12345678, "computer science", 2023, 1,
-                                null, null, fixedTime);
+                                null, null, fixedTime, true);
 
                 when(userService.search("STUDENT", "","", 12345678,null)).thenReturn(List.of(student));
 
@@ -230,7 +231,7 @@ public class UserControllerTest {
                                 2L, "Bob", "Jones", "bob@example.com",
                                 List.of(UserRole.INSTRUCTOR),
                                 null, null, null, null,
-                                87654321, "computerscience", fixedTime);
+                                87654321, "computerscience", fixedTime, true);
 
                 when(userService.search("INSTRUCTOR", "Bob","", 0,null)).thenReturn(List.of(instructor));
 
@@ -249,7 +250,7 @@ public class UserControllerTest {
                 RoleChangeRequest request = new RoleChangeRequest(List.of(UserRole.STUDENT, UserRole.COORDINATOR));
                 UserDto updatedUser = new UserDto(1L, "Alice", "Smith", "alice@example.com", List.of(UserRole.STUDENT,
                                 UserRole.COORDINATOR),
-                                null, null, null, null, null, null, null);
+                                null, null, null, null, null, null, null, true);
 
                 when(userService.changeRole(eq(1L), eq(request), eq(1L))).thenReturn(updatedUser);
 
@@ -267,7 +268,7 @@ public class UserControllerTest {
         @Test
         void getStudentByNum_returnsUserDto() throws Exception {
                 UserDto sampleUser = new UserDto(1L, "Alice", "Smith", "alice@example.com",
-                                List.of(UserRole.STUDENT), null, null, null, null, null, null, null);
+                                List.of(UserRole.STUDENT), null, null, null, null, null, null, null, true);
                 when(userService.getStudentByNum(12345678)).thenReturn(sampleUser);
 
                 mockMvc.perform(get("/users//studentNum/12345678"))
@@ -279,7 +280,7 @@ public class UserControllerTest {
         @Test
         void getStudentById_returnsUserDto() throws Exception {
                 UserDto sampleUser = new UserDto(1L, "Alice", "Smith", "alice@example.com",
-                                List.of(UserRole.STUDENT), null, null, null, null, null, null, null);
+                                List.of(UserRole.STUDENT), null, null, null, null, null, null, null, true);
                 when(userService.getStudentById(1L)).thenReturn(sampleUser);
 
                 mockMvc.perform(get("/users/students/1"))
@@ -291,7 +292,7 @@ public class UserControllerTest {
         @Test
         void getInstructorById_returnsUserDto() throws Exception {
                 UserDto instructorDto = new UserDto(2L, "Bob", "Instructor", "bob@example.com",
-                                List.of(UserRole.INSTRUCTOR), null, null, null, null, null, null, null);
+                                List.of(UserRole.INSTRUCTOR), null, null, null, null, null, null, null, true);
                 when(userService.getInstructorById(2L)).thenReturn(instructorDto);
 
                 mockMvc.perform(get("/users/instructors/2"))
@@ -303,7 +304,7 @@ public class UserControllerTest {
         @Test
         void getUserDetailsById_returnsUserDto() throws Exception {
                 UserDto instructorDto = new UserDto(2L, "Bob", "Instructor", "bob@example.com",
-                                List.of(UserRole.INSTRUCTOR), null, null, null, null, null, null, null);
+                                List.of(UserRole.INSTRUCTOR), null, null, null, null, null, null, null, true);
                 when(userService.getUserDetailsById(2L)).thenReturn(instructorDto);
 
                 mockMvc.perform(get("/users/profile/2"))
@@ -313,11 +314,34 @@ public class UserControllerTest {
         }
 
         @Test
+        void testActivateUser_success() throws Exception {
+                Long userId = 1L;
+                when(userService.activateUser(userId)).thenReturn("User activated");
+
+                mockMvc.perform(put("/users/activate/{id}", userId))
+                                .andExpect(status().isOk())
+                                .andExpect(content().string("User activated"));
+
+                verify(userService).activateUser(userId);
+        }
+
+        @Test
+        void testDeactivateUser_success() throws Exception {
+                Long userId = 2L;
+                when(userService.deactivateUser(userId)).thenReturn("User deactivated");
+
+                mockMvc.perform(put("/users/deactivate/{id}", userId))
+                                .andExpect(status().isOk())
+                                .andExpect(content().string("User deactivated"));
+
+                verify(userService).deactivateUser(userId);
+        }
+        @Test
         void succesfullyRegisterStudent_thenReturns201() throws Exception {
                 RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1",
                                 List.of(UserRole.STUDENT));
                 UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.STUDENT),
-                                null, null, null, null, null, null, null);
+                                null, null, null, null, null, null, null, true);
 
                 when(userService.register(any(), eq(null))).thenReturn(mockResponse);
 

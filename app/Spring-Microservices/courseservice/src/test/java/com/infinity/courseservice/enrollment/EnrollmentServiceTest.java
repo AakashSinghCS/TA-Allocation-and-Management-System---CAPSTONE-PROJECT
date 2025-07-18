@@ -173,7 +173,7 @@ public class EnrollmentServiceTest {
     @Test
     void getFullEnrollmentOverview_aggregatesBothTypes() {
         UserDto studentDto = new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
-                null, null);
+                null, null, true);
         StudentCourse enrolled = mock(StudentCourse.class);
         StudentCourse completed = mock(StudentCourse.class);
         StudentEnrollmentOverviewDto overview = new StudentEnrollmentOverviewDto(

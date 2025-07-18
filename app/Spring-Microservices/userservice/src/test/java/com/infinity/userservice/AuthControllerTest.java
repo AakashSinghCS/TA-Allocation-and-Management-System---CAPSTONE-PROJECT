@@ -112,7 +112,7 @@ public class AuthControllerTest {
     @Test
     void succesfullyRegisterStudent_thenReturns201() throws Exception {
         RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", List.of(UserRole.STUDENT));
-        UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.STUDENT), null, null, null, null, null, null, null);
+        UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.STUDENT), null, null, null, null, null, null, null, true);
 
         when(userService.register(any(),eq(null))).thenReturn(mockResponse);
 
@@ -130,7 +130,7 @@ public class AuthControllerTest {
     void successfullyRegisterInstructor_thenReturns201() throws Exception {
         RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", List.of(UserRole.INSTRUCTOR));
         UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.INSTRUCTOR), null, null,
-                        null, null, null, null, null);
+                        null, null, null, null, null, true);
 
         when(userService.register(any(),eq(null))).thenReturn(mockResponse);
 
@@ -149,7 +149,7 @@ public class AuthControllerTest {
         RegisterRequest request = new RegisterRequest("john@test.com", "John", "Smith", "P@ssword1", 
                 List.of(UserRole.COORDINATOR));
         UserDto mockResponse = new UserDto(1L, "John", "Smith", "test@test.com", List.of(UserRole.COORDINATOR), null, null,
-                        null, null, null, null, null);
+                        null, null, null, null, null, true);
 
         when(userService.register(any(),eq(null))).thenReturn(mockResponse);
 

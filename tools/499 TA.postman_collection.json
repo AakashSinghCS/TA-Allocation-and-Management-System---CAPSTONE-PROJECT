@@ -394,6 +394,84 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Activate User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/users/activate/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"activate",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Deactivate User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/users/deactivate/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users",
+										"deactivate",
+										"1"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
