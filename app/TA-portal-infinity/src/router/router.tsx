@@ -51,6 +51,8 @@ const ExportToCSVPage = lazy(() => import("../pages/csv/exportpage/ExportToCSVPa
 
 const GraduateAvailabilityPage = lazy(() => import("../pages/student/graduateavailabilitypage/GraduateAvailabilityPage"));
 
+const CreateExamPage = lazy(() => import("../pages/coordinator/exampage/CreateExamPage"));
+
 export const router = createBrowserRouter([
   {
     path: "/user",
@@ -131,6 +133,7 @@ export const router = createBrowserRouter([
           { path: "deadlines", element: <Suspense fallback={<div>Loading...</div>}><DeadlineManagementPage /></Suspense> },
           { path: "audit", element: <Suspense fallback={<div>Loading...</div>}><AuditLogsPage /></Suspense> },
           { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
+          { path: "create-exam", element: <Suspense fallback={<div>Loading...</div>}><CreateExamPage /></Suspense> },
         ],
       },
 

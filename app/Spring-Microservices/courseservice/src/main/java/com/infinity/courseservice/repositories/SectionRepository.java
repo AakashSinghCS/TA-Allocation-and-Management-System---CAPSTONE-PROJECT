@@ -22,4 +22,7 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
     
     Optional<Section> findByCourseAndYearAndSemesterAndSectionAndType(
         Course course, Integer year, String semester, String section, SectionType type);
+
+    Optional<Section> findByCourseIdAndSection(Long courseId, String section);
+
 }

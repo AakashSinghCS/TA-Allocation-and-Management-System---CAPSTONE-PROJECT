@@ -42,6 +42,7 @@ export default function SideNav({expanded, setExpanded}:SideNavProps) {
     { label: 'Coordinator Dashboard', to: '/user/coordinator/home', icon: <Home size={22} />, roles: [UserRole.COORDINATOR] },
     { label: 'TA Applications', to: '/user/coordinator/applications', icon: <GraduationCap size={22} />, roles: [UserRole.COORDINATOR] },
     { label: 'TA Allocations', to: '/user/coordinator/allocation', icon: <Presentation size={22} />, roles: [UserRole.COORDINATOR] },
+    { label: 'Exams', to: '/user/coordinator/create-exam', icon: <BookOpen size={22} />, roles: [UserRole.COORDINATOR] },
     // { label: 'Profile', to: '/user/coordinator/profile', icon: <UserRoundPen size={22} />, roles: [UserRole.COORDINATOR] },
     { label: 'Profile Questions', to: '/user/coordinator/questions', icon: <Users size={22} />, roles: [UserRole.COORDINATOR] },
     { label: 'Courses', to: '/user/coordinator/sections', icon: <BookOpen size={22} />, roles: [UserRole.COORDINATOR] },
