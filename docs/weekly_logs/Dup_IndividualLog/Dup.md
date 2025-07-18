@@ -2469,3 +2469,61 @@ I decided to do the following in this PR:
 - student Allocation history needs to make sure the student is creating entries only for himself.
 - more security fixes in backend concerning reading of headers (x-user-id)
 
+
+
+## Thursday 7/16 (7/15~7/18)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July17.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#415](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/415)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Enhancements:
+- Improved NeedViewer Visuals. Added Filters to NeedViewer.
+- Profiles and user search table have IDs
+- userBrowsing Search bar now works with ids. enhanced UX of search bar (more responsive)
+
+Bug fixes:
+- fixed bugs in editSectionProfile
+- courseProfile sectionProfile is linked properly to the appropriate pages.
+- global index.css : Tailwind could not overwrite input and select settings in global index.css
+
+Tommorrow:
+- Project Discussion with Team
+- Start on Course Filter PR
+Course Filter PR will contain:
+1. make the filters dynamic with caching by using useQuery (from react-query, which I already use for logs). This includes Application Filter.
+2. show only the top 5 results when filtering dynamically. The user can click "Show All" below the 5 results to search for all of them.
+3. make Application Filter call an aggregate backend function.
+click on arrow to show hidden filters
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- Course Filter PR.
+In some other cycle:
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- more security fixes in backend concerning reading of headers (x-user-id)
+
