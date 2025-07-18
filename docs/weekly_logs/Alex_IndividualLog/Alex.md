@@ -1,4 +1,56 @@
-## Thursday (July 11-14)
+## Thursday (July 15-17)
+
+### Timesheet
+Clockify report
+![alt text](./jul15-17.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Add endpoint for courses without needs
+  * #2: Have audit logs show name instead of id
+  * #3: Backend for global config for term
+
+### Progress Update (since July 14th 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Updating allocated hours in the course need when offer is accepted
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Promoting/demoting users
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+   <tr>
+        <!-- Task/Issue # -->
+        <td>Activating/deactivating users
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The two tasks from the previous cycle were merged, and I also completed the activating and deactivating of users this week rather than deleting for user management. Overall it went well, we also met to go over the results of peer testing, and have a number of actionable issues that we can address to make our app better.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * There's 3 tasks that fell to me for the next cycle, and I think I can get them all done. First is easy, just need to write an endpoint for getting courses in a year and semester that are without needs (since these are needed to allocate a student to the course). Then the new auditing feature that was made needs to be refactored to show names rather than id's to make it easier for the coordinator to understand what they're looking at. After that there's a user requirement for the coordinator to set global semesters, so I'll need to make a new table to store these and every table in the course service that uses a semester and year will now need a join relationship with this new table. Shouldn't be hard, but will need a lot of refactoring so it may not be finished for next cycle.
+
+## Monday (July 11-14)
 
 ### Timesheet
 Clockify report
