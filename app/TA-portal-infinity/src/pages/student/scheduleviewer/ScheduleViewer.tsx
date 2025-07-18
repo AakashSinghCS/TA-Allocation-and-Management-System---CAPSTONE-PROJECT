@@ -16,6 +16,8 @@ import { fetchExamById } from "../../../api/exam/fetchExamById";
 import { fetchCourse } from "../../../api/course/fetchCourse";
 import type { ExamDto } from "../../../interfaces/exam/Exam";
 import type { Course } from "../../../interfaces/course/Course";
+import { fetchSectionInfo } from "../../../api/section/fetchSectionInfo";
+
 
 const ScheduleViewer: React.FC<{ scheduleRows: ScheduleRow[] }> = ({ scheduleRows }) => {
   // Week selector state
@@ -156,20 +158,23 @@ const StudentSchedulePage: React.FC = () => {
         for (const assign of examAssignments) {
           const exam = await fetchExamById(assign.examId, token);
           if (!exam) continue;
-
-          const course = await fetchCourse(exam.courseId);
-          const courseLabel = course ? `${course.deptCode} ${course.courseNum}` : "Unknown Course";
+          const sectionInfo = await fetchSectionInfo(exam.sectionId, token);
+          const courseLabel = sectionInfo?.course
+            ? `${sectionInfo.course.deptCode} ${sectionInfo.course.courseNum}`
+            : "Unknown Course";
+          const [year, month, dayNum] = assign.date.split("-").map(Number);
+          const localDate = new Date(year, month - 1, dayNum);
 
           examRows.push({
             id: assign.id,
-            course: `Exam - ${assign.task} (${courseLabel})`,
-            section: "N/A",
+            course: `${courseLabel}: Exam - ${assign.task}`,
+            section: sectionInfo?.section ?? "N/A",
             instructor: "N/A",
-            day: new Date(assign.date).toLocaleDateString("en-US", { weekday: "long" }),
+            day: localDate.toLocaleDateString("en-US", { weekday: "long" }),
             startTime: assign.startTime,
             endTime: assign.endTime,
             status: "CONFIRMED",
-            semester: "Finals",
+            semester: sectionInfo?.semester ?? "Finals",
             year: new Date(assign.date).getFullYear(),
             numberOfHours: 0,
             date: assign.date,

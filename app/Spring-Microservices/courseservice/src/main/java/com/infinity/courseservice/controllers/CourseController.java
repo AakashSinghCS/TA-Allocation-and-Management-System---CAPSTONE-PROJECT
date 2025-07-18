@@ -2,6 +2,7 @@ package com.infinity.courseservice.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +22,9 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.services.CourseService;
+import com.infinity.courseservice.services.SectionService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,9 @@ import lombok.RequiredArgsConstructor;
 public class CourseController {
 
     private final CourseService courseService;
+
+    @Autowired
+    private SectionService sectionService;
 
     @GetMapping("/{courseId}")
     public ResponseEntity<CourseDto> findCourse(@PathVariable Long courseId) {
@@ -150,6 +156,14 @@ public class CourseController {
         CourseDto dto = courseService.getByDeptCodeAndCourseNum(deptCode, courseNum);
         return ResponseEntity.ok(dto);
     }
+
+    @GetMapping("/sections/getByCourseAndName")
+    public ResponseEntity<SectionDto> getSectionByCourseAndName(
+        @RequestParam Long courseId,
+        @RequestParam String section) {
+            SectionDto dto = sectionService.getByCourseIdAndSectionName(courseId, section);
+            return ResponseEntity.ok(dto);
+        }
 
 
     // @GetMapping("/getEnrolledCourses/{studentId}")
