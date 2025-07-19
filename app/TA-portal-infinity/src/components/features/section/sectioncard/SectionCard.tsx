@@ -34,7 +34,8 @@ export default function SectionCard({
         <div title="Delete section from list">
           <Trash2
             size={16}
-            className="absolute top-2 right-2 cursor-pointer hover:text-red-600"
+            className="absolute top-2 right-2 cursor-pointer hover:text-red-600 
+              opacity-50 hover:opacity-100 hover:stroke-2 transition-all duration-150"
 
             onClick={() => onDelete(section)}
           />
