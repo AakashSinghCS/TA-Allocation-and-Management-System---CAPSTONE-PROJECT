@@ -1,67 +1,62 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SectionFilter from '../../../components/features/course/coursefilter/SectionFilter';
 import SectionList from '../../../components/features/course/sectionlist/SectionList';
-import { fetchFilteredSections, type FilterSectionsProps } from '../../../api/course/sectionfilter/fetchFilteredSections';
+import { type FilterSectionsProps } from '../../../api/course/sectionfilter/fetchFilteredSections';
 import { convertFilterSectionsToSections } from '../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
 import { fetchExportSectionsAsCSV, fetchExportAllSectionsAsCSV, downloadCSVBlob } from '../../../api/csv/fetchExportSections';
 import type Section from '../../../interfaces/section/Section';
+import { useDebounce } from '../../../utility/pagination/useDebounce';
+import { useSectionSearchPage } from '../../../api/course/sectionfilter/useSectionFilter';
 
 export default function ExportToCSVPage() {
   const navigate = useNavigate();
-  const [sections, setSections] = useState<Section[]>([]);
-  const [selectedSections, setSelectedSections] = useState<Section[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const [filters, setFilters] = useState<FilterSectionsProps>({});
+  const [page, setPage] = useState(0);
+  const debouncedFilters = useDebounce(filters, 300);
+
+  // Reset to page 0 when filters change
+  useEffect(() => {
+    setPage(0);
+  }, [debouncedFilters]);
+
+  // Fetch paginated sections via React Query
+  const {
+    data: sectionPage,
+    isFetching: loadingSections,
+    isError: errorSections,
+    error: sectionsErrorMsg,
+  } = useSectionSearchPage(debouncedFilters, page, 10);
+
+  const raw = sectionPage?.content ?? [];
+  const sections: Section[] = convertFilterSectionsToSections(raw);
+  
+  const [selected, setSelected] = useState<Section[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = async (params: FilterSectionsProps) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const data = await fetchFilteredSections(params);
-      if (data) {
-        const sectionsData = convertFilterSectionsToSections(data);
-        setSections(sectionsData);
-      } else {
-        setSections([]);
-      }
-    } catch (err) {
-      console.error('Failed to fetch sections:', err);
-      setError('Failed to fetch sections');
-    } finally {
-      setIsLoading(false);
-    }
+  const toggleSelect = (sec: Section) => {
+    setSelected(prev =>
+      prev.some(s => s.id === sec.id)
+        ? prev.filter(s => s.id !== sec.id)
+        : [...prev, sec]
+    );
   };
 
-  const handleSectionSelect = (section: Section) => {
-    setSelectedSections((prev: Section[]) => {
-      const isAlreadySelected = prev.some((s: Section) => s.id === section.id);
-      if (isAlreadySelected) {
-        return prev.filter((s: Section) => s.id !== section.id);
-      } else {
-        return [...prev, section];
-      }
-    });
-  };
-
-  const handleSelectAll = () => {
-    setSelectedSections(sections);
-  };
-
-  const handleClearSelection = () => {
-    setSelectedSections([]);
-  };
+   const selectAll = () => setSelected(sections);
+    const clearAll  = () => setSelected([]);
 
   const handleExportToCSV = async () => {
-    if (selectedSections.length === 0) {
+    if (!selected.length) {
       alert('Please select at least one section to export');
       return;
     }
 
-    setIsLoading(true);
+    setIsExporting(true);
     setError(null);
     try {
-      const sectionIds = selectedSections
+      const sectionIds = selected
         .map((section: Section) => section.id)
         .filter((id: number | undefined): id is number => id !== undefined);
 
@@ -84,12 +79,13 @@ export default function ExportToCSVPage() {
       console.error('Export failed:', err);
       setError('Export failed: ' + (err as Error).message);
     } finally {
-      setIsLoading(false);
+      setIsExporting(false);
     }
   };
 
   const handleExportAllSections = async () => {
-    setIsLoading(true);
+    setIsExporting(true);
+    setError(null);
     try {
       const csvBlob = await fetchExportAllSectionsAsCSV();
       
@@ -103,7 +99,7 @@ export default function ExportToCSVPage() {
       console.error('Export all failed:', err);
       setError('Export all failed');
     } finally {
-      setIsLoading(false);
+      setIsExporting(false);
     }
   };
 
@@ -117,7 +113,7 @@ export default function ExportToCSVPage() {
       {/* Search Filter */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-6">
         <h2 className="text-lg font-semibold mb-4">Search Sections</h2>
-        <SectionFilter onFilterChange={handleSearch} mode="small" />
+        <SectionFilter onFilterChange={setFilters} mode="large" />
       </div>
 
       {/* Selection Summary */}
@@ -126,20 +122,20 @@ export default function ExportToCSVPage() {
           <div>
             <h3 className="font-semibold text-blue-900">Selected Sections</h3>
             <p className="text-blue-700 text-sm">
-              {selectedSections.length} of {sections.length} sections selected
+              {selected.length} of {sections.length} sections selected
             </p>
-            {selectedSections.length > 0 && (
+            {selected.length > 0 && (
               <div className="mt-2">
                 <p className="text-sm text-blue-600 mb-1">Selected:</p>
                 <div className="flex flex-wrap gap-2">
-                  {selectedSections.map((section) => (
+                  {selected.map((section) => (
                     <span
                       key={section.id}
                       className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
                     >
                       {section.course?.deptCode} {section.course?.courseNum} - {section.section}
                       <button
-                        onClick={() => handleSectionSelect(section)}
+                        onClick={() => toggleSelect(section)}
                         className="ml-1 text-blue-600 hover:text-blue-800"
                       >
                         ×
@@ -152,32 +148,32 @@ export default function ExportToCSVPage() {
           </div>
           <div className="flex space-x-2">
             <button
-              onClick={handleSelectAll}
+              onClick={selectAll}
               disabled={sections.length === 0}
               className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:bg-gray-400"
             >
               Select All
             </button>
             <button
-              onClick={handleClearSelection}
-              disabled={selectedSections.length === 0}
+              onClick={clearAll}
+              disabled={selected.length === 0}
               className="px-3 py-1 bg-gray-600 text-white rounded text-sm hover:bg-gray-700 disabled:bg-gray-400"
             >
               Clear Selection
             </button>
             <button
               onClick={handleExportToCSV}
-              disabled={selectedSections.length === 0 || isLoading}
+              disabled={selected.length === 0 || isExporting}
               className="px-4 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 disabled:bg-gray-400"
             >
-              {isLoading ? 'Exporting...' : 'Export Selected'}
+              {isExporting ? 'Exporting...' : 'Export Selected'}
             </button>
             <button
               onClick={handleExportAllSections}
-              disabled={isLoading}
+              disabled={isExporting}
               className="px-4 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:bg-gray-400"
             >
-              {isLoading ? 'Exporting...' : 'Export All Sections'}
+              {isExporting ? 'Exporting...' : 'Export All Sections'}
             </button>
           </div>
         </div>
@@ -199,7 +195,7 @@ export default function ExportToCSVPage() {
           </p>
         </div>
         <div className="p-4">
-          {isLoading ? (
+          {isExporting ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
               <p className="text-gray-600">Loading sections...</p>
@@ -212,7 +208,7 @@ export default function ExportToCSVPage() {
             <SectionList
               sections={sections}
               mode="instructorAddSection"
-              onSelect={handleSectionSelect}
+              onSelect={toggleSelect}
               askForConfirmation={true}
             />
           )}

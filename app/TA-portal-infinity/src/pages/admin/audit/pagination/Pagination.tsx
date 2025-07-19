@@ -17,7 +17,7 @@ export default function Pagination({ page, pageCount, onPrev, onNext }: Props) {
         disabled={page === 0}
         title="Previous"
         className={`
-          flex-1 flex justify-center items-center py-2 transition
+          flex-1 flex justify-center items-center transition
           ${page === 0
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}
@@ -27,7 +27,7 @@ export default function Pagination({ page, pageCount, onPrev, onNext }: Props) {
       </button>
 
       {/* Page indicator */}
-      <div className="px-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+      <div className=" text-sm font-medium text-gray-700 whitespace-nowrap">
         Page <span className="font-semibold">{page + 1}</span> of <span className="font-semibold">{pageCount}</span>
       </div>
 
@@ -37,7 +37,7 @@ export default function Pagination({ page, pageCount, onPrev, onNext }: Props) {
         disabled={page + 1 >= pageCount}
         title="Next"
         className={`
-          flex-1 flex justify-center items-center py-2 transition
+          flex-1 flex justify-center items-center transition
           ${page + 1 >= pageCount
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}
