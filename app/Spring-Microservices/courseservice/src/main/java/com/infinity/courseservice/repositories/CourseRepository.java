@@ -104,4 +104,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> findCoursesWithoutNeedsByYearAndSemester(@Param("year") Integer year,
             @Param("semester") String semester);
 
+
+    @Query("SELECT DISTINCT s.course FROM Section s WHERE s.instructorId = :instructorId")
+    List<Course> findDistinctCoursesByInstructorId(@Param("instructorId") Long instructorId);
 }

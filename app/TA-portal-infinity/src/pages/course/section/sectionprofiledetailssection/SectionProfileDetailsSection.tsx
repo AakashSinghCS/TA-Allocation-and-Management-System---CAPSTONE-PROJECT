@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { validateSectionProfile } from "../../../../utility/validation/section/validateSectionProfile";
 import SectionProfileSection from "../sectionprofilesection/SectionProfileSection";
 import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
+import { UserRole } from "../../../../interfaces/enum/UserRole";
 interface Props {
   section: Section | null;
   fields: (keyof SectionProfile)[];
@@ -34,7 +35,7 @@ export default function SectionProfileDetailsSection({
     setSection(initial);
   }, [initial]);
 
-  const isCoordinator = userRoles.includes("COORDINATOR");
+  const isCoordinatorOrAdmin = userRoles.includes(UserRole.COORDINATOR || UserRole.ADMIN);
 
   // Save schedule and refresh
   const handleSaveSchedule = async (sched: SectionSchedule, isUpdate: boolean): Promise<boolean> => {
@@ -61,14 +62,14 @@ export default function SectionProfileDetailsSection({
     if (ok) navigate(-1);
   }
 
-  const onSave = async (updates: Partial<SectionProfile>) => {
+  const onSave = async (updates: Partial<Section>) => {
     if (!section) return;
     const { ok, sanitized, errors } = validateSectionProfile(updates);
     if (!ok) {
       alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
       return;
     }
-    const success = await fetchUpdateSectionDetails(section?.id ?? -1, sanitized);
+    const success = await fetchUpdateSectionDetails(section?.id ?? -1, {instructorId:updates.instructorId,...sanitized});
     if (success) setSection(await fetchSectionIncludeInstructorId(section.course?.id ?? -1))
     setIsEditingProfile(false);
   }
@@ -78,7 +79,7 @@ export default function SectionProfileDetailsSection({
       {section && isEditingProfile ? (
         <EditSectionProfileSection
           sectionId={section.course?.id ?? -1}
-          section={section!}
+          section={section}
           fields={fields}
           labels={labels}
           onSave={onSave}
@@ -91,10 +92,10 @@ export default function SectionProfileDetailsSection({
             profileFields={fields}
             fieldLabels={labels}
             isCourse={false}
-            isCoordinator={isCoordinator}
+            isCoordinator={isCoordinatorOrAdmin}
             onSaveSchedule={handleSaveSchedule}
           />
-          {isCoordinator && (
+          {isCoordinatorOrAdmin && (
             <div className="absolute top-2 right-2 flex gap-3 text-white px-2 py-1 rounded">
               <button
                 onClick={deleteCourse}

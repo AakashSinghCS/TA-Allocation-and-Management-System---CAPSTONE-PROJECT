@@ -5,6 +5,7 @@ import Pagination from '../pagination/Pagination';
 import AuditFilters from '../auditfilters/AuditFilters';
 import AuditDetailModal from '../auditdetailmodal/AuditDetailModal';
 import { ToastContainer, toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 export default function AuditLogsPage() {
   const [page, setPage] = useState(0);
@@ -43,9 +44,14 @@ export default function AuditLogsPage() {
         closeOnClick
         pauseOnHover
       />
-
-      <h1 className="text-2xl font-semibold">Audit Logs</h1>
-
+      <div className="flex items-end w-full">
+        <h1 className="text-2xl font-semibold">Audit Logs</h1>
+        <a href="http://localhost:3000" target="_blank" rel="noopener"  
+          className=" ml-auto inline-flex items-center justify-center px-3 py-1 
+             hover:text-[#0089b2] bg-[#00c89c] text-white rounded hover:bg-[#c7fcec] transition">
+          Open Grafana
+        </a>
+      </div>
       <AuditFilters
         service={serviceFilter}
         onServiceChange={setServiceFilter}
