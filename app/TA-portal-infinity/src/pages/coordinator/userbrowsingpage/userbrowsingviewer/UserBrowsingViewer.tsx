@@ -6,9 +6,9 @@ import { instructorFieldLabels, instructorProfileFields } from "../../../../inte
 import formatDateForDisplay from "../../../../utility/formatdatefordisplay/formatDateForDisplay";
 import SearchUserBar, { type SearchCriteria } from "../../../../components/ui/user/searchuserbar/SearchUserBar";
 import { UserRole } from "../../../../interfaces/enum/UserRole";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Pagination from "../../../admin/audit/pagination/Pagination";
-import { useUserSearchPage, useUserSuggestions } from "../../../../api/user/search/useUserSearch";
+import { useUserSearchPage } from "../../../../api/user/search/useUserSearch";
 import { useDebounce } from "../../../../utility/pagination/useDebounce";
 import { fetchActivate, fetchDeactivate } from "../../../../api/admin/fetchActivation";
 import React from "react";
@@ -30,36 +30,36 @@ export default function UserBrowsingViewer({
     const { userRoles } = useAuth();
 
     const [rawCriteria, setRawCriteria] = useState<SearchCriteria>({
-        role: allowedRoles?allowedRoles[0]:"", firstname: '', lastname: '',
+        role: allowedRoles?.[0] ?? "", firstname: '', lastname: '',
         universityNumber: '', userId: '',
     });
     const criteria = useDebounce(rawCriteria, 300);
 
     // const [criteria, setCriteria] = useState<SearchCriteria>({ role: '', firstname: '', lastname: ''});
-    const [showAll, setShowAll] = useState(false);
+    // const [showAll, setShowAll] = useState(false);
     const [page, setPage] = useState(0);
 
-    const suggQ = useUserSuggestions(criteria);
-    const fullQ = useUserSearchPage(criteria, page, 10);
-React.useEffect(() => {
-     console.log('Full page data:', suggQ.data);
-  if (fullQ.data) {
-    console.log('Full page data:', fullQ.data);
-  }
-}, [fullQ.data,suggQ.data]);
+    // const suggQ = useUserSuggestions(criteria);
+    const { data, isFetching, isError, error, refetch } = useUserSearchPage(criteria, page, 10);
+    useEffect(() => {
+        setPage(0);
+    }, [criteria]);
+
+    const rows = data?.content ?? [];
+
     const hasAnyFilter = Boolean(
         rawCriteria.userId
         || rawCriteria.universityNumber
         || (rawCriteria.role)
     );
 
-    const results = showAll
-        ? fullQ.data?.content ?? []
-        : suggQ.data?.content ?? [];
+    // const results = showAll
+    //     ? fullQ.data?.content ?? []
+    //     : suggQ.data?.content ?? [];
 
-    const displayRows = hasAnyFilter ? results : [];
-    const loading = showAll ? fullQ.isFetching : suggQ.isFetching;
-    const errorMsg = showAll ? fullQ.error : suggQ.error;
+    // const displayRows = hasAnyFilter ? results : [];
+    // const loading = showAll ? fullQ.isFetching : suggQ.isFetching;
+    // const errorMsg = showAll ? fullQ.error : suggQ.error;
 
     // const { searchedUsers = [], loading, error, search, toggleActivation, lastCriteria } = useUserSearch();
     const handleToggleActivation = async (id: number, active: boolean) => {
@@ -69,8 +69,7 @@ React.useEffect(() => {
         const success = active ? await fetchDeactivate(id) : await fetchActivate(id);
         if (success) {
             // invalidate both queries so UI refreshes
-            suggQ.refetch();
-            fullQ.refetch();
+            refetch();
         } else {
             alert(`Failed to ${active ? 'deactivate' : 'activate'} user`);
         }
@@ -103,7 +102,10 @@ React.useEffect(() => {
     //     toggleActivation(id, currentlyActive);
     // };
 
-
+    const handleFilterChange = useCallback((c: SearchCriteria) => {
+        setRawCriteria(c);
+    }, []);
+  
     const handleNavConfirm = (e: React.MouseEvent, uId: number) => {
         if (!askForConfirmation) return;
         e.preventDefault();
@@ -118,8 +120,8 @@ React.useEffect(() => {
                     {/* <SearchUserBar onSearch={search} loading={loading} allowedRoles={allowedRoles} mode={mode}/> */}
                     <SearchUserBar
                         criteria={rawCriteria}
-                        setCriteria={c => { setRawCriteria(c); setShowAll(false); setPage(0); }}
-                        loading={loading}
+                        setCriteria={handleFilterChange}
+                        loading={isFetching}
                         allowedRoles={allowedRoles}
                         mode={mode}
                     />
@@ -134,27 +136,27 @@ React.useEffect(() => {
 
             </div>
 
-            {errorMsg && (
+            {isError && (
                 <div className="text-red-500 mb-2">
-                    {(errorMsg as Error).message}
+                    {(error as Error).message}
                 </div>
             )}
 
             <div className="overflow-x-auto w-full">
 
-                {!hasAnyFilter &&<>
-                <p className="text-gray-500">
-                    Please select a role (and/or enter a Student/Employee number or User ID) to begin.
-                </p></> }
-
-                {hasAnyFilter && <table className="min-w-full border-collapse">
+                {!hasAnyFilter && <>
+                    <p className="text-gray-500">
+                        Please select a role (and/or enter a Student/Employee number or User ID) to begin.
+                    </p></>}
+                {isFetching && <p>Loading…</p>}
+                {hasAnyFilter && !isFetching &&<table className="min-w-full border-collapse">
                     <thead><tr>
                         {columns.map(col => <th key={String(col)} className="border border-gray-300 px-3 py-1 bg-gray-100">{labels[col]}</th>)}
                         <th className="border border-gray-300 px-3 py-1 bg-gray-100">Actions</th>
                     </tr></thead>
                     <tbody>
 
-                        {displayRows.map(user => (
+                        {rows.map(user => (
                             <tr key={user.id} className="hover:bg-gray-50">
                                 {columns.map(col => {
                                     let disp: any = (user as any)[col];
@@ -207,22 +209,12 @@ React.useEffect(() => {
                 </table>}
             </div>
 
-            {!showAll && (suggQ.data?.totalElements ?? 0) > 5 && (
-                <button
-                    onClick={() => setShowAll(true)}
-                    className="mt-2 text-blue-600"
-                >
-                    Show All ({suggQ.data!.totalElements})
-                </button>
-            )}
-            {showAll && (
                 <Pagination
                     page={page}
-                    pageCount={fullQ.data?.totalPages ?? 0}
+                    pageCount={data?.totalPages ?? 0}
                     onPrev={() => setPage(p => Math.max(0, p - 1))}
-                    onNext={() => setPage(p => Math.min((fullQ.data?.totalPages ?? 1) - 1, p + 1))}
+                    onNext={() => setPage(p => Math.min((data?.totalPages ?? 1) - 1, p + 1))}
                 />
-            )}
         </>
     );
 }

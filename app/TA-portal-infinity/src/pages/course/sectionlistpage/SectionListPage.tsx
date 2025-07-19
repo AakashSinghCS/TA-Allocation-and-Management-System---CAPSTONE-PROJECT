@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchDeleteCourse } from '../../../api/course/fetchDeleteCourse';
 import { fetchFilteredSections, type FilterSectionsProps } from '../../../api/course/sectionfilter/fetchFilteredSections';
@@ -12,7 +12,7 @@ import Papa from 'papaparse';
 import { fetchImportAllocations } from '../../../api/allocation/fetchImportAllocations';
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
 import { useDebounce } from '../../../utility/pagination/useDebounce';
-import { useSectionSearchPage, useSectionSuggestions } from '../../../api/course/sectionfilter/useSectionFilter';
+import { useSectionSearchPage } from '../../../api/course/sectionfilter/useSectionFilter';
 import Pagination from '../../admin/audit/pagination/Pagination';
 
 
@@ -22,15 +22,15 @@ export default function SectionListPage() {
 
   const [filters, setFilters] = useState<FilterSectionsProps>({});
   const [page, setPage] = useState(0);
-  const [showAll, setShowAll] = useState(false);
+  // const [showAll, setShowAll] = useState(false);
 
   const debounced = useDebounce(filters, 300);
-  const suggQ = useSectionSuggestions(debounced);
-  const fullQ = useSectionSearchPage(debounced, page, 10);
-
-  const results = showAll ? fullQ.data?.content : suggQ.data?.content;
-  const loading = showAll ? fullQ.isFetching : suggQ.isFetching;
-  const error = (showAll ? fullQ.error : suggQ.error)?.message;
+  // const suggQ = useSectionSuggestions(debounced);
+  const { data, isFetching, isError, error,refetch } = useSectionSearchPage(debounced, page, 10);
+  const sections = data?.content ?? [];
+  // const results = showAll ? fullQ.data?.content : suggQ.data?.content;
+  // const loading = showAll ? fullQ.isFetching : suggQ.isFetching;
+  // const error = (showAll ? fullQ.error : suggQ.error)?.message;
 
   // const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
   // const [lastFilters, setLastFilters] = useState<FilterSectionsProps | null>(null);
@@ -49,7 +49,10 @@ export default function SectionListPage() {
   //     setLoading(false);
   //   }
   // };
-
+  useEffect(() => {
+    setPage(0);
+  }, [filters]);
+  
   // this will be passed down to <SectionList> and called after delete
   const handleDeleted = async (id: number, isCourse: boolean) => {
     const confirmText = isCourse
@@ -59,8 +62,7 @@ export default function SectionListPage() {
       return;
 
     await (isCourse ? fetchDeleteCourse(id) : fetchDeleteSection(id));
-    suggQ.refetch();
-    fullQ.refetch();
+    refetch();
   };
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -117,8 +119,6 @@ export default function SectionListPage() {
   };
 const handleFilterChange = useCallback((f: FilterSectionsProps) => {
     setFilters(f);
-    setPage(0);
-    setShowAll(false);
   }, []);
   return (
     <div className="container mx-auto p-4 z-10">
@@ -152,35 +152,29 @@ const handleFilterChange = useCallback((f: FilterSectionsProps) => {
         <SectionFilter
           onFilterChange={handleFilterChange}
           mode="large"
-          loading={loading}
+          loading={isFetching}
         />
       </div>
 
-      {error && <p className="text-red-600">{error}</p>}
-      {loading && <p>Loading…</p>}
+      {isError && <p className="text-red-600">{(error as Error).message}</p>}
+      {isFetching && <p>Loading…</p>}
 
-      {!loading && results && (
+      {!isFetching && !isError && (
         <>
-          <SectionList sections={convertFilterSectionsToSections(results)} mode="coordinator" />
+          <SectionList sections={convertFilterSectionsToSections(sections)} mode="coordinator" 
+          onDeleted={handleDeleted}
+          />
 
-          {!showAll && suggQ.data?.totalElements! > 5 && (
-            <button onClick={() => setShowAll(true)} className="mt-2 text-blue-600">
-              Show All ({suggQ.data!.totalElements})
-            </button>
-          )}
-
-          {showAll && (
             <Pagination
               page={page}
-              pageCount={fullQ.data?.totalPages ?? 0}
+              pageCount={data?.totalPages ?? 0}
               onPrev={() => setPage((p) => Math.max(0, p - 1))}
               onNext={() =>
                 setPage((p) =>
-                  Math.min((fullQ.data?.totalPages ?? 1) - 1, p + 1)
+                  Math.min((data?.totalPages ?? 1) - 1, p + 1)
                 )
               }
             />
-          )}
         </>
       )}
 
