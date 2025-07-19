@@ -8,12 +8,13 @@ import TimeSelector from '../../../ui/section/timeselector/TimeSelector';
 import DropdownContainer, { type AllExistingDeptCodesAndYears } from '../dropdowncontainer/DropdownContainer';
 import { fetchAllExistingYears } from '../../../../api/course/sectionfilter/fetchAllExistingYears';
 import { StatusIndicator } from '../../../ui/statusindicator/StatusIndicator';
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react';
 type Mode = 'small' | 'large';
 
 interface CourseFilterProps {
   onFilterChange: (filters: FilterSectionsProps) => void;
   mode?: Mode;
-  loading?:boolean
+  loading?: boolean
 }
 
 export interface DeptCodeCourseNumSectionYearSemesterProps {
@@ -45,7 +46,7 @@ export default function SectionFilter({
     year: null,
     semester: null,
   });
-
+  const [showFilters, setShowFilters] = useState(false);
   // const handleFilter = () => {
   //   onFilterChange({
   //     deptCode: dCCNSYS.deptCode,
@@ -82,30 +83,38 @@ export default function SectionFilter({
     times.startTime, times.endTime,
     onFilterChange
   ]);
-  
+
   const smallStyle = "mt-1 block w-full rounded border border-gray-400 px-2 py-1"
   const bigStyle = "mt-1 block w-full rounded border border-gray-400 px-3 py-2"
   const smallOrBig = `${mode === 'small' ? smallStyle : bigStyle}`
   const loadDeptAndYears = useCallback<() => Promise<AllExistingDeptCodesAndYears>>(async () => {
     const deptCodes = await fetchAllExistingDeptCodes();
-    const years     = await fetchAllExistingYears();
+    const years = await fetchAllExistingYears();
     return { deptCodes: deptCodes ?? [], years: years ?? [] };
   }, []);
+
+  const inputStyleSmall = 'px-2 py-1 border border-gray-400 rounded-md w-full';
+  const inputStyleBig = 'px-3 py-2 border border-gray-400 rounded-md w-full';
+  const toggleButtonStyleSmall = 'flex items-center justify-center border border-gray-300 rounded hover:bg-gray-100 transition';
+  const toggleButtonStyleBig = 'flex items-center justify-center border border-gray-300 rounded px-1 hover:bg-gray-100 transition';
 
   return (
     <div className={mode === 'small' ? "space-y-1 text-sm" : "space-y-4"}>
       <div className="flex gap-2">
-        <StatusIndicator loading={loading}/>
-      <input
-        type="text"
-        placeholder="Search course name (e.g. 'Introduction to ...') "
-        value={name ?? ""}
-        onChange={(e) => setName(e.target.value)}
-        className={mode === "small" ? "px-2 py-1 border border-gray-400 rounded-md w-full" : "px-3 py-2 border border-gray-400 rounded-md w-full"}
-      />
+        <StatusIndicator loading={loading} />
+        <input
+          type="text"
+          placeholder="Search course name (e.g. 'Introduction to ...') "
+          value={name ?? ""}
+          onChange={(e) => setName(e.target.value)}
+          className={mode === 'small' ? inputStyleSmall : inputStyleBig}
+        />
       </div>
-      <div className={mode === 'small' ? "grid grid-cols-2 gap-2" : "grid grid-rows-2 gap-4"}>
-        <div className="">
+      {mode === 'small' ? (
+        <div
+          className="grid gap-2"
+          style={{ gridTemplateColumns: showFilters ? '1fr 1fr auto' : '1fr auto' }}
+        >
           <GenericAPIContainer<AllExistingDeptCodesAndYears | null>
             fetchFunction={loadDeptAndYears}
             render={(allDeptCodesAndYears) => (
@@ -116,34 +125,90 @@ export default function SectionFilter({
               />
             )}
           />
-        </div>
-
-        <div className={mode === 'small' ? "grid grid-cols-1 gap-2" : "flex gap-5"}>
-          <select
-            value={type ?? ""}
-            onChange={(e) => {
-              const val = e.target.value;
-              setType(val === "" ? null : val as SectionType);
-            }}
-            className={smallOrBig}
+          {showFilters && (
+          <div className="flex flex-col space-y-2">
+      
+              <>
+                <select
+                  value={type ?? ""}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setType(val === "" ? null : val as SectionType);
+                  }}
+                  className="mt-1 block w-full rounded border border-gray-400 px-2 py-1"
+                >
+                  <option value="">All Section Types</option>
+                  {sectionTypeOptions.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+                <DaySelector mode={mode} onChange={setDay} />
+                <TimeSelector mode={mode} onChange={setTimes} />
+              </>
+            
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={() => setShowFilters((prev) => !prev)}
+            className={`${toggleButtonStyleSmall} h-full`}
           >
-            <option value="">All Types</option>
-            {sectionTypeOptions.map((t) => (
-              <option key={t} value={t}>{t}</option>
-            ))}
-          </select>
-          <DaySelector mode={mode} onChange={setDay} />
-          <TimeSelector mode={mode} onChange={setTimes} />
+            {showFilters ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+          </button>
         </div>
-      </div>
-
-      {/* <button
-        type="button"
-        onClick={handleFilter}
-        className="bg-[#040941] text-white px-4 py-2 rounded hover:bg-blue-900 transition-colors text-white w-full"
-      >
-        Filter
-      </button> */}
+      ) : (
+        <div
+          className="grid gap-2"
+          style={{ gridTemplateRows: showFilters ? 'auto auto auto' : 'auto auto' }}
+        >
+          <GenericAPIContainer<AllExistingDeptCodesAndYears | null>
+            fetchFunction={loadDeptAndYears}
+            render={(allDeptCodesAndYears) => (
+              <DropdownContainer
+                allExistingDeptCodesAndYears={allDeptCodesAndYears}
+                mode={mode}
+                onChange={(partial) => setdCCNSYS(prev => ({ ...prev, ...partial }))}
+              />
+            )}
+          />
+          <div>
+            {!showFilters ? (
+              <button
+                type="button"
+                onClick={() => setShowFilters(true)}
+                className={`${toggleButtonStyleBig} w-full`}
+              >
+                <ChevronDown size={20} />
+              </button>
+            ) : (
+              <div className="flex gap-2">
+                <select
+                  value={type ?? ''}
+                  onChange={(e) => setType(e.target.value === '' ? null : (e.target.value as SectionType))}
+                  className="mt-1 block w-full rounded border border-gray-400 px-3 py-2"
+                >
+                  <option value="">All Section Types</option>
+                  {sectionTypeOptions.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+                <DaySelector mode={mode} onChange={setDay} />
+                <TimeSelector mode={mode} onChange={setTimes} />
+                
+              </div>
+            )}
+          </div>
+          {showFilters && <button
+            type="button"
+            onClick={() => setShowFilters(false)}
+            className={toggleButtonStyleBig}
+          >
+            <ChevronUp size={20} />
+          </button>}
+        </div>
+      )}
     </div>
   );
 }

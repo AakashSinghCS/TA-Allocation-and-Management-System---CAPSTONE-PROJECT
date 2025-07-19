@@ -40,7 +40,8 @@ export default function UserBrowsingViewer({
     const [page, setPage] = useState(0);
 
     // const suggQ = useUserSuggestions(criteria);
-    const { data, isFetching, isError, error, refetch } = useUserSearchPage(criteria, page, 10);
+    const pageNum = mode === "select" ? 5 : 10;
+    const { data, isFetching, isError, error, refetch } = useUserSearchPage(criteria, page, pageNum);
     useEffect(() => {
         setPage(0);
     }, [criteria]);

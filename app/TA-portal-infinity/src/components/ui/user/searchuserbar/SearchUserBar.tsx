@@ -8,8 +8,9 @@
 // import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
 import { useAuth } from "../../../../context/AuthContext";
 import { UserRole } from "../../../../interfaces/enum/UserRole";
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { StatusIndicator } from "../../statusindicator/StatusIndicator";
+import { useState } from "react";
 export interface SearchCriteria {
   role: "Student" | "Instructor" | "Coordinator" | "";
   firstname?: string;
@@ -27,71 +28,13 @@ interface SearchUserBarProps {
   mode?: "view" | "select";
 }
 
-// export function useUserSearch<T extends User>() {
-//   const [searchedUsers, setSearchedUsers] = useState<(T & { role: SearchCriteria['role'] })[] | null>(null);
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState<string | null>(null);
-//   const [lastCriteria, setLastCriteria] = useState<SearchCriteria>({ role: "Student", firstname: "", lastname: "", universityNumber: "", userId: "" });
-
-//   const search = useCallback(async (criteria: SearchCriteria) => {
-//     setLastCriteria(criteria);
-//     setLoading(true);
-//     setError(null);
-//     try {
-//       const req = {
-//         role: criteria.role,
-//         ...(criteria.firstname ? { firstname: criteria.firstname } : {}),
-//         ...(criteria.lastname ? { lastname: criteria.lastname } : {}),
-//         ...(criteria.universityNumber ? { universityNumber: parseInt(criteria.universityNumber, 10) || 0 } : {}),
-//         ...(criteria.userId ? { userId: criteria.userId.trim() } : {})
-//       };
-//       const data =
-//         criteria.role === "Student"
-//           ? await fetchAllSearchedUsers<Student>(req)
-//           : criteria.role === "Instructor"
-//             ? await fetchAllSearchedUsers<Instructor>(req)
-//             : await fetchAllSearchedUsers<User>(req);
-//       const tagged = (data ?? []).map(u => ({ ...u, role: criteria.role })) as (T & { role: SearchCriteria['role'] })[];;
-//       setSearchedUsers(tagged);
-//     } catch {
-//       setError("Failed to fetch users");
-//       setSearchedUsers([]);
-//     } finally {
-//       setLoading(false);
-//     }
-//   }, []);
-
-//   const toggleActivation = useCallback(async (id?: number, currentlyActive?: boolean) => {
-//     if (!id || currentlyActive === undefined) return;
-
-//     const action = currentlyActive ? "deactivate" : "activate";
-//     const confirmed = window.confirm(`Are you sure you want to ${action} this user?`);
-//     if (!confirmed) return;
-
-//     const success = currentlyActive
-//       ? await fetchDeactivate(id)
-//       : await fetchActivate(id);
-
-//     if (success) {
-//       setSearchedUsers(prev =>
-//         prev?.map(u =>
-//           u.id === id ? { ...u, active: !currentlyActive } : u
-//         ) ?? []
-//       );
-//     } else {
-//       alert(`Failed to ${action} user`);
-//     }
-//   }, []);
-
-//   return { searchedUsers, loading, error, search, toggleActivation, lastCriteria };
-// }
-
 export default function SearchUserBar({ criteria, setCriteria, loading, allowedRoles, mode = 'view', }: SearchUserBarProps) {
   const roles = allowedRoles ?? ["Student", "Instructor", "Coordinator"];
   // const [criteria, setCriteria] = useState<SearchCriteria>({ role: allowedRoles?allowedRoles[0]:
   //   "", firstname: "", lastname: "", universityNumber: "", userId: "" });
   const loggedInRoles = useAuth().userRoles;
   const isAdminOrCoordinator = loggedInRoles.includes(UserRole.ADMIN || UserRole.COORDINATOR);
+  const [showHiddenFilters, setShowHiddenFilters] = useState(false);
   // const handleSearch = async () => {
   //   await onSearch(criteria);
   // };
@@ -121,6 +64,7 @@ export default function SearchUserBar({ criteria, setCriteria, loading, allowedR
   return (
     <div className={`flex flex-wrap w-full gap-2 ${mode === 'select' ? 'flex-col' : ''}`}>
       <div className="flex flex-wrap gap-2 min-w-0">
+        <StatusIndicator loading={loading}/>
         <select
           value={criteria.role}
           onChange={e => onChangeField('role', e.target.value as any)}
@@ -148,7 +92,17 @@ export default function SearchUserBar({ criteria, setCriteria, loading, allowedR
           disabled={disableNameInputs}
           className="flex-1 border px-2 py-1 border-gray-400 rounded-md disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100"
         />
+        {mode === 'select' && (
+          <button
+            type="button"
+            onClick={() => setShowHiddenFilters((prev) => !prev)}
+            className="flex items-center justify-center border border-gray-300 rounded px-2 py-1 hover:bg-gray-100 transition"
+          >
+            {showHiddenFilters ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
+        )}
       </div>
+      {(mode === 'view' || (mode === 'select' && showHiddenFilters)) && (
       <div className="flex flex-wrap gap-2 min-w-0">
         <input
           type="text"
@@ -179,8 +133,8 @@ export default function SearchUserBar({ criteria, setCriteria, loading, allowedR
         >
           {loading ? "Searching…" : "Search"}
         </button> */}
-        <StatusIndicator loading={loading}/>
       </div>
+      )}
     </div>
   );
 }
