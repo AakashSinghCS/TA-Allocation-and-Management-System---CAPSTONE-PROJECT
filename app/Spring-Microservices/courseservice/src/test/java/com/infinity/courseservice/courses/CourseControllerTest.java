@@ -366,7 +366,6 @@ public class CourseControllerTest {
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.deptCode").value("COSC"))
                                 .andExpect(jsonPath("$.courseNum").value("499"));
-<<<<<<< HEAD
         }
         
         @Test
@@ -379,8 +378,6 @@ public class CourseControllerTest {
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$[0].deptCode").value("COSC"))
                         .andExpect(jsonPath("$[0].courseNum").value("499"));
-=======
->>>>>>> develop
         }
 
         @Test
