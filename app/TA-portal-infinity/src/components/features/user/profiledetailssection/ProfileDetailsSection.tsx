@@ -38,8 +38,9 @@ export default function ProfileDetailsSection<T extends User>({
     const editFields = [
         "firstName" as keyof T,
         "lastName" as keyof T,
-        ...displayFields.filter(k => k !== "roles"),
-        ...displayFields.filter(k => k !== "id"),
+        ...displayFields.filter(
+            k => k !== "roles" && k !== "id"
+        ),
     ];
 
     const isEditable = loggedInUserId === record.id;
@@ -126,7 +127,8 @@ function filterFieldsByRole<T>(baseFields: (keyof T)[], recordRoles: UserRole[])
         displayFields = displayFields.filter(
             (k) => k !== ("employeeNum" as keyof T) && k !== ("dept" as keyof T)
         );
-    } else if (!recordRoles.includes("STUDENT")) {
+    }
+    if (!recordRoles.includes("STUDENT")) {
         displayFields = displayFields.filter(
             (k) =>
                 k !== ("studentNum" as keyof T) &&
