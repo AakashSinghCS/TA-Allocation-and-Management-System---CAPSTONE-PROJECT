@@ -4,6 +4,7 @@
 Clockify report
 <img width="2307" height="1046" alt="Screenshot 2025-07-18 at 08 47 46" src="https://github.com/user-attachments/assets/c042f52f-9539-432a-b8cd-207e2bb99423" />
 
+![alt text](./clockify_images/clockify_weekly_log_2025-07-15_07-17_seiya.png)
 
 
 ### Current Tasks (Provide sufficient detail)
@@ -67,6 +68,7 @@ What was not done:
 Clockify report
 <img width="2299" height="922" alt="july11-14" src="https://github.com/user-attachments/assets/9e4e8f08-9e29-4ed5-ad84-6f4738df47b6" />
 
+![alt text](./clockify_images/clockify_weekly_log_2025-07-11_07-14_seiya.png)
 
 
 ### Current Tasks (Provide sufficient detail)
@@ -116,6 +118,7 @@ What was not done:
 Clockify report
 <img width="2299" height="922" alt="july08-10" src="https://github.com/user-attachments/assets/3dbf7804-6141-4c2e-8bec-a7488a52a7c6" />
 
+![alt text](./clockify_images/clockify_weekly_log_2025-07-08_07-10_seiya.png)
 
 
 ### Current Tasks (Provide sufficient detail)
