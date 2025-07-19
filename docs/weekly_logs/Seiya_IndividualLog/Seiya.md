@@ -48,10 +48,7 @@ What was not done:
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
 * Provide a downloadable sample CSV template so users have a clear reference for "import from csv"
-* Update the success and error messages shown after CSV import
-* Improve CSV import feedback: replace the current raw output (e.g., “JSON import completed. Success: 1, Errors: 4” followed by long SQL duplicate‑key traces) with concise, user‑friendly success and error summaries
-* Replace the current raw output after CSV import with concise, user‑friendly success and error summaries
-
+* Improve CSV import feedback: replace the current raw output (e.g., “JSON import completed. Success: 1, Errors: 4” followed by long SQL duplicate‑key traces) with concise, user‑friendly success and error summaries  (updating the messages and removing long SQL traces)
 * Move the Import workflow to its own page (do this cycle if it can be completed quickly)
 * Improve the UX for Create Section / Create Course: either split them into separate pages or clearly separate the two areas on the same page
 
