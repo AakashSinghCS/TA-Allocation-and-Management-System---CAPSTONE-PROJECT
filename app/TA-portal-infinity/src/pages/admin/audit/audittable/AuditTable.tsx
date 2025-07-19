@@ -28,10 +28,12 @@ export default function AuditTable({ events, loading, onSelect }: Props) {
           >
             <td className="px-3 py-2">{new Date(ev.timestamp).toLocaleString()}</td>
             <td className="px-3 py-2">{ev.service}</td>
-            <td className="px-3 py-2">{ev.actorId}</td>
+            <td className="px-3 py-2">
+              {ev.actorName} <span className="text-gray-400 text-xs">({ev.actorId})</span>
+            </td>
             <td className="px-3 py-2">{ev.action}</td>
             <td className="px-3 py-2">
-              {ev.entityType}, ID: {ev.entityId}
+              {ev.entityName} <span className="text-gray-400 text-xs">({ev.entityType} #{ev.entityId})</span>
             </td>
           </tr>
         ))}

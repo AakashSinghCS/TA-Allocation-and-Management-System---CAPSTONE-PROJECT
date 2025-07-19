@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import com.infinity.userservice.dtos.AuditEventDto;
 import com.infinity.userservice.enums.ActionOptions;
 import com.infinity.userservice.models.AuditEvent;
 import com.infinity.userservice.services.AuditService;
@@ -19,7 +20,7 @@ public class AuditController {
 
     @PreAuthorize("hasRole('ADMIN')")
      @GetMapping
-    public Page<AuditEvent> search(
+    public Page<AuditEventDto> search(
         Pageable pageable,
         @RequestParam(required = false) String service,
         @RequestParam(required = false) String entityType,
@@ -34,7 +35,7 @@ public class AuditController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public AuditEvent getById(@PathVariable Long id) {
+    public AuditEventDto getById(@PathVariable Long id) {
         return auditService.getById(id);
     }
 }
