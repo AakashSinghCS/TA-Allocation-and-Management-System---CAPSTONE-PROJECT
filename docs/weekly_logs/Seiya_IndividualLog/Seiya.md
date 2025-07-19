@@ -60,9 +60,56 @@ What was not done:
 2. Polish UI and UX: style tables and add empty‑state and success banners across import and export pages.  
 
 
+------------------------------------------------------------------------------------------------------
+## Monday (July 11-14)
+
+### Timesheet
+Clockify report
 
 
------------------
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **CSV Import Backend** | Finish the parser, add field/type/time validation, and return structured error messages. |
+| **2** | **CSV Import Frontend** | Build the upload form and preview table, show basic progress, and wire calls to the backend. |
+| **3** | **CSV Import Integration** | Complete frontend-backend integration. |
+| **4** | **CSV Import Testing** | Write unit + integration test scenarios for CSV import feature. |
+
+
+
+
+### Progress Update (since July 10, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: CSV Import Backend | Complete |
+| #2: CSV Import Frontend | Complete |
+| #3: CSV Import Integration | Complete |
+| #4: CSV Import Testing | In Progress |
+
+
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to deliver a fully‑functional CSV import end‑to‑end and to begin comprehensive testing.
+
+What was done:
+* Backend parser and validation completed; returns clear error objects.
+* Frontend upload flow built with file preview and basic progress indicator.
+* Frontend‑backend integration verified with real CSV files; large‑file handling works.
+
+
+What was not done:
+* The test suite has not been created yet. writing tests will begin next cycle.
+
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Finish CSV Testing: add unit and edge‑case tests
+* Migrate both CSV import and export to Papaparse on the frontend and align the shared JSON schema, as suggested by Alex.
+
+------------------------------------------------------------------------------------------------------
+
 
 ## Monday (July 4-7)
 
