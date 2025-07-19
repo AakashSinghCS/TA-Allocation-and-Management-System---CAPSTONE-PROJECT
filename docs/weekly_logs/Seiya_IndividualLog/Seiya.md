@@ -114,6 +114,7 @@ What was not done:
 
 ### Timesheet
 Clockify report
+<img width="2299" height="922" alt="july08-10" src="https://github.com/user-attachments/assets/3dbf7804-6141-4c2e-8bec-a7488a52a7c6" />
 
 
 
