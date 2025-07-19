@@ -1,4 +1,4 @@
-## Monday (July 15-17)
+## Thursday (July 15-17)
 
 ### Timesheet
 Clockify report
@@ -62,9 +62,7 @@ What was not done:
 
 
 
-
 -----------------
-
 
 ## Monday (July 4-7)
 
