@@ -2,6 +2,8 @@ package com.infinity.userservice.controllers;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -70,6 +72,27 @@ public class UserController {
         List<UserDto> results = userService.search(role, firstname, lastname, universityNumber,userId);
         return ResponseEntity.ok(results);
     }
+
+    @PreAuthorize("hasRole('COORDINATOR') or hasRole('ADMIN')")
+  @GetMapping("/search/page")
+  public Page<UserDto> searchUsersByPage(
+    Pageable pageable,
+    @RequestParam(required = false) String role,
+    @RequestParam(required = false) String firstname,
+    @RequestParam(required = false) String lastname,
+    @RequestParam(required = false) String universityNumber,
+    @RequestParam(required = false) String userId
+  ) {
+    // Long uId = null;
+    // if (userId != null && !userId.isBlank()) {
+    //     try {
+    //         uId = Long.parseLong(userId.trim());
+    //     } catch (NumberFormatException e) {
+    //         uId = null;
+    //     }
+    // }
+    return userService.searchUsersByPage(pageable, role, firstname, lastname, universityNumber, userId);
+  }
     
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/changeRole/{id}")

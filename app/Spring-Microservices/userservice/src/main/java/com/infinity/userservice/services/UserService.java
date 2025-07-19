@@ -7,6 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -197,6 +200,57 @@ public class UserService {
                     .map(userMapper::toDto)
                     .collect(Collectors.toList());
     }
+
+    public Page<UserDto> searchUsersByPage(
+      Pageable pageable,
+      String role,
+      String firstname,
+      String lastname,
+      String universityNumber,
+      String uId
+  ) {
+    //  System.out.println("🔍 searchUsersByPage called with:"
+    //   + " uniNum=" + universityNumber
+    //   + " userId=" + userId
+    //   + " role=" + role
+    //   + " fn=" + firstname
+    //   + " ln=" + lastname
+    // );
+    Long userId = null;
+    if (uId != null && !uId.isBlank()) {
+        try {
+            userId = Long.parseLong(uId.trim());
+        } catch (NumberFormatException e) {
+            userId = null;
+        }
+    }
+    if (userId != null && userId > 0) {
+    return userRepository
+      .findAllById(userId, pageable)
+      .map(userMapper::toDto);
+  }
+
+  // partial‐match number
+  if (universityNumber != null && !universityNumber.isBlank()) {
+    return userRepository
+      .findByNumContaining(universityNumber.trim(), pageable)
+      .map(userMapper::toDto);
+  }
+
+    if (role == null || role.isBlank()) {
+      return new PageImpl<>(Collections.emptyList(), pageable, 0);
+    }
+    UserRole targetRole = UserRole.valueOf(role.trim().toUpperCase());
+    String fn = firstname  == null ? "" : firstname.trim();
+    String ln = lastname   == null ? "" : lastname.trim();
+
+    Page<User> pageOfUsers = userRepository
+      .findByRoles_NameAndFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
+        targetRole, fn, ln, pageable
+      );
+
+    return pageOfUsers.map(userMapper::toDto);
+  }
         
 
     @Transactional
