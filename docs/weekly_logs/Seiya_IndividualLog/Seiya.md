@@ -1,3 +1,74 @@
+## Monday (July 15-17)
+
+### Timesheet
+Clockify report
+<img width="2307" height="1046" alt="Screenshot 2025-07-18 at 08 47 46" src="https://github.com/user-attachments/assets/c042f52f-9539-432a-b8cd-207e2bb99423" />
+
+
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **CSV Export Refactor** | Align backend export logic with PapaParse JSON and verify round‑trip with sample CSV files. |
+| **2** | **CSV Import Refactor** | Unify import pipeline to consume PapaParse JSON and add robust field, type. |
+| **3** | **Move CSV Import to Dedicated Page** | Replace modal with a standalone `/import` page and set up routing, layout, and file uploads progress feedback (state management indicator). |
+| **4** | **CSV Preview UI Enhancement** | Render data rows (`<tbody>`), improve styling, and add label and id for the file input to improve accessibility. |
+| **5** | **Test Suite Strengthening** | Add `SectionServiceTest.java` (normal and edge cases) and update `SectionCsvImport.test.tsx`; target at least 85 percent coverage. |
+| **6** | **Error Handling Improvements** | Provide clear, actionable messages for duplicate data, unique‑constraint violations, and format errors. |
+
+
+
+### Progress Update (since July 14, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: CSV Export Refactor | Complete |
+| #2: CSV Import Refactor | Complete |
+| #3: Move CSV Import to Dedicated Page | In Progress |
+| #4: CSV Preview UI Enhancement | In Progress |
+| #5: Test Suite Strengthening | Complete |
+| #6: Error Handling Improvements | Complete |
+
+
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to migrate both CSV import and export to Papaparse on the frontend (exchanging JSON with the backend), increase automated‑test coverage, and improve error messaging.
+
+What was done:
+* Refactored CSV Export / Import so that both now use Papaparse on the frontend and exchange the same JSON schema with the Spring Boot backend.
+* Added SectionServiceTest.java and updated SectionCsvImport.test.tsx, pushing overall test coverage above 85 %.
+* Fixed the CSV preview table so it renders all data rows correctly.
+* Implemented clear error messages for duplicate records, unique‑key violations, and invalid formats.
+
+
+What was not done:
+* The full migration of the import workflow to a dedicated page.
+* Some styling polishment tasks were deferred.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Provide a downloadable sample CSV template so users have a clear reference for "import from csv"
+* Update the success and error messages shown after CSV import
+* Improve CSV import feedback: replace the current raw output (e.g., “JSON import completed. Success: 1, Errors: 4” followed by long SQL duplicate‑key traces) with concise, user‑friendly success and error summaries
+* Replace the current raw output after CSV import with concise, user‑friendly success and error summaries
+
+* Move the Import workflow to its own page (do this cycle if it can be completed quickly)
+* Improve the UX for Create Section / Create Course: either split them into separate pages or clearly separate the two areas on the same page
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Finish UI polish – Style table, add empty‑state and success banners.
+* Make Import feature in another page.
+### Next Cycle Goals
+1. Finish Import Page: complete component migration, add progress indicators, and remove legacy modal code.  
+2. Polish UI and UX: style tables and add empty‑state and success banners across import and export pages.  
+
+
+
+
+
+-----------------
+
+
 ## Monday (July 4-7)
 
 ### Timesheet
