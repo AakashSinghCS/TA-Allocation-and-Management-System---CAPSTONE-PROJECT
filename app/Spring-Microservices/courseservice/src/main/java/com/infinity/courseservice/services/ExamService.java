@@ -8,15 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.infinity.courseservice.dtos.ExamDtos.ExamAssignmentDto;
 import com.infinity.courseservice.dtos.ExamDtos.ExamAvailabilityDto;
 import com.infinity.courseservice.dtos.ExamDtos.ExamDto;
-import com.infinity.courseservice.enums.ExamTask;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
-import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Exam;
 import com.infinity.courseservice.models.ExamAssignment;
 import com.infinity.courseservice.models.ExamAvailability;
 import com.infinity.courseservice.models.Section;
-import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.ExamAssignmentRepository;
 import com.infinity.courseservice.repositories.ExamAvailabilityRepository;
 import com.infinity.courseservice.repositories.ExamRepository;
@@ -32,7 +29,6 @@ public class ExamService {
     private final ExamRepository examRepository;
     private final ExamAvailabilityRepository availabilityRepository;
     private final ExamAssignmentRepository assignmentRepository;
-    private final CourseRepository courseRepository;
     private final SectionRepository sectionRepository;
     private final ExamMapper examMapper;
 

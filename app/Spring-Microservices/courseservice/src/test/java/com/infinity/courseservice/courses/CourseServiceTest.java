@@ -426,10 +426,8 @@ public class CourseServiceTest {
 
         @Test
         void shouldReturnCourseDtoWhenFound() {
-                Course course = new Course();
+                Course course = new Course("COSC", "CAPSTONE", "499");
                 course.setId(1L);
-                course.setDeptCode("COMP");
-                course.setCourseNum("101");
 
                 CourseDto dto = new CourseDto(1L, "COSC", "CAPSTONE", "499");
 
@@ -442,6 +440,20 @@ public class CourseServiceTest {
 
                 assertEquals("COSC", result.deptCode());
                 assertEquals("499", result.courseNum());
+        }
+
+        @Test
+        void testGetCoursesWithoutNeeds() {
+                Course course = new Course("COSC", "CAPSTONE", "499");
+                course.setId(1L);
+                CourseDto dto = new CourseDto(1L, "COSC", "CAPSTONE", "499");
+                when(courseRepository.findCoursesWithoutNeedsByYearAndSemester(any(), any()))
+                                .thenReturn(List.of(course));
+                when(courseMapper.courseToDto(course)).thenReturn(dto);
+
+                List<CourseDto> result = courseService.getCoursesWithoutNeeds(2025, "W1");
+                assertEquals("COSC", result.get(0).deptCode());
+                assertEquals("499", result.get(0).courseNum());
         }
 
 }

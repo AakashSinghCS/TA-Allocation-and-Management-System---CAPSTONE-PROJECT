@@ -160,18 +160,15 @@ public class CourseController {
     @GetMapping("/sections/getByCourseAndName")
     public ResponseEntity<SectionDto> getSectionByCourseAndName(
         @RequestParam Long courseId,
-        @RequestParam String section) {
-            SectionDto dto = sectionService.getByCourseIdAndSectionName(courseId, section);
-            return ResponseEntity.ok(dto);
-        }
+            @RequestParam String section) {
+        SectionDto dto = sectionService.getByCourseIdAndSectionName(courseId, section);
+        return ResponseEntity.ok(dto);
+    }
 
-
-    // @GetMapping("/getEnrolledCourses/{studentId}")
-    // public ResponseEntity<List<CourseDto>> getMethodName(@PathVariable Integer
-    // studentId) {
-    // List<CourseDto> courseDtos = courseService.getEnrolledCourses(studentId);
-    // return ResponseEntity.ok(courseDtos);
-    // }
-
-
+    @GetMapping("/withoutNeeds/{year}/{semester}")
+    public ResponseEntity<List<CourseDto>> getCoursesWithoutNeeds(@PathVariable Integer year,
+            @PathVariable String semester) {
+        return ResponseEntity.ok(courseService.getCoursesWithoutNeeds(year, semester));
+    }
+    
 }

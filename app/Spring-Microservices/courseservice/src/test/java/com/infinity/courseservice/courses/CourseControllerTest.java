@@ -299,14 +299,26 @@ public class CourseControllerTest {
 
         @Test
         void shouldReturnCourseByDeptCodeAndCourseNum() throws Exception {
-                CourseDto courseDto = new CourseDto(1L, "COSC", "CAPSTONE","499");
+                CourseDto courseDto = new CourseDto(1L, "COSC", "CAPSTONE", "499");
 
                 when(courseService.getByDeptCodeAndCourseNum("COSC", "499"))
-                        .thenReturn(courseDto);
+                                .thenReturn(courseDto);
 
                 mockMvc.perform(get("/courses/getByDeptCodeAndCourseNum/COSC/499"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.deptCode").value("COSC"))
+                                .andExpect(jsonPath("$.courseNum").value("499"));
+        }
+        
+        @Test
+        void testGetCoursesWithoutNeeds() throws Exception {
+                CourseDto courseDto = new CourseDto(1L, "COSC", "CAPSTONE", "499");
+
+                when(courseService.getCoursesWithoutNeeds(any(), any())).thenReturn(List.of(courseDto));
+                
+                mockMvc.perform(get("/courses/withoutNeeds/2025/W1"))
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.deptCode").value("COSC"))
-                        .andExpect(jsonPath("$.courseNum").value("499"));
+                        .andExpect(jsonPath("$[0].deptCode").value("COSC"))
+                        .andExpect(jsonPath("$[0].courseNum").value("499"));
         }
 }

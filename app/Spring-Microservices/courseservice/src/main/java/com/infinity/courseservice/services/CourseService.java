@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -211,18 +212,16 @@ public class CourseService {
 
     public CourseDto getByDeptCodeAndCourseNum(String deptCode, String courseNum) {
         Course course = courseRepository.findByDeptCodeAndCourseNum(deptCode, courseNum)
-            .orElseThrow(() -> new EntityNotFoundException("Course not found with: " + deptCode + " " + courseNum));
+                .orElseThrow(() -> new EntityNotFoundException("Course not found with: " + deptCode + " " + courseNum));
         return courseMapper.courseToDto(course);
     }
 
-    // public List<CourseDto> getEnrolledCourses(Integer studentId) {
-    // UserDto user = userInterface.getStudentById(studentId).getBody();
-    // if(user == null){
-    // throw new NotFoundException("User with student number " + studentId + " not
-    // found");
-    // }
-    // List<Long> courseIds = enrollmentService.getCourseEnrollments(user.id());
-    // return findCoursesByIds(courseIds);
-    // }
+    public List<CourseDto> getCoursesWithoutNeeds(Integer year, String semester) {
+        List<Course> courses = courseRepository.findCoursesWithoutNeedsByYearAndSemester(year, semester);
+        return courses.stream()
+                  .map(courseMapper::courseToDto)
+                  .collect(Collectors.toList());
+    }
+
 
 }
