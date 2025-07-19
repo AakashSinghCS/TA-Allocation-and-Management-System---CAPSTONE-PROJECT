@@ -2471,7 +2471,7 @@ I decided to do the following in this PR:
 
 
 
-## Thursday 7/16 (7/15~7/18)
+## Thursday 7/17 (7/15~7/18)
 
 ### Timesheet
 Clockify report
@@ -2519,6 +2519,53 @@ Course Filter PR will contain:
 2. show only the top 5 results when filtering dynamically. The user can click "Show All" below the 5 results to search for all of them.
 3. make Application Filter call an aggregate backend function.
 click on arrow to show hidden filters
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- Course Filter PR.
+In some other cycle:
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- more security fixes in backend concerning reading of headers (x-user-id)
+
+
+## Friday 7/18 (7/15~7/18)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July18.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#421](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/421)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I used useQuery to make UserBrowsing Search bar have caching and pagination. Dynamic searching is enabled. Top 5 searches show up first. The user must click "show all" to show rest.
+Tommorrow: 
+- do courseFilters, show pagination in both allocation page and others.
+After that:
+- do application Filters, show pagination there too.
+
+Project discussion was held today and I assigned Allen some tasks I had planned to do myself.
+
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
 - Course Filter PR.
