@@ -109,7 +109,51 @@ What was not done:
 * Migrate both CSV import and export to Papaparse on the frontend and align the shared JSON schema, as suggested by Alex.
 
 ------------------------------------------------------------------------------------------------------
+## Monday (July 8-10)
 
+### Timesheet
+Clockify report
+
+
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **CSV Export** | Create backend export endpoint, link it to the UI download button, and verify round‑trip with sample CSVs. |
+| **2** | **CSV Import** | Build the backend parser, set validation rules (required fields, data types, timestamps), and sketch the upload flow on the frontend. |
+
+
+
+
+### Progress Update (since July 7, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: CSV Export Implementation | Complete |
+| #2:  CSV Import Implementation | In Progress |
+
+
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to deliver a working CSV export and to start implementing CSV import.
+
+
+What was done:
+* Completed CSV Export: backend endpoint, UI download flow, and round‑trip tests all pass.
+* Drafted CSV Import design: backend parsing started and validation requirements defined.
+
+What was not done:
+* Frontend upload form and full validation for CSV Import are still pending.
+
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Finish CSV Import: complete backend logic, build the upload form, and add validation + error handling.
+* Integrate import/export workflows and expand the test suite to cover import scenarios.
+
+
+
+------------------------------------------------------------------------------------------------------
 
 ## Monday (July 4-7)
 
