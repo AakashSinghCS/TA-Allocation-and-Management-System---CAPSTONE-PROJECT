@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
@@ -108,6 +110,14 @@ public class CourseService {
     public List<CourseSectionScheduleDto> filterCourses(CourseFilterRequest filter) {
         return courseRepository.courseFilter(filter.deptCode(), filter.courseNum(), filter.name(), filter.section(),
                 filter.year(), filter.semester(), filter.type(), filter.day(), filter.startTime(), filter.endTime());
+    }
+
+    public Page<CourseSectionScheduleDto> filterCoursesByPage(CourseFilterRequest filter, Pageable pageable) {
+        return courseRepository.courseFilter(
+            filter.deptCode(), filter.courseNum(), filter.name(), filter.section(),
+            filter.year(), filter.semester(), filter.type(), filter.day(), filter.startTime(), filter.endTime(),
+            pageable                                 
+        );
     }
 
     public CourseNeedAndAllocations getCourseNeedAndAllocations(Long courseId, Integer year, String semester) {

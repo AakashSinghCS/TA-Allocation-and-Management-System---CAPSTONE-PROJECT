@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchDeleteCourse } from '../../../api/course/fetchDeleteCourse';
 import { fetchFilteredSections, type FilterSectionsProps } from '../../../api/course/sectionfilter/fetchFilteredSections';
@@ -11,43 +11,56 @@ import { confirmDeletion } from '../../../utility/confirmation/confirmDeletion';
 import Papa from 'papaparse';
 import { fetchImportAllocations } from '../../../api/allocation/fetchImportAllocations';
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
+import { useDebounce } from '../../../utility/pagination/useDebounce';
+import { useSectionSearchPage, useSectionSuggestions } from '../../../api/course/sectionfilter/useSectionFilter';
+import Pagination from '../../admin/audit/pagination/Pagination';
 
 
 
 export default function SectionListPage() {
   const navigate = useNavigate();
-  const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
-  const [lastFilters, setLastFilters] = useState<FilterSectionsProps | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  const handleFilterChange = async (filters: FilterSectionsProps) => {
-    setLoading(true);
-    setLastFilters(filters);
-    try {
-      const raw = await fetchFilteredSections(filters);
-      const sections = convertFilterSectionsToSections(raw || []);
-      setFilteredSections(sections);
-    } catch (e) {
-      navigate('/error', { replace: true, state: { message: (e as Error).message } });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [filters, setFilters] = useState<FilterSectionsProps>({});
+  const [page, setPage] = useState(0);
+  const [showAll, setShowAll] = useState(false);
+
+  const debounced = useDebounce(filters, 300);
+  const suggQ = useSectionSuggestions(debounced);
+  const fullQ = useSectionSearchPage(debounced, page, 10);
+
+  const results = showAll ? fullQ.data?.content : suggQ.data?.content;
+  const loading = showAll ? fullQ.isFetching : suggQ.isFetching;
+  const error = (showAll ? fullQ.error : suggQ.error)?.message;
+
+  // const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
+  // const [lastFilters, setLastFilters] = useState<FilterSectionsProps | null>(null);
+  // const [loading, setLoading] = useState(false);
+
+  // const handleFilterChange = async (filters: FilterSectionsProps) => {
+  //   setLoading(true);
+  //   setLastFilters(filters);
+  //   try {
+  //     const raw = await fetchFilteredSections(filters);
+  //     const sections = convertFilterSectionsToSections(raw || []);
+  //     setFilteredSections(sections);
+  //   } catch (e) {
+  //     navigate('/error', { replace: true, state: { message: (e as Error).message } });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // this will be passed down to <SectionList> and called after delete
   const handleDeleted = async (id: number, isCourse: boolean) => {
-    if (isCourse) {
-      const confirm = confirmDeletion("course","This will delete all associated sections.");
-      if (!confirm) return;
-      await fetchDeleteCourse(id);
-    } else {
-      const confirm = confirmDeletion("section","This will delete associated schedule and exam data");
-      if (!confirm) return;
-      await fetchDeleteSection(id);
-    }
-    if (lastFilters) {
-      void handleFilterChange(lastFilters);
-    }
+    const confirmText = isCourse
+      ? "Delete this course and all its sections?"
+      : "Delete this section (and its schedules and exams)?";
+    if (!confirmDeletion(isCourse ? "course" : "section", confirmText))
+      return;
+
+    await (isCourse ? fetchDeleteCourse(id) : fetchDeleteSection(id));
+    suggQ.refetch();
+    fullQ.refetch();
   };
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -60,11 +73,10 @@ export default function SectionListPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const [autoCreateMissing, setAutoCreateMissing] = useState(false);
-  
+
   const handleCsvUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-
+    if (!file) return setCsvError("No file selected.");
     if (!file.name.endsWith('.csv')) {
       setCsvError('Only CSV files are allowed.');
       return;
@@ -89,33 +101,12 @@ export default function SectionListPage() {
           }
 
           const response = await fetchImportAllocations(data, autoCreateMissing, token ?? undefined);
-          setImportResult(response);
+          // setImportResult(response);
           setSuccessMessage('Allocations imported successfully!');
           setTimeout(() => setSuccessMessage(null), 3000);
           setShowImportModal(false);
-        } catch (err:any) {
-          let friendlyMessage = 'Failed to import allocations: Unknown error occurred.';
-
-          const errorText = err.message || '';
-
-          if (errorText.includes('User with student number')) {
-            const match = errorText.match(/User with student number (\d+) not found/);
-            const studentNum = match ? match[1] : 'unknown';
-            friendlyMessage = `❌ Failed to import allocations: Student with student number ${studentNum} not found. Please verify student details or add a new student.`;
-          } else if (errorText.includes('Course not found:')) {
-            const match = errorText.match(/Course not found:([A-Z]+ \d+)/);
-            const courseInfo = match ? match[1] : 'unknown';
-            friendlyMessage = `❌ Failed to import allocations: Course ${courseInfo} not found. Please create a new course.`;
-          } else if (errorText.includes('Section') && errorText.includes('not found for Course')) {
-            const match = errorText.match(/Section (\S+) (\d{4}) (\S+) not found for Course ([A-Z]+) (\d+)/);
-            if (match) {
-              const [, sectionName, year, semester, deptCode, courseNum] = match;
-              friendlyMessage = `❌ Failed to import allocations: Section ${sectionName} ${semester} ${year} not found for course ${deptCode} ${courseNum}. Please add a new section to the course.`;
-            } else {
-              friendlyMessage = `❌ Failed to import allocations: Section not found. Please add a new section to the course.`;
-            }
-          }
-
+        } catch (err: any) {
+          let friendlyMessage = allocationsChangeErrorMsg(err);
           setErrorMsg(friendlyMessage);
         }
       },
@@ -124,48 +115,76 @@ export default function SectionListPage() {
       },
     });
   };
-
+const handleFilterChange = useCallback((f: FilterSectionsProps) => {
+    setFilters(f);
+    setPage(0);
+    setShowAll(false);
+  }, []);
   return (
     <div className="container mx-auto p-4 z-10">
       <div className="flex justify-between items-stretch mb-4">
-          <h1 className="text-xl font-semibold">Search for a Section or Course</h1>
-          <div className="flex gap-2">
-            <Link
-              to="/user/coordinator/sections/add"
-              className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] hover:text-[#0089b2] transition-colors"
-            >
-              Add New Section or Course
-            </Link>
+        <h1 className="text-xl font-semibold">Search for a Section or Course</h1>
+        <div className="flex gap-2">
+          <Link
+            to="/user/coordinator/sections/add"
+            className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] hover:text-[#0089b2] transition-colors"
+          >
+            Add New Section or Course
+          </Link>
 
-            <Link
-              to="/user/coordinator/sections/export"
-              className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#363a7a] transition-colors"
-            >
-              Export to CSV
-            </Link>
+          <Link
+            to="/user/coordinator/sections/export"
+            className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#363a7a] transition-colors"
+          >
+            Export to CSV
+          </Link>
 
-            <button
-              onClick={() => setShowImportModal(true)}
-              className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-300 transition-colors"
-            >
-              Import Past Allocations
-            </button>
-          </div>
+          <button
+            onClick={() => setShowImportModal(true)}
+            className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-300 transition-colors"
+          >
+            Import Past Allocations
+          </button>
         </div>
+      </div>
       <div className="shadow-lg p-4 rounded-2xl  mb-4 ">
-        <SectionFilter onFilterChange={handleFilterChange} mode="large" />
+        {/* <SectionFilter onFilterChange={handleFilterChange} mode="large" /> */}
+        <SectionFilter
+          onFilterChange={handleFilterChange}
+          mode="large"
+          loading={loading}
+        />
       </div>
 
-      {loading
-        ? <p>Loading courses…</p>
-        : <SectionList
-          sections={filteredSections}
-          onDeleted={handleDeleted}
-        mode = 'coordinator'
-        />
-      }
+      {error && <p className="text-red-600">{error}</p>}
+      {loading && <p>Loading…</p>}
 
-      
+      {!loading && results && (
+        <>
+          <SectionList sections={convertFilterSectionsToSections(results)} mode="coordinator" />
+
+          {!showAll && suggQ.data?.totalElements! > 5 && (
+            <button onClick={() => setShowAll(true)} className="mt-2 text-blue-600">
+              Show All ({suggQ.data!.totalElements})
+            </button>
+          )}
+
+          {showAll && (
+            <Pagination
+              page={page}
+              pageCount={fullQ.data?.totalPages ?? 0}
+              onPrev={() => setPage((p) => Math.max(0, p - 1))}
+              onNext={() =>
+                setPage((p) =>
+                  Math.min((fullQ.data?.totalPages ?? 1) - 1, p + 1)
+                )
+              }
+            />
+          )}
+        </>
+      )}
+
+
       {showImportModal && (
         <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full">
@@ -174,7 +193,7 @@ export default function SectionListPage() {
             {errorMsg && (
               <p className="text-red-600 text-sm mt-2">{errorMsg}</p>
             )}
-            
+
             {csvError && <p className="text-red-500 mb-2">{csvError}</p>}
 
             <label htmlFor="csvFileInput" className="block mb-4">
@@ -226,4 +245,29 @@ export default function SectionListPage() {
 
     </div>
   );
+}
+
+function allocationsChangeErrorMsg(err: any): string {
+  let friendlyMessage = 'Failed to import allocations: Unknown error occurred.';
+
+  const errorText = err.message || '';
+
+  if (errorText.includes('User with student number')) {
+    const match = errorText.match(/User with student number (\d+) not found/);
+    const studentNum = match ? match[1] : 'unknown';
+    friendlyMessage = `❌ Failed to import allocations: Student with student number ${studentNum} not found. Please verify student details or add a new student.`;
+  } else if (errorText.includes('Course not found:')) {
+    const match = errorText.match(/Course not found:([A-Z]+ \d+)/);
+    const courseInfo = match ? match[1] : 'unknown';
+    friendlyMessage = `❌ Failed to import allocations: Course ${courseInfo} not found. Please create a new course.`;
+  } else if (errorText.includes('Section') && errorText.includes('not found for Course')) {
+    const match = errorText.match(/Section (\S+) (\d{4}) (\S+) not found for Course ([A-Z]+) (\d+)/);
+    if (match) {
+      const [, sectionName, year, semester, deptCode, courseNum] = match;
+      friendlyMessage = `❌ Failed to import allocations: Section ${sectionName} ${semester} ${year} not found for course ${deptCode} ${courseNum}. Please add a new section to the course.`;
+    } else {
+      friendlyMessage = `❌ Failed to import allocations: Section not found. Please add a new section to the course.`;
+    }
+  }
+  return friendlyMessage;
 }
