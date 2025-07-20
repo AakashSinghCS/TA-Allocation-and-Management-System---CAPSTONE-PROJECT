@@ -2574,3 +2574,50 @@ In some other cycle:
 - student Allocation history needs to make sure the student is creating entries only for himself.
 - more security fixes in backend concerning reading of headers (x-user-id)
 
+
+## Friday 7/19 (7/15~7/18)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July19.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#421](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/421)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today:
+- did courseFilters with pagination.
+- some filters now get hidden for better UX.
+- integrated the chages of the courseFilters in allocation page and export csv page.
+After that:
+- do application Filters, show pagination there too.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- TBA. Need discussion with others to find what to do.
+In some other cycle:
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- more security fixes in backend concerning reading of headers (x-user-id)
+
