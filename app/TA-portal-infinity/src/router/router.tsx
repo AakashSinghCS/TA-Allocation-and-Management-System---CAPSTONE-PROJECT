@@ -145,12 +145,12 @@ export const router = createBrowserRouter([
     path: "/",
     element: <PublicLayout />,
     children: [
-      { path: "", element: <Suspense fallback={<div>Loading...</div>}><LoginPage /></Suspense> },
-      { path: "login", element: <Suspense fallback={<div>Loading...</div>}><LoginPage /></Suspense> },
-      { path: "signup", element: <Suspense fallback={<div>Loading...</div>}><SignUpPage /></Suspense> },
-      { path: "forgot-password", element: <Suspense fallback={<div>Loading...</div>}><ForgotPasswordPage /></Suspense> },
-      { path: "reset-password", element: <Suspense fallback={<div>Loading...</div>}><ResetPasswordPage /></Suspense> },
-      { path: "*", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
+      { path: "", element: <LoginPage /> },
+      { path: "login", element: <LoginPage /> },
+      { path: "signup", element: <SignUpPage /> },
+      { path: "forgot-password", element: <ForgotPasswordPage /> },
+      { path: "reset-password", element: <ResetPasswordPage /> },
+      { path: "*", element: <ErrorPage /> },
     ],
   },
 ]);
