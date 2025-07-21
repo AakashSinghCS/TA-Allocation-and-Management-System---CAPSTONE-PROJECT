@@ -2,13 +2,17 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import SearchUserBar, { type SearchCriteria } from './SearchUserBar';
 
+vi.mock('../../../../context/AuthContext', () => ({
+  useAuth: () => ({ userRoles: ['COORDINATOR'] as const }),
+}));
+
 describe('SearchUserBar', () => {
   it('renders inputs and calls onSearch with the correct criteria', async () => {
     const mockOnSearch = vi.fn().mockResolvedValue(undefined);
 
     render(<SearchUserBar onSearch={mockOnSearch} loading={false} />);
 
-    fireEvent.change(screen.getByPlaceholderText(/Name/), { target: { value: 'Alice' } });
+    fireEvent.change(screen.getByPlaceholderText(/First Name/i), { target: { value: 'Alice' } });
     fireEvent.change(screen.getByPlaceholderText(/University Number/), { target: { value: '12345678' } });
 
 
@@ -16,9 +20,11 @@ describe('SearchUserBar', () => {
 
     await waitFor(() => {
       expect(mockOnSearch).toHaveBeenCalledWith({
-        role: 'Student',
-        name: '',
+        role: '',
+        firstname: '',
+        lastname: '',
         universityNumber: '12345678',
+        userId: '',
       } as SearchCriteria);
     });
   });
@@ -40,7 +46,7 @@ describe('SearchUserBar', () => {
     );
 
     const options = screen.getAllByRole('option');
-    expect(options).toHaveLength(1);
-    expect(options[0]).toHaveTextContent('Student');
+    expect(options).toHaveLength(2);
+    expect(options[1]).toHaveTextContent('Student');
   });
 });

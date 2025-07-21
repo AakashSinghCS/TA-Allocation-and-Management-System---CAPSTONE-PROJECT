@@ -39,7 +39,7 @@ export default function SectionProfileSection({
     <>
       <section className={`bg-white border border-slate-200 rounded-2xl shadow-sm p-4 ${className}`}>
           <h1 className="text-xl font-bold mb-4 break-words">
-            <Link to={`/user/courseprofile/${dto.id}`} className="hover:text-blue-600">
+            <Link to={`/user/courseprofile/${dto.course?.id}`} className="hover:text-blue-600">
             {dto.course?.deptCode} {dto.course?.courseNum}{' '}
             {!isCourse && dto.section}{' '}
             — {dto.course?.name}
@@ -63,7 +63,7 @@ export default function SectionProfileSection({
           >
             <span className="font-medium text-slate-700 break-words">Instructor:</span>
             <span className="ml-2 break-words">
-              <Link to={`/user/instructorprofile/${section.instructor?.id}`} className="hover:text-blue-600">
+              <Link to={`/user/profile/${section.instructor?.id}`} className="hover:text-blue-600">
                 {section.instructor?.firstName} {section.instructor?.lastName}
               </Link>
             </span>

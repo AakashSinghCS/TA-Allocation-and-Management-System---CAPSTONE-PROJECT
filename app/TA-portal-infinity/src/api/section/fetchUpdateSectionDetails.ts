@@ -1,8 +1,10 @@
+import type Section from "../../interfaces/section/Section";
 import type { SectionProfile } from "../../interfaces/section/Section";
 
-export async function fetchUpdateSectionDetails(sectionId: number,req: SectionProfile): Promise<boolean | null> {
+export async function fetchUpdateSectionDetails(sectionId: number,req: Section): Promise<boolean | null> {
   const token = localStorage.getItem("token");
   const BASE = `http://localhost:8080/sections/updateSection/${sectionId}`;
+
   try {
     const res = await fetch(BASE, {
       method: "PUT",
