@@ -205,13 +205,13 @@ const ApplicationPage: React.FC = () => {
   }, [filterTrigger]);
 
   return (
-    <div className="min-h-screen p-4 md:p-8 ">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl md:text-4xl font-bold text-[#040941] mb-8 tracking-tight">Applications Overview</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-18 gap-8">
+    <div className="min-h-screen p-2 sm:p-4 md:p-8 ">
+      <div className="max-w-7xl mx-auto w-full">
+        <h1 className="text-3xl sm:text-4xl font-bold text-[#040941] mb-6 sm:mb-8 tracking-tight text-center sm:text-left">Applications Overview</h1>
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 w-full">
           {/* Application Filters */}
-          <div className="lg:col-span-4">
-            <div className="relative bg-white rounded-2xl shadow-lg p-4 border border-blue-100 flex flex-col gap-4">
+          <div className="w-full lg:w-1/4 min-w-0">
+            <div className="relative bg-white rounded-2xl shadow-lg p-3 sm:p-4 border border-blue-100 flex flex-col gap-4">
               <h3 className="font-semibold text-[#040941] text-lg mb-2">Application Filters</h3>
               <div className="flex flex-col gap-4">
                 <div>
@@ -239,9 +239,9 @@ const ApplicationPage: React.FC = () => {
             </div>
           </div>
           {/* Stats and Results */}
-          <div className="lg:col-span-10 flex flex-col gap-8">
+          <div className="w-full lg:w-2/4 min-w-0 flex flex-col gap-4 sm:gap-8">
             {/* TA Application Stats (collapsible) */}
-            <div className="bg-white rounded-2xl shadow-lg border border-blue-100 p-6">
+            <div className="bg-white rounded-2xl shadow-lg border border-blue-100 p-3 sm:p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-[#040941] text-lg flex items-center gap-2">
                   <svg className="w-6 h-6 text-blue-500 p-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3" stroke="currentColor" strokeWidth="2"/><circle cx="12" cy="12" r="10" fill="none"/></svg>
@@ -285,9 +285,9 @@ const ApplicationPage: React.FC = () => {
               )}
             </div>
             {/* Results Cards and Details Panel */}
-            <div className="grid grid-cols-3 md:grid-cols-2 xl:grid-cols-3 gap-4 relative">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 relative">
               {/* Application Cards */}
-              <div className="col-span-3 grid md:grid-cols-2 xl:grid-cols-2 gap-8 justify-items-stretch items-stretch">
+              <div className="col-span-1 sm:col-span-2 xl:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 xl:gap-8 justify-items-stretch items-stretch">
                 {filteredApps.length > 0 ? (
                   filteredApps.map((app) => {
                     const allocations = allocationHistory.filter((alloc) => alloc.application?.applicationId === app.applicationId);
@@ -321,8 +321,8 @@ const ApplicationPage: React.FC = () => {
             </div>
           </div>
           {/* Allocation Filters */}
-          <div className="lg:col-span-4">
-            <div className="sticky top-8 bg-white rounded-2xl shadow-lg p-4 border border-blue-100 flex flex-col gap-4">
+          <div className="w-full lg:w-1/4 min-w-0">
+            <div className="lg:sticky lg:top-8 bg-white rounded-2xl shadow-lg p-3 sm:p-4 border border-blue-100 flex flex-col gap-4">
               <h3 className="font-semibold text-[#040941] text-lg mb-2">Allocation & Offer Related Filters</h3>
               <div className="flex flex-col gap-4">
                 <div>
