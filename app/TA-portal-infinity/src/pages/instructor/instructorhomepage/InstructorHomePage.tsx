@@ -348,11 +348,11 @@ export default function InstructorHomePage() {
             totalDeadlines={1}
           />
           {/* Skills/TA Qualifications */}
-          <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center w-full max-w-xs">
-            <h2 className="font-semibold text-gray-700 mt-1 mb-4">Courses Missing Skills/TA Qualifications</h2>
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6 md:p-8 flex flex-col items-center w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-auto">
+            <h2 className="font-semibold text-gray-700 mt-1 mb-4 text-center text-base sm:text-lg md:text-xl">Courses Missing Skills/TA Qualifications</h2>
             <hr className="w-full border-gray-300 mb-4" />
-            <div className="flex flex-col items-center">
-              <div className="relative w-32 h-32">
+            <div className="flex flex-col items-center w-full">
+              <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 xl:w-44 xl:h-44">
                 <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                   <circle className="text-gray-200" strokeWidth="6" stroke="currentColor" fill="none" cx="18" cy="18" r="15" />
                   {(() => {
@@ -367,7 +367,7 @@ export default function InstructorHomePage() {
                     courseKeys.forEach(courseKey => {
                       // Find all sections for this course
                       const courseSections = sections.filter(s => s.course && `${s.course.deptCode || ''}-${s.course.courseNum || ''}` === courseKey);
-                      if (courseSections.length === 0) return; // skip courses with no sections (shouldn't happen)
+                      if (courseSections.length === 0) return; 
                       // For each section, check if it has a qualification entry with non-empty qualifications
                       const hasMissing = courseSections.some(section => {
                         const qual = qualifications.find(q => q.section.id === section.id);
@@ -393,10 +393,10 @@ export default function InstructorHomePage() {
                     );
                   })()}
                 </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center" style={{textAlign: 'center', width: '100%'}}>
-                  <div className="flex flex-col items-center justify-center gap-0.5">
-                    <span className="font-bold text-2xl sm:text-3xl" style={{color: '#1D3557'}}>
-                      {/* Show count of courses with at least one section missing Skills/TA Qualifications */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center px-1 sm:px-2" style={{textAlign: 'center', width: '100%'}}>
+                  <div className="flex flex-col items-center justify-center gap-0.5 w-full">
+                    <span className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl" style={{color: '#1D3557'}}>
+                      {/* count of courses with at least one section missing Skills/TA Qualifications */}
                       {(() => {
                         const courseKeys = new Set();
                         sections.forEach(section => {
@@ -417,18 +417,18 @@ export default function InstructorHomePage() {
                         return missingCourses;
                       })()}
                     </span>
-                    <span className="font-semibold text-xs sm:text-sm mt-0.5" style={{color: '#1D3557', maxWidth: '80px', display: 'block', whiteSpace: 'normal'}}>
+                    <span className="font-semibold text-xs sm:text-sm md:text-base mt-0.5" style={{color: '#1D3557', maxWidth: '90px', display: 'block', whiteSpace: 'normal'}}>
                       missing
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-            {/* More details link below the circle, centered */}
-            <div className="w-full flex justify-center mt-4 mb-4">
+            {/* More details */}
+            <div className="w-full flex justify-center mt-3 mb-2 sm:mt-4 sm:mb-4">
               <a
                 href={`http://localhost:5173/user/instructorprofile/${userId}/qualifications`}
-                className="text-xs sm:text-sm text-blue-900 hover:underline font-medium"
+                className="text-xs sm:text-sm md:text-base text-blue-900 hover:underline font-medium"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ cursor: 'pointer' }}
