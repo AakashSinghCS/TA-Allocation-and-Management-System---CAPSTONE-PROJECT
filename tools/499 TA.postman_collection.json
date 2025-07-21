@@ -3639,6 +3639,247 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Qualification Service",
+			"item": [
+				{
+					"name": "instructor add qualification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"courseId\":1,\"description\":\"know 10 languages\", \"deptCode\": \"MATH\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/qualifications/instructor/addQualification",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"instructor",
+								"addQualification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "instructor delete qualification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"description\":\"know 10 languages\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/qualifications/instructor/deleteQualification",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"instructor",
+								"deleteQualification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find qualification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/qualifications/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by deptCode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/qualifications/byDepartment/MATH",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"byDepartment",
+								"MATH"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "student update qualification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"qualificationIds\":[1]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/qualifications/1/studentUpdateQualification",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"1",
+								"studentUpdateQualification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by student id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/qualifications/findByStudentId/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"findByStudentId",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by instructor id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/qualifications/instructor/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"instructor",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
