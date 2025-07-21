@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import DeadlineManagementPage from "./DeadlineManagementPage";
+import DeadlineManagementPage from "./GlobalConfigPage";
 import * as AuthContext from "../../../context/AuthContext";
 import * as FetchDeadline from "../../../api/admin/FetchDeadline";
 import type { DeadlineDto } from "../../../interfaces/admin/Deadline";
