@@ -35,7 +35,7 @@ const AllocationPage = lazy(() => import("../pages/coordinator/allocationpage/Al
 const ApplicationViewPage = lazy(() => import("../pages/coordinator/applicationviewpage/ApplicationViewPage"));
 const UserBrowsingPage = lazy(() => import("../pages/coordinator/userbrowsingpage/UserBrowsingPage"));
 const ManualCreateUserPage = lazy(() => import("../pages/coordinator/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage"));
-const DeadlineManagementPage = lazy(() => import("../pages/admin/deadlinemanagementpage/GlobalConfigPage"));
+const GlobalConfigPage = lazy(() => import("../pages/admin/deadlinemanagementpage/GlobalConfigPage"));
 
 const CourseProfilePage = lazy(() => import("../pages/course/courseprofilepage/CourseProfilePage"));
 const SectionListPage = lazy(() => import("../pages/course/sectionlistpage/SectionListPage"));
@@ -130,7 +130,7 @@ export const router = createBrowserRouter([
           { path: "sections/export", element: <Suspense fallback={<div>Loading...</div>}><ExportToCSVPage /></Suspense> },
           { path: "applications", element: <Suspense fallback={<div>Loading...</div>}><ApplicationViewPage /></Suspense> },
           { path: "allocation", element: <Suspense fallback={<div>Loading...</div>}><AllocationPage /></Suspense> },
-          { path: "deadlines", element: <Suspense fallback={<div>Loading...</div>}><DeadlineManagementPage /></Suspense> },
+          { path: "globalconfig", element: <Suspense fallback={<div>Loading...</div>}><GlobalConfigPage /></Suspense> },
           { path: "audit", element: <Suspense fallback={<div>Loading...</div>}><AuditLogsPage /></Suspense> },
           { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
           { path: "create-exam", element: <Suspense fallback={<div>Loading...</div>}><CreateExamPage /></Suspense> },

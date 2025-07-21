@@ -9,7 +9,7 @@ import {
   User,
   LogOut,
   Users,
-  UserRoundPen,
+  CalendarClock,
   FileUser,
   FileQuestionMark,
   ShieldCheck,
@@ -71,10 +71,9 @@ export default function SideNav({expanded, setExpanded}:SideNavProps) {
     { label: 'Profile', to: `/user/profile/${userId}`, icon: <User size={22} />, roles: [UserRole.STUDENT,UserRole.INSTRUCTOR,UserRole.COORDINATOR] },
 
     //Admin
-    { label: 'Deadline Management', to: '/user/coordinator/deadlines', icon: <BookOpen size={22} />, roles: [UserRole.ADMIN] },
+    { label: 'Term & Deadline(s)', to: '/user/coordinator/globalconfig', icon: <CalendarClock size={22} />, roles: [UserRole.ADMIN] },
     { label: 'Audit', to: `/user/coordinator/audit`, icon: <BookOpen size={22} />, roles: [UserRole.ADMIN] },
 ];
-
   const filteredNavItems = navItems.filter(item =>
     item.roles.some(role => userRoles.includes(role))
   );

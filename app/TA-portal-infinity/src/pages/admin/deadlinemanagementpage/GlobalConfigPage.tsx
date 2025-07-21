@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { LuCalendarCog } from "react-icons/lu";
 import { useAuth } from '../../../context/AuthContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,7 +15,7 @@ function formatDeadlineName(name: string): string {
 
 const DeadlineManagementPage: React.FC = () => {
   const { token } = useAuth();
-  // Term config hooks (must be inside component)
+  // Term config hooks 
   const initialTermConfig = {
     year: new Date().getFullYear(),
     semester: "W1",
@@ -96,7 +97,6 @@ const DeadlineManagementPage: React.FC = () => {
 
   // Handle save click with validation
   const handleSave = async (deadline: DeadlineDto) => {
-    // Remove seconds for validation
     const start = deadline.startTime.slice(0, 16);
     const end = deadline.endTime.slice(0, 16);
     if (!isValidDeadline(start, end)) {
@@ -126,8 +126,15 @@ return (
         draggable
         pauseOnHover
       />
-      <h1 className="text-3xl md:text-4xl font-bold text-[#040941] mb-2 text-center tracking-tight">Global Configuration</h1>
-      <p className="text-base md:text-lg text-gray-500 mb-6 text-center">Manage term and deadline settings for the application.</p>
+      <div className="flex flex-row items-center mb-8 gap-6">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#040941] mb-2 tracking-tight">Global Configuration</h1>
+          <p className="text-base md:text-lg text-gray-500 mb-6">Manage term and deadline settings </p>
+        </div>
+        <div className="hidden md:flex flex-shrink-0 justify-end items-center h-full pr-2">
+          <LuCalendarCog size={100} color="#e5e7eb" title="Configuration" />
+        </div>
+      </div>
 
       {/* Global Term Config Section */}
       <div className="mb-10">
@@ -197,7 +204,7 @@ return (
         <div className="overflow-x-auto">
           <table className="min-w-full border-separate border-spacing-y-2">
             <thead>
-              <tr className="bg-blue-100 text-[#040941] text-left">
+              <tr className="bg-gray-300 text-[#040941] text-left">
                 <th className="py-2 px-3 rounded-l-lg font-semibold">Deadline Name</th>
                 <th className="py-2 px-3 font-semibold">Start Time</th>
                 <th className="py-2 px-3 font-semibold">End Time</th>
