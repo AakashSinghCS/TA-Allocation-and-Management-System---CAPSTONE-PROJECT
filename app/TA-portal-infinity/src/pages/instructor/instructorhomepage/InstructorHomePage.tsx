@@ -153,29 +153,29 @@ export default function InstructorHomePage() {
             <div className="grid grid-cols-1 md:grid-cols-[3fr_0.85fr] gap-8 mb-8 w-full items-start justify-center">
               <div className="w-full">
                 {/* Metrics Row */}
-                <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                   {/* Courses Teaching */}
-                  <div className="flex items-center bg-white rounded-2xl shadow-md px-5 py-4 border-t-4" style={{ borderTopColor: '#040941', minHeight: '80px' }}>
-                    <FaUserGraduate size={32} style={{ color: '#040941' }} className="mr-4" />
+                  <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={{ borderTopColor: '#040941', minHeight: '60px', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
+                    <FaUserGraduate size={20} style={{ color: '#040941' }} className="mr-3" />
                     <div>
-                      <div className="text-sm text-gray-500 font-semibold uppercase tracking-wide mb-1">Courses Teaching</div>
-                      <div className="text-2xl font-bold text-[#040941]">{totalSections}</div>
+                      <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Courses Teaching</div>
+                      <div className="text-lg font-bold text-[#040941]">{totalSections}</div>
                     </div>
                   </div>
                   {/* TA Allocations */}
-                  <div className="flex items-center bg-white rounded-2xl shadow-md px-5 py-4 border-t-4" style={{ borderTopColor: '#040941', minHeight: '80px' }}>
-                    <FaUsers size={32} style={{ color: '#040941' }} className="mr-4" />
+                  <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={{ borderTopColor: '#040941', minHeight: '60px', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
+                    <FaUsers size={20} style={{ color: '#040941' }} className="mr-3" />
                     <div>
-                      <div className="text-sm text-gray-500 font-semibold uppercase tracking-wide mb-1">TA Allocations</div>
-                      <div className="text-2xl font-bold text-[#040941]">{totalAllocations}</div>
+                      <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">TA Allocations</div>
+                      <div className="text-lg font-bold text-[#040941]">{totalAllocations}</div>
                     </div>
                   </div>
                   {/* Courses Missing Needs */}
-                  <div className="flex items-center bg-white rounded-2xl shadow-md px-5 py-4 border-t-4" style={{ borderTopColor: '#040941', minHeight: '80px' }}>
-                    <GrDocumentMissing size={32} style={{ color: '#040941' }} className="mr-4" />
+                  <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={{ borderTopColor: '#040941', minHeight: '60px', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
+                    <GrDocumentMissing size={20} style={{ color: '#040941' }} className="mr-3" />
                     <div>
-                      <div className="text-sm text-gray-500 font-semibold uppercase tracking-wide mb-1">Missing Needs</div>
-                      <div className="text-2xl font-bold text-[#040941]">{missingNeeds.length}</div>
+                      <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Missing Needs</div>
+                      <div className="text-lg font-bold text-[#040941]">{missingNeeds.length}</div>
                     </div>
                   </div>
                 </div>
