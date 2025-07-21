@@ -1,7 +1,7 @@
 package com.infinity.courseservice.dtos.CourseDtos;
 
+import com.infinity.courseservice.dtos.SemesterDto;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
-import com.infinity.courseservice.enums.Semester;
 
-public record StudentTaughtCourseDto(UserDto student, CourseDto course, Semester semester, int year) {}
+public record StudentTaughtCourseDto(UserDto student, CourseDto course, SemesterDto semester) {}
 

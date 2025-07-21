@@ -1,9 +1,10 @@
 package com.infinity.courseservice.dtos.SectionDtos;
 
+import com.infinity.courseservice.dtos.SemesterDto;
+
 public record ExportedSectionData(
     Long sectionId,
-    Integer year,
-    String semester,
+    SemesterDto semester,
     String sectionCode,
     String type,
     Long courseId,

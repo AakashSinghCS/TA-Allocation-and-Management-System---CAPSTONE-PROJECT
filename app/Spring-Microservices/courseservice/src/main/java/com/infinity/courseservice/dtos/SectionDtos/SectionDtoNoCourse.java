@@ -1,11 +1,11 @@
 package com.infinity.courseservice.dtos.SectionDtos;
 
+import com.infinity.courseservice.dtos.SemesterDto;
 import com.infinity.courseservice.enums.SectionType;
 
 public record SectionDtoNoCourse(
     Long id,
-    Integer year,
-    String semester,
+    SemesterDto semester,
     String section,
     SectionType type
 ) {}

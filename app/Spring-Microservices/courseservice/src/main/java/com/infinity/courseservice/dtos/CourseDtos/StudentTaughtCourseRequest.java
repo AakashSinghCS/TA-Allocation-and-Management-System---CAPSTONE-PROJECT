@@ -1,7 +1,7 @@
 package com.infinity.courseservice.dtos.CourseDtos;
 
-import com.infinity.courseservice.enums.Semester;
+import com.infinity.courseservice.dtos.SemesterDto;
 
-public record StudentTaughtCourseRequest(Long studentId, int year, Semester semester) {
+public record StudentTaughtCourseRequest(Long studentId, SemesterDto semester) {
     
 }
