@@ -175,6 +175,10 @@ const ApplicationPage: React.FC = () => {
   const [expandAll, setExpandAll] = useState(false);
   const [allocationsLoading, setAllocationsLoading] = useState(false);
 
+
+  // Stats section show/hide state
+  const [showStats, setShowStats] = useState(true);
+
   // helper to check if any filter is set
   const anyFilterSet = [yearSubmitted, studentName, prefContains, remotePref, offerSentFilter, allocatedHoursFilter, allocationStatus, allocationDept, allocationCourseNum, allocationSectionYear, allocationSemester, allocationType].some(f => f && f !== '');
 
@@ -231,36 +235,54 @@ const ApplicationPage: React.FC = () => {
                   </select>
                 </div>
               </div>
-              <button onClick={handleFilterClick} className="mt-2 px-6 py-2 bg-[#040941] text-white rounded-lg shadow hover:opacity-80 transition font-semibold">Filter</button>
+              <button onClick={handleFilterClick} className="mt-2 mb-2 px-3 py-1.5 h-9 bg-[#040941] text-white rounded-lg font-semibold transition text-sm hover:opacity-80">Filter</button>
             </div>
           </div>
           {/* Stats and Results */}
           <div className="lg:col-span-10 flex flex-col gap-8">
-            {/* TA Application Stats */}
+            {/* TA Application Stats (collapsible) */}
             <div className="bg-white rounded-2xl shadow-lg border border-blue-100 p-6">
-              <h3 className="font-semibold text-[#040941] mb-4 text-lg flex items-center gap-2">
-                <svg className="w-6 h-6 text-blue-500 p-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3" stroke="currentColor" strokeWidth="2"/><circle cx="12" cy="12" r="10" fill="none"/></svg>
-                TA Application Stats
-              </h3>
-              <ApplicationStats
-                totalApplications={allApps.length}
-                appsWithOffer={allApps.filter(app => allocationHistory.some(alloc => alloc.application?.applicationId === app.applicationId)).length}
-                appsWithConfirmed={allApps.filter(app => allocationHistory.some(alloc => alloc.application?.applicationId === app.applicationId && alloc.status === 'CONFIRMED')).length}
-                appsWithOfferWaiting={allApps.filter(app => {
-                  const appAllocs = allocationHistory.filter(alloc => alloc.application?.applicationId === app.applicationId);
-                  return appAllocs.length > 0 && !appAllocs.some(alloc => alloc.status === 'CONFIRMED');
-                }).length}
-                filteredCount={filteredApps.length}
-              />
-              <div className="flex items-center justify-between mt-2 mb-1">
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <svg className="w-4 h-4 text-gray-400 p-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                  Last Updated: <span className="ml-1 font-semibold">{new Date().toLocaleString()}</span>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-[#040941] text-lg flex items-center gap-2">
+                  <svg className="w-6 h-6 text-blue-500 p-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3" stroke="currentColor" strokeWidth="2"/><circle cx="12" cy="12" r="10" fill="none"/></svg>
+                  TA Application Stats
+                </h3>
+                <button
+                  className="ml-2 px-3 py-1 text-xs bg-gray-200 rounded hover:bg-gray-300 transition"
+                  onClick={() => setShowStats(s => !s)}
+                  aria-label={showStats ? 'Hide Stats' : 'Show Stats'}
+                >
+                  {showStats ? 'Hide' : 'Show'}
+                </button>
+              </div>
+              {showStats ? (
+                <>
+                  <ApplicationStats
+                    totalApplications={allApps.length}
+                    appsWithOffer={allApps.filter(app => allocationHistory.some(alloc => alloc.application?.applicationId === app.applicationId)).length}
+                    appsWithConfirmed={allApps.filter(app => allocationHistory.some(alloc => alloc.application?.applicationId === app.applicationId && alloc.status === 'CONFIRMED')).length}
+                    appsWithOfferWaiting={allApps.filter(app => {
+                      const appAllocs = allocationHistory.filter(alloc => alloc.application?.applicationId === app.applicationId);
+                      return appAllocs.length > 0 && !appAllocs.some(alloc => alloc.status === 'CONFIRMED');
+                    }).length}
+                    filteredCount={filteredApps.length}
+                    compact
+                  />
+                  <div className="flex items-center justify-between mt-2 mb-1">
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <svg className="w-4 h-4 text-gray-400 p-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                      Last Updated: <span className="ml-1 font-semibold">{new Date().toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <div className="mt-2 bg-blue-50 border-l-4 border-[#040941] p-3 rounded-lg">
+                    <p className="text-sm text-[#040941]">Tip: Use the right-side filters to search for applications that already have an offer or allocation. For applications with no progress, the left-side filters are more effective.</p>
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-center justify-center text-center text-gray-500 py-2 min-h-[48px]">
+                  <span className="text-base">Stats hidden. Click "Show" to view details.</span>
                 </div>
-              </div>
-              <div className="mt-2 bg-blue-50 border-l-4 border-[#040941] p-3 rounded-lg">
-                <p className="text-sm text-[#040941]">Tip: Use the right-side filters to search for applications that already have an offer or allocation. For applications with no progress, the left-side filters are more effective.</p>
-              </div>
+              )}
             </div>
             {/* Results Cards and Details Panel */}
             <div className="grid grid-cols-3 md:grid-cols-2 xl:grid-cols-3 gap-4 relative">
@@ -354,7 +376,7 @@ const ApplicationPage: React.FC = () => {
                     <option value="INDEPENDENT_STUDY">Independent Study</option>
                   </select>
                 </div>
-                <button onClick={handleFilterClick} className="mt-2 px-6 py-2 bg-[#040941] text-white rounded-lg shadow transition font-semibold hover:opacity-80">Filter</button>
+                <button onClick={handleFilterClick} className="mt-2 mb-2 px-3 py-1.5 h-9 bg-[#040941] text-white rounded-lg font-semibold transition text-sm hover:opacity-80">Filter</button>
               </div>
             </div>
           </div>

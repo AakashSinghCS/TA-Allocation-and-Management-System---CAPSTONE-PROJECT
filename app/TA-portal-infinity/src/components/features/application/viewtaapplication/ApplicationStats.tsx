@@ -13,6 +13,7 @@ interface ApplicationStatsProps {
   appsWithConfirmed: number;
   appsWithOfferWaiting: number;
   filteredCount: number;
+  compact?: boolean;
 }
 
 const ApplicationStats: React.FC<ApplicationStatsProps> = ({
@@ -21,6 +22,7 @@ const ApplicationStats: React.FC<ApplicationStatsProps> = ({
   appsWithConfirmed,
   appsWithOfferWaiting,
   filteredCount,
+  compact = false,
 }) => {
   const statCards: StatCard[] = [
     {
@@ -65,13 +67,16 @@ const ApplicationStats: React.FC<ApplicationStatsProps> = ({
     },
   ];
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+    <div className={`grid grid-cols-2 md:grid-cols-3 gap-2 mb-2 ${compact ? '' : 'gap-4 mb-4'}`}>
       {statCards.map((stat, idx) => (
-        <div key={idx} className={`flex items-center gap-3 bg-gradient-to-br ${stat.color} border rounded-xl shadow p-3 min-h-[70px]`}>
-          <div className="flex-shrink-0">{stat.icon}</div>
+        <div
+          key={idx}
+          className={`flex items-center gap-3 bg-gradient-to-br ${stat.color} border rounded-xl shadow ${compact ? 'p-2 min-h-[48px]' : 'p-3 min-h-[70px]'}`}
+        >
+          <div className={`flex-shrink-0 ${compact ? 'w-6 h-6' : 'w-7 h-7'}`}>{stat.icon}</div>
           <div>
-            <div className="text-lg font-bold text-[#040941]">{stat.value}</div>
-            <div className="text-xs text-gray-600 font-medium">{stat.label}</div>
+            <div className={compact ? 'text-[17px] font-bold text-[#040941]' : 'text-lg font-bold text-[#040941]'}>{stat.value}</div>
+            <div className={compact ? 'text-xs text-gray-600 font-medium' : 'text-xs text-gray-600 font-medium'}>{stat.label}</div>
           </div>
         </div>
       ))}
