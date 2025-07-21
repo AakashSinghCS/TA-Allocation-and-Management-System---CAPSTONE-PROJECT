@@ -1,5 +1,5 @@
 package com.infinity.courseservice.dtos.CourseDtos;
 
-public record StudentTaughtCourseRequest(Long studentId, String semester, Integer year) {
+public record StudentTaughtCourseRequest(Long studentId, Integer year, String semester) {
     
 }

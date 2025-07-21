@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.QualificationDtos.QualificationDto;
-import com.infinity.courseservice.dtos.QualificationDtos.QualificationDtoWithId;
 import com.infinity.courseservice.dtos.QualificationDtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationDtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.QualificationDtos.StudentQualiRequest;
@@ -28,7 +27,6 @@ import com.infinity.courseservice.repositories.StudentQualificationRepository;
 import com.infinity.courseservice.utility.CourseMapper;
 import com.infinity.courseservice.utility.QualificationMapper;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -56,22 +54,21 @@ public class QualificationService {
         return qualificationMapper.toDto(qualification, course);
     }
 
-    public List<QualificationDtoWithId> findQualificationsByDeptCode(String deptCode) {
+    public List<QualificationDto> findQualificationsByDeptCode(String deptCode) {
         List<Qualification> qualifications = qualificationRepository.findAllByDeptCode(deptCode);
 
         return qualifications.stream().map(q -> {
             Course course = q.getCourse();
             CourseDto courseDto = courseMapper.courseToDto(course);
 
-            return qualificationMapper.toDtoWithId(q, courseDto);
+            return qualificationMapper.toDto(q, courseDto);
         }).toList();
     }
 
-    public QualificationDtoWithId instructorAddQualification(QualificationRequest request) {
+    public QualificationDto instructorAddQualification(QualificationRequest request) {
         // 1) Load & verify course
-        CourseDto courseDto = courseService.findCourse(request.courseId());
         Course course = courseRepository.findById(request.courseId())
-                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+                .orElseThrow(() -> new NotFoundException("Course not found"));
 
         // 2) Pre-check for duplicate
         if (qualificationRepository.existsByCourseAndDescriptionAndDeptCode(
@@ -87,7 +84,7 @@ public class QualificationService {
             Qualification saved = qualificationRepository.saveAndFlush(qualification);
 
             // 4) Return your DTO (no student in this flow, so null)
-            return qualificationMapper.toDtoWithId(qualification, courseDto);
+            return qualificationMapper.toDto(qualification, courseMapper.courseToDto(course));
 
         } catch (DataIntegrityViolationException ex) {
             // This will catch any underlying JDBC/Hibernate constraint violation
@@ -122,7 +119,7 @@ public class QualificationService {
             } catch (DataIntegrityViolationException ex) {
                 throw new BadRequestException("Qualification already exists" + ex);
             }
-            qualificationDtos.add(new QualificationDto(courseDto, qualification.getDescription(), studentDto));
+            qualificationDtos.add(qualificationMapper.toDto(qualification, courseDto));
         }
 
         return qualificationDtos;

@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,9 +37,11 @@ import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.models.SectionSchedule;
+import com.infinity.courseservice.models.Semester;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
+import com.infinity.courseservice.repositories.SemesterRepository;
 import com.infinity.courseservice.services.EnrollmentService;
 import com.infinity.courseservice.services.SectionService;
 
@@ -61,24 +64,36 @@ public class SectionServiceTest {
     private ApplicationInterface applicationInterface;
 
     @Mock
+    private SemesterRepository semesterRepository;
+
+    @Mock
     private EnrollmentService enrollmentService;
 
 
     @InjectMocks
     private SectionService sectionService;
 
-    @Test
-    void testAddSectionSuccess() {
+    private Course course;
+    private SectionAddDtoRequest request;
+    private Section section;
+    private Semester semester;
+
+    @BeforeEach
+    void setUp() {
         Course course = new Course("COSC", "Software Engineering", "310");
         course.setId(1L);
-
         SectionAddDtoRequest request = new SectionAddDtoRequest("COSC", "Test", "123", "001",
                 SectionType.LECTURE, 2025, "W1", null, null);
-        Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
+        semester = new Semester(2025, "W1", null, null);
+        section = new Section(semester, "001", SectionType.LECTURE, course, null);
         section.setId(10L);
+    }
 
+    @Test
+    void testAddSectionSuccess() {     
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
         when(sectionRepository.save(any(Section.class))).thenReturn(section);
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(semester));
 
         var result = sectionService.addSection(1L, request);
 
