@@ -186,6 +186,7 @@ return (
             onClick={handleSaveTerm}
             disabled={termLoading}
             className="bg-[#040941] text-white px-4 py-2 rounded hover:opacity-90 text-sm font-semibold shadow mt-2 md:mt-0 disabled:opacity-60"
+            aria-label="save-term"
           >
             {termLoading ? "Saving..." : "Save Term"}
           </button>
@@ -237,6 +238,7 @@ return (
                     <button
                       onClick={() => handleSave(d)}
                       className="bg-[#040941] text-white px-3 sm:px-4 py-1 rounded hover:opacity-90 text-xs sm:text-sm font-semibold shadow w-full"
+                      aria-label={`save-deadline-${d.name}`}
                     >
                       Save
                     </button>
