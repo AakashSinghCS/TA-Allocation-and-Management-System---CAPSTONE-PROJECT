@@ -12,24 +12,24 @@ import com.infinity.courseservice.enums.SectionType;
 
 @Repository
 public interface SectionRepository extends JpaRepository<Section, Long> {
+
     List<Section> findByCourseId(Long courseId);
 
     List<Section> findAllByInstructorId(Long instructorId);
 
-    Optional<Section> findByCourseIdAndYearAndSemester(Long courseId, Integer year, String semester);
-    
-    Optional<Section> findByCourseIdAndSectionAndYearAndSemester(Long courseId, String section, Integer year, String semester);
-    
-    Optional<Section> findByCourseAndYearAndSemesterAndSectionAndType(
-        Course course, Integer year, String semester, String section, SectionType type);
+    Optional<Section> findByCourseIdAndSemester_YearAndSemester_Semester(Long courseId, Integer year, String semester);
 
-    List<Section> findByInstructorIdAndYearAndSemester(Long instructorId, Integer year, String semester);
+    Optional<Section> findByCourseIdAndSectionAndSemester_YearAndSemester_Semester(
+            Long courseId, String section, Integer year, String semester);
 
-    List<Section> findByInstructorIdAndCourseIdAndYearAndSemester(
-        Long instructorId, Long courseId, Integer year, String semester);
+    Optional<Section> findByCourseAndSemester_YearAndSemester_SemesterAndSectionAndType(
+            Course course, Integer year, String semester, String section, SectionType type);
 
-    
+    List<Section> findByInstructorIdAndSemester_YearAndSemester_Semester(Long instructorId, Integer year,
+            String semester);
+
+    List<Section> findByInstructorIdAndCourseIdAndSemester_YearAndSemester_Semester(
+            Long instructorId, Long courseId, Integer year, String semester);
 
     Optional<Section> findByCourseIdAndSection(Long courseId, String section);
-
 }

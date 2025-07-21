@@ -114,7 +114,7 @@ public class CourseService {
     }
 
     public CourseNeedAndAllocations getCourseNeedAndAllocations(Long courseId, Integer year, String semester) {
-        Section section = sectionRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)
+        Section section = sectionRepository.findByCourseIdAndSemester_YearAndSemester_Semester(courseId, year, semester)
                 .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
         NeedDto need = needService.getNeed(courseId, year, semester);
         List<AllocationHistoryDtoWithCourse> allocations = applicationInterface
@@ -170,10 +170,10 @@ public class CourseService {
     ) {
         // fetch filtered Section entities
         List<Section> sections = (courseId != null)
-            ? sectionRepository.findByInstructorIdAndCourseIdAndYearAndSemester(
+            ? sectionRepository.findByInstructorIdAndCourseIdAndSemester_YearAndSemester_Semester(
                   instructorId, courseId, year, semester
               )
-            : sectionRepository.findByInstructorIdAndYearAndSemester(
+            : sectionRepository.findByInstructorIdAndSemester_YearAndSemester_Semester(
                   instructorId, year, semester
               );
 

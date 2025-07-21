@@ -229,7 +229,7 @@ public class SectionService {
 
     public SectionDto getByCourseIdSectionYearSemester(Long courseId, String section, Integer year, String semester) {
         Optional<Section> optionalSection = sectionRepository
-            .findByCourseIdAndSectionAndYearAndSemester(courseId, section, year, semester);
+            .findByCourseIdAndSectionAndSemester_YearAndSemester_Semester(courseId, section, year, semester);
 
         Section entity = optionalSection
             .orElseThrow(() -> new EntityNotFoundException("Section not found"));
