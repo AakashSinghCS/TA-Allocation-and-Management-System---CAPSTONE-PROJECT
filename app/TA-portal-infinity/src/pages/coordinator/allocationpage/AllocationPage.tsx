@@ -6,7 +6,7 @@ import type SectionDetails from '../../../interfaces/section/SectionDetails';
 import type Section from '../../../interfaces/section/Section';
 import { useAuth } from '../../../context/AuthContext';
 import type { ApplicationDto } from '../../../interfaces/application/Application';
-import { fetchApplications } from '../../../api/application/FetchApplications';
+import { fetchApplicationsPage } from '../../../api/application/FetchApplications';
 import ApplicationFilterPanel from '../../../components/features/application/applicationfilterpanel/ApplicationFilterPanel';
 import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify';
@@ -25,15 +25,12 @@ import { useSectionSearchPage } from '../../../api/course/sectionfilter/useSecti
 import { useDebounce } from '../../../utility/pagination/useDebounce';
 import SectionSelectionList from './sectionselectionlist/SectionSelectionList';
 import SectionDetailsPanel from './selectedsectionpanel/SelectedSectionPanel';
+import { useApplicationSearchPage } from '../../../api/application/useApplicationSearchPage';
 
 const TAAllocationPage: React.FC = () => {
   const { token } = useAuth();
   const { sendOffer, loading } = useSendOffer();
   const [showBanner, setShowBanner] = useState(false);
-
-  const [appQ, setAppQ] = useState({
-    pref1: '', pref2: '', wantRemote: '', wantHours: '', studentName: '', studentNum: '',
-  });
 
   const [filters, setFilters] = useState<FilterSectionsProps>({});
   const [page, setPage] = useState(0);
@@ -43,13 +40,8 @@ const TAAllocationPage: React.FC = () => {
   const rawSections = sectionPage?.content ?? [];
   const filteredSections: Section[] = convertFilterSectionsToSections(rawSections);
 
-  const [allApps, setAllApps] = useState<ApplicationDto[]>([]);
-  useEffect(() => {
-    if (!token) return;
-    fetchApplications(1, token)
-      .then(setAllApps)
-      .catch(err => console.error(err));
-  }, [token]);
+  // const [allApps, setAllApps] = useState<ApplicationDto[]>([]);
+  // const { data: appPageData, isFetching: loadingApps } = useApplicationSearchPage(appQ, appPage, appSize, token!);
 
   const [selCourse, setSelCourse] = useState<Section | null>(null);
   const [instructor, setInstructor] = useState<{ firstName: string; lastName: string } | null>(null);
@@ -287,11 +279,11 @@ const TAAllocationPage: React.FC = () => {
           )}
 
           {selCourse && (
-             <SectionDetailsPanel
-               section={selCourse}
-               instructor={instructor}
-             />
-           )}
+            <SectionDetailsPanel
+              section={selCourse}
+              instructor={instructor}
+            />
+          )}
 
         </div>
         <div className="lg:col-span-14 bg-white p-6 rounded shadow space-y-4">
@@ -431,9 +423,6 @@ const TAAllocationPage: React.FC = () => {
 
         </div>
         <ApplicationFilterPanel
-          appQ={appQ}
-          setAppQ={setAppQ}
-          allApps={allApps}
           selApp={selApp}
           loadApp={loadApp}
           colSpanClass="lg:col-span-5"

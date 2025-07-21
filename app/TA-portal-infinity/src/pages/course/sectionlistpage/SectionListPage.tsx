@@ -14,6 +14,7 @@ import type { Allocation } from '../../../interfaces/allocation/Allocation';
 import { useDebounce } from '../../../utility/pagination/useDebounce';
 import { useSectionSearchPage } from '../../../api/course/sectionfilter/useSectionFilter';
 import Pagination from '../../admin/audit/pagination/Pagination';
+import { StatusIndicator } from '../../../components/ui/statusindicator/StatusIndicator';
 
 
 
@@ -22,33 +23,12 @@ export default function SectionListPage() {
 
   const [filters, setFilters] = useState<FilterSectionsProps>({});
   const [page, setPage] = useState(0);
-  // const [showAll, setShowAll] = useState(false);
 
   const debounced = useDebounce(filters, 300);
-  // const suggQ = useSectionSuggestions(debounced);
+
   const { data, isFetching, isError, error,refetch } = useSectionSearchPage(debounced, page, 10);
   const sections = data?.content ?? [];
-  // const results = showAll ? fullQ.data?.content : suggQ.data?.content;
-  // const loading = showAll ? fullQ.isFetching : suggQ.isFetching;
-  // const error = (showAll ? fullQ.error : suggQ.error)?.message;
 
-  // const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
-  // const [lastFilters, setLastFilters] = useState<FilterSectionsProps | null>(null);
-  // const [loading, setLoading] = useState(false);
-
-  // const handleFilterChange = async (filters: FilterSectionsProps) => {
-  //   setLoading(true);
-  //   setLastFilters(filters);
-  //   try {
-  //     const raw = await fetchFilteredSections(filters);
-  //     const sections = convertFilterSectionsToSections(raw || []);
-  //     setFilteredSections(sections);
-  //   } catch (e) {
-  //     navigate('/error', { replace: true, state: { message: (e as Error).message } });
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   useEffect(() => {
     setPage(0);
   }, [filters]);
@@ -148,16 +128,15 @@ const handleFilterChange = useCallback((f: FilterSectionsProps) => {
         </div>
       </div>
       <div className="shadow-lg p-4 rounded-2xl  mb-4 ">
-        {/* <SectionFilter onFilterChange={handleFilterChange} mode="large" /> */}
         <SectionFilter
           onFilterChange={handleFilterChange}
           mode="large"
-          loading={isFetching}
+          // loading={isFetching}
         />
       </div>
 
       {isError && <p className="text-red-600">{(error as Error).message}</p>}
-      {isFetching && <p>Loading…</p>}
+      {isFetching && <StatusIndicator loading={isFetching}/>}
 
       {!isFetching && !isError && (
         <>

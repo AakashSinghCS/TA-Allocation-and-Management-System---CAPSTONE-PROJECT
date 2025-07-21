@@ -18,16 +18,6 @@ function hasAnyFilter(f: FilterSectionsProps) {
   );
 }
 
-// export function useSectionSuggestions(filters: FilterSectionsProps) {
-//   return useQuery<PageableResponse<FilterSectionsProps>, Error>({
-//     queryKey: ["sectionSuggestions", filters],
-//     queryFn: () => fetchFilteredSections(filters, 0, 5),
-//     enabled: hasAnyFilter(filters),
-//     placeholderData: keepPreviousData,
-//     staleTime: 5 * 60_000,
-//   });
-// }
-
 export function useSectionSearchPage(
   filters: FilterSectionsProps,
   page: number,

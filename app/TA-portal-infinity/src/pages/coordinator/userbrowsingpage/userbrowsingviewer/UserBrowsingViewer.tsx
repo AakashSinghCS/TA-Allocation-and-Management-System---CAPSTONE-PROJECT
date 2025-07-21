@@ -12,6 +12,7 @@ import { useUserSearchPage } from "../../../../api/user/search/useUserSearch";
 import { useDebounce } from "../../../../utility/pagination/useDebounce";
 import { fetchActivate, fetchDeactivate } from "../../../../api/admin/fetchActivation";
 import React from "react";
+import { StatusIndicator } from "../../../../components/ui/statusindicator/StatusIndicator";
 
 interface UserBrowsingViewerProps {
     mode?: 'view' | 'select';
@@ -118,7 +119,6 @@ export default function UserBrowsingViewer({
         <>
             <div className="flex justify-between items-stretch mb-4">
                 <div className="flex-1">
-                    {/* <SearchUserBar onSearch={search} loading={loading} allowedRoles={allowedRoles} mode={mode}/> */}
                     <SearchUserBar
                         criteria={rawCriteria}
                         setCriteria={handleFilterChange}
@@ -149,7 +149,7 @@ export default function UserBrowsingViewer({
                     <p className="text-gray-500">
                         Please select a role (and/or enter a Student/Employee number or User ID) to begin.
                     </p></>}
-                {isFetching && <p>Loading…</p>}
+                {isFetching && <StatusIndicator loading={isFetching}/>}
                 {hasAnyFilter && !isFetching &&<table className="min-w-full border-collapse">
                     <thead><tr>
                         {columns.map(col => <th key={String(col)} className="border border-gray-300 px-3 py-1 bg-gray-100">{labels[col]}</th>)}

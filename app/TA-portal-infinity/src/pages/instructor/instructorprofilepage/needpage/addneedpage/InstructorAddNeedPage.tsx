@@ -20,6 +20,9 @@ import type { DeadlineDto } from "../../../../../interfaces/admin/Deadline";
 import { useAuth } from "../../../../../context/AuthContext";
 
 import { toast } from "react-toastify";
+import { useDebounce } from "../../../../../utility/pagination/useDebounce";
+import { useSectionSearchPage } from "../../../../../api/course/sectionfilter/useSectionFilter";
+import Pagination from "../../../../admin/audit/pagination/Pagination";
 
 
 export default function InstructorAddNeedPage() {
@@ -33,7 +36,7 @@ export default function InstructorAddNeedPage() {
   const [requiredHours, setRequiredHours] = useState(0);
 
   const [prereqCourses, setPrereqCourses] = useState<Course[]>([]);
-  const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
+  // const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
 
   const [needDeadline, setNeedDeadline] = useState<DeadlineDto | null>(null);
   const [deadlineError, setDeadlineError] = useState("");
@@ -65,25 +68,25 @@ export default function InstructorAddNeedPage() {
         setDeadlineError("Could not load need update deadline.");
       }
     }
-  
+
     if (token) loadDeadline();
   }, [token]);
-  
-  const deadlinePassed =
-      !! needDeadline &&
-      new Date(needDeadline.endTime) < new Date();
 
-  const handleFilterChange = async (filters: FilterSectionsProps) => {
-    setLoading(true);
-    try {
-      const raw = await fetchFilteredSections(filters);
-      setFilteredSections(convertFilterSectionsToSections(raw || []));
-    } catch (e) {
-      navigate("/error", { replace: true, state: { message: (e as Error).message } });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const deadlinePassed = !!needDeadline && new Date(needDeadline.endTime) < new Date();
+
+
+  const [filters, setFilters] = useState<FilterSectionsProps>({});
+  const [page, setPage] = useState(0);
+  const debounced = useDebounce(filters, 300);
+  useEffect(() => { setPage(0); }, [debounced]);
+  const {
+    data: pageData,
+    isFetching: loadingSections,
+    isError: fetchError,
+    error: fetchErrMsg
+  } = useSectionSearchPage(debounced, page, 10);
+  const raw = pageData?.content ?? [];
+  const filteredSections = convertFilterSectionsToSections(raw);
 
   const onSelectCourse = (cId: number, deptCode: string, courseNum: string, name: string) => {
     const newCourse: Course = { id: cId, deptCode, courseNum, name };
@@ -100,10 +103,13 @@ export default function InstructorAddNeedPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sectionId) return;
-
+    if (deadlinePassed) {
+      toast.error('Deadline passed, cannot submit');
+      return;
+    }
     setLoading(true);
     try {
-        if(!section) return;
+      if (!section) return;
       await fetchAddNeed({
         section: section,
         description,
@@ -127,12 +133,12 @@ export default function InstructorAddNeedPage() {
       </h2>
 
       {needDeadline && (
-      <p className="text-md text-gray-700 mb-6">
-        Deadline:{" "}
-        <span className="font-medium">
-          {new Date(needDeadline.endTime).toLocaleString()}
-        </span>
-      </p>
+        <p className="text-md text-gray-700 mb-6">
+          Deadline:{" "}
+          <span className="font-medium">
+            {new Date(needDeadline.endTime).toLocaleString()}
+          </span>
+        </p>
       )}
       {!needDeadline && !deadlineError && (
         <p className="text-md text-gray-500 mb-6">
@@ -204,12 +210,27 @@ export default function InstructorAddNeedPage() {
         <div>
           <h3 className="text-lg font-semibold mb-2">Add a Course to Prerequisites</h3>
           <div className="border p-4 rounded-md shadow-sm mb-4">
-            <SectionFilter onFilterChange={handleFilterChange} mode="large" />
+            <SectionFilter onFilterChange={setFilters} mode="large" />
           </div>
           {loading ? (
             <p>Loading courses…</p>
           ) : (
-            <SectionList sections={filteredSections} onSelectCourse={onSelectCourse} mode='instructorPrereqCourse' askForConfirmation={true}/>
+            <>
+              <SectionList
+                sections={filteredSections}
+                mode="instructorPrereqCourse"
+                onSelectCourse={onSelectCourse}
+                askForConfirmation
+              />
+              <div className="mt-4">
+                <Pagination
+                  page={page}
+                  pageCount={pageData?.totalPages ?? 0}
+                  onPrev={() => setPage(p => Math.max(0,p-1))}
+                  onNext={() => setPage(p => Math.min((pageData?.totalPages ?? 1)-1, p+1))}
+                />
+              </div>
+            </>
           )}
         </div>
 
@@ -224,11 +245,10 @@ export default function InstructorAddNeedPage() {
                 toast.error("The need update deadline has passed. You can no longer submit.");
               }
             }}
-            className={`px-6 py-2 rounded ${
-              deadlinePassed
+            className={`px-6 py-2 rounded ${deadlinePassed
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded"
-            }`}
+              }`}
           >
             Save Need
           </button>

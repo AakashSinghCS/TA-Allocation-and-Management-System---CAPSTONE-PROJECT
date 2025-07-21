@@ -64,7 +64,7 @@ export default function SearchUserBar({ criteria, setCriteria, loading, allowedR
   return (
     <div className={`flex flex-wrap w-full gap-2 ${mode === 'select' ? 'flex-col' : ''}`}>
       <div className="flex flex-wrap gap-2 min-w-0">
-        <StatusIndicator loading={loading}/>
+        {/* <StatusIndicator loading={loading}/> */}
         <select
           value={criteria.role}
           onChange={e => onChangeField('role', e.target.value as any)}

@@ -47,20 +47,6 @@ export default function SectionFilter({
     semester: null,
   });
   const [showFilters, setShowFilters] = useState(false);
-  // const handleFilter = () => {
-  //   onFilterChange({
-  //     deptCode: dCCNSYS.deptCode,
-  //     name: name,
-  //     courseNum: dCCNSYS.courseNum,
-  //     section: dCCNSYS.section,
-  //     year: dCCNSYS.year,
-  //     semester: dCCNSYS.semester,
-  //     type: type,
-  //     day: day,
-  //     startTime: times.startTime,
-  //     endTime: times.endTime
-  //   });
-  // };
 
   useEffect(() => {
     onFilterChange({
@@ -84,32 +70,22 @@ export default function SectionFilter({
     onFilterChange
   ]);
 
-  const smallStyle = "mt-1 block w-full rounded border border-gray-400 px-2 py-1"
-  const bigStyle = "mt-1 block w-full rounded border border-gray-400 px-3 py-2"
-  const smallOrBig = `${mode === 'small' ? smallStyle : bigStyle}`
+  // const smallStyle = "mt-1 block w-full rounded border border-gray-400 px-2 py-1"
+  // const bigStyle = "mt-1 block w-full rounded border border-gray-400 px-3 py-2"
+  // const smallOrBig = `${mode === 'small' ? smallStyle : bigStyle}`
   const loadDeptAndYears = useCallback<() => Promise<AllExistingDeptCodesAndYears>>(async () => {
     const deptCodes = await fetchAllExistingDeptCodes();
     const years = await fetchAllExistingYears();
     return { deptCodes: deptCodes ?? [], years: years ?? [] };
   }, []);
 
-  const inputStyleSmall = 'px-2 py-1 border border-gray-400 rounded-md w-full';
-  const inputStyleBig = 'px-3 py-2 border border-gray-400 rounded-md w-full';
-  const toggleButtonStyleSmall = 'flex items-center justify-center border border-gray-300 rounded hover:bg-gray-100 transition';
-  const toggleButtonStyleBig = 'flex items-center justify-center border border-gray-300 rounded px-1 hover:bg-gray-100 transition';
+  const inputStyleSmall = 'px-2 py-1 border border-gray-400 rounded w-full mt-1';
+  const inputStyleBig = 'px-3 py-2 border border-gray-400 rounded w-full mt-1';
+  const toggleButtonStyleSmall = 'flex items-center justify-center border border-gray-400 rounded hover:bg-gray-100 transition';
+  const toggleButtonStyleBig = 'flex items-center justify-center border border-gray-400 rounded px-1 hover:bg-gray-100 transition';
 
   return (
     <div className={mode === 'small' ? "space-y-1 text-sm" : "space-y-4"}>
-      <div className="flex gap-2">
-        <StatusIndicator loading={loading} />
-        <input
-          type="text"
-          placeholder="Search course name (e.g. 'Introduction to ...') "
-          value={name ?? ""}
-          onChange={(e) => setName(e.target.value)}
-          className={mode === 'small' ? inputStyleSmall : inputStyleBig}
-        />
-      </div>
       {mode === 'small' ? (
         <div
           className="grid gap-2"
@@ -125,10 +101,9 @@ export default function SectionFilter({
               />
             )}
           />
+          
           {showFilters && (
-          <div className="flex flex-col space-y-2">
-      
-              <>
+          <div className="grid grid-cols-1 gap-2">
                 <select
                   value={type ?? ""}
                   onChange={(e) => {
@@ -144,8 +119,14 @@ export default function SectionFilter({
                 </select>
                 <DaySelector mode={mode} onChange={setDay} />
                 <TimeSelector mode={mode} onChange={setTimes} />
-              </>
-            
+             
+                  <input
+                  type="text"
+                  placeholder="Course Name (e.g. 'Introduction to ...') "
+                  value={name ?? ""}
+                  onChange={(e) => setName(e.target.value)}
+                  className={inputStyleSmall}
+                />
             </div>
           )}
           <button
@@ -181,7 +162,7 @@ export default function SectionFilter({
                 <ChevronDown size={20} />
               </button>
             ) : (
-              <div className="flex gap-2">
+              <div className="flex gap-5">
                 <select
                   value={type ?? ''}
                   onChange={(e) => setType(e.target.value === '' ? null : (e.target.value as SectionType))}
@@ -196,7 +177,14 @@ export default function SectionFilter({
                 </select>
                 <DaySelector mode={mode} onChange={setDay} />
                 <TimeSelector mode={mode} onChange={setTimes} />
-                
+                <input
+                    type="text"
+                    placeholder="Course Name (e.g. 'Introduction to ...') "
+                    value={name ?? ""}
+                    onChange={(e) => setName(e.target.value)}
+                    className={inputStyleBig}
+                    title="Course Name (e.g. 'Introduction to Computer Science...')"
+                  />
               </div>
             )}
           </div>
@@ -209,6 +197,10 @@ export default function SectionFilter({
           </button>}
         </div>
       )}
+      <div className="flex gap-2">
+          {/* <StatusIndicator loading={loading} /> */}
+          
+        </div>
     </div>
   );
 }
