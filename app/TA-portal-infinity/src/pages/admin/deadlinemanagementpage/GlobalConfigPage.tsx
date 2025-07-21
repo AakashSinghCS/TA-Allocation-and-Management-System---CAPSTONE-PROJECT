@@ -30,7 +30,19 @@ const DeadlineManagementPage: React.FC = () => {
   const handleTermChange = (field: string, value: string) => {
     setTermConfig((prev) => ({ ...prev, [field]: value }));
   };
+  // Client-side validation for term config dates
+  const isValidTermDates = (start: string, end: string) => {
+    if (!start || !end) return false;
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    return startDate < endDate;
+  };
+
   const handleSaveTerm = async () => {
+    if (!isValidTermDates(termConfig.startDate, termConfig.endDate)) {
+      toast.error("Start date must be before end date.");
+      return;
+    }
     setTermLoading(true);
     setTimeout(() => {
       setTermLoading(false);
@@ -73,8 +85,24 @@ const DeadlineManagementPage: React.FC = () => {
     setDeadlines(updated);
   };
 
-  // Handle save click
+
+  // Client-side validation for start and end time
+  const isValidDeadline = (start: string, end: string) => {
+    if (!start || !end) return false;
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    return startDate < endDate;
+  };
+
+  // Handle save click with validation
   const handleSave = async (deadline: DeadlineDto) => {
+    // Remove seconds for validation
+    const start = deadline.startTime.slice(0, 16);
+    const end = deadline.endTime.slice(0, 16);
+    if (!isValidDeadline(start, end)) {
+      toast.error("Start time must be before end time.");
+      return;
+    }
     try {
       const updated = await updateDeadline(deadline.name, deadline, token || "");
       const data = await fetchDeadlines(token || "");
