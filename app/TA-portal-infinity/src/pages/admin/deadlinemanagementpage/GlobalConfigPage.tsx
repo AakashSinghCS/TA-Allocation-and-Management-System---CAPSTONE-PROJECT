@@ -115,7 +115,7 @@ const DeadlineManagementPage: React.FC = () => {
   };
 
 return (
-    <div className="min-h-screen w-full max-w-6xl mx-auto flex flex-col py-8 px-2 md:px-0">
+    <div className="min-h-screen w-full max-w-6xl mx-auto flex flex-col py-4 px-2 sm:px-4 md:px-6 lg:px-0">
       <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -126,20 +126,20 @@ return (
         draggable
         pauseOnHover
       />
-      <div className="flex flex-row items-center mb-8 gap-6">
-        <div className="flex-1 min-w-0">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#040941] mb-2 tracking-tight">Global Configuration</h1>
-          <p className="text-base md:text-lg text-gray-500 mb-6">Manage term and deadline settings </p>
+      <div className="flex flex-col md:flex-row items-center mb-8 gap-4 md:gap-6">
+        <div className="w-full md:flex-1 min-w-0 flex flex-col items-start">
+          <h1 className="text-2xl sm:text-2xl md:text-3xl font-bold text-[#040941] mb-2 tracking-tight">Global Configuration</h1>
+          <p className="text-sm sm:text-base md:text-lg text-gray-500 mb-4 md:mb-6">Manage term and deadline settings </p>
         </div>
-        <div className="hidden md:flex flex-shrink-0 justify-end items-center h-full pr-2">
-          <LuCalendarCog size={100} color="#e5e7eb" title="Configuration" />
+        <div className="flex justify-center md:justify-end items-center w-full md:w-auto mb-4 md:mb-0">
+          <LuCalendarCog size={72} color="#e5e7eb" title="Configuration" className="block" />
         </div>
       </div>
 
       {/* Global Term Config Section */}
-      <div className="mb-10">
-        <h2 className="text-xl font-semibold text-[#040941] mb-3">Term Configuration</h2>
-        <div className="flex flex-col md:flex-row md:items-end gap-4">
+      <div className="mb-8 sm:mb-10">
+        <h2 className="text-lg sm:text-xl font-semibold text-[#040941] mb-3">Term Configuration</h2>
+        <div className="flex flex-col sm:flex-row sm:flex-wrap md:flex-row md:items-end gap-4">
           <div className="flex flex-col">
             <label className="text-xs text-gray-600 mb-1">Year</label>
             <input
@@ -192,7 +192,7 @@ return (
         </div>
       </div>
 
-      <h2 className="text-xl font-semibold text-[#040941] mb-3">Deadlines</h2>
+      <h2 className="text-lg sm:text-xl font-semibold text-[#040941] mb-3">Deadlines</h2>
       {loading && <p className="text-blue-600 text-center font-semibold animate-pulse">Loading...</p>}
       {error && <p className="text-red-500 text-center font-semibold">{error}</p>}
 
@@ -202,41 +202,41 @@ return (
 
       {!loading && deadlines.length > 0 && (
         <div className="overflow-x-auto">
-          <table className="min-w-full border-separate border-spacing-y-2">
+          <table className="min-w-full border-separate border-spacing-y-2 text-xs sm:text-sm md:text-base">
             <thead>
               <tr className="bg-gray-300 text-[#040941] text-left">
-                <th className="py-2 px-3 rounded-l-lg font-semibold">Deadline Name</th>
-                <th className="py-2 px-3 font-semibold">Start Time</th>
-                <th className="py-2 px-3 font-semibold">End Time</th>
-                <th className="py-2 px-3 rounded-r-lg font-semibold text-center">Action</th>
+                <th className="py-2 px-2 sm:px-3 rounded-l-lg font-semibold">Deadline Name</th>
+                <th className="py-2 px-2 sm:px-3 font-semibold">Start Time</th>
+                <th className="py-2 px-2 sm:px-3 font-semibold">End Time</th>
+                <th className="py-2 px-2 sm:px-3 rounded-r-lg font-semibold text-center">Action</th>
               </tr>
             </thead>
             <tbody>
               {deadlines.map((d, idx) => (
                 <tr key={d.name} className="bg-white hover:bg-blue-50 transition-colors">
-                  <td className="py-2 px-3 text-[#040941] font-medium whitespace-nowrap align-middle">
+                  <td className="py-2 px-2 sm:px-3 text-[#040941] font-medium whitespace-nowrap align-middle">
                     {formatDeadlineName(d.name)}
                   </td>
-                  <td className="py-2 px-3 align-middle">
+                  <td className="py-2 px-2 sm:px-3 align-middle">
                     <input
                       type="datetime-local"
                       value={d.startTime.slice(0, 16)}
                       onChange={(e) => handleChange(idx, "startTime", e.target.value)}
-                      className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                      className="border border-blue-200 rounded px-1 sm:px-2 py-1 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white w-full min-w-[120px]"
                     />
                   </td>
-                  <td className="py-2 px-3 align-middle">
+                  <td className="py-2 px-2 sm:px-3 align-middle">
                     <input
                       type="datetime-local"
                       value={d.endTime.slice(0, 16)}
                       onChange={(e) => handleChange(idx, "endTime", e.target.value)}
-                      className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                      className="border border-blue-200 rounded px-1 sm:px-2 py-1 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white w-full min-w-[120px]"
                     />
                   </td>
-                  <td className="py-2 px-3 align-middle text-center">
+                  <td className="py-2 px-2 sm:px-3 align-middle text-center">
                     <button
                       onClick={() => handleSave(d)}
-                      className="bg-[#040941] text-white px-4 py-1 rounded hover:opacity-90 text-sm font-semibold shadow"
+                      className="bg-[#040941] text-white px-3 sm:px-4 py-1 rounded hover:opacity-90 text-xs sm:text-sm font-semibold shadow w-full"
                     >
                       Save
                     </button>
