@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.ExportedSectionData;
@@ -25,9 +24,11 @@ import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.models.SectionSchedule;
+import com.infinity.courseservice.models.Semester;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
+import com.infinity.courseservice.repositories.SemesterRepository;
 import com.infinity.courseservice.utility.SectionMapper;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -44,65 +45,45 @@ public class SectionService {
     private final UserInterface userInterface;
     private final ApplicationInterface applicationInterface;
     private final EnrollmentService enrollmentService;
+    private final SemesterRepository semesterRepository;
     private final SectionMapper sectionMapper;
 
     public SectionDto getSectionById(Long id) {
 
         Section section = sectionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No section with id " + id));
-        Course course = section.getCourse();
 
-        return new SectionDto(
-                section.getId(),
-                section.getYear(),
-                section.getSemester(),
-                section.getSection(),
-                section.getType(),
-                new CourseDto(
-                        course.getId(),
-                        course.getDeptCode(),
-                        course.getName(),
-                        course.getCourseNum()
-                )
-        );
+        return sectionMapper.sectionToDto(section);
     }
 
     @Transactional
     public SectionDto addSection(Long courseId, SectionAddDtoRequest request) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("Course not found"));
+        Semester semester = semesterRepository.findByYearAndSemester(request.year(), request.semester())
+            .orElseThrow(() -> new NotFoundException("Semester doesn't exist"));
 
-        Section section = new Section(request.year(), request.semester(), request.section(), request.type(), course, request.instructorId());
+        Section section = new Section(semester, request.section(), request.type(), course, request.instructorId());
         try {
             sectionRepository.save(section);
         } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException("Section already exists " + ex);
         }
 
-        return new SectionDto(section.getId(), section.getYear(), section.getSemester(), section.getSection(),
-                section.getType(),
-                new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum()));
+        return sectionMapper.sectionToDto(section);
     }
 
     public SectionDto updateSection(Long sectionId, CourseRequest request) {
         Section section = sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
-        section.setYear(request.year());
+        Semester semester = semesterRepository.findByYearAndSemester(request.year(), request.semester())
+                .orElseThrow(() -> new NotFoundException("Semester doesn't exist"));
         section.setSection(request.section());
         section.setType(request.type());
-        section.setSemester(request.semester());
+        section.setSemester(semester);
         section.setInstructorId(request.instructorId());
         sectionRepository.save(section);
-        return new SectionDto(section.getId(),
-                section.getYear(),
-                section.getSemester(),
-                section.getSection(),
-                section.getType(),
-                new CourseDto(
-                        section.getCourse().getId(),
-                        section.getCourse().getDeptCode(),
-                        section.getCourse().getName(),
-                        section.getCourse().getCourseNum()));
+        return sectionMapper.sectionToDto(section);
     }
 
     public String deleteSection(Long sectionId) {
@@ -184,36 +165,15 @@ public class SectionService {
     public List<SectionDto> getInstructorSections(Long instructorId) {
         List<Section> sections = sectionRepository.findAllByInstructorId(instructorId);
         return sections.stream()
-                .map(sec -> new SectionDto(sec.getId(),
-                        sec.getYear(),
-                        sec.getSemester(),
-                        sec.getSection(),
-                        sec.getType(),
-                        new CourseDto(
-                                sec.getCourse().getId(),
-                                sec.getCourse().getDeptCode(),
-                                sec.getCourse().getName(),
-                                sec.getCourse().getCourseNum())))
+                .map(sec -> sectionMapper.sectionToDto(sec))
                 .toList();
     }
 
     public SectionDtoWithInstructorId getSectionWithInstructorIdById(Long id) {
         Section section = sectionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No section with id " + id));
-        Course course = section.getCourse();
 
-        return new SectionDtoWithInstructorId(
-                section.getId(),
-                section.getInstructorId(),
-                section.getYear(),
-                section.getSemester(),
-                section.getSection(),
-                section.getType(),
-                new CourseDto(
-                        course.getId(),
-                        course.getDeptCode(),
-                        course.getName(),
-                        course.getCourseNum()));
+        return sectionMapper.sectionDtoWithInstructorId(section);
     }
 
     @Transactional
@@ -224,6 +184,8 @@ public class SectionService {
         if (deptCode.isEmpty() || courseNum.isEmpty()) {
             throw new BadRequestException("Both deptCode and courseNum are required and cannot be blank.");
         }
+        Semester semester = semesterRepository.findByYearAndSemester(request.year(), request.semester())
+                .orElseThrow(() -> new NotFoundException("Semester doesn't exist"));
 
         Course course = courseRepository
                 .findByDeptCodeAndCourseNum(deptCode, courseNum)
@@ -236,8 +198,7 @@ public class SectionService {
                 });
 
         Section section = new Section(
-                request.year(),
-                request.semester(),
+                semester,
                 request.section(),
                 request.type(),
                 request.instructorId(),
@@ -281,27 +242,7 @@ public class SectionService {
         List<Section> sections = sectionRepository.findAllById(sectionIds);
         
         return sections.stream()
-                .map(section -> new ExportedSectionData(
-                        section.getId(),
-                        section.getYear(),
-                        section.getSemester(),
-                        section.getSection(),
-                        section.getType().toString(),
-                        section.getCourse().getId(),
-                        section.getCourse().getDeptCode(),
-                        section.getCourse().getCourseNum(),
-                        section.getCourse().getName(),
-                        null, // needId - would need additional query
-                        null, // needDescription
-                        null, // requiredGradingHours
-                        null, // numHoursCurrentlyAllocated
-                        null, // allocationId
-                        null, // studentId
-                        null, // studentFirstName
-                        null, // studentLastName
-                        null, // isConfirmed
-                        null  // numberOfHours
-                ))
+                .map(section -> sectionMapper.exportedSectionData(section))
                 .collect(Collectors.toList());
     }
 
@@ -336,18 +277,7 @@ public class SectionService {
         List<SectionSchedule> schedules = sectionScheduleRepository.findBySection(section);
         SectionSchedule schedule = schedules.isEmpty() ? null : schedules.get(0);
         
-        return new SectionCsvData(
-                section.getCourse().getDeptCode(),
-                section.getCourse().getCourseNum(),
-                section.getCourse().getName(),
-                section.getYear(),
-                section.getSemester(),
-                section.getSection(),
-                section.getType().toString(),
-                schedule != null ? schedule.getDay() : "",
-                schedule != null && schedule.getStartTime() != null ? schedule.getStartTime().toString() : "",
-                schedule != null && schedule.getEndTime() != null ? schedule.getEndTime().toString() : ""
-        );
+        return sectionMapper.sectionCsvData(section, schedule);
     }
 
     public SectionDto getByCourseIdAndSectionName(Long courseId, String section) {

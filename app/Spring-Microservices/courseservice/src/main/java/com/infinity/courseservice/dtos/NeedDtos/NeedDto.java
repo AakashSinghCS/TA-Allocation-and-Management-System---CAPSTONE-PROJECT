@@ -2,7 +2,6 @@ package com.infinity.courseservice.dtos.NeedDtos;
 
 import java.util.List;
 
-import com.infinity.courseservice.dtos.SemesterDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 
 public record NeedDto(
@@ -11,6 +10,7 @@ public record NeedDto(
         String description,
         int requiredGradingHours,
         int numHoursCurrentlyAllocated,
-        SemesterDto semester,
+        Integer year,
+        String semester,
         List<CourseDto> prerequisites
         ) {}

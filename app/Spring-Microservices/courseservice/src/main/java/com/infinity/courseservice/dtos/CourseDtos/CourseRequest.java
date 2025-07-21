@@ -1,9 +1,10 @@
 package com.infinity.courseservice.dtos.CourseDtos;
 
-import com.infinity.courseservice.dtos.SemesterDto;
 import com.infinity.courseservice.enums.SectionType;
 
 import io.micrometer.common.lang.Nullable;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 
 public record CourseRequest(
@@ -25,7 +26,14 @@ public record CourseRequest(
         String section,
         @Nullable SectionType type,
         @Nullable 
-        SemesterDto semester,
+        @Min(value = 1900, message = "Year must be ≥ 1900")
+        @Max(value = 2199, message = "Year must be ≤ 2199")
+        Integer year,
+
+        @Nullable 
+        @Pattern(regexp = "^[WS][12]$",
+             message = "Semester must be W1/W2/S1/S2")
+        String semester,
         @Nullable String day,
         @Nullable String startTime,
         @Nullable String endTime,

@@ -25,6 +25,8 @@ import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.QualificationRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.StudentQualificationRepository;
+import com.infinity.courseservice.utility.CourseMapper;
+import com.infinity.courseservice.utility.QualificationMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -40,6 +42,8 @@ public class QualificationService {
     private final StudentQualificationRepository studentQualificationRepository;
     private final CourseRepository courseRepository;
     private final CourseService courseService;
+    private final CourseMapper courseMapper;
+    private final QualificationMapper qualificationMapper;
 
     public QualificationDto findQualification(Long id) {
         Qualification qualification = qualificationRepository.findById(id)
@@ -49,7 +53,7 @@ public class QualificationService {
         // StudentDto stu = studentClient.getStudentById(qualification.getStudentId());
         // return new QualificationDto(course, qualification.getDescription(), stu);
         // }
-        return new QualificationDto(course, qualification.getDescription(), null);
+        return qualificationMapper.toDto(qualification, course);
     }
 
     public List<QualificationDtoWithId> findQualificationsByDeptCode(String deptCode) {
@@ -57,18 +61,9 @@ public class QualificationService {
 
         return qualifications.stream().map(q -> {
             Course course = q.getCourse();
-            CourseDto courseDto = new CourseDto(
-                    course.getId(),
-                    course.getDeptCode(),
-                    course.getName(),
-                    course.getCourseNum());
+            CourseDto courseDto = courseMapper.courseToDto(course);
 
-            return new QualificationDtoWithId(
-                    q.getId(),
-                    courseDto,
-                    q.getDescription(),
-                    null // no student info in Qualification
-            );
+            return qualificationMapper.toDtoWithId(q, courseDto);
         }).toList();
     }
 
@@ -92,11 +87,7 @@ public class QualificationService {
             Qualification saved = qualificationRepository.saveAndFlush(qualification);
 
             // 4) Return your DTO (no student in this flow, so null)
-            return new QualificationDtoWithId(
-                    saved.getId(),
-                    courseDto,
-                    saved.getDescription(),
-                    /* student = */ null);
+            return qualificationMapper.toDtoWithId(qualification, courseDto);
 
         } catch (DataIntegrityViolationException ex) {
             // This will catch any underlying JDBC/Hibernate constraint violation
@@ -153,19 +144,7 @@ public class QualificationService {
                 .flatMap(section -> {
                     List<Qualification> quals = qualificationRepository.findAllByCourse(section.getCourse());
                     return quals.stream()
-                            .map(q -> new QualificationWithSectionDto(
-                                    // course-level
-                                    section.getCourse().getId(),
-                                    // section-level
-                                    section.getId(),
-                                    section.getYear(),
-                                    section.getSemester(),
-                                    section.getSection(),
-                                    section.getType(),
-                                    // qualification-level
-                                    q.getId(),
-                                    q.getDeptCode(),
-                                    q.getDescription()));
+                            .map(q -> qualificationMapper.toQualificationWithSectionDto(section, q));
                 })
                 .collect(Collectors.toList());
     }
