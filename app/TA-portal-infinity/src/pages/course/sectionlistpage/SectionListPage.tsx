@@ -136,7 +136,7 @@ export default function SectionListPage() {
           <div className="flex gap-2">
             <Link
               to="/user/coordinator/sections/add"
-              className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors"
+              className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] hover:text-[#0089b2] transition-colors"
             >
               Add New Section or Course
             </Link>

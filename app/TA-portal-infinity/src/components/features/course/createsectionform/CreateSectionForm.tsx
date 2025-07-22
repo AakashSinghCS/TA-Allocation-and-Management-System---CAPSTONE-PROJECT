@@ -237,7 +237,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
               </button>
             </div>
           ) : (
-            <div>
+            <div className="w-full max-w-full min-w-0">
               <p className="text-sm text-gray-400">Search for an Instructor and click on SELECT in the far right column. Don't select any Instructor, if you wish not to change instructors.</p>
               <UserBrowsingViewer
                 mode="select"
