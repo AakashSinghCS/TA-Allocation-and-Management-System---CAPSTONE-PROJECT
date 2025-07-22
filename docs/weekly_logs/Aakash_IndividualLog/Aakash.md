@@ -1774,3 +1774,76 @@ Retrospective: Process is going well. Team members are working hard to get their
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin next assigned coding task.
+
+## Sunday 7/20 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.20.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page (Coordinator): Validation checks + improved workflow
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 50% complete
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Modified assign student to exam form to auto update the exams dropdown without refreshing the page once a new exam is added. Added startTime and endTime validation to ensure consistency with students schedule viewer calendar. Tomorrow, I have to display the students availabilites once student is selected from the dropdown to improve workflow and UX. I also have to ensure the student has a graduate application submitted before assigning them to an exam. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
+## Monday 7/21 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.21.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page (Coordinator): Validation checks + improved workflow
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Display the students availabilites once student is selected from the dropdown to improve workflow and UX in assign student to exam form. Ensured the student has a graduate application submitted before assigning them to an exam. Also, if task selected is "Coordination", verified that start and end times match the exams start and end time. Displayed user-friendly error messages at each step to guide the coordinator through the process.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
