@@ -38,13 +38,13 @@ export default function ProfileDetailsSection<T extends User>({
     const baseFields = fields.filter((k) => isCoordinatorOrAdmin ? k !== "createdAt" : k !== "createdAt" && k !== "id");
     const displayFields = filterFieldsByRole(baseFields, record.roles ?? []);
 
-    const editFields = [
+   const editFields = [
         "firstName" as keyof T,
         "lastName" as keyof T,
-        ...displayFields.filter(k => k !== "roles"),
-        ...displayFields.filter(k => k !== "id"),
+        ...displayFields.filter(
+            k => k !== "roles" && k !== "id"
+        ),
     ];
-
     const isEditable = loggedInUserId === record.id;
 
     return (
@@ -165,11 +165,14 @@ export default function ProfileDetailsSection<T extends User>({
 }
 function filterFieldsByRole<T>(baseFields: (keyof T)[], recordRoles: UserRole[]): (keyof T)[] {
     let displayFields = [...baseFields];
+    // Remove instructor-specific fields for non-instructors
     if (!recordRoles.includes("INSTRUCTOR")) {
         displayFields = displayFields.filter(
             (k) => k !== ("employeeNum" as keyof T) && k !== ("dept" as keyof T)
         );
-    } else if (!recordRoles.includes("STUDENT")) {
+    }
+    // Remove student-specific fields for non-students
+    if (!recordRoles.includes("STUDENT")) {
         displayFields = displayFields.filter(
             (k) =>
                 k !== ("studentNum" as keyof T) &&
