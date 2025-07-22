@@ -42,7 +42,8 @@ describe('ProfileDetailsSection', () => {
                     firstName: 'First Name',
                     lastName: 'Last Name',
                     createdAt: 'Created At',
-                    roles: 'Roles'
+                    roles: 'Roles',
+                    active: 'Active'
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />
@@ -62,7 +63,8 @@ describe('ProfileDetailsSection', () => {
                     firstName: 'First Name',
                     lastName: 'Last Name',
                     createdAt: 'Created At',
-                    roles: "roles"
+                    roles: "roles",
+                    active: 'Active'
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />
@@ -72,16 +74,7 @@ describe('ProfileDetailsSection', () => {
         expect(screen.getByTestId('edit-section')).toBeInTheDocument();
     });
 
-    vi.mock('../changerolemodal/ChangeRolesModal', () => ({
-        default: (props: any) => (
-            <div data-testid="change-roles-modal">
-                <button onClick={() => props.onSave(["INSTRUCTOR"])}>Mock Save</button>
-                <button onClick={props.onClose}>Mock Cancel</button>
-            </div>
-        ),
-    }));
-
-    it('shows Change Roles button for admin', () => {
+    it('shows Manage Roles button for admin', () => {
         setupAuth(999, ['ADMIN']);
         render(
             <ProfileDetailsSection
@@ -94,14 +87,15 @@ describe('ProfileDetailsSection', () => {
                     email: 'Test@test.com',
                     createdAt: 'Created At',
                     roles: 'Roles',
+                    active: 'Active'
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />
         );
-        expect(screen.getByText('Change Roles')).toBeInTheDocument();
+        expect(screen.getByText('Manage Roles')).toBeInTheDocument();
     });
 
-    it('does not show Change Roles button for non-admin', () => {
+    it('does not show Manage Roles button for non-admin', () => {
         setupAuth(999, ['COORDINATOR']);
         render(
             <ProfileDetailsSection
@@ -114,14 +108,15 @@ describe('ProfileDetailsSection', () => {
                     email: 'test@test.com',
                     createdAt: 'Created At',
                     roles: 'Roles',
+                    active: 'Active'
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />
         );
-        expect(screen.queryByText('Change Roles')).not.toBeInTheDocument();
+        expect(screen.queryByText('Manage Roles')).not.toBeInTheDocument();
     });
 
-    it('opens Change Roles modal when button is clicked', () => {
+    it('opens role editing form when Manage Roles button is clicked', () => {
         setupAuth(999, ['ADMIN']);
         render(
             <ProfileDetailsSection
@@ -134,13 +129,14 @@ describe('ProfileDetailsSection', () => {
                     email: 'test@test.com',
                     createdAt: 'Created At',
                     roles: 'Roles',
+                    active: 'Active'
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />
         );
 
-        fireEvent.click(screen.getByText('Change Roles'));
-        expect(screen.getByTestId('change-roles-modal')).toBeInTheDocument();
+        fireEvent.click(screen.getByText('Manage Roles'));
+        expect(screen.getByText('Update user role assignments')).toBeInTheDocument();
     });
 
 });

@@ -20,17 +20,6 @@ function getInitials(firstName: string, lastName: string): string {
   return first + last;
 }
 
-// Helper function to generate a consistent bluish color based on name
-function getAvatarColor(firstName: string, lastName: string): string {
-  const colors = [
-    'bg-blue-500', 'bg-blue-600', 'bg-indigo-500', 'bg-indigo-600', 
-    'bg-cyan-500', 'bg-cyan-600', 'bg-sky-500', 'bg-sky-600'
-  ];
-  const name = (firstName + lastName).toLowerCase();
-  const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return colors[hash % colors.length];
-}
-
 // Helper function to calculate profile completion percentage
 function calculateProfileCompletion<T extends User>(user: T, profileFields: (keyof T)[]): number {
   // Count non-empty, meaningful fields from the provided profileFields
@@ -120,7 +109,6 @@ export default function ProfileSection<T extends User>({
   const profileDetails = createProfileDetails<T>(user, profileFields, fieldLabels);
 
   const initials = getInitials(user.firstName || '', user.lastName || '');
-  const avatarColor = getAvatarColor(user.firstName || '', user.lastName || '');
   const profileCompletion = calculateProfileCompletion(user, profileFields);
   const userStatus = getUserStatus(user);
   const yearsActive = getYearsActive(user);
@@ -128,7 +116,7 @@ export default function ProfileSection<T extends User>({
 
   const header = big ? (
     <div className="flex items-center space-x-3 mb-3">
-      <div className={`w-12 h-12 rounded-full ${avatarColor} flex items-center justify-center text-white font-bold text-xl shadow-md`}>
+      <div className="w-16 h-16 rounded-full bg-blue-200 flex items-center justify-center text-black font-bold text-3xl shadow-md">
         {initials}
       </div>
       <div>
@@ -148,7 +136,7 @@ export default function ProfileSection<T extends User>({
     </div>
   ) : (
     <div className="flex items-center space-x-2 mb-2">
-      <div className={`w-9 h-9 rounded-full ${avatarColor} flex items-center justify-center text-white font-semibold text-lg shadow-md`}>
+      <div className="w-9 h-9 rounded-full bg-blue-200 flex items-center justify-center text-white font-semibold text-lg shadow-md">
         {initials}
       </div>
       <div className="text-sm font-semibold break-words">

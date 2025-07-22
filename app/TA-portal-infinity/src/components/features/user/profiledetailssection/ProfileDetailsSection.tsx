@@ -71,7 +71,7 @@ export default function ProfileDetailsSection<T extends User>({
                     )}
                     {isAdmin && !isEdit && !isEditRoles && (
                         <button
-                            className="absolute top-4 right-4 bg-orange-600 text-white px-3 py-2 rounded-lg hover:bg-orange-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm flex items-center gap-2"
+                            className="absolute top-4 right-4 bg-[#040941] text-white px-3 py-2 rounded-lg hover:bg-[#040941]/90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm flex items-center gap-2"
                             onClick={() => setIsEditRoles(true)}
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,8 +110,10 @@ export default function ProfileDetailsSection<T extends User>({
                         />
                     </div>
                 )}
-                <div className="lg:col-span-2">
-                    {isEditRoles && (
+
+                {/* Edit Roles Section - Only visible when editing roles */}
+                {isEditRoles && (
+                    <div className="relative">
                         <EditRolesForm
                             currentRoles={record.roles ?? []}
                             onSave={async (newRoles: UserRole[]) => {
@@ -126,10 +128,9 @@ export default function ProfileDetailsSection<T extends User>({
                             }}
                             onCancel={() => setIsEditRoles(false)}
                         />
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
-            
             {/* Toast Container for this component */}
             <ToastContainer
                 position="top-right"
@@ -146,7 +147,6 @@ export default function ProfileDetailsSection<T extends User>({
         </div>
     );
 }
-
 function filterFieldsByRole<T>(baseFields: (keyof T)[], recordRoles: UserRole[]): (keyof T)[] {
     let displayFields = [...baseFields];
     if (!recordRoles.includes("INSTRUCTOR")) {
@@ -162,6 +162,5 @@ function filterFieldsByRole<T>(baseFields: (keyof T)[], recordRoles: UserRole[])
                 k !== ("schoolYear" as keyof T)
         );
     }
-
     return displayFields;
 }
