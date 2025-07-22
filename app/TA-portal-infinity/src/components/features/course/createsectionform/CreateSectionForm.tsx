@@ -25,9 +25,10 @@ export interface CreateSectionData {
 }
 interface Props {
   onCreateSection: (data: CreateSectionData) => void;
+  mode?: 'course' | 'section';
 }
 
-export default function CreateSectionForm({ onCreateSection }: { onCreateSection: (data: CreateSectionData) => void }) {
+export default function CreateSectionForm({ onCreateSection, mode }: Props) {
   const navigate = useNavigate()
   const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
   // form state
@@ -41,7 +42,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
     type: null,
     instructorId: null,
     sectionSchedules: null,
-    isCourse: false
+    isCourse: mode === 'course' ? true : false
   })
 
   const handleChange = <K extends keyof CreateSectionData>(
@@ -91,30 +92,32 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      <label className="inline-flex items-center gap-2">
-        <input
-          type="checkbox"
-          checked={form.isCourse}
-          onChange={e => {
-            const isCourse = e.target.checked
-            setForm(f => ({
-              ...f,
-              isCourse,
-              ...(isCourse
-                ? {
-                  section: null,
-                  year: null,
-                  semester: null,
-                  type: null,
-                  instructorId: null,
-                  sectionSchedules: null
-                }
-                : {})
-            }))
-          }}
-        />
-        <span>Create a course</span>
-      </label>
+      {mode === undefined && (
+        <label className="inline-flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={form.isCourse}
+            onChange={e => {
+              const isCourse = e.target.checked
+              setForm(f => ({
+                ...f,
+                isCourse,
+                ...(isCourse
+                  ? {
+                    section: null,
+                    year: null,
+                    semester: null,
+                    type: null,
+                    instructorId: null,
+                    sectionSchedules: null
+                  }
+                  : {})
+              }))
+            }}
+          />
+          <span>Create a course</span>
+        </label>
+      )}
 
       {/* always enabled */}
       <div>
@@ -337,7 +340,7 @@ export default function CreateSectionForm({ onCreateSection }: { onCreateSection
           type="submit"
           className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors flex-1"
         >
-          Create Section
+          {mode === 'course' ? 'Create Course' : mode === 'section' ? 'Create Section' : 'Create Section'}
         </button>
         <button
           type="button"
