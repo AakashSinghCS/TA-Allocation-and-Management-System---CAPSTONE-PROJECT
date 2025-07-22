@@ -20,9 +20,42 @@ describe('LoginPage', () => {
       </AuthProvider>
     );
 
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    const emailInput = screen.getByLabelText(/email/i);
+    expect(emailInput).toBeInTheDocument();
+    const passwordInput = screen.getByLabelText(/password/i);
+    expect(passwordInput).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
+
+    // Eye icon should not be present when password is empty
+    expect(screen.queryByRole('button', { name: /show password|hide password/i })).not.toBeInTheDocument();
+
+    // Enter a password and check for the eye icon
+    fireEvent.change(passwordInput, { target: { value: 'testpass123!' } });
+    expect(screen.getByRole('button', { name: /show password|hide password/i })).toBeInTheDocument();
+  });
+
+  it('toggles password visibility when eye icon is clicked', () => {
+    render(
+      <AuthProvider>
+        <MemoryRouter>
+          <LoginPage />
+        </MemoryRouter>
+      </AuthProvider>
+    );
+    const passwordInput = screen.getByLabelText(/password/i);
+    // Eye icon should not be present initially
+    expect(screen.queryByRole('button', { name: /show password|hide password/i })).not.toBeInTheDocument();
+    // Enter a password
+    fireEvent.change(passwordInput, { target: { value: 'testpass123!' } });
+    const toggleButton = screen.getByRole('button', { name: /show password|hide password/i });
+    // Default type is password
+    expect(passwordInput).toHaveAttribute('type', 'password');
+    // Click to show password
+    fireEvent.click(toggleButton);
+    expect(passwordInput).toHaveAttribute('type', 'text');
+    // Click again to hide password
+    fireEvent.click(toggleButton);
+    expect(passwordInput).toHaveAttribute('type', 'password');
   });
 
   it('shows error on invalid login', async () => {
