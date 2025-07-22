@@ -37,12 +37,13 @@ export default function AuditDetailModal({
           <p className="text-red-600">Error: {error.message}</p>
         ) : data ? (
           <>
-            <p className="mb-4 text-sm text-gray-600">
-              <strong>{data.service}</strong> – <strong>{data.actorId}</strong>{' '}
-              {data.action.toLowerCase()}{' '}
-              {data.entityType} #{data.entityId} at{' '}
-              {new Date(data.timestamp).toLocaleString()}
-            </p>
+                <p className="mb-4 text-sm text-gray-600">
+                  <strong>{data.service}</strong> – <strong>{data.actorName}</strong>{' '}
+                  ({data.actorId}) {data.action.toLowerCase()}{" "}
+                  <strong>{data.entityName}</strong> ({data.entityType} #{data.entityId}) at{" "}
+                  {new Date(data.timestamp).toLocaleString()}
+                </p>
+
 
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>

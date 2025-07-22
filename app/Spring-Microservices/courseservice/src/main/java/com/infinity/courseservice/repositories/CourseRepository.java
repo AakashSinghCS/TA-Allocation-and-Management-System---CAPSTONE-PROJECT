@@ -91,9 +91,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     List<Course> findAllByDeptCode(String deptCode);
 
-    @Query("SELECT DISTINCT s.course FROM Section s WHERE s.instructorId = :instructorId")
-    List<Course> findDistinctCoursesByInstructorId(@Param("instructorId") Long instructorId);
-
     @Query(
       value = """
         SELECT DISTINCT new com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto(
@@ -146,4 +143,23 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
       @Param("endTime")   java.time.LocalTime endTime,
       Pageable pageable
     );
+
+    @Query("""
+            SELECT DISTINCT s.course
+            FROM Section s
+            WHERE s.year = :year
+              AND s.semester = :semester
+              AND s.course.id NOT IN (
+                  SELECT cn.course.id
+                  FROM CourseNeed cn
+                  WHERE cn.year = :year
+                    AND cn.semester = :semester
+              )
+            """)
+    List<Course> findCoursesWithoutNeedsByYearAndSemester(@Param("year") Integer year,
+            @Param("semester") String semester);
+
+
+    @Query("SELECT DISTINCT s.course FROM Section s WHERE s.instructorId = :instructorId")
+    List<Course> findDistinctCoursesByInstructorId(@Param("instructorId") Long instructorId);
 }

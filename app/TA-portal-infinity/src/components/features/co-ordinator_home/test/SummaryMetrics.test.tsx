@@ -23,7 +23,7 @@ describe('SummaryMetrics', () => {
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('Offers Rejected')).toBeInTheDocument();
     expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('Sections in System')).toBeInTheDocument();
+    expect(screen.getByText('Total Sections')).toBeInTheDocument();
     expect(screen.getByText('5')).toBeInTheDocument();
   });
 });

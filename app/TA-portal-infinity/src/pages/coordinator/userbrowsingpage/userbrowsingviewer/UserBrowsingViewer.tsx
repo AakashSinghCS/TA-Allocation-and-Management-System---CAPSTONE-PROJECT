@@ -13,6 +13,7 @@ import { useDebounce } from "../../../../utility/pagination/useDebounce";
 import { fetchActivate, fetchDeactivate } from "../../../../api/admin/fetchActivation";
 import React from "react";
 import { StatusIndicator } from "../../../../components/ui/statusindicator/StatusIndicator";
+import { UserRole } from "../../../../interfaces/enum/UserRole";
 
 interface UserBrowsingViewerProps {
     mode?: 'view' | 'select';

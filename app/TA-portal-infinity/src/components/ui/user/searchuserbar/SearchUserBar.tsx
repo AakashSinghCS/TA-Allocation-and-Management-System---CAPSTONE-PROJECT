@@ -2,7 +2,14 @@ import { useAuth } from "../../../../context/AuthContext";
 import { UserRole } from "../../../../interfaces/enum/UserRole";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from "react";
+import { useAuth } from "../../../../context/AuthContext";
+import { UserRole } from "../../../../interfaces/enum/UserRole";
 export interface SearchCriteria {
+  role: "Student" | "Instructor" | "Coordinator" | "";
+  firstname?: string;
+  lastname?: string;
+  universityNumber?: string;
+  userId?: string;
   role: "Student" | "Instructor" | "Coordinator" | "";
   firstname?: string;
   lastname?: string;
@@ -39,6 +46,8 @@ export default function SearchUserBar({ criteria, setCriteria, loading, allowedR
     });
   };
 
+  const smallModePadding = mode === "select" ? "px-2 py-1" : ""
+  const isFlexCol = mode ==="select" ? "flex-col" : ""
   return (
     <div className={`flex flex-wrap w-full gap-2 ${mode === 'select' ? 'flex-col' : ''}`}>
       <div className="flex flex-wrap gap-2 min-w-0">

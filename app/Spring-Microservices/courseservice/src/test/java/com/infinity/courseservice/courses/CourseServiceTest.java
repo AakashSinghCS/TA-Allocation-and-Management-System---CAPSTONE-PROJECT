@@ -3,7 +3,10 @@ package com.infinity.courseservice.courses;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -366,64 +369,64 @@ public class CourseServiceTest {
                                 () -> courseService.getCourseNeedAndAllocations(404L, 2025, "W1"));
         }
 
-        // @Test
-        // void testGetInstructorCourseNeedsAndAllocations_Success() {
-        // Long instructorId = 77L;
+        @Test
+        void testGetInstructorCourseNeedsAndAllocations_Success() {
+        Long instructorId = 77L;
 
-        // SectionDto section1 = new SectionDto(
-        // 10L, 2025, "W1", "001", SectionType.LECTURE,
-        // new CourseDto(1L, "COSC", "Security", "430"));
+        SectionDto section1 = new SectionDto(
+        10L, 2025, "W1", "001", SectionType.LECTURE,
+        new CourseDto(1L, "COSC", "Security", "430"));
 
-        // SectionDto section2 = new SectionDto(
-        // 11L, 2025, "W1", "002", SectionType.LABORATORY,
-        // new CourseDto(1L, "COSC", "Security", "430"));
-        // OfferDto offer = new OfferDto(1L, true, "description");
-        // NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1", null);
-        // AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
-        // 42L,
-        // new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-        // 12345678,
-        // "COSC", 2025, 3, null, null, null),
-        // offer,
-        // true,
-        // 10,
-        // new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
-        // new CourseDto(1L, "COSC", "CS", "112")));
+        SectionDto section2 = new SectionDto(
+        11L, 2025, "W1", "002", SectionType.LABORATORY,
+        new CourseDto(1L, "COSC", "Security", "430"));
+        OfferDto offer = new OfferDto(1L, true, "description");
+        NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1", null);
+        AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
+        42L,
+        new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
+        12345678,
+        "COSC", 2025, 3, null, null, null,true),
+        offer,
+        true,
+        10,
+        new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
+        new CourseDto(1L, "COSC", "CS", "112")));
 
-        // when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1,
-        // section2));
-        // when(needService.getNeed(1L, 2025, "W1")).thenReturn(need);
-        // when(applicationInterface.getAllocationsBySectionId(any())).thenReturn(ResponseEntity.ok(List.of(dto)));
+        when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1,
+        section2));
+        when(needService.getNeed(1L, 2025, "W1")).thenReturn(need);
+        when(applicationInterface.getAllocationsBySectionId(any())).thenReturn(ResponseEntity.ok(List.of(dto)));
 
-        // List<CourseNeedAndAllocations> result = courseService
-        // .getInstructorCourseNeedsAndAllocations(instructorId);
+        List<CourseNeedAndAllocations> result = courseService
+        .getInstructorCourseNeedsAndAllocations(instructorId);
 
-        // assertEquals(2, result.size());
-        // assertEquals("Security", result.get(0).section().course().name());
-        // assertEquals("Labs", result.get(0).need().description());
-        // assertEquals("Alice",
-        // result.get(0).allocations().get(0).student().firstName());
-        // }
+        assertEquals(2, result.size());
+        assertEquals("Security", result.get(0).section().course().name());
+        assertEquals("Labs", result.get(0).need().description());
+        assertEquals("Alice",
+        result.get(0).allocations().get(0).student().firstName());
+        }
 
-        // @Test
-        // void
-        // testGetInstructorCourseNeedsAndAllocations_DoesNotIgnorenWhenMissingNeed() {
-        // Long instructorId = 77L;
+        @Test
+        void
+        testGetInstructorCourseNeedsAndAllocations_DoesNotIgnorenWhenMissingNeed() {
+        Long instructorId = 77L;
 
-        // SectionDto section1 = new SectionDto(
-        // 10L, 2025, "W1", "001", SectionType.LECTURE,
-        // new CourseDto(1L, "COSC", "Security", "430"));
+        SectionDto section1 = new SectionDto(
+        10L, 2025, "W1", "001", SectionType.LECTURE,
+        new CourseDto(1L, "COSC", "Security", "430"));
 
-        // when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1));
-        // when(needService.getNeed(1L, 2025, "W1")).thenThrow(new
-        // NotFoundException("Need not found"));
-        // when(applicationInterface.getAllocationsBySectionId(10L))
-        // .thenReturn(ResponseEntity.ok(Collections.emptyList()));
-        // List<CourseNeedAndAllocations> result = courseService
-        // .getInstructorCourseNeedsAndAllocations(instructorId);
+        when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1));
+        when(needService.getNeed(1L, 2025, "W1")).thenThrow(new
+        NotFoundException("Need not found"));
+        when(applicationInterface.getAllocationsBySectionId(10L))
+        .thenReturn(ResponseEntity.ok(Collections.emptyList()));
+        List<CourseNeedAndAllocations> result = courseService
+        .getInstructorCourseNeedsAndAllocations(instructorId);
 
-        // assertEquals(1, result.size());
-        // }
+        assertEquals(1, result.size());
+        }
 
         @Test
         void testGetInstructorSpecificCourseNeedsAndAllocations_WithCourseFilter_Success() {
@@ -629,10 +632,8 @@ public class CourseServiceTest {
 
         @Test
         void shouldReturnCourseDtoWhenFound() {
-                Course course = new Course();
+                Course course = new Course("COSC", "CAPSTONE", "499");
                 course.setId(1L);
-                course.setDeptCode("COMP");
-                course.setCourseNum("101");
 
                 CourseDto dto = new CourseDto(1L, "COSC", "CAPSTONE", "499");
 
@@ -689,4 +690,18 @@ public class CourseServiceTest {
                 assertEquals("Calculus", result.get(1).name());
                 assertEquals("101", result.get(1).courseNum());
         }
+        @Test
+        void testGetCoursesWithoutNeeds() {
+                Course course = new Course("COSC", "CAPSTONE", "499");
+                course.setId(1L);
+                CourseDto dto = new CourseDto(1L, "COSC", "CAPSTONE", "499");
+                when(courseRepository.findCoursesWithoutNeedsByYearAndSemester(any(), any()))
+                                .thenReturn(List.of(course));
+                when(courseMapper.courseToDto(course)).thenReturn(dto);
+
+                List<CourseDto> result = courseService.getCoursesWithoutNeeds(2025, "W1");
+                assertEquals("COSC", result.get(0).deptCode());
+                assertEquals("499", result.get(0).courseNum());
+        }
+
 }

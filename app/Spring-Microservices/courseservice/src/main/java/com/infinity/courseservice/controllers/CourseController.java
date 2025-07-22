@@ -112,6 +112,19 @@ public class CourseController {
             );
         return ResponseEntity.ok(data);
     }
+     @GetMapping("/needAndAllocations/specific/{instructorId}")
+    public ResponseEntity<List<CourseNeedAndAllocations>> getSpecific(
+        @PathVariable Long instructorId,
+        @RequestParam(required = false) Long courseId,
+        @RequestParam Integer year,
+        @RequestParam String semester
+    ) {
+        List<CourseNeedAndAllocations> data =
+            courseService.getInstructorSpecificCourseNeedsAndAllocations(
+                instructorId, courseId, year, semester
+            );
+        return ResponseEntity.ok(data);
+    }
     
     @GetMapping("/allDeptCodes")
     public ResponseEntity<List<String>> getAllDeptCodes() {
@@ -183,10 +196,10 @@ public class CourseController {
     @GetMapping("/sections/getByCourseAndName")
     public ResponseEntity<SectionDto> getSectionByCourseAndName(
         @RequestParam Long courseId,
-        @RequestParam String section) {
-            SectionDto dto = sectionService.getByCourseIdAndSectionName(courseId, section);
-            return ResponseEntity.ok(dto);
-        }
+            @RequestParam String section) {
+        SectionDto dto = sectionService.getByCourseIdAndSectionName(courseId, section);
+        return ResponseEntity.ok(dto);
+    }
 
     @GetMapping("/allCourses/{instructorId}")
     public ResponseEntity<List<CourseDto>> getInstructorCourses(
@@ -195,13 +208,12 @@ public class CourseController {
         return ResponseEntity.ok(
         courseService.getCoursesForInstructor(instructorId)
         );
+    }    
+    
+    @GetMapping("/withoutNeeds/{year}/{semester}")
+    public ResponseEntity<List<CourseDto>> getCoursesWithoutNeeds(@PathVariable Integer year,
+            @PathVariable String semester) {
+        return ResponseEntity.ok(courseService.getCoursesWithoutNeeds(year, semester));
     }
-    // @GetMapping("/getEnrolledCourses/{studentId}")
-    // public ResponseEntity<List<CourseDto>> getMethodName(@PathVariable Integer
-    // studentId) {
-    // List<CourseDto> courseDtos = courseService.getEnrolledCourses(studentId);
-    // return ResponseEntity.ok(courseDtos);
-    // }
-
-
+    
 }

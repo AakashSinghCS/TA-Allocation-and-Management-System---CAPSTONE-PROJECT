@@ -21,6 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByRoles_Name(UserRole name);
 
     // List<User> findByRoles_NameAndStudentNum(UserRole role, Integer studentNum);
+    // List<User> findByRoles_NameAndStudentNum(UserRole role, Integer studentNum);
 
     // List<User> findByRoles_NameAndEmployeeNum(UserRole role, Integer
     // employeeNum);

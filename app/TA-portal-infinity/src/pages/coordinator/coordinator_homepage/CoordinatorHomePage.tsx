@@ -22,13 +22,6 @@ export default function CoordinatorHomePage() {
   const { token, userId } = useAuth();
   // welcome message
   const [userProfile, setUserProfile] = useState<{ firstName: string; lastName: string }>({ firstName: 'User', lastName: '' });
-  useEffect(() => {
-    if (!token) return;
-    fetchUserDetails<{ firstName: string; lastName: string }>(userId)
-      .then(u => setUserProfile({ firstName: u.firstName ?? 'User', lastName: u.lastName ?? '' }))
-      .catch(() => {});
-  }, [token, userId]);
-  const fullName = userProfile.lastName ? `${userProfile.firstName} ${userProfile.lastName}` : userProfile.firstName;
   const [totalApps, setTotalApps] = useState(0);
   const [recentApps, setRecentApps] = useState<ApplicationDto[]>([]);
   const [offerCount, setOfferCount] = useState(0);
@@ -42,6 +35,24 @@ export default function CoordinatorHomePage() {
   // deadlines set out of total
   const totalDeadlines = 3;
   const [deadlines, setDeadlines] = useState<Deadline[]>([]);
+  // Loading states for async data
+  const [userProfileLoaded, setUserProfileLoaded] = useState(false);
+  const [appsLoaded, setAppsLoaded] = useState(false);
+  const [allocationsLoaded, setAllocationsLoaded] = useState(false);
+  const [sectionsLoaded, setSectionsLoaded] = useState(false);
+  const [questionsLoaded, setQuestionsLoaded] = useState(false);
+  const [deadlinesLoaded, setDeadlinesLoaded] = useState(false);
+
+  // User profile loading effect and fullName logic
+  useEffect(() => {
+    setUserProfileLoaded(false);
+    if (!token) return;
+    fetchUserDetails<{ firstName: string; lastName: string }>(userId)
+      .then(u => setUserProfile({ firstName: u.firstName ?? 'User', lastName: u.lastName ?? '' }))
+      .catch(() => {})
+      .finally(() => setUserProfileLoaded(true));
+  }, [token, userId]);
+  const fullName = userProfile.lastName ? `${userProfile.firstName} ${userProfile.lastName}` : userProfile.firstName;
   // Only count deadlines whose endTime is in the future
   const now = new Date();
   const activeDeadlines = deadlines.filter(d => new Date(d.endTime) > now);
@@ -69,7 +80,12 @@ export default function CoordinatorHomePage() {
     'text-red-700';
 
   useEffect(() => {
+    setAppsLoaded(false);
+    setAllocationsLoaded(false);
+    setSectionsLoaded(false);
+    setQuestionsLoaded(false);
     if (!token) return;
+    // Applications and allocations
     fetchApplications(1, token)
       .then(apps => {
         setTotalApps(apps.length);
@@ -87,12 +103,16 @@ export default function CoordinatorHomePage() {
               allocMap[appId] = allocs;
             });
             setRecentAppAllocations(allocMap);
+            setAppsLoaded(true);
           })
-          .catch(() => {});
+          .catch(() => {
+            setAppsLoaded(true);
+          });
       })
       .catch(() => {
         setTotalApps(0);
         setRecentApps([]);
+        setAppsLoaded(true);
       });
     // fetch offer counts and build unified top allocations list
     const statuses = ['SENT', 'CONFIRMED', 'REJECTED'] as const;
@@ -117,6 +137,7 @@ export default function CoordinatorHomePage() {
       const all = results.flat();
       const sorted = all.sort((a, b) => new Date(b.application?.timeSubmitted ?? '').getTime() - new Date(a.application?.timeSubmitted ?? '').getTime());
       setTopAllocations(sorted.slice(0, 5));
+      setAllocationsLoaded(true);
     });
 
     // fetch all sections and count how many have no allocations
@@ -130,18 +151,27 @@ export default function CoordinatorHomePage() {
         );
         const needyCount = allocLists.filter(arr => arr.length === 0).length;
         setSectionsNeedingTAsCount(needyCount);
+        setSectionsLoaded(true);
       })
       .catch(() => {
         setSectionsCount(0);
         setSectionsNeedingTAsCount(0);
+        setSectionsLoaded(true);
       });
     // fetch profile questions count
     fetchAllProfileQuestions()
-      .then(qs => setQuestionsCount(qs?.length ?? 0))
-      .catch(() => setQuestionsCount(0));
+      .then(qs => {
+        setQuestionsCount(qs?.length ?? 0);
+        setQuestionsLoaded(true);
+      })
+      .catch(() => {
+        setQuestionsCount(0);
+        setQuestionsLoaded(true);
+      });
   }, [token]);
   // fetch deadline
   useEffect(() => {
+    setDeadlinesLoaded(false);
     if (!token) return;
     fetchDeadlines(token)
       .then(res => {
@@ -152,58 +182,73 @@ export default function CoordinatorHomePage() {
           endTime: (d as any).endTime,
         }));
         setDeadlines(list);
+        setDeadlinesLoaded(true);
       })
-      .catch(() => setDeadlines([]));
+      .catch(() => {
+        setDeadlines([]);
+        setDeadlinesLoaded(true);
+      });
   }, [token]);
   // task summaries
   const pendingApplications = Math.max(0, totalApps - offerCount);
   const sectionsInSystem = sectionsCount;
   const sectionsNeedingTAs = sectionsNeedingTAsCount;
 
+  // Only render dashboard after all data is loaded
+  const allLoaded = userProfileLoaded && appsLoaded && allocationsLoaded && sectionsLoaded && questionsLoaded && deadlinesLoaded;
+
   return (
     <section className="px-2 sm:px-4 py-4 sm:py-6 bg-white min-h-full">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#040941] mb-2">My Dashboard</h1>
-        <p className="text-base sm:text-lg text-gray-700 mb-4">Welcome, {fullName}</p>
-        {/* Main Content & Sidebar */}
-        <div className="flex flex-col lg:flex-row gap-y-6 lg:gap-y-0 lg:gap-x-8">
-          <main className="w-full lg:w-3/4 space-y-6">
-            <SummaryMetrics
-              totalApps={totalApps}
-              pendingApplications={pendingApplications}
-              offerCount={offerCount}
-              confirmedCount={confirmedCount}
-              rejectedCount={rejectedCount}
-              sectionsInSystem={sectionsInSystem}
-            />
-            <RecentApplications
-              recentApps={recentApps}
-              recentAppAllocations={recentAppAllocations}
-              topAllocations={topAllocations}
-            />
-            <OfferTasks
-              topAllocations={topAllocations}
-            />
-          </main>
-          <aside className="flex justify-center w-full lg:w-1/4 mt-6 lg:mt-0">
-            <TasksOverview
-              totalDeadlines={totalDeadlines}
-              activeDeadlines={activeDeadlines.length}
-              deadlines={deadlines}
-              daysUntilList={daysUntilList}
-              formatDeadlineName={formatDeadlineName}
-              progressColor={progressColor}
-              tasksDash1={tasksDash1}
-              tasksDash2={tasksDash2}
-              sectionsNeedingTAs={sectionsNeedingTAs}
-              profileDash1={profileDash1}
-              profileDash2={profileDash2}
-              profileColor={profileColor}
-              questionsCount={questionsCount}
-            />
-          </aside>
-        </div>
-         </div>
+        {!allLoaded ? (
+          <div className="flex flex-1 items-center justify-center min-h-[300px]">
+            <span className="text-gray-500 text-lg">Loading...</span>
+          </div>
+        ) : (
+          <>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#040941] mb-2">My Dashboard</h1>
+            <p className="text-base sm:text-lg text-gray-700 mb-4">Welcome, {fullName}</p>
+            {/* Main Content & Sidebar */}
+            <div className="flex flex-col lg:flex-row gap-y-6 lg:gap-y-0 lg:gap-x-8">
+              <main className="w-full lg:w-3/4 space-y-6">
+                <SummaryMetrics
+                  totalApps={totalApps}
+                  pendingApplications={pendingApplications}
+                  offerCount={offerCount}
+                  confirmedCount={confirmedCount}
+                  rejectedCount={rejectedCount}
+                  sectionsInSystem={sectionsInSystem}
+                />
+                <RecentApplications
+                  recentApps={recentApps}
+                  recentAppAllocations={recentAppAllocations}
+                  topAllocations={topAllocations}
+                />
+                <OfferTasks
+                  topAllocations={topAllocations}
+                />
+              </main>
+              <aside className="flex justify-center w-full lg:w-1/4 mt-6 lg:mt-0">
+                <TasksOverview
+                  totalDeadlines={totalDeadlines}
+                  activeDeadlines={activeDeadlines.length}
+                  deadlines={deadlines}
+                  daysUntilList={daysUntilList}
+                  formatDeadlineName={formatDeadlineName}
+                  progressColor={progressColor}
+                  tasksDash1={tasksDash1}
+                  tasksDash2={tasksDash2}
+                  sectionsNeedingTAs={sectionsNeedingTAs}
+                  profileDash1={profileDash1}
+                  profileDash2={profileDash2}
+                  profileColor={profileColor}
+                  questionsCount={questionsCount}
+                />
+              </aside>
+            </div>
+          </>
+        )}
+      </div>
     </section>
   );
 }
