@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Papa from "papaparse";
 
 export default function SectionCsvImport() {
-  const [file, setFile] = useState<File | null>(null);
+  // const [file, setFile] = useState<File | null>(null); // temporary commented out the unused state
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
@@ -11,9 +11,9 @@ export default function SectionCsvImport() {
   const [parsedData, setParsedData] = useState<Array<Record<string, string>> | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(""); // Clear error when a file is selected
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
-      setFile(selectedFile);
       Papa.parse(selectedFile, {
         header: true,
         skipEmptyLines: true,
@@ -106,8 +106,8 @@ export default function SectionCsvImport() {
         />
         <button
           type="submit"
-          disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded"
+          disabled={loading || !parsedData || parsedData.length === 0}
+          className={`px-4 py-2 rounded text-white ${loading || !parsedData || parsedData.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
         >
           {loading ? "Importing..." : "Import CSV"}
         </button>
