@@ -44,6 +44,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -99,10 +102,28 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.active;
     }
 
     public boolean hasRole(UserRole role) {
         return roles.stream().anyMatch(r -> r.getName() == role);
+    }
+
+    public User(User other) {
+        this.id             = other.id;
+        this.email          = other.email;
+        this.firstName      = other.firstName;
+        this.lastName       = other.lastName;
+        this.password       = other.password;
+        this.createdAt      = other.createdAt;
+        this.studentNum     = other.studentNum;
+        this.program        = other.program;
+        this.enrollmentYear = other.enrollmentYear;
+        this.schoolYear     = other.schoolYear;
+        this.employeeNum    = other.employeeNum;
+        this.department     = other.department;
+        this.roles = other.roles == null
+            ? new HashSet<>()
+            : new HashSet<>(other.roles);
     }
 }

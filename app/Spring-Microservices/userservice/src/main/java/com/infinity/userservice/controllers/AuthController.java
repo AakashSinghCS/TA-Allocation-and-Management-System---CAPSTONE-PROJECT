@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,8 +34,8 @@ public class AuthController {
     }
 
      @PostMapping("/register")
-     public ResponseEntity<UserDto> addUser(@RequestBody @Valid RegisterRequest request) {
-         UserDto userDto = userService.register(request);
+     public ResponseEntity<UserDto> addUser(@RequestBody @Valid RegisterRequest request,@RequestHeader(name="X-User-Id", required = false) Long userIdFromHeader) {
+         UserDto userDto = userService.register(request,userIdFromHeader);
          return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
      }
     

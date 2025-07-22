@@ -1,5 +1,7 @@
 package com.infinity.userservice.services;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,6 +14,7 @@ import com.infinity.userservice.dtos.RoleChangeRequest;
 import com.infinity.userservice.dtos.UserDto;
 import com.infinity.userservice.dtos.UserUpdateRequest;
 import com.infinity.userservice.dtos.Registration.RegisterRequest;
+import com.infinity.userservice.enums.ActionOptions;
 import com.infinity.userservice.enums.UserRole;
 import com.infinity.userservice.exceptions.AuthorizationException;
 import com.infinity.userservice.exceptions.BadRequestException;
@@ -33,8 +36,9 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AuditService auditService;
 
-    public UserDto register(RegisterRequest request) {
+    public UserDto register(RegisterRequest request, Long userIdFromHeader) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new BadRequestException("An account with this email already exists");
         }
@@ -50,8 +54,18 @@ public class UserService {
 
         User user = userMapper.registerToUser(request, roles);
         user.setPassword(passwordEncoder.encode(request.password()));
-        userRepository.save(user);
-
+        User saved = userRepository.save(user);
+        Long actorId = (userIdFromHeader != null && userIdFromHeader > 0)
+            ? userIdFromHeader
+            : saved.getId();
+        auditService.record(
+            actorId,
+            ActionOptions.CREATE,
+            "User",
+            null,
+            saved,
+            saved.getId()
+        );
         return userMapper.toDto(user);
     }    
 
@@ -67,6 +81,8 @@ public class UserService {
     public void updateUserById(Long id, Long userIdFromHeader, List<String> headerRoles, UserUpdateRequest req) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
+
+        User before = new User(user);
 
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_ADMIN")) {
             throw new AuthorizationException("Not allowed");
@@ -98,7 +114,16 @@ public class UserService {
             user.setDepartment(req.dept());
 
         try {
-        userRepository.save(user);
+        User after = userRepository.save(user);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "User",
+            before,   
+            after,
+            id
+        );
         } catch (DataIntegrityViolationException ex) {
             if (ex.getMessage().contains("Duplicate entry")) {
                 throw new BadRequestException(
@@ -113,41 +138,73 @@ public class UserService {
         if (!id.equals(userIdFromHeader) && !headerRoles.contains("ROLE_ADMIN")) {
             throw new AuthorizationException("Not allowed");
         }
-        if (!userRepository.existsById(id)) {
-            throw new NotFoundException("User with id " + id + " doesn't exist");
-        }
-        userRepository.deleteById(id);
+
+        User before = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with id " + id + " doesn't exist"));
+        
+        userRepository.delete(before);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "User",
+            before,
+            null,
+            id
+        );
         return "User deleted successfully";
     }
 
-    public List<UserDto> search(String role, String name, int universityNumber) {
-        UserRole targetRole;
-        try {
-            targetRole = UserRole.valueOf(role.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new BadRequestException("Invalid role specified: " + role);
-        }
-
+    public List<UserDto> search(
+        String role,
+        String firstname,
+        String lastname,
+        int    universityNumber,
+        Long   userId
+    ) {
         List<User> users;
 
-        if (targetRole == UserRole.STUDENT && universityNumber > 0) {
-            users = userRepository.findByRoles_NameAndStudentNum(targetRole, universityNumber);
-        } else if (targetRole == UserRole.INSTRUCTOR && universityNumber > 0) {
-            users = userRepository.findByRoles_NameAndEmployeeNum(targetRole, universityNumber);
+        // 1) userId search takes absolute priority
+        if (userId != null && userId > 0) {
+            users = userRepository.findById(userId)
+                                  .map(Collections::singletonList)
+                                  .orElse(Collections.emptyList());
+
+        // 2) universityNumber search next
+        } else if (universityNumber > 0) {
+            users = new ArrayList<>();
+            userRepository.findByStudentNum(universityNumber)
+                          .ifPresent(users::add);
+            userRepository.findByEmployeeNum(universityNumber)
+                          .ifPresent(users::add);
+
+        // 3) finally, role + name search
         } else {
-            users = userRepository.findByRoleAndName(targetRole, name.toLowerCase());
+            if (role == null || role.isBlank()) {
+                return Collections.emptyList();  // no mode selected
+            }
+            UserRole targetRole = UserRole.valueOf(role.trim().toUpperCase());
+            String fn = firstname == null ? "" : firstname.trim();
+            String ln = lastname  == null ? "" : lastname.trim();
+
+            users = userRepository
+                .findByRoles_NameAndFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
+                    targetRole, fn, ln
+                );
         }
 
         return users.stream()
-                .map(userMapper::toDto)
-                .collect(Collectors.toList());
+                    .map(userMapper::toDto)
+                    .collect(Collectors.toList());
     }
         
 
     @Transactional
-    public UserDto changeRole(Long id, RoleChangeRequest request) {
+    public UserDto changeRole(Long id, RoleChangeRequest request, Long userIdFromHeader) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
+
+        User before = new User(user);
 
         Set<Role> newRoles = request.roles().stream()
                 .map(roleEnum -> roleRepository.findByName(roleEnum)
@@ -155,7 +212,36 @@ public class UserService {
                 .collect(Collectors.toSet());
 
         user.setRoles(newRoles);
-        return userMapper.toDto(userRepository.save(user));
+        User saved = userRepository.save(user);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "User",
+            before,
+            saved,
+            id
+        );
+
+        return userMapper.toDto(saved);
+    }
+
+    @Transactional
+    public String activateUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException("Not user with id " + id);
+        }
+        userRepository.activateUser(id);
+        return "User activated";
+    }
+
+    @Transactional
+    public String deactivateUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException("Not user with id " + id);
+        }
+        userRepository.deactivateUser(id);
+        return "User deactivated";
     }
 
     //Student methods

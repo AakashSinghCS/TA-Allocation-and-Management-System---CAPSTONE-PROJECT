@@ -14,7 +14,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -52,9 +51,7 @@ import com.infinity.applicationservice.repositories.ConfigRepository;
 import com.infinity.applicationservice.services.ApplicationService;
 import com.infinity.applicationservice.services.ConfigService;
 import com.infinity.applicationservice.utility.ApplicationMapper;
-import com.infinity.applicationservice.utility.ConfigMapper;
 import com.infinity.applicationservice.utility.EmailMapper;
-import com.netflix.discovery.converters.Auto;
 
 @ExtendWith(MockitoExtension.class)
 public class ApplicationServiceTest {
@@ -215,7 +212,7 @@ public class ApplicationServiceTest {
                 Set.of());
 
         UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                12345678, "COSC", 2025, 3, null, null, null);
+                12345678, "COSC", 2025, 3, null, null, null, true);
         when(applicationMapper.toDto(Mockito.any(Application.class))).thenReturn(mockedDto);
         when(userInterface.getStudentById(1L)).thenReturn(ResponseEntity.ok(studentDto));
         when(notificationClient.sendEmail(any())).thenReturn(null);
@@ -458,7 +455,7 @@ public class ApplicationServiceTest {
         app.setSubmittedAt(LocalDateTime.of(2024, 1, 1, 12, 0));
 
         UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null);
+                                12345678, "COSC", 2025, 3, null, null, null, true);
 
         ApplicationWithStudentDto expectedDto = new ApplicationWithStudentDto(
                 1L,

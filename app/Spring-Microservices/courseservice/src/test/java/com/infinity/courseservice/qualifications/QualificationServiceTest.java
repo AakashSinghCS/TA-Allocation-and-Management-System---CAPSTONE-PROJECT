@@ -22,12 +22,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.infinity.courseservice.dtos.QualificationDto;
-import com.infinity.courseservice.dtos.QualificationDtoWithId;
-import com.infinity.courseservice.dtos.QualificationRequest;
-import com.infinity.courseservice.dtos.QualificationWithSectionDto;
-import com.infinity.courseservice.dtos.StudentQualiRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.courseservice.dtos.QualificationDtos.QualificationDto;
+import com.infinity.courseservice.dtos.QualificationDtos.QualificationDtoWithId;
+import com.infinity.courseservice.dtos.QualificationDtos.QualificationRequest;
+import com.infinity.courseservice.dtos.QualificationDtos.QualificationWithSectionDto;
+import com.infinity.courseservice.dtos.QualificationDtos.StudentQualiRequest;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.UserRole;
@@ -243,7 +243,7 @@ class QualificationServiceTest {
         when(courseService.findCourse(20L)).thenReturn(courseDto2);
 
         UserDto studentDto = new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
-                null, null);
+                null, null, true);
         when(studentClient.getStudentById(studentId)).thenReturn(studentDto);
 
         // Act

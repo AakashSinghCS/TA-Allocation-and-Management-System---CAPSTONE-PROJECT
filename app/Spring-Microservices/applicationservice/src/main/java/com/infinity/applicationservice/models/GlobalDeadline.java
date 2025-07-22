@@ -28,4 +28,10 @@ public class GlobalDeadline {
 
     @Column(nullable = false)
     private LocalDateTime endTime;
+
+    public GlobalDeadline(String name, LocalDateTime startTime, LocalDateTime endTime) {
+        this.name = name;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 }

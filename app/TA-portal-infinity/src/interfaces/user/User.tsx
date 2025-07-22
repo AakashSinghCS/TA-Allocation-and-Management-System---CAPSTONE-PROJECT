@@ -6,7 +6,8 @@ export default interface User {
   lastName?: string;
   email?: string;
   roles?: UserRole[];
-  createdAt?:  string | Date;
+  createdAt?: string | Date;
+  active?: boolean;
 }
 
 export interface StudentOrInstructorOrCoordinator extends User{
@@ -34,7 +35,7 @@ export const userProfileFields: (keyof StudentOrInstructorOrCoordinator)[] = [
 ];
 
 export const userFieldLabels: Record<keyof StudentOrInstructorOrCoordinator, string> = {
-  id:              "User Id",
+  id:              "ID",
   firstName:       "First Name",
   lastName:        "Last Name",
   email:           "Email",
@@ -45,5 +46,6 @@ export const userFieldLabels: Record<keyof StudentOrInstructorOrCoordinator, str
   dept:      "Department",
   employeeNum:     "Employee Number",
   roles :          "Roles",
-  createdAt:       "Registered",
+  createdAt: "Registered",
+  active: "Active"
 };

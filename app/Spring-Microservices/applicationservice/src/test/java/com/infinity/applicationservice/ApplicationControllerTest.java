@@ -165,7 +165,7 @@ public class ApplicationControllerTest {
         @Test
         void testGetAllApplicationsWithStudentDto() throws Exception {
                 UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null);
+                                12345678, "COSC", 2025, 3, null, null, null, true);
                 ApplicationWithStudentDto dto = new ApplicationWithStudentDto(
                                 1L,
                                 studentDto,

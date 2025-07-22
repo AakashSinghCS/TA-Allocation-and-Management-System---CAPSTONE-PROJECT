@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
@@ -45,6 +46,12 @@ public class NeedController {
     public ResponseEntity<NeedDto> updateNeed(@RequestBody NeedRequest request,
             @PathVariable Long courseId, @PathVariable Integer year, @PathVariable String semester) {
         return ResponseEntity.ok(needService.updateNeed(request, courseId, year, semester));
+    }
+
+    @PutMapping("/updateAllocatedHours/{needId}")
+    public ResponseEntity<String> updateNeedAllocatedHours(@PathVariable Long needId,
+            @RequestParam int numAllocatedHours) {
+        return ResponseEntity.ok(needService.updateAllocatedHours(needId, numAllocatedHours));
     }
     
     @PreAuthorize("hasRole('INSTRUCTOR')")

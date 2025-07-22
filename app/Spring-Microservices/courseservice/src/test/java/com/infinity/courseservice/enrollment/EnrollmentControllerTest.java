@@ -97,7 +97,7 @@ public class EnrollmentControllerTest {
     void testGetEnrollmentOverview_returnsAggregatedData() throws Exception {
         StudentEnrollmentOverviewDto overview = new StudentEnrollmentOverviewDto(
                 new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
-    null, null),
+    null, null,true),
                 List.of(new ActiveEnrollmentDto(
                         new CourseDto(1L, "COSC", "Intro", "111"),
                         new SectionDtoNoCourse(1L, 2024, "W1", "001", null),

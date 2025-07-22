@@ -125,7 +125,7 @@ public class EnrollmentMapperTest {
         StudentCourse completed = new StudentCourse(1L, course2, EnrollmentStatus.COMPLETED, null, 90, 85);
 
         UserDto student = new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,
-                null, null);
+                null, null, true);
 
         StudentEnrollmentOverviewDto overview = mapper.toOverviewDto(student, List.of(enrolled), List.of(completed));
 

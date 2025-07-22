@@ -21,7 +21,6 @@ import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.StudentCourseRepository;
 import com.infinity.courseservice.utility.EnrollmentMapper;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 

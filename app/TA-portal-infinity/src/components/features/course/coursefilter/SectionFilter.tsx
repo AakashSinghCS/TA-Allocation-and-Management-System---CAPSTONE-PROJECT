@@ -117,7 +117,7 @@ export default function SectionFilter({
       <button
         type="button"
         onClick={handleFilter}
-        className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#040491] transition-colors text-white w-full"
+        className="bg-[#040941] text-white px-4 py-2 rounded hover:bg-blue-900 transition-colors text-white w-full"
       >
         Filter
       </button>

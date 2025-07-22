@@ -41,7 +41,7 @@ import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.SectionType;
 import com.infinity.applicationservice.enums.UserRole;
-import com.infinity.applicationservice.feign.SectionInterface;
+import com.infinity.applicationservice.feign.CourseInterface;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.services.AllocationService;
 
@@ -62,7 +62,7 @@ public class AllocationControllerTest {
         private UserInterface studentInterface;
 
         @MockitoBean
-        private SectionInterface sectionInterface;
+        private CourseInterface sectionInterface;
 
         private AllocationHistoryDto sampleDto;
 
@@ -81,7 +81,7 @@ public class AllocationControllerTest {
                 101L,
                 new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null,
-                                                null, null),
+                                                null, null,true),
                 application,
                 ApplicationStatus.SENT,
                 10,
@@ -124,9 +124,7 @@ public class AllocationControllerTest {
         AllocationHistoryDto responseDto = new AllocationHistoryDto(
                 123L,
                         new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
-                                        "COSC", 2025, 3, null,
-                                        null,
-                                        null),
+                                        "COSC", 2025, 3, null,null,null,true),
                 application,
                 ApplicationStatus.SENT,
                 10,

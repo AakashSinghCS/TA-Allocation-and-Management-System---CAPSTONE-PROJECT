@@ -2,6 +2,7 @@ package com.infinity.courseservice.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +22,9 @@ import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.services.CourseService;
+import com.infinity.courseservice.services.SectionService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,9 @@ import lombok.RequiredArgsConstructor;
 public class CourseController {
 
     private final CourseService courseService;
+
+    @Autowired
+    private SectionService sectionService;
 
     @GetMapping("/{courseId}")
     public ResponseEntity<CourseDto> findCourse(@PathVariable Long courseId) {
@@ -51,7 +57,7 @@ public class CourseController {
             @PathVariable Long courseId) {
         return ResponseEntity.ok(courseService.updateCourse(request, courseId));
     }
-    
+
     @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("/deleteCourse/{courseId}")
     public ResponseEntity<String> deleteCourse(@PathVariable Long courseId) {
@@ -75,14 +81,26 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getCourseNeedAndAllocations(courseId, year, semester));
     }
 
-    @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
-    @GetMapping("/needAndAllocations/{instructorId}")
-    public ResponseEntity<List<CourseNeedAndAllocations>> getInstructorCourseNeedsAndAllocations(
-            @PathVariable Long instructorId) {
-        return ResponseEntity.ok(courseService.getInstructorCourseNeedsAndAllocations(instructorId));
-    }
+    // @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
+    // @GetMapping("/needAndAllocations/{instructorId}")
+    // public ResponseEntity<List<CourseNeedAndAllocations>> getInstructorCourseNeedsAndAllocations(
+    //         @PathVariable Long instructorId) {
+    //     return ResponseEntity.ok(courseService.getInstructorCourseNeedsAndAllocations(instructorId));
+    // }
 
-    
+     @GetMapping("/needAndAllocations/specific/{instructorId}")
+    public ResponseEntity<List<CourseNeedAndAllocations>> getSpecific(
+        @PathVariable Long instructorId,
+        @RequestParam(required = false) Long courseId,
+        @RequestParam Integer year,
+        @RequestParam String semester
+    ) {
+        List<CourseNeedAndAllocations> data =
+            courseService.getInstructorSpecificCourseNeedsAndAllocations(
+                instructorId, courseId, year, semester
+            );
+        return ResponseEntity.ok(data);
+    }
     
     @GetMapping("/allDeptCodes")
     public ResponseEntity<List<String>> getAllDeptCodes() {
@@ -151,13 +169,25 @@ public class CourseController {
         return ResponseEntity.ok(dto);
     }
 
+    @GetMapping("/sections/getByCourseAndName")
+    public ResponseEntity<SectionDto> getSectionByCourseAndName(
+        @RequestParam Long courseId,
+            @RequestParam String section) {
+        SectionDto dto = sectionService.getByCourseIdAndSectionName(courseId, section);
+        return ResponseEntity.ok(dto);
+    }
 
-    // @GetMapping("/getEnrolledCourses/{studentId}")
-    // public ResponseEntity<List<CourseDto>> getMethodName(@PathVariable Integer
-    // studentId) {
-    // List<CourseDto> courseDtos = courseService.getEnrolledCourses(studentId);
-    // return ResponseEntity.ok(courseDtos);
-    // }
-
-
+    @GetMapping("/allCourses/{instructorId}")
+    public ResponseEntity<List<CourseDto>> getInstructorCourses(
+        @PathVariable Long instructorId
+    ) {
+        return ResponseEntity.ok(
+        courseService.getCoursesForInstructor(instructorId)
+        );
+    }    @GetMapping("/withoutNeeds/{year}/{semester}")
+    public ResponseEntity<List<CourseDto>> getCoursesWithoutNeeds(@PathVariable Integer year,
+            @PathVariable String semester) {
+        return ResponseEntity.ok(courseService.getCoursesWithoutNeeds(year, semester));
+    }
+    
 }

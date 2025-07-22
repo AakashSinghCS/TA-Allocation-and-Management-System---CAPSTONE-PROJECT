@@ -4,8 +4,11 @@ import EditProfileSection from "../editprofilesection/EditProfileSection";
 import { fetchUpdateUserDetails } from "../../../../api/user/fetchUpdateUserDetails";
 import type User from "../../../../interfaces/user/User";
 import { useAuth } from "../../../../context/AuthContext";
-import type { UserRole } from "../../../../interfaces/enum/UserRole";
+import { UserRole } from "../../../../interfaces/enum/UserRole";
 import TabNav from "../../../layout/tabnav/TabNav";
+import ChangeRolesModal from "../changerolemodal/ChangeRolesModal";
+import { fetchChangeRole } from "../../../../api/admin/fetchChangeRole";
+
 
 interface Props<T extends User> {
     user: T;
@@ -23,16 +26,20 @@ export default function ProfileDetailsSection<T extends User>({
     const { userId: loggedInUserId, userRoles: loggedInUserRoles } = useAuth();
     const [record, setRecord] = useState<T>(user);
     const [isEdit, setIsEdit] = useState(false);
+    const isCoordinatorOrAdmin = loggedInUserRoles.includes(UserRole.ADMIN || UserRole.COORDINATOR);
+    const [showRoleModal, setShowRoleModal] = useState(false);
+    const isAdmin = loggedInUserRoles.includes("ADMIN");
 
     useEffect(() => setRecord(user), [user]);
 
-    const baseFields = fields.filter((k) => k !== "createdAt");
+    const baseFields = fields.filter((k) => isCoordinatorOrAdmin ?k !== "createdAt" :k !== "createdAt"&& k!=="id");
     const displayFields = filterFieldsByRole(baseFields, record.roles ?? []);
 
     const editFields = [
         "firstName" as keyof T,
         "lastName" as keyof T,
         ...displayFields.filter(k => k !== "roles"),
+        ...displayFields.filter(k => k !== "id"),
     ];
 
     const isEditable = loggedInUserId === record.id;
@@ -58,6 +65,14 @@ export default function ProfileDetailsSection<T extends User>({
                                     Update
                                 </button>
                                 )}
+                                {isAdmin && (
+                                  <button
+                                    className="absolute top-12 right-2 bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700 transition-colors"
+                                    onClick={() => setShowRoleModal(true)}
+                                  >
+                                    Change Roles
+                                  </button>
+                                )} 
                             </>
                         ) : (
                             <EditProfileSection<T>
@@ -88,6 +103,19 @@ export default function ProfileDetailsSection<T extends User>({
                     </div>
                 </div>
             </div>
+                        {showRoleModal && (
+              <ChangeRolesModal
+                currentRoles={record.roles ?? []}
+                onClose={() => setShowRoleModal(false)}
+                onSave={async (newRoles) => {
+                  await fetchChangeRole(record.id!, newRoles);
+                  const fresh = await fetchDetailsFunction<T>(record.id!);
+                  setRecord(fresh);
+                  setShowRoleModal(false);
+                }}
+              />
+            )}
+
         </div>
     );
 }

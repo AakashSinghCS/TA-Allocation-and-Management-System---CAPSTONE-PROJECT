@@ -4,43 +4,62 @@ import UserBrowsingViewer from "./UserBrowsingViewer";
 import { mockStudentJohnDoe, mockStudentEmmaDoe } from "../../../../mocked-objects/user/mockStudents";
 import { vi } from "vitest";
 
+const toggleActivationMock = vi.fn();
+const useAuthMock = vi.fn();
+
 vi.mock("../../../../components/ui/user/searchuserbar/SearchUserBar", () => ({
   useUserSearch: () => ({
-    searchedUsers: [mockStudentJohnDoe, mockStudentEmmaDoe],
+    searchedUsers: [
+      { ...mockStudentJohnDoe, active: true },
+      { ...mockStudentEmmaDoe, active: false },
+    ],
     loading: false,
     error: null,
     search: vi.fn(),
-    deleteUser: deleteUserMock,
+    toggleActivation: toggleActivationMock,
     lastCriteria: { role: "Student", name: "", universityNumber: "" },
   }),
   default: () => <div data-testid="search-bar" />,
 }));
 
-const deleteUserMock = vi.fn();
-
 vi.mock("../../../../context/AuthContext", () => ({
-  useAuth: () => ({ userRoles: ["STUDENT"] }),
+  useAuth: () => useAuthMock(),
 }));
 
 describe("UserBrowsingViewer", () => {
   beforeEach(() => {
-    deleteUserMock.mockClear();
+    toggleActivationMock.mockClear();
   });
 
-  it("renders two students and calls deleteUser on click", () => {
+  it("renders students with correct activation buttons and triggers toggle", () => {
+    useAuthMock.mockReturnValue({ userRoles: ["ADMIN"] });
+
     render(
       <MemoryRouter>
         <UserBrowsingViewer />
       </MemoryRouter>
     );
 
-    expect(screen.getByText(/john doe/i)).toBeInTheDocument();
-    expect(screen.getByText(/emma doe/i)).toBeInTheDocument();
+    const buttons = screen.getAllByRole("button", { name: /activate|deactivate/i });
+    expect(buttons[0]).toHaveTextContent("Deactivate");
+    expect(buttons[1]).toHaveTextContent("Activate");
 
-    const deleteButtons = screen.getAllByRole("button", { name: /delete/i });
-    expect(deleteButtons).toHaveLength(2);
+    fireEvent.click(buttons[0]);
+    expect(toggleActivationMock).toHaveBeenCalledWith(mockStudentJohnDoe.id, true);
+  });
 
-    fireEvent.click(deleteButtons[0]);
-    expect(deleteUserMock).toHaveBeenCalledWith(mockStudentJohnDoe.id);
+  it("disables toggle buttons for non-admin users", () => {
+    useAuthMock.mockReturnValue({ userRoles: ["STUDENT"] });
+
+    render(
+      <MemoryRouter>
+        <UserBrowsingViewer />
+      </MemoryRouter>
+    );
+
+    const buttons = screen.getAllByRole("button", { name: /activate|deactivate/i });
+    buttons.forEach(button => {
+      expect(button).toBeDisabled();
+    });
   });
 });

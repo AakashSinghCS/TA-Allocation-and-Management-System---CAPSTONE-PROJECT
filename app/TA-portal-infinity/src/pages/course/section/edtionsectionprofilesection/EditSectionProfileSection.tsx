@@ -1,17 +1,19 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 // import { fetchAddSectionSchedule } from "../../../../api/section/sectionschedule/fetchAddSectionSchedule";
 import type { SectionProfile } from '../../../../interfaces/section/Section';
 import { sectionTypeOptions, type SectionType } from "../../../../interfaces/section/SectionDetails";
 import type { Instructor } from "../../../../interfaces/user/Instructor";
 import UserBrowsingViewer from "../../../coordinator/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer";
+import type Section from "../../../../interfaces/section/Section";
+import { fetchInstructorDetails } from "../../../../api/instructor/fetchInstructorDetails";
 // import EditSectionSchedule from "../editsectionschedule/EditSectionSchedule";
 
 export interface EditSectionProfileSectionProps {
   sectionId : number;
-  section: SectionProfile;
+  section: Section;
   fields: (keyof SectionProfile)[];
   labels: Record<keyof SectionProfile, string>;
-  onSave: (updates: Partial<SectionProfile>) => Promise<void>;
+  onSave: (updates: Partial<Section>) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -28,9 +30,23 @@ export default function EditSectionProfileSection({
   onSave,
   onCancel,
 }: EditSectionProfileSectionProps) {
-  const [form, setForm] = useState<Partial<SectionProfile>>(Object.fromEntries(fields.map(k => [k, section[k]])) as Partial<SectionProfile>);
+  const [form, setForm] = useState<Partial<Section>>(Object.fromEntries(fields.map(k => [k, section[k]])) as Partial<Section>);
   // const [showScheduleEdit, setShowScheduleEdit] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
+
+  useEffect(()=>{
+    async function loadInstructor() {
+    if (section.instructor && section.instructor.id != null) {
+      try {
+        const inst:Instructor = await fetchInstructorDetails(section.instructor.id);
+        setSelectedInstructor(inst);
+      } catch (err) {
+        console.error("Failed to load instructor details", err);
+      }
+    }
+  }
+  loadInstructor();
+  },[section.instructorId])
 
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target;
@@ -90,7 +106,7 @@ export default function EditSectionProfileSection({
             </div>
           ) : (
             <div>
-              <p className="text-sm text-gray-400">Search for an Instructor and click on SELECT in the far right column. Don't select any Instructor, if you wish not to change instructors.</p>
+              <p className="text-sm text-gray-400">Search for an Instructor and click on SELECT in the far right column.</p>
               <UserBrowsingViewer
                 mode="select"
                 onSelect={u => setSelectedInstructor(u)}
