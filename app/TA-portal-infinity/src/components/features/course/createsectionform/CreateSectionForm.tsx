@@ -88,7 +88,7 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (mode === 'course') {
+    if (mode === 'course' || (mode === undefined && form.isCourse)) {
       const { errors } = validateCourseProfile({
         name: form.name ?? '',
         deptCode: form.deptCode,
@@ -104,14 +104,20 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
       setCourseErrors(errMap);
       setSectionErrors({});
       if (errors.length > 0) return;
-    } else if (mode === 'section') {
-      // Section Creation: validate deptCode and courseNum
+    } else if (mode === 'section' || (mode === undefined && !form.isCourse)) {
+      // Section Creation: validate deptCode and courseNum only
+      const { errors } = validateCourseProfile({
+        deptCode: form.deptCode,
+        courseNum: form.courseNum,
+      }, { skipName: true });
       const errMap: {[k: string]: string} = {};
-      if (!form.deptCode) errMap.deptCode = 'Department code is required.';
-      if (!form.courseNum) errMap.courseNum = 'Course number is required.';
+      errors.forEach(msg => {
+        if (msg.toLowerCase().includes('department code')) errMap.deptCode = msg;
+        if (msg.toLowerCase().includes('course number')) errMap.courseNum = msg;
+      });
       setSectionErrors(errMap);
       setCourseErrors({});
-      if (Object.keys(errMap).length > 0) return;
+      if (errors.length > 0) return;
     }
     setCourseErrors({});
     setSectionErrors({});
@@ -150,10 +156,21 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
         </label>
       )}
 
-      {/* Show Course Name field only for Course Creation */}
-      {(mode === 'course' || mode === undefined) && (
+      {/* Show required info for Section Creation (no Course Name field) */}
+      {mode === 'section' && (
+        <div className="mb-2 text-sm text-gray-500">
+          Dept Code and Course Num are required fields for section creation.<br />
+          <span className="text-gray-400">
+            You can create the section without entering Section Code, Year, Semester, Section Type, Instructor ID, or Section Schedules.<br />
+            You can edit them later.
+          </span>
+        </div>
+      )}
+
+      {/* Show Course Name field for Course Creation (required) */}
+      {mode === 'course' && (
         <div>
-          <label htmlFor='name' className="text-sm block mb-1">Course Name</label>
+          <label htmlFor='name' className="text-sm block mb-1">Course Name{' '}<span className="text-red-500">*</span></label>
           <input
             id="name"
             value={form.name ?? ""}
@@ -161,28 +178,20 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
               handleChange('name', e.target.value);
               if (courseErrors.name) setCourseErrors(errors => ({ ...errors, name: undefined }));
             }}
-            className="w-full border rounded px-2 py-1"
+            className={`w-full border rounded px-2 py-1${courseErrors.name ? ' border-red-500' : ''}`}
             placeholder='e.g. Introduction to Computer Science'
           />
-          {mode === 'course' && courseErrors.name && (
+          {courseErrors.name && (
             <div className="text-red-600 text-xs mt-1">{courseErrors.name}</div>
           )}
         </div>
       )}
 
-      {/* Show required info for Section Creation */}
-      {mode === 'section' && (
-        <>
-          <div className="mb-2 text-sm text-gray-500">
-            Dept Code and Course Num are required fields for section creation.<br />
-            <span className="text-gray-400">
-              You can create the section without entering Section Code, Year, Semester, Section Type, Instructor ID, or Section Schedules. You can edit them later.
-            </span>
-          </div>
-        </>
-      )}
+      {/* (Removed duplicate Section Creation info message) */}
       <div>
-        <label htmlFor="deptCode" className="text-sm block mb-1">Dept Code</label>
+        <label htmlFor="deptCode" className="text-sm block mb-1">
+          Dept Code{' '}<span className="text-red-500">*</span>
+        </label>
         <input
           id="deptCode"
           value={form.deptCode}
@@ -191,7 +200,7 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
             if (courseErrors.deptCode) setCourseErrors(errors => ({ ...errors, deptCode: undefined }));
             if (sectionErrors.deptCode) setSectionErrors(errors => ({ ...errors, deptCode: undefined }));
           }}
-          className="w-full border rounded px-2 py-1"
+          className={`w-full border rounded px-2 py-1${(courseErrors.deptCode || sectionErrors.deptCode) ? ' border-red-500' : ''}`}
           placeholder=" e.g. COSC"
         />
         {mode === 'course' && courseErrors.deptCode && (
@@ -202,7 +211,9 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
         )}
       </div>
       <div>
-        <label htmlFor='courseNum' className="text-sm block mb-1">Course Num</label>
+        <label htmlFor='courseNum' className="text-sm block mb-1">
+          Course Num{' '}<span className="text-red-500">*</span>
+        </label>
         <input
           id="courseNum"
           value={form.courseNum}
@@ -211,7 +222,7 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
             if (courseErrors.courseNum) setCourseErrors(errors => ({ ...errors, courseNum: undefined }));
             if (sectionErrors.courseNum) setSectionErrors(errors => ({ ...errors, courseNum: undefined }));
           }}
-          className="w-full border rounded px-2 py-1"
+          className={`w-full border rounded px-2 py-1${(courseErrors.courseNum || sectionErrors.courseNum) ? ' border-red-500' : ''}`}
           placeholder='e.g. 499'
         />
         {mode === 'course' && courseErrors.courseNum && (
@@ -252,7 +263,7 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
                 )
               }
               className="w-full border rounded px-2 py-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
-              placeholder="e.g. 2024"
+              placeholder="e.g. 2025"
             />
           </div>
           <div>
