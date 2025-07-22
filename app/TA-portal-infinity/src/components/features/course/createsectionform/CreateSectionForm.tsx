@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { validateCourseProfile } from '../../../../utility/validation/course/validateCourseProfile';
 import { sectionTypeOptions, type SectionType } from '../../../../interfaces/section/SectionDetails';
 
 import { useNavigate } from 'react-router-dom';
@@ -44,6 +45,8 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
     sectionSchedules: null,
     isCourse: mode === 'course' ? true : false
   })
+  // error state for course creation
+  const [courseErrors, setCourseErrors] = useState<{[k: string]: string | undefined}>({});
 
   const handleChange = <K extends keyof CreateSectionData>(
     key: K,
@@ -83,8 +86,25 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
   }
 
   const onSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    onCreateSection({ ...form, instructorId: selectedInstructor?.id })
+    e.preventDefault();
+    if (mode === 'course') {
+      const { errors } = validateCourseProfile({
+        name: form.name ?? '',
+        deptCode: form.deptCode,
+        courseNum: form.courseNum,
+      });
+      // Map errors to fields
+      const errMap: {[k: string]: string} = {};
+      errors.forEach(msg => {
+        if (msg.toLowerCase().includes('course name')) errMap.name = msg;
+        if (msg.toLowerCase().includes('department code')) errMap.deptCode = msg;
+        if (msg.toLowerCase().includes('course number')) errMap.courseNum = msg;
+      });
+      setCourseErrors(errMap);
+      if (errors.length > 0) return;
+    }
+    setCourseErrors({});
+    onCreateSection({ ...form, instructorId: selectedInstructor?.id });
   }
 
   // disable flag
@@ -119,19 +139,23 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
         </label>
       )}
 
-      {/* Show Name field only for Course Creation */}
+      {/* Show Course Name field only for Course Creation */}
       {(mode === 'course' || mode === undefined) && (
         <div>
-          <label htmlFor='name' className="text-sm block mb-1">Name</label>
+          <label htmlFor='name' className="text-sm block mb-1">Course Name</label>
           <input
             id="name"
             value={form.name ?? ""}
-            onChange={e => 
-              handleChange('name', e.target.value)
-            }
+            onChange={e => {
+              handleChange('name', e.target.value);
+              if (courseErrors.name) setCourseErrors(errors => ({ ...errors, name: undefined }));
+            }}
             className="w-full border rounded px-2 py-1"
-            placeholder='e.g. Introduction to Computer ...'
+            placeholder='e.g. Introduction to Computer Science'
           />
+          {mode === 'course' && courseErrors.name && (
+            <div className="text-red-600 text-xs mt-1">{courseErrors.name}</div>
+          )}
         </div>
       )}
 
@@ -146,12 +170,16 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
         <input
           id="deptCode"
           value={form.deptCode}
-          onChange={e =>  
-            handleChange('deptCode', e.target.value)
-          }
+          onChange={e =>  {
+            handleChange('deptCode', e.target.value);
+            if (courseErrors.deptCode) setCourseErrors(errors => ({ ...errors, deptCode: undefined }));
+          }}
           className="w-full border rounded px-2 py-1"
           placeholder=" e.g. COSC"
         />
+        {mode === 'course' && courseErrors.deptCode && (
+          <div className="text-red-600 text-xs mt-1">{courseErrors.deptCode}</div>
+        )}
         {mode === 'section' && !form.deptCode && (
           <div className="text-red-600 text-xs mt-1">Department code is required.</div>
         )}
@@ -161,12 +189,16 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
         <input
           id="courseNum"
           value={form.courseNum}
-          onChange={e =>  
-            handleChange('courseNum', e.target.value)
-          }
+          onChange={e =>  {
+            handleChange('courseNum', e.target.value);
+            if (courseErrors.courseNum) setCourseErrors(errors => ({ ...errors, courseNum: undefined }));
+          }}
           className="w-full border rounded px-2 py-1"
           placeholder='e.g. 499'
         />
+        {mode === 'course' && courseErrors.courseNum && (
+          <div className="text-red-600 text-xs mt-1">{courseErrors.courseNum}</div>
+        )}
         {mode === 'section' && !form.courseNum && (
           <div className="text-red-600 text-xs mt-1">Course number is required.</div>
         )}
