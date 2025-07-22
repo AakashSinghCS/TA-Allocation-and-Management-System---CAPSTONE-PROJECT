@@ -183,10 +183,7 @@ export default function ProfileSection<T extends User>({
       <div className="border-t border-gray-200 pt-4 mt-6">
         <div className="grid grid-cols-1 gap-3">
           {/* Status Indicator */}
-          <div className={`flex items-center justify-between p-3 bg-gradient-to-r ${
-            userStatus.status === 'Active' ? 'from-green-50 to-emerald-50 border-green-200' :
-            'from-red-50 to-rose-50 border-red-200'
-          } rounded-lg border`}>
+          <div className="flex items-center justify-between p-3 bg-gradient-to-r from-slate-50 to-gray-50 rounded-lg border border-gray-200">
             <div className="flex items-center gap-2">
               <div className={`w-3 h-3 rounded-full ${
                 userStatus.status === 'Active' ? 'bg-green-500 animate-pulse' :
