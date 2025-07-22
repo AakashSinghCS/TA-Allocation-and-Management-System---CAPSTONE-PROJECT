@@ -1552,6 +1552,7 @@ Meetings were productive and helped align the entire team on next steps for back
 
 ## Next Cycle Goals
 - Complete Instrcutor dashboard testing and finalize documentation
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## 18 July, Friday
@@ -1656,6 +1657,4 @@ Addressed key UI concerns while keeping development velocity on PR #448. Coordin
 - Perform peer testing of updated application components
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
 
