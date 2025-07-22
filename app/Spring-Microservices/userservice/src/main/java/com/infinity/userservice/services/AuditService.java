@@ -1,23 +1,26 @@
 package com.infinity.userservice.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.infinity.userservice.enums.ActionOptions;
-import com.infinity.userservice.exceptions.NotFoundException;
-import com.infinity.userservice.models.AuditEvent;
-import com.infinity.userservice.repositories.AuditRepository;
-
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.infinity.userservice.dtos.AuditEventDto;
+import com.infinity.userservice.enums.ActionOptions;
+import com.infinity.userservice.exceptions.NotFoundException;
+import com.infinity.userservice.models.AuditEvent;
+import com.infinity.userservice.repositories.AuditRepository;
+import com.infinity.userservice.repositories.UserRepository;
+import com.infinity.userservice.utility.AuditMapper;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,8 @@ public class AuditService {
 
     private final AuditRepository auditRepo;
     private final ObjectMapper objectMapper;
+    private final AuditMapper auditMapper;
+    private final UserRepository userRepository;
 
     private static final String SERVICE_NAME = "user-service";
 
@@ -55,7 +60,7 @@ public class AuditService {
         }
     }
 
-    public Page<AuditEvent> search(
+    public Page<AuditEventDto> search(
         Pageable pageable,
         String   service,
         String   entityType,
@@ -99,19 +104,38 @@ public class AuditService {
             LocalDateTime startOfDay = day.atStartOfDay();
             LocalDateTime startOfNext = startOfDay.plusDays(1);
 
-            spec = spec.and((root, query, cb) ->
-                cb.between(root.get("timestamp"), startOfDay, startOfNext));
+            spec = spec.and((root, query, cb) -> cb.between(root.get("timestamp"), startOfDay, startOfNext));
         }
+        Page<AuditEvent> page = auditRepo.findAll(spec, pageable);
 
-        return auditRepo.findAll(spec, pageable);
+        return page.map(event -> {
+            String actorName = userRepository.findById(event.getActorId())
+                    .map(u -> u.getFirstName() + " " + u.getLastName())
+                    .orElse("Unknown");
+
+            String entityName = userRepository.findById(event.getEntityId())
+                    .map(u -> u.getFirstName() + " " + u.getLastName())
+                    .orElse("Unknown");
+
+            return auditMapper.mapToDto(event, actorName, entityName);
+        });
+
     }
 
     /**
      * Lookup a single AuditEvent by its id, or throw 404
      */
-    public AuditEvent getById(Long id) {
-        return auditRepo.findById(id)
+    public AuditEventDto getById(Long id) {
+        AuditEvent event =  auditRepo.findById(id)
             .orElseThrow(() -> new NotFoundException("AuditEvent not found with id " + id));
+            String actorName = userRepository.findById(event.getActorId())
+                .map(u -> u.getFirstName() + " " + u.getLastName())
+                    .orElse("Unknown");
+            String entityName = userRepository.findById(event.getEntityId())
+                    .map(u -> u.getFirstName() + " " + u.getLastName())
+                    .orElse("Unknown");
+
+        return auditMapper.mapToDto(event, actorName, entityName);
     }
 
     private String filterPassword(Object obj) throws JsonProcessingException {
