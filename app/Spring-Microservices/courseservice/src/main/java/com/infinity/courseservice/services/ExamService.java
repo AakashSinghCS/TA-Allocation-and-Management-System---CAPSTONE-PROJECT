@@ -36,55 +36,84 @@ public class ExamService {
     // --- Exam CRUD ---
 
     public ExamDto createExam(ExamDto dto) {
-        Exam exam = new Exam();
-        Section section = sectionRepository.findById(dto.sectionId())
-                .orElseThrow(() -> new NotFoundException("Section not found"));
-        // Course course = courseRepository.findById(dto.courseId())
-        //         .orElseThrow(() -> new NotFoundException("Course not found"));
-        // Long sectionId = course.getSections().get(0).getId();
+        try {
+            Exam exam = new Exam();
+            Section section = sectionRepository.findById(dto.sectionId())
+                    .orElseThrow(() -> new NotFoundException("Section not found"));
 
-        // Check for duplicate exam
-        boolean exists = examRepository.findAll().stream().anyMatch(e ->
-            e.getSectionId().equals(section.getId()) &&
-            e.getDate().equals(dto.date()) &&
-            e.getStartTime().equals(dto.startTime()) &&
-            e.getEndTime().equals(dto.endTime())
-        );
-        if (exists) {
-            throw new BadRequestException("Duplicate exam entry exists for this section, date, and time.");
+            boolean exists = examRepository.findAll().stream().anyMatch(e ->
+                e.getSectionId().equals(section.getId()) &&
+                e.getDate().equals(dto.date()) &&
+                e.getStartTime().equals(dto.startTime()) &&
+                e.getEndTime().equals(dto.endTime())
+            );
+            if (exists) {
+                throw new BadRequestException("Duplicate exam entry exists for this section, date, and time.");
+            }
+
+            exam.setSectionId(section.getId());
+            exam.setDate(dto.date());
+            exam.setStartTime(dto.startTime());
+            exam.setEndTime(dto.endTime());
+            Exam saved = examRepository.save(exam);
+
+            return examMapper.mapExam(saved);
+        } catch (NotFoundException | BadRequestException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to create exam: " + e.getMessage());
         }
-
-        exam.setSectionId(section.getId());
-        exam.setDate(dto.date());
-        exam.setStartTime(dto.startTime());
-        exam.setEndTime(dto.endTime());
-        Exam saved = examRepository.save(exam);
-
-        return examMapper.mapExam(saved);
     }
 
     public ExamDto updateExam(Long id, ExamDto dto) {
-        Exam exam = examRepository.findById(id).orElseThrow(() -> new NotFoundException("Exam not found"));
-        exam.setDate(dto.date());
-        exam.setStartTime(dto.startTime());
-        exam.setEndTime(dto.endTime());
-        Exam saved = examRepository.save(exam);
-        return examMapper.mapExam(saved);
+        try {
+            Exam exam = examRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Exam not found"));
+            exam.setDate(dto.date());
+            exam.setStartTime(dto.startTime());
+            exam.setEndTime(dto.endTime());
+            Exam saved = examRepository.save(exam);
+            return examMapper.mapExam(saved);
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to update exam: " + e.getMessage());
+        }
     }
 
     public void deleteExam(Long id) {
-        examRepository.deleteById(id);
+        try {
+            if (!examRepository.existsById(id)) {
+                throw new NotFoundException("Exam not found");
+            }
+            examRepository.deleteById(id);
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to delete exam: " + e.getMessage());
+        }
     }
 
     public List<ExamDto> getAllExams() {
-        return examRepository.findAll().stream()
-                .map(examMapper::mapExam)
-                .toList();
+        try {
+            return examRepository.findAll().stream()
+                    .map(examMapper::mapExam)
+                    .toList();
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to fetch exams: " + e.getMessage());
+        }
     }
 
     public ExamDto getExamById(Long id) {
-        Exam exam = examRepository.findById(id).orElseThrow(() -> new NotFoundException("Exam not found"));
-        return examMapper.mapExam(exam);
+        try {
+            Exam exam = examRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Exam not found"));
+            return examMapper.mapExam(exam);
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to fetch exam: " + e.getMessage());
+        }
     }
 
     

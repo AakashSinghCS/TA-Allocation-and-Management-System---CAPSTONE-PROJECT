@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SectionFilter from '../../../../../components/features/course/coursefilter/SectionFilter';
 import { useAuth } from '../../../../../context/AuthContext';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { fetchFilteredSections, type FilterSectionsProps } from '../../../../../api/course/sectionfilter/fetchFilteredSections';
 import { fetchAllStudentEnrollmentOverview } from '../../../../../api/student/enrollment/fetchAllStudentCompletedCourses';
@@ -136,10 +138,10 @@ export default function AddEnrollmentPage() {
         );
         const firstError = enrollmentResults.find(r => !r.success);
         if (firstError) {
-            alert(`Unable to enroll: ${firstError.message}`);
+            toast.error(`Unable to enroll: ${firstError.message}`);
             const secondError = deletionResults.find(r => !r.success);
             if (secondError) {
-                alert(`Unable to enroll: ${secondError.message}`);
+                toast.error(`Unable to enroll: ${secondError.message}`);
             }
             return;          // keep user on the page
         }
@@ -227,6 +229,7 @@ export default function AddEnrollmentPage() {
                     Submit
                 </button>
             </div>
+            <ToastContainer />
         </div>
     );
 }

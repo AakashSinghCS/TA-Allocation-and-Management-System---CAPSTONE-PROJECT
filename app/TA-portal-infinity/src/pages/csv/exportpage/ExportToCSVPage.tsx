@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import SectionFilter from '../../../components/features/course/coursefilter/SectionFilter';
 import SectionList from '../../../components/features/course/sectionlist/SectionList';
 import { fetchFilteredSections, type FilterSectionsProps } from '../../../api/course/sectionfilter/fetchFilteredSections';
@@ -54,7 +56,7 @@ export default function ExportToCSVPage() {
 
   const handleExportToCSV = async () => {
     if (selectedSections.length === 0) {
-      alert('Please select at least one section to export');
+      toast.error('Please select at least one section to export');
       return;
     }
 
@@ -68,7 +70,7 @@ export default function ExportToCSVPage() {
       console.log('Exporting sections with IDs:', sectionIds);
 
       if (sectionIds.length === 0) {
-        alert('Selected sections do not have valid IDs');
+        toast.error('Selected sections do not have valid IDs');
         return;
       }
 
@@ -76,9 +78,10 @@ export default function ExportToCSVPage() {
       
       if (csvBlob) {
         downloadCSVBlob(csvBlob);
-        alert('CSV export completed successfully!');
+        toast.success('CSV export completed successfully!');
       } else {
-        alert('Export failed. Please try again.');
+        toast.error('Export failed. Please try again.');
+        return;
       }
     } catch (err) {
       console.error('Export failed:', err);
@@ -95,9 +98,10 @@ export default function ExportToCSVPage() {
       
       if (csvBlob) {
         downloadCSVBlob(csvBlob);
-        alert('All sections exported successfully!');
+        toast.success('All sections exported successfully!');
       } else {
-        alert('Export failed. Please try again.');
+        toast.error('Export failed. Please try again.');
+        return;
       }
     } catch (err) {
       console.error('Export all failed:', err);
@@ -218,6 +222,7 @@ export default function ExportToCSVPage() {
           )}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

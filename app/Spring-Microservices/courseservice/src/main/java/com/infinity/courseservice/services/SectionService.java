@@ -69,116 +69,178 @@ public class SectionService {
 
     @Transactional
     public SectionDto addSection(Long courseId, SectionAddDtoRequest request) {
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new NotFoundException("Course not found"));
-
-        Section section = new Section(request.year(), request.semester(), request.section(), request.type(), course, request.instructorId());
         try {
-            sectionRepository.save(section);
-        } catch (DataIntegrityViolationException ex) {
-            throw new BadRequestException("Section already exists " + ex);
-        }
+            Course course = courseRepository.findById(courseId)
+                    .orElseThrow(() -> new NotFoundException("Course not found"));
 
-        return new SectionDto(section.getId(), section.getYear(), section.getSemester(), section.getSection(),
-                section.getType(),
-                new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum()));
+            Section section = new Section(request.year(), request.semester(), request.section(), request.type(), course, request.instructorId());
+            sectionRepository.save(section);
+
+            return new SectionDto(section.getId(), section.getYear(), section.getSemester(), section.getSection(),
+                    section.getType(),
+                    new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum()));
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("Section already exists " + ex.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to add section: " + e.getMessage());
+        }
     }
 
     public SectionDto updateSection(Long sectionId, CourseRequest request) {
-        Section section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
-        section.setYear(request.year());
-        section.setSection(request.section());
-        section.setType(request.type());
-        section.setSemester(request.semester());
-        section.setInstructorId(request.instructorId());
-        sectionRepository.save(section);
-        return new SectionDto(section.getId(),
-                section.getYear(),
-                section.getSemester(),
-                section.getSection(),
-                section.getType(),
-                new CourseDto(
-                        section.getCourse().getId(),
-                        section.getCourse().getDeptCode(),
-                        section.getCourse().getName(),
-                        section.getCourse().getCourseNum()));
+        try {
+            Section section = sectionRepository.findById(sectionId)
+                    .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
+            section.setYear(request.year());
+            section.setSection(request.section());
+            section.setType(request.type());
+            section.setSemester(request.semester());
+            section.setInstructorId(request.instructorId());
+            sectionRepository.save(section);
+            return new SectionDto(section.getId(),
+                    section.getYear(),
+                    section.getSemester(),
+                    section.getSection(),
+                    section.getType(),
+                    new CourseDto(
+                            section.getCourse().getId(),
+                            section.getCourse().getDeptCode(),
+                            section.getCourse().getName(),
+                            section.getCourse().getCourseNum()));
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("Section update violates data integrity: " + ex.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to update section: " + e.getMessage());
+        }
     }
 
     public String deleteSection(Long sectionId) {
-        if (!sectionRepository.existsById(sectionId)) {
-            throw new NotFoundException("No section with id " + sectionId);
-        }
-        sectionRepository.deleteById(sectionId);
+        try {
+            if (!sectionRepository.existsById(sectionId)) {
+                throw new NotFoundException("No section with id " + sectionId);
+            }
+            sectionRepository.deleteById(sectionId);
 
-        Integer allocationsAffected = applicationInterface.setSectionIdNull(sectionId).getBody();
-        Integer enrollmentsAffected = enrollmentService.clearSectionFromStudentCourses(sectionId);
-        return "Section deleted. "+allocationsAffected+" allocations cleared. "+enrollmentsAffected+" enrollments affected.";
+            Integer allocationsAffected = applicationInterface.setSectionIdNull(sectionId).getBody();
+            Integer enrollmentsAffected = enrollmentService.clearSectionFromStudentCourses(sectionId);
+            return "Section deleted. "+allocationsAffected+" allocations cleared. "+enrollmentsAffected+" enrollments affected.";
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("Section deletion violates data integrity: " + ex.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to delete section: " + e.getMessage());
+        }
     }
 
     @Transactional
     public SectionScheduleDto addSectionSchedule(Long sectionId, CourseRequest request) {
-        Section section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new NotFoundException("section not found"));
-        LocalTime startTime = request.startTime() != null ? LocalTime.parse(request.startTime()) : null;
-        LocalTime endTime = request.endTime() != null ? LocalTime.parse(request.endTime()) : null;
-        SectionSchedule sectionSchedule = new SectionSchedule(request.day(), startTime, endTime, section);
         try {
+            Section section = sectionRepository.findById(sectionId)
+                    .orElseThrow(() -> new NotFoundException("section not found"));
+            LocalTime startTime = request.startTime() != null ? LocalTime.parse(request.startTime()) : null;
+            LocalTime endTime = request.endTime() != null ? LocalTime.parse(request.endTime()) : null;
+            SectionSchedule sectionSchedule = new SectionSchedule(request.day(), startTime, endTime, section);
             sectionScheduleRepository.save(sectionSchedule);
+            return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(),
+                    sectionSchedule.getEndTime(), sectionSchedule.getSection().getId(), sectionSchedule.getId());
+        } catch (NotFoundException e) {
+            throw e;
         } catch (DataIntegrityViolationException ex) {
-            throw new BadRequestException("Schedule already exists " + ex);
+            throw new BadRequestException("Schedule already exists " + ex.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to add section schedule: " + e.getMessage());
         }
-        return new SectionScheduleDto(sectionSchedule.getDay(), sectionSchedule.getStartTime(),
-                sectionSchedule.getEndTime(), sectionSchedule.getSection().getId(), sectionSchedule.getId());
     }
 
     public List<SectionScheduleDto> getSectionSchedules(Long sectionId) {
-        Section section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
-        return section.getSectionSchedules().stream()
-                .map(sec -> new SectionScheduleDto(sec.getDay(),
-                        sec.getStartTime(),
-                        sec.getEndTime(),sec.getSection().getId(),
-                        sec.getId()))
-                .toList();
+        try {
+            Section section = sectionRepository.findById(sectionId)
+                    .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
+            return section.getSectionSchedules().stream()
+                    .map(sec -> new SectionScheduleDto(sec.getDay(),
+                            sec.getStartTime(),
+                            sec.getEndTime(),sec.getSection().getId(),
+                            sec.getId()))
+                    .toList();
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to get section schedules: " + e.getMessage());
+        }
     }
-    
+
     public SectionScheduleDto updateSectionSchedule(Long sectionScheduleId, CourseRequest request) {
-        SectionSchedule schedule = sectionScheduleRepository.findById(sectionScheduleId)
-                .orElseThrow(() -> new NotFoundException("No schedule with id " + sectionScheduleId));
-        schedule.setDay(request.day());
-        schedule.setStartTime(LocalTime.parse(request.startTime()));
-        schedule.setEndTime(LocalTime.parse(request.endTime()));
-        sectionScheduleRepository.save(schedule);
-        return new SectionScheduleDto(schedule.getDay(),
-                    schedule.getStartTime(),
-                    schedule.getEndTime(),schedule.getSection().getId(),
-                    schedule.getId());
+        try {
+            SectionSchedule schedule = sectionScheduleRepository.findById(sectionScheduleId)
+                    .orElseThrow(() -> new NotFoundException("No schedule with id " + sectionScheduleId));
+            schedule.setDay(request.day());
+            schedule.setStartTime(LocalTime.parse(request.startTime()));
+            schedule.setEndTime(LocalTime.parse(request.endTime()));
+            sectionScheduleRepository.save(schedule);
+            return new SectionScheduleDto(schedule.getDay(),
+                        schedule.getStartTime(),
+                        schedule.getEndTime(),schedule.getSection().getId(),
+                        schedule.getId());
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("Schedule update violates data integrity: " + ex.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to update section schedule: " + e.getMessage());
+        }
     }
 
     public String deleteSectionSchedule(Long sectionScheduleId) {
-        if (!sectionScheduleRepository.existsById(sectionScheduleId)) {
-            throw new NotFoundException("No schedule with id " + sectionScheduleId);
+        try {
+            if (!sectionScheduleRepository.existsById(sectionScheduleId)) {
+                throw new NotFoundException("No schedule with id " + sectionScheduleId);
+            }
+            sectionScheduleRepository.deleteById(sectionScheduleId);
+            return "Section schedule deleted";
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("Section schedule deletion violates data integrity: " + ex.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to delete section schedule: " + e.getMessage());
         }
-        sectionScheduleRepository.deleteById(sectionScheduleId);
-        return "Section schedule deleted";
     }
 
     public String assignInstructor(AssignInstructorRequest request) {
-        UserDto instructorDto = userInterface.getInstructorById(request.instructorId());
-        Section section = sectionRepository.findById(request.sectionId())
-                .orElseThrow(() -> new NotFoundException("No section with id " + request.sectionId()));
-        section.setInstructorId(instructorDto.id());
-        sectionRepository.save(section);
-        return "Instructor assigned to section " + section.getId();
+        try {
+            UserDto instructorDto = userInterface.getInstructorById(request.instructorId());
+            Section section = sectionRepository.findById(request.sectionId())
+                    .orElseThrow(() -> new NotFoundException("No section with id " + request.sectionId()));
+            section.setInstructorId(instructorDto.id());
+            sectionRepository.save(section);
+            return "Instructor assigned to section " + section.getId();
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("Instructor assignment violates data integrity: " + ex.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to assign instructor: " + e.getMessage());
+        }
     }
 
     public String unassignInstructor(Long sectionId, Long instructorId) {
-        Section section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
-        section.setInstructorId(null);
-        sectionRepository.save(section);
-        return "Instructor unassigned from " + section.getId();
+        try {
+            Section section = sectionRepository.findById(sectionId)
+                    .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
+            section.setInstructorId(null);
+            sectionRepository.save(section);
+            return "Instructor unassigned from " + section.getId();
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("Instructor unassignment violates data integrity: " + ex.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to unassign instructor: " + e.getMessage());
+        }
     }
 
     public List<SectionDto> getInstructorSections(Long instructorId) {

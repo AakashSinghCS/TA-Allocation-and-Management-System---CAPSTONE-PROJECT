@@ -7,6 +7,8 @@ import type { CourseProfile } from '../../../interfaces/course/Course';
 import { validateCourseProfile } from '../../../utility/validation/course/validateCourseProfile';
 import { validateSectionProfile } from '../../../utility/validation/section/validateSectionProfile';
 import type { SectionProfile } from '../../../interfaces/section/Section';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function AddSectionPage() {
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ export default function AddSectionPage() {
     const courseProfile = extractCourseProfile(data);
     const { ok, sanitized, errors } = validateCourseProfile(courseProfile);
     if (!ok) {
-      alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
+      toast.error(`Please fix the following:\n• ${errors.join("\n• ")}`);
       return;
     }
 
@@ -27,16 +29,17 @@ export default function AddSectionPage() {
       const success = await fetchCreateCourse(courseAddDtoRequest);
 
       if (success) {
-        alert("Course is created!");
+        toast.success("Course is created!");
         navigate('/user/coordinator/sections', { replace: true });
       } else {
-        alert("Failed to create course. Are you sure it's not a duplicate?")
+        toast.error("Failed to create course. Are you sure it's not a duplicate?");
+        return;
       }
     } else if (!data.isCourse) {
       const sectionProfile = extractSectionProfile(data);
       const { ok, sanitized: sanitizedSections, errors } = validateSectionProfile(sectionProfile);
       if (!ok) {
-        alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
+        toast.error(`Please fix the following:\n• ${errors.join("\n• ")}`);
         return;
       }
       const sectionAddDtoRequest: SectionAddDtoRequest = {
@@ -48,10 +51,11 @@ export default function AddSectionPage() {
 
       const success = await fetchCreateSection(sectionAddDtoRequest);
       if (success) {
-        alert("Section is created!");
+        toast.success("Section is created!");
         navigate('/user/coordinator/sections', { replace: true });
       } else {
-        alert("Failed to create section. Are you sure it's not a duplicate?")
+        toast.error("Failed to create section. Are you sure it's not a duplicate?");
+        return;
       }
     }
   };
@@ -74,6 +78,7 @@ export default function AddSectionPage() {
           <CsvUpload onFileUpload={handleFileUpload} />
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

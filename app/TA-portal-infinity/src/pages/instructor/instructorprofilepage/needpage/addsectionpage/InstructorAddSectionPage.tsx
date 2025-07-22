@@ -10,6 +10,8 @@ import { useAuth } from "../../../../../context/AuthContext";
 import type { Course } from "../../../../../interfaces/course/Course";
 import type Section from "../../../../../interfaces/section/Section";
 import { convertFilterSectionsToSections } from "../../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type Mode = "update" | "add";
 
@@ -62,7 +64,9 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
   // per‐section add (in “add” mode)
   const onSelect = async (section: Section) => {
     const ok = await fetchAssignInstructor(instructorId, section?.id ?? -1);
-    alert(ok ? 'Section added!' : 'Failed to add section.');
+    toast[ok ? 'success' : 'error'](
+      ok ? 'Section added!' : 'Failed to add section.'
+    );
     navigate(`/user/instructorprofile/${instructorId}/need`);
   };
 
@@ -103,7 +107,9 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
       semester: semester,
       prerequisites:selectedPrereqs
     });
-    alert(ok ? 'Prerequisites updated!' : 'Failed to update prerequisites.');
+    toast[ok ? 'success' : 'error'](
+      ok ? 'Prerequisites updated!' : 'Failed to update prerequisites.'
+    );
     navigate(`/user/instructorprofile/${instructorId}/need`);
   };
 
@@ -197,6 +203,7 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
           </button>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 }

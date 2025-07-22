@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from '../../../context/AuthContext';
 import { fetchDeadlines, updateDeadline } from "../../../api/admin/FetchDeadline";
 import type { DeadlineDto } from "../../../interfaces/admin/Deadline";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function formatDeadlineName(name: string): string {
   return name
@@ -53,7 +55,8 @@ const DeadlineManagementPage: React.FC = () => {
       );
     } catch (err) {
       console.error("Failed to update deadline:", err);
-      alert("Error updating deadline");
+      toast.error("Error updating deadline");
+      return;
     }
   };
 
@@ -106,6 +109,7 @@ const DeadlineManagementPage: React.FC = () => {
             ))}
           </div>
         )}
+        <ToastContainer />
       </div>
     </div>
   );

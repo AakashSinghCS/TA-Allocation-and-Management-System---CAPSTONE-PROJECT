@@ -14,6 +14,9 @@ import { validateSectionProfile } from "../../../../utility/validation/section/v
 import SectionProfileSection from "../sectionprofilesection/SectionProfileSection";
 import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
 import { UserRole } from "../../../../interfaces/enum/UserRole";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 interface Props {
   section: Section | null;
   fields: (keyof SectionProfile)[];
@@ -66,7 +69,7 @@ export default function SectionProfileDetailsSection({
     if (!section) return;
     const { ok, sanitized, errors } = validateSectionProfile(updates);
     if (!ok) {
-      alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
+      toast.error(`Please fix the following:\n• ${errors.join("\n• ")}`);
       return;
     }
     const success = await fetchUpdateSectionDetails(section?.id ?? -1, {instructorId:updates.instructorId,...sanitized});
@@ -111,6 +114,7 @@ export default function SectionProfileDetailsSection({
               </button>
             </div>
           )}
+          <ToastContainer />
         </>
       )}
     </div>

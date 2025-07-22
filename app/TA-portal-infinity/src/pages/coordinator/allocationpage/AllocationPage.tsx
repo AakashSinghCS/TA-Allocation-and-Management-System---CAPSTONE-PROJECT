@@ -97,6 +97,7 @@ const TAAllocationPage: React.FC = () => {
     console.error("Failed to load section:", err);
     //Temporary UX helper here:
     toast.error("Are you sure instructor has set the requirements for this section?");
+    return;
   }
 
   // Fetch instructor info using section id
@@ -486,6 +487,7 @@ const events = [
                   }
                 } catch (e) {
                   toast.error('Failed to revoke Offer.');
+                  return;
                 }
               }}
               className="text-sm bg-[#040941] text-white px-3 py-1 rounded hover:bg-[#03072a] transition"

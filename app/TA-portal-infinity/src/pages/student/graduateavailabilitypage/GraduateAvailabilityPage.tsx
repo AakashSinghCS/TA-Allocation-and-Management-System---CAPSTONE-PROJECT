@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { fetchApplicationsByStudent } from "../../../api/application/FetchApplicationsByStudent";
 
@@ -106,7 +108,6 @@ const GraduateAvailabilityPage = () => {
           customButtons={{
             clearAll: {
               text: 'Reset',
-
               click: async () => {
                 const confirmed = window.confirm("Are you sure you want to delete all your availability?");
                 if (!confirmed) return;
@@ -114,16 +115,15 @@ const GraduateAvailabilityPage = () => {
                 try {
                   await deleteExamAvailability(userId, token!);
                   setEvents([]);
-                  alert("All availability has been cleared.");
+                  toast.success("All availability has been cleared.");
                 } catch (error) {
                   console.error(error);
-                  alert("Failed to clear availability. Please try again.");
+                  toast.error("Failed to clear availability. Please try again.");
+                  return;
                 }
               },
             },
           }}
-
-
           headerToolbar={{
             left: "prev,next",
             center: "title",
@@ -138,9 +138,11 @@ const GraduateAvailabilityPage = () => {
           onClick={async () => {
             try {
               await submitExamAvailability(userId, events, token!);
-              alert("Availability submitted successfully!");
+              toast.success("Availability submitted successfully!");
             } catch (error) {
-              alert("Please click the reset button if you want to update your availability.");
+              toast.error("Please click the reset button if you want to update your availability.");
+              console.error("Failed to submit availability: ", error);
+              return;
             }
           }}
           className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
@@ -148,7 +150,7 @@ const GraduateAvailabilityPage = () => {
           Submit Availability
         </button>
       </div>
-
+      <ToastContainer />
     </div>
   );
   

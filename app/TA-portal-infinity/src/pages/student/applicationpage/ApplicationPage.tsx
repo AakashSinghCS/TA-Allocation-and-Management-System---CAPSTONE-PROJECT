@@ -366,10 +366,13 @@ const deadlinePassed =
                               } catch (err: any) {
                                 if (err.message && err.message.includes('403')) {
                                   toast.error('You do not have permission to delete this application.', { autoClose: 3500 });
+                                  return;
                                 }  else if (err.message.includes('Failed to delete application')) {
                                   toast.error('This application has allocations and cannot be deleted.', { autoClose: 3500 });
+                                  return;
                                 }  else {
                                   toast.error('Failed to delete application. Please try again.', { autoClose: 3500 });
+                                  return;
                                 }
                                 console.error(err);
                               }

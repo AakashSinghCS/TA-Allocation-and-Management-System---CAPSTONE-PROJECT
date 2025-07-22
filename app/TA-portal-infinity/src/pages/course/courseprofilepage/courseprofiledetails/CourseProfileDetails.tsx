@@ -9,6 +9,8 @@ import { fetchDeleteCourse } from "../../../../api/course/fetchDeleteCourse";
 import { useNavigate } from "react-router-dom";
 import { validateCourseProfile } from "../../../../utility/validation/course/validateCourseProfile";
 import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 interface Props {
@@ -44,7 +46,7 @@ export default function CourseProfileDetails({
     const onSave = async (updates: Partial<CourseProfile>) =>{
         const {ok , sanitized, errors} = validateCourseProfile(updates);
         if (!ok) {
-            alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
+            toast.error(`Please fix the following:\n• ${errors.join("\n• ")}`);
             return;
         }
         const success = await fetchUpdateCourse(course?.id ?? -1, sanitized);
@@ -90,6 +92,7 @@ export default function CourseProfileDetails({
                     )}
                 </>
             )}
+            <ToastContainer />
         </div>
     );
 }

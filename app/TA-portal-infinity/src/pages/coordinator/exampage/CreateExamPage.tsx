@@ -6,6 +6,8 @@ import { getAllDeptCodes } from '../../../api/course/getAllDeptCodes';
 import { useAuth } from '../../../context/AuthContext';
 import { fetchAllExistingCourseNums } from "../../../api/course/sectionfilter/fetchAllExistingCourseNums";
 import type { StudentOrInstructorOrCoordinator } from '../../../interfaces/user/User';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 const CreateExamPage = () => {
@@ -186,7 +188,7 @@ const CreateExamPage = () => {
 
   const handleSubmit = async () => {
     if (!courseId || !sectionId || !term || !date || !startTime || !endTime) {
-      alert('Please fill in all fields.');
+      toast.error('Please fill in all fields.');
       return;
     }
 
@@ -211,10 +213,11 @@ const CreateExamPage = () => {
 
         if (!response.ok) {
             const errTxt = await response.text();
-            throw new Error(`Failed to create exam: ${response.status} ${errTxt}`);
+            toast.error(`Failed to create exam: ${response.status} ${errTxt}`);
+            return;
         }
 
-        alert('Exam created successfully!');
+        toast.success('Exam created successfully!');
         setSelectedDeptCode('');
         setSelectedCourseNum('');
         setCourseId(null);
@@ -227,20 +230,21 @@ const CreateExamPage = () => {
 
     } catch (err) {
         console.error('Error creating exam:', err);
-        alert('Failed to create exam.');
+        toast.error('Failed to create exam.');
+        return;
     }
   };
 
   const handleAssign = async () => {
     const token = localStorage.getItem("token");
     if (!selectedStudentId || !selectedExamId || !task || !assignStartTime || !assignEndTime) {
-        alert("Please fill in all fields.");
+        toast.error("Please fill in all fields.");
         return;
     }
 
     const selectedExam = exams.find(e => e.id === selectedExamId);
     if (!selectedExam) {
-        alert("Selected exam not found.");
+        toast.error("Selected exam not found.");
         return;
     }
 
@@ -263,10 +267,11 @@ const CreateExamPage = () => {
 
         if (!res.ok) {
             const txt = await res.text();
-            throw new Error(`Error assigning: ${res.status} - ${txt}`);
+            toast.error(`Error assigning: ${res.status} - ${txt}`);
+            return;
         }
 
-        alert("Student assigned to exam successfully!");
+        toast.success("Student assigned to exam successfully!");
 
         setStudentName('');
         setStudentNum('');
@@ -278,7 +283,8 @@ const CreateExamPage = () => {
 
     } catch (err) {
         console.error("Assignment error:", err);
-        alert("Failed to assign student.");
+        toast.error("Failed to assign student.");
+        return;
     }
   };
 
@@ -457,6 +463,7 @@ const CreateExamPage = () => {
                 Assign
             </button>
         </div>
+        <ToastContainer />
     </div>
   );
 

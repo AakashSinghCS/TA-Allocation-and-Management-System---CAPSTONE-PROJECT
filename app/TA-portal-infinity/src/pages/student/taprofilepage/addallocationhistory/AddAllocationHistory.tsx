@@ -8,6 +8,8 @@ import SectionList from "../../../../components/features/course/sectionlist/Sect
 import { useAuth } from "../../../../context/AuthContext";
 import type Section from "../../../../interfaces/section/Section";
 import { convertFilterSectionsToSections } from "../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function AddAllocationHistory() {
   const { userId: studentId } = useAuth();
@@ -69,7 +71,9 @@ export default function AddAllocationHistory() {
 
   const handleSaveHistory = async () => {
     const ok = await fetchPostAllocationHistory(studentId, selectedSections, initialSections);
-    alert(ok ? "History updated!" : "Failed to update history.");
+    toast[ok ? "success" : "error"](
+      ok ? "History updated!" : "Failed to update history."
+    );
     navigate(`/user/taprofile/${studentId}/allocationHistory`);
   };
 
@@ -132,6 +136,7 @@ export default function AddAllocationHistory() {
           Save History
         </button>
       </div>
+      <ToastContainer />
     </div>
   );
 }
