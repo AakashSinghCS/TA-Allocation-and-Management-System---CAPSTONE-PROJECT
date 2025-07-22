@@ -4,15 +4,16 @@ import type AuditEvent from '../../../../interfaces/admin/audit/AuditEvent';
 import { vi } from 'vitest';
 
 describe('AuditTable (with updated AuditEvent interface)', () => {
-  // Two mock events: one numeric entityId, one string
   const mockEvents: AuditEvent[] = [
     {
       id: 1,
       timestamp: '2025-07-16T08:30:00Z',
       actorId: 11,
+      actorName: 'Alice Smith',
       action: 'CREATE',
       entityType: 'User',
-      entityId: 101,            // number
+      entityId: 101,
+      entityName: 'Bob Johnson',
       summary: 'Created a user',
       service: 'user-service',
       beforeJson: '{"foo":"bar"}',
@@ -22,12 +23,13 @@ describe('AuditTable (with updated AuditEvent interface)', () => {
       id: 2,
       timestamp: '2025-07-16T08:30:00Z',
       actorId: 22,
+      actorName: 'Carol Lee',
       action: 'UPDATE',
       entityType: 'Book',
-      entityId: 'ISBN-1234',    // string
+      entityId: 'ISBN-1234',
+      entityName: 'JavaScript Basics',
       summary: 'Updated book title',
       service: 'catalog-service',
-      // beforeJson/afterJson omitted to test optionality
     },
   ];
 
@@ -48,37 +50,28 @@ describe('AuditTable (with updated AuditEvent interface)', () => {
     const onSelect = vi.fn();
     render(<AuditTable events={mockEvents} loading={false} onSelect={onSelect} />);
 
-    // Check column headers
-    ['When', 'Service', 'Actor Id', 'Action', 'Entity'].forEach((header) => {
+    // Check headers
+    ['When', 'Service', 'Actor Id', 'Action', 'Entity'].forEach(header => {
       expect(screen.getByRole('columnheader', { name: header })).toBeInTheDocument();
     });
 
-    // Check first row cells
-    expect(
-        screen.getAllByRole('cell', { name: '08:30 UTC' })[0]
-        ).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: 'user-service' })).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: '11' })).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: 'CREATE' })).toBeInTheDocument();
-    expect(
-      screen.getByRole('cell', { name: 'User, ID: 101' })
-    ).toBeInTheDocument();
+    // Actor name and ID combined
+    expect(screen.getByText(/Alice Smith/)).toBeInTheDocument();
+    expect(screen.getByText(/\(11\)/)).toBeInTheDocument();
 
-    // Check second row cells (string entityId)
-    expect(
-        screen.getAllByRole('cell', { name: '08:30 UTC' })[1]
-        ).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: 'catalog-service' })).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: '22' })).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: 'UPDATE' })).toBeInTheDocument();
-    expect(
-      screen.getByRole('cell', { name: 'Book, ID: ISBN-1234' })
-    ).toBeInTheDocument();
+    // Entity name and ID combined
+    expect(screen.getByText(/Bob Johnson/)).toBeInTheDocument();
+    expect(screen.getByText(/User #101/)).toBeInTheDocument();
 
-    // Clicking the second row should call onSelect with id=2
+    // Second row
+    expect(screen.getByText(/Carol Lee/)).toBeInTheDocument();
+    expect(screen.getByText(/\(22\)/)).toBeInTheDocument();
+    expect(screen.getByText(/JavaScript Basics/)).toBeInTheDocument();
+    expect(screen.getByText(/Book #ISBN-1234/)).toBeInTheDocument();
+
+    // Clicking the second row
     const rows = screen.getAllByRole('row');
-    const secondDataRow = rows[2]; // index 0 = header, 1 = first, 2 = second
-    fireEvent.click(secondDataRow);
+    fireEvent.click(rows[2]); // second data row
     expect(onSelect).toHaveBeenCalledOnce();
     expect(onSelect).toHaveBeenCalledWith(2);
   });
