@@ -7,6 +7,8 @@ import QuestionItem from "../../../components/features/questionanswer/questionit
 import { useAuth } from "../../../context/AuthContext";
 import type { ProfileQuestion } from "../../../interfaces/question/ProfileQuestion";
 import { GenericAPIContainer } from "../../../utility/genericapicontainer/GenericAPIContainer";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 //ResponseState is an object whose keys are numbers (question IDs), and each value is a StudentResponseDto.
 type ResponseState = {
   [questionId: number]: StudentResponseDto;
@@ -61,41 +63,48 @@ function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null })
 
 
     const res = await fetchSubmitQuestions(Number(studentId), request);
-    alert(res
-      ? 'All answers submitted successfully.'
-      : 'Some answers failed to save. Please try again.');
-    navigate(`/user/student/home`);
+    toast[res ? "success" : "error"](
+      res
+        ? 'All answers submitted successfully.'
+        : 'Some answers failed to save. Please try again.'
+    );
+    setTimeout(() => {
+      navigate(`/user/student/home`);
+    }, 1500); // 100 milliseconds delay
   }
 
   return (
-    <form onSubmit={e => {
-      e.preventDefault();
-      handleSubmit();
-    }}
-      className="space-y-6 max-w-5xl mx-auto grid grid-cols-1 gap-3"
-    >
-      <div>
-        <h2 className="text-xl font-semibold mb-1">Questions about you</h2>
-        <p className="text-xs text-slate-600 mb-1">Respond to these questions so the Coordinator understands more about you.</p>
-      </div>
-      {questions && questions.map(q => (
-        typeof q.id === 'number' ?
-          (<div className="border-b-solid border-b-2 border-gray-200 py-2">
-            <QuestionItem
-              key={q.id}
-              initialQuestion={q}
-              responseValue={responses[q.id]}
-              onChange={update}
-            />
-          </div>
-          ) : null))}
-      <button
-        type="submit"
-        className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors"
+    <>
+      <form onSubmit={e => {
+        e.preventDefault();
+        handleSubmit();
+      }}
+        className="space-y-6 max-w-5xl mx-auto grid grid-cols-1 gap-3"
       >
-        Save answers
-      </button>
-    </form>
+        <div>
+          <h2 className="text-xl font-semibold mb-1">Questions about you</h2>
+          <p className="text-xs text-slate-600 mb-1">Respond to these questions so the Coordinator understands more about you.</p>
+        </div>
+        {questions && questions.map(q => (
+          typeof q.id === 'number' ?
+            (<div className="border-b-solid border-b-2 border-gray-200 py-2">
+              <QuestionItem
+                key={q.id}
+                initialQuestion={q}
+                responseValue={responses[q.id]}
+                onChange={update}
+              />
+            </div>
+            ) : null))}
+        <button
+          type="submit"
+          className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors"
+        >
+          Save answers
+        </button>
+      </form>
+      <ToastContainer />
+    </>
   );
 }
 

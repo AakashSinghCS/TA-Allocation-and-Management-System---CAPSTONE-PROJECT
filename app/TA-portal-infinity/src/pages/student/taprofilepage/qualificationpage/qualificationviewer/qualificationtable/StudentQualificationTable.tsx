@@ -3,6 +3,7 @@ import { fetchAllStudentQualifications } from "../../../../../../api/student/qua
 import { fetchSubmitStudentQualifications } from "../../../../../../api/student/qualification/fetchSubmitStudentQualifications";
 import { useAuth } from "../../../../../../context/AuthContext";
 import type { DeptCodeQualificationResponse } from "../../../../../../api/qualification/fetchAllDeptCodeQualifications";
+import { toast, ToastContainer } from "react-toastify";
 
 interface StudentQualificationTableProps {
     qualificationList: DeptCodeQualificationResponse[];
@@ -39,8 +40,8 @@ export default function StudentQualificationTable({
         if(!isStudent) return;
         // we know studentChecked is number[] here
         const ok = await fetchSubmitStudentQualifications(studentId, studentChecked);
-        if(!ok) alert("Failed to submit!")
-        if(ok) alert("Submitted!");
+        if(!ok) toast.error("Failed to submit!");
+        if(ok) toast.success("Submitted!");
     };
 
     // sort + filter out any items without a defined id
@@ -58,56 +59,54 @@ export default function StudentQualificationTable({
         });
 
     return (
-  <form onSubmit={onSubmit} className="space-y-4">
-    <table className="min-w-full table-auto border-collapse border border-gray-300 overflow-hidden">
-      <thead className="bg-slate-100 text-left text-sm">
-        <tr>
-          <th className="w-12 border border-gray-300 px-2 py-2 text-center 2xl:text-medium">✓</th>
-          <th className="border border-gray-300 px-4 py-2 2xl:text-medium">Qualification</th>
-          <th className="w-28 border border-gray-300 px-3 py-2 text-right 2xl:text-medium">Course</th>
-        </tr>
-      </thead>
+  <><form onSubmit={onSubmit} className="space-y-4">
+        <table className="min-w-full table-auto border-collapse border border-gray-300 overflow-hidden">
+          <thead className="bg-slate-100 text-left text-sm">
+            <tr>
+              <th className="w-12 border border-gray-300 px-2 py-2 text-center 2xl:text-medium">✓</th>
+              <th className="border border-gray-300 px-4 py-2 2xl:text-medium">Qualification</th>
+              <th className="w-28 border border-gray-300 px-3 py-2 text-right 2xl:text-medium">Course</th>
+            </tr>
+          </thead>
 
-      <tbody className="text-sm 2xl:text-base">
-        {sorted.map(({ qualification, course }, idx) => {
-          const id = qualification.id!;
-          return (
-            <tr
-              key={id}
-              className={`
+          <tbody className="text-sm 2xl:text-base">
+            {sorted.map(({ qualification, course }, idx) => {
+              const id = qualification.id!;
+              return (
+                <tr
+                  key={id}
+                  className={`
                 border-t
                 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
               `}
-            >
-              <td className="border border-gray-300 px-2 py-2 text-center">
-                <input
-                  type="checkbox"
-                  checked={studentChecked.includes(id)}
-                  onChange={() => handleCheckboxChange(id)}
-                  className="h-4 w-4 accent-blue-600"
-                />
-              </td>
+                >
+                  <td className="border border-gray-300 px-2 py-2 text-center">
+                    <input
+                      type="checkbox"
+                      checked={studentChecked.includes(id)}
+                      onChange={() => handleCheckboxChange(id)}
+                      className="h-4 w-4 accent-blue-600" />
+                  </td>
 
-              <td className="border border-gray-300 px-4 py-2">
-                {qualification.description}
-              </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {qualification.description}
+                  </td>
 
-              <td className="border border-gray-300 px-3 py-2 text-right font-medium">
-                {course.deptCode} {course.courseNum}
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+                  <td className="border border-gray-300 px-3 py-2 text-right font-medium">
+                    {course.deptCode} {course.courseNum}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
 
-    {isStudent && <button
-      type="submit"
-      className="w-full bg-[#00c89c] text-white py-2 rounded hover:bg-[#c7fcec] transition-colors"
-    >
-      Save
-    </button>
-}
-  </form>
+        {isStudent && <button
+          type="submit"
+          className="w-full bg-[#00c89c] text-white py-2 rounded hover:bg-[#c7fcec] transition-colors"
+        >
+          Save
+        </button>}
+      </form><ToastContainer /></>
 );
 }
