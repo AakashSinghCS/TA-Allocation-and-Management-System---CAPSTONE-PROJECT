@@ -1,5 +1,6 @@
 package com.infinity.applicationservice.controllers;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -45,8 +46,9 @@ public class ApplicationController {
     public ResponseEntity<ApplicationDto> getApplication(@PathVariable Long studentId,
             @PathVariable Integer year,
             @RequestHeader("X-User-Id") Long requesterId,
-            @RequestHeader("X-User-Roles") List<String> roles) {
-        return ResponseEntity.ok(applicationService.getApplication(studentId, year, requesterId, roles));
+            @RequestHeader("X-User-Roles") String rolesHeader) {
+        List<String> headerRoles = Arrays.asList(rolesHeader.split(","));
+        return ResponseEntity.ok(applicationService.getApplication(studentId, year, requesterId, headerRoles));
     }
 
     @PutMapping("update/{studentId}")

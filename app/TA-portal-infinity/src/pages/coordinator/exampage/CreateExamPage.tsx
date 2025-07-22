@@ -6,6 +6,7 @@ import { getAllDeptCodes } from '../../../api/course/getAllDeptCodes';
 import { useAuth } from '../../../context/AuthContext';
 import { fetchAllExistingCourseNums } from "../../../api/course/sectionfilter/fetchAllExistingCourseNums";
 import type { StudentOrInstructorOrCoordinator } from '../../../interfaces/user/User';
+import type { ExamAvailabilityDto } from '../../../interfaces/exam/ExamAvailability';
 
 
 const CreateExamPage = () => {
@@ -40,6 +41,10 @@ const CreateExamPage = () => {
   const [task, setTask] = useState('');
   const [assignStartTime, setAssignStartTime] = useState('');
   const [assignEndTime, setAssignEndTime] = useState('');
+
+  const [availabilities, setAvailabilities] = useState<ExamAvailabilityDto[]>([]);
+
+  const currentYear = new Date().getFullYear();
 
 
   useEffect(() => {
@@ -132,37 +137,46 @@ const CreateExamPage = () => {
     }
   }, [courseId, selectedSection]);
 
-  useEffect(() => {
+  const fetchExamsAndUpdateDropdown = async () => {
     const token = localStorage.getItem("token");
+    
+    try {
+        const res = await fetch("http://localhost:8080/exams", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const examList = await res.json();
 
-    fetch("http://localhost:8080/exams", {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
-        .then(res => res.json())
-        .then(async (examList) => {
-            const formattedExams = await Promise.all(examList.map(async (exam: any) => {
-                const courseRes = await fetch(`http://localhost:8080/courses/${exam.courseId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                const sectionRes = await fetch(`http://localhost:8080/sections/get/${exam.sectionId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+        const formattedExams = await Promise.all(
+            examList.map(async (exam: any) => {
+                const [courseRes, sectionRes] = await Promise.all([
+                    fetch(`http://localhost:8080/courses/${exam.courseId}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                    fetch(`http://localhost:8080/sections/get/${exam.sectionId}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                ]);
 
                 const course = await courseRes.json();
                 const section = await sectionRes.json();
 
                 return {
                     id: exam.id,
-                    label: `${course.deptCode} ${course.courseNum} Section ${section.section} (${section.semester})`
+                    label: `${course.deptCode} ${course.courseNum} Section ${section.section} (${section.semester})`,
                 };
-            }));
+            })
+        );
 
-            setExams(examList);
-            setExamDisplayOptions(formattedExams);
-        })
-        .catch(err => console.error("Failed to fetch exams:", err));
+        setExams(examList);
+        setExamDisplayOptions(formattedExams);
+    } catch (err) {
+        console.error("Failed to fetch exams:", err);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchExamsAndUpdateDropdown();
   }, []);
 
   useEffect(() => {
@@ -215,6 +229,7 @@ const CreateExamPage = () => {
         }
 
         alert('Exam created successfully!');
+        await fetchExamsAndUpdateDropdown();
         setSelectedDeptCode('');
         setSelectedCourseNum('');
         setCourseId(null);
@@ -238,13 +253,73 @@ const CreateExamPage = () => {
         return;
     }
 
+    const [startHour, startMinute] = assignStartTime.split(":").map(Number);
+    const [endHour, endMinute] = assignEndTime.split(":").map(Number);
+
+    const startTotalMin = startHour * 60 + startMinute;
+    const endTotalMin = endHour * 60 + endMinute;
+
+    const minAllowed = 8 * 60;
+    const maxAllowed = 20 * 60;
+
+    if (startTotalMin < minAllowed || startTotalMin > maxAllowed) {
+        alert("Start time must be between 08:00 and 20:00.");
+        return;
+    }
+
+    if (endTotalMin < minAllowed || endTotalMin > maxAllowed) {
+        alert("End time must be between 08:00 and 20:00.");
+        return;
+    }
+
+    if (endTotalMin <= startTotalMin) {
+        alert("End time must be after start time.");
+        return;
+    }
+
     const selectedExam = exams.find(e => e.id === selectedExamId);
     if (!selectedExam) {
         alert("Selected exam not found.");
         return;
     }
 
+    const formatTime = (timeStr: string) => timeStr?.slice(0, 5);
+
+    const formatTo12Hour = (timeStr: string) => {
+        const [hour, minute] = timeStr.split(":");
+        const date = new Date();
+        date.setHours(Number(hour));
+        date.setMinutes(Number(minute));
+        return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+    };
+
+    if (task === "COORDINATION" && (formatTime(assignStartTime) !== formatTime(selectedExam.startTime) || formatTime(assignEndTime) !== formatTime(selectedExam.endTime))) {
+        alert(`For Coordination task, the assigned time must match the exam time.\n\nExam Start Time: ${formatTo12Hour(selectedExam.startTime)}\nExam End Time: ${formatTo12Hour(selectedExam.endTime)}`);
+        return;
+    }
+
     try {
+
+        const appRes = await fetch(`http://localhost:8080/applications/get/${selectedStudentId}/${currentYear}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "X-User-Id": userId?.toString() ?? "",
+                "X-User-Roles": userRoles?.join(",") ?? ""
+            }
+        });
+
+        if (!appRes.ok) {
+            const errText = await appRes.text();
+            throw new Error(`Application fetch failed: ${appRes.status} ${errText}`);
+        }
+
+        const appData = await appRes.json();
+
+        if (appData.applicationType !== "GRADUATE") {
+            alert("Only graduate students can be assigned to exams.");
+            return;
+        }
+
         const res = await fetch(`http://localhost:8080/exams/${selectedExamId}/assignments`, {
             method: "POST",
             headers: {
@@ -399,7 +474,27 @@ const CreateExamPage = () => {
             <label className="block mb-2">Select Matching Student</label>
             <select
                 value={selectedStudentId || ''}
-                onChange={e => setSelectedStudentId(Number(e.target.value))}
+                onChange={async (e) => {
+                    const studentId = Number(e.target.value);
+                    setSelectedStudentId(studentId);
+
+                    if (studentId) {
+                        const token = localStorage.getItem("token");
+                        try {
+                            const res = await fetch(`http://localhost:8080/exams/${studentId}/availability`, {
+                                headers: { Authorization: `Bearer ${token}` }
+                            });
+                            if (!res.ok) throw new Error("Failed to fetch availability");
+                            const data = await res.json();
+                            setAvailabilities(data);
+                        } catch (err) {
+                            console.error("Error fetching availabilities:", err);
+                            setAvailabilities([]);
+                        }
+                    } else {
+                        setAvailabilities([]);
+                    }
+                }}
                 className="w-full mb-4 p-2 border rounded"
             >
                 <option value="">Select a student</option>
@@ -409,6 +504,19 @@ const CreateExamPage = () => {
                     </option>
                 ))}
             </select>
+
+            {availabilities.length > 0 && (
+                <div className="mb-4">
+                    <h3 className="font-semibold mb-2">Student Availability:</h3>
+                    <ul className="list-disc ml-6">
+                        {availabilities.map((a) => (
+                            <li key={a.id}>
+                                {a.date} | {a.startTime} – {a.endTime}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             <label className="block mb-2">Select Exam</label>
             <select
