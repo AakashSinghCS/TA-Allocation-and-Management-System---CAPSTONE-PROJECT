@@ -33,7 +33,7 @@ describe("SectionCsvImport", () => {
     render(<SectionCsvImport />);
     const input = screen.getByLabelText(/file/i);
     fireEvent.change(input, { target: { files: [file] } });
-    // CSVプレビュー表示を待つ
+    // Wait for CSV preview to appear
     await waitFor(() => {
       expect(screen.getByText(/CSV Preview/)).toBeInTheDocument();
     });
