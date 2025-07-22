@@ -13,7 +13,8 @@ export default function AddSectionPage() {
 
   const handleCreateSection = async (data: CreateSectionData) => {
     const courseProfile = extractCourseProfile(data);
-    const { ok, sanitized, errors } = validateCourseProfile(courseProfile);
+    // For section creation, skip course name validation
+    const { ok, sanitized, errors } = validateCourseProfile(courseProfile, { skipName: !data.isCourse });
     if (!ok) {
       alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
       return;
