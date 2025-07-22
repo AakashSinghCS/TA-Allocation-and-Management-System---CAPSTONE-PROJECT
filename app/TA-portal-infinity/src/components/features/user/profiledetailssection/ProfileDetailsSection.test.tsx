@@ -42,7 +42,8 @@ describe('ProfileDetailsSection', () => {
                     firstName: 'First Name',
                     lastName: 'Last Name',
                     createdAt: 'Created At',
-                    roles: 'Roles'
+                    roles: 'Roles',
+                    active : "true"
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />
@@ -62,7 +63,8 @@ describe('ProfileDetailsSection', () => {
                     firstName: 'First Name',
                     lastName: 'Last Name',
                     createdAt: 'Created At',
-                    roles: "roles"
+                    roles: "roles",
+                    active : "true"
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />
@@ -94,6 +96,7 @@ describe('ProfileDetailsSection', () => {
                     email: 'Test@test.com',
                     createdAt: 'Created At',
                     roles: 'Roles',
+                    active: "active"
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />
@@ -114,6 +117,7 @@ describe('ProfileDetailsSection', () => {
                     email: 'test@test.com',
                     createdAt: 'Created At',
                     roles: 'Roles',
+                    active: "true"
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />
@@ -134,6 +138,7 @@ describe('ProfileDetailsSection', () => {
                     email: 'test@test.com',
                     createdAt: 'Created At',
                     roles: 'Roles',
+                    active: "true"
                 }}
                 fetchDetailsFunction={mockFetchDetails}
             />

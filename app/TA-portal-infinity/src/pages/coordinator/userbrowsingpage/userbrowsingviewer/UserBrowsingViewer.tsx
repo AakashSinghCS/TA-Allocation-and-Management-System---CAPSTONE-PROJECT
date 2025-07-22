@@ -5,7 +5,6 @@ import { studentFieldLabels, studentProfileFields } from "../../../../interfaces
 import { instructorFieldLabels, instructorProfileFields } from "../../../../interfaces/user/Instructor";
 import formatDateForDisplay from "../../../../utility/formatdatefordisplay/formatDateForDisplay";
 import SearchUserBar, { type SearchCriteria } from "../../../../components/ui/user/searchuserbar/SearchUserBar";
-import { UserRole } from "../../../../interfaces/enum/UserRole";
 import { useCallback, useEffect, useState } from "react";
 import Pagination from "../../../../utility/pagination/pagination/Pagination";
 import { useUserSearchPage } from "../../../../api/user/search/useUserSearch";

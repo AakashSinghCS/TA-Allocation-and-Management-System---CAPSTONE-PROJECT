@@ -92,26 +92,14 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getCourseNeedAndAllocations(courseId, year, semester));
     }
 
-    // @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
-    // @GetMapping("/needAndAllocations/{instructorId}")
-    // public ResponseEntity<List<CourseNeedAndAllocations>> getInstructorCourseNeedsAndAllocations(
-    //         @PathVariable Long instructorId) {
-    //     return ResponseEntity.ok(courseService.getInstructorCourseNeedsAndAllocations(instructorId));
-    // }
-
-     @GetMapping("/needAndAllocations/specific/{instructorId}")
-    public ResponseEntity<List<CourseNeedAndAllocations>> getSpecific(
-        @PathVariable Long instructorId,
-        @RequestParam(required = false) Long courseId,
-        @RequestParam Integer year,
-        @RequestParam String semester
-    ) {
-        List<CourseNeedAndAllocations> data =
-            courseService.getInstructorSpecificCourseNeedsAndAllocations(
-                instructorId, courseId, year, semester
-            );
-        return ResponseEntity.ok(data);
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
+    @GetMapping("/needAndAllocations/{instructorId}")
+    public ResponseEntity<List<CourseNeedAndAllocations>> getInstructorCourseNeedsAndAllocations(
+            @PathVariable Long instructorId) {
+        return ResponseEntity.ok(courseService.getInstructorCourseNeedsAndAllocations(instructorId));
     }
+
+  
      @GetMapping("/needAndAllocations/specific/{instructorId}")
     public ResponseEntity<List<CourseNeedAndAllocations>> getSpecific(
         @PathVariable Long instructorId,

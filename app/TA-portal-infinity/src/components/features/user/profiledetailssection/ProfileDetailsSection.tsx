@@ -5,7 +5,6 @@ import { fetchUpdateUserDetails } from "../../../../api/user/fetchUpdateUserDeta
 import type User from "../../../../interfaces/user/User";
 import { useAuth } from "../../../../context/AuthContext";
 import { UserRole } from "../../../../interfaces/enum/UserRole";
-import { UserRole } from "../../../../interfaces/enum/UserRole";
 import TabNav from "../../../layout/tabnav/TabNav";
 import ChangeRolesModal from "../changerolemodal/ChangeRolesModal";
 import { fetchChangeRole } from "../../../../api/admin/fetchChangeRole";
@@ -28,13 +27,11 @@ export default function ProfileDetailsSection<T extends User>({
     const [record, setRecord] = useState<T>(user);
     const [isEdit, setIsEdit] = useState(false);
     const isCoordinatorOrAdmin = loggedInUserRoles.includes(UserRole.ADMIN || UserRole.COORDINATOR);
-    const isCoordinatorOrAdmin = loggedInUserRoles.includes(UserRole.ADMIN || UserRole.COORDINATOR);
     const [showRoleModal, setShowRoleModal] = useState(false);
     const isAdmin = loggedInUserRoles.includes("ADMIN");
 
     useEffect(() => setRecord(user), [user]);
 
-    const baseFields = fields.filter((k) => isCoordinatorOrAdmin ?k !== "createdAt" :k !== "createdAt"&& k!=="id");
     const baseFields = fields.filter((k) => isCoordinatorOrAdmin ?k !== "createdAt" :k !== "createdAt"&& k!=="id");
     const displayFields = filterFieldsByRole(baseFields, record.roles ?? []);
 

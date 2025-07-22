@@ -263,7 +263,6 @@ public class CourseControllerTest {
                                 need, List.of(alloc));
 
                 when(courseService.getInstructorCourseNeedsAndAllocations(instructorId)).thenReturn(List.of(entry));
-                when(courseService.getInstructorCourseNeedsAndAllocations(instructorId)).thenReturn(List.of(entry));
 
                 mockMvc.perform(get("/courses/needAndAllocations/{instructorId}",
                                 instructorId))

@@ -1,15 +1,8 @@
-import { useAuth } from "../../../../context/AuthContext";
-import { UserRole } from "../../../../interfaces/enum/UserRole";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from "react";
 import { useAuth } from "../../../../context/AuthContext";
 import { UserRole } from "../../../../interfaces/enum/UserRole";
 export interface SearchCriteria {
-  role: "Student" | "Instructor" | "Coordinator" | "";
-  firstname?: string;
-  lastname?: string;
-  universityNumber?: string;
-  userId?: string;
   role: "Student" | "Instructor" | "Coordinator" | "";
   firstname?: string;
   lastname?: string;
