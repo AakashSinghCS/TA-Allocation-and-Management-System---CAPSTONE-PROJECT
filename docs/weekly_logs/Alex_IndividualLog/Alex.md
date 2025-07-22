@@ -1,3 +1,54 @@
+## Monday (July 18-21)
+
+### Timesheet
+Clockify report
+![alt text](./jul18-21.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Backend for global config for term
+
+### Progress Update (since July 17th 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Add endpoint for courses without needs
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Have audit logs show name instead of id
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+   <tr>
+        <!-- Task/Issue # -->
+        <td>Backend for global config for term
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I was able to finish the two first tasks that were relatively small (adding an endpoint for courses without needs and adding names to auditing), which put me in a good spot. I figured today would be enough time to get the refactor for how we are storing semesters together, but since so many modules use semester it changed a lot of the logic. While I was in there there was a bunch of code that I wanted to fix up like adding mappers or cleaning up weird logic or obsolete dto's. This went fine, but then of course this messed up the tests, so I'm still cleaning up tests. Once everything is working, then I can add the CRUD for adding semesters and their associated tests, but I'll need another day for that.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * I want to finish the config for semesters this cycle. I should be able to do that in another 3-4 hours (maybe less, maybe more) and once that's done I'll grab a new task to do, most likely adding more endpoints for Mandeep or maybe adding the application functionality to allow different allocation offers (like grading, or just assigned to a lab, or prep work etc.) as Chad requested.
+
+
 ## Thursday (July 15-17)
 
 ### Timesheet
