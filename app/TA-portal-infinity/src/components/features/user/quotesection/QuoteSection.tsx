@@ -1,7 +1,6 @@
 export default function QuoteSection() {
     return (
         <div className="flex flex-col justify-center items-center space-y-8 lg:space-y-12 px-4 sm:px-6 lg:px-8 py-8 lg:py-16">
-            {/* Quote Icon */}
             <div className="flex flex-col items-center space-y-4 lg:space-y-6">
                 <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center">
                     <svg className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
@@ -9,16 +8,12 @@ export default function QuoteSection() {
                     </svg>
                 </div>
             </div>
-            
-            {/* Main Quote */}
             <div className="text-center max-w-xs sm:max-w-sm lg:max-w-md space-y-4 lg:space-y-6">
                 <blockquote className="text-base sm:text-lg lg:text-lg font-medium text-gray-600 leading-relaxed italic px-2">
                     "Excellence is not a skill, it's an attitude."
                 </blockquote>
                 <p className="text-xs sm:text-sm lg:text-sm text-gray-500 font-medium">— Ralph Marston</p>
             </div>
-            
-            {/* Additional Simple Quotes - Hidden on mobile */}
             <div className="hidden sm:block space-y-4 lg:space-y-6 max-w-xs sm:max-w-sm text-center">
                 <div>
                     <p className="text-xs sm:text-sm lg:text-sm text-gray-500 italic">"Success is the sum of small efforts repeated daily."</p>
@@ -30,8 +25,6 @@ export default function QuoteSection() {
                     <p className="text-xs lg:text-xs text-gray-400 mt-1 lg:mt-2">— Eleanor Roosevelt</p>
                 </div>
             </div>
-            
-            {/* Simple Decorative Line */}
             <div className="w-12 sm:w-14 lg:w-16 h-px bg-gray-300 opacity-50"></div>
         </div>
     );

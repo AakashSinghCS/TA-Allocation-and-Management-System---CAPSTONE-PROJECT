@@ -48,9 +48,9 @@ export default function ProfileDetailsSection<T extends User>({
     const isEditable = loggedInUserId === record.id;
 
     return (
-        <div>
+        <div className="ml-2 sm:ml-4">
             {/* title - Only show for single user profile view, not in coordinator multi-tab view */}
-            {!isCoordinatorOrAdmin && (
+            {(!isCoordinatorOrAdmin || isEditable) && (
                 <div className="mb-4 md:mb-6 px-2 sm:px-0">
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 md:mb-2">Profile</h1>
                     <p className="text-sm sm:text-base text-gray-600">View and manage user profile information</p>
