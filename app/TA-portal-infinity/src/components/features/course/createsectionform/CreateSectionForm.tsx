@@ -176,7 +176,7 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
           <div className="mb-2 text-sm text-gray-500">
             Dept Code and Course Num are required fields for section creation.<br />
             <span className="text-gray-400">
-              You can create the section without entering Section Code, Year, Semester, Section Type, or Instructor ID. You can edit them later.
+              You can create the section without entering Section Code, Year, Semester, Section Type, Instructor ID, or Section Schedules. You can edit them later.
             </span>
           </div>
         </>
