@@ -574,6 +574,7 @@ finish exam service intgration, add more exception and validations on backend se
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * finish exam service(frontend and integration)
+
   * work on exception handling
 
 
@@ -617,4 +618,3 @@ added more exception and validations on backend services, replaced all alert to 
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Mark all the backend functions that are not used as "Not Being used".
-  * work on exception handling

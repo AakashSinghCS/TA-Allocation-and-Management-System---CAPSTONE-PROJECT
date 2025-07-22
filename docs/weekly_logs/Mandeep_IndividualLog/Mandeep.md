@@ -1318,3 +1318,238 @@ Increased system stability and user satisfaction with improved cancellation flow
 - Finalize any pending bugs or UI tweaks in homepage
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 9 June, Monday
+
+**Clockify:**  ![alt text](clockify_images/image-52.png)
+
+## Time Slot
+- **12:43 PM – 5:36 PM:** Finished the dashboard for student & fixed time bug in Docker
+- **9:22 PM – 10:48 PM:** Reviewed some PRs
+- **11:45 PM – 2:37 AM (+1):** Learned about parsing
+
+## Current Tasks
+- Completed student dashboard UI and resolved time bug in Docker
+- Reviewed and provided feedback on pull requests
+- Studied and prototyped parsing logic for future integrations
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                         | STATUS     |
+|---------------|-------------------------------------|------------|
+| #1         | Student dashboard and Docker fix    | Completed  |
+| #2         | PR reviews and feedback            | Completed  |
+| #3          | Parsing logic prototype           | In progress |
+
+## Cycle Goal Review
+
+### Reflection
+Successfully improved dashboard stability and addressed critical Docker timing issues, enabling better cross-environment consistency. Parsing study laid the foundation for upcoming transcript import work.
+
+### Retrospective
+Effective focus on UI and backend issues increased confidence in system readiness. Evening parsing session helped clarify next parsing steps.
+
+## Next Cycle Goals
+- Finalize parsing implementation and start integrating it
+- Gather user feedback on the new student dashboard and iterate
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 10 June, Tuesday
+
+**Clockify:**  ![alt text](clockify_images/image-53.png)
+
+## Time Slot
+- **1:15 PM – 3:31 PM:** Worked on allocations; revoke offer
+
+## Current Tasks
+- Improved and updated allocations logic
+- Implemented revoke offer functionality
+- Verified backend and frontend integration for allocation updates
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                         | STATUS     |
+|---------------|-------------------------------------|------------|
+| #1         | Update allocations logic            | Completed  |
+| #2        | Revoke offer feature                | In progress  |
+| #3        | Integration testing                | In progress |
+
+## Cycle Goal Review
+
+### Reflection
+Streamlined allocation handling and completed the revoke offer feature, improving system flexibility for coordinators.
+
+### Retrospective
+Simplified flows and resolved potential edge cases; next step is to finalize integration tests and improve UX messaging.
+
+## Next Cycle Goals
+- Finish and validate all revoke offer tests
+- Improve UI confirmations and error handling
+- Update allocation documentation and user guide
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 11 July, Friday
+
+**Clockify:**  ![alt text](clockify_images/image-54.png)
+
+## Time Slot
+- **10:54 AM – 12:49 PM:** Team meeting  
+
+## Current Tasks
+-  Reviewed overall progress and assigned tasks
+- Worked with allen to see how deadlines work
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                            | STATUS    |
+|--------------|--------------------------------------------------------|-----------|
+| #1           |  Reviewed overall progress and assigned tasks          | Completed |
+| #2           |   Checked how deadlines feature works                  | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Aligned on feedback and set clear deliverables for upcoming tasks.
+
+### Retrospective
+Improved meeting structure; documentation of decisions needs enhancement.
+
+## Next Cycle Goals
+- Schedule viewer for student and other improvements
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 13 July, Sunday
+
+**Clockify:**  ![alt text](clockify_images/image-55.png)
+
+## Time Slot
+- **1:59 PM – 7:22 PM:** Built Scheduler Viewer for student  
+
+## Current Tasks
+- Created student schedule‑viewer component  
+- Integrated FullCalendar with fetched allocations  
+- Styled calendar to match UI  
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                            | STATUS    |
+|--------------|----------------------------------------|-----------|
+| #1           | Develop basic Scheduler Viewer         | Completed |
+| #2           | Connect FullCalendar with real data    | Completed |
+| #3           | Apply UI styling to schedule viewer    | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Laid the foundation for the student schedule viewer; calendar integration is functional.
+
+### Retrospective
+Next, export features and the upcoming‑schedule section need implementation.
+
+## Next Cycle Goals
+- Add CSV and ICS export functionality  
+- Implement upcoming‑schedule section  
+- Write tests for export features 
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 14 July, Monday
+
+**Clockify:**  ![alt text](clockify_images/image-55.png)
+
+## Time Slot
+- **1:09 PM – 4:44 PM:** Testing for schedule viewer and fixing allocation‑view bug  
+- **10:03 PM – 11:16 PM:** Team meeting to discuss peer‑feedback event  
+- **2:16 PM – 7:34 PM:** Implement fetchInstructor name on all pages, rewrite tests, and refactor schedule viewer  
+- **7:34 PM – 8:38 PM:** PR reviewed  
+
+## Current Tasks
+- Fixed schedule viewer and allocation‑view bugs  
+- Conducted peer‑feedback team meeting  
+- Implemented instructor‑name fetching across all pages  
+- Rewrote schedule‑viewer tests  
+- Refactored schedule‑viewer code  
+- Reviewed and merged PRs  
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                           | STATUS    |
+|--------------|-------------------------------------------------------|-----------|
+| #1           | Fix schedule‑viewer & allocation‑view bug             | Completed |
+| #2           | Implement instructor‑name fetching                    | Completed |
+| #3           | Rewrite schedule‑viewer tests                         | Completed |
+| #4           | Refactor schedule‑viewer code                         | Completed |
+| #5           | Review and merge open PRs                             | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Streamlined schedule‑viewer functionality, ensured accurate instructor data, and improved test coverage.
+
+### Retrospective
+Refactoring and test rewrites made the codebase more maintainable; next focus is export features and upcoming‑schedule display.
+
+## Next Cycle Goals
+- Dashboards for all remaining users (instructor and co-ordinator) 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 16 July, Wednesday
+
+**Clockify:**  ![alt text](clockify_images/july_16.png)
+
+## Time Slot
+- **1:05 PM – 3:18 PM:** Tested Functionality again and fixed some bugs after feedback event  
+- **5:40 PM – 9:44 PM:** Created dashboard for co-ordinator with backend integration  
+- **11:03 PM – 3:41 AM:** Wrote tests for the co-ordinator and approved ##405 PR  
+
+## Current Tasks
+- Developed coordinator dashboard with backend data  
+- Wrote and approved tests for PR #405  
+- Fixed issues based on feedback from team session  
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                       | STATUS    |
+|--------------|---------------------------------------------------|-----------|
+| #420         | Co-ordinator dashboard with backend integration   | Completed |
+| #420           | Write & approve tests for co-ordinator (PR #405)  | Completed |
+| #417           | Fix bugs after feedback session                   | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Major progress made on co-ordinator view and testing. Feedback-driven revisions enhanced stability and usability.
+
+### Retrospective
+Backend integration for dashboards is now stable. PR testing ensured robustness. Ready to move on to instructor-side interfaces.
+
+## Next Cycle Goals
+- Finalize instructor dashboard and ensure cross-role testing  
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 17 July, Thursday
+
+**Clockify:**  ![alt text](clockify_images/july_17.png)
+
+## Time Slot
+- **1:46 PM – 2:45 PM:** Team Meeting for feedback event and planning for global config  
+- **10:58 PM – 11:59 PM:** Team logs and meeting prep  
+
+## Current Tasks
+- Participated in feedback event meeting and global config planning  
+- Documented team logs and prepped for upcoming coordination tasks  
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                      | STATUS    |
+|--------------|--------------------------------------------------|-----------|
+| #NA           | Feedback event meeting + global config planning  | Completed |
+| #NA           | Team log documentation and prep work             | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Refined global configuration strategies and synced up on team-wide progress through focused discussion and log updates.
+
+### Retrospective
+Meetings were productive and helped align the entire team on next steps for backend integration and testing goals.
+
+## Next Cycle Goals
+- Complete Instrcutor dashboard testing and finalize documentation
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
