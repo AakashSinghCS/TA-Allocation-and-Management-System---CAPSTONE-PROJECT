@@ -64,6 +64,15 @@ export default function AddSectionPage() {
   return (
     <div className="container mx-auto p-4 w-full max-w-5xl z-10">
       <h1 className="text-2xl font-bold mb-8 text-center">Course & Section Creation</h1>
+      
+      {/* If we want to force vertical stacking for all screen sizes, use: */}
+        {/* 
+          <div className="flex flex-col gap-8"> 
+        */}
+      {/* (This will stack Course Creation and Section Creation vertically on all devices.) */}
+
+
+      {/* flex-col md:flex-row: vertical on mobile, horizontal (side-by-side) on desktop */}
       <div className="flex flex-col md:flex-row gap-8">
         {/* Course Creation Area */}
         <div className="flex-1 bg-white shadow-lg p-6 rounded-2xl border border-blue-200">
