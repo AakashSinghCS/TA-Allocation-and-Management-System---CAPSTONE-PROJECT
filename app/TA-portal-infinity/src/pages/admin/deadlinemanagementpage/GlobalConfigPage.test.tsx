@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import DeadlineManagementPage from "./DeadlineManagementPage";
+import DeadlineManagementPage from "./GlobalConfigPage";
 import * as AuthContext from "../../../context/AuthContext";
 import * as FetchDeadline from "../../../api/admin/FetchDeadline";
 import type { DeadlineDto } from "../../../interfaces/admin/Deadline";
@@ -60,8 +60,8 @@ describe("DeadlineManagementPage", () => {
       target: { value: "2025-09-30T23:59" },
     });
 
-    // Click Save
-    const saveButton = screen.getByRole("button", { name: /save/i });
+    // Click Save for the specific deadline using aria-label
+    const saveButton = screen.getByLabelText("save-deadline-student_application_deadline");
     fireEvent.click(saveButton);
 
     // Confirm updateDeadline was called
@@ -98,7 +98,7 @@ describe("DeadlineManagementPage", () => {
     // Mock fetchDeadlines and failing updateDeadline
     vi.spyOn(FetchDeadline, "fetchDeadlines").mockResolvedValue([mockDeadline]);
     vi.spyOn(FetchDeadline, "updateDeadline").mockRejectedValue(new Error("Update failed"));
-    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+  
 
     render(<DeadlineManagementPage />);
     // Wait for deadlines to load
@@ -106,10 +106,9 @@ describe("DeadlineManagementPage", () => {
     // Change end date and click save
     const endInput = screen.getByDisplayValue("2025-08-31T23:59");
     fireEvent.change(endInput, { target: { value: "2025-09-30T23:59" } });
-    fireEvent.click(screen.getByRole("button", { name: /save/i }));
+    fireEvent.click(screen.getByLabelText("save-deadline-student_application_deadline"));
 
-    await waitFor(() => {
-      expect(alertSpy).toHaveBeenCalledWith("Error updating deadline");
-    });
+    // Wait for the toast error message to appear
+    expect(await screen.findByText(/error updating deadline/i)).toBeInTheDocument();
   });
 });
