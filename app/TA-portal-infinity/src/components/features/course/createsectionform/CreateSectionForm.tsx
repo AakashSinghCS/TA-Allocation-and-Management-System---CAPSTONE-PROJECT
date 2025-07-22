@@ -45,8 +45,9 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
     sectionSchedules: null,
     isCourse: mode === 'course' ? true : false
   })
-  // error state for course creation
+  // error state for course and section creation
   const [courseErrors, setCourseErrors] = useState<{[k: string]: string | undefined}>({});
+  const [sectionErrors, setSectionErrors] = useState<{[k: string]: string | undefined}>({});
 
   const handleChange = <K extends keyof CreateSectionData>(
     key: K,
@@ -101,9 +102,19 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
         if (msg.toLowerCase().includes('course number')) errMap.courseNum = msg;
       });
       setCourseErrors(errMap);
+      setSectionErrors({});
       if (errors.length > 0) return;
+    } else if (mode === 'section') {
+      // Section Creation: validate deptCode and courseNum
+      const errMap: {[k: string]: string} = {};
+      if (!form.deptCode) errMap.deptCode = 'Department code is required.';
+      if (!form.courseNum) errMap.courseNum = 'Course number is required.';
+      setSectionErrors(errMap);
+      setCourseErrors({});
+      if (Object.keys(errMap).length > 0) return;
     }
     setCourseErrors({});
+    setSectionErrors({});
     onCreateSection({ ...form, instructorId: selectedInstructor?.id });
   }
 
@@ -173,6 +184,7 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
           onChange={e =>  {
             handleChange('deptCode', e.target.value);
             if (courseErrors.deptCode) setCourseErrors(errors => ({ ...errors, deptCode: undefined }));
+            if (sectionErrors.deptCode) setSectionErrors(errors => ({ ...errors, deptCode: undefined }));
           }}
           className="w-full border rounded px-2 py-1"
           placeholder=" e.g. COSC"
@@ -180,8 +192,8 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
         {mode === 'course' && courseErrors.deptCode && (
           <div className="text-red-600 text-xs mt-1">{courseErrors.deptCode}</div>
         )}
-        {mode === 'section' && !form.deptCode && (
-          <div className="text-red-600 text-xs mt-1">Department code is required.</div>
+        {mode === 'section' && sectionErrors.deptCode && (
+          <div className="text-red-600 text-xs mt-1">{sectionErrors.deptCode}</div>
         )}
       </div>
       <div>
@@ -192,6 +204,7 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
           onChange={e =>  {
             handleChange('courseNum', e.target.value);
             if (courseErrors.courseNum) setCourseErrors(errors => ({ ...errors, courseNum: undefined }));
+            if (sectionErrors.courseNum) setSectionErrors(errors => ({ ...errors, courseNum: undefined }));
           }}
           className="w-full border rounded px-2 py-1"
           placeholder='e.g. 499'
@@ -199,8 +212,8 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
         {mode === 'course' && courseErrors.courseNum && (
           <div className="text-red-600 text-xs mt-1">{courseErrors.courseNum}</div>
         )}
-        {mode === 'section' && !form.courseNum && (
-          <div className="text-red-600 text-xs mt-1">Course number is required.</div>
+        {mode === 'section' && sectionErrors.courseNum && (
+          <div className="text-red-600 text-xs mt-1">{sectionErrors.courseNum}</div>
         )}
       </div>
 
