@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import Papa from "papaparse";
 
 export default function SectionCsvImport() {
-  // const [file, setFile] = useState<File | null>(null); // temporary commented out the unused state
+
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [csvPreview, setCsvPreview] = useState<Array<Record<string, string>> | null>(null);
   const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
   const [parsedData, setParsedData] = useState<Array<Record<string, string>> | null>(null);
+
+  
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError(""); // Clear error when a file is selected
@@ -31,7 +34,6 @@ export default function SectionCsvImport() {
       });
     } else {
       setCsvPreview(null);
-      setCsvHeaders([]);
       setParsedData(null);
     }
   };
@@ -42,7 +44,7 @@ export default function SectionCsvImport() {
     setError("");
     setResult("");
     if (!parsedData || parsedData.length === 0) {
-      setError("Please select a valid CSV file and make sure it is not empty.");
+      setError("Please select a valid CSV file");
       setLoading(false);
       return;
     }
@@ -61,6 +63,7 @@ export default function SectionCsvImport() {
         endTime: row["End Time"] || ""
       });
       const mappedData = parsedData.map(mapCsvRowToSection);
+      
       const token = localStorage.getItem('token');
       const res = await fetch("http://localhost:8080/sections/import-csv", {
         method: "POST",
@@ -70,6 +73,7 @@ export default function SectionCsvImport() {
         },
         body: JSON.stringify(mappedData),
       });
+      
       let errorDetail = "";
       let text = "";
       const contentType = res.headers.get("content-type");
@@ -82,6 +86,7 @@ export default function SectionCsvImport() {
       if (!res.ok) {
         errorDetail = text ? `Import failed: ${text}` : `Import failed (status ${res.status})`;
         setError(errorDetail);
+        
       } else {
         setResult(text);
       }

@@ -12,13 +12,11 @@ describe("SectionCsvImport", () => {
     localStorage.clear();
   });
 
-  it("shows error if no file is selected", async () => {
+  it("disables Import CSV button if no file is selected", () => {
+    // The UI disables the Import CSV button when no file is selected, so error message is not shown.
     render(<SectionCsvImport />);
     const button = screen.getByRole("button", { name: /import csv/i });
-    fireEvent.click(button);
-    await waitFor(() => {
-      expect(screen.getByText(/please select a valid csv file/i)).toBeInTheDocument();
-    });
+    expect(button).toBeDisabled();
   });
 
   it("parses CSV and sends mapped JSON to backend", async () => {
@@ -63,18 +61,34 @@ describe("SectionCsvImport", () => {
     mockFetch.mockResolvedValue({
       ok: false,
       headers: { get: () => "application/json" },
-      json: async () => ({ message: "Import failed: missing required fields" })
+      json: async () => ({ message: "missing required fields" }),
+      text: async () => "missing required fields"
     });
-    render(<SectionCsvImport />);
-    // Simulate file upload
-    const csvContent = `Dept Code,Course Number,Course Name,Year,Semester,Section,Type,Day,Start Time,End Time\n,,,,,,,,,`;
+    // eslint-disable-next-line no-console
+    console.log('Test: about to render SectionCsvImport for error test');
+    const { container } = render(<SectionCsvImport />);
+    // Simulate file upload with a valid-looking row that backend will reject
+    const csvContent = `Dept Code,Course Number,Course Name,Year,Semester,Section,Type,Day,Start Time,End Time\nCOSC,999,Invalid Course,2025,Fall,001,LEC,Mon,09:00,10:00`;
     const file = new File([csvContent], "sections.csv", { type: "text/csv" });
     const input = screen.getByLabelText(/file/i);
     fireEvent.change(input, { target: { files: [file] } });
-    const button = screen.getByRole("button", { name: /import csv/i });
-    fireEvent.click(button);
+    const form = container.querySelector('form');
+    fireEvent.submit(form!);
     await waitFor(() => {
-      expect(screen.getByText(/import failed|please select a valid csv file/i)).toBeInTheDocument();
-    });
+      // Debug: print the error message div if present
+      const errorDiv = screen.queryByText((content) => /import failed|please select a valid csv file/i.test(content));
+      if (errorDiv) {
+        // eslint-disable-next-line no-console
+        console.log('Test found error div:', errorDiv.textContent);
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('Test did not find error div');
+      }
+      expect(
+        screen.getByText((content) =>
+          /import failed|please select a valid csv file/i.test(content)
+        )
+      ).toBeInTheDocument();
+    }, { timeout: 2000 });
   });
 });
