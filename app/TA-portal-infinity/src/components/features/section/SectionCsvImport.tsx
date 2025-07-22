@@ -96,21 +96,22 @@ export default function SectionCsvImport() {
     <div className="max-w-2xl min-w-[600px] mx-auto p-4 bg-white rounded shadow">
       <h2 className="text-lg font-bold mb-2">Import Sections from CSV</h2>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="csv-file">File</label>
-        <input
-          id="csv-file"
-          type="file"
-          accept=".csv"
-          onChange={handleFileChange}
-          className="mb-2"
-        />
-        <button
-          type="submit"
-          disabled={loading || !parsedData || parsedData.length === 0}
-          className={`px-4 py-2 rounded text-white ${loading || !parsedData || parsedData.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
-        >
-          {loading ? "Importing..." : "Import CSV"}
-        </button>
+        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
+          <input
+            id="csv-file"
+            type="file"
+            accept=".csv"
+            onChange={handleFileChange}
+            className="block file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+          />
+          <button
+            type="submit"
+            disabled={loading || !parsedData || parsedData.length === 0}
+            className={`px-4 py-2 rounded font-semibold transition-colors ${loading || !parsedData || parsedData.length === 0 ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          >
+            {loading ? "Importing..." : "Import Sections from CSV"}
+          </button>
+        </div>
       </form>
       {/* CSV preview display */}
       {csvPreview && csvPreview.length > 0 && (
