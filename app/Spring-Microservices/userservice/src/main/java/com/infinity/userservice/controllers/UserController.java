@@ -27,9 +27,6 @@ import com.infinity.userservice.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-
-
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -38,8 +35,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Long id,  @RequestHeader("X-User-Id") Long requesterId,
-    @RequestHeader("X-User-Roles") List<String> roles) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id, @RequestHeader("X-User-Id") Long requesterId,
+            @RequestHeader("X-User-Roles") List<String> roles) {
         UserDto userDto = userService.getUserById(id, requesterId, roles);
         return ResponseEntity.ok(userDto);
     }
@@ -61,43 +58,23 @@ public class UserController {
         return ResponseEntity.ok("User deleted");
     }
 
-    @PreAuthorize("hasRole('COORDINATOR')")
-    @GetMapping("/search")
-    public ResponseEntity<List<UserDto>> searchUsers(
+    @PreAuthorize("hasRole('COORDINATOR') or hasRole('ADMIN')")
+    @GetMapping("/search/page")
+    public Page<UserDto> searchUsersByPage(
+            Pageable pageable,
             @RequestParam(required = false) String role,
-            @RequestParam(required = false, defaultValue = "") String firstname,
-             @RequestParam(required = false, defaultValue = "") String lastname,
-            @RequestParam(required = false, defaultValue = "0") int universityNumber,
-            @RequestParam(required = false) Long userId) {
-        List<UserDto> results = userService.search(role, firstname, lastname, universityNumber,userId);
-        return ResponseEntity.ok(results);
+            @RequestParam(required = false) String firstname,
+            @RequestParam(required = false) String lastname,
+            @RequestParam(required = false) String universityNumber,
+            @RequestParam(required = false) String userId) {
+        return userService.searchUsersByPage(pageable, role, firstname, lastname, universityNumber, userId);
     }
 
-    @PreAuthorize("hasRole('COORDINATOR') or hasRole('ADMIN')")
-  @GetMapping("/search/page")
-  public Page<UserDto> searchUsersByPage(
-    Pageable pageable,
-    @RequestParam(required = false) String role,
-    @RequestParam(required = false) String firstname,
-    @RequestParam(required = false) String lastname,
-    @RequestParam(required = false) String universityNumber,
-    @RequestParam(required = false) String userId
-  ) {
-    // Long uId = null;
-    // if (userId != null && !userId.isBlank()) {
-    //     try {
-    //         uId = Long.parseLong(userId.trim());
-    //     } catch (NumberFormatException e) {
-    //         uId = null;
-    //     }
-    // }
-    return userService.searchUsersByPage(pageable, role, firstname, lastname, universityNumber, userId);
-  }
-    
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/changeRole/{id}")
-    public ResponseEntity<UserDto> changeRole(@PathVariable Long id, @RequestBody RoleChangeRequest request,@RequestHeader("X-User-Id") Long userIdFromHeader) {
-        return ResponseEntity.ok(userService.changeRole(id, request,userIdFromHeader));
+    public ResponseEntity<UserDto> changeRole(@PathVariable Long id, @RequestBody RoleChangeRequest request,
+            @RequestHeader("X-User-Id") Long userIdFromHeader) {
+        return ResponseEntity.ok(userService.changeRole(id, request, userIdFromHeader));
     }
 
     @GetMapping("/studentNum/{studentNum}")
@@ -114,6 +91,7 @@ public class UserController {
     public ResponseEntity<UserDto> getInstructorById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getInstructorById(id));
     }
+
     @GetMapping("/profile/{id}")
     public ResponseEntity<UserDto> getUserDetailsById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserDetailsById(id));
@@ -126,7 +104,7 @@ public class UserController {
         UserDto userDto = userService.register(request, userIdFromHeader);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
     }
-     
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/activate/{id}")
     public ResponseEntity<String> activateUser(@PathVariable Long id) {

@@ -1,6 +1,6 @@
 import type Section from "../../../../interfaces/section/Section";
 import type SectionDetails from "../../../../interfaces/section/SectionDetails";
-import Pagination from "../../../admin/audit/pagination/Pagination";
+import Pagination from "../../../../utility/pagination/pagination/Pagination";
 
 interface SectionSelectionListProps {
   sections: Section[];

@@ -6,16 +6,14 @@ import type SectionDetails from '../../../interfaces/section/SectionDetails';
 import type Section from '../../../interfaces/section/Section';
 import { useAuth } from '../../../context/AuthContext';
 import type { ApplicationDto } from '../../../interfaces/application/Application';
-import { fetchApplicationsPage } from '../../../api/application/FetchApplications';
 import ApplicationFilterPanel from '../../../components/features/application/applicationfilterpanel/ApplicationFilterPanel';
 import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify';
 import { useSendOffer } from '../../../hooks/sendoffer/useSendOffer';
 import SectionFilter from '../../../components/features/course/coursefilter/SectionFilter';
-import { fetchFilteredSections, type FilterSectionsProps } from '../../../api/course/sectionfilter/fetchFilteredSections';
+import {  type FilterSectionsProps } from '../../../api/course/sectionfilter/fetchFilteredSections';
 import { convertFilterSectionsToSections } from '../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
 import { fetchSectionInfo } from '../../../api/section/fetchSectionInfo';
-import { Link } from 'react-router-dom';
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
 import { fetchAllocationsByStudent } from '../../../api/allocation/fetchAllocationByStudent';
 import { fetchSectionIncludeInstructorId } from '../../../api/section/fetchSectionIncludeInstructorId';
@@ -24,8 +22,7 @@ import { deallocateAllocation } from '../../../api/allocation/deallocateAllocati
 import { useSectionSearchPage } from '../../../api/course/sectionfilter/useSectionFilter';
 import { useDebounce } from '../../../utility/pagination/useDebounce';
 import SectionSelectionList from './sectionselectionlist/SectionSelectionList';
-import SectionDetailsPanel from './selectedsectionpanel/SelectedSectionPanel';
-import { useApplicationSearchPage } from '../../../api/application/useApplicationSearchPage';
+import SelectedSectionPanel from './selectedsectionpanel/SelectedSectionPanel';
 
 const TAAllocationPage: React.FC = () => {
   const { token } = useAuth();
@@ -279,7 +276,7 @@ const TAAllocationPage: React.FC = () => {
           )}
 
           {selCourse && (
-            <SectionDetailsPanel
+            <SelectedSectionPanel
               section={selCourse}
               instructor={instructor}
             />

@@ -1,15 +1,6 @@
-// import { useCallback, useState } from "react";
-// import { fetchAllSearchedUsers } from "../../../../api/user/fetchAllSearchedUsers";
-// import { fetchActivate } from "../../../../api/admin/fetchActivation";
-// import { fetchDeactivate } from "../../../../api/admin/fetchActivation";
-// import type { Instructor } from "../../../../interfaces/user/Instructor";
-// import type { Student } from "../../../../interfaces/user/Student";
-// import type User from "../../../../interfaces/user/User";
-// import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
 import { useAuth } from "../../../../context/AuthContext";
 import { UserRole } from "../../../../interfaces/enum/UserRole";
-import { CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
-import { StatusIndicator } from "../../statusindicator/StatusIndicator";
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from "react";
 export interface SearchCriteria {
   role: "Student" | "Instructor" | "Coordinator" | "";
@@ -20,7 +11,6 @@ export interface SearchCriteria {
 }
 
 interface SearchUserBarProps {
-  // onSearch: (criteria: SearchCriteria) => Promise<void>;
   criteria: SearchCriteria;
   setCriteria: (c: SearchCriteria) => void;
   loading: boolean;
@@ -30,14 +20,9 @@ interface SearchUserBarProps {
 
 export default function SearchUserBar({ criteria, setCriteria, loading, allowedRoles, mode = 'view', }: SearchUserBarProps) {
   const roles = allowedRoles ?? ["Student", "Instructor", "Coordinator"];
-  // const [criteria, setCriteria] = useState<SearchCriteria>({ role: allowedRoles?allowedRoles[0]:
-  //   "", firstname: "", lastname: "", universityNumber: "", userId: "" });
   const loggedInRoles = useAuth().userRoles;
   const isAdminOrCoordinator = loggedInRoles.includes(UserRole.ADMIN || UserRole.COORDINATOR);
   const [showHiddenFilters, setShowHiddenFilters] = useState(false);
-  // const handleSearch = async () => {
-  //   await onSearch(criteria);
-  // };
   const disableRoleSelect = Boolean(criteria.universityNumber || criteria.userId);
   const disableNameInputs = Boolean(criteria.universityNumber || criteria.userId);
 
@@ -54,13 +39,6 @@ export default function SearchUserBar({ criteria, setCriteria, loading, allowedR
     });
   };
 
-  // const isUniversityNumberEntered = criteria.universityNumber ? criteria.universityNumber.length > 0 : false;
-  // const isUserIDEntered = criteria.userId ? criteria.userId?.length > 0 : false;
-  // const isFirstNameEntered = criteria.firstname ? criteria.firstname.length > 0 : false;
-  // const isLastNameEntered = criteria.lastname ? criteria.lastname.length > 0 : false;
-
-  // const smallModePadding = mode === "select" ? "px-2 py-1" : ""
-  // const isFlexCol = mode ==="select" ? "flex-col" : ""
   return (
     <div className={`flex flex-wrap w-full gap-2 ${mode === 'select' ? 'flex-col' : ''}`}>
       <div className="flex flex-wrap gap-2 min-w-0">
@@ -124,15 +102,6 @@ export default function SearchUserBar({ criteria, setCriteria, loading, allowedR
           className="flex-1 border px-2 py-1 border-gray-400 rounded-md w-40 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100"
         />
         }
-        {/* <button
-          type="button"
-          onClick={handleSearch}
-          disabled={loading}
-          className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#040491] 
-            cursor-pointer transition-colors disabled:opacity-50 "
-        >
-          {loading ? "Searching…" : "Search"}
-        </button> */}
       </div>
       )}
     </div>

@@ -7,7 +7,7 @@ import SectionList from "../../../../../components/features/course/sectionlist/S
 import type { Course } from "../../../../../interfaces/course/Course";
 import type Section from "../../../../../interfaces/section/Section";
 
-import { fetchFilteredSections, type FilterSectionsProps } from "../../../../../api/course/sectionfilter/fetchFilteredSections";
+import { type FilterSectionsProps } from "../../../../../api/course/sectionfilter/fetchFilteredSections";
 import { convertFilterSectionsToSections } from "../../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections";
 
 // You must have an API util for fetching one section by ID
@@ -22,7 +22,7 @@ import { useAuth } from "../../../../../context/AuthContext";
 import { toast } from "react-toastify";
 import { useDebounce } from "../../../../../utility/pagination/useDebounce";
 import { useSectionSearchPage } from "../../../../../api/course/sectionfilter/useSectionFilter";
-import Pagination from "../../../../admin/audit/pagination/Pagination";
+import Pagination from "../../../../../utility/pagination/pagination/Pagination";
 
 
 export default function InstructorAddNeedPage() {

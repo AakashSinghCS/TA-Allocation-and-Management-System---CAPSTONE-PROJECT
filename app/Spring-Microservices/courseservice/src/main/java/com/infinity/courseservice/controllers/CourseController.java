@@ -67,10 +67,10 @@ public class CourseController {
         return ResponseEntity.ok(courseService.deleteCourse(courseId));
     }
 
-    @PostMapping("/filterCourses")
-    public ResponseEntity<List<CourseSectionScheduleDto>> filterCourses(@RequestBody CourseFilterRequest filter) {
-        return ResponseEntity.ok(courseService.filterCourses(filter));
-    }
+    // @PostMapping("/filterCourses")
+    // public ResponseEntity<List<CourseSectionScheduleDto>> filterCourses(@RequestBody CourseFilterRequest filter) {
+    //     return ResponseEntity.ok(courseService.filterCourses(filter));
+    // }
 
     @PostMapping("/filterCourses/page")
     public ResponseEntity<Page<CourseSectionScheduleDto>> filterCoursesByPage(

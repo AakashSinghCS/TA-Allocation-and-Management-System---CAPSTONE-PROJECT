@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchDeleteCourse } from '../../../api/course/fetchDeleteCourse';
-import { fetchFilteredSections, type FilterSectionsProps } from '../../../api/course/sectionfilter/fetchFilteredSections';
+import { type FilterSectionsProps } from '../../../api/course/sectionfilter/fetchFilteredSections';
 import { fetchDeleteSection } from '../../../api/section/fetchDeleteSection';
 import SectionFilter from '../../../components/features/course/coursefilter/SectionFilter';
 import SectionList from '../../../components/features/course/sectionlist/SectionList';
-import type Section from '../../../interfaces/section/Section';
 import { convertFilterSectionsToSections } from '../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
 import { confirmDeletion } from '../../../utility/confirmation/confirmDeletion';
 import Papa from 'papaparse';
@@ -13,7 +12,7 @@ import { fetchImportAllocations } from '../../../api/allocation/fetchImportAlloc
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
 import { useDebounce } from '../../../utility/pagination/useDebounce';
 import { useSectionSearchPage } from '../../../api/course/sectionfilter/useSectionFilter';
-import Pagination from '../../admin/audit/pagination/Pagination';
+import Pagination from '../../../utility/pagination/pagination/Pagination';
 import { StatusIndicator } from '../../../components/ui/statusindicator/StatusIndicator';
 
 

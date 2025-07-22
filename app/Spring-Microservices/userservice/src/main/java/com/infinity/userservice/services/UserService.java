@@ -158,48 +158,48 @@ public class UserService {
         return "User deleted successfully";
     }
 
-    public List<UserDto> search(
-        String role,
-        String firstname,
-        String lastname,
-        int    universityNumber,
-        Long   userId
-    ) {
-        List<User> users;
+    // public List<UserDto> search(
+    //     String role,
+    //     String firstname,
+    //     String lastname,
+    //     int    universityNumber,
+    //     Long   userId
+    // ) {
+    //     List<User> users;
 
-        // 1) userId search takes absolute priority
-        if (userId != null && userId > 0) {
-            users = userRepository.findById(userId)
-                                  .map(Collections::singletonList)
-                                  .orElse(Collections.emptyList());
+    //     // 1) userId search takes absolute priority
+    //     if (userId != null && userId > 0) {
+    //         users = userRepository.findById(userId)
+    //                               .map(Collections::singletonList)
+    //                               .orElse(Collections.emptyList());
 
-        // 2) universityNumber search next
-        } else if (universityNumber > 0) {
-            users = new ArrayList<>();
-            userRepository.findByStudentNum(universityNumber)
-                          .ifPresent(users::add);
-            userRepository.findByEmployeeNum(universityNumber)
-                          .ifPresent(users::add);
+    //     // 2) universityNumber search next
+    //     } else if (universityNumber > 0) {
+    //         users = new ArrayList<>();
+    //         userRepository.findByStudentNum(universityNumber)
+    //                       .ifPresent(users::add);
+    //         userRepository.findByEmployeeNum(universityNumber)
+    //                       .ifPresent(users::add);
 
-        // 3) finally, role + name search
-        } else {
-            if (role == null || role.isBlank()) {
-                return Collections.emptyList();  // no mode selected
-            }
-            UserRole targetRole = UserRole.valueOf(role.trim().toUpperCase());
-            String fn = firstname == null ? "" : firstname.trim();
-            String ln = lastname  == null ? "" : lastname.trim();
+    //     // 3) finally, role + name search
+    //     } else {
+    //         if (role == null || role.isBlank()) {
+    //             return Collections.emptyList();  // no mode selected
+    //         }
+    //         UserRole targetRole = UserRole.valueOf(role.trim().toUpperCase());
+    //         String fn = firstname == null ? "" : firstname.trim();
+    //         String ln = lastname  == null ? "" : lastname.trim();
 
-            users = userRepository
-                .findByRoles_NameAndFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
-                    targetRole, fn, ln
-                );
-        }
+    //         users = userRepository
+    //             .findByRoles_NameAndFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
+    //                 targetRole, fn, ln
+    //             );
+    //     }
 
-        return users.stream()
-                    .map(userMapper::toDto)
-                    .collect(Collectors.toList());
-    }
+    //     return users.stream()
+    //                 .map(userMapper::toDto)
+    //                 .collect(Collectors.toList());
+    // }
 
     public Page<UserDto> searchUsersByPage(
       Pageable pageable,
@@ -209,13 +209,6 @@ public class UserService {
       String universityNumber,
       String uId
   ) {
-    //  System.out.println("🔍 searchUsersByPage called with:"
-    //   + " uniNum=" + universityNumber
-    //   + " userId=" + userId
-    //   + " role=" + role
-    //   + " fn=" + firstname
-    //   + " ln=" + lastname
-    // );
     Long userId = null;
     if (uId != null && !uId.isBlank()) {
         try {

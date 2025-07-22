@@ -17,6 +17,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -116,28 +123,80 @@ public class CourseControllerTest {
                                 .andExpect(status().isOk());
         }
 
-        @Test
-        void testFilterCourses() throws Exception {
-                CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", "systems", null, null, 2024, "W1",
-                                null, null,
-                                LocalTime.of(14, 00), null);
+        // @Test
+        // void testFilterCourses() throws Exception {
+        //         CourseFilterRequest filterRequest = new CourseFilterRequest("COSC", "systems", null, null, 2024, "W1",
+        //                         null, null,
+        //                         LocalTime.of(14, 00), null);
 
-                CourseSectionScheduleDto dto = new CourseSectionScheduleDto(1L, 1L, "COSC", "Distributed Systems",
-                                "455", "001",
-                                2024, "W1", SectionType.LABORATORY, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30),
-                                false);
+        //         CourseSectionScheduleDto dto = new CourseSectionScheduleDto(1L, 1L, "COSC", "Distributed Systems",
+        //                         "455", "001",
+        //                         2024, "W1", SectionType.LABORATORY, "Wed", LocalTime.of(14, 00), LocalTime.of(15, 30),
+        //                         false);
 
-                when(courseService.filterCourses(any(CourseFilterRequest.class)))
-                                .thenReturn(List.of(dto));
+        //         when(courseService.filterCourses(any(CourseFilterRequest.class)))
+        //                         .thenReturn(List.of(dto));
 
-                mockMvc.perform(post("/courses/filterCourses")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(filterRequest)))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$[0].deptCode").value("COSC"))
-                                .andExpect(jsonPath("$[0].courseNum").value(455));
-        }
+        //         mockMvc.perform(post("/courses/filterCourses")
+        //                         .contentType(MediaType.APPLICATION_JSON)
+        //                         .content(objectMapper.writeValueAsString(filterRequest)))
+        //                         .andExpect(status().isOk())
+        //                         .andExpect(jsonPath("$[0].deptCode").value("COSC"))
+        //                         .andExpect(jsonPath("$[0].courseNum").value(455));
+        // }
 
+        @TestConfiguration
+    @EnableSpringDataWebSupport
+    static class PageableConfig {}
+
+    @Test
+    void whenFilterCoursesByPage_thenReturnsPagedResults() throws Exception {
+        // given
+        CourseFilterRequest filterRequest = new CourseFilterRequest(
+            "COSC", null, null, null,
+            2025, "W1", SectionType.LABORATORY, "Wed",
+            LocalTime.of(14, 0), LocalTime.of(15, 30)
+        );
+
+        CourseSectionScheduleDto dto1 = new CourseSectionScheduleDto(
+            1L, 3L, "COSC", "Distributed Systems", "455", "001",
+            2025, "W1", SectionType.LABORATORY, "Wed",
+            LocalTime.of(14, 0), LocalTime.of(15, 30), false
+        );
+
+        CourseSectionScheduleDto dto2 = new CourseSectionScheduleDto(
+            2L, 4L, "COSC", "Operating Systems", "456", "002",
+            2025, "W2", SectionType.LABORATORY, "Wed",
+            LocalTime.of(14, 0), LocalTime.of(15, 30), false
+        );
+
+        Page<CourseSectionScheduleDto> page = new PageImpl<>(
+            List.of(dto1, dto2),
+            PageRequest.of(0, 2, Sort.by("courseNum").ascending()),
+            2
+        );
+
+        when(courseService.filterCoursesByPage(
+            any(CourseFilterRequest.class),
+            any(Pageable.class)
+        )).thenReturn(page);
+
+        // when / then
+        mockMvc.perform(post("/courses/filterCourses/page")
+                    .param("page", "0")
+                    .param("size", "2")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(filterRequest))
+                    .accept(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.content.length()").value(2))
+               .andExpect(jsonPath("$.content[0].deptCode").value("COSC"))
+               .andExpect(jsonPath("$.content[0].courseNum").value("455"))
+               .andExpect(jsonPath("$.totalElements").value(2))
+               .andExpect(jsonPath("$.size").value(2))
+               .andExpect(jsonPath("$.number").value(0));
+    }
+    
         @Test
         void testGetCoursesByIds() throws Exception {
                 CourseDto dto1 = new CourseDto(1L, "COSC", "Distributed Systems", "455");

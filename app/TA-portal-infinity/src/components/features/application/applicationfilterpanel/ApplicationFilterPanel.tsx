@@ -1,8 +1,7 @@
-// src/components/features/application/applicationfilterpanel/ApplicationFilterPanel.tsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../../../context/AuthContext';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import Pagination from '../../../../pages/admin/audit/pagination/Pagination';
+import Pagination from '../../../../utility/pagination/pagination/Pagination';
 import { fetchAllocationsByStudent } from '../../../../api/allocation/fetchAllocationByStudent';
 import type { ApplicationDto } from '../../../../interfaces/application/Application';
 import type { Allocation } from '../../../../interfaces/allocation/Allocation';
@@ -113,6 +112,7 @@ export default function ApplicationFilterPanel({
       {/* ───── Basic filters (always visible) ───── */}
       <div className="grid grid-rows-3 gap-2">
         <select
+         aria-label="Year"
           className="border rounded px-2 py-1"
           value={filters.year}
           onChange={e => setFilters(f => ({ ...f, year: e.target.value }))}
@@ -121,6 +121,7 @@ export default function ApplicationFilterPanel({
           {years.map(y => <option key={y} value={y}>{y}</option>)}
         </select>
         <select
+         aria-label="1st Pref"
           className="border rounded px-2 py-1"
           value={filters.pref1}
           onChange={e => setFilters(f => ({ ...f, pref1: e.target.value }))}
@@ -133,6 +134,7 @@ export default function ApplicationFilterPanel({
           }
         </select>
         <select
+         aria-label="Hours"
           className="border rounded px-2 py-1"
           value={filters.wantHours}
           onChange={e => setFilters(f => ({ ...f, wantHours: e.target.value }))}
@@ -205,7 +207,7 @@ export default function ApplicationFilterPanel({
         className="w-full border border-gray-300 rounded flex justify-center items-center text-gray-600 hover:bg-gray-100 transition">
         {advancedOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
       </button>
-
+      <h1 className="font-semibold text-xl mt-2">Please select an Application</h1>
       <div className="max-h-48 overflow-auto space-y-1 mt-2">
         {isFetching && <StatusIndicator loading={isFetching}/>}
         {!isFetching && apps.length === 0 && (
@@ -232,7 +234,7 @@ export default function ApplicationFilterPanel({
         onPrev={() => setPage(p => Math.max(0, p - 1))}
         onNext={() => setPage(p => Math.min(totalPages - 1, p + 1))}
       />
-
+      
       {selApp && (
         <SelectedApplicationDetails 
           selApp={selApp} 

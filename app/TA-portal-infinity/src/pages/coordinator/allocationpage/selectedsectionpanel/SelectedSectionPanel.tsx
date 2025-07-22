@@ -10,7 +10,7 @@ interface SectionDetailsPanelProps {
   instructor: Instructor | null;
 }
 
-export default function SectionDetailsPanel({ section, instructor }: SectionDetailsPanelProps) {
+export default function SelectedSectionPanel({ section, instructor }: SectionDetailsPanelProps) {
   return (
     <div className="mt-6 border-t pt-6 space-y-6">
       {/* Section Details */}
@@ -27,10 +27,10 @@ export default function SectionDetailsPanel({ section, instructor }: SectionDeta
             <strong>Type:</strong> {section.type ?? 'N/A'}
           </p>
           <p>
-            <strong>Instructor:</strong>{' '}
+            <strong>Instructor:</strong>
             {instructor && instructor.firstName && instructor.lastName
-              ? `${instructor.firstName} ${instructor.lastName}`
-              : 'N/A'}
+              ? ` ${instructor.firstName} ${instructor.lastName}`
+              : ' N/A'}
           </p>
         </div>
       </section>

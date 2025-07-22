@@ -31,7 +31,7 @@ export default function ExportToCSVPage() {
 
   const raw = sectionPage?.content ?? [];
   const sections: Section[] = convertFilterSectionsToSections(raw);
-  
+
   const [selected, setSelected] = useState<Section[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,8 +44,8 @@ export default function ExportToCSVPage() {
     );
   };
 
-   const selectAll = () => setSelected(sections);
-    const clearAll  = () => setSelected([]);
+  const selectAll = () => setSelected(sections);
+  const clearAll = () => setSelected([]);
 
   const handleExportToCSV = async () => {
     if (!selected.length) {
@@ -68,7 +68,7 @@ export default function ExportToCSVPage() {
       }
 
       const csvBlob = await fetchExportSectionsAsCSV(sectionIds);
-      
+
       if (csvBlob) {
         downloadCSVBlob(csvBlob);
         alert('CSV export completed successfully!');
@@ -88,7 +88,7 @@ export default function ExportToCSVPage() {
     setError(null);
     try {
       const csvBlob = await fetchExportAllSectionsAsCSV();
-      
+
       if (csvBlob) {
         downloadCSVBlob(csvBlob);
         alert('All sections exported successfully!');
@@ -195,10 +195,14 @@ export default function ExportToCSVPage() {
           </p>
         </div>
         <div className="p-4">
-          {isExporting ? (
+          {loadingSections ? (
             <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading sections...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4" />
+              <p className="text-gray-600">Loading sections…</p>
+            </div>
+          ) : errorSections ? (
+            <div className="text-center py-8 text-red-500">
+              Failed to fetch sections
             </div>
           ) : sections.length === 0 ? (
             <div className="text-center py-8 text-gray-500">

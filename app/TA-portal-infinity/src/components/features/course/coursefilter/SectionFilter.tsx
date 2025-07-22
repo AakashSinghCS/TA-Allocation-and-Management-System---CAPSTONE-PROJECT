@@ -7,7 +7,6 @@ import DaySelector from '../../../ui/section/dayselector/DaySelector';
 import TimeSelector from '../../../ui/section/timeselector/TimeSelector';
 import DropdownContainer, { type AllExistingDeptCodesAndYears } from '../dropdowncontainer/DropdownContainer';
 import { fetchAllExistingYears } from '../../../../api/course/sectionfilter/fetchAllExistingYears';
-import { StatusIndicator } from '../../../ui/statusindicator/StatusIndicator';
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react';
 type Mode = 'small' | 'large';
 
@@ -133,6 +132,7 @@ export default function SectionFilter({
             type="button"
             onClick={() => setShowFilters((prev) => !prev)}
             className={`${toggleButtonStyleSmall} h-full`}
+            aria-label={showFilters ? 'Hide Section Filters' : 'Show Section Filters'}
           >
             {showFilters ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
           </button>
@@ -158,6 +158,7 @@ export default function SectionFilter({
                 type="button"
                 onClick={() => setShowFilters(true)}
                 className={`${toggleButtonStyleBig} w-full`}
+                aria-label={'Show Section Filters'}
               >
                 <ChevronDown size={20} />
               </button>
@@ -192,15 +193,12 @@ export default function SectionFilter({
             type="button"
             onClick={() => setShowFilters(false)}
             className={toggleButtonStyleBig}
+            aria-label={'Hide Section Filters'}
           >
             <ChevronUp size={20} />
           </button>}
         </div>
       )}
-      <div className="flex gap-2">
-          {/* <StatusIndicator loading={loading} /> */}
-          
-        </div>
     </div>
   );
 }

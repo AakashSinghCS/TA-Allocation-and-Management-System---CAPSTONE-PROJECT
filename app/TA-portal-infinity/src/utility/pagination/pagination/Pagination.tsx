@@ -27,7 +27,8 @@ export default function Pagination({ page, pageCount, onPrev, onNext }: Props) {
       </button>
 
       {/* Page indicator */}
-      <div className=" text-sm font-medium text-gray-700 whitespace-nowrap">
+      <div className=" text-sm font-medium text-gray-700 whitespace-nowrap"
+      aria-label={`Page ${page + 1} of ${pageCount}`}>
         Page <span className="font-semibold">{page + 1}</span> of <span className="font-semibold">{pageCount}</span>
       </div>
 

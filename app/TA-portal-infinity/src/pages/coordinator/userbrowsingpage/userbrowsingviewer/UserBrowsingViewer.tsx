@@ -7,7 +7,7 @@ import formatDateForDisplay from "../../../../utility/formatdatefordisplay/forma
 import SearchUserBar, { type SearchCriteria } from "../../../../components/ui/user/searchuserbar/SearchUserBar";
 import { UserRole } from "../../../../interfaces/enum/UserRole";
 import { useCallback, useEffect, useState } from "react";
-import Pagination from "../../../admin/audit/pagination/Pagination";
+import Pagination from "../../../../utility/pagination/pagination/Pagination";
 import { useUserSearchPage } from "../../../../api/user/search/useUserSearch";
 import { useDebounce } from "../../../../utility/pagination/useDebounce";
 import { fetchActivate, fetchDeactivate } from "../../../../api/admin/fetchActivation";
@@ -35,12 +35,8 @@ export default function UserBrowsingViewer({
         universityNumber: '', userId: '',
     });
     const criteria = useDebounce(rawCriteria, 300);
-
-    // const [criteria, setCriteria] = useState<SearchCriteria>({ role: '', firstname: '', lastname: ''});
-    // const [showAll, setShowAll] = useState(false);
     const [page, setPage] = useState(0);
 
-    // const suggQ = useUserSuggestions(criteria);
     const pageNum = mode === "select" ? 5 : 10;
     const { data, isFetching, isError, error, refetch } = useUserSearchPage(criteria, page, pageNum);
     useEffect(() => {
@@ -54,16 +50,6 @@ export default function UserBrowsingViewer({
         || rawCriteria.universityNumber
         || (rawCriteria.role)
     );
-
-    // const results = showAll
-    //     ? fullQ.data?.content ?? []
-    //     : suggQ.data?.content ?? [];
-
-    // const displayRows = hasAnyFilter ? results : [];
-    // const loading = showAll ? fullQ.isFetching : suggQ.isFetching;
-    // const errorMsg = showAll ? fullQ.error : suggQ.error;
-
-    // const { searchedUsers = [], loading, error, search, toggleActivation, lastCriteria } = useUserSearch();
     const handleToggleActivation = async (id: number, active: boolean) => {
         const ok = window.confirm(`Are you sure you want to ${active ? 'deactivate' : 'activate'} this user?`);
         if (!ok) return;

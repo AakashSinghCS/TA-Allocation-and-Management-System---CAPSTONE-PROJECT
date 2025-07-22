@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery, type UseQueryOptions } from '@tanstack/react-query';
 import type PageableResponse from '../../interfaces/admin/audit/PageableResponse';
 import type { ApplicationDto } from '../../interfaces/application/Application';
 import { fetchApplicationsPage } from './FetchApplications';
@@ -14,7 +14,7 @@ export function useApplicationSearchPage(
   },
   page: number,
   size: number,
-  token: string
+  token: string,
 ) {
   const hasAnyFilter = Object.values(filters).some(v => v != null && v !== '');
 
@@ -23,6 +23,6 @@ export function useApplicationSearchPage(
     queryFn: () => fetchApplicationsPage(filters, page, size, token),
     enabled: hasAnyFilter,
     placeholderData: keepPreviousData,
-    staleTime: 0,
+    staleTime: 0
   });
 }
