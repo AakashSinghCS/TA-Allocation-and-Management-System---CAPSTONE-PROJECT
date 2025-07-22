@@ -32,7 +32,7 @@ describe('EditProfileSection', () => {
 
     expect(screen.getByLabelText('First Name')).toHaveValue('Alice');
     expect(screen.getByLabelText('Last Name')).toHaveValue('Smith');
-    expect(screen.getByText('Save')).toBeInTheDocument();
+    expect(screen.getByText('Save Changes')).toBeInTheDocument();
     expect(screen.getByText('Cancel')).toBeInTheDocument();
   });
 
@@ -50,7 +50,7 @@ describe('EditProfileSection', () => {
     fireEvent.change(screen.getByLabelText('First Name'), {
       target: { value: 'Bob' },
     });
-    fireEvent.click(screen.getByText('Save'));
+    fireEvent.click(screen.getByText('Save Changes'));
 
     await waitFor(() =>
       expect(onSave).toHaveBeenCalledWith({
@@ -72,7 +72,7 @@ describe('EditProfileSection', () => {
       />
     );
 
-    fireEvent.click(screen.getByText('Save'));
+    fireEvent.click(screen.getByText('Save Changes'));
     expect(await screen.findByText('Save failed')).toBeInTheDocument();
   });
 

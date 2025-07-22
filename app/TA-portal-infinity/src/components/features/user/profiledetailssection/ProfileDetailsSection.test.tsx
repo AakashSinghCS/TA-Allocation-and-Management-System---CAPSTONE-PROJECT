@@ -12,6 +12,29 @@ vi.mock('../editprofilesection/EditProfileSection', () => ({
     default: () => <div data-testid="edit-section">EDIT MODE</div>,
 }));
 
+vi.mock('../editrolesform/EditRolesForm', () => ({
+    default: () => <div data-testid="edit-roles-form">Edit Roles Form</div>,
+}));
+
+vi.mock('../quotesection/QuoteSection', () => ({
+    default: () => <div data-testid="quote-section">Quote Section</div>,
+}));
+
+vi.mock('../profilesection/ProfileSection', () => ({
+    default: () => <div data-testid="profile-section">Profile Section</div>,
+}));
+
+vi.mock('../../../layout/tabnav/TabNav', () => ({
+    default: () => <div data-testid="tab-nav">Tab Nav</div>,
+}));
+
+vi.mock('react-toastify', () => ({
+    toast: {
+        success: vi.fn(),
+    },
+    ToastContainer: () => <div data-testid="toast-container">Toast Container</div>,
+}));
+
 describe('ProfileDetailsSection', () => {
     const mockFetchDetails = vi.fn();
     const baseUser: User = {
@@ -30,7 +53,7 @@ describe('ProfileDetailsSection', () => {
         (useAuth as vi.Mock).mockReturnValue({ userId, userRoles });
     }
 
-    it('shows the Update button for the owner', () => {
+    it('shows the Edit Profile button for the owner', () => {
         setupAuth(1, ['STUDENT']);
         render(
             <ProfileDetailsSection
@@ -48,10 +71,10 @@ describe('ProfileDetailsSection', () => {
                 fetchDetailsFunction={mockFetchDetails}
             />
         );
-        expect(screen.getByText('Update')).toBeInTheDocument();
+        expect(screen.getByText('Edit Profile')).toBeInTheDocument();
     });
 
-    it('enters edit mode when Update is clicked', () => {
+    it('enters edit mode when Edit Profile is clicked', () => {
         setupAuth(1, ['USER']);
         render(
             <ProfileDetailsSection
@@ -70,7 +93,7 @@ describe('ProfileDetailsSection', () => {
             />
         );
 
-        fireEvent.click(screen.getByText('Update'));
+        fireEvent.click(screen.getByText('Edit Profile'));
         expect(screen.getByTestId('edit-section')).toBeInTheDocument();
     });
 
@@ -136,7 +159,7 @@ describe('ProfileDetailsSection', () => {
         );
 
         fireEvent.click(screen.getByText('Manage Roles'));
-        expect(screen.getByText('Update user role assignments')).toBeInTheDocument();
+        expect(screen.getByText('Edit Roles Form')).toBeInTheDocument();
     });
 
 });
