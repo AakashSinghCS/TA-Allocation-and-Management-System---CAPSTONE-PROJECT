@@ -15,7 +15,7 @@ Clockify report
 
 
 
-### Progress Update (since July , 2025) 
+### Progress Update (since July 17, 2025) 
 | TASK / ISSUE # | STATUS |
 |----------------|--------|
 | #1: CSV Import – clean up | Complete |
