@@ -1846,3 +1846,4 @@ Retrospective: Process is going well. Team members are working hard to get their
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin next assigned coding task.
+
