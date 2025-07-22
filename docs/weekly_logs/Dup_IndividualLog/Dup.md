@@ -2412,7 +2412,6 @@ Tommorrow I will work on the tests.
 - student Allocation history needs to make sure the student is creating entries only for himself.
 - section profile shows needs
 
-
 ## Wednesday 7/16 (7/15~7/18)
 
 ### Timesheet
