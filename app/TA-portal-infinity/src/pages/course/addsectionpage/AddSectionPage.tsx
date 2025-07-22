@@ -89,8 +89,8 @@ export default function AddSectionPage() {
         </div>
       </div>
       <div className="mt-10 shadow-lg p-6 rounded-2xl border border-gray-200 bg-gray-50">
-        <h2 className="text-xl font-semibold mb-2 text-gray-700">Bulk Section Upload (CSV)</h2>
-        <p className="mb-4 text-gray-600 text-sm">You can upload multiple sections at once using a CSV file.</p>
+        <h2 className="text-xl font-semibold mb-2 text-gray-700">Import Sections from CSV</h2>
+        <p className="mb-4 text-gray-600 text-sm">Import multiple sections at once by uploading a CSV file. Only .csv files are supported.</p>
         <CsvUpload onFileUpload={handleFileUpload} />
       </div>
     </div>
