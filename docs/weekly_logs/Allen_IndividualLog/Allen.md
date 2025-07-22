@@ -490,3 +490,131 @@ built the deadline page for admin, adding deadline restrictions to student appli
   * finish deadline restrictions
   * notification service
 
+
+## July 11 - 14
+
+### Timesheet
+Clockify report
+![alt text](./clockify/7.14.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: add deadline blocks to other services
+  * #2: exam service backend
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>add deadline blocks to other services
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>exam service backend
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+added deadline restrictions to student application, student accept offer, and instructor update needs, blocks on both front end and back end. built exam service backend.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * finish exam service(frontend and integration)
+  * work on exception handling
+
+
+## July 15 - 17
+
+### Timesheet
+Clockify report
+![alt text](./clockify/7.17.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: integrating exam service
+  * #2: exception handling
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>integrating exam service
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>exception handling
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+finish exam service intgration, add more exception and validations on backend services
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * finish exam service(frontend and integration)
+
+  * work on exception handling
+
+
+## July 18 - 21
+
+### Timesheet
+Clockify report
+![alt text](./clockify/7.21.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: replacing alert with toastify
+  * #2: add more exception handling
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>replacing alert with toastify
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>add exception handling
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+added more exception and validations on backend services, replaced all alert to toast.error pop-ups
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Mark all the backend functions that are not used as "Not Being used".
