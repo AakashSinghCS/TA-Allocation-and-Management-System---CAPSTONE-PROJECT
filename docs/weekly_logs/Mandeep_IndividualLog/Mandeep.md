@@ -1552,6 +1552,109 @@ Meetings were productive and helped align the entire team on next steps for back
 
 ## Next Cycle Goals
 - Complete Instrcutor dashboard testing and finalize documentation
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 18 July, Friday
+
+**Clockify:**  ![alt text](clockify_images/July_18.png)
+
+## Time Slot
+- **9:30 AM – 11:20 AM:** Team meeting to discuss further tasks  
+
+## Current Tasks
+- Conducted planning meeting to outline upcoming development and documentation tasks  
+- Aligned on remaining implementation goals and immediate next steps  
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                | STATUS    |
+|--------------|--------------------------------------------|-----------|
+| #NA          | Team planning meeting for upcoming tasks   | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+The discussion clarified everyone's responsibilities and established priorities for the next sprint. It also helped distribute remaining backend and UI refinements.
+
+### Retrospective
+Productive sync helped keep momentum and team clarity high.
+
+## Next Cycle Goals
+- Finalize remaining components for testing  
+- Begin end-to-end integration with updated backend APIs
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 20 July, Sunday
+
+**Clockify:**  ![alt text](clockify_images/july_20.png)
+
+## Time Slot
+- **12:53 PM – 7:14 PM:** Created instructor homepage including integration, testing, reviewed PR #440, and created PR #434  
+- **10:15 PM – 3:05 AM (+1):** Completed PR #446 and reviewed PR #441  
+
+## Current Tasks
+- Built and integrated instructor homepage with full functionality  
+- Wrote and passed test cases for instructor dashboard  
+- Reviewed PRs #440 and #441  
+- Created PR #434 and completed PR #446  
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                         | STATUS    |
+|--------------|-----------------------------------------------------|-----------|
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#434](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/434)         | Created PR for instructor homepage            | Completed |
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#427](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/427)        |  frontend for global config for term               | Completed |
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#447](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/447)         |  Prevent rendering prior to data loading          | Completed |
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#445](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/445)        | Add Eye(s) to all the password fields for password viewing # Feedback Event I                 | Completed |
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#443](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/443)         | 
+Improve the deadline page, fix client side validation and error handling                | Completed |
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#444](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/444)        | Minor bug in public Layout loading                  | Completed |
+| #440         | PR reviewed for endpoint for course without needs             | Completed |
+| PR#441         | Peer PR review                                      | Completed |
+## Cycle Goal Review
+
+### Reflection
+Significant progress made on instructor features; tests are in place and reviews helped ensure code quality.
+
+### Retrospective
+All key components for instructor module were developed and reviewed in one focused day, setting the stage for final polishing.
+
+## Next Cycle Goals
+- bug fixes and testing 
+- [UBCO-COSC499-S2025/team-10-capstone-infinity#448](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/448) - In progress
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 21 July, Monday
+
+**Clockify:** ![clockify_images/july_21.png](clockify_images/july_21.png)
+
+## Time Slot
+- **12:58 PM – 3:35 PM:** Fixed bugs in view applications page  
+- **5:05 PM – 8:57 PM:** Worked on PR #448 (in progress)  
+
+## Current Tasks
+- Resolved layout and data-binding issues in the view applications component  
+- Continued development of PR #448 with partial implementation and testing  
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                 | STATUS      |
+|--------------|---------------------------------------------|-------------|
+| #448         |   Aesthetics of the profile page across all user roles and addition of missing feature if any | In Progress |
+| #448          | Bug fixes in view applications              | Completed   |
+
+## Cycle Goal Review
+
+### Reflection
+Bug resolution improved the stability of the view application module. Continued focused effort on PR #448 implementation.
+
+### Retrospective
+Addressed key UI concerns while keeping development velocity on PR #448. Coordination will be needed for final merge.
+
+## Next Cycle Goals
+- Finalize and submit PR #448  
+- Perform peer testing of updated application components
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 
