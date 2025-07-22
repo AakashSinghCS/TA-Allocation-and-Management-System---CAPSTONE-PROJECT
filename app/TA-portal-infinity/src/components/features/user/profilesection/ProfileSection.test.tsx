@@ -4,10 +4,9 @@ import { BrowserRouter } from "react-router-dom";
 import ProfileSection from "./ProfileSection";
 import formatDateForDisplay from "../../../../utility/formatdatefordisplay/formatDateForDisplay";
 import { studentProfileFields, studentFieldLabels } from "../../../../interfaces/user/Student";
-import type { ReactNode } from 'react';
 
 // Wrapper component for router context
-function TestWrapper({ children }: { children: ReactNode }) {
+function TestWrapper({ children }: { children: JSX.Element }) {
   return <BrowserRouter>{children}</BrowserRouter>;
 }
 
