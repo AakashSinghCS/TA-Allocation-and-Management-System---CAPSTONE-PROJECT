@@ -156,7 +156,7 @@ describe('<SectionListPage />', () => {
     );
 
     expect(screen.queryByLabelText(/Choose CSV file/i)).not.toBeInTheDocument();
-    // expect(mockImportAllocations).toHaveBeenCalledTimes(1); // ファイルアップロードのテスト環境制約のためコメントアウト
+    // expect(mockImportAllocations).toHaveBeenCalledTimes(1); // Commented out due to test environment limitations for file upload
   
   });
 });
