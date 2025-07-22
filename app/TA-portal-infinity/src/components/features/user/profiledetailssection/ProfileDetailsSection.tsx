@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ProfileSection from "../profilesection/ProfileSection";
 import EditProfileSection from "../editprofilesection/EditProfileSection";
 import EditRolesForm from "../editrolesform/EditRolesForm";
+import QuoteSection from "../quotesection/QuoteSection";
 import { fetchUpdateUserDetails } from "../../../../api/user/fetchUpdateUserDetails";
 import type User from "../../../../interfaces/user/User";
 import { useAuth } from "../../../../context/AuthContext";
@@ -48,6 +49,14 @@ export default function ProfileDetailsSection<T extends User>({
 
     return (
         <div>
+            {/* title - Only show for single user profile view, not in coordinator multi-tab view */}
+            {!isCoordinatorOrAdmin && (
+                <div className="mb-6">
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">Profile</h1>
+                    <p className="text-gray-600">View and manage user profile information</p>
+                </div>
+            )}
+            
             <TabNav roles={record.roles ?? []} />
             <div className={`grid gap-6 mt-10 ${isEdit ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1 lg:grid-cols-2'}`}>
                 {/* Profile Section - Always visible */}
@@ -81,6 +90,11 @@ export default function ProfileDetailsSection<T extends User>({
                         </button>
                     )}
                 </div>
+
+                {/* Quote Section - Visible when no forms are open */}
+                {!isEdit && !isEditRoles && (
+                    <QuoteSection />
+                )}
 
                 {/* Edit Form Section - Only visible when editing */}
                 {isEdit && (
