@@ -51,14 +51,14 @@ export default function ProfileDetailsSection<T extends User>({
         <div>
             {/* title - Only show for single user profile view, not in coordinator multi-tab view */}
             {!isCoordinatorOrAdmin && (
-                <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">Profile</h1>
-                    <p className="text-gray-600">View and manage user profile information</p>
+                <div className="mb-4 md:mb-6 px-2 sm:px-0">
+                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 md:mb-2">Profile</h1>
+                    <p className="text-sm sm:text-base text-gray-600">View and manage user profile information</p>
                 </div>
             )}
             
             <TabNav roles={record.roles ?? []} />
-            <div className={`grid gap-6 mt-10 ${isEdit ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1 lg:grid-cols-2'}`}>
+            <div className={`grid gap-4 md:gap-6 mt-6 md:mt-10 ${isEdit ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-1 xl:grid-cols-2'}`}>
                 {/* Profile Section - Always visible */}
                 <div className="relative">
                     <ProfileSection
@@ -69,24 +69,26 @@ export default function ProfileDetailsSection<T extends User>({
                     />
                     {isEditable && !isEdit && !isEditRoles && (
                         <button
-                            className={`absolute top-4 ${isAdmin ? 'right-44' : 'right-4'} bg-[#040941] text-white px-3 py-2 rounded-lg hover:bg-[#040941]/90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm flex items-center gap-2`}
+                            className={`absolute top-2 sm:top-4 ${isAdmin ? 'right-32 sm:right-44' : 'right-2 sm:right-4'} bg-[#040941] text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg hover:bg-[#040941]/90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-xs sm:text-sm flex items-center gap-1 sm:gap-2`}
                             onClick={() => setIsEdit(true)}
                         >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
-                            Edit Profile
+                            <span className="hidden sm:inline">Edit Profile</span>
+                            <span className="sm:hidden">Edit</span>
                         </button>
                     )}
                     {isAdmin && !isEdit && !isEditRoles && (
                         <button
-                            className="absolute top-4 right-4 bg-[#040941] text-white px-3 py-2 rounded-lg hover:bg-[#040941]/90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm flex items-center gap-2"
+                            className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-[#040941] text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg hover:bg-[#040941]/90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-xs sm:text-sm flex items-center gap-1 sm:gap-2"
                             onClick={() => setIsEditRoles(true)}
                         >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                             </svg>
-                            Manage Roles
+                            <span className="hidden sm:inline">Manage Roles</span>
+                            <span className="sm:hidden">Roles</span>
                         </button>
                     )}
                 </div>
