@@ -11,6 +11,7 @@ import { confirmDeletion } from '../../../utility/confirmation/confirmDeletion';
 import Papa from 'papaparse';
 import { fetchImportAllocations } from '../../../api/allocation/fetchImportAllocations';
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
+import SectionCsvImport from '../../../components/features/section/SectionCsvImport';
 
 
 
@@ -125,9 +126,12 @@ export default function SectionListPage() {
     });
   };
 
+  const [showCsvImport, setShowCsvImport] = useState(false);
+
   return (
     <div className="container mx-auto p-4 z-10">
-      <div className="flex justify-between items-stretch mb-4">
+      <>
+        <div className="flex justify-between items-stretch mb-4">
           <h1 className="text-xl font-semibold">Search for a Section or Course</h1>
           <div className="flex gap-2">
             <Link
@@ -136,26 +140,24 @@ export default function SectionListPage() {
             >
               Add New Section or Course
             </Link>
-
             <Link
               to="/user/coordinator/sections/export"
               className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#363a7a] transition-colors"
             >
               Export to CSV
             </Link>
-
             <button
-              onClick={() => setShowImportModal(true)}
-              className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-300 transition-colors"
+              onClick={() => setShowCsvImport(true)}
+              className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition-colors"
             >
-              Import Past Allocations
+              Import Sections from CSV
             </button>
           </div>
         </div>
-      <div className="shadow-lg p-4 rounded-2xl  mb-4 ">
-        <SectionFilter onFilterChange={handleFilterChange} mode="large" />
-      </div>
-
+        <div className="shadow-lg p-4 rounded-2xl  mb-4 ">
+          <SectionFilter onFilterChange={handleFilterChange} mode="large" />
+        </div>
+      </>
       {loading
         ? <p>Loading courses…</p>
         : <SectionList
@@ -165,7 +167,9 @@ export default function SectionListPage() {
         />
       }
 
-      
+      <div className="flex justify-end mb-4">
+      </div>
+
       {showImportModal && (
         <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full">
@@ -214,6 +218,20 @@ export default function SectionListPage() {
                 Cancel
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showCsvImport && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 relative min-w-[350px]">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowCsvImport(false)}
+            >
+              ×
+            </button>
+            <SectionCsvImport />
           </div>
         </div>
       )}
