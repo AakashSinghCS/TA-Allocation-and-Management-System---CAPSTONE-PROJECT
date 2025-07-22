@@ -165,13 +165,13 @@ export default function ProfileDetailsSection<T extends User>({
 }
 function filterFieldsByRole<T>(baseFields: (keyof T)[], recordRoles: UserRole[]): (keyof T)[] {
     let displayFields = [...baseFields];
-    // Remove instructor-specific fields for non-instructors
+    // remove instructor-specific fields for non-instructors
     if (!recordRoles.includes("INSTRUCTOR")) {
         displayFields = displayFields.filter(
             (k) => k !== ("employeeNum" as keyof T) && k !== ("dept" as keyof T)
         );
     }
-    // Remove student-specific fields for non-students
+    // remove student-specific fields for non-students
     if (!recordRoles.includes("STUDENT")) {
         displayFields = displayFields.filter(
             (k) =>
