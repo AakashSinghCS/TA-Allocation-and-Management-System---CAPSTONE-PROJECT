@@ -1,3 +1,55 @@
+## Monday (July 18-21)
+
+### Timesheet
+Clockify report
+
+![alt text](./clockify_images/clockify_weekly_log_2025-07-18_07-21_seiya.png)
+
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **CSV Import – clean up** | Modified file-upload UI with validation, removed unused dependencies, and cleaned up duplicate tests. |
+| **2** | **Course and Section page – split-pane UI** | Make the layout clearer by visually separating the two areas on the same page. |
+
+
+
+
+### Progress Update (since July , 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: CSV Import – clean up | Complete |
+| #2: Course and Section page – split-pane UI | In Progress |
+
+
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to complete the CSV Import cleanup and to deliver a major UI improvement by implementing a split-pane layout for Course Creation and Section Creation.
+
+What was done:
+* Finished CSV Import cleanup: Modified file-upload UI with validation, pruned unused packages, and removed duplicate tests
+* Styled the page with Course Creation on the left and Section Creation on the right, delivering a major UI improvement
+
+
+
+What was not done:
+* Providing a downloadable sample CSV template for reference
+* Improving CSV import feedback (concise success/error summaries and removal of raw SQL traces)
+* Moving the Import workflow to its own dedicated page
+
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Enhance Course /Section Creation UX by strengthening form validation and finalizing UI
+* Deliver a downloadable CSV template so users have a clear reference for “import from csv”
+* Improve CSV import feedback by replacing raw output and long SQL traces with concise, user-friendly summaries
+* Relocate the Import workflow onto its own page (time-boxed evaluation: implement if it can be done quickly)
+
+
+
+------------------------------------------------------------------------------------------------------
+
 ## Thursday (July 15-17)
 
 ### Timesheet
@@ -51,13 +103,6 @@ What was not done:
 * Improve CSV import feedback: replace the current raw output (e.g., “JSON import completed. Success: 1, Errors: 4” followed by long SQL duplicate‑key traces) with concise, user‑friendly success and error summaries  (updating the messages and removing long SQL traces)
 * Move the Import workflow to its own page (do this cycle if it can be completed quickly)
 * Improve the UX for Create Section / Create Course: either split them into separate pages or clearly separate the two areas on the same page
-
-### Next Cycle Goals (What are you going to accomplish during the next cycle)
-* Finish UI polish – Style table, add empty‑state and success banners.
-* Make Import feature in another page.
-### Next Cycle Goals
-1. Finish Import Page: complete component migration, add progress indicators, and remove legacy modal code.  
-2. Polish UI and UX: style tables and add empty‑state and success banners across import and export pages.  
 
 
 ------------------------------------------------------------------------------------------------------
