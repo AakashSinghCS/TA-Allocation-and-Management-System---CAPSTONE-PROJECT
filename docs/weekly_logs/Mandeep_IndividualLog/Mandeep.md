@@ -1639,8 +1639,9 @@ All key components for instructor module were developed and reviewed in one focu
 ## Progress Update
 | TASK/ISSUE # | DESCRIPTION                                 | STATUS      |
 |--------------|---------------------------------------------|-------------|
-| #448         |   Aesthetics of the profile page across all user roles and addition of missing feature if any | In Progress |
-| #448          | Bug fixes in view applications              | Completed   |
+| #NA         | Bug fixes and testing in view applications              | Completed   |
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#448](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/448)         |   Aesthetics of the profile page across all user roles and addition of missing feature if any | In Progress |
+
 
 ## Cycle Goal Review
 
