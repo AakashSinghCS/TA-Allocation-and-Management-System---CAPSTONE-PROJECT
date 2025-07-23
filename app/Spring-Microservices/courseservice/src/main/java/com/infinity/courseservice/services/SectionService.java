@@ -17,6 +17,7 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.ApplicationInterface;
@@ -38,18 +39,28 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SectionService {
+
+    private final SectionRepository sectionRepository;
+    private final CourseRepository courseRepository;
+    private final SectionScheduleRepository sectionScheduleRepository;
+
+    private final UserInterface userInterface;
+    private final ApplicationInterface applicationInterface;
+    private final EnrollmentService enrollmentService;
+    private final SemesterRepository semesterRepository;
+    private final SectionMapper sectionMapper;
     /**
      * Import sections from JSON payload.
      * Accepts a list of SectionCsvData objects.
      * Returns import result summary.
      */
-    public String importSectionsFromJson(List<com.infinity.courseservice.dtos.SectionDtos.SectionCsvData> sections) {
+    public String importSectionsFromJson(List<SectionCsvData> sections) {
         int successCount = 0;
         int errorCount = 0;
         StringBuilder errorMessages = new StringBuilder();
 
         int rowNum = 1;
-        for (com.infinity.courseservice.dtos.SectionDtos.SectionCsvData sectionCsvData : sections) {
+        for (SectionCsvData sectionCsvData : sections) {
             // Basic validation: check required columns
             if (sectionCsvData == null) {
                 errorCount++;
@@ -71,8 +82,8 @@ public class SectionService {
 
             try {
                 // Find or create Course
-                java.util.Optional<com.infinity.courseservice.models.Course> courseOpt = courseRepository.findByDeptCodeAndCourseNum(sectionCsvData.deptCode(), sectionCsvData.courseNum());
-                com.infinity.courseservice.models.Course course;
+                Optional<Course> courseOpt = courseRepository.findByDeptCodeAndCourseNum(sectionCsvData.deptCode(), sectionCsvData.courseNum());
+                Course course;
                 if (courseOpt.isPresent()) {
                     course = courseOpt.get();
                     // Update course name if needed
@@ -81,14 +92,14 @@ public class SectionService {
                         courseRepository.save(course);
                     }
                 } else {
-                    course = new com.infinity.courseservice.models.Course(sectionCsvData.deptCode(), sectionCsvData.name(), sectionCsvData.courseNum());
+                    course = new Course(sectionCsvData.deptCode(), sectionCsvData.name(), sectionCsvData.courseNum());
                     course = courseRepository.save(course);
                 }
 
                 // Convert type string to SectionType enum
-                com.infinity.courseservice.enums.SectionType sectionType;
+                SectionType sectionType;
                 try {
-                    sectionType = com.infinity.courseservice.enums.SectionType.valueOf(sectionCsvData.type().toUpperCase());
+                    sectionType = SectionType.valueOf(sectionCsvData.type().toUpperCase());
                 } catch (Exception e) {
                     errorCount++;
                     errorMessages.append("Row ").append(rowNum).append(": Invalid section type.\n");
@@ -97,16 +108,18 @@ public class SectionService {
                 }
 
                 // Check for duplicate Section
-                java.util.Optional<com.infinity.courseservice.models.Section> sectionOpt = sectionRepository.findByCourseAndYearAndSemesterAndSectionAndType(
+                Optional<Section> sectionOpt = sectionRepository.findByCourseAndSemester_YearAndSemester_SemesterAndSectionAndType(
                     course, sectionCsvData.year(), sectionCsvData.semester(), sectionCsvData.section(), sectionType);
-                com.infinity.courseservice.models.Section section;
+                Section section;
                 if (sectionOpt.isPresent()) {
                     section = sectionOpt.get();
                     // Optionally update section fields here
                 } else {
-                    section = new com.infinity.courseservice.models.Section(
-                        sectionCsvData.year(),
-                        sectionCsvData.semester(),
+                    Semester semester = semesterRepository.findByYearAndSemester(sectionCsvData.year(),
+                            sectionCsvData.semester())
+                            .orElseThrow(() -> new NotFoundException("That semester doesn't exist"));
+                    section = new Section(
+                        semester,
                         sectionCsvData.section(),
                         sectionType,
                         course,
@@ -116,14 +129,14 @@ public class SectionService {
                 }
 
                 // Parse schedule times
-                java.time.LocalTime startTime = null;
-                java.time.LocalTime endTime = null;
+                LocalTime startTime = null;
+                LocalTime endTime = null;
                 try {
                     if (sectionCsvData.startTime() != null && !sectionCsvData.startTime().isEmpty()) {
-                        startTime = java.time.LocalTime.parse(sectionCsvData.startTime());
+                        startTime = LocalTime.parse(sectionCsvData.startTime());
                     }
                     if (sectionCsvData.endTime() != null && !sectionCsvData.endTime().isEmpty()) {
-                        endTime = java.time.LocalTime.parse(sectionCsvData.endTime());
+                        endTime = LocalTime.parse(sectionCsvData.endTime());
                     }
                 } catch (Exception e) {
                     errorCount++;
@@ -134,7 +147,7 @@ public class SectionService {
 
                 // Save SectionSchedule if day is present
                 if (sectionCsvData.day() != null && !sectionCsvData.day().isEmpty()) {
-                    com.infinity.courseservice.models.SectionSchedule schedule = new com.infinity.courseservice.models.SectionSchedule(
+                    SectionSchedule schedule = new SectionSchedule(
                         sectionCsvData.day(), startTime, endTime, section
                     );
                     sectionScheduleRepository.save(schedule);
@@ -153,15 +166,7 @@ public class SectionService {
             (errorCount > 0 ? "\nError details:\n" + errorMessages.toString() : "");
     }
 
-    private final SectionRepository sectionRepository;
-    private final CourseRepository courseRepository;
-    private final SectionScheduleRepository sectionScheduleRepository;
-
-    private final UserInterface userInterface;
-    private final ApplicationInterface applicationInterface;
-    private final EnrollmentService enrollmentService;
-    private final SemesterRepository semesterRepository;
-    private final SectionMapper sectionMapper;
+    
 
     public SectionDto getSectionById(Long id) {
 
