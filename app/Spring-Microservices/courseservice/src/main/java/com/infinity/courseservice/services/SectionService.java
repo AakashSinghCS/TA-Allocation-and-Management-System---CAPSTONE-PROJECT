@@ -491,4 +491,24 @@ public class SectionService {
         return sectionMapper.sectionToDto(entity);
     }
 
+    public void incrementNumberOfTAsAllocated(Long sectionId) {
+        Section section = sectionRepository.findById(sectionId)
+            .orElseThrow(() -> new NotFoundException("Section not found"));
+
+        section.setNumberOfTAsAllocated(section.getNumberOfTAsAllocated() + 1);
+        sectionRepository.save(section);
+    }
+
+    public void decrementNumberOfTAsAllocated(Long sectionId) {
+        Section section = sectionRepository.findById(sectionId)
+            .orElseThrow(() -> new NotFoundException("Section not found"));
+
+        int current = section.getNumberOfTAsAllocated();
+        if (current > 0) {
+            section.setNumberOfTAsAllocated(current - 1);
+            sectionRepository.save(section);
+        }
+    }
+
+
 }
