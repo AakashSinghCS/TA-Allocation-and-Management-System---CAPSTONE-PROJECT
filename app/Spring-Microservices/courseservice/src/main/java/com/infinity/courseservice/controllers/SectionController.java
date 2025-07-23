@@ -158,13 +158,13 @@ public class SectionController {
     //     return ResponseEntity.ok(sectionService.importSections(request));
     // }
 
-    @PatchMapping("/{id}/incrementTA")
+    @PutMapping("/{id}/incrementTA")
     public ResponseEntity<Void> incrementNumberOfTAs(@PathVariable Long id) {
         sectionService.incrementNumberOfTAsAllocated(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/decrementTA")
+    @PutMapping("/{id}/decrementTA")
     public ResponseEntity<Void> decrementNumberOfTAs(@PathVariable Long id) {
         sectionService.decrementNumberOfTAsAllocated(id);
         return ResponseEntity.noContent().build();

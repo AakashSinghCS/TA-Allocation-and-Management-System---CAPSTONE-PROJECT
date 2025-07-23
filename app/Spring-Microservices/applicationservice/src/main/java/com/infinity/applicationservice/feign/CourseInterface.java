@@ -49,10 +49,10 @@ public interface CourseInterface {
     public ResponseEntity<String> updateNeedAllocatedHours(@PathVariable Long needId,
             @RequestParam int numAllocatedHours);
 
-    @PatchMapping("/sections/{id}/incrementTA")
+    @PutMapping("/sections/{id}/incrementTA")
     void incrementNumberOfTAs(@PathVariable Long id);
 
-    @PatchMapping("/sections/{id}/decrementTA")
+    @PutMapping("/sections/{id}/decrementTA")
     void decrementNumberOfTAs(@PathVariable Long id);
 
 }
