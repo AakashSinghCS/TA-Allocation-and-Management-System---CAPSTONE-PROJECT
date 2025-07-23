@@ -122,7 +122,7 @@ public class CourseService {
                 new CourseDto(section.getCourse().getId(),
                         section.getCourse().getDeptCode(),
                         section.getCourse().getName(),
-                        section.getCourse().getCourseNum()));
+                        section.getCourse().getCourseNum()), section.getNumberOfTAsAllocated());
         return new CourseNeedAndAllocations(sectionDto, need, allocations);
 
     }

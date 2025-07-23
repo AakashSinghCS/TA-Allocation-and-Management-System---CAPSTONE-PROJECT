@@ -54,7 +54,7 @@ public class SectionControllerTest {
                 CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025,
                                 "W1", null, null, null,null);
                 SectionDto response = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE,
-                                new CourseDto(1L, "COSC", "Security", "430"));
+                                new CourseDto(1L, "COSC", "Security", "430"),1);
 
                 when(sectionService.addSection(eq(courseId), any(SectionAddDtoRequest.class))).thenReturn(response);
 
@@ -92,7 +92,7 @@ public class SectionControllerTest {
         void testGetSectionById() throws Exception {
                 Long sectionId = 300L;
                 SectionDto response = new SectionDto(sectionId,2025, "W2", "002", SectionType.LECTURE,
-                                new CourseDto(1L, "COSC", "Networks", "329")
+                                new CourseDto(1L, "COSC", "Networks", "329"),1
                                 );
 
                 when(sectionService.getSectionById(sectionId)).thenReturn(response);
@@ -103,7 +103,8 @@ public class SectionControllerTest {
                                 .andExpect(jsonPath("$.year").value(2025))
                                 .andExpect(jsonPath("$.semester").value("W2"))
                                 .andExpect(jsonPath("$.section").value("002"))
-                                .andExpect(jsonPath("$.course.name").value("Networks"));
+                                .andExpect(jsonPath("$.course.name").value("Networks"))
+                                .andExpect(jsonPath("$.numberOfTAsAllocated").value(1));
         }
 
         @Test
@@ -111,7 +112,7 @@ public class SectionControllerTest {
                 CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025,
                                 "W1", null, null, null,null);
                 SectionDto response = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE,
-                                   new CourseDto(1L, "COSC", "Security", "430"));
+                                   new CourseDto(1L, "COSC", "Security", "430"),1);
 
                 when(sectionService.updateSection(any(), any(CourseRequest.class))).thenReturn(response);
 
@@ -122,7 +123,8 @@ public class SectionControllerTest {
                                 .andExpect(jsonPath("$.year").value(2025))
                                 .andExpect(jsonPath("$.semester").value("W1"))
                                 .andExpect(jsonPath("$.section").value("001"))
-                                .andExpect(jsonPath("$.type").value("LECTURE"));
+                                .andExpect(jsonPath("$.type").value("LECTURE"))
+                                .andExpect(jsonPath("$.numberOfTAsAllocated").value(1));
         }
 
         @Test
@@ -216,9 +218,9 @@ public class SectionControllerTest {
                 Long instructorId = 99L;
                 List<SectionDto> sections = List.of(
                                 new SectionDto(10L, 2025, "W1", "001", SectionType.LECTURE,
-                                                new CourseDto(1L, "COSC", "Security", "430")),
+                                                new CourseDto(1L, "COSC", "Security", "430"),1),
                                 new SectionDto(11L, 2025, "W1", "002", SectionType.LABORATORY,
-                                                new CourseDto(2L, "COSC", "AI", "310")));
+                                                new CourseDto(2L, "COSC", "AI", "310"),1));
 
                 when(sectionService.getInstructorSections(instructorId)).thenReturn(sections);
 
@@ -285,7 +287,7 @@ public class SectionControllerTest {
 
                 SectionDto dto = new SectionDto(
                         10L, year, semester, sectionName, null,
-                        new CourseDto(courseId, "COSC", "CAPSTONE","499")
+                        new CourseDto(courseId, "COSC", "CAPSTONE","499"),1
                 );
 
                 when(sectionService.getByCourseIdSectionYearSemester(courseId, sectionName, year, semester))

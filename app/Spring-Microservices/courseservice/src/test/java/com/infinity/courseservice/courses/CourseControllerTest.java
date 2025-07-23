@@ -159,14 +159,14 @@ public class CourseControllerTest {
                 OfferDto offer = new OfferDto(1L, true, "description");
                 NeedDto need = new NeedDto(10L, courseId, "Marking", 30, 10, year, semester, null);
                 CourseDto course = new CourseDto(courseId, "COSC", "Security", "430");
-                SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
+                SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course,0);
                 AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
                                 new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null,
                                                 null, null,true),
                                 offer,
                                 true, 10,
-                                new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course));
+                                new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course,0));
 
                 CourseNeedAndAllocations response = new CourseNeedAndAllocations(sectionDto, need, List.of(alloc));
                 when(courseService.getCourseNeedAndAllocations(courseId, year, semester)).thenReturn(response);
@@ -177,7 +177,8 @@ public class CourseControllerTest {
                                 .andExpect(jsonPath("$.section.semester").value("W1"))
                                 .andExpect(jsonPath("$.section.course.name").value("Security"))
                                 .andExpect(jsonPath("$.need.description").value("Marking"))
-                                .andExpect(jsonPath("$.allocations[0].numberOfHours").value(10));
+                                .andExpect(jsonPath("$.allocations[0].numberOfHours").value(10))
+                                .andExpect(jsonPath("$.section.numberOfTAsAllocated").value(0));
         }
 
         @Test
@@ -187,14 +188,14 @@ public class CourseControllerTest {
         CourseDto course = new CourseDto(1L, "COSC", "Networks", "329");
         NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2", null);
         SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001",
-        SectionType.LABORATORY, course);
+        SectionType.LABORATORY, course,1);
         AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
         new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
         12345678,
         "COSC", 2025, 3, null,
         null, null,true),offer,
         true, 10,
-        new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
+        new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course,1)
         );
 
         CourseNeedAndAllocations entry = new CourseNeedAndAllocations(sectionDto,
@@ -210,7 +211,8 @@ public class CourseControllerTest {
         .andExpect(jsonPath("$[0].section.semester").value("W1"))
         .andExpect(jsonPath("$[0].section.course.name").value("Networks"))
         .andExpect(jsonPath("$[0].need.description").value("Grading"))
-        .andExpect(jsonPath("$[0].allocations[0].student.firstName").value("Alice"));
+        .andExpect(jsonPath("$[0].allocations[0].student.firstName").value("Alice"))
+        .andExpect(jsonPath("$[0].section.numberOfTAsAllocated").value(1));
         }
 
         @Test
@@ -222,7 +224,7 @@ public class CourseControllerTest {
 
                 CourseDto course = new CourseDto(1L, "COSC", "Security", "430");
                 SectionDto sectionDto = new SectionDto(
-                                10L, 2025, semester, "001", SectionType.LECTURE, course);
+                                10L, 2025, semester, "001", SectionType.LECTURE, course,1);
 
                 NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, year, semester, null);
 
@@ -240,7 +242,7 @@ public class CourseControllerTest {
                                                 "COSC", 2025, 3, null,
                                                 null, null,true),offer,
                     true, 10,
-        new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
+        new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course,1)
     );
 
                 CourseNeedAndAllocations entry = new CourseNeedAndAllocations(sectionDto, need, List.of(alloc));
@@ -259,7 +261,8 @@ public class CourseControllerTest {
                                 .andExpect(jsonPath("$[0].section.semester").value("W1"))
                                 .andExpect(jsonPath("$[0].section.course.name").value("Security"))
                                 .andExpect(jsonPath("$[0].need.description").value("Labs"))
-                                .andExpect(jsonPath("$[0].allocations[0].student.firstName").value("Alice"));
+                                .andExpect(jsonPath("$[0].allocations[0].student.firstName").value("Alice"))
+                                .andExpect(jsonPath("$[0].section.numberOfTAsAllocated").value(1));
         }
 
         @Test

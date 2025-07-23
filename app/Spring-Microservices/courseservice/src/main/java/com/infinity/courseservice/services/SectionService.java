@@ -178,7 +178,8 @@ public class SectionService {
                         course.getDeptCode(),
                         course.getName(),
                         course.getCourseNum()
-                )
+                ),
+                section.getNumberOfTAsAllocated()
         );
     }
 
@@ -196,7 +197,7 @@ public class SectionService {
 
         return new SectionDto(section.getId(), section.getYear(), section.getSemester(), section.getSection(),
                 section.getType(),
-                new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum()));
+                new CourseDto(course.getId(), course.getDeptCode(), course.getName(), course.getCourseNum()), section.getNumberOfTAsAllocated());
     }
 
     public SectionDto updateSection(Long sectionId, CourseRequest request) {
@@ -217,7 +218,8 @@ public class SectionService {
                         section.getCourse().getId(),
                         section.getCourse().getDeptCode(),
                         section.getCourse().getName(),
-                        section.getCourse().getCourseNum()));
+                        section.getCourse().getCourseNum()),
+                section.getNumberOfTAsAllocated());
     }
 
     public String deleteSection(Long sectionId) {
@@ -308,7 +310,8 @@ public class SectionService {
                                 sec.getCourse().getId(),
                                 sec.getCourse().getDeptCode(),
                                 sec.getCourse().getName(),
-                                sec.getCourse().getCourseNum())))
+                                sec.getCourse().getCourseNum()),
+                        sec.getNumberOfTAsAllocated()))
                 .toList();
     }
 

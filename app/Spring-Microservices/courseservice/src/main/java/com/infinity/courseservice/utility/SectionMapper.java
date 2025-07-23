@@ -21,7 +21,8 @@ public class SectionMapper {
                 section.getCourse().getDeptCode(),
                 section.getCourse().getName(),
                 section.getCourse().getCourseNum()
-            )
+            ),
+            section.getNumberOfTAsAllocated()
         );
     }
 

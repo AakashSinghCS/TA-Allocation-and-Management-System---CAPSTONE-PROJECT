@@ -263,7 +263,7 @@ public class CourseServiceTest {
                                 true,
                                 10,
                                 new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
-                                                new CourseDto(1L, "COSC", "CS", "112")));
+                                                new CourseDto(1L, "COSC", "CS", "112"),1));
 
                 when(sectionRepository.findByCourseIdAndYearAndSemester(courseId, year, semester))
                                 .thenReturn(Optional.of(section));
@@ -292,11 +292,11 @@ public class CourseServiceTest {
 
         SectionDto section1 = new SectionDto(
         10L, 2025, "W1", "001", SectionType.LECTURE,
-        new CourseDto(1L, "COSC", "Security", "430"));
+        new CourseDto(1L, "COSC", "Security", "430"),1);
 
         SectionDto section2 = new SectionDto(
         11L, 2025, "W1", "002", SectionType.LABORATORY,
-        new CourseDto(1L, "COSC", "Security", "430"));
+        new CourseDto(1L, "COSC", "Security", "430"),1);
         OfferDto offer = new OfferDto(1L, true, "description");
         NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1", null);
         AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
@@ -308,7 +308,7 @@ public class CourseServiceTest {
         true,
         10,
         new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
-        new CourseDto(1L, "COSC", "CS", "112")));
+        new CourseDto(1L, "COSC", "CS", "112"),1));
 
         when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1,
         section2));
@@ -323,6 +323,7 @@ public class CourseServiceTest {
         assertEquals("Labs", result.get(0).need().description());
         assertEquals("Alice",
         result.get(0).allocations().get(0).student().firstName());
+        assertEquals(1, result.get(0).section().numberOfTAsAllocated());
         }
 
         @Test
@@ -332,7 +333,7 @@ public class CourseServiceTest {
 
         SectionDto section1 = new SectionDto(
         10L, 2025, "W1", "001", SectionType.LECTURE,
-        new CourseDto(1L, "COSC", "Security", "430"));
+        new CourseDto(1L, "COSC", "Security", "430"),1);
 
         when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1));
         when(needService.getNeed(1L, 2025, "W1")).thenThrow(new
@@ -364,7 +365,7 @@ public class CourseServiceTest {
 
                 SectionDto sectionDto = new SectionDto(
                                 10L, year, semester, "001", SectionType.LECTURE,
-                                new CourseDto(courseId, "COSC", "Security", "430"));
+                                new CourseDto(courseId, "COSC", "Security", "430"),1);
 
                 // — a NeedDto and one allocation
                 NeedDto needDto = new NeedDto(10L, courseId, "Labs", 25, 10, year, semester, null);
@@ -378,7 +379,7 @@ public class CourseServiceTest {
                                 true,
                                 10,
                                 new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
-                                                new CourseDto(1L, "COSC", "CS", "112")));
+                                                new CourseDto(1L, "COSC", "CS", "112"),1));
 
                 // — stubbing repository, mapper, services
                 when(sectionRepository.findByInstructorIdAndCourseIdAndYearAndSemester(
@@ -426,7 +427,7 @@ public class CourseServiceTest {
 
                 SectionDto sectionDto = new SectionDto(
                                 11L, 2025, "W1", "002", SectionType.LABORATORY,
-                                new CourseDto(1L, "COSC", "Security", "430"));
+                                new CourseDto(1L, "COSC", "Security", "430"),1);
 
                 when(sectionRepository.findByInstructorIdAndYearAndSemester(
                                 instructorId, year, semester))

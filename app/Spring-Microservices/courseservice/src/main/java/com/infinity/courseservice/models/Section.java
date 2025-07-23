@@ -46,6 +46,9 @@ public class Section {
 
     private Long instructorId;
 
+    @Column(nullable = false)
+    private int numberOfTAsAllocated = 0;
+
     @Enumerated(EnumType.STRING)
     private SectionType type;
 
