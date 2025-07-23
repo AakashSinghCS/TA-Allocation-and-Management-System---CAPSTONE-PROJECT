@@ -124,43 +124,43 @@ public class CourseService {
 
     }
 
-    // public List<CourseNeedAndAllocations> getInstructorCourseNeedsAndAllocations(Long instructorId) {
-    //     List<SectionDto> sections = sectionService.getInstructorSections(instructorId);
-    //     Set<String> uniqueKeys = new HashSet<>();
-    //     List<CourseNeedAndAllocations> result = new ArrayList<>();
+    public List<CourseNeedAndAllocations> getInstructorCourseNeedsAndAllocations(Long instructorId) {
+        List<SectionDto> sections = sectionService.getInstructorSections(instructorId);
+        Set<String> uniqueKeys = new HashSet<>();
+        List<CourseNeedAndAllocations> result = new ArrayList<>();
 
-    //     for (SectionDto section : sections) {
-    //         Long courseId = section.course().id();
-    //         Long sectionId = section.id();
-    //         Integer year = section.year();
-    //         String semester = section.semester();
-    //         String key = sectionId.toString();
-    //         if (!uniqueKeys.contains(key)) {
-    //             uniqueKeys.add(key);
+        for (SectionDto section : sections) {
+            Long courseId = section.course().id();
+            Long sectionId = section.id();
+            Integer year = section.year();
+            String semester = section.semester();
+            String key = sectionId.toString();
+            if (!uniqueKeys.contains(key)) {
+                uniqueKeys.add(key);
 
-    //             NeedDto need = null;
-    //             List<AllocationHistoryDtoWithCourse> allocations = new ArrayList<>();
+                NeedDto need = null;
+                List<AllocationHistoryDtoWithCourse> allocations = new ArrayList<>();
 
-    //             try {
+                try {
 
-    //                 need = needService.getNeed(courseId, year, semester);
-    //             } catch (NotFoundException e) {
-    //             }
-    //             try {
-    //                 List<AllocationHistoryDtoWithCourse> fetched = applicationInterface
-    //                         .getAllocationsBySectionId(sectionId).getBody();
-    //                 if (fetched != null) {
-    //                     allocations = fetched;
-    //                 }
-    //             } catch (NotFoundException e) {
-    //             }
-    //             CourseNeedAndAllocations entry = new CourseNeedAndAllocations(section, need, allocations);
+                    need = needService.getNeed(courseId, year, semester);
+                } catch (NotFoundException e) {
+                }
+                try {
+                    List<AllocationHistoryDtoWithCourse> fetched = applicationInterface
+                            .getAllocationsBySectionId(sectionId).getBody();
+                    if (fetched != null) {
+                        allocations = fetched;
+                    }
+                } catch (NotFoundException e) {
+                }
+                CourseNeedAndAllocations entry = new CourseNeedAndAllocations(section, need, allocations);
 
-    //             result.add(entry);
-    //         }
-    //     }
-    //     return result;
-    // }
+                result.add(entry);
+            }
+        }
+        return result;
+    }
 
     public List<CourseNeedAndAllocations> getInstructorSpecificCourseNeedsAndAllocations(
         Long instructorId,

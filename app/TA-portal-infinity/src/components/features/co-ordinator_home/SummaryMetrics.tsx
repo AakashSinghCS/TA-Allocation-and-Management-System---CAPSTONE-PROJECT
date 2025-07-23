@@ -1,4 +1,10 @@
 import React from 'react';
+import { RxCrossCircled } from 'react-icons/rx';
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { IoBookOutline } from "react-icons/io5";
+import { MdPendingActions } from "react-icons/md";
+import { RiUserSharedLine } from "react-icons/ri";
+import { GrDocumentUser } from "react-icons/gr";
 
 interface SummaryMetricsProps {
   totalApps: number;
@@ -9,6 +15,13 @@ interface SummaryMetricsProps {
   sectionsInSystem: number;
 }
 
+const cardStyle = {
+  borderTopColor: '#040941',
+  minHeight: '60px', // smaller height
+  paddingTop: '0.5rem',
+  paddingBottom: '0.5rem',
+};
+
 const SummaryMetrics: React.FC<SummaryMetricsProps> = ({
   totalApps,
   pendingApplications,
@@ -17,47 +30,53 @@ const SummaryMetrics: React.FC<SummaryMetricsProps> = ({
   rejectedCount,
   sectionsInSystem,
 }) => (
-  <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+  <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
     {/* Total Applications */}
-    <div className="bg-blue-50 rounded-lg p-4 flex justify-between items-center">
+    <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={cardStyle}>
+      <GrDocumentUser size={20} style={{ color: '#040941' }} className="mr-3" />
       <div>
-        <p className="text-sm text-gray-600">Total Applications</p>
-        <p className="text-xl font-semibold text-gray-900">{totalApps}</p>
+        <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Total Applications</div>
+        <div className="text-lg font-bold text-[#040941]">{totalApps}</div>
       </div>
     </div>
     {/* Pending Reviews */}
-    <div className="bg-yellow-50 rounded-lg p-4 flex justify-between items-center">
+    <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={cardStyle}>
+      <MdPendingActions size={20} style={{ color: '#040941' }} className="mr-3" />
       <div>
-        <p className="text-sm text-gray-600">Pending Reviews</p>
-        <p className="text-xl font-semibold text-gray-900">{pendingApplications}</p>
+        <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Pending Reviews</div>
+        <div className="text-lg font-bold text-[#040941]">{pendingApplications}</div>
       </div>
     </div>
     {/* Offers Sent */}
-    <div className="bg-green-50 rounded-lg p-4 flex justify-between items-center">
+    <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={cardStyle}>
+      <RiUserSharedLine size={20} style={{ color: '#040941' }} className="mr-3" />
       <div>
-        <p className="text-sm text-gray-600">Offers Sent</p>
-        <p className="text-xl font-semibold text-gray-900">{offerCount}</p>
+        <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Offers Sent</div>
+        <div className="text-lg font-bold text-[#040941]">{offerCount}</div>
       </div>
     </div>
     {/* Offers Confirmed */}
-    <div className="bg-red-50 rounded-lg p-4 flex justify-between items-center">
+    <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={cardStyle}>
+      <IoMdCheckmarkCircleOutline size={20} style={{ color: '#040941' }} className="mr-3" />
       <div>
-        <p className="text-sm text-gray-600">Offers Confirmed</p>
-        <p className="text-xl font-semibold text-gray-900">{confirmedCount}</p>
+        <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Offers Confirmed</div>
+        <div className="text-lg font-bold text-[#040941]">{confirmedCount}</div>
       </div>
     </div>
     {/* Offers Rejected */}
-    <div className="bg-blue-50 rounded-lg p-4 flex justify-between items-center">
+    <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={cardStyle}>
+      <RxCrossCircled size={20} style={{ color: '#040941' }} className="mr-3" />
       <div>
-        <p className="text-sm text-gray-600">Offers Rejected</p>
-        <p className="text-xl font-semibold text-gray-900">{rejectedCount}</p>
+        <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Offers Rejected</div>
+        <div className="text-lg font-bold text-[#040941]">{rejectedCount}</div>
       </div>
     </div>
     {/* Sections in System */}
-    <div className="bg-yellow-50 rounded-lg p-4 flex justify-between items-center">
+    <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={cardStyle}>
+      <IoBookOutline size={20} style={{ color: '#040941' }} className="mr-3" />
       <div>
-        <p className="text-sm text-gray-600">Sections in System</p>
-        <p className="text-xl font-semibold text-gray-900">{sectionsInSystem}</p>
+        <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Total Sections</div>
+        <div className="text-lg font-bold text-[#040941]">{sectionsInSystem}</div>
       </div>
     </div>
   </div>

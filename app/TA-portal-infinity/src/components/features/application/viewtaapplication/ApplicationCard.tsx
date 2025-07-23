@@ -13,14 +13,21 @@ interface ApplicationCardProps {
 
 const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, allocations, isAllocated, isExpanded, onExpand, onCollapse }) => {
   return (
-    <div className={`bg-white rounded-2xl shadow-lg border border-blue-100 p-8 flex flex-col gap-6 hover:shadow-2xl transition relative ${isExpanded ? 'ring-2 ring-blue-400' : ''} w-full h-full min-h-[380px] sm:w-[98%] md:w-[98%] xl:w-[98%] mx-auto`}>
+    <div className={`bg-white rounded-2xl shadow-lg border border-blue-100 p-4 flex flex-col gap-2 hover:shadow-2xl transition relative ${isExpanded ? 'ring-2 ring-blue-400' : ''} w-full h-full min-h-[240px] sm:w-[98%] md:w-[98%] xl:w-[98%] mx-auto`}>
       {/* Unexpanded summary */}
       <div className="flex items-center gap-2 mb-1">
         <div className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-lg font-bold text-[#040941]">
           {app.student.firstName[0]}{app.student.lastName[0]}
         </div>
         <div>
-          <h2 className="font-semibold text-base text-[#040941] leading-tight">{app.student.firstName} {app.student.lastName}</h2>
+          <a
+            href={`http://localhost:5173/user/profile/${app.student.id}`}
+            className="font-semibold text-base text-[#040941] leading-tight hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {app.student.firstName} {app.student.lastName}
+          </a>
           <p className="text-xs text-gray-500 leading-tight">ID: {app.student.studentNum}</p>
         </div>
       </div>
@@ -43,7 +50,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, allocations, isA
       </div>
       {!isExpanded ? (
         <button
-          className="mt-2 px-3 py-1.5 bg-[#040941] text-white rounded-lg font-semibold transition text-sm hover:opacity-80"
+          className="mt-2 mb-2 px-3 py-1.5 bg-[#040941] text-white rounded-lg font-semibold transition text-sm hover:opacity-80"
           onClick={onExpand}
         >
           View Details
@@ -66,7 +73,14 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, allocations, isA
           <div className="mb-1">
             <h4 className="font-semibold text-[#040941] mb-0.5 text-sm">Applicant Info</h4>
             <div className="text-xs space-y-0.5">
-              <div><strong>Name:</strong> {app.student.firstName} {app.student.lastName}</div>
+              <div><strong>Name:</strong> <a
+                href={`http://localhost:5173/user/profile/${app.student.id}`}
+                className="text-blue-900 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {app.student.firstName} {app.student.lastName}
+              </a></div>
               <div><strong>Student #:</strong> {app.student.studentNum}</div>
               <div><strong>Program:</strong> {app.student.program || 'N/A'}</div>
               <div><strong>Enrollment Year:</strong> {app.student.enrollmentYear || 'N/A'}</div>

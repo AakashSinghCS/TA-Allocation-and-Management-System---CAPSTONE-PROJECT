@@ -178,38 +178,38 @@ public class CourseControllerTest {
                                 .andExpect(jsonPath("$.allocations[0].numberOfHours").value(10));
         }
 
-        // @Test
-        // void testGetInstructorCourseNeedsAndAllocations() throws Exception {
-        // Long instructorId = 77L;
-        // OfferDto offer = new OfferDto(1L, true, "description");
-        // CourseDto course = new CourseDto(1L, "COSC", "Networks", "329");
-        // NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2", null);
-        // SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001",
-        // SectionType.LABORATORY, course);
-        // AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
-        // new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-        // 12345678,
-        // "COSC", 2025, 3, null,
-        // null, null),offer,
-        // true, 10,
-        // new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
-        // );
+        @Test
+        void testGetInstructorCourseNeedsAndAllocations() throws Exception {
+        Long instructorId = 77L;
+        OfferDto offer = new OfferDto(1L, true, "description");
+        CourseDto course = new CourseDto(1L, "COSC", "Networks", "329");
+        NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2", null);
+        SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001",
+        SectionType.LABORATORY, course);
+        AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
+        new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
+        12345678,
+        "COSC", 2025, 3, null,
+        null, null,true),offer,
+        true, 10,
+        new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
+        );
 
-        // CourseNeedAndAllocations entry = new CourseNeedAndAllocations(sectionDto,
-        // need, List.of(alloc));
+        CourseNeedAndAllocations entry = new CourseNeedAndAllocations(sectionDto,
+        need, List.of(alloc));
 
-        // when(courseService.getInstructorCourseNeedsAndAllocations(instructorId)).thenReturn(List.of(entry));
-        // when(courseService.getInstructorCourseNeedsAndAllocations(instructorId)).thenReturn(List.of(entry));
+        when(courseService.getInstructorCourseNeedsAndAllocations(instructorId)).thenReturn(List.of(entry));
+        when(courseService.getInstructorCourseNeedsAndAllocations(instructorId)).thenReturn(List.of(entry));
 
-        // mockMvc.perform(get("/courses/needAndAllocations/{instructorId}",
-        // instructorId))
-        // .andExpect(status().isOk())
-        // .andExpect(jsonPath("$.length()").value(1))
-        // .andExpect(jsonPath("$[0].section.semester").value("W1"))
-        // .andExpect(jsonPath("$[0].section.course.name").value("Networks"))
-        // .andExpect(jsonPath("$[0].need.description").value("Grading"))
-        // .andExpect(jsonPath("$[0].allocations[0].student.firstName").value("Alice"));
-        // }
+        mockMvc.perform(get("/courses/needAndAllocations/{instructorId}",
+        instructorId))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].section.semester").value("W1"))
+        .andExpect(jsonPath("$[0].section.course.name").value("Networks"))
+        .andExpect(jsonPath("$[0].need.description").value("Grading"))
+        .andExpect(jsonPath("$[0].allocations[0].student.firstName").value("Alice"));
+        }
 
         @Test
         void testGetInstructorSpecificCourseNeedsAndAllocations_Controller() throws Exception {

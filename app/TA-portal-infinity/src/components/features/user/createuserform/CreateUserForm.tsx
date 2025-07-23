@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle, AlertTriangle } from 'lucide-react';
+import { CheckCircle, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 import { validateUserFormData } from '../../../../utility/validation/user/validateUserFormData';
 import type { UserRole } from '../../../../interfaces/enum/UserRole';
 
@@ -19,22 +19,38 @@ interface UserFormProps {
     successMessage?: string;
 }
 
-const InputField = ({ label, name, type, value, onChange, error,...rest }: any) => (
-    <div>
-        <label htmlFor={name} className="text-sm block mb-1">{label}*</label>
-        <input
-            id={name}
-            type={type}
-            name={name}
-            value={value}
-            onChange={onChange}
-            className="w-full border border-gray-400 rounded px-3 py-2"
-            required
-            {...rest}
-        />
-        {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
-    </div>
-);
+const InputField = ({ label, name, type, value, onChange, error, showPassword, setShowPassword, ...rest }: any) => {
+    const isPassword = name === 'password' || name === 'confirmPassword';
+    return (
+        <div className={isPassword ? "relative" : undefined}>
+            <label htmlFor={name} className="text-sm block mb-1">{label}*</label>
+            <div className={isPassword ? "relative flex items-center" : undefined}>
+                <input
+                    id={name}
+                    type={isPassword && showPassword ? "text" : type}
+                    name={name}
+                    value={value}
+                    onChange={onChange}
+                    className={"w-full border border-gray-400 rounded px-3 py-2" + (isPassword ? " pr-10" : "")}
+                    required
+                    {...rest}
+                />
+                {isPassword && value && setShowPassword && (
+                    <button
+                        type="button"
+                        aria-label={showPassword ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
+                        onClick={() => setShowPassword((prev: boolean) => !prev)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#040941] focus:outline-none"
+                        tabIndex={-1}
+                    >
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                )}
+            </div>
+            {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+        </div>
+    );
+};
 
 export default function CreateUserForm({
     onSubmit,
@@ -54,6 +70,8 @@ export default function CreateUserForm({
     const [formSuccess, setFormSuccess] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof UserFormData, string>>>({});
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setFormError(null);
@@ -148,6 +166,8 @@ export default function CreateUserForm({
                 onChange={handleChange}
                 pattern="^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-\\[\\]{}|;:',.<>?]).{8,}$"
                 error={fieldErrors.password}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
             />
             <InputField
                 label="Confirm Password"
@@ -156,6 +176,8 @@ export default function CreateUserForm({
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 error={fieldErrors.confirmPassword}
+                showPassword={showConfirmPassword}
+                setShowPassword={setShowConfirmPassword}
             />
 
             {formError && (
