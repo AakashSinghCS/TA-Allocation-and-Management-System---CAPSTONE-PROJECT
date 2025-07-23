@@ -58,8 +58,6 @@ public class ExamService {
             Exam saved = examRepository.save(exam);
 
             return examMapper.mapExam(saved);
-        } catch (NotFoundException | BadRequestException e) {
-            throw e;
         } catch (Exception e) {
             throw new BadRequestException("Failed to create exam: " + e.getMessage());
         }
@@ -74,8 +72,6 @@ public class ExamService {
             exam.setEndTime(dto.endTime());
             Exam saved = examRepository.save(exam);
             return examMapper.mapExam(saved);
-        } catch (NotFoundException e) {
-            throw e;
         } catch (Exception e) {
             throw new BadRequestException("Failed to update exam: " + e.getMessage());
         }
@@ -88,7 +84,7 @@ public class ExamService {
             }
             examRepository.deleteById(id);
         } catch (NotFoundException e) {
-            throw e;
+            throw new NotFoundException("exam not found: " + e.getMessage());
         } catch (Exception e) {
             throw new BadRequestException("Failed to delete exam: " + e.getMessage());
         }
@@ -100,7 +96,7 @@ public class ExamService {
                     .map(examMapper::mapExam)
                     .toList();
         } catch (Exception e) {
-            throw new BadRequestException("Failed to fetch exams: " + e.getMessage());
+            throw new NotFoundException("Failed to fetch exams: " + e.getMessage());
         }
     }
 
@@ -109,10 +105,8 @@ public class ExamService {
             Exam exam = examRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Exam not found"));
             return examMapper.mapExam(exam);
-        } catch (NotFoundException e) {
-            throw e;
         } catch (Exception e) {
-            throw new BadRequestException("Failed to fetch exam: " + e.getMessage());
+            throw new NotFoundException("Failed to fetch exam: " + e.getMessage());
         }
     }
 
@@ -121,70 +115,114 @@ public class ExamService {
     // --- Availability ---
 
     public List<ExamAvailabilityDto> updateStudentAvailability(Long studentId, List<ExamAvailabilityDto> availabilities) {
-        availabilityRepository.deleteByStudentId(studentId);
-        List<ExamAvailability> entities = availabilities.stream()
-                .map(dto -> {
-                    ExamAvailability a = new ExamAvailability();
-                    a.setStudentId(studentId);
-                    a.setDate(dto.date());
-                    a.setStartTime(dto.startTime());
-                    a.setEndTime(dto.endTime());
-                    return a;
-                })
-                .toList();
-        availabilityRepository.saveAll(entities);
-        return entities.stream()
-                .map(a -> new ExamAvailabilityDto(
-                        a.getId(),
-                        a.getStudentId(),
-                        a.getDate(),
-                        a.getStartTime(),
-                        a.getEndTime()
-                ))
-                .toList();
+        try {
+            availabilityRepository.deleteByStudentId(studentId);
+            List<ExamAvailability> entities = availabilities.stream()
+                    .map(dto -> {
+                        ExamAvailability a = new ExamAvailability();
+                        a.setStudentId(studentId);
+                        a.setDate(dto.date());
+                        a.setStartTime(dto.startTime());
+                        a.setEndTime(dto.endTime());
+                        return a;
+                    })
+                    .toList();
+            availabilityRepository.saveAll(entities);
+            return entities.stream()
+                    .map(a -> new ExamAvailabilityDto(
+                            a.getId(),
+                            a.getStudentId(),
+                            a.getDate(),
+                            a.getStartTime(),
+                            a.getEndTime()
+                    ))
+                    .toList();
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to update student availability: " + e.getMessage());
+        }
     }
 
     public List<ExamAvailabilityDto> getAvailabilityByStudentId(Long studentId) {
-        return availabilityRepository.findByStudentId(studentId).stream()
-                .map(a -> new ExamAvailabilityDto(
-                        a.getId(),
-                        a.getStudentId(),
-                        a.getDate(),
-                        a.getStartTime(),
-                        a.getEndTime()
-                ))
-                .toList();
+        try {
+            return availabilityRepository.findByStudentId(studentId).stream()
+                    .map(a -> new ExamAvailabilityDto(
+                            a.getId(),
+                            a.getStudentId(),
+                            a.getDate(),
+                            a.getStartTime(),
+                            a.getEndTime()
+                    ))
+                    .toList();
+        } catch (Exception e) {
+            throw new NotFoundException("Failed to fetch availability for student: " + e.getMessage());
+        }
     }
 
     @Transactional
     public void deleteAvailabilityByStudentId(Long studentId) {
-        availabilityRepository.deleteByStudentId(studentId);
+        try {
+            availabilityRepository.deleteByStudentId(studentId);
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to delete availability for student: " + e.getMessage());
+        }
     }
 
 
     // --- Assignments ---
 
     public ExamAssignmentDto assignStudentToExam(Long examId, ExamAssignmentDto dto) {
-        Exam exam = examRepository.findById(examId)
-            .orElseThrow(() -> new NotFoundException("Exam not found"));
+        try {
+            Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new NotFoundException("Exam not found"));
 
-        ExamAssignment assignment = new ExamAssignment();
-        assignment.setExam(exam);
-        assignment.setStudentId(dto.studentId());
-        assignment.setTask(dto.task());
-        assignment.setDate(dto.date());
-        assignment.setStartTime(dto.startTime());
-        assignment.setEndTime(dto.endTime());
+            ExamAssignment assignment = new ExamAssignment();
+            assignment.setExam(exam);
+            assignment.setStudentId(dto.studentId());
+            assignment.setTask(dto.task());
+            assignment.setDate(dto.date());
+            assignment.setStartTime(dto.startTime());
+            assignment.setEndTime(dto.endTime());
 
-        ExamAssignment saved = assignmentRepository.save(assignment);
-        return examMapper.mapAssignment(saved);
+            ExamAssignment saved = assignmentRepository.save(assignment);
+            return examMapper.mapAssignment(saved);
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Failed to find exam: " + e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to assign student to exam: " + e.getMessage());
+        }
     }
 
     public List<ExamAssignmentDto> getAssignmentsByStudentId(Long studentId) {
-        return assignmentRepository.findByStudentId(studentId).stream()
-                .map(examMapper::mapAssignment)
-                .toList();
+        try {
+            return assignmentRepository.findByStudentId(studentId).stream()
+                    .map(examMapper::mapAssignment)
+                    .toList();
+        } catch (Exception e) {
+            throw new NotFoundException("Failed to fetch assignments for student: " + e.getMessage());
+        }
     }
 
-    
+    public List<ExamAssignmentDto> getAssignmentsByExamId(Long examId) {
+        try {
+            return assignmentRepository.findById(examId).stream()
+                    .map(examMapper::mapAssignment)
+                    .toList();
+        } catch (Exception e) {
+            throw new NotFoundException("Failed to fetch assignments for exam: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void deleteAssignment(Long assignmentId) {
+        try {
+            if (!assignmentRepository.existsById(assignmentId)) {
+                throw new NotFoundException("Assignment not found");
+            }
+            assignmentRepository.deleteById(assignmentId);
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Assignment not found: " + e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to delete assignment: " + e.getMessage());
+        }
+    }
 }

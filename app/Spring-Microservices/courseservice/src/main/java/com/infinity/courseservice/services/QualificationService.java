@@ -48,9 +48,7 @@ public class QualificationService {
             CourseDto course = courseService.findCourse(qualification.getCourse().getId());
             return new QualificationDto(course, qualification.getDescription(), null);
         } catch (NotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new BadRequestException("Failed to find qualification: " + e.getMessage());
+            throw new NotFoundException("Failed to find qualification: " + e.getMessage());
         }
     }
 
@@ -74,7 +72,7 @@ public class QualificationService {
                 );
             }).toList();
         } catch (Exception e) {
-            throw new BadRequestException("Failed to find qualifications by dept code: " + e.getMessage());
+            throw new NotFoundException("Failed to find qualifications by dept code: " + e.getMessage());
         }
     }
 
@@ -82,7 +80,7 @@ public class QualificationService {
         try {
             CourseDto courseDto = courseService.findCourse(request.courseId());
             Course course = courseRepository.findById(request.courseId())
-                    .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+                    .orElseThrow(() -> new NotFoundException("Course not found with ID: " + request.courseId()));
 
             if (qualificationRepository.existsByCourseAndDescriptionAndDeptCode(
                     course, request.description(), request.deptCode())) {
@@ -107,7 +105,7 @@ public class QualificationService {
             // This will catch any underlying JDBC/Hibernate constraint violation
             throw new BadRequestException(
                     "Unable to create qualification: it may already exist");
-        } catch (Exception e) {
+        } catch (NotFoundException e) {
             throw new BadRequestException("Failed to add qualification: " + e.getMessage());
         }
     }
@@ -124,9 +122,7 @@ public class QualificationService {
             studentQualificationRepository.deleteAll(toDeleteSq);
             return deleteIds;
         } catch (NotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new BadRequestException("Failed to delete qualification: " + e.getMessage());
+            throw new NotFoundException("Failed to delete qualification: " + e.getMessage());
         }
     }
 
@@ -156,8 +152,8 @@ public class QualificationService {
             List<Long> qualificationIds = studentQualifications.stream().map(sq -> sq.getQualification().getId())
                     .collect(Collectors.toList());
             return qualificationIds;
-        } catch (Exception e) {
-            throw new BadRequestException("Failed to find qualifications by student ID: " + e.getMessage());
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Failed to find qualifications by student ID: " + e.getMessage());
         }
     }
 
@@ -181,8 +177,8 @@ public class QualificationService {
                                         q.getDescription()));
                     })
                     .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new BadRequestException("Failed to find qualifications by instructor ID: " + e.getMessage());
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Failed to find qualifications by instructor ID: " + e.getMessage());
         }
     }
 }

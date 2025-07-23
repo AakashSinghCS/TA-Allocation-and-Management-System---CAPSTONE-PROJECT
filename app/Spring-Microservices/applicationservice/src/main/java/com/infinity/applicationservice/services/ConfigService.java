@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.infinity.applicationservice.dtos.DeadlineDto;
+import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
 import com.infinity.applicationservice.models.GlobalDeadline;
 import com.infinity.applicationservice.repositories.ConfigRepository;
@@ -21,8 +22,8 @@ public class ConfigService {
     public List<DeadlineDto> getDeadlines() {
         try {
             return configRepository.findAll().stream().map(ConfigMapper::toDto).toList();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to fetch deadlines: " + e.getMessage(), e);
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Failed to fetch deadlines: " + e.getMessage());
         }
     }
 
@@ -34,9 +35,7 @@ public class ConfigService {
             }
             return ConfigMapper.toDto(deadline);
         } catch (NotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to fetch deadline by name: " + e.getMessage(), e);
+            throw new NotFoundException("Failed to fetch deadline by name: " + e.getMessage());
         }
     }
 
@@ -54,8 +53,8 @@ public class ConfigService {
             configRepository.saveAll(saved);
             List<DeadlineDto> returnDtos = saved.stream().map(ConfigMapper::toDto).toList();
             return returnDtos;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to add deadlines: " + e.getMessage(), e);
+        } catch (BadRequestException e) {
+            throw new BadRequestException("Failed to add deadlines: " + e.getMessage());
         }
     }
 
@@ -69,10 +68,8 @@ public class ConfigService {
             existing.setEndTime(updated.endTime());
             configRepository.save(existing);
             return ConfigMapper.toDto(existing);
-        } catch (NotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to update deadline: " + e.getMessage(), e);
+        } catch (NotFoundException e) {            
+            throw new NotFoundException("Failed to update deadline: " + e.getMessage());
         }
     }
 
@@ -85,9 +82,7 @@ public class ConfigService {
             configRepository.delete(existing);
             return ConfigMapper.toDto(existing);
         } catch (NotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to delete deadline: " + e.getMessage(), e);
+            throw new NotFoundException("Failed to delete deadline: " + e.getMessage());
         }
     }
 }

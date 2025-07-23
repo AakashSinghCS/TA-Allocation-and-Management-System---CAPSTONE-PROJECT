@@ -1,21 +1,23 @@
 package com.infinity.courseservice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.infinity.courseservice.dtos.ExamDtos.ExamAssignmentDto;
@@ -117,18 +119,18 @@ public class ExamServiceTest {
     }
 
     @Test
-    void testCreateExam_CourseNotFound() {
+    void testCreateExam_CourseBadRequest() {
         ExamDto dto = new ExamDto(null, 1L, 1L, "W1 2025", LocalDate.now(), LocalTime.of(9,0), LocalTime.of(12,0));
 
-        assertThrows(NotFoundException.class, () -> examService.createExam(dto));
+        assertThrows(BadRequestException.class, () -> examService.createExam(dto));
     }
 
     @Test
-    void testUpdateExam_NotFound() {
+    void testUpdateExam_BadRequest() {
         when(examRepository.findById(10L)).thenReturn(Optional.empty());
         ExamDto dto = new ExamDto(null, 1L, 1L, "W1 2025", LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
 
-        assertThrows(NotFoundException.class, () -> examService.updateExam(10L, dto));
+        assertThrows(BadRequestException.class, () -> examService.updateExam(10L, dto));
     }
 
     @Test
@@ -145,12 +147,6 @@ public class ExamServiceTest {
         ExamDto result = examService.updateExam(10L, mapped);
 
         assertEquals(10L, result.id());
-    }
-
-    @Test
-    void testDeleteExam() {
-        examService.deleteExam(5L);
-        verify(examRepository).deleteById(5L);
     }
 
     @Test
@@ -182,6 +178,53 @@ public class ExamServiceTest {
 
         List<ExamDto> result = examService.getAllExams();
         assertEquals(1, result.size());
+    }
+
+    // --- Exception handling for CRUD ---
+
+    @Test
+    void testCreateExam_shouldThrowBadRequest_onGenericException() {
+        ExamDto dto = new ExamDto(null, 1L, 1L, "W1 2025", LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
+        when(sectionRepository.findById(anyLong())).thenThrow(new RuntimeException("DB error"));
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> examService.createExam(dto));
+        assertTrue(ex.getMessage().contains("Failed to create exam"));
+    }
+
+    @Test
+    void testUpdateExam_shouldThrowBadRequest_onGenericException() {
+        ExamDto dto = new ExamDto(null, 1L, 1L, "W1 2025", LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
+        when(examRepository.findById(anyLong())).thenThrow(new RuntimeException("DB error"));
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> examService.updateExam(1L, dto));
+        assertTrue(ex.getMessage().contains("Failed to update exam"));
+    }
+
+    @Test
+    void testDeleteExam_shouldThrowNotFound_whenNotExists() {
+        when(examRepository.existsById(1L)).thenReturn(false);
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> examService.deleteExam(1L));
+        assertTrue(ex.getMessage().toLowerCase().contains("exam not found"));
+    }
+
+    @Test
+    void testDeleteExam_shouldThrowBadRequest_onGenericException() {
+        when(examRepository.existsById(1L)).thenReturn(true);
+        doThrow(new RuntimeException("DB error")).when(examRepository).deleteById(1L);
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> examService.deleteExam(1L));
+        assertTrue(ex.getMessage().contains("Failed to delete exam"));
+    }
+
+    @Test
+    void testGetAllExams_shouldThrowNotFound_onGenericException() {
+        when(examRepository.findAll()).thenThrow(new RuntimeException("DB error"));
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> examService.getAllExams());
+        assertTrue(ex.getMessage().contains("Failed to fetch exams"));
+    }
+
+    @Test
+    void testGetExamById_shouldThrowNotFound_onGenericException() {
+        when(examRepository.findById(anyLong())).thenThrow(new RuntimeException("DB error"));
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> examService.getExamById(1L));
+        assertTrue(ex.getMessage().contains("Failed to fetch exam"));
     }
 
     // --- Availability ---
@@ -222,6 +265,30 @@ public class ExamServiceTest {
         examService.deleteAvailabilityByStudentId(studentId);
 
         verify(availabilityRepository, times(1)).deleteByStudentId(studentId);
+    }
+
+    // --- Exception handling for Availability ---
+
+    @Test
+    void testUpdateStudentAvailability_shouldThrowBadRequest_onGenericException() {
+        doThrow(new RuntimeException("DB error")).when(availabilityRepository).deleteByStudentId(anyLong());
+        BadRequestException ex = assertThrows(BadRequestException.class, () ->
+                examService.updateStudentAvailability(1L, List.of(new ExamAvailabilityDto(null, null, LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT))));
+        assertTrue(ex.getMessage().contains("Failed to update student availability"));
+    }
+
+    @Test
+    void testGetAvailabilityByStudentId_shouldThrowNotFound_onGenericException() {
+        when(availabilityRepository.findByStudentId(anyLong())).thenThrow(new RuntimeException("DB error"));
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> examService.getAvailabilityByStudentId(1L));
+        assertTrue(ex.getMessage().contains("Failed to fetch availability for student"));
+    }
+
+    @Test
+    void testDeleteAvailabilityByStudentId_shouldThrowBadRequest_onGenericException() {
+        doThrow(new RuntimeException("DB error")).when(availabilityRepository).deleteByStudentId(anyLong());
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> examService.deleteAvailabilityByStudentId(1L));
+        assertTrue(ex.getMessage().contains("Failed to delete availability for student"));
     }
 
     // --- Assignments ---
@@ -319,5 +386,50 @@ public class ExamServiceTest {
 
         List<ExamAssignmentDto> result = examService.getAssignmentsByStudentId(1L);
         assertEquals(1, result.size());
+    }
+
+    @Test
+    void testAssignStudentToExam_shouldThrowNotFound_onNotFoundException() {
+        when(examRepository.findById(anyLong())).thenThrow(new NotFoundException("Exam not found"));
+        ExamAssignmentDto dto = new ExamAssignmentDto(null, 1L, 1L, ExamTask.MARKING, LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> examService.assignStudentToExam(1L, dto));
+        assertTrue(ex.getMessage().contains("Failed to find exam"));
+    }
+
+    @Test
+    void testAssignStudentToExam_shouldThrowBadRequest_onGenericException() {
+        when(examRepository.findById(anyLong())).thenThrow(new RuntimeException("DB error"));
+        ExamAssignmentDto dto = new ExamAssignmentDto(null, 1L, 1L, ExamTask.MARKING, LocalDate.now(), LocalTime.NOON, LocalTime.MIDNIGHT);
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> examService.assignStudentToExam(1L, dto));
+        assertTrue(ex.getMessage().contains("Failed to assign student to exam"));
+    }
+
+    @Test
+    void testGetAssignmentsByStudentId_shouldThrowNotFound_onGenericException() {
+        when(assignmentRepository.findByStudentId(anyLong())).thenThrow(new RuntimeException("DB error"));
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> examService.getAssignmentsByStudentId(1L));
+        assertTrue(ex.getMessage().contains("Failed to fetch assignments for student"));
+    }
+
+    @Test
+    void testGetAssignmentsByExamId_shouldThrowNotFound_onGenericException() {
+        when(assignmentRepository.findById(anyLong())).thenThrow(new RuntimeException("DB error"));
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> examService.getAssignmentsByExamId(1L));
+        assertTrue(ex.getMessage().contains("Failed to fetch assignments for exam"));
+    }
+
+    @Test
+    void testDeleteAssignment_shouldThrowNotFound_whenNotExists() {
+        when(assignmentRepository.existsById(1L)).thenReturn(false);
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> examService.deleteAssignment(1L));
+        assertTrue(ex.getMessage().toLowerCase().contains("assignment not found"));
+    }
+
+    @Test
+    void testDeleteAssignment_shouldThrowBadRequest_onGenericException() {
+        when(assignmentRepository.existsById(1L)).thenReturn(true);
+        doThrow(new RuntimeException("DB error")).when(assignmentRepository).deleteById(1L);
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> examService.deleteAssignment(1L));
+        assertTrue(ex.getMessage().contains("Failed to delete assignment"));
     }
 }

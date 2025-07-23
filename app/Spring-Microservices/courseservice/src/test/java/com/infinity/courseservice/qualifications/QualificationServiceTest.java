@@ -1,26 +1,27 @@
 package com.infinity.courseservice.qualifications;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.QualificationDtos.QualificationDto;
@@ -202,7 +203,7 @@ class QualificationServiceTest {
                 NotFoundException.class,
                 () -> qualificationService.instructorDeleteQualification(qualificationId));
 
-        assertEquals("No qualifications found with id: " + qualificationId, ex.getMessage());
+        assertEquals("Failed to delete qualification: No qualifications found with id: " + qualificationId, ex.getMessage());
 
         verify(qualificationRepository, never()).deleteAll(any());
         verify(studentQualificationRepository, never()).deleteAll(any());
@@ -329,5 +330,91 @@ class QualificationServiceTest {
 
         assertTrue(ids.contains(100L));
         assertTrue(ids.contains(101L));
+    }
+
+    @Test
+    void findQualification_shouldThrowNotFoundException_onGenericException() {
+        when(qualificationRepository.findById(1L)).thenThrow(new NotFoundException("DB error"));
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> qualificationService.findQualification(1L));
+        assertTrue(ex.getMessage().contains("Failed to find qualification"));
+    }
+
+    @Test
+    void findQualificationsByDeptCode_shouldThrowNotFoundException_onGenericException() {
+        when(qualificationRepository.findAllByDeptCode("COSC")).thenThrow(new RuntimeException("DB error"));
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> qualificationService.findQualificationsByDeptCode("COSC"));
+        assertTrue(ex.getMessage().contains("Failed to find qualifications by dept code"));
+    }
+
+    @Test
+    void instructorAddQualification_shouldThrowBadRequest_onDataIntegrityViolation() {
+        long courseId = 42L;
+        QualificationRequest req = new QualificationRequest(1L, courseId, 2L, "Food Safety", "HOSP");
+        Course course = new Course();
+        course.setId(courseId);
+        course.setDeptCode("HOSP");
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        when(courseService.findCourse(courseId)).thenReturn(new CourseDto(courseId, "HOSP", "Hospitality", "101"));
+        when(qualificationRepository.existsByCourseAndDescriptionAndDeptCode(course, req.description(), req.deptCode())).thenReturn(false);
+        when(qualificationRepository.saveAndFlush(any(Qualification.class))).thenThrow(new DataIntegrityViolationException("Unique constraint"));
+
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> qualificationService.instructorAddQualification(req));
+        assertTrue(ex.getMessage().contains("Unable to create qualification"));
+    }
+
+    @Test
+    void instructorAddQualification_shouldThrowBadRequest_onGenericException() {
+        long courseId = 42L;
+        QualificationRequest req = new QualificationRequest(1L, courseId, 2L, "Food Safety", "HOSP");
+        Course course = new Course();
+        course.setId(courseId);
+        course.setDeptCode("HOSP");
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        when(courseService.findCourse(courseId)).thenReturn(new CourseDto(courseId, "HOSP", "Hospitality", "101"));
+        when(qualificationRepository.existsByCourseAndDescriptionAndDeptCode(course, req.description(), req.deptCode())).thenReturn(false);
+        when(qualificationRepository.saveAndFlush(any(Qualification.class))).thenThrow(new BadRequestException("DB error"));
+
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> qualificationService.instructorAddQualification(req));
+        assertTrue(ex.getMessage().contains("DB error"));
+    }
+
+    @Test
+    void instructorDeleteQualification_shouldThrowBadRequest_onGenericException() {
+        Long qualificationId = 1L;
+        Qualification qualification = new Qualification();
+        qualification.setId(qualificationId);
+        List<Qualification> qualifications = List.of(qualification);
+
+        when(qualificationRepository.findAllByIds(List.of(qualificationId))).thenReturn(qualifications);
+        doThrow(new BadRequestException("DB error")).when(qualificationRepository).deleteAll(qualifications);
+
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> qualificationService.instructorDeleteQualification(qualificationId));
+        assertTrue(ex.getMessage().contains("DB error"));
+    }
+
+    @Test
+    void studentUpdateQualifications_shouldThrowBadRequest_onGenericException() {
+        StudentQualiRequest request = mock(StudentQualiRequest.class);
+        when(request.qualificationIds()).thenReturn(List.of(1L));
+        doThrow(new BadRequestException("DB error")).when(studentQualificationRepository).deleteAllByStudentId(5L);
+
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> qualificationService.studentUpdateQualifications(request, 5L));
+        assertTrue(ex.getMessage().contains("DB error"));
+    }
+
+    @Test
+    void findQualificationsByStudentId_shouldThrowBadRequest_onGenericException() {
+        when(studentQualificationRepository.findAllByStudentId(5L)).thenThrow(new NotFoundException("DB error"));
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> qualificationService.findQualificationsByStudentId(5L));
+        assertTrue(ex.getMessage().contains("Failed to find qualifications by student ID"));
+    }
+
+    @Test
+    void findQualificationsByInstructorId_shouldThrowNotFound_onGenericException() {
+        when(sectionRepository.findAllByInstructorId(1L)).thenThrow(new NotFoundException("DB error"));
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> qualificationService.findQualificationsByInstructorId(1L));
+        assertTrue(ex.getMessage().contains("Failed to find qualifications by instructor ID"));
     }
 }
