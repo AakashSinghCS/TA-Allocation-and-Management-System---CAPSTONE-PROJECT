@@ -3,7 +3,7 @@ import { type EventClickArg } from '@fullcalendar/core';
 import type Section from "../../../../interfaces/section/Section";
 import type { ApplicationDto } from "../../../../interfaces/application/Application";
 import { getDayNumber } from "../../../../utility/calendar/calendarUtils";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useSendOffer } from "../../../../hooks/sendoffer/useSendOffer";
 
@@ -17,74 +17,79 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
     const { sendOffer, loading } = useSendOffer();
     const [gradingHours, setGradingHours] = useState<string>('');
     const [labPrepHours, setLabPrepHours] = useState<string>('');
-    const [offSlots, setOffSlots] = useState<Set<number>>(new Set());
+    const [onSlots, setOnSlots] = useState<Set<number>>(new Set());
 
     const required = selCourse?.need?.requiredGradingHours ?? 0;
     const allocated = selCourse?.need?.numHoursCurrentlyAllocated ?? 0;
     const remaining = Math.max(required - allocated, 0);
     const hoursOK = allocated >= required;
-    // All course slots must be fully covered by student availability
-    const hasAvailabilityMatch = (selCourse?.sectionSchedule || [])
-        .filter(s => s.day && s.startTime && s.endTime)
-        .every(slot =>
-            isSlotFullyCovered(
+    const allIdxs = useMemo(
+        () => (selCourse?.sectionSchedule || []).map((_, i) => i),
+        [selCourse]
+    );
+    useEffect(() => {
+        setOnSlots(new Set(allIdxs)); // everything ON by default
+    }, [allIdxs]);
+
+    const totalSectionMinutes = useMemo(
+        () => calcSectionMinutes(selCourse, onSlots),
+        [selCourse, onSlots]
+    );
+    const totalSectionHours = +(totalSectionMinutes / 60).toFixed(2);
+
+    const anyHoursPresent =
+        totalSectionHours > 0 || ((+gradingHours || 0) + (+labPrepHours || 0)) > 0;
+
+
+
+    // const hasUnavailabilityMatch = (selCourse?.sectionSchedule || [])
+    //     .filter(s => s.day && s.startTime && s.endTime)
+    //     .every(slot =>
+    //         isSlotHasOverlap(
+    //             { day: slot.day!, startTime: slot.startTime!, endTime: slot.endTime! },
+    //             selApp?.availabilities || []
+    //         )
+    //     ) && totalSectionHours>0;
+    const hasUnavailabilityMatch =
+        totalSectionHours > 0 &&
+        (selCourse?.sectionSchedule || []).some(s =>
+            s.day && s.startTime && s.endTime &&
+            isSlotHasOverlap({ day: s.day!, startTime: s.startTime!, endTime: s.endTime! }, selApp?.availabilities || [])
+        );
+
+    const disableOffer = !selCourse || !selApp || loading || !anyHoursPresent || hasUnavailabilityMatch;
+
+    const courseEvents = useMemo(() => (
+        (selCourse?.sectionSchedule || []).map((slot, i) => {
+            const isBad = isSlotHasOverlap(
                 { day: slot.day!, startTime: slot.startTime!, endTime: slot.endTime! },
                 selApp?.availabilities || []
-            )
-        );
-
-    const courseEvents = (selCourse?.sectionSchedule || []).map((slot, i) => {
-        const dayNum = getDayNumber(slot.day);
-        const isClear = isSlotFullyCovered(
-            { day: slot.day!, startTime: slot.startTime!, endTime: slot.endTime! },
-            selApp?.availabilities || []
-        );
-
-        return {
-            id: `c${i}`,
-            title: 'Course Slot',
-            daysOfWeek: [dayNum],
-            startTime: slot.startTime,
-            endTime: slot.endTime,
-            backgroundColor: isClear ? 'rgba(16,185,129,0.8)' : '#EF4444CC', // green when no conflict, red when conflict
-            extendedProps: { type: 'course', slotIndex: i, isClear },
-        };
-    });
-
-    const appEvents = (selApp?.availabilities || []).map((slot, i) => ({
-        id: `app${i}`,
-        title: 'Student Availability',
-        daysOfWeek: [getDayNumber(slot.day)],
-        startTime: slot.startTime,
-        endTime: slot.endTime,
-        backgroundColor: 'rgba(35, 38, 39, 0.3)',
-    }));
-
-    // Computing segments of student availability that match course slots
-    const bgMatchedEvents = useMemo(() => {
-        return (selCourse?.sectionSchedule || []).flatMap((slot, i) => {
-            if (!slot.day || !slot.startTime || !slot.endTime) return [];
-            const clear = isSlotFullyCovered(
-                { day: slot.day, startTime: slot.startTime, endTime: slot.endTime },
-                selApp?.availabilities || []
             );
-            if (!clear) return []; // skip unmatched
-            return [{
-                id: `matched-${i}`,
+            return {
+                id: `c${i}`,
+                title: 'Section',
                 daysOfWeek: [getDayNumber(slot.day)],
                 startTime: slot.startTime,
                 endTime: slot.endTime,
-                title: 'Matched (no conflict)',
-                backgroundColor: 'rgb(5, 168, 81)',
-            }];
-        });
-    }, [selCourse, selApp?.availabilities]);
+                backgroundColor: colorForSection(i, isBad, onSlots),
+                extendedProps: { type: 'section', slotIndex: i, isBad },
+            };
+        })
+    ), [selCourse, selApp?.availabilities, onSlots]);
 
-    // Combine all events into a single list
+    const appEvents = (selApp?.availabilities || []).map((slot, i) => ({
+        id: `app${i}`,
+        title: 'Student Unavailability',
+        daysOfWeek: [getDayNumber(slot.day)],
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        extendedProps: { type: 'unavail' },
+    }));
+
     const events = [
         ...courseEvents,
         ...appEvents,
-        ...bgMatchedEvents,
+        // ...bgMatchedEvents,
     ].filter((e): e is NonNullable<typeof e> => e !== null);
 
 
@@ -97,72 +102,52 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
             Number(totalSectionHours),
             Number(labPrepHours),
             Number(gradingHours),
-            hasAvailabilityMatch,
+            hasUnavailabilityMatch,
             onSendOfferSuccess
         );
     };
 
-
-    const totalSectionMinutes = useMemo(
-        () => calcSectionMinutes(selCourse, offSlots),
-        [selCourse, offSlots]
-    );
-    const totalSectionHours = +(totalSectionMinutes / 60).toFixed(2);
-
-
-    const allHoursPresent =
-        totalSectionHours > 0 &&
-        gradingHours.trim() !== '' &&
-        labPrepHours.trim() !== '' &&
-        !isNaN(Number(gradingHours)) &&
-        !isNaN(Number(labPrepHours));
-
-    const disableOffer = !selCourse || !selApp || loading || !allHoursPresent;
-
     const onEventClick = (info: EventClickArg) => {
-        const { event } = info;
-        const { type, slotIndex } = event.extendedProps as { type?: string; slotIndex?: number };
-
-        if (type !== 'course' || slotIndex === undefined) return; // ignore non-course events
-
-        setOffSlots(prev => {
+        const { type } = info.event.extendedProps as { type?: string };
+        if (type !== 'section') return;
+        setOnSlots(prev => {
             const next = new Set(prev);
-            if (next.has(slotIndex)) {
-                next.delete(slotIndex);
+
+            const sectionOn = allIdxs.every(i => onSlots.has(i));
+            if (sectionOn) {
+                // turn ALL off
+                allIdxs.forEach(i => next.delete(i));
             } else {
-                next.add(slotIndex);
+                // turn ALL on
+                allIdxs.forEach(i => next.add(i));
             }
             return next;
         });
-
-        // Change color immediately for better UX (optional; state re-render will also do it)
-        const isOff = !offSlots.has(slotIndex);
-        event.setProp(
-            'backgroundColor',
-            isOff ? 'rgba(156,163,175,0.45)' : (event.extendedProps.isMatched ? 'rgba(16,185,129,0.8)' : '#3B82F6CC')
-        );
     };
 
     return (
         <>
             <h1 className="font-semibold text-xl">Weekly Calendar</h1>
-            <div className="flex items-center space-x-6 mb-2">
+            <div className="flex items-center space-x-6 mb-2 w-full">
                 <div className="flex items-center space-x-1">
-                    <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: '#3B82F6CC' }} />
-                    <span className="text-sm">Course Slot</span>
+                    <span className="w-8 h-4 block rounded-sm" style={{ background: GREEN }} />
+                    <span className="text-sm">No Overlap</span>
                 </div>
-                <div className="flex items-center space-x-1">
+                {/* <div className="flex items-center space-x-1">
                     <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(16,185,129,0.8)' }} />
-                    <span className="text-sm">Matched Slot</span>
-                </div>
+                    <span className="text-sm">Matched</span>
+                </div> */}
                 <div className="flex items-center space-x-1">
                     <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(239,68,68,0.8)' }} />
-                    <span className="text-sm">UnMatched Slot</span>
+                    <span className="text-sm">Overlap Exists</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                    <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(35, 38, 39, 0.3)' }} />
-                    <span className="text-sm">Student Availability</span>
+                    <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(156,163,175,0.45)' }} />
+                    <span className="text-sm">Section Toggled Off</span>
                 </div>
+                <span className="ml-auto text-xs">
+                    Click on a section to toggle hours
+                </span>
             </div>
             <FullCalendar
                 key={selCourse?.id ?? 'none'}
@@ -171,12 +156,42 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                 headerToolbar={false}
                 allDaySlot={false}
                 slotMinTime="06:00:00"
-                slotMaxTime="20:00:00"
+                slotMaxTime="21:00:00"
                 slotEventOverlap={true}
                 dayHeaderFormat={{ weekday: 'short' }}
                 slotLabelFormat={{ hour: 'numeric', minute: '2-digit' }}
                 events={events}
                 eventClick={onEventClick}
+                eventClassNames={(arg) => {
+                    const t = arg.event.extendedProps.type;
+                    if (t === 'unavail') {
+                        return ['cursor-not-allowed', 'fc-unavail']; // add custom class
+                    }
+                    if (t === 'section') {
+                        return [
+                            'cursor-pointer',
+                            'transition',
+                            'hover:opacity-90',
+                            'hover:ring-2',
+                            'hover:ring-blue-400',
+                            'rounded-sm'
+                        ];
+                    }
+                    return [];
+                }}
+                eventDidMount={(info) => {
+                    const { type } = info.event.extendedProps as { type?: string };
+                    if (type === 'unavail') {
+                        // stripes
+                        info.el.style.backgroundImage =
+                            'repeating-linear-gradient(135deg, rgba(35,38,39,0.3) 0 8px, rgba(35,38,39,0.6) 8px 16px)';
+                        info.el.style.backgroundColor = 'transparent'; // prevent solid override
+                        info.el.setAttribute('title', 'Student is NOT available here (forbidden)');
+                    }
+                    if (type === 'section') {
+                        info.el.setAttribute('title', 'Click to toggle section hours');
+                    }
+                }}
                 height="auto"
             />
             <div className="bg-gray-100 p-4 rounded-md space-y-3">
@@ -191,8 +206,8 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                 </p>
                 <p>
                     Unavailability Match:{' '}
-                    <span className={hasAvailabilityMatch ? 'text-green-600' : 'text-red-600'}>
-                        {hasAvailabilityMatch ? 'No' : 'Yes'}
+                    <span className={hasUnavailabilityMatch ? 'text-red-600' : 'text-green-600'}>
+                        {hasUnavailabilityMatch ? 'Yes' : 'No'}
                     </span>
                 </p>
 
@@ -219,7 +234,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                             value={gradingHours}
                             onChange={numericOnly(setGradingHours)}
                             className="w-20 border rounded px-2 py-1 text-right"
-                            placeholder="10"
+                            placeholder="e.g. 10"
                         />
                     </label>
 
@@ -234,7 +249,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                             value={labPrepHours}
                             onChange={numericOnly(setLabPrepHours)}
                             className="w-20 border rounded px-2 py-1 text-right"
-                            placeholder="4"
+                            placeholder="e.g. 1.5"
                         />
                     </label>
                 </div>
@@ -299,17 +314,17 @@ function slotOverlapsAnyBlock(
 }
 
 // Keep the old name but invert the meaning: "fully covered" == NO overlap
-function isSlotFullyCovered(
+function isSlotHasOverlap(
     slot: { day: string; startTime: string; endTime: string },
     blocks: { day: string; startTime: string; endTime: string }[]
 ) {
-    return !slotOverlapsAnyBlock(slot, blocks);
+    return slotOverlapsAnyBlock(slot, blocks);
 }
 
-function calcSectionMinutes(section: Section | null | undefined, off: Set<number>): number {
+function calcSectionMinutes(section: Section | null | undefined, on: Set<number>): number {
     if (!section?.sectionSchedule) return 0;
     return section.sectionSchedule.reduce((sum, slot, idx) => {
-        if (off.has(idx) || !slot.startTime || !slot.endTime) return sum;
+        if (!on.has(idx) || !slot.startTime || !slot.endTime) return sum;
         return sum + (timeToMinutes(slot.endTime) - timeToMinutes(slot.startTime));
     }, 0);
 }
@@ -322,3 +337,12 @@ const numericOnly =
             const cleaned = v.replace(/^(\d*\.\d*).*$/, '$1');
             setter(cleaned);
         };
+
+const GREY = 'rgba(156,163,175,0.45)'; // off
+const RED = '#EF4444CC';              // overlap
+const GREEN = 'rgba(16,185,129,0.8)';   // clean
+
+const colorForSection = (idx: number, isBad: boolean, on: Set<number>) => {
+    if (!on.has(idx)) return GREY;
+    return isBad ? RED : GREEN;
+};

@@ -13,14 +13,14 @@ function getRemainingGradingHours(need: Need): number {
 }
 
 /** Validating all preconditions; return an error string or null. */
-function validate(app: ApplicationDto, need: Need, hasAvailabilityMatch: boolean, gradingHours:number, labPrepHours:number, sectionHours:number): string | null {
+function validate(app: ApplicationDto, need: Need, hasUnavailabilityMatch: boolean, gradingHours:number, labPrepHours:number, sectionHours:number): string | null {
   const remaining = getRemainingGradingHours(need);
   const studentTotalHours = gradingHours + labPrepHours + sectionHours;
   //commented this out because it's possible the instructor set 0 as grading hours, but still wants TAs for labs.
   // if (remaining <= 0) {
   //   return 'No grading hours left on this section.';
   // }
-  //I commented this out because why send an error when the student is getting assigned less hours than he wanted?
+  //I commented this out because it's outdated. hours is more about just the grading now.
   // if (app.wantWorkingHours > remaining) {
   //   return `${app.student.firstName} requested ${app.wantWorkingHours}h, but only ${remaining}h available.`;
   // }
@@ -32,7 +32,7 @@ function validate(app: ApplicationDto, need: Need, hasAvailabilityMatch: boolean
     return `The section has ${remaining} grading hours remaining, 
       but you tried to assign more grading hours than what the instructor requested`;
   }
-  if (hasAvailabilityMatch) {
+  if (hasUnavailabilityMatch) {
     return "Unavailability match: student's unavailability intercepts with course slots.";
   }
   return null;

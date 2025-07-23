@@ -44,7 +44,7 @@ export default function AllocationBanner({ selApp, setSelApp, selCourse, refresh
                 {/* message changes */}
                 <p className="text-sm text-gray-700">
                     {showBanner
-                        ? `You’ve just sent an offer to `
+                        ? `You’ve sent an offer to `
                         : `An offer was already sent to `}
                     <strong>
                         {selApp.student.firstName} {selApp.student.lastName}
