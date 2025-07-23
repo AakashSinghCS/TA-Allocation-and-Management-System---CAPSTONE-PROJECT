@@ -10,5 +10,8 @@ export interface Allocation {
   application?: ApplicationDto;       
   status?: ApplicationStatus;
   numberOfHours?: number;
+  numberOfLabPrepHours? : number;
+  numberOfGradingHours? : number;
+  numberOfSectionHours? : number;
   section?: Section;
 }

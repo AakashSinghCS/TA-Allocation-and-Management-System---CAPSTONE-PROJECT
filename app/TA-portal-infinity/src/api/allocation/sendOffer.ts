@@ -5,7 +5,10 @@ export interface CreateOfferRequest {
   studentId:     number;
   applicationId: number;
   status:        import('../../interfaces/enum/ApplicationStatus').ApplicationStatus;
-  numberOfHours: number;
+  // numberOfHours: number;
+  numberOfSectionHours: number;
+  numberOfLabPrepHours : number;
+  numberOfGradingHours : number;
   sectionId:     number;
 }
 
