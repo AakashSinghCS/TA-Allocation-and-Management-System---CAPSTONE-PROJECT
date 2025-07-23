@@ -302,9 +302,7 @@ const CreateExamPage = () => {
 
         const appRes = await fetch(`http://localhost:8080/applications/get/${selectedStudentId}/${currentYear}`, {
             headers: {
-                "Authorization": `Bearer ${token}`,
-                "X-User-Id": userId?.toString() ?? "",
-                "X-User-Roles": userRoles?.join(",") ?? ""
+                "Authorization": `Bearer ${token}`
             }
         });
 

@@ -69,7 +69,7 @@ public class ApplicationService {
 
     public ApplicationDto getApplication(Long studentId, Integer year, Long userIdFromHeader,
             List<String> headerRoles) {
-        if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("COORDINATOR")) {
+        if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
         }
         Application application = applicationRepository.findByStudentIdAndYear(studentId, year)

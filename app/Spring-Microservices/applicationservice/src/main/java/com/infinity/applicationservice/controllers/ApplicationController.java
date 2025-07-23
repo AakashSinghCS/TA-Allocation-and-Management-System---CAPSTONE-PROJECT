@@ -46,9 +46,8 @@ public class ApplicationController {
     public ResponseEntity<ApplicationDto> getApplication(@PathVariable Long studentId,
             @PathVariable Integer year,
             @RequestHeader("X-User-Id") Long requesterId,
-            @RequestHeader("X-User-Roles") String rolesHeader) {
-        List<String> headerRoles = Arrays.asList(rolesHeader.split(","));
-        return ResponseEntity.ok(applicationService.getApplication(studentId, year, requesterId, headerRoles));
+            @RequestHeader("X-User-Roles") List<String> roles) {
+        return ResponseEntity.ok(applicationService.getApplication(studentId, year, requesterId, roles));
     }
 
     @PutMapping("update/{studentId}")
