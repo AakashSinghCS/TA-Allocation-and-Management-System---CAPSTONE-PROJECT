@@ -263,7 +263,11 @@ class QualificationServiceTest {
                 UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
                                 12345678, "COSC", 2025, 3, null,
                                 null, null, true);
+                QualificationDto qualificationDto1 = new QualificationDto(100L, courseDto1, "Qualification 1", null);
+                QualificationDto qualificationDto2 = new QualificationDto(200L, courseDto2, "Qualification 2", null);
                 when(studentClient.getStudentById(studentId)).thenReturn(studentDto);
+                when(qualificationMapper.toDto(qualification1, courseDto1)).thenReturn(qualificationDto1);
+                when(qualificationMapper.toDto(qualification2, courseDto2)).thenReturn(qualificationDto2);
 
                 // Act
                 List<QualificationDto> result = qualificationService.studentUpdateQualifications(request, studentId);

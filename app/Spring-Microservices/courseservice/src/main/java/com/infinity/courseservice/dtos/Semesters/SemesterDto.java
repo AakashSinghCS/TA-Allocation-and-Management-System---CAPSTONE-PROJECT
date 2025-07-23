@@ -1,4 +1,4 @@
-package com.infinity.courseservice.dtos;
+package com.infinity.courseservice.dtos.Semesters;
 
 import java.time.LocalDate;
 

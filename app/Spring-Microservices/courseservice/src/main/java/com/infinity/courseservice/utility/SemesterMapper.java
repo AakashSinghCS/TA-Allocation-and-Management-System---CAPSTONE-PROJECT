@@ -2,7 +2,7 @@ package com.infinity.courseservice.utility;
 
 import org.springframework.stereotype.Component;
 
-import com.infinity.courseservice.dtos.SemesterDto;
+import com.infinity.courseservice.dtos.Semesters.SemesterDto;
 import com.infinity.courseservice.models.Semester;
 
 @Component
