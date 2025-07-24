@@ -6,6 +6,7 @@ import { getDayNumber } from "../../../../utility/calendar/calendarUtils";
 import { useEffect, useMemo, useState } from "react";
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useSendOffer } from "../../../../hooks/sendoffer/useSendOffer";
+import { Check, X } from "lucide-react";
 
 interface AllocationCalendarProps {
     selCourse: Section | null;
@@ -17,7 +18,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
     const { sendOffer, loading } = useSendOffer();
     const [gradingHours, setGradingHours] = useState<string>('');
     const [labPrepHours, setLabPrepHours] = useState<string>('');
-    const [onSlots, setOnSlots] = useState<Set<number>>(new Set());
+    const [selectedSectionSlots, setSelectedSectionSlots] = useState<Set<number>>(new Set());
 
     const required = selCourse?.need?.requiredGradingHours ?? 0;
     const allocated = selCourse?.need?.numHoursCurrentlyAllocated ?? 0;
@@ -28,28 +29,18 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
         [selCourse]
     );
     useEffect(() => {
-        setOnSlots(new Set(allIdxs)); // everything ON by default
+        setSelectedSectionSlots(new Set(allIdxs));
     }, [allIdxs]);
 
     const totalSectionMinutes = useMemo(
-        () => calcSectionMinutes(selCourse, onSlots),
-        [selCourse, onSlots]
+        () => calcSectionMinutes(selCourse, selectedSectionSlots),
+        [selCourse, selectedSectionSlots]
     );
     const totalSectionHours = +(totalSectionMinutes / 60).toFixed(2);
 
     const anyHoursPresent =
         totalSectionHours > 0 || ((+gradingHours || 0) + (+labPrepHours || 0)) > 0;
 
-
-
-    // const hasUnavailabilityMatch = (selCourse?.sectionSchedule || [])
-    //     .filter(s => s.day && s.startTime && s.endTime)
-    //     .every(slot =>
-    //         isSlotHasOverlap(
-    //             { day: slot.day!, startTime: slot.startTime!, endTime: slot.endTime! },
-    //             selApp?.availabilities || []
-    //         )
-    //     ) && totalSectionHours>0;
     const hasUnavailabilityMatch =
         totalSectionHours > 0 &&
         (selCourse?.sectionSchedule || []).some(s =>
@@ -71,11 +62,11 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                 daysOfWeek: [getDayNumber(slot.day)],
                 startTime: slot.startTime,
                 endTime: slot.endTime,
-                backgroundColor: colorForSection(i, isBad, onSlots),
+                backgroundColor: colorForSection(i, isBad, selectedSectionSlots),
                 extendedProps: { type: 'section', slotIndex: i, isBad },
             };
         })
-    ), [selCourse, selApp?.availabilities, onSlots]);
+    ), [selCourse, selApp?.availabilities, selectedSectionSlots]);
 
     const appEvents = (selApp?.availabilities || []).map((slot, i) => ({
         id: `app${i}`,
@@ -89,7 +80,6 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
     const events = [
         ...courseEvents,
         ...appEvents,
-        // ...bgMatchedEvents,
     ].filter((e): e is NonNullable<typeof e> => e !== null);
 
 
@@ -110,10 +100,10 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
     const onEventClick = (info: EventClickArg) => {
         const { type } = info.event.extendedProps as { type?: string };
         if (type !== 'section') return;
-        setOnSlots(prev => {
+        setSelectedSectionSlots(prev => {
             const next = new Set(prev);
 
-            const sectionOn = allIdxs.every(i => onSlots.has(i));
+            const sectionOn = allIdxs.every(i => selectedSectionSlots.has(i));
             if (sectionOn) {
                 // turn ALL off
                 allIdxs.forEach(i => next.delete(i));
@@ -133,10 +123,6 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                     <span className="w-8 h-4 block rounded-sm" style={{ background: GREEN }} />
                     <span className="text-sm">No Overlap</span>
                 </div>
-                {/* <div className="flex items-center space-x-1">
-                    <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(16,185,129,0.8)' }} />
-                    <span className="text-sm">Matched</span>
-                </div> */}
                 <div className="flex items-center space-x-1">
                     <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(239,68,68,0.8)' }} />
                     <span className="text-sm">Overlap Exists</span>
@@ -206,8 +192,18 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                 </p>
                 <p>
                     Unavailability Match:{' '}
-                    <span className={hasUnavailabilityMatch ? 'text-red-600' : 'text-green-600'}>
-                        {hasUnavailabilityMatch ? 'Yes' : 'No'}
+                    <span
+                        className={`${hasUnavailabilityMatch ? 'text-red-600' : 'text-[#00c89c]'} inline-flex items-center gap-1`}
+                    >
+                        {hasUnavailabilityMatch ? (
+                            <>
+                                Yes <X className="w-4 h-4" />
+                            </>
+                        ) : (
+                            <>
+                                No <Check className="w-4 h-4" />
+                            </>
+                        )}
                     </span>
                 </p>
 
@@ -286,7 +282,6 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
     )
 }
 
-// Convert "HH:mm" to minutes since midnight
 function timeToMinutes(t: string) {
     const [h, m] = t.split(":").map(Number);
     return h * 60 + m;
@@ -296,7 +291,6 @@ function rangesOverlap(startA: number, endA: number, startB: number, endB: numbe
     return startA < endB && endA > startB; // strict overlap check
 }
 
-// Check if a course slot is fully covered by any student availability (numerical time comparison)
 function slotOverlapsAnyBlock(
     slot: { day: string; startTime: string; endTime: string },
     blocks: { day: string; startTime: string; endTime: string }[]
@@ -313,7 +307,6 @@ function slotOverlapsAnyBlock(
     });
 }
 
-// Keep the old name but invert the meaning: "fully covered" == NO overlap
 function isSlotHasOverlap(
     slot: { day: string; startTime: string; endTime: string },
     blocks: { day: string; startTime: string; endTime: string }[]
