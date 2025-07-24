@@ -25,7 +25,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
-import com.infinity.courseservice.dtos.AllocationDtos.OfferDto;
+import com.infinity.courseservice.dtos.ApplicationDtos.ApplicationDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseNeedAndAllocations;
@@ -36,6 +36,7 @@ import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.ApplicationStatus;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.Semester;
 import com.infinity.courseservice.enums.UserRole;
@@ -252,15 +253,14 @@ public class CourseServiceTest {
                 section.setId(1L);
 
                 NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, year, semester, null);
-                OfferDto offer = new OfferDto(1L, true, "description");
                 AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
                                 42L,
                                 new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null,
                                                 null, null,
                                                 true),
-                                offer,
-                                true,
+                                new ApplicationDto(null, null, null, null, true, null, null, null),
+                                ApplicationStatus.CONFIRMED,
                                 10,
                                 new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
                                                 new CourseDto(1L, "COSC", "CS", "112")));
@@ -297,15 +297,14 @@ public class CourseServiceTest {
         SectionDto section2 = new SectionDto(
         11L, 2025, "W1", "002", SectionType.LABORATORY,
         new CourseDto(1L, "COSC", "Security", "430"));
-        OfferDto offer = new OfferDto(1L, true, "description");
         NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1", null);
         AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
         42L,
         new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
         12345678,
         "COSC", 2025, 3, null, null, null,true),
-        offer,
-        true,
+        new ApplicationDto(null, null, null, null, true, null, null, null),
+        ApplicationStatus.CONFIRMED,
         10,
         new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
         new CourseDto(1L, "COSC", "CS", "112")));
@@ -374,8 +373,8 @@ public class CourseServiceTest {
                                 new UserDto(2L, "Alice", "Wang", "awang@test.com",
                                                 List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null, null, null,true),
-                                new OfferDto(1L, true, "description"),
-                                true,
+                               new ApplicationDto(null, null, null, null, true, null, null, null),
+                                ApplicationStatus.CONFIRMED,
                                 10,
                                 new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
                                                 new CourseDto(1L, "COSC", "CS", "112")));

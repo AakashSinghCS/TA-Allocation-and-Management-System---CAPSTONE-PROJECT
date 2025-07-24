@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalTime;
 import java.util.List;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.courseservice.controllers.CourseController;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
-import com.infinity.courseservice.dtos.AllocationDtos.OfferDto;
+import com.infinity.courseservice.dtos.ApplicationDtos.ApplicationDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
 import com.infinity.courseservice.dtos.CourseDtos.CourseNeedAndAllocations;
@@ -35,6 +34,7 @@ import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.ApplicationStatus;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.Semester;
 import com.infinity.courseservice.enums.UserRole;
@@ -156,16 +156,15 @@ public class CourseControllerTest {
                 Long courseId = 1L;
                 Integer year = 2025;
                 String semester = "W1";
-                OfferDto offer = new OfferDto(1L, true, "description");
                 NeedDto need = new NeedDto(10L, courseId, "Marking", 30, 10, year, semester, null);
                 CourseDto course = new CourseDto(courseId, "COSC", "Security", "430");
                 SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
                 AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
                                 new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null,
-                                                null, null,true),
-                                offer,
-                                true, 10,
+                                                null, null, true),
+                                new ApplicationDto(null, null, null, null, true, null, null, null),
+                                ApplicationStatus.CONFIRMED, 10,
                                 new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course));
 
                 CourseNeedAndAllocations response = new CourseNeedAndAllocations(sectionDto, need, List.of(alloc));
@@ -183,7 +182,6 @@ public class CourseControllerTest {
         @Test
         void testGetInstructorCourseNeedsAndAllocations() throws Exception {
         Long instructorId = 77L;
-        OfferDto offer = new OfferDto(1L, true, "description");
         CourseDto course = new CourseDto(1L, "COSC", "Networks", "329");
         NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2", null);
         SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001",
@@ -192,8 +190,9 @@ public class CourseControllerTest {
         new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
         12345678,
         "COSC", 2025, 3, null,
-        null, null,true),offer,
-        true, 10,
+                                        null, null, true),
+        new ApplicationDto(null, null, null, null, true, null, null, null),
+        ApplicationStatus.CONFIRMED, 10,
         new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
         );
 
@@ -231,15 +230,15 @@ public class CourseControllerTest {
                 //                 List.of(UserRole.STUDENT),
                 //                 12345678, "COSC", 2025, 3,
                 //                 null, null, null,true);
-                OfferDto offer = new OfferDto(1L, true, "description");
                 // CourseDto course = new CourseDto(1L, "COSC", "Networks", "329");
                 // NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2", null);
                 // SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course);
                 AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
                                 new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null,
-                                                null, null,true),offer,
-                    true, 10,
+                                                null, null,true), 
+                                new ApplicationDto(null, null, null, null, true, null, null, null),
+                    ApplicationStatus.CONFIRMED, 10,
         new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course)
     );
 
