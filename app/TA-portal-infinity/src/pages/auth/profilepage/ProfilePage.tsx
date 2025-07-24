@@ -15,7 +15,7 @@ export default function ProfilePage() {
   );
 
   return (
-    <div className="mx-auto space-y-6 p-4">
+    <div className="mx-auto space-y-4 sm:space-y-6 p-2 sm:p-4 max-w-7xl">
       <GenericAPIContainer<StudentOrInstructorOrCoordinator>
         fetchFunction={() => fetchUserDetails(uId)}
         render={(u) => (
