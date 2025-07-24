@@ -72,7 +72,7 @@ export default function NeedCard({
   };
 
   if (!isMainSection) {
-    // Non-lecture sections don't require TAs
+    // Non-lecture sections have the same TA requirements as the main section
     return (
       <div className="w-full overflow-hidden rounded-lg border border-gray-200 
         bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:border-[#0089b2] 
@@ -87,7 +87,7 @@ export default function NeedCard({
             Non-lecture sections
           </p>
           <p className="text-xs text-gray-600">
-            don't require TAs
+            Non-lecture sections have the same TA requirements as the main section.
           </p>
         </div>
       </div>

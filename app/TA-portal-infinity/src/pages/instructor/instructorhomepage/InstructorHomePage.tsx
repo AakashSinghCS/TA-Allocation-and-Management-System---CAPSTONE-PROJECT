@@ -114,9 +114,18 @@ export default function InstructorHomePage() {
     loadDeadlines();
   }, [token]);
 
+  // Debug log to see the allocation structure
+  console.log("Allocation data:", sections.map(s => s.allocations?.map(a => ({
+    id: a.id,
+    status: a.status
+  }))));
+  
   // Metrics
   const totalSections = sections.length;
-  const totalAllocations = sections.reduce((sum, s) => sum + (s.allocations?.length || 0), 0);
+  // Only count CONFIRMED allocations
+  const totalAllocations = sections.reduce((sum, s) => sum + (
+    (s.allocations?.filter(alloc => alloc.status === 'CONFIRMED'))?.length || 0
+  ), 0);
   const missingNeeds = sections.filter(s => !s.need || !s.need.description);
 
   // Only render dashboard after all data is loaded
