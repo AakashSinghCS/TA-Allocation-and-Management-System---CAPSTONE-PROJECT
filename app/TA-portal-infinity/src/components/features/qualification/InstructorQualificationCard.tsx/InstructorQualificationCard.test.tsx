@@ -10,6 +10,7 @@ const renderer = () => render(<InstructorQualificationCard
   initialQualifications={mockQualificationCOSC111}
   course={mockCourseCOSC111}
   authenticated={true}
+  deadlinePassed={false}
 />)
 
 vi.mock('../../../../api/instructor/fetchCreateQualification', () => ({
@@ -18,6 +19,23 @@ vi.mock('../../../../api/instructor/fetchCreateQualification', () => ({
 
 vi.mock('../../../../api/instructor/fetchDeleteQualification', () => ({
   fetchDeleteQualification: vi.fn(),
+}));
+
+// Mock the toast confirmation system
+vi.mock('../../../../utility/confirmation/toastConfirmation', () => ({
+  showToastConfirmation: vi.fn(() => Promise.resolve(true)),
+  showToastSuccess: vi.fn(),
+  showToastError: vi.fn(),
+}));
+
+// Mock react-toastify
+vi.mock('react-toastify', () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+    dismiss: vi.fn(),
+  },
+  ToastContainer: () => null,
 }));
 
 vi.mock('../../../../utility/fallbackTempId/fallbackTempId', () => {
@@ -33,8 +51,6 @@ vi.mock('../../../../utility/fallbackTempId/fallbackTempId', () => {
 describe('<InstructorQualificationCard />', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(window, "confirm").mockReturnValue(true)
-    vi.spyOn(window, "prompt").mockReturnValue("DELETE")
   });
 
   afterEach(() => {
@@ -45,7 +61,8 @@ describe('<InstructorQualificationCard />', () => {
     renderer();
 
     for (const qual of mockQualificationCOSC111) {
-      expect(screen.getByText(qual.description ?? "")).toBeInTheDocument();
+      // Use partial text matching to account for bullet points
+      expect(screen.getByText(new RegExp(qual.description ?? "", 'i'))).toBeInTheDocument();
     }
   });
 
@@ -72,25 +89,40 @@ describe('<InstructorQualificationCard />', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('can juggle flaming torches')).toBeInTheDocument();
+      // Use partial text matching for the new qualification
+      expect(screen.getByText(/can juggle flaming torches/i)).toBeInTheDocument();
     });
   });
 
 
   it('handles deletion of existing qualification', async () => {
-    renderer();
-
-    // let window.confirm return true
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
-    // mock the delete call to succeed
+    // Import the mock function to control its behavior
+    const { showToastConfirmation } = await import('../../../../utility/confirmation/toastConfirmation');
+    (showToastConfirmation as Mock).mockResolvedValueOnce(true);
     (fetchDeleteQualification as unknown as Mock).mockResolvedValueOnce(true);
+
+    renderer();
 
     const deleteBtn = screen.getAllByRole('button', { name: /delete/i })[0];
     fireEvent.click(deleteBtn);
 
     await waitFor(() => {
+      expect(showToastConfirmation).toHaveBeenCalledWith({
+        title: "Delete Lab Skill",
+        message: expect.stringContaining(mockQualificationCOSC111[0].description ?? ''),
+        confirmText: "Delete",
+        cancelText: "Cancel",
+        type: "danger"
+      });
+    });
+
+    await waitFor(() => {
+      expect(fetchDeleteQualification).toHaveBeenCalledWith(mockQualificationCOSC111[0].id);
+    });
+
+    await waitFor(() => {
       expect(
-        screen.queryByText(mockQualificationCOSC111[0].description ?? '')
+        screen.queryByText(new RegExp(mockQualificationCOSC111[0].description ?? '', 'i'))
       ).not.toBeInTheDocument();
     });
   });
@@ -99,8 +131,8 @@ describe('<InstructorQualificationCard />', () => {
     renderer();
 
     fireEvent.click(screen.getByRole('button', { name: /add a qualification/i }));
-    const closeBtn = screen.getByRole('button', { name: /✕/ });
-    fireEvent.click(closeBtn);
+    const cancelBtn = screen.getByRole('button', { name: /cancel/i });
+    fireEvent.click(cancelBtn);
 
     expect(screen.queryByPlaceholderText(/enter qualification/i)).not.toBeInTheDocument();
   });
