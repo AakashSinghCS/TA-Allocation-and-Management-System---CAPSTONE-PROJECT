@@ -1,17 +1,17 @@
 import { useParams } from "react-router-dom";
-import type Section from "../../../../interfaces/section/Section";
-import TabNav from "../../../../components/layout/tabnav/TabNav";
-import { fetchUserDetails } from "../../../../api/user/fetchUserDetails";
-import type { StudentOrInstructorOrCoordinator } from "../../../../interfaces/user/User";
+import type Section from "../../../interfaces/section/Section";
+import TabNav from "../../layout/tabnav/TabNav";
+import { fetchUserDetails } from "../../../api/user/fetchUserDetails";
+import type { StudentOrInstructorOrCoordinator } from "../../../interfaces/user/User";
 import { useEffect, useState } from "react";
-import { fetchAllExistingYears } from "../../../../api/course/sectionfilter/fetchAllExistingYears";
-import { fetchSectionNeedAndAllocations } from "../../../../api/instructor/fetchSectionNeedAndAllocations";
-import { fetchConfirmedAllocationsForSections } from "../../../../api/instructor/fetchConfirmedAllocations";
-import type { Course } from "../../../../interfaces/course/Course";
-import { fetchAllInstructorCourses } from "../../../../api/instructor/fetchAllInstructorCourses";
-import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
+import { fetchAllExistingYears } from "../../../api/course/sectionfilter/fetchAllExistingYears";
+import { fetchSectionNeedAndAllocations } from "../../../api/instructor/fetchSectionNeedAndAllocations";
+import { fetchConfirmedAllocationsForSections } from "../../../api/instructor/fetchConfirmedAllocations";
+import type { Course } from "../../../interfaces/course/Course";
+import { fetchAllInstructorCourses } from "../../../api/instructor/fetchAllInstructorCourses";
+import { GenericAPIContainer } from "../../../utility/genericapicontainer/GenericAPIContainer";
 import { FaUsers } from "react-icons/fa";
-import { FilterSection, SectionCard, exportToCSV, exportToPDF } from "../../../../components/features/allocatedStudent";
+import { FilterSection, SectionCard, exportToCSV, exportToPDF } from "../../../components/features/allocatedStudent";
 
 export default function StudentsAllocatedPage() {
   const { userId } = useParams();

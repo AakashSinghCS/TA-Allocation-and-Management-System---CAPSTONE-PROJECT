@@ -10,7 +10,7 @@ describe('AllocationCard', () => {
         <AllocationCard />
       </MemoryRouter>
     )
-    expect(screen.getByText(/No students allocated/i)).toBeInTheDocument()
+    expect(screen.getByText(/No Confirmed TAs/i)).toBeInTheDocument()
   })
 
   it('renders students and hours', () => {
@@ -21,6 +21,6 @@ describe('AllocationCard', () => {
     )
 
     expect(screen.getByText(/John/i)).toBeInTheDocument()
-    expect(screen.getByText('6 hrs')).toBeInTheDocument()
+    expect(screen.getByText('6h')).toBeInTheDocument()
   })
 })
