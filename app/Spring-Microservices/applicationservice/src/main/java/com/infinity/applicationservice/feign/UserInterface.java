@@ -24,4 +24,6 @@ public interface UserInterface {
     @GetMapping("/users/studentNum/{studentNum}")
     public ResponseEntity<UserDto> getStudentByNum(@PathVariable Integer studentNum);
 
+    @GetMapping("/users/profile/{id}")
+    public ResponseEntity<UserDto> getUserDetailsById(@PathVariable Long id);
 }

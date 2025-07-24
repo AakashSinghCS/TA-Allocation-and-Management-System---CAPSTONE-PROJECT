@@ -18,6 +18,7 @@ import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Needs.NeedDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
+import com.infinity.applicationservice.enums.ActionOptions;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
@@ -49,6 +50,7 @@ public class AllocationService {
     private final AllocationMapper allocationMapper;
     private final NotificationClient notificationClient;
     private final EmailMapper emailMapper;
+    private final AuditService auditService;
 
     public List<AllocationHistoryDto> getAllocationsByStudentId(Long studentId) {
         List<Allocation> allocations = allocationRepository.findByStudentId(studentId);
@@ -70,7 +72,7 @@ public class AllocationService {
         }).collect(Collectors.toList());
     }
 
-    public AllocationHistoryDto allocateStudent(AllocationRequest request) {
+    public AllocationHistoryDto allocateStudent(AllocationRequest request, Long userIdFromHeader) {
         Application application = applicationRepository.findById(request.applicationId())
                 .orElseThrow(() -> new NotFoundException("Application not found"));
         if (allocationRepository.existsByApplicationIdAndSectionIdAndStudentId(
@@ -96,10 +98,19 @@ public class AllocationService {
           notificationClient.sendEmail(emailMapper.allocationEmailRequest(student));
         }
 
+         auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "Allocation",
+            null,
+            saved,
+            saved.getId()
+        );
+
         return allocationMapper.toDto(saved, student, applicationDto, section);
     }
     
-    public String deallocateStudent(Long allocationId) {
+    public String deallocateStudent(Long allocationId, Long userIdFromHeader) {
         Allocation allocation = allocationRepository.findById(allocationId)
         .orElseThrow(() -> new NotFoundException("Allocation not found"));
         if (allocation.getStatus() == ApplicationStatus.CONFIRMED) {
@@ -110,14 +121,25 @@ public class AllocationService {
                     need.numHoursCurrentlyAllocated() - allocation.getNumberOfHours());
         }
         allocationRepository.deleteById(allocationId);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "Allocation",
+            allocation,
+            null,
+            allocationId
+        );
+
         return "Student deallocated";
     }
 
 
     @Transactional
-    public void updateConfirmationStatus(Long allocationId, ApplicationStatus status) {
+    public void updateConfirmationStatus(Long allocationId, ApplicationStatus status, Long userIdFromHeader) {
         Allocation allocation = allocationRepository.findById(allocationId)
             .orElseThrow(() -> new NotFoundException("Allocation not found"));
+        Allocation before = new Allocation(allocation);
         if (LocalDateTime.now()
                 .isBefore(configService.getDeadlineByName("student_offer_accept_deadline").startTime())) {
             throw new BadRequestException("The application is not open yet.");
@@ -132,7 +154,16 @@ public class AllocationService {
             courseInterface.updateNeedAllocatedHours(need.id(), need.numHoursCurrentlyAllocated() + allocation.getNumberOfHours());
         }        
         allocation.setStatus(status);
-        allocationRepository.save(allocation);
+        Allocation after = allocationRepository.save(allocation);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "Allocation",
+            before,
+            after,
+            allocationId
+        );
     }
 
     public List<AllocationHistoryDto> getAllocationsByConfirmationStatus(ApplicationStatus status) {
@@ -226,7 +257,7 @@ public class AllocationService {
         return allocationRepository.clearSectionIdBySectionId(sectionId);
     }
 
-    public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList, boolean autoCreate) {
+    public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList, boolean autoCreate, Long userIdFromHeader) {
 
         List<AllocationHistoryDto> importedAllocations = new ArrayList<>();
 
@@ -274,6 +305,15 @@ public class AllocationService {
 
             Allocation saved = allocationRepository.save(allocation);
             importedAllocations.add(allocationMapper.toDto(saved, studentDto, null, sectionDto));
+
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.CREATE,
+                "Allocation",
+                null,
+                saved,
+                saved.getId()
+            );
         }
 
         return importedAllocations;

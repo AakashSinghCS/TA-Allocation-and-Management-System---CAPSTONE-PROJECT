@@ -34,4 +34,11 @@ public class GlobalDeadline {
         this.startTime = startTime;
         this.endTime = endTime;
     }
+
+    public GlobalDeadline(GlobalDeadline other){
+        this.id = other.id;
+        this.name = other.name;
+        this.startTime = other.startTime;
+        this.endTime= other.endTime;
+    }
 }

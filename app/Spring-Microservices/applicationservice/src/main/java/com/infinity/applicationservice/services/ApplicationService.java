@@ -14,6 +14,7 @@ import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
 import com.infinity.applicationservice.dtos.Applications.AvailabilityDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
+import com.infinity.applicationservice.enums.ActionOptions;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
@@ -39,6 +40,7 @@ public class ApplicationService {
     private final ConfigService configService;
     private final NotificationClient notificationClient;
     private final EmailMapper emailMapper;
+    private final AuditService auditService;
 
     public ApplicationDto submitApplication(ApplicationRequest req, Long userIdFromHeader, List<String> headerRoles) {
         int year = LocalDate.now().getYear();
@@ -59,10 +61,19 @@ public class ApplicationService {
 
         mapAvailability(req, application);
 
-        applicationRepository.save(application);
+        Application saved = applicationRepository.save(application);
         
         UserDto student = userInterface.getStudentById(userIdFromHeader).getBody();
         notificationClient.sendEmail(emailMapper.applicationReceivedEmailRequest(student));
+
+         auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "Application",
+            null,
+            saved,
+            saved.getId()
+        );
 
         return applicationMapper.toDto(application);
     }
@@ -83,10 +94,29 @@ public class ApplicationService {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
         }
-        if (!applicationRepository.existsByStudentIdAndYear(studentId, LocalDate.now().getYear())) {
-            throw new NotFoundException("Application with that student id and year doesn't exist");
-        }
-        applicationRepository.deleteByStudentIdAndYear(studentId, LocalDate.now().getYear());
+        // if (!applicationRepository.existsByStudentIdAndYear(studentId, LocalDate.now().getYear())) {
+        //     throw new NotFoundException("Application with that student id and year doesn't exist");
+        // }
+        // applicationRepository.deleteByStudentIdAndYear(studentId, LocalDate.now().getYear());
+        int currentYear = LocalDate.now().getYear();
+
+        Application toDelete = applicationRepository
+            .findByStudentIdAndYear(studentId, currentYear)
+            .orElseThrow(() -> new NotFoundException(
+                "Application with studentId " + studentId +
+                " and year " + currentYear + " doesn't exist"));
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "Application",
+            toDelete,
+            null,
+            toDelete.getId()
+        );
+
+        applicationRepository.delete(toDelete);
+
         return "Application deleted";
     }
 
@@ -109,6 +139,8 @@ public class ApplicationService {
                 .findByStudentIdAndYear(studentId, year)
                 .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
 
+        Application before = new Application(application);
+        
         application.setSubjectPreferences(req);
         application.setApplicationType(req.applicationType());
         application.setWantRemote(req.wantRemote());
@@ -117,7 +149,17 @@ public class ApplicationService {
         application.getAvailabilities().clear();
         mapAvailability(req, application);
 
-        applicationRepository.save(application);
+        Application saved = applicationRepository.save(application);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "Application",
+            before,
+            saved,
+            application.getId()
+        );
+
         return applicationMapper.toDto(application);
     }
 

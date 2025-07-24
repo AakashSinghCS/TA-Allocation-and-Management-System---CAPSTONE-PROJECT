@@ -30,5 +30,14 @@ public class Allocation {
     //TODO: prevent orphaned keys when deleting sections! make it be null.
     @Column(name = "section_id", nullable = true)
     private Long sectionId;
+
+    public Allocation(Allocation other) {
+        this.id = other.id;
+        this.status= other.status;
+        this.numberOfHours = other.numberOfHours;
+        this.studentId=other.studentId;
+        this.application = other.application;
+        this.studentId = other.studentId;
+    }
 }
 

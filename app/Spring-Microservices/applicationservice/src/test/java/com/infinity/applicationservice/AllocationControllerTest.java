@@ -131,11 +131,13 @@ public class AllocationControllerTest {
                 new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
                         new CourseDto(1L, "COSC", "Capstone", "499")));
 
-        when(allocationService.allocateStudent(any(AllocationRequest.class))).thenReturn(responseDto);
+                        Long userIdFromHeader = 1L;
+        when(allocationService.allocateStudent(any(AllocationRequest.class),eq(userIdFromHeader))).thenReturn(responseDto);
 
         mvc.perform(post("/allocations/allocate")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)))
+                .content(mapper.writeValueAsString(request))
+                .header("X-User-Id", userIdFromHeader))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(123))
                 .andExpect(jsonPath("$.student.firstName").value("Alice"))
@@ -148,34 +150,39 @@ public class AllocationControllerTest {
     void deallocateStudent_removesAllocationAndReturnsMessage() throws Exception {
         Long allocationId = 101L;
         String expectedResponse = "Student deallocated";
+        Long userIdFromHeader = 1L;
+        when(allocationService.deallocateStudent(allocationId,userIdFromHeader)).thenReturn(expectedResponse);
 
-        when(allocationService.deallocateStudent(allocationId)).thenReturn(expectedResponse);
-
-        mvc.perform(delete("/allocations/deallocate/{allocationId}", allocationId))
+        mvc.perform(delete("/allocations/deallocate/{allocationId}", allocationId)
+                .header("X-User-Id", userIdFromHeader))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(expectedResponse));
 
-        verify(allocationService, times(1)).deallocateStudent(allocationId);
+        verify(allocationService, times(1)).deallocateStudent(allocationId,userIdFromHeader);
     }
 
     @Test
     void acceptOffer_updatesConfirmationStatusToTrue() throws Exception {
-        doNothing().when(allocationService).updateConfirmationStatus(123L, ApplicationStatus.CONFIRMED);
+        Long userIdFromHeader = 1L;
+        doNothing().when(allocationService).updateConfirmationStatus(123L, ApplicationStatus.CONFIRMED,userIdFromHeader);
 
-        mvc.perform(put("/allocations/123/acceptOffer"))
+        mvc.perform(put("/allocations/123/acceptOffer")
+        .header("X-User-Id", userIdFromHeader))
                 .andExpect(status().isOk());
 
-        verify(allocationService, times(1)).updateConfirmationStatus(123L, ApplicationStatus.CONFIRMED);
+        verify(allocationService, times(1)).updateConfirmationStatus(123L, ApplicationStatus.CONFIRMED,userIdFromHeader);
     }
 
     @Test
     void denyOffer_updatesConfirmationStatusToFalse() throws Exception {
-        doNothing().when(allocationService).updateConfirmationStatus(123L, ApplicationStatus.REJECTED);
+        Long userIdFromHeader = 1L;
+        doNothing().when(allocationService).updateConfirmationStatus(123L, ApplicationStatus.REJECTED,userIdFromHeader);
 
-        mvc.perform(put("/allocations/123/denyOffer"))
+        mvc.perform(put("/allocations/123/denyOffer")
+        .header("X-User-Id", userIdFromHeader))
                 .andExpect(status().isOk());
 
-        verify(allocationService, times(1)).updateConfirmationStatus(123L, ApplicationStatus.REJECTED);
+        verify(allocationService, times(1)).updateConfirmationStatus(123L, ApplicationStatus.REJECTED,userIdFromHeader);
     }
 
     @Test
@@ -250,17 +257,18 @@ public class AllocationControllerTest {
         ));
 
         ImportRequest request = new ImportRequest(requestList, true);
-
-        when(allocationService.importPreviousAllocations(any(), eq(true))).thenReturn(List.of(sampleDto));
+        Long userIdFromHeader = 1L;
+        when(allocationService.importPreviousAllocations(any(), eq(true),eq(userIdFromHeader))).thenReturn(List.of(sampleDto));
 
         mvc.perform(post("/allocations/import")
                .contentType(MediaType.APPLICATION_JSON)
-               .content(mapper.writeValueAsString(request)))
+               .content(mapper.writeValueAsString(request))
+               .header("X-User-Id", userIdFromHeader))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$", hasSize(1)))
            .andExpect(jsonPath("$[0].student.firstName").value("Alice"));
 
-        verify(allocationService, times(1)).importPreviousAllocations(any(), eq(true));
+        verify(allocationService, times(1)).importPreviousAllocations(any(), eq(true),eq(userIdFromHeader));
      }
 
      @Test
@@ -275,17 +283,18 @@ public class AllocationControllerTest {
         ));
 
         ImportRequest request = new ImportRequest(requestList, false);
-
-        when(allocationService.importPreviousAllocations(any(), eq(false))).thenReturn(List.of(sampleDto));
+        Long userIdFromHeader = 1L;
+        when(allocationService.importPreviousAllocations(any(), eq(false),eq(userIdFromHeader))).thenReturn(List.of(sampleDto));
 
         mvc.perform(post("/allocations/import")
                .contentType(MediaType.APPLICATION_JSON)
-               .content(mapper.writeValueAsString(request)))
+               .content(mapper.writeValueAsString(request))
+               .header("X-User-Id", userIdFromHeader))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$", hasSize(1)))
            .andExpect(jsonPath("$[0].student.firstName").value("Alice"));
 
-        verify(allocationService, times(1)).importPreviousAllocations(any(), eq(false));
+        verify(allocationService, times(1)).importPreviousAllocations(any(), eq(false),eq(userIdFromHeader));
      }
 
         @Test

@@ -1,4 +1,4 @@
-package com.infinity.userservice;
+package com.infinity.applicationservice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -22,18 +22,19 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.infinity.userservice.dtos.AuditEventDto;
-import com.infinity.userservice.enums.ActionOptions;
-import com.infinity.userservice.exceptions.NotFoundException;
-import com.infinity.userservice.models.AuditEvent;
-import com.infinity.userservice.models.User;
-import com.infinity.userservice.repositories.AuditRepository;
-import com.infinity.userservice.repositories.UserRepository;
-import com.infinity.userservice.services.AuditService;
-import com.infinity.userservice.utility.AuditMapper;
+import com.infinity.applicationservice.dtos.Audit.AuditEventDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
+import com.infinity.applicationservice.enums.ActionOptions;
+import com.infinity.applicationservice.exceptions.NotFoundException;
+import com.infinity.applicationservice.feign.UserInterface;
+import com.infinity.applicationservice.models.AuditEvent;
+import com.infinity.applicationservice.repositories.AuditRepository;
+import com.infinity.applicationservice.services.AuditService;
+import com.infinity.applicationservice.utility.AuditMapper;
 
 @ExtendWith(MockitoExtension.class)
 class AuditServiceTest {
@@ -43,7 +44,7 @@ class AuditServiceTest {
     @Mock
     private AuditMapper auditMapper;
     @Mock
-    private UserRepository userRepository;
+    private UserInterface userRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private AuditService service;
@@ -53,7 +54,6 @@ class AuditServiceTest {
         service = new AuditService(auditRepo, objectMapper, auditMapper, userRepository);
     }
 
-    // helper dummy class to test password filtering
     static class DummyUser {
         public String username;
         public String password;
@@ -65,30 +65,32 @@ class AuditServiceTest {
     }
 
     @Test
-    void record_filtersOutPasswordField_andHandlesNulls() throws JsonProcessingException {
+    void record_andHandlesNulls() throws JsonProcessingException {
         DummyUser before = new DummyUser("alice", "secret");
-        DummyUser after = null;
+        Object after = null;
 
-        service.record(99L, ActionOptions.CREATE, "MyEntity", before, after, 123L);
+        service.record(
+                99L,
+                ActionOptions.CREATE,
+                "MyEntity",
+                before,
+                after,
+                123L);
 
         ArgumentCaptor<AuditEvent> captor = ArgumentCaptor.forClass(AuditEvent.class);
         verify(auditRepo).save(captor.capture());
 
         AuditEvent ev = captor.getValue();
-        // actorId, service, action, entityType, entityId are set
         assertThat(ev.getActorId()).isEqualTo(99L);
-        assertThat(ev.getService()).isEqualTo("user-service");
+        assertThat(ev.getService()).isEqualTo("application-service");
         assertThat(ev.getAction()).isEqualTo(ActionOptions.CREATE);
         assertThat(ev.getEntityType()).isEqualTo("MyEntity");
         assertThat(ev.getEntityId()).isEqualTo(123L);
 
-        // beforeJson should include username but not password
         String beforeJson = ev.getBeforeJson();
         assertThat(beforeJson).contains("alice");
-        assertThat(beforeJson).doesNotContain("secret");
-        // afterJson should be null
+        assertThat(beforeJson).contains("secret");
         assertThat(ev.getAfterJson()).isNull();
-        // timestamp should be non-null
         assertThat(ev.getTimestamp()).isBeforeOrEqualTo(LocalDateTime.now());
     }
 
@@ -98,9 +100,9 @@ class AuditServiceTest {
                 .id(42L)
                 .actorId(5L)
                 .entityId(2L)
-                .entityType("User")
+                .entityType("Application")
                 .action(ActionOptions.UPDATE)
-                .service("user-service")
+                .service("application-service")
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -109,20 +111,33 @@ class AuditServiceTest {
                 5L,
                 "Actor Name",
                 LocalDateTime.now(),
-                "user-service",
+                "application-service",
                 ActionOptions.UPDATE,
                 "E",
                 2L,
                 "Entity Name",
                 null, null);
 
-        when(auditRepo.findById(42L)).thenReturn(Optional.of(expected));
-        when(userRepository.findById(5L)).thenReturn(
-                Optional.of(new User("actor@example.com", "Actor", "Name", "pass")));
-        when(userRepository.findById(2L)).thenReturn(
-                Optional.of(new User("entity@example.com", "Entity", "Name", "pass")));
+        UserDto actorDto = new UserDto(
+                5L,
+                "Actor",
+                "Name",
+                "actor@example.com",
+                List.of(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                LocalDateTime.now(),
+                true);
 
-        when(auditMapper.mapToDto(expected, "Actor Name", "Entity Name")).thenReturn(auditDto);
+        when(auditRepo.findById(42L)).thenReturn(Optional.of(expected));
+        when(userRepository.getUserDetailsById(5L)).thenReturn(
+                ResponseEntity.ok(actorDto));
+
+        when(auditMapper.mapToDto(expected, "Actor Name", null)).thenReturn(auditDto);
 
         AuditEventDto actual = service.getById(42L);
         assertThat(actual).isSameAs(auditDto);
@@ -146,15 +161,13 @@ class AuditServiceTest {
 
         service.search(
                 pageReq,
-                "svc", // service filter
-                "entity", // entityType filter
-                555L, // entityId filter
+                "svc",
+                "entity",
+                555L,
                 ActionOptions.DELETE,
                 777L,
-                "2025-07-16" // dateOnly filter
-        );
+                "2025-07-16");
 
-        // verify it called findAll with a Specification and the same Pageable
         verify(auditRepo).findAll(
                 (Specification<AuditEvent>) any(Specification.class),
                 eq(pageReq));
@@ -168,7 +181,7 @@ class AuditServiceTest {
                 .id(1L)
                 .actorId(10L)
                 .entityId(20L)
-                .service("user-service")
+                .service("application-service")
                 .action(ActionOptions.UPDATE)
                 .entityType("User")
                 .timestamp(LocalDateTime.now())
@@ -176,28 +189,34 @@ class AuditServiceTest {
 
         Page<AuditEvent> eventPage = new PageImpl<>(List.of(event), pageReq, 1);
 
-        when(auditRepo.findAll(any(Specification.class), eq(pageReq))).thenReturn(eventPage);
+        when(auditRepo.findAll(any(Specification.class), eq(pageReq)))
+                .thenReturn(eventPage);
 
-        when(userRepository.findById(10L))
-                .thenReturn(Optional.of(new User("actor@example.com", "Alice", "Smith", "pw")));
-        when(userRepository.findById(20L))
-                .thenReturn(Optional.of(new User("entity@example.com", "Bob", "Johnson", "pw")));
+        UserDto actorDto = new UserDto(
+                10L, "Alice", "Smith", "alice@example.com",
+                List.of(), null, null, null, null, null, null,
+                LocalDateTime.now(), true);
 
+        when(userRepository.getUserDetailsById(10L))
+                .thenReturn(ResponseEntity.ok(actorDto));
         AuditEventDto expectedDto = new AuditEventDto(
                 1L, 10L, "Alice Smith", event.getTimestamp(),
-                "user-service", ActionOptions.UPDATE, "User", 20L, "Bob Johnson",
+                "application-service",
+                ActionOptions.UPDATE,
+                "Application", 20L, null,
                 null, null);
-
-        when(auditMapper.mapToDto(event, "Alice Smith", "Bob Johnson")).thenReturn(expectedDto);
+        when(auditMapper.mapToDto(event, "Alice Smith", null))
+                .thenReturn(expectedDto);
 
         Page<AuditEventDto> result = service.search(
                 pageReq,
-                "user-service",
-                "User",
+                "application-service",
+                "Application",
                 20L,
                 ActionOptions.UPDATE,
                 10L,
                 null);
+
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0)).isEqualTo(expectedDto);
     }

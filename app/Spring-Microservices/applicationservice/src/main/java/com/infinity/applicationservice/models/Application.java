@@ -104,4 +104,32 @@ public class Application {
                 this.getSubjectPreference3());
     }  
 
+    public Application(Long applicationId, Long studentId, List<Subject> preferences, 
+        ApplicationType applicationType, boolean wantRemote, 
+        Integer wantWorkingHours, LocalDateTime year,Set<Availability> availabilities) {
+        this.studentId = studentId;
+        this.subjectPreference1 = preferences.size() > 0 ? preferences.get(0) : null;
+        this.subjectPreference2 = preferences.size() > 1 ? preferences.get(1) : null;
+        this.subjectPreference3 = preferences.size() > 2 ? preferences.get(2) : null;
+        this.applicationType = applicationType;
+        this.wantRemote = wantRemote;
+        this.wantWorkingHours = wantWorkingHours;
+        this.isAccepted = false;
+        this.year = year.getYear();
+        this.availabilities = availabilities;
+    }
+
+    public Application(Application other){
+        this.id = other.id;
+        this.studentId = other.studentId;
+        this.subjectPreference1 = other.subjectPreference1;
+        this.subjectPreference2 = other.subjectPreference2;
+        this.subjectPreference3 = other.subjectPreference3;
+        this.applicationType = other.applicationType;
+        this.wantRemote = other.wantRemote;
+        this.wantWorkingHours = other.wantWorkingHours;
+        this.isAccepted = other.isAccepted;
+        this.year = other.year;
+        this.availabilities = other.availabilities;
+    }
 }

@@ -6,7 +6,7 @@ export default interface AuditEvent {
   action: "CREATE" | "UPDATE" | "DELETE";
   entityType: string;         // e.g. "Book"
   entityId: string | number;
-  entityName: string;
+  entityName?: string;
   summary: string;            // short description
   service: string;
   beforeJson?: string;   // raw JSON blobs stored in the DB

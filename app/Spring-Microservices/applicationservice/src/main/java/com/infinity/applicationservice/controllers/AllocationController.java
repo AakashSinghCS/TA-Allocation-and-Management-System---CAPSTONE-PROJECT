@@ -31,28 +31,28 @@ public class AllocationController {
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/allocate")
-    public ResponseEntity<AllocationHistoryDto> allocateStudent(@RequestBody AllocationRequest request) {
-        AllocationHistoryDto dto = allocationService.allocateStudent(request);
+    public ResponseEntity<AllocationHistoryDto> allocateStudent(@RequestBody AllocationRequest request, @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        AllocationHistoryDto dto = allocationService.allocateStudent(request,userIdFromHeader);
         return ResponseEntity.ok(dto);
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("/deallocate/{allocationId}")
-    public ResponseEntity<String> deallocatedStudent(@PathVariable Long allocationId) {
-        return ResponseEntity.ok(allocationService.deallocateStudent(allocationId));
+    public ResponseEntity<String> deallocatedStudent(@PathVariable Long allocationId, @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(allocationService.deallocateStudent(allocationId,userIdFromHeader));
     }
 
     @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("/{id}/acceptOffer")
-    public ResponseEntity<Void> acceptOffer(@PathVariable Long id) {
-        allocationService.updateConfirmationStatus(id, ApplicationStatus.CONFIRMED);
+    public ResponseEntity<Void> acceptOffer(@PathVariable Long id, @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        allocationService.updateConfirmationStatus(id, ApplicationStatus.CONFIRMED,userIdFromHeader);
         return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("/{id}/denyOffer")
-    public ResponseEntity<Void> denyOffer(@PathVariable Long id) {
-        allocationService.updateConfirmationStatus(id, ApplicationStatus.REJECTED);
+    public ResponseEntity<Void> denyOffer(@PathVariable Long id, @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        allocationService.updateConfirmationStatus(id, ApplicationStatus.REJECTED,userIdFromHeader);
         return ResponseEntity.ok().build();
     }
 
@@ -88,10 +88,10 @@ public class AllocationController {
         return ResponseEntity.ok(affected);
     }
     @PostMapping("/import")
-    public ResponseEntity<List<AllocationHistoryDto>> importAllocations(@RequestBody ImportRequest request) {
+    public ResponseEntity<List<AllocationHistoryDto>> importAllocations(@RequestBody ImportRequest request, @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
         List<Map<String, String>> rows = request.rows();
         boolean autoCreate = request.autoCreateMissing();
-        return ResponseEntity.ok(allocationService.importPreviousAllocations(rows, autoCreate));
+        return ResponseEntity.ok(allocationService.importPreviousAllocations(rows, autoCreate,userIdFromHeader));
     }
 
 }

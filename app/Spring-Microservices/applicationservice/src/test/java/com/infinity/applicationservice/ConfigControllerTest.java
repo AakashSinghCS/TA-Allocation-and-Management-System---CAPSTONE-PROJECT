@@ -85,14 +85,16 @@ public class ConfigControllerTest {
                 LocalDateTime.parse("2025-08-01T00:00:00"),
                 LocalDateTime.parse("2025-08-31T23:59:59")
         );
+        Long userIdFromHeader = 1L;
 
-        when(configService.addDeadlines(any())).thenReturn(List.of(sampleDto));
+        when(configService.addDeadlines(any(),eq(userIdFromHeader))).thenReturn(List.of(sampleDto));
 
         String body = mapper.writeValueAsString(List.of(inputDto));
 
         mvc.perform(post("/config/add")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(body))
+                        .content(body)
+                        .header("X-User-Id", userIdFromHeader))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].name").value("student_application_deadline"));
@@ -106,15 +108,17 @@ public class ConfigControllerTest {
                 LocalDateTime.parse("2025-09-01T00:00:00"),
                 LocalDateTime.parse("2025-09-30T23:59:59")
         );
+        Long userIdFromHeader = 1L;
 
-        when(configService.updateDeadline(eq("student_application_deadline"), any()))
+        when(configService.updateDeadline(eq("student_application_deadline"), any(),eq(userIdFromHeader)))
                 .thenReturn(inputDto);
 
         String body = mapper.writeValueAsString(inputDto);
 
         mvc.perform(put("/config/update/{name}", "student_application_deadline")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(body))
+                        .content(body)
+                        .header("X-User-Id", userIdFromHeader))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("student_application_deadline"))
                 .andExpect(jsonPath("$.startTime").value("2025-09-01T00:00:00"))
@@ -124,10 +128,11 @@ public class ConfigControllerTest {
     @Test
     @WithMockUser(roles = "COORDINATOR")
     void testDeleteDeadline_ShouldReturnDeletedDto() throws Exception {
+         Long userIdFromHeader = 1L;
+    when(configService.deleteDeadline("student_application_deadline",userIdFromHeader)).thenReturn(sampleDto);
 
-    when(configService.deleteDeadline("student_application_deadline")).thenReturn(sampleDto);
-
-    mvc.perform(delete("/config/delete/{name}", "student_application_deadline"))
+    mvc.perform(delete("/config/delete/{name}", "student_application_deadline")
+                .header("X-User-Id", userIdFromHeader))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name").value("student_application_deadline"))
             .andExpect(jsonPath("$.startTime").value("2025-08-01T00:00:00"))
