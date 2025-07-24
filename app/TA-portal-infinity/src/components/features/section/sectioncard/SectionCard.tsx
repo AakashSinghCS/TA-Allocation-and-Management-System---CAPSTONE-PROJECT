@@ -48,7 +48,7 @@ export default function SectionCard({
       )}
 
       <div className="space-y-2">
-        {/* Course Title - Compact */}
+        {/* Course Title*/}
         <div className="flex items-center justify-between">
           <div className="flex-1 min-w-0">
             {section?.id ? (
@@ -72,7 +72,7 @@ export default function SectionCard({
           </div>
         </div>
 
-        {/* Compact Details Row */}
+        {/*Details Row */}
         <div className="flex flex-wrap items-center gap-1 text-xs">
           {section.type && (
             <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#040941] text-white font-medium">
@@ -96,7 +96,7 @@ export default function SectionCard({
           )}
         </div>
 
-        {/* Schedule - Compact */}
+        {/* Schedule */}
         {!isStudentView && section.sectionSchedule && section.sectionSchedule.length > 0 && (
           <div className="text-xs text-gray-600">
             <div className="flex flex-wrap gap-1">
@@ -112,7 +112,7 @@ export default function SectionCard({
           </div>
         )}
 
-        {/* Instructor - Compact */}
+        {/* Instructor */}
         {section.instructor && (
           <div className="flex items-center text-xs text-gray-600 border-t border-gray-100 pt-1.5">
             <svg className="w-3 h-3 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -193,7 +193,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
         </div>
       </div>
 
-      {/* Clean Grid Layout */}
+      {/* Content Section */}
       <div className="space-y-4">
         {sections.length === 0 && (
           <div className="text-center py-16 bg-gray-50 rounded-lg border border-gray-200">
@@ -209,7 +209,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
 
         {sections.map((sec, index) => (
           <div key={sec?.id} className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-            {/* Compact Horizontal Section Header */}
+            {/*Horizontal Section Header */}
             <div className="bg-gray-50 border-b border-gray-200 px-4 py-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
@@ -231,7 +231,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
               </div>
             </div>
 
-            {/* Enhanced Content Grid */}
+            {/* Content Section */}
             <div className="p-4">
               <div className="grid lg:grid-cols-3 gap-4">
                 {/* Section Information Panel */}

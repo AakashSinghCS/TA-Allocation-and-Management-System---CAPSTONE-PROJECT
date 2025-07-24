@@ -193,7 +193,7 @@ export default function NeedCard({
         </div>
       ) : (
         <div className="pr-20 space-y-1.5">
-          {/* Line 1: Additional Comments */}
+          {/*Additional Comments */}
           <div className="flex items-start space-x-2">
             <span className="text-[#040941] font-medium text-xs min-w-fit">Comments:</span>
             <span className="text-gray-700 text-xs line-clamp-1 flex-1">
@@ -201,7 +201,7 @@ export default function NeedCard({
             </span>
           </div>
           
-          {/* Line 2: Hours Allocation */}
+          {/*Hours Allocation */}
           <div className="flex items-center space-x-2">
             <span className="text-[#040941] font-medium text-xs">Hours:</span>
             <div className="flex items-center space-x-1">
@@ -229,7 +229,7 @@ export default function NeedCard({
             </div>
           </div>
           
-          {/* Line 3: Prerequisites */}
+          {/* Prerequisites */}
           <div className="flex items-center space-x-2">
             <span className="text-[#040941] font-medium text-xs min-w-fit">Prerequisites:</span>
             {need?.prerequisites?.length ? (
