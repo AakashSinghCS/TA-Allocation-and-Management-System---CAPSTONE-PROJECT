@@ -15,6 +15,8 @@ import {
   ShieldCheck,
   type LucideProps,
   CalendarDays,
+  Award,
+  ClipboardCheck,
 } from 'lucide-react';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { UserRole } from '../../../interfaces/enum/UserRole';
@@ -51,11 +53,11 @@ export default function SideNav({expanded, setExpanded}:SideNavProps) {
     { label: 'Dashboard', to: '/user/instructor/home', icon: <Home size={22} />, roles: [UserRole.INSTRUCTOR] },
     // { label: 'My Courses', to: '/user/instructor/courses', icon: <BookOpen size={22} />, roles: [UserRole.INSTRUCTOR] },
     { label: 'Sections & Req(s)', to: `instructorprofile/${userId}/need`, icon: <ClipboardList size={22} />, roles: [UserRole.INSTRUCTOR] },
-    { label: 'Students Allocated', to: `/user/instructorprofile/${userId}/students`, icon: <Presentation size={22} />, roles: [UserRole.INSTRUCTOR] },
+    { label: 'Allocated Students', to: `/user/instructorprofile/${userId}/students`, icon: <ClipboardCheck size={22} />, roles: [UserRole.INSTRUCTOR] },
     // { label: 'TA Allocations', to: `instructorprofile/${userId}/need`, icon: <Presentation size={22} />, roles: [UserRole.INSTRUCTOR] },
     // { label: 'Instructor Profile', to: `/user/instructorprofile/${userId}`, icon: <User size={22} />, roles: [UserRole.INSTRUCTOR] },
     // { label: 'Users', to: '/user/instructor/browseuser', icon: <Users size={22} />, roles: [UserRole.INSTRUCTOR] },
-    { label: 'Instructor Lab Skills', to: `/user/instructorprofile/${userId}/qualifications`, icon: <User size={22} />, roles: [UserRole.INSTRUCTOR] },
+    { label: 'Qualifications & Skills', to: `/user/instructorprofile/${userId}/qualifications`, icon: <Award size={22} />, roles: [UserRole.INSTRUCTOR] },
 
     // Student
     { label: 'Dashboard', to: '/user/student/home', icon: <Home size={22} />, roles: [UserRole.STUDENT] },
