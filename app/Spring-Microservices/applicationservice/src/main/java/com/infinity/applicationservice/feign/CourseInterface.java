@@ -15,6 +15,7 @@ import com.infinity.applicationservice.dtos.Allocations.ImportSectionRequest;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Needs.NeedDto;
+import com.infinity.applicationservice.dtos.Semesters.SemesterDto;
 
 @FeignClient(name = "COURSE-SERVICE", configuration = FeignClientInterceptor.class)
 public interface CourseInterface {
@@ -46,5 +47,9 @@ public interface CourseInterface {
     
     @PutMapping("/needs/updateAllocatedHours/{needId}")
     public ResponseEntity<String> updateNeedAllocatedHours(@PathVariable Long needId,
-            @RequestParam int numAllocatedHours);
+                    @RequestParam int numAllocatedHours);
+            
+        @GetMapping("/semesters/{year}/{semester}")
+        public ResponseEntity<SemesterDto> getSemesterByYearAndSemester(@PathVariable Integer year,
+                        @PathVariable String semester);
 }

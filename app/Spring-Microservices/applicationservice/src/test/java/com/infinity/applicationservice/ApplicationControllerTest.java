@@ -42,7 +42,7 @@ public class ApplicationControllerTest {
 
         @Test
         void submitApplication_NullPreferences_BadRequest() throws Exception {
-                ApplicationRequest request = new ApplicationRequest(null, ApplicationType.UNDERGRADUATE,false, 4, null);
+                ApplicationRequest request = new ApplicationRequest(null, ApplicationType.UNDERGRADUATE,false, 4, 2025, "W1", null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -55,7 +55,8 @@ public class ApplicationControllerTest {
 
         @Test
         void submitApplication_EmptyPreferences_BadRequest() throws Exception {
-                ApplicationRequest request = new ApplicationRequest(List.of(), ApplicationType.UNDERGRADUATE,false, 4, null);
+                ApplicationRequest request = new ApplicationRequest(List.of(), ApplicationType.UNDERGRADUATE,false, 4,
+                                2025, "W1", null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -70,7 +71,7 @@ public class ApplicationControllerTest {
         void submitApplication_Over3Preferences_BadRequest() throws Exception {
                 ApplicationRequest request = new ApplicationRequest(
                                 List.of(Subject.COSC, Subject.MATH, Subject.DATA, Subject.PHYS),
-                                ApplicationType.UNDERGRADUATE, false, 4, null);
+                                ApplicationType.UNDERGRADUATE, false, 4, 2025, "W1", null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -84,7 +85,7 @@ public class ApplicationControllerTest {
         @Test
         void submitApplication_TooFewHours_BadRequest() throws Exception {
                 ApplicationRequest request = new ApplicationRequest(
-                                List.of(Subject.COSC), ApplicationType.UNDERGRADUATE,false, 1, null);
+                                List.of(Subject.COSC), ApplicationType.UNDERGRADUATE,false, 1, 2025, "W1", null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -98,7 +99,7 @@ public class ApplicationControllerTest {
         @Test
         void submitApplication_TooManyHours_BadRequest() throws Exception {
                 ApplicationRequest request = new ApplicationRequest(
-                                List.of(Subject.COSC), ApplicationType.UNDERGRADUATE,false, 13, null);
+                                List.of(Subject.COSC), ApplicationType.UNDERGRADUATE,false, 13, 2025, "W1", null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -112,7 +113,7 @@ public class ApplicationControllerTest {
         @Test
         void submitApplication_Success() throws Exception {
                 ApplicationRequest request = new ApplicationRequest(List.of(Subject.COSC),
-                                ApplicationType.UNDERGRADUATE, false, 4, null);
+                                ApplicationType.UNDERGRADUATE, false, 4, 2025, "W1", null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -125,7 +126,7 @@ public class ApplicationControllerTest {
         @Test
         void getApplication_Success() throws Exception {
 
-                mockMvc.perform(get("/applications/get/1/2025")
+                mockMvc.perform(get("/applications/get/1/2025/W1")
                                 .header("X-User-Id", "1")
                                 .header("X-User-Roles", "ROLE_STUDENT"))
                                 .andExpect(status().isOk());
@@ -134,9 +135,9 @@ public class ApplicationControllerTest {
         @Test
         void updateApplication_Success() throws Exception {
                 ApplicationRequest request = new ApplicationRequest(List.of(Subject.COSC),
-                                ApplicationType.UNDERGRADUATE, false, 4, null);
+                                ApplicationType.UNDERGRADUATE, false, 4, 2025, "W1", null);
 
-                mockMvc.perform(put("/applications/update/1")
+                mockMvc.perform(put("/applications/update/1/2025/W1")
                                 .header("X-User-Id", "1")
                                 .header("X-User-Roles", "ROLE_STUDENT")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -147,7 +148,7 @@ public class ApplicationControllerTest {
         @Test
         void deleteApplication_Success() throws Exception {
 
-                mockMvc.perform(delete("/applications/delete/1")
+                mockMvc.perform(delete("/applications/delete/1/2025/W1")
                                 .header("X-User-Id", "1")
                                 .header("X-User-Roles", "ROLE_STUDENT"))
                                 .andExpect(status().isOk());
@@ -173,14 +174,16 @@ public class ApplicationControllerTest {
                                 ApplicationType.UNDERGRADUATE,
                                 false,
                                 6,
+                                2025, "W1",
                                 LocalDateTime.of(2024, 1, 1, 12, 0),
                                 Set.of());
 
-                when(applicationService.getAllApplications(2024, false, 6, Subject.COSC, null, null))
+                when(applicationService.getAllApplications(2024, "W1", false, 6, Subject.COSC, null, null))
                                 .thenReturn(List.of(dto));
 
                 mockMvc.perform(get("/applications/getAll")
                                 .param("year", "2024")
+                                .param("semester", "W1")
                                 .param("wantRemote", "false")
                                 .param("hours", "6")
                                 .param("preference1", "COSC"))

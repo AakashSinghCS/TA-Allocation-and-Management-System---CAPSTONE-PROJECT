@@ -1,5 +1,6 @@
 package com.infinity.courseservice.services;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -81,6 +82,20 @@ public class SemesterService {
                 request.startDate().getYear() != request.year()) {
             throw new BadRequestException("Year must match the start date's year");
         }
+    }
+
+    public SemesterDto getSemesterByYearAndSemester(Integer year, String semester) {
+        Semester semesterObj = semesterRepository.findByYearAndSemester(year, semester)
+                .orElseThrow(() -> new NotFoundException("Semester doesn't exist"));
+        return semesterMapper.toDto(semesterObj);
+    }
+
+    public List<SemesterDto> getAllFutureSemesters() {
+        LocalDate currentDate = LocalDate.now();
+        List<Semester> semesters = semesterRepository.findByStartDateAfterOrderByStartDateAsc(currentDate);
+        return semesters.stream()
+                .map(semesterMapper::toDto)
+                .toList();
     }
 
 }

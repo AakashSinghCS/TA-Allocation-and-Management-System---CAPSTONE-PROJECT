@@ -117,7 +117,29 @@ class SemesterControllerTest {
         when(semesterService.deleteSemester(1L)).thenReturn("Semester deleted");
 
         mockMvc.perform(delete("/semesters/delete/1"))
-            .andExpect(status().isOk())
-            .andExpect(content().string("Semester deleted"));
+                .andExpect(status().isOk())
+                .andExpect(content().string("Semester deleted"));
+    }
+    
+    @Test
+    void getSemesterByYearAndSemester_returnsOk() throws Exception {
+        SemesterDto dto = new SemesterDto(1L, 2025, "W1", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1));
+        when(semesterService.getSemesterByYearAndSemester(2025, "W1")).thenReturn(dto);
+
+        mockMvc.perform(get("/semesters/2025/W1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.year").value(2025))
+                .andExpect(jsonPath("$.semester").value("W1"));
+    }
+
+    @Test
+    void getAllFutureSemesters_returnsList() throws Exception {
+        SemesterDto dto = new SemesterDto(1L, 2026, "W1", LocalDate.now().plusDays(30), LocalDate.now().plusDays(120));
+        when(semesterService.getAllFutureSemesters()).thenReturn(List.of(dto));
+
+        mockMvc.perform(get("/semesters/getAllFuture"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].year").value(2026))
+                .andExpect(jsonPath("$[0].semester").value("W1"));
     }
 }

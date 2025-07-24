@@ -1,6 +1,5 @@
 package com.infinity.applicationservice.services;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -18,6 +17,7 @@ import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
+import com.infinity.applicationservice.feign.CourseInterface;
 import com.infinity.applicationservice.feign.NotificationClient;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Application;
@@ -39,13 +39,15 @@ public class ApplicationService {
     private final ConfigService configService;
     private final NotificationClient notificationClient;
     private final EmailMapper emailMapper;
+    private final CourseInterface courseInterface;
 
     public ApplicationDto submitApplication(ApplicationRequest req, Long userIdFromHeader, List<String> headerRoles) {
-        int year = LocalDate.now().getYear();
 
-        if (applicationRepository.existsByStudentIdAndYear(userIdFromHeader, year)) {
-            throw new BadRequestException("You have already submitted an application for this year.");
+        if (applicationRepository.existsByStudentIdAndYearAndSemester(userIdFromHeader, req.year(), req.semester())) {
+            throw new BadRequestException("You have already submitted an application for this year and semester.");
         }
+        courseInterface.getSemesterByYearAndSemester(req.year(), req.semester());
+          
         if (LocalDateTime.now().isAfter(configService.getDeadlineByName("student_application_deadline").endTime())) {
             throw new BadRequestException("The application deadline has passed.");
         }
@@ -67,13 +69,13 @@ public class ApplicationService {
         return applicationMapper.toDto(application);
     }
 
-    public ApplicationDto getApplication(Long studentId, Integer year, Long userIdFromHeader,
+    public ApplicationDto getApplication(Long studentId, Integer year, String semester, Long userIdFromHeader,
             List<String> headerRoles) {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
         }
-        Application application = applicationRepository.findByStudentIdAndYearSemester(studentId, year, )
-                .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
+        Application application = applicationRepository.findByStudentIdAndYearAndSemester(studentId, year, semester)
+                .orElseThrow(() -> new NotFoundException("Application with that student id, year, and semester doesn't exist"));
 
         return applicationMapper.toDto(application);
     }
@@ -91,7 +93,7 @@ public class ApplicationService {
     }
 
     @Transactional
-    public ApplicationDto updateApplication(ApplicationRequest req, Long studentId, Long userIdFromHeader,
+    public ApplicationDto updateApplication(ApplicationRequest req, Long studentId, Integer year, String semester, Long userIdFromHeader,
             List<String> headerRoles) {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
@@ -102,16 +104,19 @@ public class ApplicationService {
         if (LocalDateTime.now().isBefore(configService.getDeadlineByName("student_application_deadline").startTime())) {
             throw new BadRequestException("The application is not open yet.");
         }
+        courseInterface.getSemesterByYearAndSemester(req.year(), req.semester());
         validateAvailabilities(req);
 
         Application application = applicationRepository
-                .findByStudentIdAndYearAndSemester(studentId, req.year(), req.semester())
+                .findByStudentIdAndYearAndSemester(studentId, year, semester)
                 .orElseThrow(() -> new NotFoundException("Application with that student id, year, and semester doesn't exist"));
 
         application.setSubjectPreferences(req);
         application.setApplicationType(req.applicationType());
         application.setWantRemote(req.wantRemote());
         application.setWantWorkingHours(req.wantWorkingHours());
+        application.setYear(req.year());
+        application.setSemester(req.semester());
 
         application.getAvailabilities().clear();
         mapAvailability(req, application);
@@ -165,10 +170,10 @@ public class ApplicationService {
 
     }
 
-    public List<ApplicationWithStudentDto> getAllApplications(Integer year, Boolean wantRemote, Integer hours,
+    public List<ApplicationWithStudentDto> getAllApplications(Integer year, String semester, Boolean wantRemote, Integer hours,
             Subject preference1, Subject preference2, Subject preference3) {
 
-        List<Application> applications = applicationRepository.findByFilters(year, wantRemote, hours,
+        List<Application> applications = applicationRepository.findByFilters(year, semester, wantRemote, hours,
                 preference1, preference2, preference3);
 
 

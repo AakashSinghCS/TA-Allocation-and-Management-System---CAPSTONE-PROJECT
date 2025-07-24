@@ -44,17 +44,20 @@ public class ApplicationController {
     @GetMapping("/get/{studentId}/{year}/{semester}")
     public ResponseEntity<ApplicationDto> getApplication(@PathVariable Long studentId,
             @PathVariable Integer year,
+            @PathVariable String semester,
             @RequestHeader("X-User-Id") Long requesterId,
             @RequestHeader("X-User-Roles") List<String> roles) {
-        return ResponseEntity.ok(applicationService.getApplication(studentId, year, requesterId, roles));
+        return ResponseEntity.ok(applicationService.getApplication(studentId, year, semester, requesterId, roles));
     }
 
-    @PutMapping("update/{studentId}")
+    @PutMapping("update/{studentId}/{year}/{semester}")
     public ResponseEntity<ApplicationDto> updateApplication(@RequestBody @Valid ApplicationRequest req,
             @PathVariable Long studentId,
+            @PathVariable Integer year,
+            @PathVariable String semester,
             @RequestHeader("X-User-Id") Long requesterId,
             @RequestHeader("X-User-Roles") List<String> roles) {
-        return ResponseEntity.ok(applicationService.updateApplication(req, studentId, requesterId, roles));
+        return ResponseEntity.ok(applicationService.updateApplication(req, studentId, year, semester, requesterId, roles));
     }
 
     @DeleteMapping("/delete/{studentId}/{year}/{semester}")
@@ -73,17 +76,20 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.getAllApplicationsByStudentId(studentId, requesterId, roles));
     }
 
+
+
     @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/getAll")
     public ResponseEntity<List<ApplicationWithStudentDto>> getAllApplications(
             @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) String semester,
             @RequestParam(required = false) Boolean wantRemote,
             @RequestParam(required = false) Integer hours,
             @RequestParam(required = false) Subject preference1,
             @RequestParam(required = false) Subject preference2,
             @RequestParam(required = false) Subject preference3) {
         return ResponseEntity.ok(
-                applicationService.getAllApplications(year, wantRemote, hours, preference1, preference2, preference3));
+                applicationService.getAllApplications(year, semester, wantRemote, hours, preference1, preference2, preference3));
     }
     
 

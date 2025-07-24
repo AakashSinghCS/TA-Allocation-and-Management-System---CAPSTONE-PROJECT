@@ -157,4 +157,39 @@ class SemesterServiceTest {
 
         assertThrows(NotFoundException.class, () -> semesterService.deleteSemester(1L));
     }
+
+    @Test
+    void getSemesterByYearAndSemester_returnsDto_whenFound() {
+        Semester semester = new Semester(2025, "W1", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1));
+        SemesterDto dto = new SemesterDto(1L, 2025, "W1", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1));
+
+        when(semesterRepository.findByYearAndSemester(2025, "W1")).thenReturn(Optional.of(semester));
+        when(semesterMapper.toDto(semester)).thenReturn(dto);
+
+        SemesterDto result = semesterService.getSemesterByYearAndSemester(2025, "W1");
+
+        assertEquals(dto, result);
+    }
+
+    @Test
+    void getSemesterByYearAndSemester_throwsException_whenNotFound() {
+        when(semesterRepository.findByYearAndSemester(2026, "W2")).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> semesterService.getSemesterByYearAndSemester(2026, "W2"));
+    }
+
+    @Test
+    void getAllFutureSemesters_returnsMappedList() {
+        LocalDate today = LocalDate.now();
+        Semester futureSemester = new Semester(2026, "W1", today.plusMonths(3), today.plusMonths(6));
+        SemesterDto dto = new SemesterDto(1L, 2026, "W1", futureSemester.getStartDate(), futureSemester.getEndDate());
+
+        when(semesterRepository.findByStartDateAfterOrderByStartDateAsc(today)).thenReturn(List.of(futureSemester));
+        when(semesterMapper.toDto(futureSemester)).thenReturn(dto);
+
+        List<SemesterDto> result = semesterService.getAllFutureSemesters();
+
+        assertEquals(1, result.size());
+        assertEquals(dto, result.get(0));
+    }
 }

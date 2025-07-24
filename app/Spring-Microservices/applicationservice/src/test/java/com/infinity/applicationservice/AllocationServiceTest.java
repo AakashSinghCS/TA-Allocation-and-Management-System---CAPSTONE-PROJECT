@@ -84,6 +84,8 @@ class AllocationServiceTest {
         @Mock
         ConfigService configService;
 
+        private ApplicationDto applicationDto;
+
         @BeforeEach
         void mockDeadline() {
                 DeadlineDto dto = new DeadlineDto(
@@ -93,7 +95,9 @@ class AllocationServiceTest {
                 );
 
                 lenient().when(configService.getDeadlineByName(anyString()))
-                .thenReturn(dto);
+                                .thenReturn(dto);
+                applicationDto = new ApplicationDto(30L, 1L, List.of(), ApplicationType.UNDERGRADUATE,
+                                false, 6, 2025, "W1", LocalDateTime.now(), Set.of());
         }
 
         @Test
@@ -115,9 +119,6 @@ class AllocationServiceTest {
                                 12345678, "COSC", 2025, 3, null, null, null, true);
                 SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
                                 new CourseDto(1L, "COSC", "Capstone", "499"));
-                ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE,
-                                false,
-                                null, null, Set.of());
                 AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, applicationDto,
                                 ApplicationStatus.CONFIRMED, 10,
                                 sectionDto);
@@ -188,9 +189,6 @@ class AllocationServiceTest {
                 ;
                 SectionDto sectionDto = new SectionDto(sectionId, 2025, "Fall", "T01", SectionType.TUTORIAL,
                                 new CourseDto(1L, "COSC", "Capstone", "499"));
-                ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE,
-                                false,
-                                null, LocalDateTime.now(), Set.of());
                 AllocationHistoryDto expectedDto = new AllocationHistoryDto(500L, studentDto, applicationDto,
                                 ApplicationStatus.SENT, 5,
                                 sectionDto);
@@ -388,8 +386,6 @@ class AllocationServiceTest {
                                 null, null, true);
                 SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY,
                                 new CourseDto(1L, "COSC", "capstone", "499"));
-                ApplicationDto applicationDto = new ApplicationDto(1l, 1L, List.of(), ApplicationType.UNDERGRADUATE,
-                                false, 6, LocalDateTime.now(), Set.of());
 
                 AllocationHistoryDto expectedDto = new AllocationHistoryDto(1L, studentDto, applicationDto,
                                 ApplicationStatus.CONFIRMED, 10, sectionDto);
@@ -440,9 +436,6 @@ class AllocationServiceTest {
                 ;
                 SectionDto sectionDto = new SectionDto(100L, 2025, "Winter", "001", SectionType.LABORATORY,
                                 new CourseDto(1L, "COSC", "capstone", "499"));
-                ApplicationDto applicationDto = new ApplicationDto(1L, 1L, List.of(), ApplicationType.UNDERGRADUATE,
-                                false, 6,
-                                LocalDateTime.now(), Set.of());
 
                 AllocationHistoryDto expectedDto = new AllocationHistoryDto(
                                 1L,
@@ -508,8 +501,6 @@ class AllocationServiceTest {
                 ;
                 SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY,
                                 new CourseDto(1L, "COSC", "capstone", "499"));
-                ApplicationDto applicationDto = new ApplicationDto(1L, 1L, List.of(), ApplicationType.UNDERGRADUATE,
-                                false, 6, app1.getSubmittedAt(), Set.of());
                 AllocationHistoryDto historyDto = new AllocationHistoryDto(1L, studentDto, applicationDto,
                                 ApplicationStatus.CONFIRMED, 10, sectionDto);
 
@@ -557,8 +548,6 @@ class AllocationServiceTest {
                                 12345678, "COSC", 2025, 3, null, null, null, true);
                 SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY,
                                 new CourseDto(1L, "COSC", "capstone", "499"));
-                ApplicationDto applicationDto = new ApplicationDto(1L, 1L, List.of(), ApplicationType.UNDERGRADUATE,
-                                false, 6, now, Set.of());
                 AllocationHistoryDto historyDto = new AllocationHistoryDto(1L, studentDto, applicationDto,
                                 ApplicationStatus.CONFIRMED, 10, sectionDto);
 
@@ -592,8 +581,6 @@ class AllocationServiceTest {
                                 12345678, "COSC", 2025, 3, null, null, null, true);
                 SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY,
                                 new CourseDto(1L, "COSC", "capstone", "499"));
-                ApplicationDto applicationDto = new ApplicationDto(30L, 1L, List.of(), ApplicationType.UNDERGRADUATE,
-                                false, 6, LocalDateTime.now(), Set.of());
                 AllocationHistoryDto historyDto = new AllocationHistoryDto(1L, studentDto, applicationDto,
                                 ApplicationStatus.CONFIRMED, 10, sectionDto);
 
@@ -639,8 +626,6 @@ class AllocationServiceTest {
                                 12345678, "COSC", 2025, 3, null, null, null, true);
                 SectionDto sectionDto = new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
                                 new CourseDto(1L, "COSC", "Capstone", "499"));
-                ApplicationDto applicationDto = new ApplicationDto(1L, studentId, null, ApplicationType.UNDERGRADUATE,
-                                false, null, null, Set.of());
 
                 AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, applicationDto,
                                 ApplicationStatus.CONFIRMED, 10, sectionDto);
