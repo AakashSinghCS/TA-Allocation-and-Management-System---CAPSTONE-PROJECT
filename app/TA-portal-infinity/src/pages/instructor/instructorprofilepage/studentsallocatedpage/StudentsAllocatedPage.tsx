@@ -6,6 +6,7 @@ import type { StudentOrInstructorOrCoordinator } from "../../../../interfaces/us
 import { useEffect, useState } from "react";
 import { fetchAllExistingYears } from "../../../../api/course/sectionfilter/fetchAllExistingYears";
 import { fetchSectionNeedAndAllocations } from "../../../../api/instructor/fetchSectionNeedAndAllocations";
+import { fetchConfirmedAllocationsForSections } from "../../../../api/instructor/fetchConfirmedAllocations";
 import type { Course } from "../../../../interfaces/course/Course";
 import { fetchAllInstructorCourses } from "../../../../api/instructor/fetchAllInstructorCourses";
 import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
@@ -22,16 +23,12 @@ export default function StudentsAllocatedPage() {
   const [selectedYear, setSelectedYear] = useState<number>(-1);
   const [selectedSemester, setSelectedSemester] = useState<string>("W1");
 
-  // Filter sections to only show those with CONFIRMED TAs allocated
+  // With our new fetchConfirmedAllocationsForSections, we already have only CONFIRMED allocations
   const sectionsWithTAs = sections.filter(section => 
-    section.allocations && section.allocations.some(allocation => allocation.status === "CONFIRMED")
+    section.allocations && section.allocations.length > 0
   );
   
-  // Prepare sections with only CONFIRMED allocations for display
-  const sectionsWithConfirmedTAs = sectionsWithTAs.map(section => ({
-    ...section,
-    allocations: section.allocations?.filter(allocation => allocation.status === "CONFIRMED") || []
-  }));
+  const sectionsWithConfirmedTAs = sectionsWithTAs;
 
   // Export functions
   const exportToCSV = () => {
@@ -120,16 +117,24 @@ export default function StudentsAllocatedPage() {
   useEffect(() => {
     async function loadInitialData() {
       try {
+        const token = localStorage.getItem("token");
         const years = await fetchAllExistingYears();
         const mostRecent = years ? Math.max(...years.map(Number)) : -1;
         const defaultSemester = "W1";
 
-        const [initialSections, allAssignedCourses] = await Promise.all([
-          fetchSectionNeedAndAllocations(iId, null, mostRecent, defaultSemester) ?? [],
-          fetchAllInstructorCourses(iId)
-        ]);
-
-        setSections(initialSections ?? []);
+        // First, fetch sections with their needs
+        const sectionsWithNeeds = await fetchSectionNeedAndAllocations(iId, null, mostRecent, defaultSemester) ?? [];
+        
+        // Then fetch only confirmed allocations for these sections
+        const sectionsWithConfirmedAllocations = await fetchConfirmedAllocationsForSections(
+          sectionsWithNeeds, 
+          token || undefined
+        );
+        
+        // Fetch all courses assigned to this instructor
+        const allAssignedCourses = await fetchAllInstructorCourses(iId);
+        
+        setSections(sectionsWithConfirmedAllocations);
         setCourseList(allAssignedCourses);
         setExistingYears(years ?? []);
         setSelectedYear(mostRecent);
@@ -144,13 +149,23 @@ export default function StudentsAllocatedPage() {
 
   const onSearch = async () => {
     try {
-      const result = await fetchSectionNeedAndAllocations(
+      const token = localStorage.getItem("token");
+      
+      // First, fetch sections with their needs
+      const sectionsWithNeeds = await fetchSectionNeedAndAllocations(
         iId,
         selectedCourse,
         selectedYear,
         selectedSemester
+      ) ?? [];
+      
+      // Then fetch only confirmed allocations for these sections
+      const sectionsWithConfirmedAllocations = await fetchConfirmedAllocationsForSections(
+        sectionsWithNeeds, 
+        token || undefined
       );
-      setSections(result ?? []);
+      
+      setSections(sectionsWithConfirmedAllocations);
     } catch (error) {
       console.error("Failed to search sections:", error);
     }
@@ -183,7 +198,7 @@ export default function StudentsAllocatedPage() {
               <button
                 onClick={exportToCSV}
                 disabled={sectionsWithTAs.length === 0}
-                className="inline-flex items-center px-3 py-2 text-xs bg-green-600 text-white rounded-md 
+                className="inline-flex items-center px-3 py-2 text-xs bg-green-800 text-white rounded-md 
                   hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium"
               >
                 <FaFileCsv className="w-3 h-3 mr-1" />
@@ -192,7 +207,7 @@ export default function StudentsAllocatedPage() {
               <button
                 onClick={exportToPDF}
                 disabled={sectionsWithTAs.length === 0}
-                className="inline-flex items-center px-3 py-2 text-xs bg-red-600 text-white rounded-md 
+                className="inline-flex items-center px-3 py-2 text-xs bg-red-800 text-white rounded-md 
                   hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium"
               >
                 <FaFilePdf className="w-3 h-3 mr-1" />

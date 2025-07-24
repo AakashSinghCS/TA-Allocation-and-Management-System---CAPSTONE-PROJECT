@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { fetchAllSectionsAndNeedAndAllocations } from "../../../api/instructor/fetchAllSectionsAndNeedAndAllocations";
+import { fetchConfirmedAllocationsForSections } from "../../../api/instructor/fetchConfirmedAllocations";
 import { fetchDeadlines } from "../../../api/config/fetchDeadlines";
 import type Section from "../../../interfaces/section/Section";
 import type { Deadline } from "../../../interfaces/config/Deadline";
@@ -50,8 +51,20 @@ export default function InstructorHomePage() {
       setError("");
       setSectionsLoaded(false);
       try {
-        const data = await fetchAllSectionsAndNeedAndAllocations(userId);
-        setSections(data || []);
+         const token = localStorage.getItem("token");
+        
+        // First, fetch sections with their needs
+        const sectionsWithNeeds = await fetchAllSectionsAndNeedAndAllocations(userId);
+        
+        // Then fetch only confirmed allocations for these sections
+        const sectionsWithConfirmedAllocations = await fetchConfirmedAllocationsForSections(
+          sectionsWithNeeds || [], 
+          token || undefined
+        );
+        
+        console.log(`[InstructorHomePage] Fetched ${sectionsWithConfirmedAllocations.length} sections with confirmed allocations`);
+        
+        setSections(sectionsWithConfirmedAllocations);
       } catch (err) {
         setError("Failed to load data");
       } finally {
@@ -114,18 +127,10 @@ export default function InstructorHomePage() {
     loadDeadlines();
   }, [token]);
 
-  // Debug log to see the allocation structure
-  console.log("Allocation data:", sections.map(s => s.allocations?.map(a => ({
-    id: a.id,
-    status: a.status
-  }))));
-  
   // Metrics
   const totalSections = sections.length;
-  // Only count CONFIRMED allocations
-  const totalAllocations = sections.reduce((sum, s) => sum + (
-    (s.allocations?.filter(alloc => alloc.status === 'CONFIRMED'))?.length || 0
-  ), 0);
+  // No need to filter by status since fetchConfirmedAllocationsForSections already returns only confirmed allocations
+  const totalAllocations = sections.reduce((sum, s) => sum + (s.allocations?.length || 0), 0);
   const missingNeeds = sections.filter(s => !s.need || !s.need.description);
 
   // Only render dashboard after all data is loaded
@@ -167,15 +172,15 @@ export default function InstructorHomePage() {
                   <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={{ borderTopColor: '#040941', minHeight: '60px', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
                     <FaUserGraduate size={20} style={{ color: '#040941' }} className="mr-3" />
                     <div>
-                      <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Courses Teaching</div>
+                      <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Sections Teaching</div>
                       <div className="text-lg font-bold text-[#040941]">{totalSections}</div>
                     </div>
                   </div>
-                  {/* TA Allocations */}
+                  {/* Confirmed TA Allocations */}
                   <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={{ borderTopColor: '#040941', minHeight: '60px', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
                     <FaUsers size={20} style={{ color: '#040941' }} className="mr-3" />
                     <div>
-                      <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">TA Allocations</div>
+                      <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Confirmed Allocations</div>
                       <div className="text-lg font-bold text-[#040941]">{totalAllocations}</div>
                     </div>
                   </div>

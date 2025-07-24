@@ -13,6 +13,7 @@ import { useAuth } from "../../../../context/AuthContext";
 import { fetchAllExistingDeptCodes } from "../../../../api/course/sectionfilter/fetchAllExistingDeptCodes";
 import { fetchAllExistingYears } from "../../../../api/course/sectionfilter/fetchAllExistingYears";
 import { fetchSectionNeedAndAllocations } from "../../../../api/instructor/fetchSectionNeedAndAllocations";
+import { fetchConfirmedAllocationsForSections } from "../../../../api/instructor/fetchConfirmedAllocations";
 import type { Course } from "../../../../interfaces/course/Course";
 import { fetchAllInstructorCourses } from "../../../../api/instructor/fetchAllInstructorCourses";
 import { FaRegClock } from "react-icons/fa";
@@ -108,13 +109,12 @@ export default function InstructorNeedPage() {
             const mostRecent = years ? Math.max(...years.map(Number)) : -1;
             const defaultSemester = "W1";
 
-            const [sections, allAssignedCourses] = await Promise.all([
-              fetchSectionNeedAndAllocations(iId, null, mostRecent, defaultSemester) ?? [],
-              fetchAllInstructorCourses(iId)
-            ]);
-
+            const token = localStorage.getItem("token");
+            const sectionsWithNeeds = await fetchSectionNeedAndAllocations(iId, null, mostRecent, defaultSemester) ?? [];
+            const sectionsWithAllocations = await fetchConfirmedAllocationsForSections(sectionsWithNeeds, token || undefined);
+            const allAssignedCourses = await fetchAllInstructorCourses(iId);
             const response: NeedViewerResponse = {
-              sections,
+              sections: sectionsWithAllocations,
               existingYears: years ?? [""],
               allAssignedCourses
             }

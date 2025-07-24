@@ -225,7 +225,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
                   </span>
                   <span className="text-gray-500 text-sm">•</span>
                   <span className="text-gray-600 text-sm">
-                    {sec.allocations?.filter(a => a.status === "CONFIRMED")?.length || 0} assigned TAs
+                    {sec.allocations?.length || 0} confirmed TAs
                   </span>
                 </div>
               </div>
