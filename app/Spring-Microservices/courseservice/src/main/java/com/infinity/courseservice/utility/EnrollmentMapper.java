@@ -14,7 +14,10 @@ import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.models.StudentCourse;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class EnrollmentMapper {
 
     public CourseDto toCourseDto(StudentCourse studentCourse) {
@@ -28,8 +31,8 @@ public class EnrollmentMapper {
 
         return new SectionDtoNoCourse(
                 section.getId(),
-                section.getYear(),
-                section.getSemester(),
+                section.getSemester().getYear(),
+                section.getSemester().getSemester(),
                 section.getSection(),
                 section.getType());
     }

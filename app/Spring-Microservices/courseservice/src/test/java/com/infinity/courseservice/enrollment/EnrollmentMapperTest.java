@@ -20,6 +20,7 @@ import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.Semester;
 import com.infinity.courseservice.models.StudentCourse;
 import com.infinity.courseservice.utility.EnrollmentMapper;
 
@@ -45,10 +46,10 @@ public class EnrollmentMapperTest {
 
     @Test
     void testToSectionDtoNoCourse_validSection() {
+        Semester semester = new Semester(2024, "W1", null, null);
         Section section = new Section();
         section.setId(10L);
-        section.setYear(2024);
-        section.setSemester("Fall");
+        section.setSemester(semester);
         section.setSection("002");
         section.setType(SectionType.LECTURE);
 
@@ -56,7 +57,7 @@ public class EnrollmentMapperTest {
 
         assertEquals(10L, dto.id());
         assertEquals("002", dto.section());
-        assertEquals("Fall", dto.semester());
+        assertEquals("W1", dto.semester());
         assertEquals(2024, dto.year());
         assertEquals(SectionType.LECTURE, dto.type());
     }
@@ -85,12 +86,12 @@ public class EnrollmentMapperTest {
     @Test
     void testToActiveEnrollmentDto() {
         Course course = new Course("COSC", "Intro", "110");
+        Semester semester = new Semester(2024, "W1", null, null);
         course.setId(1L);
 
         Section section = new Section();
         section.setId(2L);
-        section.setYear(2024);
-        section.setSemester("Winter");
+        section.setSemester(semester);
         section.setSection("001");
         section.setType(SectionType.LABORATORY);
 
@@ -113,11 +114,11 @@ public class EnrollmentMapperTest {
 
         Course course2 = new Course("MATH", "Calc", "101");
         course2.setId(2L);
+        Semester semester = new Semester(2024, "W1", null, null);
 
         Section section = new Section();
         section.setId(3L);
-        section.setYear(2023);
-        section.setSemester("Fall");
+        section.setSemester(semester);
         section.setSection("A01");
         section.setType(SectionType.LECTURE);
 

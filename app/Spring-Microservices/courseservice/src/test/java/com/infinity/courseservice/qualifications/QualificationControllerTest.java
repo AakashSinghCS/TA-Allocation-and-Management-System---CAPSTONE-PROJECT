@@ -1,17 +1,8 @@
 package com.infinity.courseservice.qualifications;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,14 +10,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.courseservice.controllers.QualificationController;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.QualificationDtos.QualificationDto;
-import com.infinity.courseservice.dtos.QualificationDtos.QualificationDtoWithId;
 import com.infinity.courseservice.dtos.QualificationDtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationDtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.QualificationDtos.StudentQualiRequest;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDtoNoCourse;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.services.QualificationService;
 
@@ -45,7 +46,7 @@ class QualificationControllerTest {
 
     @Test
     void getQualification_shouldReturnQualificationDto() throws Exception {
-        QualificationDto dto = new QualificationDto(
+        QualificationDto dto = new QualificationDto(1L, 
                 new CourseDto(1L, "COSC", "Intro", "101"),
                 "desc",
                 null
@@ -62,7 +63,7 @@ class QualificationControllerTest {
     void getQualificationsByDeptCode_shouldReturnList() throws Exception {
         // CourseDto courseDto = new CourseDto(1L, "COSC", "Intro", "101");
         // StudentDto studentDto = new StudentDto(2L, "Alice","Sun",10001,"BA",  2020, 3);
-        QualificationDtoWithId q = new QualificationDtoWithId(
+        QualificationDto q = new QualificationDto(
                 1L,
                 new CourseDto(1L, "COSC", "Intro", "101"),
                 "desc",
@@ -77,7 +78,7 @@ class QualificationControllerTest {
     @Test
     void instructorAddQualification_shouldReturnDto() throws Exception {
         QualificationRequest request = new QualificationRequest(1L, null ,null, "desc", "COSC");
-        QualificationDtoWithId dto = new QualificationDtoWithId(
+        QualificationDto dto = new QualificationDto(
                 1L,
                 new CourseDto(1L, "COSC", "Intro", "101"),
                 "desc",
@@ -108,7 +109,7 @@ class QualificationControllerTest {
     @Test
     void studentUpdateQualification_shouldReturnQualificationDtos() throws Exception {
         StudentQualiRequest request = new StudentQualiRequest(List.of(1L));
-        QualificationDto dto = new QualificationDto(
+        QualificationDto dto = new QualificationDto(1L, 
                 new CourseDto(1L, "COSC", "Intro", "101"),
                 "desc",
                 null
@@ -139,14 +140,10 @@ class QualificationControllerTest {
     @Test
     void getQualificationsByInstructorId_shouldReturnOk() throws Exception {
         Long instructorId = 5L;
-
+        SectionDtoNoCourse sectionDto = new SectionDtoNoCourse(10L, 2025, "W1", "001", SectionType.LECTURE);
         QualificationWithSectionDto dto = new QualificationWithSectionDto(
             1L,
-            10L,
-            2024,
-            "W1",
-            "001",
-            SectionType.LECTURE,
+            sectionDto,
             100L,
             "COSC",
             "Test Qualification"
@@ -158,19 +155,22 @@ class QualificationControllerTest {
         mockMvc.perform(get("/qualifications/instructor/{instructorId}", instructorId)
                 .accept(MediaType.APPLICATION_JSON))
                .andExpect(status().isOk())
-               .andExpect(content().json("""
-                   [
-                       {
-                           "sectionId":10,
-                           "year":2024,
-                           "semester":"W1",
-                           "sectionName":"001",
-                           "sectionType":"LECTURE",
-                           "qualificationId":100,
-                           "courseDeptCode":"COSC",
-                           "qualificationDescription":"Test Qualification"
-                       }
-                   ]
-               """));
+                .andExpect(content().json("""
+                        [
+                            {
+                                "courseId": 1,
+                                "sectionDto": {
+                                    "id": 10,
+                                    "year": 2025,
+                                    "semester": "W1",
+                                    "section": "001",
+                                    "type": "LECTURE"
+                                },
+                                "qualificationId": 100,
+                                "courseDeptCode": "COSC",
+                                "qualificationDescription": "Test Qualification"
+                            }
+                        ]
+                        """));
     }
 }
