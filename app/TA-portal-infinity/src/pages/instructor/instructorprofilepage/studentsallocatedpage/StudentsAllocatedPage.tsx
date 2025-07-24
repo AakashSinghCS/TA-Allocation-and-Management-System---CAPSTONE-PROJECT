@@ -6,13 +6,12 @@ import type { StudentOrInstructorOrCoordinator } from "../../../../interfaces/us
 import { useEffect, useState } from "react";
 import { fetchAllExistingYears } from "../../../../api/course/sectionfilter/fetchAllExistingYears";
 import { fetchSectionNeedAndAllocations } from "../../../../api/instructor/fetchSectionNeedAndAllocations";
-import { fetchConfirmedAllocationsForSections } from "../../../../api/instructor/fetchConfirmedAllocations";
-import type { Course } from "../../../../interfaces/course/Course";
 import { fetchAllInstructorCourses } from "../../../../api/instructor/fetchAllInstructorCourses";
 import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
 import { FaUsers } from "react-icons/fa";
 import { FilterSection, SectionCard, exportToCSV, exportToPDF } from "../../../../components/features/allocatedStudent";
 import { useAuth } from "../../../../context/AuthContext";
+import type { Course } from "../../../../interfaces/course/Course";
 
 export default function StudentsAllocatedPage() {
   const { userId } = useParams();
@@ -26,7 +25,7 @@ export default function StudentsAllocatedPage() {
   const [selectedYear, setSelectedYear] = useState<number>(-1);
   const [selectedSemester, setSelectedSemester] = useState<string>("W1");
 
-  // fetchConfirmedAllocationsForSections, we already have only CONFIRMED allocations
+  // Filter sections that have confirmed TAs (we already filtered for CONFIRMED status)
   const sectionsWithTAs = sections.filter(section => 
     section.allocations && section.allocations.length > 0
   );
@@ -41,19 +40,18 @@ export default function StudentsAllocatedPage() {
   useEffect(() => {
     async function loadInitialData() {
       try {
-        const token = localStorage.getItem("token");
         const years = await fetchAllExistingYears();
         const mostRecent = years ? Math.max(...years.map(Number)) : -1;
         const defaultSemester = "W1";
 
-        // First, fetch sections with their needs
+        // Fetch sections with their needs and allocations
         const sectionsWithNeeds = await fetchSectionNeedAndAllocations(iId, null, mostRecent, defaultSemester) ?? [];
         
-        // Then fetch only confirmed allocations for these sections
-        const sectionsWithConfirmedAllocations = await fetchConfirmedAllocationsForSections(
-          sectionsWithNeeds, 
-          token || undefined
-        );
+        // Filter allocations to show only CONFIRMED status
+        const sectionsWithConfirmedAllocations = sectionsWithNeeds.map(section => ({
+          ...section,
+          allocations: section.allocations?.filter(allocation => allocation.status === "CONFIRMED") ?? []
+        }));
         
         // Fetch all courses assigned to this instructor
         const allAssignedCourses = await fetchAllInstructorCourses(iId);
@@ -73,9 +71,7 @@ export default function StudentsAllocatedPage() {
 
   const onSearch = async () => {
     try {
-      const token = localStorage.getItem("token");
-      
-      // First, fetch sections with their needs
+      // Fetch sections with their needs and allocations
       const sectionsWithNeeds = await fetchSectionNeedAndAllocations(
         iId,
         selectedCourse,
@@ -83,11 +79,11 @@ export default function StudentsAllocatedPage() {
         selectedSemester
       ) ?? [];
       
-      // Then fetch only confirmed allocations for these sections
-      const sectionsWithConfirmedAllocations = await fetchConfirmedAllocationsForSections(
-        sectionsWithNeeds, 
-        token || undefined
-      );
+      // Filter allocations to show only CONFIRMED status
+      const sectionsWithConfirmedAllocations = sectionsWithNeeds.map(section => ({
+        ...section,
+        allocations: section.allocations?.filter(allocation => allocation.status === "CONFIRMED") ?? []
+      }));
       
       setSections(sectionsWithConfirmedAllocations);
     } catch (error) {
@@ -116,7 +112,7 @@ export default function StudentsAllocatedPage() {
         )}
 
         {/* Add spacing when coordinator is viewing and header is hidden */}
-        {isCoordinator && <div className="mb-10"></div>}
+        {isCoordinator && <div className="mb-6"></div>}
 
         {/* Filter Section */}
         <FilterSection

@@ -72,13 +72,24 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
     }
   }
   const onSearch = async () => {
-    const result = await fetchSectionNeedAndAllocations(
-      instructorId,
-      selectedCourse,
-      selectedYear,
-      selectedSemester
-    );
-    setSections(result ?? []);
+    try {
+      const sectionsWithNeeds = await fetchSectionNeedAndAllocations(
+        instructorId,
+        selectedCourse,
+        selectedYear,
+        selectedSemester
+      ) ?? [];
+      
+      // Apply the same CONFIRMED filtering 
+      const sectionsWithConfirmedAllocations = sectionsWithNeeds.map(section => ({
+        ...section,
+        allocations: section.allocations?.filter(allocation => allocation.status === "CONFIRMED") ?? []
+      }));
+      
+      setSections(sectionsWithConfirmedAllocations);
+    } catch (error) {
+      console.error("Failed to search sections:", error);
+    }
   };
 
   const isMainSection = (section:Section) =>{
