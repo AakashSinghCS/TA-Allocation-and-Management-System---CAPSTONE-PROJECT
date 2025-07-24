@@ -2,6 +2,8 @@ package com.infinity.courseservice.sections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -301,4 +303,21 @@ public class SectionControllerTest {
                         .andExpect(jsonPath("$.year").value(2023))
                         .andExpect(jsonPath("$.semester").value("W1"));
         }   
+
+        @Test
+        void testIncrementNumberOfTAs() throws Exception {
+                mockMvc.perform(put("/sections/1/incrementTA"))
+                        .andExpect(status().isNoContent());
+
+                verify(sectionService, times(1)).incrementNumberOfTAsAllocated(1L);
+        }
+
+        @Test
+        void testDecrementNumberOfTAs() throws Exception {
+                mockMvc.perform(put("/sections/1/decrementTA"))
+                        .andExpect(status().isNoContent());
+
+                verify(sectionService, times(1)).decrementNumberOfTAsAllocated(1L);
+        }
+
 }

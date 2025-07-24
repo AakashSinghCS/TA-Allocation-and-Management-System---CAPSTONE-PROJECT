@@ -37,8 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class SectionController {
 
     private final SectionService sectionService;
-    @Autowired
-    private SectionRepository sectionRepository;
+    
 
     @GetMapping("/get/{id}")
     public ResponseEntity<SectionDto> getSectionById(@PathVariable Long id) {

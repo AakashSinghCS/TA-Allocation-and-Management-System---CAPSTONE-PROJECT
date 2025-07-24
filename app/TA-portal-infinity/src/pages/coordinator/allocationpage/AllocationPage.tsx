@@ -174,6 +174,13 @@ const TAAllocationPage: React.FC = () => {
   };
   const onSend = () => {
     if (!selApp || !selCourse?.id || !selCourse.need) return;
+    if (selCourse.type === 'LECTURE'){
+      toast.warn("Warning: You cannot allocate TAs to a LECTURE.");
+      return;
+    }
+    if ((selCourse.numberOfTAsAllocated ?? 0) >= 1) {
+      toast.warn("Warning: You are assigning more than 1 TA to this section.");
+    }
     sendOffer(
       selApp,
       selCourse.id,
@@ -330,6 +337,7 @@ const events = [
                   <p><strong>Section:</strong> {selCourse.section ?? 'N/A'}</p>
                   <p><strong>Type:</strong> {selCourse.type ?? 'N/A'}</p>
                   <p><strong>Instructor:</strong> {instructor && instructor.firstName && instructor.lastName ? `${instructor.firstName} ${instructor.lastName}` : 'N/A'}</p>
+                  <p><strong>TAs Allocated:</strong> {selCourse.numberOfTAsAllocated ?? '0'}</p>
                 </div>
               </section>
 
