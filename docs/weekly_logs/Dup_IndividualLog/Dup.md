@@ -2713,3 +2713,53 @@ Will be working on issue 463 starting from tommorrow.
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
 - Security improvement.
 - TBA: must discuss with teammates first on what to do.
+
+## Wednesday 7/23 (7/22~7/25)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July23.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#421](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/421)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#463](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/463)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today:
+- I reworked the Allocation Calendar.
+- Allocation Calendar now shows unavailabilities and the sum of the three variables: number of grading hours, lab prep, section hours.
+- added tests for Allocation Banner and Calendar.
+- integration has to be done after Allen has completed his work.
+Tommorrow:
+- May have to work on new issue for Logs since Allen has not finished his backend part yet.
+- Logs issue is including application , notification, course, profile service into the audit cycle.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+- Security improvement.
+- TBA: must discuss with teammates first on what to do.
