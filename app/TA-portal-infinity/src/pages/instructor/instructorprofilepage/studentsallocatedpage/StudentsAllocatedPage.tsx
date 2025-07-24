@@ -13,6 +13,7 @@ import type { Course } from "../../../../interfaces/course/Course";
 import { fetchAllInstructorCourses } from "../../../../api/instructor/fetchAllInstructorCourses";
 import AllocationCard from "../../../../components/features/allocation/AllocationCard";
 import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
+import { CiClock2 } from "react-icons/ci";
 
 export default function StudentsAllocatedPage() {
   const { userId } = useParams();
@@ -112,9 +113,7 @@ export default function StudentsAllocatedPage() {
                 <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
                     <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                      </svg>
+                    <CiClock2 className="w-5 h-5 text-white" />
                     </div>
                   </div>
                   <div>

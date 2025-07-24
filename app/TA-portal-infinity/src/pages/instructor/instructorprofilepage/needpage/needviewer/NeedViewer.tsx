@@ -91,18 +91,18 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
 
   return (
     <div className={"space-y-8 " + className}>
-      {/* Compact Filter Section */}
-      <div className="bg-white rounded-md border border-gray-200 p-4 shadow-sm">
+      {/* Filter Section */}
+      <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-[#040941]">Filter Sections</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Filter Sections</h3>
           {isInstructor && (
             <Link
               to="/user/instructor/addsection"
-              className="inline-flex items-center px-3 py-1.5 bg-[#040941] text-white rounded-md 
-                hover:bg-[#030735] transition-colors font-medium text-xs"
+              className="inline-flex items-center px-4 py-2 bg-[#040941] text-white rounded-md 
+                hover:bg-[#030735] transition-colors font-medium text-sm"
             >
-              <svg className="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
               </svg>
               Add Section
@@ -111,10 +111,10 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
         </div>
         
         {/* Filter Controls */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Course */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Course</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
             <select
               value={selectedCourse ?? ""}
               onChange={(e) =>
@@ -122,8 +122,8 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
                   e.target.value ? Number(e.target.value) : null
                 )
               }
-              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-[#040941] 
-                focus:border-[#040941] bg-white text-gray-900"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0089b2] 
+                focus:border-[#0089b2] bg-white text-gray-900 transition-colors hover:border-gray-400"
             >
               <option value="">All courses</option>
               {courseList.map((c) => (
@@ -136,12 +136,12 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
 
           {/* Year */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Year</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
             <select
               value={selectedYear}
               onChange={(e) => setSelectedYear(Number(e.target.value))}
-              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-[#040941] 
-                focus:border-[#040941] bg-white text-gray-900"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0089b2] 
+                focus:border-[#0089b2] bg-white text-gray-900 transition-colors hover:border-gray-400"
             >
               {initial?.existingYears && initial?.existingYears.map((yr) => (
                 <option key={yr} value={yr}>
@@ -153,12 +153,12 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
 
           {/* Semester */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Semester</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Semester</label>
             <select
               value={selectedSemester}
               onChange={(e) => setSelectedSemester(e.target.value)}
-              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-[#040941] 
-                focus:border-[#040941] bg-white text-gray-900"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0089b2] 
+                focus:border-[#0089b2] bg-white text-gray-900 transition-colors hover:border-gray-400"
             >
               {["W1", "W2", "S1", "S2"].map((sem) => (
                 <option key={sem} value={sem}>
@@ -169,11 +169,12 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
           </div>
 
           {/* Search Button */}
-          <div className="flex items-end">
+          <div>
+            <label className="block text-sm font-medium text-transparent mb-1">Search</label>
             <button
               type="button"
               onClick={onSearch}
-              className="w-full px-3 py-1.5 text-sm bg-[#040941] text-white rounded-md hover:bg-[#030735] 
+              className="w-full px-4 py-2 text-sm bg-[#040941] text-white rounded-md hover:bg-[#030735] 
                 transition-colors font-medium"
             >
               Search
@@ -181,9 +182,14 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
           </div>
         </div>
 
-        {/* Compact Results Summary */}
-        <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-600">
-          {sections.length} sections found
+        {/* Results Summary */}
+        <div className="mt-4 pt-3 border-t border-gray-100">
+          <div className="flex items-center justify-between text-sm text-gray-600">
+            <span>{sections.length} sections found</span>
+            {sections.length > 0 && (
+              <span>{sections.filter(s => s.allocations && s.allocations.length > 0).length} with TAs assigned</span>
+            )}
+          </div>
         </div>
       </div>
 

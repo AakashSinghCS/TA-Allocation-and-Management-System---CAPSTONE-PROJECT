@@ -15,6 +15,7 @@ import { fetchAllExistingYears } from "../../../../api/course/sectionfilter/fetc
 import { fetchSectionNeedAndAllocations } from "../../../../api/instructor/fetchSectionNeedAndAllocations";
 import type { Course } from "../../../../interfaces/course/Course";
 import { fetchAllInstructorCourses } from "../../../../api/instructor/fetchAllInstructorCourses";
+import { FaRegClock } from "react-icons/fa";
 
 export interface NeedViewerResponse {
   sections: Section[] | null;
@@ -60,57 +61,45 @@ export default function InstructorNeedPage() {
           )}
         />
         
-        {/* Simple Header */}
+        {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">TA Information</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-1">TA Information</h1>
           <p className="text-gray-600 text-lg">Manage your sections and TA requirements</p>
         </div>
         
         {/* Deadline Information */}
-        {needDeadline && (
-          <div className="flex items-start space-x-4 p-4 bg-blue-100/50 backdrop-blur-sm rounded-lg border-l-4 border-blue-500 mb-8">
-            <div className="flex-shrink-0 mt-1">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <div className="mb-4 -mt-2">
+          {needDeadline ? (
+            <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded border-l-3 border-blue-400">
+              <FaRegClock className="w-5 h-5 text-blue-600 flex-shrink-0" />
+              <div>
+          <h3 className="text-base font-medium text-blue-900">TA Requirements Deadline</h3>
+          <p className="text-blue-800 text-sm">
+            {new Date(needDeadline.endTime).toLocaleString()}
+          </p>
+          <p className="text-blue-700 text-sm mt-1">Please submit your TA requirements before this deadline</p>
+              </div>
+            </div>
+          ) : deadlineError ? (
+            <div className="flex items-center space-x-3 p-3 bg-red-50 rounded border-l-3 border-red-400">
+              <FaRegClock className="w-5 h-5 text-red-600 flex-shrink-0" />
+              <div>
+          <h3 className="text-base font-medium text-red-800">Error Loading Deadline</h3>
+          <p className="text-red-700 text-sm">{deadlineError}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded border-l-3 border-gray-400">
+              <svg className="w-5 h-5 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
+              <div>
+          <h3 className="text-base font-medium text-gray-700">No Deadline Set</h3>
+          <p className="text-gray-600 text-sm">No requirements deadline configured.</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-blue-900 mb-1">TA Requirements Deadline</h3>
-              <p className="text-blue-800 font-medium">
-                {new Date(needDeadline.endTime).toLocaleString()}
-              </p>
-              <p className="text-blue-700 text-sm mt-1">Please submit your TA requirements before this deadline</p>
-            </div>
-          </div>
-        )}
-        
-        {!needDeadline && !deadlineError && (
-          <div className="flex items-start space-x-4 p-4 bg-gray-100/50 backdrop-blur-sm rounded-lg border-l-4 border-gray-400 mb-8">
-            <div className="flex-shrink-0 mt-1">
-              <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-1">No Deadline Set</h3>
-              <p className="text-gray-600">No requirements deadline has been configured yet.</p>
-            </div>
-          </div>
-        )}
-        
-        {deadlineError && (
-          <div className="flex items-start space-x-4 p-4 bg-red-100/50 backdrop-blur-sm rounded-lg border-l-4 border-red-500 mb-8">
-            <div className="flex-shrink-0 mt-1">
-              <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-red-800 mb-1">Error Loading Deadline</h3>
-              <p className="text-red-700">{deadlineError}</p>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Content Section */}
         <GenericAPIContainer<NeedViewerResponse | null>
