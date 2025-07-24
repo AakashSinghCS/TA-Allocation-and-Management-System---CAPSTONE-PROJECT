@@ -7,14 +7,12 @@ import StudentsAllocatedPage from './StudentsAllocatedPage';
 import { fetchUserDetails } from '../../../../api/user/fetchUserDetails';
 import { fetchAllExistingYears } from '../../../../api/course/sectionfilter/fetchAllExistingYears';
 import { fetchSectionNeedAndAllocations } from '../../../../api/instructor/fetchSectionNeedAndAllocations';
-import { fetchConfirmedAllocationsForSections } from '../../../../api/instructor/fetchConfirmedAllocations';
 import { fetchAllInstructorCourses } from '../../../../api/instructor/fetchAllInstructorCourses';
 
 // Mock all the API functions
 vi.mock('../../../../api/user/fetchUserDetails');
 vi.mock('../../../../api/course/sectionfilter/fetchAllExistingYears');
 vi.mock('../../../../api/instructor/fetchSectionNeedAndAllocations');
-vi.mock('../../../../api/instructor/fetchConfirmedAllocations');
 vi.mock('../../../../api/instructor/fetchAllInstructorCourses');
 
 // Mock react-router-dom
@@ -107,6 +105,7 @@ const mockSections = [
       {
         id: 1,
         numberOfHours: 10,
+        status: 'CONFIRMED',
         student: {
           id: 1,
           firstName: 'Jane',
@@ -130,7 +129,6 @@ describe('StudentsAllocatedPage', () => {
     (fetchUserDetails as Mock).mockResolvedValue(mockUserDetails);
     (fetchAllExistingYears as Mock).mockResolvedValue(mockYears);
     (fetchSectionNeedAndAllocations as Mock).mockResolvedValue(mockSections);
-    (fetchConfirmedAllocationsForSections as Mock).mockResolvedValue(mockSections);
     (fetchAllInstructorCourses as Mock).mockResolvedValue(mockCourses);
     
     // Mock localStorage
@@ -170,7 +168,6 @@ describe('StudentsAllocatedPage', () => {
       expect(fetchUserDetails).toHaveBeenCalledWith(123);
       expect(fetchAllExistingYears).toHaveBeenCalled();
       expect(fetchSectionNeedAndAllocations).toHaveBeenCalledWith(123, null, 2025, 'W1');
-      expect(fetchConfirmedAllocationsForSections).toHaveBeenCalled();
       expect(fetchAllInstructorCourses).toHaveBeenCalledWith(123);
     });
   });
@@ -193,7 +190,7 @@ describe('StudentsAllocatedPage', () => {
   });
 
   it('displays no students message when no sections have TAs', async () => {
-    (fetchConfirmedAllocationsForSections as Mock).mockResolvedValue([]);
+    (fetchSectionNeedAndAllocations as Mock).mockResolvedValue([]);
     
     renderComponent();
     
@@ -277,7 +274,7 @@ describe('StudentsAllocatedPage', () => {
       },
     ];
 
-    (fetchConfirmedAllocationsForSections as Mock).mockResolvedValue([
+    (fetchSectionNeedAndAllocations as Mock).mockResolvedValue([
       ...mockSections,
       ...sectionsWithoutAllocations,
     ]);

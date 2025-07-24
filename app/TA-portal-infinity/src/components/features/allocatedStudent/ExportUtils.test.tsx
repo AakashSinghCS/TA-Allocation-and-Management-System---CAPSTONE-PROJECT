@@ -238,11 +238,13 @@ describe('ExportUtils', () => {
     beforeEach(() => {
       mockPrintWindow = {
         document: {
+          open: vi.fn(),
           write: vi.fn(),
           close: vi.fn(),
         },
         focus: vi.fn(),
         print: vi.fn(),
+        close: vi.fn(),
       };
       
       mockWindowOpen.mockReturnValue(mockPrintWindow);
@@ -257,10 +259,12 @@ describe('ExportUtils', () => {
     it('writes HTML content to print window', () => {
       exportToPDF(mockSections);
       
+      expect(mockPrintWindow.document.open).toHaveBeenCalled();
       expect(mockPrintWindow.document.write).toHaveBeenCalled();
       expect(mockPrintWindow.document.close).toHaveBeenCalled();
       expect(mockPrintWindow.focus).toHaveBeenCalled();
       expect(mockPrintWindow.print).toHaveBeenCalled();
+      expect(mockPrintWindow.close).toHaveBeenCalled();
     });
 
     it('includes section information in PDF content', () => {

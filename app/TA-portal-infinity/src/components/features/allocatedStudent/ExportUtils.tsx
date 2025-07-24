@@ -34,14 +34,8 @@ export const exportToCSV = (sectionsWithConfirmedTAs: Section[]) => {
 };
 
 export const exportToPDF = (sectionsWithConfirmedTAs: Section[]) => {
-  // Simple PDF export using browser print via hidden iframe
-  const iframe = document.createElement('iframe');
-  iframe.style.visibility = 'hidden';
-  iframe.style.position = 'fixed';
-  iframe.style.right = '0';
-  iframe.style.bottom = '0';
-  document.body.appendChild(iframe);
-  const printWindow = iframe.contentWindow;
+  // Simple PDF export using browser print
+  const printWindow = window.open('', '_blank');
   if (!printWindow) return;
   
   const content = `
@@ -82,12 +76,13 @@ export const exportToPDF = (sectionsWithConfirmedTAs: Section[]) => {
     </html>
   `;
   
-  // Write and print via iframe
-  printWindow.document.open();
-  printWindow.document.write(content);
-  printWindow.document.close();
+  // Write and print via opened window
+  const doc = printWindow.document;
+  doc.open();
+  doc.write(content);
+  doc.close();
   printWindow.focus();
   printWindow.print();
-  // Clean up
-  document.body.removeChild(iframe);
+  // Close the print window after printing
+  printWindow.close();
 };
