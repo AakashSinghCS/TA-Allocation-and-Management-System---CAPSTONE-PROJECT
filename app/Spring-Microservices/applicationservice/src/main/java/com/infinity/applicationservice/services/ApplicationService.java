@@ -55,7 +55,7 @@ public class ApplicationService {
 
         validateAvailabilities(req);
         Application application = new Application(userIdFromHeader, req.preferences(), req.applicationType(),
-                req.wantRemote(), req.wantWorkingHours());
+                req.wantRemote(), req.wantWorkingHours(), req.year(), req.semester());
 
         mapAvailability(req, application);
 
@@ -72,21 +72,21 @@ public class ApplicationService {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
         }
-        Application application = applicationRepository.findByStudentIdAndYear(studentId, year)
+        Application application = applicationRepository.findByStudentIdAndYearSemester(studentId, year, )
                 .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
 
         return applicationMapper.toDto(application);
     }
 
     @Transactional
-    public String deleteApplication(Long studentId, Long userIdFromHeader, List<String> headerRoles) {
+    public String deleteApplication(Long studentId, Integer year, String semester,Long userIdFromHeader, List<String> headerRoles) {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
         }
-        if (!applicationRepository.existsByStudentIdAndYear(studentId, LocalDate.now().getYear())) {
+        if (!applicationRepository.existsByStudentIdAndYearAndSemester(studentId, year, semester)) {
             throw new NotFoundException("Application with that student id and year doesn't exist");
         }
-        applicationRepository.deleteByStudentIdAndYear(studentId, LocalDate.now().getYear());
+        applicationRepository.deleteByStudentIdAndYearAndSemester(studentId, year, semester);
         return "Application deleted";
     }
 
@@ -103,11 +103,10 @@ public class ApplicationService {
             throw new BadRequestException("The application is not open yet.");
         }
         validateAvailabilities(req);
-        int year = LocalDate.now().getYear();
 
         Application application = applicationRepository
-                .findByStudentIdAndYear(studentId, year)
-                .orElseThrow(() -> new NotFoundException("Application with that student id and year doesn't exist"));
+                .findByStudentIdAndYearAndSemester(studentId, req.year(), req.semester())
+                .orElseThrow(() -> new NotFoundException("Application with that student id, year, and semester doesn't exist"));
 
         application.setSubjectPreferences(req);
         application.setApplicationType(req.applicationType());

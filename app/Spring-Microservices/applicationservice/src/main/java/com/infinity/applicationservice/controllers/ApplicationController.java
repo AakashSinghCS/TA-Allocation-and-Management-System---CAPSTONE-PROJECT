@@ -1,6 +1,5 @@
 package com.infinity.applicationservice.controllers;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
@@ -23,7 +23,6 @@ import com.infinity.applicationservice.services.ApplicationService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -42,7 +41,7 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.submitApplication(req, requesterId, roles));
     }
 
-    @GetMapping("/get/{studentId}/{year}")
+    @GetMapping("/get/{studentId}/{year}/{semester}")
     public ResponseEntity<ApplicationDto> getApplication(@PathVariable Long studentId,
             @PathVariable Integer year,
             @RequestHeader("X-User-Id") Long requesterId,
@@ -58,11 +57,13 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.updateApplication(req, studentId, requesterId, roles));
     }
 
-    @DeleteMapping("/delete/{studentId}")
+    @DeleteMapping("/delete/{studentId}/{year}/{semester}")
     public ResponseEntity<String> deleteApplication(@PathVariable Long studentId,
+            @PathVariable Integer year,
+            @PathVariable String semester,
             @RequestHeader("X-User-Id") Long requesterId,
             @RequestHeader("X-User-Roles") List<String> roles) {
-        return ResponseEntity.ok(applicationService.deleteApplication(studentId, requesterId, roles));
+        return ResponseEntity.ok(applicationService.deleteApplication(studentId, year, semester, requesterId, roles));
     }
 
     @GetMapping("/getAll/{studentId}")

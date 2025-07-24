@@ -14,16 +14,13 @@ import com.infinity.applicationservice.models.Application;
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long>{
 
-    void deleteByStudentIdAndYear(Long studentId, Integer year);
+    void deleteByStudentIdAndYearAndSemester(Long studentId, Integer year, String semester);
 
-    boolean existsByStudentIdAndYear(Long studentId, Integer year);
+    boolean existsByStudentIdAndYearAndSemester(Long studentId, Integer year, String semester);
 
-    Optional<Application> findByStudentIdAndYear(Long studentId, Integer year);
+    Optional<Application> findByStudentIdAndYearAndSemester(Long studentId, Integer year, String semester);
 
     Optional<List<Application>> findAllByStudentId(Long studentId);
-
-
-    Optional<Application> findById(Long id);
 
     @Query("""
                 SELECT a FROM Application a

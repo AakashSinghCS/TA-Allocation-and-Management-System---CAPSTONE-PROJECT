@@ -24,6 +24,8 @@ public class ApplicationMapper {
             application.getApplicationType(),
             application.isWantRemote(),
             application.getWantWorkingHours(),
+            application.getYear(),
+            application.getSemester(),
             application.getSubmittedAt(),
             application.getAvailabilities().stream()
                 .map(a -> new AvailabilityDto(
@@ -42,6 +44,8 @@ public class ApplicationMapper {
                 app.getApplicationType(),
                 app.isWantRemote(),
                 app.getWantWorkingHours(),
+                app.getYear(),
+                app.getSemester(),
                 app.getSubmittedAt(),
                 app.getAvailabilities().stream()
                         .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime().toString(),
