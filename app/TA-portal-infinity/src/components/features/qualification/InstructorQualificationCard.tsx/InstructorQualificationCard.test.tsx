@@ -108,7 +108,7 @@ describe('<InstructorQualificationCard />', () => {
 
     await waitFor(() => {
       expect(showToastConfirmation).toHaveBeenCalledWith({
-        title: "Delete Lab Skill",
+        title: "Delete Skill/Qualification",
         message: expect.stringContaining(mockQualificationCOSC111[0].description ?? ''),
         confirmText: "Delete",
         cancelText: "Cancel",

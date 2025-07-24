@@ -52,7 +52,7 @@ export default function SideNav({expanded, setExpanded}:SideNavProps) {
     // Instructor
     { label: 'Dashboard', to: '/user/instructor/home', icon: <Home size={22} />, roles: [UserRole.INSTRUCTOR] },
     // { label: 'My Courses', to: '/user/instructor/courses', icon: <BookOpen size={22} />, roles: [UserRole.INSTRUCTOR] },
-    { label: 'Sections & Req(s)', to: `instructorprofile/${userId}/need`, icon: <ClipboardList size={22} />, roles: [UserRole.INSTRUCTOR] },
+    { label: 'Sections & Req(s)', to: `/user/instructorprofile/${userId}/need`, icon: <ClipboardList size={22} />, roles: [UserRole.INSTRUCTOR] },
     { label: 'Allocated Students', to: `/user/instructorprofile/${userId}/students`, icon: <ClipboardCheck size={22} />, roles: [UserRole.INSTRUCTOR] },
     // { label: 'TA Allocations', to: `instructorprofile/${userId}/need`, icon: <Presentation size={22} />, roles: [UserRole.INSTRUCTOR] },
     // { label: 'Instructor Profile', to: `/user/instructorprofile/${userId}`, icon: <User size={22} />, roles: [UserRole.INSTRUCTOR] },

@@ -18,7 +18,8 @@ export default function InstructorQualificationPage (){
     const iId = Number(userId);
 
     const [needDeadline, setNeedDeadline] = useState<DeadlineDto | null>(null);
-    const { token } = useAuth();
+    const { token, userRoles } = useAuth();
+    const isCoordinator = userRoles.includes("COORDINATOR");
     
     useEffect(() => {
         async function loadDeadline() {
@@ -48,17 +49,22 @@ export default function InstructorQualificationPage (){
                     )}
                 />
                 
-                {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-1">Course Qualifications Management</h1>
-                    <p className="text-gray-600 text-lg">Manage your sections and TA requirements</p>
-                </div>
+                {/* Header - only show when not viewed by coordinator */}
+                {!isCoordinator && (
+                    <div className="mb-8">
+                        <h1 className="text-3xl font-bold text-gray-900 mb-1">Course Qualifications & Skills Management</h1>
+                        <p className="text-gray-600 text-lg">Manage your sections and TA requirements</p>
+                    </div>
+                )}
+                
+                {/* Add spacing when coordinator is viewing and header is hidden */}
+                {isCoordinator && <div className="mb-10"></div>}
                 
                 {/* Information Message with Deadline */}
                 <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded border-l-4 border-blue-400 mb-4">
                     <Info className="w-5 h-5 text-blue-600 flex-shrink-0" />
                     <div className="flex-1">
-                        <h3 className="text-base font-medium text-blue-900">TA Requirements</h3>
+                        <h3 className="text-base font-medium text-blue-900">Reminder! TA Requirements</h3>
                         <p className="text-sm text-blue-800">Please update your TA requirements for your courses</p>
                     </div>
                     {needDeadline && (

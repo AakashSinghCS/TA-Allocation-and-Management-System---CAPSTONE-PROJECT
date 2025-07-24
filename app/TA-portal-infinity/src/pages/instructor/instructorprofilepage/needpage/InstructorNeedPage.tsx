@@ -31,6 +31,7 @@ export default function InstructorNeedPage() {
   const [deadlineError, setDeadlineError] = useState("");
 
   const { token, userRoles } = useAuth();
+  const isCoordinator = userRoles.includes("COORDINATOR");
 
   useEffect(() => {
     async function loadDeadline() {
@@ -62,11 +63,16 @@ export default function InstructorNeedPage() {
           )}
         />
         
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">TA Information</h1>
-          <p className="text-gray-600 text-lg">Manage your sections and TA requirements</p>
-        </div>
+        {/* Header - only show when not viewed by coordinator */}
+        {!isCoordinator && (
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-1">TA Information</h1>
+            <p className="text-gray-600 text-lg">Manage your sections and TA requirements</p>
+          </div>
+        )}
+        
+        {/* Add spacing when coordinator is viewing and header is hidden */}
+        {isCoordinator && <div className="mb-10"></div>}
         
         {/* Deadline Information */}
         <div className="mb-4 -mt-2">

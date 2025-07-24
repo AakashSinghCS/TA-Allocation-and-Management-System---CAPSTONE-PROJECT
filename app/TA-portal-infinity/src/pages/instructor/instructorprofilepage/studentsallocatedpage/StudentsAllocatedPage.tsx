@@ -12,10 +12,13 @@ import { fetchAllInstructorCourses } from "../../../../api/instructor/fetchAllIn
 import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
 import { FaUsers } from "react-icons/fa";
 import { FilterSection, SectionCard, exportToCSV, exportToPDF } from "../../../../components/features/allocatedStudent";
+import { useAuth } from "../../../../context/AuthContext";
 
 export default function StudentsAllocatedPage() {
   const { userId } = useParams();
   const iId = Number(userId);
+  const { userRoles } = useAuth();
+  const isCoordinator = userRoles.includes("COORDINATOR");
   const [sections, setSections] = useState<Section[]>([]);
   const [courseList, setCourseList] = useState<Course[]>([]);
   const [existingYears, setExistingYears] = useState<string[]>([]);
@@ -104,11 +107,16 @@ export default function StudentsAllocatedPage() {
           )}
         />
         
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">Students Allocated</h1>
-          <p className="text-gray-600 text-lg">View and manage student allocations for your courses</p>
-        </div>
+        {/* Header - only show when not viewed by coordinator */}
+        {!isCoordinator && (
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-1">Students Allocated</h1>
+            <p className="text-gray-600 text-lg">View and manage student allocations for your courses</p>
+          </div>
+        )}
+
+        {/* Add spacing when coordinator is viewing and header is hidden */}
+        {isCoordinator && <div className="mb-10"></div>}
 
         {/* Filter Section */}
         <FilterSection

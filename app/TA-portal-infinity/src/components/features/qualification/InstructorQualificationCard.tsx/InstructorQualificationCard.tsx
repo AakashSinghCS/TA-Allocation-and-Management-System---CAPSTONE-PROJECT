@@ -45,11 +45,11 @@ export default function InstructorQualificationCard({ initialQualifications, cou
           if (created) {
             setQualifications((q) =>
               q.map((x) => x.tempId === savedTempId ? { ...created, tempId:savedTempId } : x));
-            showToastSuccess("Qualification added successfully!");
+            showToastSuccess("Qualification/Skill added successfully!");
           }
         } catch (error) {
-          showToastError("Failed to add qualification. Please try again.");
-          console.error("Error creating qualification:", error);
+          showToastError("Failed to add qualification/skill. Please try again.");
+          console.error("Error creating qualification/skill:", error);
         }
     };
 
@@ -62,7 +62,7 @@ export default function InstructorQualificationCard({ initialQualifications, cou
       if (removingq.id) {
         try {
           const confirmed = await showToastConfirmation({
-            title: "Delete Lab Skill",
+            title: "Delete Skill/Qualification",
             message: `Are you sure you want to delete "${removingq.description}"? This will permanently remove this qualification from all future and ongoing courses.`,
             confirmText: "Delete",
             cancelText: "Cancel",
@@ -70,8 +70,8 @@ export default function InstructorQualificationCard({ initialQualifications, cou
           });
           
           if (!confirmed) return;
-          
-          console.log("Attempting to delete qualification with ID:", removingq.id);
+
+          console.log("Attempting to delete qualification/skill with ID:", removingq.id);
           const ok = await fetchDeleteQualification(removingq.id);
           console.log("Delete API response:", ok);
           
@@ -80,18 +80,18 @@ export default function InstructorQualificationCard({ initialQualifications, cou
               if(x.id) return x.id !== removingq.id;
               return x.tempId !== removingq.tempId;
             }));
-            showToastSuccess("Qualification deleted successfully!");
+            showToastSuccess("Qualification/Skill deleted successfully!");
           } else {
-            showToastError("Failed to delete qualification. Server returned an error.");
+            showToastError("Failed to delete qualification/skill. Server returned an error.");
           }
         } catch (error) {
-          console.error("Error deleting qualification:", error);
+          console.error("Error deleting qualification/skill:", error);
           showToastError("Failed to delete qualification. Please check your network connection and try again.");
         }
       } else {
         // For unsaved qualifications, just remove from state
         setQualifications(q => q.filter(x => x.tempId !== removingq.tempId));
-        showToastSuccess("Unsaved qualification removed.");
+        showToastSuccess("Unsaved qualification/skill removed.");
       }
     }
     return (
@@ -99,7 +99,7 @@ export default function InstructorQualificationCard({ initialQualifications, cou
       className={`${className} w-full border border-gray-200 rounded-lg bg-white p-4`}
       data-testid="qualification-card"
     >
-      <h3 className="font-semibold text-base text-[#040941] mb-4">Required Lab Skills</h3>
+      <h3 className="font-semibold text-base text-[#040941] mb-4">Required Skills/Qualifications</h3>
 
       {qualifications.length === 0 && !authenticated ? (
         <div className="text-center py-6 text-gray-500 bg-gray-50 rounded-lg border border-dashed border-gray-300">
@@ -128,7 +128,7 @@ export default function InstructorQualificationCard({ initialQualifications, cou
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
           </svg>
-          Add a qualification
+          Add a qualification/skill
         </button>
       )}
     </div>
@@ -150,12 +150,12 @@ function QualificationRow({ isEdit = false, qualification, onSaved, onRemoved, a
         if (description.trim()) {
             onSaved(qualification.tempId, description.trim());
         } else {
-            showToastError("Please enter a qualification description.");
+            showToastError("Please enter a qualification/skill description.");
         }
     };
 
     const handleRemove = () => {
-        console.log("Remove button clicked for qualification:", qualification);
+        console.log("Remove button clicked for qualification/skill:", qualification);
         onRemoved(qualification);
     };
 
@@ -195,7 +195,7 @@ function QualificationRow({ isEdit = false, qualification, onSaved, onRemoved, a
             <button 
               onClick={handleRemove} 
               className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
-              title="Delete qualification"
+              title="Delete qualification/skill"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
