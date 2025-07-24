@@ -7,7 +7,7 @@ import com.infinity.courseservice.enums.ApplicationStatus;
 public record AllocationHistoryDto(
                 Long id,
                 UserDto student,
-                ApplicationStatus applicationStatus,
+                ApplicationStatus status,
                 int numberOfHours,
                 SectionDtoNoCourse section) {
 

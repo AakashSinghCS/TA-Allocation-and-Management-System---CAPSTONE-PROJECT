@@ -9,7 +9,7 @@ public record AllocationHistoryDtoWithCourse(
         Long id,
         UserDto student,
         ApplicationDto applicationDto,
-        ApplicationStatus applicationStatus,
+        ApplicationStatus status,
         int numberOfHours,
         SectionDto section) {
 
