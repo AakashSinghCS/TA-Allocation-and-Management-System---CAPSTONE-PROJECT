@@ -22,14 +22,20 @@ export default function StudentsAllocatedPage() {
   const [selectedYear, setSelectedYear] = useState<number>(-1);
   const [selectedSemester, setSelectedSemester] = useState<string>("W1");
 
-  // Filter sections to only show those with TAs allocated
+  // Filter sections to only show those with CONFIRMED TAs allocated
   const sectionsWithTAs = sections.filter(section => 
-    section.allocations && section.allocations.length > 0
+    section.allocations && section.allocations.some(allocation => allocation.status === "CONFIRMED")
   );
+  
+  // Prepare sections with only CONFIRMED allocations for display
+  const sectionsWithConfirmedTAs = sectionsWithTAs.map(section => ({
+    ...section,
+    allocations: section.allocations?.filter(allocation => allocation.status === "CONFIRMED") || []
+  }));
 
   // Export functions
   const exportToCSV = () => {
-    const csvData = sectionsWithTAs.flatMap(section => 
+    const csvData = sectionsWithConfirmedTAs.flatMap(section => 
       section.allocations?.map(allocation => ({
         'Course Code': `${section.course?.deptCode} ${section.course?.courseNum}`,
         'Course Name': section.course?.name || '',
@@ -81,16 +87,16 @@ export default function StudentsAllocatedPage() {
           </style>
         </head>
         <body>
-          <h1>Student Allocations Report</h1>
+          <h1>Confirmed Student Allocations Report</h1>
           <p>Generated on: ${new Date().toLocaleDateString()}</p>
-          ${sectionsWithTAs.map(section => `
+          ${sectionsWithConfirmedTAs.map(section => `
             <div class="section">
               <div class="section-header">
                 <h3>${section.course?.deptCode} ${section.course?.courseNum} ${section.section} - ${section.course?.name}</h3>
                 <p><strong>Type:</strong> ${section.type} | <strong>Year:</strong> ${section.year} | <strong>Semester:</strong> ${section.semester}</p>
                 ${section.instructor ? `<p><strong>Instructor:</strong> ${section.instructor.firstName} ${section.instructor.lastName}</p>` : ''}
               </div>
-              <h4>Allocated Students (${section.allocations?.length || 0})</h4>
+              <h4>Confirmed TAs (${section.allocations?.length || 0})</h4>
               ${section.allocations?.map(allocation => `
                 <div class="student">
                   <strong>${allocation.student?.firstName} ${allocation.student?.lastName}</strong>
@@ -289,7 +295,7 @@ export default function StudentsAllocatedPage() {
             </div>
           )}
 
-          {sectionsWithTAs.map((section) => (
+          {sectionsWithConfirmedTAs.map((section) => (
             <div key={section?.id} className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
               {/* Combined Section and Allocation Info */}
               <div className="p-6">
@@ -338,7 +344,7 @@ export default function StudentsAllocatedPage() {
                   
                   <div className="text-right">
                     <div className="text-sm font-medium text-gray-900">
-                      {section.allocations?.length || 0} Student{(section.allocations?.length || 0) !== 1 ? 's' : ''}
+                      {section.allocations?.length || 0} Confirmed TA{(section.allocations?.length || 0) !== 1 ? 's' : ''}
                     </div>
                     <div className="text-xs text-gray-500">
                       {section.allocations?.reduce((total, alloc) => total + (alloc.numberOfHours || 0), 0) || 0} Total Hours
@@ -348,7 +354,7 @@ export default function StudentsAllocatedPage() {
 
                 {/* Students List */}
                 <div className="border-t border-gray-100 pt-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-3">Allocated Students</h4>
+                  <h4 className="text-sm font-medium text-gray-700 mb-3">Confirmed TAs</h4>
                   <div className="space-y-2">
                     {section.allocations?.map((allocation) => (
                       <div key={allocation.id} 

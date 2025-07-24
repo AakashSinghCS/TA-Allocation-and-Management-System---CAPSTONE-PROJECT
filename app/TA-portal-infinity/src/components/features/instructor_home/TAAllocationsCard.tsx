@@ -25,9 +25,9 @@ export const TAAllocationsCard: React.FC<TAAllocationsCardProps> = ({ sections, 
               <span className="text-xs text-gray-500 mt-0.5">
                 {section.year} {section.semester} | Section {section.section} | {section.type}
               </span>
-              {section.allocations && section.allocations.length > 0 ? (
+              {section.allocations && section.allocations.filter(alloc => alloc.status === "CONFIRMED").length > 0 ? (
                 <ul className="ml-4 mt-1">
-                  {section.allocations.map((alloc, idx) => (
+                  {section.allocations.filter(alloc => alloc.status === "CONFIRMED").map((alloc, idx) => (
                     <li key={alloc.id || idx} className="text-sm text-gray-700 mb-2">
                       <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-2">

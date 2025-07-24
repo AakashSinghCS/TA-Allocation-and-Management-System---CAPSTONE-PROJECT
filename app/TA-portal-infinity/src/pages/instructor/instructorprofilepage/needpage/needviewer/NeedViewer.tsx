@@ -187,7 +187,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
           <div className="flex items-center justify-between text-sm text-gray-600">
             <span>{sections.length} sections found</span>
             {sections.length > 0 && (
-              <span>{sections.filter(s => s.allocations && s.allocations.length > 0).length} with TAs assigned</span>
+              <span>{sections.filter(s => s.allocations && s.allocations.some(a => a.status === "CONFIRMED")).length} with confirmed TAs</span>
             )}
           </div>
         </div>
@@ -225,7 +225,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
                   </span>
                   <span className="text-gray-500 text-sm">•</span>
                   <span className="text-gray-600 text-sm">
-                    {sec.allocations?.length || 0} TAs assigned
+                    {sec.allocations?.filter(a => a.status === "CONFIRMED")?.length || 0} assigned TAs
                   </span>
                 </div>
               </div>

@@ -10,7 +10,12 @@ export default function AllocationCard({
   allocations = [],
   className = "",
 }: AllocationCardProps) {
-  if (!allocations.length)
+  // Filter to only show CONFIRMED allocations
+  const confirmedAllocations = allocations.filter(allocation => 
+    allocation.status === "CONFIRMED"
+  );
+  
+  if (!confirmedAllocations.length)
     return (
       <div className={`${className} w-full overflow-hidden rounded-lg border border-gray-200 
         bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:border-[#0089b2] 
@@ -22,8 +27,8 @@ export default function AllocationCard({
               <FaGraduationCap />
             </span>
           </div>
-          <p className="text-xs font-semibold text-gray-600">No TAs Assigned</p>
-          <p className="text-xs text-gray-500">Students will appear here once allocated</p>
+          <p className="text-xs font-semibold text-gray-600">No Confirmed TAs</p>
+          <p className="text-xs text-gray-500">Students will appear here once confirmed</p>
         </div>
       </div>
     );
@@ -33,7 +38,7 @@ export default function AllocationCard({
       bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:border-[#0089b2] p-3`}
       data-testid="allocation-card">
       <ul className="space-y-2">
-        {allocations.map((allocation) => (
+        {confirmedAllocations.map((allocation) => (
           <li key={allocation.id} 
             className="flex items-center justify-between p-2 rounded-md border border-gray-100 
               hover:border-[#0089b2] hover:bg-blue-50 transition-all duration-200 group">
