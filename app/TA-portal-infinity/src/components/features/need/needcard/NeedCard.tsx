@@ -2,6 +2,7 @@ import { BookOpen, Check, Edit2, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { Need } from "../../../../interfaces/need/Need";
+import { showToastConfirmation } from "../../../../utility/confirmation/toastConfirmation";
 
 interface NeedCardProps {
   need?: Need;
@@ -55,15 +56,25 @@ export default function NeedCard({
     }
   };
 
-  const handlePrereqNavigation = () => {
+  const handlePrereqNavigation = async () => {
     if (!need) return;
-    const confirm = window.confirm(
-      "Navigating away will discard any unsaved changes. Continue to update prerequisites?"
-    );
-    if (confirm) {
-      navigate(
-        `/user/instructor/updateprereqcourses/${need.courseId}/${need.year}/${need.semester}`
-      );
+    
+    try {
+      const confirmed = await showToastConfirmation({
+        title: "Navigate to Prerequisites",
+        message: "Navigating away will discard any unsaved changes. Continue to update prerequisites?",
+        confirmText: "Continue",
+        cancelText: "Stay",
+        type: "warning"
+      });
+
+      if (confirmed) {
+        navigate(
+          `/user/instructor/updateprereqcourses/${need.courseId}/${need.year}/${need.semester}`
+        );
+      }
+    } catch (error) {
+      console.error("Error in prerequisites navigation:", error);
     }
   };
 

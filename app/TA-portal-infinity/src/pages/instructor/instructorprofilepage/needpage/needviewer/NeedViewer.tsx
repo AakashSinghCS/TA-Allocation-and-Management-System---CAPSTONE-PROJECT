@@ -8,12 +8,13 @@ import { fetchUpdateNeed } from "../../../../../api/need/fetchUpdateNeed";
 import { useState } from "react";
 import { fetchDeleteNeed } from "../../../../../api/need/fetchDeleteNeed";
 import { fetchUnassignInstructor } from "../../../../../api/section/instructor/fetchUnassignInstructor";
-import { confirmDeletion } from "../../../../../utility/confirmation/confirmDeletion";
+import { showToastConfirmation } from "../../../../../utility/confirmation/toastConfirmation";
 import { useAuth } from "../../../../../context/AuthContext";
 import type { Course } from "../../../../../interfaces/course/Course";
 import { fetchSectionNeedAndAllocations } from "../../../../../api/instructor/fetchSectionNeedAndAllocations";
 import type { NeedViewerResponse } from "../InstructorNeedPage";
 import { PiGraduationCapFill } from "react-icons/pi";
+import { toast } from 'react-toastify';
 
 interface NeedViewerProps {
   instructorId: number;
@@ -32,45 +33,82 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
   const [selectedSemester, setSelectedSemester] = useState<string>("W1");
 
   const onDeleteNeed = async (need: Need) => {
-    const confirm = confirmDeletion("TA requirement", "This will erase all the TA requirements for other sections of the associated course");
-    if (confirm) {
-      const success = await fetchDeleteNeed(need);
-      if (success) {
-        setSections((prev) =>
-          prev.map((sec) =>
-            sec.need && sec.need.id === need.id ? { ...sec, need: undefined } : sec
-          )
-        );
+    try {
+      const confirmed = await showToastConfirmation({
+        title: "Delete TA Requirement",
+        message: `Are you sure you want to delete the TA requirement "${need.description}"? This will erase all the TA requirements for other sections of the associated course.`,
+        confirmText: "Delete",
+        cancelText: "Cancel",
+        type: "danger"
+      });
+
+      if (confirmed) {
+        const success = await fetchDeleteNeed(need);
+        if (success) {
+          setSections((prev) =>
+            prev.map((sec) =>
+              sec.need && sec.need.id === need.id ? { ...sec, need: undefined } : sec
+            )
+          );
+          toast.success("TA requirement deleted successfully");
+        } else {
+          toast.error("Failed to delete TA requirement");
+        }
       }
+    } catch (error) {
+      console.error("Error deleting need:", error);
+      toast.error("An error occurred while deleting the TA requirement");
     }
   };
 
   const onUpdateNeed = async (updatedNeed: Need) => {
-    const success = await fetchUpdateNeed(updatedNeed);
-    if (success) {
-      setSections((prev) =>
-        prev.map((sec) =>
-          sec.need && sec.need.id === updatedNeed.id
-            ? { ...sec, need: updatedNeed }
-            : sec
-        )
-      );
+    try {
+      const success = await fetchUpdateNeed(updatedNeed);
+      if (success) {
+        setSections((prev) =>
+          prev.map((sec) =>
+            sec.need && sec.need.id === updatedNeed.id
+              ? { ...sec, need: updatedNeed }
+              : sec
+          )
+        );
+        toast.success("TA requirement updated successfully");
+      } else {
+        toast.error("Failed to update TA requirement");
+      }
+    } catch (error) {
+      console.error("Error updating need:", error);
+      toast.error("An error occurred while updating the TA requirement");
     }
   };
 
   const onDeleteSection = async (s: Section) => {
-    const confirm = window.confirm(
-      "Do you really wish to unassign yourself from this section?"
-    );
-    if (confirm) {
-      const ok = await fetchUnassignInstructor(s?.id ?? -1, instructorId);
-      if (ok) {
-        setSections((prev) =>
-          prev.filter((sec) => sec?.id !== s?.id)
-        );
+    try {
+      const confirmed = await showToastConfirmation({
+        title: "Unassign from Section",
+        message: `Are you sure you want to unassign yourself from section ${s.course?.deptCode} ${s.course?.courseNum} ${s.section}? This action cannot be undone.`,
+        confirmText: "Unassign",
+        cancelText: "Cancel",
+        type: "danger"
+      });
+
+      if (confirmed) {
+        const success = await fetchUnassignInstructor(s?.id ?? -1, instructorId);
+        if (success) {
+          setSections((prev) =>
+            prev.filter((sec) => sec?.id !== s?.id)
+          );
+          toast.success("Successfully unassigned from section");
+        } else {
+          toast.error("Failed to unassign from section");
+        }
       }
+    } catch (error) {
+      console.error("Error unassigning from section:", error);
+      toast.error("An error occurred while unassigning from the section");
     }
-  }
+  };
+
   const onSearch = async () => {
     try {
       const sectionsWithNeeds = await fetchSectionNeedAndAllocations(
@@ -87,8 +125,10 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
       }));
       
       setSections(sectionsWithConfirmedAllocations);
+      toast.success("Search completed successfully");
     } catch (error) {
       console.error("Failed to search sections:", error);
+      toast.error("Failed to search sections");
     }
   };
 

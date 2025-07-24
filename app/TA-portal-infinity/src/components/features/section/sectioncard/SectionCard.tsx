@@ -28,21 +28,16 @@ export default function SectionCard({
   return (
     <div
       data-testid={`section-card-${section?.id}`}
-      className={`${className} relative w-full overflow-hidden rounded-lg border border-gray-200 
-        bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:border-[#0089b2] group p-3`}
+      className={`${className} w-full overflow-hidden rounded-lg text-sm border border-gray-200 bg-white p-3 relative shadow-sm \
+        hover:shadow-md transition-all duration-200 hover:border-[#0089b2]`}
     >
-      {onDelete && authenticated &&(
-        <div title="Delete section from list" className="absolute top-3 right-3 z-10">
+      {onDelete && authenticated && (
+        <div title="Delete section from list" className="absolute top-2 right-2 z-10">
           <button
             onClick={() => onDelete(section)}
-            className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 flex items-center justify-center 
-              border border-red-200 hover:border-red-300 transition-all duration-200 opacity-0 
-              group-hover:opacity-100"
+            className="w-6 h-6 bg-red-500 hover:bg-red-600 rounded-md flex items-center justify-center transition-colors"
           >
-            <Trash2
-              size={14}
-              className="text-red-500 hover:text-red-600 transition-colors"
-            />
+            <Trash2 className="text-white" size={12} />
           </button>
         </div>
       )}
