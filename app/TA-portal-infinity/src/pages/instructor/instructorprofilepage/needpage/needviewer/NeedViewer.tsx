@@ -5,7 +5,7 @@ import type Section from "../../../../../interfaces/section/Section";
 import { Link } from "react-router-dom";
 import type { Need } from "../../../../../interfaces/need/Need";
 import { fetchUpdateNeed } from "../../../../../api/need/fetchUpdateNeed";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { fetchDeleteNeed } from "../../../../../api/need/fetchDeleteNeed";
 import { fetchUnassignInstructor } from "../../../../../api/section/instructor/fetchUnassignInstructor";
 import { confirmDeletion } from "../../../../../utility/confirmation/confirmDeletion";
@@ -13,6 +13,7 @@ import { useAuth } from "../../../../../context/AuthContext";
 import type { Course } from "../../../../../interfaces/course/Course";
 import { fetchSectionNeedAndAllocations } from "../../../../../api/instructor/fetchSectionNeedAndAllocations";
 import type { NeedViewerResponse } from "../InstructorNeedPage";
+import { PiGraduationCapFill } from "react-icons/pi";
 
 interface NeedViewerProps {
   instructorId: number;
@@ -89,99 +90,186 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
   }
 
   return (
-    <div className={"grid gap-3 " + className}>
-      <div className="flex gap-2 items-end w-full">
-        <select
-          value={selectedCourse ?? ""}
-          onChange={(e) =>
-            setSelectedCourse(
-              e.target.value ? Number(e.target.value) : null
-            )
-          }
-        >
-          <option value="">All courses</option>
-          {courseList.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.deptCode} {c.courseNum}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(Number(e.target.value))}
-        >
-          {initial?.existingYears && initial?.existingYears.map((yr) => (
-            <option key={yr} value={yr}>
-              {yr}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={selectedSemester}
-          onChange={(e) => setSelectedSemester(e.target.value)}
-        >
-          {["W1", "W2", "S1", "S2"].map((sem) => (
-            <option key={sem} value={sem}>
-              {sem}
-            </option>
-          ))}
-        </select>
-
-        <button
-          type="button"
-          onClick={onSearch}
-          className="px-3 py-1 h-full bg-[#040941] hover:bg-[#040491] text-white rounded transition-colors cursor-pointer"
-        >
-          Search
-        </button>
-        {isInstructor && (
-          <Link
-            to="/user/instructor/addsection"
-            className=" ml-auto inline-flex items-center justify-center px-3 py-1 
-              h-full bg-[#00c89c] text-white rounded hover:bg-[#c7fcec] hover:text-[#0089b2] transition"
-          >
-            + Add section
-          </Link>
-        )}
-      </div>
-      {/* Header row for large screens */}
-      <div className="hidden lg:grid lg:grid-cols-3 font-medium text-lg text-slate-600">
-        <span>Sections Teaching</span>
-        <span>TA Requirements of Course</span>
-        <span>Students Allocated</span>
-      </div>
-
-      {/* Section rows */}
-      {sections.map((sec) => (
-        <div key={sec?.id} className="grid gap-2 sm:grid-cols-1 lg:grid-cols-3">
-          <SectionCard section={sec} className="" authenticated={isInstructor} onDelete={onDeleteSection} />
-
-          {/* Need column */}
-          {isMainSection(sec) ? (sec.need ? (
-            <NeedCard
-              need={sec.need}
-              className=""
-              onDelete={onDeleteNeed}
-              onUpdate={onUpdateNeed}
-              authenticated={isInstructor}
-            />
-          ) : (
-            <div
-              className="block w-full text-center rounded-lg border-2 border-dashed border-slate-400 px-4 py-3
-                text-sm font-medium text-slate-700 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition cursor-pointer"
+    <div className={"space-y-8 " + className}>
+      {/* Compact Filter Section */}
+      <div className="bg-white rounded-md border border-gray-200 p-4 shadow-sm">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-[#040941]">Filter Sections</h3>
+          {isInstructor && (
+            <Link
+              to="/user/instructor/addsection"
+              className="inline-flex items-center px-3 py-1.5 bg-[#040941] text-white rounded-md 
+                hover:bg-[#030735] transition-colors font-medium text-xs"
             >
-              {isInstructor && <Link to={`/user/instructor/addneed/${sec?.id}`}>Click Me to Add a TA Requirement</Link>}
-            </div>
-          )):<div className="p-2 italic text-slate-400 border border-dashed border-slate-200 rounded-lg">
-              This is a Tutorial, Laboratory, Discussion, Workshop, or Independent Study.
-            </div>}
-
-          {/* Allocation column */}
-          <AllocationCard allocations={sec.allocations} className="" />
+              <svg className="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              Add Section
+            </Link>
+          )}
         </div>
-      ))}
+        
+        {/* Filter Controls */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          {/* Course */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Course</label>
+            <select
+              value={selectedCourse ?? ""}
+              onChange={(e) =>
+                setSelectedCourse(
+                  e.target.value ? Number(e.target.value) : null
+                )
+              }
+              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-[#040941] 
+                focus:border-[#040941] bg-white text-gray-900"
+            >
+              <option value="">All courses</option>
+              {courseList.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.deptCode} {c.courseNum}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Year */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Year</label>
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-[#040941] 
+                focus:border-[#040941] bg-white text-gray-900"
+            >
+              {initial?.existingYears && initial?.existingYears.map((yr) => (
+                <option key={yr} value={yr}>
+                  {yr}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Semester */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Semester</label>
+            <select
+              value={selectedSemester}
+              onChange={(e) => setSelectedSemester(e.target.value)}
+              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-[#040941] 
+                focus:border-[#040941] bg-white text-gray-900"
+            >
+              {["W1", "W2", "S1", "S2"].map((sem) => (
+                <option key={sem} value={sem}>
+                  {sem}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Search Button */}
+          <div className="flex items-end">
+            <button
+              type="button"
+              onClick={onSearch}
+              className="w-full px-3 py-1.5 text-sm bg-[#040941] text-white rounded-md hover:bg-[#030735] 
+                transition-colors font-medium"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+
+        {/* Compact Results Summary */}
+        <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-600">
+          {sections.length} sections found
+        </div>
+      </div>
+
+      {/* Clean Grid Layout */}
+      <div className="space-y-4">
+        {sections.length === 0 && (
+          <div className="text-center py-16 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="w-12 h-12 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No sections found</h3>
+            <p className="text-gray-500">Try adjusting your filter criteria or add a new section.</p>
+          </div>
+        )}
+
+        {sections.map((sec, index) => (
+          <div key={sec?.id} className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            {/* Compact Horizontal Section Header */}
+            <div className="bg-gray-50 border-b border-gray-200 px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-6 h-6 bg-[#040941] text-white rounded-md flex items-center justify-center text-xs font-semibold">
+                    {index + 1}
+                  </div>
+                  <h3 className="text-base font-semibold text-gray-900">
+                    {sec.course?.deptCode} {sec.course?.courseNum} - {sec.type} {sec.section}
+                  </h3>
+                  <span className="text-gray-500 text-sm">•</span>
+                  <span className="text-gray-600 text-sm">
+                    {sec.year} {sec.semester}
+                  </span>
+                  <span className="text-gray-500 text-sm">•</span>
+                  <span className="text-gray-600 text-sm">
+                    {sec.allocations?.length || 0} TAs assigned
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Enhanced Content Grid */}
+            <div className="p-4">
+              <div className="grid lg:grid-cols-3 gap-4">
+                {/* Section Information Panel */}
+                <div>
+                  <h4 className="font-medium text-gray-900 text-sm mb-3 flex items-center">
+                    <svg className="w-4 h-4 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                    Section Details
+                  </h4>
+                  <SectionCard section={sec} authenticated={isInstructor} onDelete={onDeleteSection} />
+                </div>
+
+                {/* TA Requirements Panel */}
+                <div>
+                  <h4 className="font-medium text-gray-900 text-sm mb-3 flex items-center">
+                    <svg className="w-4 h-4 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    TA Requirements
+                  </h4>
+                  <NeedCard
+                    need={sec.need}
+                    onDelete={onDeleteNeed}
+                    onUpdate={onUpdateNeed}
+                    authenticated={isInstructor}
+                    sectionId={sec.id}
+                    isMainSection={isMainSection(sec)}
+                  />
+                </div>
+
+                {/* Students Allocated Panel */}
+                <div>
+                  <h4 className="font-medium text-gray-900 text-sm mb-3 flex items-center">
+                    <PiGraduationCapFill className="w-4 h-4 text-gray-600 mr-2" />
+                    Allocated Students
+                  </h4>
+                  <AllocationCard allocations={sec.allocations} />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

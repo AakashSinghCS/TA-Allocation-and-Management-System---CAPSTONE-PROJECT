@@ -29,7 +29,8 @@ const isCoordinator = useAuth().userRoles.includes("COORDINATOR");
     const base = `/user/instructorprofile/${userId}`;
     tabs.push(
       { to: `/user/profile/${userId}`, label: 'Profile' },
-      { to: `${base}/need`, label: 'Need' },
+      { to: `${base}/need`, label: 'TA Information' },
+      { to: `${base}/students`, label: 'Students Allocated' },
       { to: `${base}/qualifications`, label: 'Instructor Lab Skills' }
     );
   }
