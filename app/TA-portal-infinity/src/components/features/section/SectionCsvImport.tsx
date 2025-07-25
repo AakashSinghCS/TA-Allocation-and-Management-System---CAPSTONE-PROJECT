@@ -1,4 +1,11 @@
 import React, { useState } from "react";
+
+// For debug logging in tests
+declare global {
+  interface Window {
+    __DEBUG_PARSED_DATA__?: any;
+  }
+}
 import Papa from "papaparse";
 
 interface SectionCsvImportProps {
@@ -42,6 +49,8 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Debug: log file change event
+    console.log('File change event:', e.target.files);
     // Reset all UI state for new upload
     setError("");
     setResult("");
@@ -56,11 +65,16 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         skipEmptyLines: true,
         complete: (results) => {
           const data = results.data as Record<string, string>[];
+          // Debug: log parsed data
+          console.log('Parsed CSV data:', data);
+          window.__DEBUG_PARSED_DATA__ = data; // For test debug
+          // Only error if no rows at all
           if (!data || data.length === 0) {
             setError("CSV file is empty or invalid. Please check the file contents.");
             setParsedData(null);
             return;
           }
+          // Do not set error for partial/invalid rows, let backend handle it
           setCsvPreview(data.slice(0, 10)); // Show only the first 10 rows
           setCsvHeaders(results.meta.fields || []);
           setParsedData(data);
@@ -77,13 +91,15 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    setError(""); // Clear error before backend call
     setResult("");
     if (!parsedData || parsedData.length === 0) {
       setError("Please select a valid CSV file and make sure it is not empty.");
       setLoading(false);
       return;
     }
+    // Debug: log parsedData before backend call
+    console.log('Submitting parsedData to backend:', parsedData);
     try {
       // Map CSV headers to SectionCsvData fields
       const mapCsvRowToSection = (row: Record<string, string>) => ({
@@ -122,8 +138,18 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         text = await res.text();
       }
       if (!res.ok) {
-        errorDetail = errorDetail || (text ? `Import failed: ${text}` : `Import failed (status ${res.status})`);
-        setError(errorDetail);
+        // Always show backend error message if present
+        if (text) {
+          console.log('Setting backend error:', `Import failed: ${text}`);
+          setError(`Import failed: ${text}`);
+        } else if (errorDetail) {
+          console.log('Setting backend error:', errorDetail);
+          setError(errorDetail);
+        } else {
+          console.log('Setting backend error:', `Import failed (status ${res.status})`);
+          setError(`Import failed (status ${res.status})`);
+        }
+        return; // Ensure only backend error is shown after backend call
       } else {
         setResult(text);
         setImported(true); // Mark as imported
@@ -160,13 +186,19 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           />
           <button
             type="submit"
-            disabled={loading || !parsedData || parsedData.length === 0 || imported}
-            className={`px-4 py-2 rounded font-semibold transition-colors ${loading || !parsedData || parsedData.length === 0 || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+            disabled={loading || imported}
+            className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
           >
             {loading ? "Importing..." : "Import Sections from CSV"}
           </button>
         </div>
       </form>
+      {/* Error message always immediately after form for visibility */}
+      {error && (
+        <div role="alert" className="mt-2 text-red-600">
+          {error}
+        </div>
+      )}
       {/* CSV preview display */}
       {csvPreview && csvPreview.length > 0 && (
         <div className="mt-4">
@@ -191,11 +223,6 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
               </tbody>
             </table>
           </div>
-        </div>
-      )}
-      {error && (
-        <div role="alert" className="mt-2 text-red-600">
-          {error}
         </div>
       )}
       {result && (
