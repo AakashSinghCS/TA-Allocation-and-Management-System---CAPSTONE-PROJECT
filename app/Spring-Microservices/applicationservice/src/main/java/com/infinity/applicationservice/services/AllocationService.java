@@ -86,6 +86,7 @@ public class AllocationService {
         allocation.setSectionId(request.sectionId());
 
         Allocation saved = allocationRepository.save(allocation);
+        courseInterface.incrementNumberOfTAs(request.sectionId());
         UserDto student = studentInterface.getStudentById(request.studentId()).getBody();
         SectionDto section = courseInterface.getSectionById(request.sectionId());
 
@@ -109,7 +110,11 @@ public class AllocationService {
             courseInterface.updateNeedAllocatedHours(need.id(),
                     need.numHoursCurrentlyAllocated() - allocation.getNumberOfHours());
         }
+        Long sectionId = allocation.getSectionId();
+
         allocationRepository.deleteById(allocationId);
+
+        courseInterface.decrementNumberOfTAs(sectionId);
         return "Student deallocated";
     }
 

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
@@ -62,7 +64,7 @@ public class ApplicationService {
         mapAvailability(req, application);
 
         applicationRepository.save(application);
-        
+
         UserDto student = userInterface.getStudentById(userIdFromHeader).getBody();
         notificationClient.sendEmail(emailMapper.applicationReceivedEmailRequest(student));
 
@@ -133,8 +135,8 @@ public class ApplicationService {
         List<Application> applications = applicationRepository.findAllByStudentId(studentId)
                 .orElseThrow(() -> new NotFoundException("No applications exist for this user"));
         return applications.stream()
-            .map(applicationMapper::toDto)
-            .toList();
+                .map(applicationMapper::toDto)
+                .toList();
     }
 
     private void validateAvailabilities(ApplicationRequest req) {
@@ -150,8 +152,6 @@ public class ApplicationService {
             }
         }
     }
-  
-    
 
     private void mapAvailability(ApplicationRequest req, Application application) {
         if (req.availabilities() != null) {
@@ -176,10 +176,26 @@ public class ApplicationService {
         List<Application> applications = applicationRepository.findByFilters(year, semester, wantRemote, hours,
                 preference1, preference2, preference3);
 
+        return applications.stream()
+                .map(app -> applicationMapper.toDtoWithStudent(app,
+                        userInterface.getStudentById(app.getStudentId()).getBody()))
+                .toList();
+    }
 
-         return applications.stream()
-            .map(app -> applicationMapper.toDtoWithStudent(app,
-                    userInterface.getStudentById(app.getStudentId()).getBody()))
-            .toList();
-    }   
+    public Page<ApplicationWithStudentDto> getAllApplications(
+            Integer year,
+            Boolean wantRemote,
+            Integer hours,
+            Subject pref1,
+            Subject pref2,
+            Subject pref3,
+            Pageable pageable) {
+
+        Page<Application> page = applicationRepository
+                .findByFilters(year, wantRemote, hours, pref1, pref2, pref3, pageable);
+
+        return page.map(app -> applicationMapper.toDtoWithStudent(
+                app,
+                userInterface.getStudentById(app.getStudentId()).getBody()));
+    }
 }

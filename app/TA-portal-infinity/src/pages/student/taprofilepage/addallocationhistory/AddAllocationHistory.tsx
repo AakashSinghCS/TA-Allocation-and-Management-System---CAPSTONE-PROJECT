@@ -1,77 +1,89 @@
+// AddAllocationHistory.tsx
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchFilteredSections, type FilterSectionsProps } from "../../../../api/course/sectionfilter/fetchFilteredSections";
-import { fetchPostAllocationHistory } from "../../../../api/student/allocation/fetchPostAllocationHistory";
-import { fetchStudentAllocationHistory } from "../../../../api/student/allocation/fetchStudentAllocationHistory";
 import SectionFilter from "../../../../components/features/course/coursefilter/SectionFilter";
 import SectionList from "../../../../components/features/course/sectionlist/SectionList";
 import { useAuth } from "../../../../context/AuthContext";
 import type Section from "../../../../interfaces/section/Section";
 import { convertFilterSectionsToSections } from "../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections";
+import { fetchStudentAllocationHistory } from "../../../../api/student/allocation/fetchStudentAllocationHistory";
+import { fetchPostAllocationHistory } from "../../../../api/student/allocation/fetchPostAllocationHistory";
+import { type FilterSectionsProps } from "../../../../api/course/sectionfilter/fetchFilteredSections";
+import { useDebounce } from "../../../../utility/pagination/useDebounce";
+import { useSectionSearchPage } from "../../../../api/course/sectionfilter/useSectionFilter";
+import Pagination from "../../../../utility/pagination/pagination/Pagination";
+import { StatusIndicator } from "../../../../components/ui/statusindicator/StatusIndicator";
 
 export default function AddAllocationHistory() {
   const { userId: studentId } = useAuth();
   const navigate = useNavigate();
-  const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
-  const [loading, setLoading] = useState(false);
+
+  // ----- Selection state -----
   const [selectedSections, setSelectedSections] = useState<Section[]>([]);
   const [initialSections, setInitialSections] = useState<Section[]>([]);
 
+  // Fetch existing history on mount
   useEffect(() => {
     const fetchData = async () => {
-    const fetched = await fetchStudentAllocationHistory(studentId);
-    // ensure every Section has a sectionDetails.sectionId+    
-     const sectionsWithSids: Section[] = fetched.map(sec => ({
-      ...sec,
-        // if the real sectionId is missing, fall back to the course‐level id
-       id: sec?.id ?? sec.course?.id ?? -1
-      
-    }));
-
-    setSelectedSections(sectionsWithSids);
-    setInitialSections(sectionsWithSids);
-  };
+      const fetched = await fetchStudentAllocationHistory(studentId);
+      const sectionsWithSids: Section[] = fetched.map((sec) => ({
+        ...sec,
+        id: sec?.id ?? sec.course?.id ?? -1,
+      }));
+      setSelectedSections(sectionsWithSids);
+      setInitialSections(sectionsWithSids);
+    };
     fetchData();
   }, [studentId]);
 
-  const handleFilterChange = async (filters: FilterSectionsProps) => {
-    setLoading(true);
-    try {
-      const raw = await fetchFilteredSections(filters);
-      setFilteredSections(convertFilterSectionsToSections(raw || []));
-    } catch (e) {
-      navigate("/error", { replace: true, state: { message: (e as Error).message } });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // toggle a single section by sectionId
+  // Toggle select
   const onSelect = useCallback((sec: Section) => {
     const sid = sec?.id;
     if (sid == null) return;
-
-    setSelectedSections(prev => {
-      if (prev.some(s => s?.id === sid)) {
-        return prev.filter(s => s?.id !== sid);
-      }
-      return [...prev, sec];
-    });
+    setSelectedSections((prev) =>
+      prev.some((s) => s?.id === sid)
+        ? prev.filter((s) => s?.id !== sid)
+        : [...prev, sec]
+    );
   }, []);
 
-
-  // remove by sectionId
   const onRemovePrereq = (sidToRemove: number) => {
-    setSelectedSections(prev =>
-      prev.filter(s => s?.id !== sidToRemove)
-    );
+    setSelectedSections((prev) => prev.filter((s) => s?.id !== sidToRemove));
   };
 
   const handleSaveHistory = async () => {
-    const ok = await fetchPostAllocationHistory(studentId, selectedSections, initialSections);
+    const ok = await fetchPostAllocationHistory(
+      studentId,
+      selectedSections,
+      initialSections
+    );
     alert(ok ? "History updated!" : "Failed to update history.");
     navigate(`/user/taprofile/${studentId}/allocationHistory`);
   };
+
+  // ----- Filtering + pagination -----
+  const [filters, setFilters] = useState<FilterSectionsProps>({});
+  const [page, setPage] = useState(0);
+  const size = 10;
+
+  const debouncedFilters = useDebounce(filters, 300);
+
+  const { data, isFetching, isError, error } = useSectionSearchPage(
+    debouncedFilters,
+    page,
+    size
+  );
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(0);
+  }, [debouncedFilters]);
+
+  const handleFilterChange = useCallback((f: FilterSectionsProps) => {
+    setFilters(f);
+  }, []);
+
+  const sections = convertFilterSectionsToSections(data?.content ?? []);
 
   return (
     <div className="container mx-auto p-4 w-full max-w-3xl">
@@ -82,10 +94,11 @@ export default function AddAllocationHistory() {
         </p>
       </div>
 
+      {/* Selected list */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Selected Sections</h3>
         <div className="space-y-2">
-          {selectedSections.map(sec => {
+          {selectedSections.map((sec) => {
             const sid = sec?.id;
             return (
               <div
@@ -109,21 +122,43 @@ export default function AddAllocationHistory() {
         </div>
       </div>
 
-       <div className="border p-4 rounded-md shadow-sm mb-4">
-         <SectionFilter onFilterChange={handleFilterChange} mode="large" />
-       </div>
+      {/* Filter */}
+      <div className="border p-4 rounded-md shadow-sm mb-4">
+        <SectionFilter onFilterChange={handleFilterChange} mode="large" />
+      </div>
 
-      {loading ? (
-        <p>Loading sections…</p>
-      ) : (
-        <SectionList
-          sections={filteredSections}
-          mode="studentAddHistory"
-          onSelect={onSelect}
-          askForConfirmation={true}
-        />
+      {/* Results */}
+      {isError && (
+        <p className="text-red-600">
+          {(error as Error)?.message ?? "Failed to load sections"}
+        </p>
       )}
 
+      {isFetching && <StatusIndicator loading={isFetching} />}
+
+      {!isFetching && !isError && (
+        <>
+          <SectionList
+            sections={sections}
+            mode="studentAddHistory"
+            onSelect={onSelect}
+            askForConfirmation={true}
+          />
+
+          <Pagination
+            page={page}
+            pageCount={data?.totalPages ?? 0}
+            onPrev={() => setPage((p) => Math.max(0, p - 1))}
+            onNext={() =>
+              setPage((p) =>
+                Math.min((data?.totalPages ?? 1) - 1, p + 1)
+              )
+            }
+          />
+        </>
+      )}
+
+      {/* Save */}
       <div className="mt-4 flex justify-end">
         <button
           onClick={handleSaveHistory}
@@ -135,3 +170,4 @@ export default function AddAllocationHistory() {
     </div>
   );
 }
+

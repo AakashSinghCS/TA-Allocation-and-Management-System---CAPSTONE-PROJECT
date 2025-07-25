@@ -3,6 +3,7 @@ package com.infinity.applicationservice.feign;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,4 +53,11 @@ public interface CourseInterface {
         @GetMapping("/semesters/{year}/{semester}")
         public ResponseEntity<SemesterDto> getSemesterByYearAndSemester(@PathVariable Integer year,
                         @PathVariable String semester);
+
+    @PutMapping("/sections/{id}/incrementTA")
+    void incrementNumberOfTAs(@PathVariable Long id);
+
+    @PutMapping("/sections/{id}/decrementTA")
+    void decrementNumberOfTAs(@PathVariable Long id);
+
 }
