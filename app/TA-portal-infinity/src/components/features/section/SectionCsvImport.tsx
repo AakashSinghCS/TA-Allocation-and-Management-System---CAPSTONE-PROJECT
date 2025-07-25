@@ -165,6 +165,10 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
     <div className="max-w-2xl min-w-[600px] mx-auto p-4 bg-white rounded shadow">
       <h2 className="text-lg font-bold mb-2">Import Sections from CSV</h2>
       <div className="mb-4">
+        <div className="text-sm text-gray-700 mb-2">
+          You can download a sample CSV file for section import.<br />
+          Use this as a reference for the required format and columns.
+        </div>
         <button
           type="button"
           onClick={handleDownloadSampleCsv}
