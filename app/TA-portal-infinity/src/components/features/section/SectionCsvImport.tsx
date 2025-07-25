@@ -241,20 +241,10 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           onChange={handleFileChange}
         />
       </div>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
         </div>
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={loading || imported}
-            className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
-          >
-            {loading ? "Importing..." : "Import"}
-          </button>
-        </div>
       </form>
-      {/* Error message always immediately after form for visibility */}
       {error && (
         <div role="alert" className="mt-2 text-red-600">
           {error}
@@ -274,7 +264,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
                 </tr>
               </thead>
               <tbody>
-                {csvPreview && csvPreview.length > 0 && csvPreview.map((row, idx) => (
+                {csvPreview.map((row, idx) => (
                   <tr key={idx}>
                     {csvHeaders.map((header) => (
                       <td key={header} className="px-2 py-1 border-b">{row[header]}</td>
@@ -286,6 +276,16 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           </div>
         </div>
       )}
+      {/* <div className="flex justify-end mt-6">
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={loading || imported}
+          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+        >
+          {loading ? "Importing..." : "Import"}
+        </button>
+      </div> */}
       {result && (
         <div
           role="alert"
@@ -296,6 +296,16 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           {result}
         </div>
       )}
+      <div className="flex justify-end mt-6">
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={loading || imported}
+          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+        >
+          {loading ? "Importing..." : "Import"}
+        </button>
+      </div>
       {result && result.includes('Failed: 0') && (
         <>
         {/* Can change "Close" button position to "left", "center", or "right" by uncommenting the corresponding */}
