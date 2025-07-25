@@ -182,7 +182,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
             id="csv-file"
             type="file"
             onChange={handleFileChange}
-            disabled={imported}
+            // ファイル選択は常に有効
           />
           <button
             type="submit"
