@@ -5,6 +5,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { fetchDeadlines, updateDeadline } from "../../../api/admin/FetchDeadline";
 import type { DeadlineDto } from "../../../interfaces/admin/Deadline";
+import { addSemester } from "../../../api/semester/addSemester";
+import type { SemesterCreate } from "../../../interfaces/semester/Semester";
 
 function formatDeadlineName(name: string): string {
   return name
@@ -24,7 +26,6 @@ const DeadlineManagementPage: React.FC = () => {
   };
   const [termConfig, setTermConfig] = useState(initialTermConfig);
   const [termLoading, setTermLoading] = useState(false);
-  const [termSuccess, setTermSuccess] = useState(false);
   useEffect(() => {
     setTermConfig(initialTermConfig);
   }, []);
@@ -33,28 +34,51 @@ const DeadlineManagementPage: React.FC = () => {
   };
   // Client-side validation for term config dates
   const isValidTermDates = (start: string, end: string) => {
-    if (!start || !end) return false;
     const startDate = new Date(start);
     const endDate = new Date(end);
     return startDate < endDate;
   };
 
   const handleSaveTerm = async () => {
+    if (!termConfig.startDate || !termConfig.endDate) {
+      toast.error("Both start and end dates must be specified.");
+      return;
+    }
+
     if (!isValidTermDates(termConfig.startDate, termConfig.endDate)) {
       toast.error("Start date must be before end date.");
       return;
     }
     setTermLoading(true);
-    setTimeout(() => {
+    
+    try {
+      const semesterData: SemesterCreate = {
+        year: parseInt(termConfig.year.toString()),
+        semester: termConfig.semester as "W1" | "W2" | "S1" | "S2",
+        startDate: termConfig.startDate,
+        endDate: termConfig.endDate
+      };
+      
+      const success = await addSemester(semesterData, token || "");
+      
+      if (success) {
+        toast.success('Term configuration saved successfully!');
+        // Reset form to initial state
+        setTermConfig(initialTermConfig);
+      } else {
+        toast.error('Failed to save term configuration.');
+      }
+    } catch (error) {
+      console.error("Error saving term:", error);
+      toast.error('Error saving term configuration.');
+    } finally {
       setTermLoading(false);
-      toast.success('Term configuration updated!');
-    }, 800);
+    }
   };
   // Deadlines state
   const [deadlines, setDeadlines] = useState<DeadlineDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [showSuccess, setShowSuccess] = useState(false);
 
   // Load deadlines on mount
   useEffect(() => {
@@ -89,7 +113,6 @@ const DeadlineManagementPage: React.FC = () => {
 
   // Client-side validation for start and end time
   const isValidDeadline = (start: string, end: string) => {
-    if (!start || !end) return false;
     const startDate = new Date(start);
     const endDate = new Date(end);
     return startDate < endDate;
@@ -99,12 +122,18 @@ const DeadlineManagementPage: React.FC = () => {
   const handleSave = async (deadline: DeadlineDto) => {
     const start = deadline.startTime.slice(0, 16);
     const end = deadline.endTime.slice(0, 16);
+
+    if (!start || !end) {
+      toast.error("Both start and end time must be specified.");
+      return;
+    }
+
     if (!isValidDeadline(start, end)) {
       toast.error("Start time must be before end time.");
       return;
     }
     try {
-      const updated = await updateDeadline(deadline.name, deadline, token || "");
+      await updateDeadline(deadline.name, deadline, token || "");
       const data = await fetchDeadlines(token || "");
       setDeadlines(data);
       toast.success('Deadline updated successfully!');
@@ -158,10 +187,10 @@ return (
               onChange={e => handleTermChange("semester", e.target.value)}
               className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-40"
             >
-              <option value="W1">W1 (Fall)</option>
-              <option value="W2">W2 (Winter)</option>
-              <option value="S1">S1 (Summer I)</option>
-              <option value="S2">S2 (Summer II)</option>
+              <option value="W1">W1</option>
+              <option value="W2">W2</option>
+              <option value="S1">S1</option>
+              <option value="S2">S2</option>
             </select>
           </div>
           <div className="flex flex-col">
