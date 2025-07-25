@@ -85,4 +85,17 @@ describe("SectionCsvImport", () => {
       expect(alert).toHaveTextContent(/import failed/i);
     });
   });
+  
+  it("should trigger download when Download Sample CSV button is clicked", () => {
+    // Spy on document.body methods
+    const appendChildSpy = vi.spyOn(document.body, "appendChild");
+    const removeChildSpy = vi.spyOn(document.body, "removeChild");
+    
+    render(<SectionCsvImport />);
+    const button = screen.getByRole("button", { name: /download sample csv/i });
+    fireEvent.click(button);
+    
+    expect(appendChildSpy).toHaveBeenCalled();
+    expect(removeChildSpy).toHaveBeenCalled();
+  });
 });
