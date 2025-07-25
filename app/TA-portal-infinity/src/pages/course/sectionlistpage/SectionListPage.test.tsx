@@ -121,14 +121,11 @@ describe('<SectionListPage />', () => {
     const csvContent =
       'firstName,lastName,studentNum,deptCode,courseNum,section,year,semester\nScoobert,Doobert,63260442,COSC,499,001,2025,W1';
     const file = new File([csvContent], 'test.csv', { type: 'text/csv' });
-    await waitFor(() => {
-      expect(screen.getByText('Import Sections from CSV')).toBeTruthy();
-    });
-    await waitFor(() => {
-      if (!container.querySelector('[data-testid="csv-file-input"]')) throw new Error('file input not found');
-    });
-    const fileInput = container.querySelector('[data-testid="csv-file-input"]');
-    if (!fileInput) throw new Error('file input not found after waitFor');
+    // Open the CSV import modal
+    fireEvent.click(screen.getAllByText('Import Sections from CSV')[0]);
+    // Get the file input element
+    const fileInput = await screen.findByTestId('csv-file-input');
+    expect(fileInput).not.toBeNull();
     fireEvent.change(fileInput, { target: { files: [file] } });
     // (2) delete that course
     mockDelCourse.mockResolvedValueOnce({}); // pretend API success

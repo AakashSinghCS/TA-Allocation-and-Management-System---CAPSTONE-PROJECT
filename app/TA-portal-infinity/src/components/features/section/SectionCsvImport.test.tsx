@@ -87,7 +87,7 @@ describe("SectionCsvImport", () => {
     const input = container.querySelector('#csv-file');
     if (!input) throw new Error('File input not found');
     fireEvent.change(input, { target: { files: [file] } });
-    // CSVプレビューが表示されるまで待つ
+    // Wait until the CSV preview is displayed
     await waitFor(() => {
       expect(screen.getByText(/CSV Preview/i)).toBeInTheDocument();
     });

@@ -236,6 +236,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           ref={fileInputRef}
           accept=".csv"
           id="csv-file"
+          data-testid="csv-file-input"
           type="file"
           style={{ display: 'none' }}
           onChange={handleFileChange}
