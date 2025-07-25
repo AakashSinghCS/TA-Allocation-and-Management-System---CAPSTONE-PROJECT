@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import Papa from "papaparse";
 
-export default function SectionCsvImport() {
+interface SectionCsvImportProps {
+  onClose?: () => void;
+}
+
+export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   // const [file, setFile] = useState<File | null>(null); // temporary commented out the unused state
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -85,6 +89,7 @@ export default function SectionCsvImport() {
         setError(errorDetail);
       } else {
         setResult(text);
+        // Removed auto-close on successful import
       }
     } catch (err: any) {
       setError(err?.message ? `Import failed: ${err.message}` : "Import failed.");
@@ -149,6 +154,14 @@ export default function SectionCsvImport() {
         >
           {result}
         </div>
+      )}
+      {result && result.includes('Failed: 0') && (
+        <button
+          className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
+          onClick={onClose}
+        >
+          Close 
+        </button>
       )}
     </div>
   );
