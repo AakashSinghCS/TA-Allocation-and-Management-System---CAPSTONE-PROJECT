@@ -473,7 +473,7 @@ public class SectionServiceTest {
     void importSectionsFromJson_missingRequiredFields() {
         var data = new com.infinity.courseservice.dtos.SectionDtos.SectionCsvData("", "", "", null, "", "", "", "", "", "");
         String result = sectionService.importSectionsFromJson(List.of(data));
-        assertTrue(result.contains("Errors: 1"));
+        assertTrue(result.contains("Failed: 1"));
         assertTrue(result.contains("Missing required fields"));
     }
 
@@ -483,7 +483,7 @@ public class SectionServiceTest {
         Course course = new Course("COSC", "Intro to CS", "111");
         when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
         String result = sectionService.importSectionsFromJson(List.of(data));
-        assertTrue(result.contains("Errors: 1"));
+        assertTrue(result.contains("Failed: 1"));
         assertTrue(result.contains("Invalid section type"));
     }
 
@@ -494,7 +494,7 @@ public class SectionServiceTest {
         when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
         when(sectionRepository.findByCourseAndYearAndSemesterAndSectionAndType(course, 2025, "Winter", "001", SectionType.LECTURE)).thenReturn(Optional.empty());
         String result = sectionService.importSectionsFromJson(List.of(data));
-        assertTrue(result.contains("Errors: 1"));
+        assertTrue(result.contains("Failed: 1"));
         assertTrue(result.contains("Invalid time format"));
     }
 }
