@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import TAAllocationPage from './AllocationPage';
 import { vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 vi.mock('../../../context/AuthContext', () => ({
   useAuth: () => ({
@@ -26,10 +27,14 @@ vi.mock('../../../api/allocation/fetchAllocationByStudent', () => ({
 
 describe('TAAllocationPage', () => {
   it('renders the main headings and panels', () => {
+    const queryClient = new QueryClient();
+
     render(
+      <QueryClientProvider client={queryClient}>
       <MemoryRouter>
         <TAAllocationPage />
       </MemoryRouter>
+      </QueryClientProvider>
     );
     expect(screen.getByText(/TA Allocations/i)).toBeInTheDocument();
     expect(screen.getByText(/Course Filter/i)).toBeInTheDocument();
