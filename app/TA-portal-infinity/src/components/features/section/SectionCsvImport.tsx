@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 // For debug logging in tests
 declare global {
@@ -20,8 +20,10 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   const [csvPreview, setCsvPreview] = useState<Array<Record<string, string>> | null>(null);
   const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
   const [parsedData, setParsedData] = useState<Array<Record<string, string>> | null>(null);
-  // Add a flag to track if import is done
   const [imported, setImported] = useState(false);
+  const [isDragActive, setIsDragActive] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Sample CSV headers
   const sampleHeaders = [
@@ -60,6 +62,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
     setImported(false); // Reset imported flag
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
+      setSelectedFileName(selectedFile.name);
       Papa.parse(selectedFile, {
         header: true,
         skipEmptyLines: true,
@@ -177,17 +180,66 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           Download Sample CSV
         </button>
       </div>
+
+      {/* Improved explanation between download and file upload */}
+      <div className="mb-4">
+        <hr className="my-2" />
+        <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
+          <li>Select or drag a CSV file with the required columns to import section data.</li>
+          <li>Only the first 10 rows will be previewed before import.</li>
+          <li><span className="font-semibold">Please make sure your CSV file matches the sample format.</span></li>
+        </ul>
+        <hr className="my-2" />
+      </div>
+
+      {/* Drag-and-drop upload area */}
+      <div
+        className={`mb-4 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-white'}`}
+        style={{ minHeight: 120 }}
+        onClick={() => fileInputRef.current?.click()}
+        onDragOver={e => {
+          e.preventDefault();
+          setIsDragActive(true);
+        }}
+        onDragLeave={e => {
+          e.preventDefault();
+          setIsDragActive(false);
+        }}
+        onDrop={e => {
+          e.preventDefault();
+          setIsDragActive(false);
+          if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            setSelectedFileName(e.dataTransfer.files[0].name);
+            handleFileChange({
+              target: { files: e.dataTransfer.files },
+            } as React.ChangeEvent<HTMLInputElement>);
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-label="Upload CSV file by drag and drop or click"
+      >
+        <div className="flex flex-col items-center justify-center py-6">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="#64748b" className="mb-2">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 16v-8m0 0l-4 4m4-4l4 4" />
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke="#64748b" strokeWidth={2} fill="none" />
+          </svg>
+          <span className="text-gray-500">
+            {selectedFileName ? selectedFileName : "Drag a file here or click to choose"}
+          </span>
+        </div>
+        <input
+          ref={fileInputRef}
+          accept=".csv"
+          id="csv-file"
+          type="file"
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
+      </div>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-          <label htmlFor="csv-file" className="font-medium text-gray-700">File</label>
-          <input
-            accept=".csv"
-            className="block file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
-            id="csv-file"
-            type="file"
-            onChange={handleFileChange}
-            // ファイル選択は常に有効
-          />
+          {/* ...existing code... (remove old file input, drag-and-drop now handles file selection) */}
           <button
             type="submit"
             disabled={loading || imported}
