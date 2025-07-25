@@ -1,4 +1,4 @@
-package com.infinity.applicationservice.services;
+package com.infinity.courseservice.services;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,14 +13,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.infinity.applicationservice.dtos.Audit.AuditEventDto;
-import com.infinity.applicationservice.dtos.Users.UserDto;
-import com.infinity.applicationservice.enums.ActionOptions;
-import com.infinity.applicationservice.exceptions.NotFoundException;
-import com.infinity.applicationservice.feign.UserInterface;
-import com.infinity.applicationservice.models.AuditEvent;
-import com.infinity.applicationservice.repositories.AuditRepository;
-import com.infinity.applicationservice.utility.AuditMapper;
+import com.infinity.courseservice.dtos.AuditDtos.AuditEventDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.ActionOptions;
+import com.infinity.courseservice.exceptions.NotFoundException;
+import com.infinity.courseservice.feign.UserInterface;
+import com.infinity.courseservice.models.AuditEvent;
+import com.infinity.courseservice.repositories.AuditRepository;
+import com.infinity.courseservice.utility.AuditMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,9 +31,7 @@ public class AuditService {
     private final AuditRepository auditRepo;
     private final ObjectMapper objectMapper;
     private final AuditMapper auditMapper;
-    // private final UserRepository userRepository;
     private final UserInterface userInterface;
-    // private final ApplicationRe
 
     private static final String SERVICE_NAME = "application-service";
 

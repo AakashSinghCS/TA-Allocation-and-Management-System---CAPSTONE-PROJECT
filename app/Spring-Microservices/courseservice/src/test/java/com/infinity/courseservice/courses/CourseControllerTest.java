@@ -1,6 +1,7 @@
 package com.infinity.courseservice.courses;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -74,12 +75,14 @@ public class CourseControllerTest {
                                 null, null,
                                 null, null);
                 CourseDto response = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+                Long userIdFromHeader = 1L;
 
-                when(courseService.addCourse(any(CourseRequest.class))).thenReturn(response);
+                when(courseService.addCourse(any(CourseRequest.class), eq(userIdFromHeader))).thenReturn(response);
 
                 mockMvc.perform(post("/courses/addCourse")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
+                                .content(objectMapper.writeValueAsString(request))
+                                .header("X-User-Id", userIdFromHeader))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.deptCode").value("COSC"))
                                 .andExpect(jsonPath("$.name").value("Distributed Systems"))
@@ -92,12 +95,13 @@ public class CourseControllerTest {
                                 null, null,
                                 null, null);
                 CourseDto response = new CourseDto(1L, "COSC", "Distributed Systems", "455");
-
-                when(courseService.updateCourse(any(CourseRequest.class), any())).thenReturn(response);
+                Long userIdFromHeader = 1L;
+                when(courseService.updateCourse(any(CourseRequest.class), any(), eq(userIdFromHeader))).thenReturn(response);
 
                 mockMvc.perform(put("/courses/updateCourse/1")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
+                                .content(objectMapper.writeValueAsString(request))
+                                .header("X-User-Id", userIdFromHeader))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.deptCode").value("COSC"))
                                 .andExpect(jsonPath("$.name").value("Distributed Systems"))
@@ -106,13 +110,14 @@ public class CourseControllerTest {
 
         @Test
         void testDeleteCourse() throws Exception {
-
+                Long userIdFromHeader = 1L;
                 String response = "Course deleted";
 
-                when(courseService.deleteCourse(any())).thenReturn(response);
+                when(courseService.deleteCourse(any(),eq(userIdFromHeader))).thenReturn(response);
 
                 mockMvc.perform(delete("/courses/deleteCourse/1")
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-User-Id", userIdFromHeader))
                                 .andExpect(status().isOk());
         }
 
@@ -266,15 +271,20 @@ public class CourseControllerTest {
         void testAddStudentTaughtCourse() throws Exception {
                 StudentTaughtCourseRequest request = new StudentTaughtCourseRequest(1001L, 2023, Semester.W1);
 
+                Long userIdFromHeader = 1L;
         mockMvc.perform(post("/courses/studentTaught/add/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(objectMapper.writeValueAsString(request))
+                .header("X-User-Id", userIdFromHeader))
                 .andExpect(status().isOk());
     }
     
     @Test
     void testDeleteStudentTaughtCourse() throws Exception {
-        mockMvc.perform(delete("/courses/studentTaught/delete/1/1"))
+        Long userIdFromHeader = 1L;
+        
+        mockMvc.perform(delete("/courses/studentTaught/delete/1/1")
+                .header("X-User-Id", userIdFromHeader))
                 .andExpect(status().isOk());
     }
     
@@ -284,8 +294,8 @@ public class CourseControllerTest {
                         "COSC", 2025, 3, null,
                         null, null,true);
         CourseDto course = new CourseDto(1L, "COSC", "Algorithms", "320");
-
-                StudentTaughtCourseDto dto = new StudentTaughtCourseDto(student, course, Semester.S2, 2022);
+                Long stcId = 1L;
+                StudentTaughtCourseDto dto = new StudentTaughtCourseDto(stcId,student, course, Semester.S2, 2022);
 
                 when(courseService.getCoursesTaughtByStudent(1001L)).thenReturn(List.of(dto));
 

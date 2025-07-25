@@ -56,4 +56,11 @@ public class Course {
         this.name = name;
         this.courseNum = courseNum;
     }
+
+    public Course(Course other){
+        this.id = other.id;
+        this.deptCode = other.deptCode;
+        this.name = other.name;
+        this.courseNum = other.courseNum;
+    }
 }

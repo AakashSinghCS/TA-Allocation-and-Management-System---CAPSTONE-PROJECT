@@ -26,4 +26,11 @@ public class StudentTaughtCourse {
 
     @Column(name = "student_year")
     private int year;
+
+    public StudentTaughtCourse(Long studentId, Course course, Semester semester, int year){
+        this.studentId = studentId;
+        this.course = course;
+        this.semester = semester;
+        this.year = year;
+    }
 }

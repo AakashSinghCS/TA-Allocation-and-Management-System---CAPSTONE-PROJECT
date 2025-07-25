@@ -106,7 +106,10 @@ public class ApplicationService {
                 "Application with studentId " + studentId +
                 " and year " + currentYear + " doesn't exist"));
 
-        auditService.record(
+       
+
+        applicationRepository.delete(toDelete);
+         auditService.record(
             userIdFromHeader,
             ActionOptions.DELETE,
             "Application",
@@ -114,9 +117,7 @@ public class ApplicationService {
             null,
             toDelete.getId()
         );
-
-        applicationRepository.delete(toDelete);
-
+        
         return "Application deleted";
     }
 

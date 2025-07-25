@@ -22,6 +22,7 @@ import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.ActionOptions;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.ApplicationInterface;
@@ -35,6 +36,7 @@ import com.infinity.courseservice.repositories.SectionScheduleRepository;
 import com.infinity.courseservice.repositories.StudentTaughtCourseRepository;
 import com.infinity.courseservice.utility.CourseMapper;
 import com.infinity.courseservice.utility.SectionMapper;
+import com.infinity.courseservice.utility.StudentTaughtCourseMapper;
 
 import org.springframework.lang.Nullable;
 import jakarta.persistence.EntityNotFoundException;
@@ -56,10 +58,11 @@ public class CourseService {
     private final CourseMapper courseMapper;
     private final StudentTaughtCourseRepository stcRepository;
     private final SectionMapper sectionMapper;
-
+    private final AuditService auditService;
+    private final StudentTaughtCourseMapper studentTaughtCourseMapper;
     // private final EnrollmentService enrollmentService;
 
-    public CourseDto addCourse(CourseRequest request) {
+    public CourseDto addCourse(CourseRequest request, Long userIdFromHeader) {
         String deptCode = Optional.ofNullable(request.deptCode()).orElse("").trim();
         String name = Optional.ofNullable(request.name()).orElse("").trim();
         String courseNum = Optional.ofNullable(request.courseNum()).orElse("").trim();
@@ -74,6 +77,15 @@ public class CourseService {
             throw new BadRequestException("Course already exists " + ex);
         }
 
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "Course",   
+            null,               
+            course,           
+            course.getId()   
+        );
+
         return courseMapper.courseToDto(course);
     }
 
@@ -83,21 +95,49 @@ public class CourseService {
         return courseMapper.courseToDto(course);
     }
 
-    public CourseDto updateCourse(CourseRequest request, Long courseId) {
+    public CourseDto updateCourse(CourseRequest request, Long courseId, Long userIdFromHeader) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
+
+        Course before = new Course(course);
         course.setDeptCode(request.deptCode());
         course.setName(request.name());
         course.setCourseNum(request.courseNum());
         courseRepository.save(course);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "Course",   
+            before,               
+            course,           
+            course.getId()   
+        );
+
         return courseMapper.courseToDto(course);
     }
 
-    public String deleteCourse(Long courseId) {
-        if (!courseRepository.existsById(courseId)) {
-            throw new NotFoundException("No course with id " + courseId);
-        }
-        courseRepository.deleteById(courseId);
+    public String deleteCourse(Long courseId, Long userIdFromHeader) {
+        // if (!courseRepository.existsById(courseId)) {
+        //     throw new NotFoundException("No course with id " + courseId);
+        // }
+        
+        Course toDelete = courseRepository
+            .findById(courseId)
+            .orElseThrow(() -> new NotFoundException(
+               "No course with id " + courseId));
+
+        // courseRepository.deleteById(courseId);
+        courseRepository.delete(toDelete);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "Course",   
+            toDelete,               
+            null,           
+            toDelete.getId()   
+        );
+
         return "Course deleted";
     }
 
@@ -207,7 +247,7 @@ public class CourseService {
         return result;
     }
 
-    public void addStudentTaughtCourse(Long courseId, StudentTaughtCourseRequest request) {
+    public StudentTaughtCourseDto addStudentTaughtCourse(Long courseId, StudentTaughtCourseRequest request, Long userIdFromHeader) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("Course not found"));
 
@@ -218,11 +258,32 @@ public class CourseService {
                 .year(request.year())
                 .build();
 
-        stcRepository.save(record);
+        StudentTaughtCourse saved = stcRepository.save(record);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "StudentTaughtCourse",   
+            null,               
+            saved,           
+            saved.getId()   
+        );
+        
+        return studentTaughtCourseMapper.toDto(saved);
     }
 
-    public void deleteStudentTaughtCourse(Long studentId, Long courseId) {
-        stcRepository.deleteByStudentIdAndCourseId(studentId, courseId);
+    public void deleteStudentTaughtCourse(Long studentId, Long courseId, Long userIdFromHeader) {
+        StudentTaughtCourse toDelete = 
+            stcRepository.findByStudentIdAndCourseId(studentId, courseId);
+        stcRepository.delete(toDelete);
+        
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "StudentTaughtCourse",   
+            toDelete,               
+            null,           
+            toDelete.getId()   
+        );
     }
 
     public List<StudentTaughtCourseDto> getCoursesTaughtByStudent(Long studentId) {
@@ -230,6 +291,7 @@ public class CourseService {
 
         return stcRepository.findByStudentId(studentId).stream()
                 .map(record -> new StudentTaughtCourseDto(
+                        record.getId(),
                         student,
                         new CourseDto(record.getCourse().getId(), record.getCourse().getDeptCode(),
                                 record.getCourse().getName(), record.getCourse().getCourseNum()),

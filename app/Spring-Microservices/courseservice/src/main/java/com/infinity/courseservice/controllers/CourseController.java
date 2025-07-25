@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,22 +47,24 @@ public class CourseController {
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addCourse")
-    public ResponseEntity<CourseDto> addCourse(@RequestBody CourseRequest request) {
-        return ResponseEntity.ok(courseService.addCourse(request));
+    public ResponseEntity<CourseDto> addCourse(@RequestBody CourseRequest request,  @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(courseService.addCourse(request,userIdFromHeader));
 
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PutMapping("/updateCourse/{courseId}")
     public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseRequest request,
-            @PathVariable Long courseId) {
-        return ResponseEntity.ok(courseService.updateCourse(request, courseId));
+            @PathVariable Long courseId,
+             @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(courseService.updateCourse(request, courseId,userIdFromHeader));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("/deleteCourse/{courseId}")
-    public ResponseEntity<String> deleteCourse(@PathVariable Long courseId) {
-        return ResponseEntity.ok(courseService.deleteCourse(courseId));
+    public ResponseEntity<String> deleteCourse(@PathVariable Long courseId,
+     @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(courseService.deleteCourse(courseId,userIdFromHeader));
     }
 
     @PostMapping("/filterCourses")
@@ -137,16 +140,18 @@ public class CourseController {
     @PostMapping("/studentTaught/add/{courseId}")
     public ResponseEntity<Void> addStudentTaughtCourse(
             @PathVariable Long courseId,
-            @RequestBody StudentTaughtCourseRequest request) {
-        courseService.addStudentTaughtCourse(courseId, request);
+            @RequestBody StudentTaughtCourseRequest request,
+            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        courseService.addStudentTaughtCourse(courseId, request,userIdFromHeader);
         return ResponseEntity.ok().build();
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('COORDINATOR', 'STUDENT')")
     @DeleteMapping("/studentTaught/delete/{studentId}/{courseId}")
-    public ResponseEntity<Void> deleteStudentTaughtCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
-        courseService.deleteStudentTaughtCourse(studentId, courseId);
+    public ResponseEntity<Void> deleteStudentTaughtCourse(@PathVariable Long studentId, @PathVariable Long courseId,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        courseService.deleteStudentTaughtCourse(studentId, courseId,userIdFromHeader);
         return ResponseEntity.ok().build();
     }
 
