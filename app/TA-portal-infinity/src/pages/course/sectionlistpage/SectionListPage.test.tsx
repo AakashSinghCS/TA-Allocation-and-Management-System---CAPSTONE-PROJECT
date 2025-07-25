@@ -151,9 +151,18 @@ describe('<SectionListPage />', () => {
     const fileInput = screen.getByLabelText(/File/i);
     fireEvent.change(fileInput, { target: { files: [file] } });
 
-    await waitFor(() =>
-      expect(screen.getByText(/CSV Preview \(first 10 rows\):/i)).toBeInTheDocument()
-    );
+    await waitFor(() => {
+      // Manually query all elements with the preview label class and check their combined text
+      const labels = document.querySelectorAll('.font-semibold.mb-2');
+      let found = false;
+      labels.forEach(label => {
+        const text = label.textContent || '';
+        if (text.includes('CSV Preview') && text.includes('first 10 rows')) {
+          found = true;
+        }
+      });
+      expect(found).toBe(true);
+    });
 
     expect(screen.queryByLabelText(/Choose CSV file/i)).not.toBeInTheDocument();
     // expect(mockImportAllocations).toHaveBeenCalledTimes(1); // Commented out due to test environment limitations for file upload

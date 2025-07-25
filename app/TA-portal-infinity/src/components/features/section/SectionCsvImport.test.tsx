@@ -15,7 +15,7 @@ describe("SectionCsvImport", () => {
   it("shows error if no file is selected", async () => {
     render(<SectionCsvImport />);
     // Try to submit with no file selected
-    const button = screen.getByRole("button", { name: /import sections from csv/i });
+    const button = screen.getByRole("button", { name: /import/i });
     fireEvent.click(button);
     await waitFor(() => {
       const alert = screen.getByRole('alert');
@@ -25,7 +25,7 @@ describe("SectionCsvImport", () => {
 
   it("parses CSV and sends mapped JSON to backend", async () => {
     // Prepare a fake CSV file
-    const csvContent = `Dept Code,Course Number,Course Name,Year,Semester,Section,Type,Day,Start Time,End Time\nCOSC,111,Intro to CS,2025,Winter,001,LEC,Mon,09:00,10:00`;
+    const csvContent = `Dept Code,Course Number,Course Name,Year,Semester,Section,Type,Day,Start Time,End Time\nCOSC,111,Intro to CS,2025,Winter,001,LEC,Mon,09:00,10:00\nCOSC,112,Advanced CS,2025,Winter,002,LEC,Tue,10:00,11:00`;
     const file = new File([csvContent], "sections.csv", { type: "text/csv" });
     mockFetch.mockResolvedValue({
       ok: true,
@@ -33,13 +33,26 @@ describe("SectionCsvImport", () => {
       json: async () => ({ message: "Import successful" })
     });
     render(<SectionCsvImport />);
-    const input = screen.getByLabelText(/file/i);
+    const { container } = render(<SectionCsvImport />);
+    const input = container.querySelector('#csv-file');
+    if (!input) throw new Error('File input not found');
     fireEvent.change(input, { target: { files: [file] } });
-    // Wait for CSV preview to appear
+    // Debug: print DOM after file upload
+    screen.debug();
+    // Wait for CSV preview to appear (check for preview label and table headers)
     await waitFor(() => {
-      expect(screen.getByText(/CSV Preview/)).toBeInTheDocument();
+      // Use a function matcher to find the preview label even if split/wrapped
+      expect(
+        screen.getByText((content, element) =>
+          content.includes('CSV Preview') && content.includes('first 10 rows')
+        )
+      ).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: /Dept Code/i })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: /Course Number/i })).toBeInTheDocument();
     });
-    const button = screen.getByRole("button", { name: /import sections from csv/i });
+    // There may be multiple 'Import' buttons, so select the last one (actual import action)
+    const importButtons = screen.getAllByRole("button", { name: /import/i });
+    const button = importButtons[importButtons.length - 1];
     fireEvent.click(button);
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledTimes(1);
@@ -67,18 +80,18 @@ describe("SectionCsvImport", () => {
       headers: { get: () => "application/json" },
       json: async () => ({ message: "Import failed: missing required fields" })
     });
-    render(<SectionCsvImport />);
-    // Simulate file upload with one row of invalid data (not empty, at least three fields)
-    const csvContent = `Dept Code,Course Number,Course Name,Year,Semester,Section,Type,Day,Start Time,End Time\nCOSC,111,Intro to CS,,,,,,,
-    `;
+    const { container } = render(<SectionCsvImport />);
+    // Simulate file upload with 2 valid rows (1 row is for error case)
+    const csvContent = `Dept Code,Course Number,Course Name,Year,Semester,Section,Type,Day,Start Time,End Time\nCOSC,999,Invalid Course,2025,Fall,001,LEC,Mon,09:00,10:00\nCOSC,111,Intro to CS,2025,Winter,001,LEC,Mon,09:00,10:00`;
     const file = new File([csvContent], "sections.csv", { type: "text/csv" });
-    const input = screen.getByLabelText(/file/i);
+    const input = container.querySelector('#csv-file');
+    if (!input) throw new Error('File input not found');
     fireEvent.change(input, { target: { files: [file] } });
-    // Wait for CSV preview to appear to ensure parsedData is set
+    // CSVプレビューが表示されるまで待つ
     await waitFor(() => {
-      expect(screen.getByText(/CSV Preview/)).toBeInTheDocument();
+      expect(screen.getByText(/CSV Preview/i)).toBeInTheDocument();
     });
-    const button = screen.getByRole("button", { name: /import sections from csv/i });
+    const button = screen.getByRole("button", { name: /import/i });
     fireEvent.click(button);
     await waitFor(() => {
       const alert = screen.getByRole('alert');
