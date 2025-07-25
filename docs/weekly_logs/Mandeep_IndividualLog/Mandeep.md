@@ -1656,5 +1656,110 @@ Addressed key UI concerns while keeping development velocity on PR #448. Coordin
 - Finalize and submit PR #448  
 - Perform peer testing of updated application components
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 22 July, Tuesday
+
+**Clockify:** ![clockify_images/july_22.png](clockify_images/july_22.png)
+
+## Time Slot
+- **3:02 PM – 3:45 PM:** Team meeting/logs
+- **10:45 AM – 12:30 PM:** Team meeting discussion
+- **12:09 AM – 2:31 AM:** Completed issue #448, PR up
+
+## Current Tasks
+- Participated in team meeting for project coordination and planning
+- Continued development on PR #448 (profile page aesthetics) and completed 
+- Updated team logs and documentation
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                 | STATUS      |
+|--------------|---------------------------------------------|-------------|
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#448](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/448) | Aesthetics of the profile page across all user roles and addition of missing feature if any | Completed |
+| #NA          | Team meetings and coordination              | Completed   |
+| #NA          | Log updates and documentation               | Completed   |
+
+## Cycle Goal Review
+
+### Reflection
+Productive day with team coordination through meetings. Made steady progress on the profile page aesthetics work while maintaining good communication with the team about project status and next steps.
+
+### Retrospective
+Team meetings were effective for alignment, but need to ensure more focused development time. The profile page work is progressing well but requires continued attention to detail for UI/UX consistency across user roles.
+
+## Next Cycle Goals
+- [UBCO-COSC499-S2025/team-10-capstone-infinity#469](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/469)Instructor entire view improvement and missing feature 
+- Finalize profile page aesthetics across all user roles
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 23 July, Wednesday
+
+**Clockify:** ![clockify_images/july_23.png](clockify_images/july_23.png)
+
+## Time Slot
+- **11:37 PM – 4:30 AM (+1):** Issues #479, #483, #482 completion
+- **1:41 PM – 7:20 PM:** Issues #481, #480, #478 completion
+
+## Current Tasks
+- Completed multiple critical issues and enhancements
+- Worked on section needs viewing page with UI improvements
+- Implemented export functionality and allocation viewing features
+- Fixed qualification page issues and dashboard improvements
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                 | STATUS      |
+|--------------|---------------------------------------------|-------------|
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#478](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/478) | Added a dedicated page for viewing section needs and details, with UI enhancements for clarity and usability | Completed |
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#479](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/479) | Created a separate page to view allocated students, showing detailed allocation info per section | Completed |
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#480](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/480) | Implemented export functionality (PDF & CSV) for confirmed section allocations | Completed |
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#481](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/481) | Improved the Qualification page, including better layout, validation, and data handling | Completed |
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#482](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/482) | Fixed a logic issue in allocated number of hours calculation and display | Completed |
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#483](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/483) | Addressed multiple dashboard issues, improving data loading, metric accuracy, and responsiveness | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Highly productive day with completion of 6 major issues spanning different areas of the application. Successfully implemented new viewing pages, export functionality, and resolved critical bugs in qualification and dashboard components. The work covered both UI enhancements and backend integration improvements.
+
+### Retrospective
+Excellent momentum in addressing multiple issues simultaneously. The completion of export functionality and allocation viewing pages significantly improves the user experience for coordinators. Dashboard fixes ensure better data accuracy and loading performance.
+
+## Next Cycle Goals
+- Continue with issue #469 (Instructor view improvements)
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 24 July, Thursday
+
+**Clockify:** ![clockify_images/july_24.png](clockify_images/july_24.png)
+
+## Time Slot
+- **12:14PM– 3:40PM:** Working on finalizing PR #469 - Instructor entire view improvement and missing features 
+
+## Current Tasks
+- Implementing instructor view improvements and adding missing features
+- Enhanced UI/UX for instructor dashboard and related components
+- Testing and validating instructor-specific functionality
+
+## Progress Update
+| TASK/ISSUE # | DESCRIPTION                                 | STATUS      |
+|--------------|---------------------------------------------|-------------|
+| [UBCO-COSC499-S2025/team-10-capstone-infinity#469](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/469) | Instructor entire view improvement and missing feature | Completed |
+| #469        | UI/UX enhancements for instructor interface | Completed |
+| #469         | Testing and validation of instructor features | Completed |
+
+## Cycle Goal Review
+
+### Reflection
+Focused work session on improving the instructor experience across the application. Working to identify and implement missing features while enhancing the overall user interface for instructor-specific workflows.
+
+### Retrospective
+Building on the momentum from yesterday's completion of 6 major issues. The instructor view improvements require careful attention to user experience and feature completeness to ensure instructors have all necessary tools for their workflows.
+
+## Next Cycle Goals
+| [#490](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/490) | Add term fields to application form & impacted flow | Application Form         | 
+| [#489](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/489) | Integration backend and frontend Global Config       | Config                   | 
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
