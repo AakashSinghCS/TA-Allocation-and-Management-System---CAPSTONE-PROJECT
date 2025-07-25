@@ -1,4 +1,4 @@
-## Monday (July 22-24)
+## Thursday (July 22-24)
 
 ### Timesheet
 Clockify report
@@ -48,6 +48,10 @@ What was not done:
 * Finish transcript CSV parsing, validation, and preview UI
 * Implement robust error messages and edge case handling
 * Add automated tests and sample data for transcript import
+
+
+
+
 
 
 
