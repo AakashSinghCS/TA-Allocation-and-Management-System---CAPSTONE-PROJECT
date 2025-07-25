@@ -2,6 +2,7 @@ package com.infinity.applicationservice.models;
 
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.infinity.applicationservice.enums.Day;
 
@@ -45,5 +46,6 @@ public class Availability {
 
     @ManyToOne
     @JoinColumn(name = "application_id", nullable = false)
+    @JsonBackReference("app-avail")
     private Application application;
 }

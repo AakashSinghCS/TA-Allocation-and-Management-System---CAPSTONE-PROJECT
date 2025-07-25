@@ -74,4 +74,14 @@ public class Section {
         this.instructorId = instructorId;
         this.course = course;
     }
+
+    public Section(Section other){
+        this.id = other.id;
+        this.year = other.year;
+        this.semester= other.semester;
+        this.section = other.section;
+        this.instructorId= other.instructorId;
+        this.type = other.type;
+        this.course = other.course;
+    }
 }

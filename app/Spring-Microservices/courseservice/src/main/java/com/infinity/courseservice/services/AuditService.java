@@ -33,7 +33,7 @@ public class AuditService {
     private final AuditMapper auditMapper;
     private final UserInterface userInterface;
 
-    private static final String SERVICE_NAME = "application-service";
+    private static final String SERVICE_NAME = "course-service";
 
     public void record(
             Long actorId,

@@ -45,6 +45,8 @@ public class AuditService {
             Object after,
             Long entityId) {
         try {
+            System.out.println("TESTTTTT!!!");
+            System.out.println(actorId);
             String beforeJson = before == null ? null
                     : objectMapper.writeValueAsString(before);
             String afterJson = after == null ? null
@@ -61,6 +63,7 @@ public class AuditService {
                     .build();
             auditRepo.save(ev);
         } catch (JsonProcessingException e) {
+            System.out.println(e);
             // log or rethrow as needed
         }
     }

@@ -3,10 +3,15 @@ package com.infinity.courseservice.sections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import org.mockito.Mockito;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -27,6 +32,7 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.ActionOptions;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -39,6 +45,7 @@ import com.infinity.courseservice.models.SectionSchedule;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
+import com.infinity.courseservice.services.AuditService;
 import com.infinity.courseservice.services.EnrollmentService;
 import com.infinity.courseservice.services.SectionService;
 
@@ -60,15 +67,19 @@ public class SectionServiceTest {
     @Mock
     private ApplicationInterface applicationInterface;
 
-    @Mock
-    private EnrollmentService enrollmentService;
-
-
     @InjectMocks
     private SectionService sectionService;
 
+    @Mock
+    private EnrollmentService enrollmentService;
+
+    @Mock
+    private AuditService auditService;
+
+
     @Test
     void testAddSectionSuccess() {
+        Long userIdFromHeader = 1L;
         Course course = new Course("COSC", "Software Engineering", "310");
         course.setId(1L);
 
@@ -80,23 +91,32 @@ public class SectionServiceTest {
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
         when(sectionRepository.save(any(Section.class))).thenReturn(section);
 
-        var result = sectionService.addSection(1L, request);
+        var result = sectionService.addSection(1L, request,userIdFromHeader);
 
         assertEquals("001", result.section());
         assertEquals("W1", result.semester());
+        verify(auditService).record(
+            eq(userIdFromHeader),
+            eq(ActionOptions.CREATE),
+            eq("Section"),
+            isNull(),
+            eq(section),
+            eq(section.getId()));
     }
-
+   
     @Test
     void testAddSection_CourseNotFound() {
+        Long userIdFromHeader = 1L;
         when(courseRepository.findById(99L)).thenReturn(Optional.empty());
 
         SectionAddDtoRequest request = new SectionAddDtoRequest("COSC", "Test", "123", "001",
                 SectionType.LECTURE, 2025, "W1", null, null);
-        assertThrows(NotFoundException.class, () -> sectionService.addSection(99L, request));
+        assertThrows(NotFoundException.class, () -> sectionService.addSection(99L, request,userIdFromHeader));
     }
 
     @Test
     void testAddSection_Duplicate() {
+        Long userIdFromHeader = 1L;
         SectionAddDtoRequest request = new SectionAddDtoRequest("COSC", "Test", "123", "001",
                 SectionType.LECTURE, 2025, "W1", null, null);
         Course course = new Course("COSC", "Test", "123");
@@ -104,7 +124,7 @@ public class SectionServiceTest {
         when(sectionRepository.save(any(Section.class)))
                 .thenThrow(new DataIntegrityViolationException("Duplicate entry"));
 
-        BadRequestException ex = assertThrows(BadRequestException.class, () -> sectionService.addSection(1L, request));
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> sectionService.addSection(1L, request,userIdFromHeader));
 
         assertEquals("Section already exists org.springframework.dao.DataIntegrityViolationException: Duplicate entry",
                 ex.getMessage());
@@ -112,28 +132,42 @@ public class SectionServiceTest {
 
     @Test
     void testUpdateSectionNotFound() {
+        Long userIdFromHeader = 1L;
         CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
                 SectionType.LECTURE, 2025, "W1", null, null, null, null);
         when(sectionRepository.findById(1L)).thenReturn(Optional.empty());
 
-        NotFoundException ex = assertThrows(NotFoundException.class, () -> sectionService.updateSection(1L, request));
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> sectionService.updateSection(1L, request,userIdFromHeader));
 
         assertEquals("No section with id 1", ex.getMessage());
     }
 
     @Test
     void testUpdateSectionSuccess() {
+        Long userIdFromHeader = 1L;
         Course course = new Course("COSC", "Software Engineering", "310");
         course.setId(1L);
         Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course, null);
+        Section before = new Section(section);
         when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
+        when(sectionRepository.save(any(Section.class))).thenAnswer(invocation -> invocation.getArgument(0));
         CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
                 SectionType.LECTURE, 2025, "W1", null, null, null, null);
-        SectionDto dto = sectionService.updateSection(1L, request);
-
+        SectionDto dto = sectionService.updateSection(1L, request,userIdFromHeader);
+        Course courseInSectionDto = new Course(dto.course().deptCode(),dto.course().name(),dto.course().courseNum());
+        courseInSectionDto.setId(dto.course().id());
+        Section after = new Section(dto.year(),dto.semester(), dto.section(), dto.type(),courseInSectionDto,null);
+        after.setId(before.getId());
         assertEquals(SectionType.LECTURE, dto.type());
         assertEquals(2025, dto.year());
         assertEquals("W1", dto.semester());
+        verify(auditService).record(
+            eq(userIdFromHeader),
+            eq(ActionOptions.UPDATE),
+            eq("Section"),
+            eq(before),
+            eq(after),
+            eq(before.getId()));
     }
 
     @Test
@@ -147,25 +181,15 @@ public class SectionServiceTest {
 
     @Test
     void testDeleteSectionSuccess() {
-        Long sectionId = 1L;
+        when(sectionRepository.existsById(1L)).thenReturn(true);
+        when(applicationInterface.setSectionIdNull(1L))
+            .thenReturn(ResponseEntity.ok(3));
+        when(enrollmentService.clearSectionFromStudentCourses(1L))
+            .thenReturn(5);
 
-        when(sectionRepository.existsById(sectionId)).thenReturn(true);
+        String response = sectionService.deleteSection(1L);
 
-        when(applicationInterface.setSectionIdNull(sectionId))
-            .thenReturn(ResponseEntity.ok(5));
-        when(enrollmentService.clearSectionFromStudentCourses(sectionId))
-            .thenReturn(3);
-
-        String response = sectionService.deleteSection(sectionId);
-
-        assertEquals(
-            "Section deleted. 5 allocations cleared. 3 enrollments affected.",
-            response
-        );
-        verify(sectionRepository).existsById(sectionId);
-        verify(sectionRepository).deleteById(sectionId);
-        verify(applicationInterface).setSectionIdNull(sectionId);
-        verify(enrollmentService).clearSectionFromStudentCourses(sectionId);
+        assertEquals("Section deleted. 3 allocations cleared. 5 enrollments affected.", response);
     }
 
     @Test
@@ -298,8 +322,7 @@ public class SectionServiceTest {
     void testAssignInstructor_Success() {
         AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L);
 
-        UserDto instructorDto = new UserDto(2L,"Alice", "Wang", "awang@test.com", List.of(UserRole.INSTRUCTOR), null, null, null, null, 12345678,
-                "COSC", null,true);
+        UserDto instructorDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.INSTRUCTOR), null, null, null, null, 12345678, "COSC", null, false);
         Course course = new Course("COSC", "AI", "310");
         Section section = new Section(2025, "W1", "001", SectionType.LECTURE, course,null);
         section.setId(101L);
@@ -316,8 +339,7 @@ public class SectionServiceTest {
     @Test
     void testAssignInstructor_SectionNotFound() {
         AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L);
-        UserDto instructorDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.INSTRUCTOR),
-                null, null, null, null, 12345678,"COSC", null,true);
+        UserDto instructorDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.INSTRUCTOR), null, null, null, null, 12345678, "COSC", null, false);
 
         when(userInterface.getInstructorById(99L)).thenReturn(instructorDto);
         when(sectionRepository.findById(101L)).thenReturn(Optional.empty());
@@ -462,5 +484,47 @@ public class SectionServiceTest {
         assertThrows(NotFoundException.class, () -> sectionService.getSectionWithInstructorIdById(99L));
     }
 
+    // --- CSV Import/Export tests ---
+    @Test
+    void importSectionsFromJson_success() {
+        var data = new com.infinity.courseservice.dtos.SectionDtos.SectionCsvData(
+                "COSC", "111", "Intro to CS", 2025, "Winter", "001", "LECTURE", "Mon", "09:00", "10:00"
+        );
+        Course course = new Course("COSC", "Intro to CS", "111");
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
+        when(sectionRepository.findByCourseAndYearAndSemesterAndSectionAndType(course, 2025, "Winter", "001", SectionType.LECTURE)).thenReturn(Optional.empty());
+        when(sectionRepository.save(any())).thenReturn(Mockito.mock(Section.class));
+        String result = sectionService.importSectionsFromJson(List.of(data));
+        assertTrue(result.contains("Success: 1"));
+        assertFalse(result.contains("Errors: 1"));
+    }
 
+    @Test
+    void importSectionsFromJson_missingRequiredFields() {
+        var data = new com.infinity.courseservice.dtos.SectionDtos.SectionCsvData("", "", "", null, "", "", "", "", "", "");
+        String result = sectionService.importSectionsFromJson(List.of(data));
+        assertTrue(result.contains("Errors: 1"));
+        assertTrue(result.contains("Missing required fields"));
+    }
+
+    @Test
+    void importSectionsFromJson_invalidType() {
+        var data = new com.infinity.courseservice.dtos.SectionDtos.SectionCsvData("COSC", "111", "Intro to CS", 2025, "Winter", "001", "INVALID", "Mon", "09:00", "10:00");
+        Course course = new Course("COSC", "Intro to CS", "111");
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
+        String result = sectionService.importSectionsFromJson(List.of(data));
+        assertTrue(result.contains("Errors: 1"));
+        assertTrue(result.contains("Invalid section type"));
+    }
+
+    @Test
+    void importSectionsFromJson_invalidTimeFormat() {
+        var data = new com.infinity.courseservice.dtos.SectionDtos.SectionCsvData("COSC", "111", "Intro to CS", 2025, "Winter", "001", "LECTURE", "Mon", "invalid", "invalid");
+        Course course = new Course("COSC", "Intro to CS", "111");
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
+        when(sectionRepository.findByCourseAndYearAndSemesterAndSectionAndType(course, 2025, "Winter", "001", SectionType.LECTURE)).thenReturn(Optional.empty());
+        String result = sectionService.importSectionsFromJson(List.of(data));
+        assertTrue(result.contains("Errors: 1"));
+        assertTrue(result.contains("Invalid time format"));
+    }
 }

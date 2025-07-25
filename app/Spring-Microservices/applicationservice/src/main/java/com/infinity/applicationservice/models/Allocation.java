@@ -1,5 +1,6 @@
 package com.infinity.applicationservice.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 
 import jakarta.persistence.*;
@@ -25,6 +26,7 @@ public class Allocation {
     
     @ManyToOne
     @JoinColumn(name = "application_id")
+    @JsonBackReference("app-alloc")
     private Application application;
 
     //TODO: prevent orphaned keys when deleting sections! make it be null.

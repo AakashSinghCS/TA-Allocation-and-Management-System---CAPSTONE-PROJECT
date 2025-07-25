@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,14 +47,16 @@ public class SectionController {
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addSection/{courseId}")
     public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId,
-            @RequestBody SectionAddDtoRequest request) {
-        return ResponseEntity.ok(sectionService.addSection(courseId, request));
+            @RequestBody SectionAddDtoRequest request,
+            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.addSection(courseId, request,userIdFromHeader));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PutMapping("/updateSection/{sectionId}")
-    public ResponseEntity<SectionDto> updateSection(@PathVariable Long sectionId, @RequestBody CourseRequest request) {
-        return ResponseEntity.ok(sectionService.updateSection(sectionId, request));
+    public ResponseEntity<SectionDto> updateSection(@PathVariable Long sectionId, @RequestBody CourseRequest request
+    ,@RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.updateSection(sectionId, request,userIdFromHeader));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")

@@ -64,8 +64,6 @@ public class ApplicationService {
         Application saved = applicationRepository.save(application);
         
         UserDto student = userInterface.getStudentById(userIdFromHeader).getBody();
-        notificationClient.sendEmail(emailMapper.applicationReceivedEmailRequest(student));
-
          auditService.record(
             userIdFromHeader,
             ActionOptions.CREATE,
@@ -75,6 +73,8 @@ public class ApplicationService {
             saved.getId()
         );
 
+        notificationClient.sendEmail(emailMapper.applicationReceivedEmailRequest(student));
+        
         return applicationMapper.toDto(application);
     }
 
@@ -117,7 +117,7 @@ public class ApplicationService {
             null,
             toDelete.getId()
         );
-        
+
         return "Application deleted";
     }
 

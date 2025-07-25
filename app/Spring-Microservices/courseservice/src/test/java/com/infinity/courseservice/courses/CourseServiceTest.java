@@ -581,7 +581,6 @@ public class CourseServiceTest {
                                 savedEntity.getSemester(),
                                 savedEntity.getYear());
 
-                // stub the mapper to return it
                 when(studentTaughtCourseMapper.toDto(savedEntity))
                                 .thenReturn(expectedDto);
 
