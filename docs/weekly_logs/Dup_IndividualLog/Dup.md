@@ -2763,3 +2763,62 @@ Tommorrow:
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
 - Security improvement.
 - TBA: must discuss with teammates first on what to do.
+
+
+## Thursday 7/24 (7/22~7/25)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July24.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#421](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/421)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#463](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/463)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#471](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Issue 463 has to be delayed until I get back from Allen about the backend progress so that I can integrate backend.
+Today:
+- I integrated application-service into the auditing cycle.
+- I completed the courseService and I just started on getting the sectionService into the auditing cycle.
+- I learned that the models need to have @JsonManagedReference or @JsonBackReference so that there are no infinite recursion bugs when doing the auditing.
+Tommorrow:
+- Issue 463 is the priority. If it can't be done, I will continue finishing the the course-service after I do project discussions.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+- Security improvement.
+- TBA: must discuss with teammates first on what to do.
