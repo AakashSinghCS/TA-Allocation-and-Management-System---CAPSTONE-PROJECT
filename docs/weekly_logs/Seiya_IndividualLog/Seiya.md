@@ -1,4 +1,4 @@
-## Monday (July 22-24)
+## Thursday (July 22-24)
 
 ### Timesheet
 Clockify report
