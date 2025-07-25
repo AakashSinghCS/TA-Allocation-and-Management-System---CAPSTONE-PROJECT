@@ -12,17 +12,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalTime;
 import java.util.List;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
@@ -44,7 +42,6 @@ import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.enums.SectionType;
-import com.infinity.courseservice.enums.Semester;
 import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.services.CourseService;
 import com.infinity.courseservice.services.SectionService;
@@ -326,7 +323,7 @@ public class CourseControllerTest {
 
         @Test
         void testAddStudentTaughtCourse() throws Exception {
-                StudentTaughtCourseRequest request = new StudentTaughtCourseRequest(1001L, 2023, Semester.W1);
+                StudentTaughtCourseRequest request = new StudentTaughtCourseRequest(1001L, 2025, "W1");
 
                 mockMvc.perform(post("/courses/studentTaught/add/1")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -348,7 +345,7 @@ public class CourseControllerTest {
                                 null, null, true);
                 CourseDto course = new CourseDto(1L, "COSC", "Algorithms", "320");
 
-                StudentTaughtCourseDto dto = new StudentTaughtCourseDto(student, course, Semester.S2, 2022);
+                StudentTaughtCourseDto dto = new StudentTaughtCourseDto(student, course, 2022, "S2");
 
                 when(courseService.getCoursesTaughtByStudent(1001L)).thenReturn(List.of(dto));
 
