@@ -1,3 +1,45 @@
+## Thursday (July 22-24)
+
+### Timesheet
+Clockify report
+![alt text](./jul22-24.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allow applications to be semester specific - backend [477](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/477)
+
+### Progress Update (since July 21st 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Backend for global config for term <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/428">428</a>
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Allow applications to be semester specific - backend <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/477">477</a>
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I finished the backend for global config, which ended up being a lengthy issue for all the refactoring that took place and fixing tests. But I think it works well and is overall better and allows more flexibility down the line having these semesters bound in a table. I started doing the application refactor to be semester specific which now pretty much works except a number of tests have understandably broken and will need to be fixed before I make the PR.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Once the application changes are finalized in the backend, I'll decide whether I need to do another new task in the backend or if I should complete the frontend portion of this. I've been still doing a lot of pair programming for front and back end with Mandeep but if his hands are too full I may step in and complete some of this functionality for him there.
+
 ## Monday (July 18-21)
 
 ### Timesheet
@@ -5,7 +47,7 @@ Clockify report
 ![alt text](./jul18-21.png)
 
 ### Current Tasks (Provide sufficient detail)
-  * #1: Backend for global config for term
+  * #1: Backend for global config for term [428](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/428)
 
 ### Progress Update (since July 17th 2025) 
 <table>
