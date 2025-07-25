@@ -31,9 +31,9 @@ public class Allocation {
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status;
 
-    private int labPrepHours;
+    private double labPrepHours;
     private int gradingHours;
-    private int sectionHours;
+    private double sectionHours;
 
     @Column(name = "student_id")
     private Long studentId;

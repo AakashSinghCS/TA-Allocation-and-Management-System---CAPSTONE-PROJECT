@@ -1,13 +1,15 @@
 package com.infinity.applicationservice.dtos.Allocations;
 
+import com.infinity.applicationservice.enums.TaskType;
+
 public record AllocatedSectionDto(
     Long id,
     Long allocationId,
     Long sectionId,
-    String task
+    TaskType task
 ) {
-    
-    public AllocatedSectionDto(Long id, Long allocationId, Long sectionId, String task) {
+
+    public AllocatedSectionDto(Long id, Long allocationId, Long sectionId, TaskType task) {
         this.id = id;
         this.allocationId = allocationId;
         this.sectionId = sectionId;
