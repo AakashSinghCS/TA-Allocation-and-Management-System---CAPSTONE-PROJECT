@@ -13,6 +13,8 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   const [csvPreview, setCsvPreview] = useState<Array<Record<string, string>> | null>(null);
   const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
   const [parsedData, setParsedData] = useState<Array<Record<string, string>> | null>(null);
+  // Add a flag to track if import is done
+  const [imported, setImported] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Reset all UI state for new upload
@@ -21,6 +23,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
     setCsvPreview(null);
     setCsvHeaders([]);
     setParsedData(null);
+    setImported(false); // Reset imported flag
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
       Papa.parse(selectedFile, {
@@ -89,7 +92,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         setError(errorDetail);
       } else {
         setResult(text);
-        // Removed auto-close on successful import
+        setImported(true); // Mark as imported
       }
     } catch (err: any) {
       setError(err?.message ? `Import failed: ${err.message}` : "Import failed.");
@@ -112,8 +115,8 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           />
           <button
             type="submit"
-            disabled={loading || !parsedData || parsedData.length === 0}
-            className={`px-4 py-2 rounded font-semibold transition-colors ${loading || !parsedData || parsedData.length === 0 ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+            disabled={loading || !parsedData || parsedData.length === 0 || imported}
+            className={`px-4 py-2 rounded font-semibold transition-colors ${loading || !parsedData || parsedData.length === 0 || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
           >
             {loading ? "Importing..." : "Import Sections from CSV"}
           </button>
