@@ -1552,6 +1552,7 @@ Meetings were productive and helped align the entire team on next steps for back
 
 ## Next Cycle Goals
 - Complete Instrcutor dashboard testing and finalize documentation
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## 18 July, Friday
