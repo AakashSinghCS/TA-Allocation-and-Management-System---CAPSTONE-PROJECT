@@ -1887,3 +1887,528 @@ It was very tough integrating everything and making sure everything works well. 
   * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
 - presentation for MVP
 - refactoring and checking for errors and fixing them.
+
+
+## Thursday 7/03 (7/01~7/04)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July03.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Instructor Needs profile, Qualifications, Allopcation History
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#119](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/119)
+  * #3: [UBCO-COSC499-S2025/team-10-capstone-infinity#315](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/315)
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 3
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I completed the design improvements for all the work I did so far. Of course, it's far from done.
+- basic CSV export function is done
+- Did presentation preparation and project discussion.
+- did merging into dev with teammates.
+Presentation preparation wasn't the best, but it was good we got some discussion. 
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- refactoring and checking for errors and fixing them.
+
+
+## Friday 7/04 (7/01~7/04)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July04.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: MVP Presentation
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#328](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/328)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today we did the MVP presentation. It went okay. Was satisfied that we got the most done functionality wise out of all the groups.
+Our project still has some features to be desired and improved.
+- Talked with Seiya about his lack of communication. He told us that he is willing to do more in the future and also explained his unfortunate circumstances of losing his family member and friend within the span of just a few weeks.
+- Told Allen he also should have done more.
+- Started on the refactoring. It isn't as hard as I expected. Might be done sooner than I expected.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- refactoring and checking for errors and fixing them.
+- make the Comparers work with the backend.
+- error checking 
+
+
+## Saturday 7/05 (7/04~7/08)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July05.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Refactoring
+  * #2: [UBCO-COSC499-S2025/team-10-capstone-infinity#328](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/328)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I changed the Section interface in the frontend to look exactly like the SectionDTO in the backend.
+This was because the discrepency between the response and the interfaces in the frontend was making coding very difficult and confusing.
+Moreover, my teammates recommended changing the scaffolding to make them role-based. So I made the Pages folder and api folders more organized and role-based.
+I encountered lots of errors and had to fix lots of tests due to the moving files, but I managed to catch them all and make the project work.
+- next time I will work on UR 1.4 and 1.5
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- make the Comparers work with the backend.
+- UR 1.4 and UR 1.5
+- error checking 
+
+
+
+## Monday 7/07 (7/04~7/08)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July07.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#343](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/343)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I reviewed other's PRs. Spent about 2 hours on that.
+I improved the user-accessability. I made confirmation of user stronger for DELETE and UPDATE operations in some parts of the project.
+I also added a SQL injection checks in frontend, though it's not really necessary, as Spring Boot already has something embedded in it to prvent it. There were other checks I added such as the size and regex patterns of inputs in course, section, user registration and creation.
+Things to note for tommorrow:
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- need to assure the deletion of sections implies there are no orphaned foreign key constraints in other tables. Like StudentCoursea and Allocation.
+- handle other possible orphaned foreign key constraints
+- make Section Filter work with only Year and Semester
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- make the Comparers work with the backend.
+- UR 1.5
+- error checking 
+
+
+## Tuesday 7/08 (7/04~7/08)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July08.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#343](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/343)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I completed the orphaned key problems in Sections. I fixed bugs in Qualifications and Needs pages. I added the validation to user edit profile as well.
+We did a project discussion today face to face. It was productive, and we decided what we are going to do over the next few days.
+I will primarily focus on UR 1.5 after today. After that I will work on the other goals.
+The process is going smoothly now and is less stressful now, as I am finding myself looking for work to do rather than the work hunting me down.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- UR 1.5
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- enrollment for student works
+- section profile shows needs
+
+## Wednesday 7/09 (7/08~7/011)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July09.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#358](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/358)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today I made prometheus and grafana work. I can see a dashboard in grafana for user-service (and the others too probably), but I haven't yet placed it behind a gateway. I need to do that so only the admins can access it after logging in.
+It was a big challenge to set this up. There were many errors, stackoverflow errors, and such that just wouldn't let the code work that smoothly. After many greuling hours, I somehow got it to work.
+
+Tommorrow I have to
+- make gateway store a cookie when logging in as admin. delete it when logging out.
+- use the cookie to access prometheus through localhost:8080.
+- same for grafana. 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- enrollment for student works
+- section profile shows needs
+- reflect the changes in User Role in backend in frontend
+
+## Thursday 7/10 (7/08~7/011)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July10.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#358](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/358)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I completed grafana. I couldn't make grafana work behind localhost:8080, authenticated through a token that has ADMIN role. But it still works with normal grafana credentials.
+- next, I will help Alex with refactoring the frontend after he finishes user role refactoring.
+I did the team logs today.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- enrollment for student works
+- section profile shows needs
+- reflect the changes in User Role in backend in frontend
+
+
+## Friday 7/11 (7/08~7/011)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July11.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#374](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/374)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I completed reworking the profile details section. It now works with the changes Alex made to the User Roles.
+I did a project discussion with others and had a meeting with Scott.
+I plan to 
+- complete the PR by making the sidebar be in accord with the changes Alex made.
+- prepare for the UX testing on tuesday.
+- If I have time, I will start on finishing up UR1.5, which I expected to finish, but turned out I didn't.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- enrollment for student works
+- section profile shows needs
+- Need to create a seperate logging table in backend and making logging happen manually, not through grafana.
+
+
+## Saturday 7/12 (7/11~7/15)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July12.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: [UBCO-COSC499-S2025/team-10-capstone-infinity#374](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/374)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I unified the taprofile and instructor profile into one profile. It was necessary because of the backend changes concerning roles. Since a user can now be a instructor AND a student at the same time, a profile could not stay as just a ta profile.
+Fixed bugs in sectionFilter and section creation.
+Generally made the website look more presentable for July 15, when the testing will happen
+
+To do next time:
+- Need to create a seperate logging table in backend and making logging happen manually, not through grafana.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- enrollment for student works
+- section profile shows needs
+
+
+## Monday 7/14 (7/11~7/15)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July14.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#390](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/390)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I created the logging auditing pages in the frontend and backend. It is integrated and it works for User-Service only.
+The process was not so difficult as AI played a great role in helping me get started.
+I installed react-query into our project.
+
+Tommorrow:
+- I will create the tests for the new methods I created in user-service.
+- Test for the new pages in the frontend
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- section profile shows needs
+
+
+## Tuesday 7/15 (7/11~7/15)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July15.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#390](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/390)
+
+  
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today there was the testing-event during lecture time.
+
+I continued to work on the log audit page. the filters were expanded to include more options like actorId, entityId, etc. The backend was changed to reflect this.
+Tommorrow I will work on the tests.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Next Cycle, I wiil work on some of the tasks in the list I wrote below.
+- assignInstructor in SectionController has to make sure the logged in instructor is assigning only for himself.
+- student Allocation history needs to make sure the student is creating entries only for himself.
+- section profile shows needs
+
