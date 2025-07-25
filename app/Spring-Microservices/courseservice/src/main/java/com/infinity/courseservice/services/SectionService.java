@@ -147,9 +147,27 @@ public class SectionService {
             rowNum++;
         }
 
-        // Return summary
-        return "JSON import completed. Success: " + successCount + ", Errors: " + errorCount +
-            (errorCount > 0 ? "\nError details:\n" + errorMessages.toString() : "");
+        // Build improved summary message
+        StringBuilder summary = new StringBuilder();
+        if (errorCount > 0) {
+            summary.append("Section import failed.\n");
+        } else {
+            summary.append("Section import completed.\n");
+        }
+        summary.append("Success: ").append(successCount).append("\n");
+        summary.append("Failed: ").append(errorCount).append("\n");
+        if (errorCount > 0) {
+            summary.append("\nError details (per row):\n");
+            String[] errors = errorMessages.toString().split("\n");
+            for (String err : errors) {
+                if (err.contains("duplicate key") || err.toLowerCase().contains("sql") || err.toLowerCase().contains("constraint") || err.toLowerCase().contains("exception during save")) {
+                    summary.append(err.replaceAll("Exception during save:.*", "Database error: Duplicate or constraint violation.")).append("\n");
+                } else {
+                    summary.append(err).append("\n");
+                }
+            }
+        }
+        return summary.toString().trim();
     }
 
     private final SectionRepository sectionRepository;

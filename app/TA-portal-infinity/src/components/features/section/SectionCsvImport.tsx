@@ -140,7 +140,15 @@ export default function SectionCsvImport() {
         </div>
       )}
       {error && <div className="mt-2 text-red-600">{error}</div>}
-      {result && <div className="mt-2 text-green-600 whitespace-pre-line">{result}</div>}
+      {result && (
+        <div
+          className={`mt-2 whitespace-pre-line ${
+            result.includes('Failed: 0') ? 'text-green-600' : 'text-red-600'
+          }`}
+        >
+          {result}
+        </div>
+      )}
     </div>
   );
 }
