@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { vi, type Mock } from 'vitest';
@@ -9,7 +8,6 @@ import { mockSectionCOSC121 as s121 } from '../../../../../mocked-objects/sectio
 import { mockCourseCOSC111 as c111 } from '../../../../../mocked-objects/course/mockCourseCOSC111';
 import { mockCourseCOSC121 as c121 } from '../../../../../mocked-objects/course/mockCourseCOSC121';
 import { fetchSectionNeedAndAllocations } from '../../../../../api/instructor/fetchSectionNeedAndAllocations';
-import { useAuth } from '../../../../../context/AuthContext';
 import type Section from '../../../../../interfaces/section/Section';
 
 // Mock AuthContext to simulate an instructor
@@ -65,9 +63,9 @@ describe('<NeedViewer />', () => {
     expect(screen.getByDisplayValue('W1')).toBeInTheDocument();
   });
 
-  it('shows the + Add section link for instructors', () => {
+  it('shows the Add section link for instructors', () => {
     renderer();
-    expect(screen.getByRole('link', { name: '+ Add section' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Add Section' })).toBeInTheDocument();
   });
 
   it('calls fetchSectionNeedAndAllocations with correct parameters on Search click', async () => {
@@ -105,7 +103,7 @@ describe('<NeedViewer />', () => {
     );
     expect(
       screen.getByText(
-        'This is a Tutorial, Laboratory, Discussion, Workshop, or Independent Study.'
+        'Non-lecture sections have the same TA requirements as the main section.'
       )
     ).toBeInTheDocument();
   });
