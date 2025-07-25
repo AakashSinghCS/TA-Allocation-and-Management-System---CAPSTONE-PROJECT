@@ -3,6 +3,7 @@ package com.infinity.courseservice;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,10 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.infinity.courseservice.controllers.ExamController;
 import com.infinity.courseservice.dtos.ExamDtos.ExamAssignmentDto;
 import com.infinity.courseservice.dtos.ExamDtos.ExamAvailabilityDto;
@@ -204,4 +208,70 @@ public class ExamControllerTest {
             .andExpect(jsonPath("$[0].endTime").value(endTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))));
 
     }
+
+    @Test
+    void testGetAssignmentsForExam() throws Exception {
+        Long examId = 1L;
+        ExamAssignmentDto dto = new ExamAssignmentDto(
+            10L, examId, 42L, ExamTask.MARKING,
+            LocalDate.of(2025, 5, 1),
+            LocalTime.of(10, 0),
+            LocalTime.of(12, 0)
+        );
+
+        when(examService.getAssignmentsForExam(examId)).thenReturn(List.of(dto));
+
+        mockMvc.perform(get("/exams/assignments/byexam/{examId}", examId))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].studentId").value(42L));
+    
+    }
+
+    @Test
+    void testUnassignStudentFromExam() throws Exception {
+        Long assignmentId = 10L;
+
+        mockMvc.perform(delete("/exams/assignments/{assignmentId}", assignmentId))
+            .andExpect(status().isOk());
+
+        verify(examService).unassignStudentFromExam(assignmentId);
+    }
+
+    @Test
+    void testUpdateAssignmentByStudentId() throws Exception {
+        Long examId = 1L;
+        Long studentId = 2L;
+
+        ExamAssignmentDto inputDto = new ExamAssignmentDto(
+            5L, examId, studentId, ExamTask.MARKING, LocalDate.of(2025, 8, 10),
+            LocalTime.of(13, 0),
+            LocalTime.of(15, 0)
+        );
+
+        when(examService.updateAssignmentByStudentId(eq(examId), eq(studentId), any(ExamAssignmentDto.class)))
+            .thenReturn(inputDto);
+
+        mockMvc.perform(put("/exams/assignments/{examId}/student/{studentId}", examId, studentId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(inputDto)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.examId").value(1))
+            .andExpect(jsonPath("$.studentId").value(2))
+            .andExpect(jsonPath("$.task").value("MARKING"))
+            .andExpect(jsonPath("$.startTime").value("13:00:00"))
+            .andExpect(jsonPath("$.endTime").value("15:00:00"));
+    }
+
+    private static String asJsonString(final Object obj) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            return mapper.writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }

@@ -320,4 +320,86 @@ public class ExamServiceTest {
         List<ExamAssignmentDto> result = examService.getAssignmentsByStudentId(1L);
         assertEquals(1, result.size());
     }
+
+    @Test
+    void testGetAssignmentsForExam() {
+        Long examId = 1L;
+        Exam exam = new Exam(); exam.setId(examId);
+        ExamAssignment assignment = new ExamAssignment();
+        assignment.setId(10L);
+        assignment.setExam(exam);
+        assignment.setStudentId(42L);
+        assignment.setTask(ExamTask.MARKING);
+        assignment.setDate(LocalDate.of(2025, 5, 1));
+        assignment.setStartTime(LocalTime.of(10, 0));
+        assignment.setEndTime(LocalTime.of(12, 0));
+
+        when(assignmentRepository.findByExamId(examId)).thenReturn(List.of(assignment));
+        when(examMapper.mapAssignment(any())).thenReturn(new ExamAssignmentDto(
+            10L, examId, 42L, ExamTask.MARKING, 
+            LocalDate.of(2025, 5, 1), 
+            LocalTime.of(10, 0), 
+            LocalTime.of(12, 0)
+        ));
+
+        List<ExamAssignmentDto> result = examService.getAssignmentsForExam(examId);
+
+        assertEquals(1, result.size());
+        assertEquals(42L, result.get(0).studentId());
+    }
+
+    @Test
+    void testUnassignStudentFromExam_Success() {
+        Long assignmentId = 5L;
+        when(assignmentRepository.existsById(assignmentId)).thenReturn(true);
+
+        examService.unassignStudentFromExam(assignmentId);
+
+        verify(assignmentRepository, times(1)).deleteById(assignmentId);
+    }
+
+    @Test
+    void testUnassignStudentFromExam_NotFound() {
+        Long assignmentId = 99L;
+        when(assignmentRepository.existsById(assignmentId)).thenReturn(false);
+
+        assertThrows(NotFoundException.class, () -> examService.unassignStudentFromExam(assignmentId));
+    }
+
+    @Test
+    void testUpdateAssignmentByStudentId() {
+        Exam exam = new Exam();
+        exam.setId(1L);
+        
+        Long studentId = 2L;
+
+        ExamAssignment existing = new ExamAssignment();
+        existing.setId(5L);
+        existing.setExam(exam);
+        existing.setStudentId(studentId);
+        existing.setTask(ExamTask.PREPARATION);
+        existing.setStartTime(LocalTime.of(12, 0));
+        existing.setEndTime(LocalTime.of(14, 0));
+        existing.setDate(LocalDate.parse("2025-08-10"));
+
+        ExamAssignmentDto updatedDto = new ExamAssignmentDto(
+            5L, exam.getId(), studentId, ExamTask.MARKING, LocalDate.parse("2025-08-10"), LocalTime.of(13, 0), LocalTime.of(15, 0)
+        );
+
+        when(assignmentRepository.findByExamIdAndStudentId(exam.getId(), studentId))
+            .thenReturn(Optional.of(existing));
+
+        when(assignmentRepository.save(any(ExamAssignment.class)))
+            .thenReturn(existing);
+
+        when(examMapper.mapAssignment(existing))
+            .thenReturn(updatedDto);
+
+        ExamAssignmentDto result = examService.updateAssignmentByStudentId(exam.getId(), studentId, updatedDto);
+
+        assertEquals(ExamTask.MARKING, result.task());
+        assertEquals(LocalTime.of(13, 0), result.startTime());
+        assertEquals(LocalTime.of(15, 0), result.endTime());
+    }   
+
 }
