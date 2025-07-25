@@ -1735,7 +1735,7 @@ Excellent momentum in addressing multiple issues simultaneously. The completion 
 **Clockify:** ![clockify_images/july_24.png](clockify_images/july_24.png)
 
 ## Time Slot
-- **[Start Time] – [End Time]:** Working on PR #469 - Instructor entire view improvement and missing features
+- **12:14PM– 3:40PM:** Working on finalizing PR #469 - Instructor entire view improvement and missing features 
 
 ## Current Tasks
 - Implementing instructor view improvements and adding missing features
