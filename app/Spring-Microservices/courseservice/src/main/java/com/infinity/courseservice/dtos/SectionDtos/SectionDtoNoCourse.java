@@ -7,5 +7,6 @@ public record SectionDtoNoCourse(
     Integer year,
     String semester,
     String section,
-    SectionType type
+    SectionType type,
+    Integer numberOfTAsAllocated
 ) {}

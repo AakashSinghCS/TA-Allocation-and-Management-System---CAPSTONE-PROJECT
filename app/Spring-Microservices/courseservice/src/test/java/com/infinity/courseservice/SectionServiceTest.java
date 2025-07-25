@@ -101,7 +101,7 @@ public class SectionServiceTest {
         section = new Section(semester, "001", SectionType.LECTURE, course, null);
         section.setId(10L);
         courseDto = new CourseDto(1L, "COSC", "Software Engineering", "310");
-        sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE, courseDto);
+        sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE, courseDto, 1);
     }
 
     @Test
@@ -360,8 +360,8 @@ public class SectionServiceTest {
         s1.setId(10L);
         Section s2 = new Section(semester, "002", SectionType.LABORATORY, course2, null);
         s2.setId(11L);
-        SectionDto sectionDto1 = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE, courseDto1);
-        SectionDto sectionDto2 = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE, courseDto2);
+        SectionDto sectionDto1 = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE, courseDto1, 1);
+        SectionDto sectionDto2 = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE, courseDto2, 1);
 
         List<Section> sections = List.of(s1, s2);
         when(sectionRepository.findAllByInstructorId(99L)).thenReturn(sections);
@@ -449,7 +449,7 @@ public class SectionServiceTest {
     void testGetSectionWithInstructorIdById_Success() {
         section.setId(55L);
         SectionDtoWithInstructorId mappedDto = new SectionDtoWithInstructorId(1L, 1L, 2025, "W1", "001",
-                SectionType.LECTURE, courseDto);
+                SectionType.LECTURE, courseDto, 1);
 
         when(sectionRepository.findById(55L)).thenReturn(Optional.of(section));
         when(sectionMapper.sectionDtoWithInstructorId(any())).thenReturn(mappedDto);

@@ -16,6 +16,7 @@ export interface SectionDtoWithInstructorId{
     section : string;
     type : SectionType;
     course: Course;
+    numberOfTAsAllocated: number;
 }
 
 
@@ -40,7 +41,8 @@ export function mapDtoToSection(
       name:             dto.course.name,
       deptCode:         dto.course.deptCode,
       courseNum:        dto.course.courseNum,
-    }
+    },
+    numberOfTAsAllocated: dto.numberOfTAsAllocated
   };
 
   return {
