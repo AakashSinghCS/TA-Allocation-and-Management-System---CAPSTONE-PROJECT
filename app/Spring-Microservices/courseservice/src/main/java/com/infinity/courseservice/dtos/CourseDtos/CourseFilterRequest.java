@@ -2,6 +2,8 @@ package com.infinity.courseservice.dtos.CourseDtos;
 
 import java.time.LocalTime;
 
+import com.infinity.courseservice.enums.SectionType;
+
 public record CourseFilterRequest(
         String deptCode,
         String name,
@@ -9,7 +11,7 @@ public record CourseFilterRequest(
         String section,
         Integer year,
         String semester,
-        String type,
+        SectionType type,
         String day,
         LocalTime startTime,
         LocalTime endTime

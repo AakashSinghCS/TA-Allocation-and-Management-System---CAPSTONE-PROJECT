@@ -24,17 +24,18 @@ export default function TimeSelector({ mode, onChange }: TimeSelectorProps) {
   const bigStyle = "mt-1 block w-full rounded border border-gray-400 px-3 py-2"
   const smallOrBig = `${mode === 'small' ? smallStyle : bigStyle}`
 
-  useEffect(()=>{
-    onChange({startTime: startTime ?? "", endTime:endTime ?? ""})
-  },[startTime,endTime])
-
   return (
     <>
 
       <select
         id="startTime"
         value={startTime ?? ""}
-        onChange={(e) => setStartTime(e.target.value || null)}
+        onChange={(e) => {
+          const v = e.target.value;
+          const nextStart = v === "" ? null : v;
+          setStartTime(nextStart);
+          onChange({ startTime: nextStart, endTime });
+        }}
         className={smallOrBig}
       >
         <option value="">Start time</option>
@@ -48,7 +49,12 @@ export default function TimeSelector({ mode, onChange }: TimeSelectorProps) {
       <select
         id="endTime"
         value={endTime ?? ""}
-        onChange={(e) => setEndTime(e.target.value || null)}
+        onChange={(e) => {
+          const v = e.target.value;
+          const nextEnd = v === "" ? null : v;
+          setEndTime(nextEnd);
+          onChange({ startTime, endTime: nextEnd });
+        }}
         className={smallOrBig}
       >
         <option value="">End time</option>

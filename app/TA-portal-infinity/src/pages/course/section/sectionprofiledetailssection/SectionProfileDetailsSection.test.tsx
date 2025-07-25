@@ -4,6 +4,7 @@ import SectionProfileDetailsSection from "./SectionProfileDetailsSection";
 import { sectionProfileFields } from "../../../../interfaces/section/Section";
 import { sectionFieldLabels } from "../../../../interfaces/section/Section";
 import { MemoryRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // 1. Mock useAuth so userRoles includes COORDINATOR
 vi.mock("../../../../context/AuthContext", () => ({
@@ -67,12 +68,16 @@ describe("SectionProfileDetailsSection", () => {
   });
 
   it("toggles into edit mode when Edit Details is clicked", async () => {
+    const queryClient = new QueryClient();
+
     render(
+      <QueryClientProvider client={queryClient}>
       <MemoryRouter>      <SectionProfileDetailsSection
         section={baseSection as any}
         fields={sectionProfileFields}
         labels={sectionFieldLabels}
       /></MemoryRouter>
+      </QueryClientProvider>
 
     );
 
@@ -87,12 +92,15 @@ describe("SectionProfileDetailsSection", () => {
   });
 
   it("calls delete API and navigates back when Delete is clicked", async () => {
+    const queryClient = new QueryClient();
     render(
+      <QueryClientProvider client={queryClient}>
       <MemoryRouter><SectionProfileDetailsSection
         section={baseSection as any}
         fields={sectionProfileFields}
         labels={sectionFieldLabels}
       /></MemoryRouter>
+      </QueryClientProvider>
       
     );
 

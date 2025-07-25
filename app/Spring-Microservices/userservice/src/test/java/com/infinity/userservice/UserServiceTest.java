@@ -9,6 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -20,6 +21,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -340,119 +345,145 @@ void testRegister_SuccessMultipleRoles() {
         u.setRoles(Set.of(new Role(1L, role)));
         return u;
     }
+    private final Pageable pageable = PageRequest.of(0, 10);
+
     @Test
     void testSearch_ByUserId_takesPriority() {
+        // Arrange
         User found = makeUser("a@x.com","A","X", 0, 0, UserRole.COORDINATOR);
-        when(userRepository.findById(42L))
-            .thenReturn(Optional.of(found));
         found.setId(42L);
+        Page<User> page = new PageImpl<>(List.of(found), pageable, 1);
+        when(userRepository.findAllById(42L, pageable)).thenReturn(page);
+
         UserDto dto = userToDto.toDto(found);
         when(userMapper.toDto(found)).thenReturn(dto);
 
-        var results = userService.search(
-            /*role*/       null,
-            /*firstName*/  null,
-            /*lastName*/   null,
-            /*univNum*/     0,
-            /*userId*/      42L
+        // Act
+        Page<UserDto> results = userService.searchUsersByPage(
+            pageable,
+            /* role */            null,
+            /* firstname */       null,
+            /* lastname */        null,
+            /* universityNumber */"",
+            /* uId */             "42"
         );
 
-        assertEquals(1, results.size());
-        assertEquals("A", results.get(0).firstName());
-        verify(userRepository).findById(42L);
+        // Assert
+        assertEquals(1, results.getContent().size());
+        assertEquals("A", results.getContent().get(0).firstName());
+        verify(userRepository).findAllById(42L, pageable);
         verifyNoMoreInteractions(userRepository);
     }
 
     @Test
     void testSearch_StudentByNumber() {
+        // Arrange
         int num = 12345678;
         User student = makeUser("emma@example.com","Emma","Stone", num, 0, UserRole.STUDENT);
-        when(userRepository.findByStudentNum(num))
-            .thenReturn(Optional.of(student));
-        when(userRepository.findByEmployeeNum(num))
-            .thenReturn(Optional.empty());
         student.setId(1L);
+        Page<User> page = new PageImpl<>(List.of(student), pageable, 1);
+        when(userRepository.findByNumContaining(String.valueOf(num), pageable))
+            .thenReturn(page);
+
         UserDto dto = userToDto.toDto(student);
         when(userMapper.toDto(student)).thenReturn(dto);
 
-        var results = userService.search(
-            /*role*/       null,
-            /*firstName*/  null,
-            /*lastName*/   null,
-            /*univNum*/     num,
-            /*userId*/      null
+        // Act
+        Page<UserDto> results = userService.searchUsersByPage(
+            pageable,
+            /* role */            null,
+            /* firstname */       null,
+            /* lastname */        null,
+            /* universityNumber */String.valueOf(num),
+            /* uId */             null
         );
 
-        assertEquals(1, results.size());
-        assertEquals("Emma", results.get(0).firstName());
-        verify(userRepository).findByStudentNum(num);
-        verify(userRepository).findByEmployeeNum(num);
+        // Assert
+        assertEquals(1, results.getContent().size());
+        assertEquals("Emma", results.getContent().get(0).firstName());
+        verify(userRepository).findByNumContaining(String.valueOf(num), pageable);
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
     void testSearch_InstructorByNumber() {
+        // Arrange
         int num = 987654;
         User instr = makeUser("emma@example.com","Emma","Stone", 0, num, UserRole.INSTRUCTOR);
-        when(userRepository.findByStudentNum(num))
-            .thenReturn(Optional.empty());
-        when(userRepository.findByEmployeeNum(num))
-            .thenReturn(Optional.of(instr));
         instr.setId(1L);
+        Page<User> page = new PageImpl<>(List.of(instr), pageable, 1);
+        when(userRepository.findByNumContaining(String.valueOf(num), pageable))
+            .thenReturn(page);
+
         UserDto dto = userToDto.toDto(instr);
         when(userMapper.toDto(instr)).thenReturn(dto);
 
-        var results = userService.search(
-            /*role*/       null,
-            /*firstName*/  null,
-            /*lastName*/   null,
-            /*univNum*/     num,
-            /*userId*/      null
+        // Act
+        Page<UserDto> results = userService.searchUsersByPage(
+            pageable,
+            /* role */            null,
+            /* firstname */       null,
+            /* lastname */        null,
+            /* universityNumber */String.valueOf(num),
+            /* uId */             null
         );
 
-        assertEquals(1, results.size());
-        assertEquals("Emma", results.get(0).firstName());
-        verify(userRepository).findByStudentNum(num);
-        verify(userRepository).findByEmployeeNum(num);
+        // Assert
+        assertEquals(1, results.getContent().size());
+        assertEquals("Emma", results.getContent().get(0).firstName());
+        verify(userRepository).findByNumContaining(String.valueOf(num), pageable);
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
     void testSearch_ByName_NoNumber() {
+        // Arrange
         User user = makeUser("emma@example.com","Emma","Stone", 0, 0, UserRole.COORDINATOR);
+        user.setId(1L);
+        Page<User> page = new PageImpl<>(List.of(user), pageable, 1);
+        UserRole targetRole = UserRole.COORDINATOR;
         when(userRepository
              .findByRoles_NameAndFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
-                UserRole.COORDINATOR, "Emma", "Stone"
+                 targetRole, "Emma", "Stone", pageable
              ))
-            .thenReturn(List.of(user));
-        user.setId(1L);
+            .thenReturn(page);
+
         UserDto dto = userToDto.toDto(user);
         when(userMapper.toDto(user)).thenReturn(dto);
 
-        var results = userService.search(
-            /*role*/       "CoOrDInaTor",
-            /*firstName*/  "Emma",
-            /*lastName*/   "Stone",
-            /*univNum*/     0,
-            /*userId*/      null
+        // Act
+        Page<UserDto> results = userService.searchUsersByPage(
+            pageable,
+            /* role */            "CoOrDInaTor",
+            /* firstname */       "Emma",
+            /* lastname */        "Stone",
+            /* universityNumber */"",
+            /* uId */             null
         );
 
-        assertEquals(1, results.size());
-        assertEquals("Emma", results.get(0).firstName());
-        verify(userRepository).findByRoles_NameAndFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
-            UserRole.COORDINATOR, "Emma", "Stone"
-        );
+        // Assert
+        assertEquals(1, results.getContent().size());
+        assertEquals("Emma", results.getContent().get(0).firstName());
+        verify(userRepository)
+            .findByRoles_NameAndFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
+                targetRole, "Emma", "Stone", pageable
+            );
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
     void testSearch_InvalidRole_ThrowsIllegalArgument() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            userService.search(
-                /*role*/       "UNKNOWN",
-                /*firstName*/  "",
-                /*lastName*/   "",
-                /*univNum*/     0,
-                /*userId*/      null
-            );
-        });
+        // Arrange / Act / Assert
+        assertThrows(IllegalArgumentException.class, () ->
+            userService.searchUsersByPage(
+                pageable,
+                /* role */            "UNKNOWN",
+                /* firstname */       "",
+                /* lastname */        "",
+                /* universityNumber */"",
+                /* uId */             ""
+            )
+        );
     }
     @Test
     void testGetStudentById_Success() {
