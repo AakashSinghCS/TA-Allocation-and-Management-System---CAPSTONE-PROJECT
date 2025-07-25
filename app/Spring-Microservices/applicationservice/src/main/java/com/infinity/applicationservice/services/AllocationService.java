@@ -2,20 +2,28 @@ package com.infinity.applicationservice.services;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocatedSectionDto;
+import com.infinity.applicationservice.dtos.Allocations.AllocationCsvDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
+import com.infinity.applicationservice.dtos.Allocations.ImportCourseRequest;
+import com.infinity.applicationservice.dtos.Allocations.ImportSectionRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
+import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Needs.NeedDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
+import com.infinity.applicationservice.enums.TaskType;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
@@ -52,6 +60,12 @@ public class AllocationService {
 
     public AllocationHistoryDto getAllocationByStudentId(Long studentId) {
         Allocation allocation = allocationRepository.findByStudentId(studentId);
+        if (allocation == null) {
+            throw new NotFoundException("Allocation not found for student ID: " + studentId);
+        }
+        if (allocation.getAllocatedSections().isEmpty()) {
+            throw new NotFoundException("Allocation ID " + allocation.getId() + " has no associated sections.");
+        }
         UserDto student = studentInterface.getStudentById(studentId).getBody();
         List<Long> sectionIds = allocation.getAllocatedSections().stream()
                     .map(AllocatedSection::getSectionId)
@@ -82,28 +96,14 @@ public class AllocationService {
             allocation.setApplication(application);
             allocation.setStudentId(request.studentId());
             allocation.setStatus(ApplicationStatus.SENT);
-            allocation.setLabPrepHours(
-            Optional.ofNullable(allocation.getLabPrepHours()).orElse(0) + request.labPrepHours());
-            allocation.setGradingHours(
-            Optional.ofNullable(allocation.getGradingHours()).orElse(0) + request.gradingHours());
-            allocation.setSectionHours(
-            Optional.ofNullable(allocation.getSectionHours()).orElse(0) + request.sectionHours());
-
         } else {
-            allocation = allocationRepository.findByStudentId(request.studentId());
+            allocation = allocationRepository.findByApplicationId(request.applicationId());
             if (allocation == null) {
                 throw new NotFoundException("No allocation found for student ID: " + request.studentId());
             }
             if (allocation.getApplication().getId() != request.applicationId()) {
                 throw new BadRequestException("Student already has an allocation for a different application.");
             }
-            allocation.setLabPrepHours(
-            Optional.ofNullable(allocation.getLabPrepHours()).orElse(0) + request.labPrepHours());
-            allocation.setGradingHours(
-            Optional.ofNullable(allocation.getGradingHours()).orElse(0) + request.gradingHours());
-            allocation.setSectionHours(
-            Optional.ofNullable(allocation.getSectionHours()).orElse(0) + request.sectionHours());
-            // allocation.setStatus(ApplicationStatus.UPDATED);
         }
         if (allocatedSectionRepository.existsBySectionIdAndAllocationId(
             request.sectionId(), allocation.getId())) {
@@ -134,6 +134,16 @@ public class AllocationService {
         Allocation allocation = allocationRepository.findById(allocatedSection.getAllocation().getId())
             .orElseThrow(() -> new NotFoundException("Allocation not found"));
         if (allocation.getStatus() == ApplicationStatus.CONFIRMED) {
+            if (allocatedSection.getTask() == TaskType.GRADING) {
+                allocation.setGradingHours(
+                Optional.ofNullable(allocation.getGradingHours()).orElse(0) - (int) allocatedSection.getHours());
+            } else if (allocatedSection.getTask() == TaskType.LAB_PREP) {
+                allocation.setLabPrepHours(
+                Optional.ofNullable(allocation.getLabPrepHours()).orElse(0.0) - allocatedSection.getHours());
+            } else if (allocatedSection.getTask() == TaskType.LAB) {
+                allocation.setSectionHours(
+                Optional.ofNullable(allocation.getSectionHours()).orElse(0.0) - allocatedSection.getHours());
+            }
             SectionDto section = courseInterface.getSectionById(allocatedSection.getSectionId());
             NeedDto need = courseInterface.getNeed(allocation.getApplication().getId(), section.year(),
                     section.semester());
@@ -141,6 +151,11 @@ public class AllocationService {
                     need.numHoursCurrentlyAllocated() - allocation.getGradingHours());
         }
         allocatedSectionRepository.delete(allocatedSection);
+        allocation = allocationRepository.findById(allocatedSection.getAllocation().getId())
+            .orElseThrow(() -> new NotFoundException("Allocation not found"));
+        if (allocation.getAllocatedSections().isEmpty()) {
+            allocationRepository.delete(allocation);
+        }
         return "Student deallocated";
     }
 
@@ -166,6 +181,18 @@ public class AllocationService {
             NeedDto need = courseInterface.getNeed(allocation.getApplication().getId(), section.year(),
                     section.semester());
             courseInterface.updateNeedAllocatedHours(need.id(), need.numHoursCurrentlyAllocated() + allocation.getGradingHours());
+            for (AllocatedSection allocatedSection : allocation.getAllocatedSections()) {
+                if (allocatedSection.getTask() == TaskType.GRADING) {
+                    allocation.setGradingHours(
+                        Optional.ofNullable(allocation.getGradingHours()).orElse(0) + (int) allocatedSection.getHours());
+                } else if (allocatedSection.getTask() == TaskType.LAB_PREP) {
+                    allocation.setLabPrepHours(
+                        Optional.ofNullable(allocation.getLabPrepHours()).orElse(0.0) + allocatedSection.getHours());
+                } else if (allocatedSection.getTask() == TaskType.LAB) {
+                    allocation.setSectionHours(
+                        Optional.ofNullable(allocation.getSectionHours()).orElse(0.0) + allocatedSection.getHours());
+                }
+            }
         }        
         allocation.setStatus(status);
         allocationRepository.save(allocation);
@@ -187,24 +214,10 @@ public class AllocationService {
     }
 
     public List<AllocatedSectionDto> getAllocationsBySectionId(Long sectionId) {
-        // return allocationRepository.findAll().stream()
-        //     .filter(a -> a.getSectionId().equals(sectionId))
-        //     .map(allocation -> {
-        //         UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
-        //         SectionDto section = courseInterface.getSectionById(allocation.getSectionId());
-        //         ApplicationDto applicationDto = null;
-        //         //If application is not null, the TA requirements (needs) page does not work after importing allocations through csv.
-        //         if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
-        //             applicationDto = applicationMapper.toDto(allocation.getApplication());
-        //         }
-        //         return allocationMapper.toDto(allocation, student, applicationDto);
-        //     })
-        //     .collect(Collectors.toList()); 
         return allocatedSectionRepository.findAllBySectionId(sectionId).stream()
             .map(allocatedSection -> {
                 Allocation allocation = allocationRepository.findById(allocatedSection.getAllocation().getId())
                     .orElseThrow(() -> new NotFoundException("Allocation not found with ID: " + allocatedSection.getAllocation().getId()));
-                UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
                 return new AllocatedSectionDto(
                     allocatedSection.getId(),
                     allocation.getId(),
@@ -261,57 +274,63 @@ public class AllocationService {
         return allocatedSectionRepository.deleteAllBySectionId(sectionId);
     }
 
-    // public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList, boolean autoCreate) {
+    public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList, boolean autoCreate) {
 
-    //     List<AllocationHistoryDto> importedAllocations = new ArrayList<>();
+        List<AllocationHistoryDto> importedAllocations = new ArrayList<>();
+        HashMap<AllocationCsvDto, List<AllocatedSection>> allocationMap = new HashMap<>();
+        for (Map<String, String> data : allocationDataList) {
+            Integer studentNum = Integer.parseInt(data.get("studentNum").trim());
+            String deptCode = data.get("deptCode").trim();
+            String courseNum = data.get("courseNum").trim();
+            String section = data.get("section").trim();
+            int year = Integer.parseInt(data.get("year").trim());
+            String semester = data.get("semester").trim();
 
-    //     for (Map<String, String> data : allocationDataList) {
-    //         Integer studentNum = Integer.parseInt(data.get("studentNum").trim());
-    //         String deptCode = data.get("deptCode").trim();
-    //         String courseNum = data.get("courseNum").trim();
-    //         String section = data.get("section").trim();
-    //         int year = Integer.parseInt(data.get("year").trim());
-    //         String semester = data.get("semester").trim();
-
-    //         UserDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
-    //         if (studentDto == null) {
-    //             throw new NotFoundException("Student not found: " + studentNum);
-    //         }
             
 
-    //         CourseDto courseDto;
-    //         try {
-    //             courseDto = courseInterface.getCourseByDeptCodeAndCourseNum(deptCode, courseNum).getBody();
-    //         } catch (Exception e) {
-    //             if (autoCreate) {
-    //                 courseDto = courseInterface.addCourse(new ImportCourseRequest(deptCode, courseNum));
-    //             } else {
-    //                 throw new NotFoundException("Course not found:" + deptCode + " " + courseNum);
-    //             }
-    //         }
+            UserDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
+            if (studentDto == null) {
+                throw new NotFoundException("Student not found: " + studentNum);
+            }
+            
 
-    //         SectionDto sectionDto;
-    //         try {
-    //             sectionDto = courseInterface.getByCourseIdSectionYearSemester(courseDto.id(), section, year, semester);
-    //         } catch (Exception e) {
-    //             if (autoCreate) {
-    //                 sectionDto = courseInterface.addSection(courseDto.id(), new ImportSectionRequest(section, year, semester)); 
-    //             } else {
-    //                 throw new NotFoundException("Section " + section + " " +  year + " " + semester + " not found for Course " + courseDto.deptCode() + " " + courseDto.courseNum());
-    //             }
-    //         }
+            CourseDto courseDto;
+            try {
+                courseDto = courseInterface.getCourseByDeptCodeAndCourseNum(deptCode, courseNum).getBody();
+            } catch (Exception e) {
+                if (autoCreate) {
+                    courseDto = courseInterface.addCourse(new ImportCourseRequest(deptCode, courseNum));
+                } else {
+                    throw new NotFoundException("Course not found:" + deptCode + " " + courseNum);
+                }
+            }
 
-    //         Allocation allocation = new Allocation();
-    //         allocation.setStudentId(studentDto.id());
-    //         allocation.setSectionId(sectionDto.id());
-    //         allocation.setStatus(ApplicationStatus.CONFIRMED);
-    //         allocation.setNumberOfHours(0);
+            SectionDto sectionDto;
+            try {
+                sectionDto = courseInterface.getByCourseIdSectionYearSemester(courseDto.id(), section, year, semester);
+            } catch (Exception e) {
+                if (autoCreate) {
+                    sectionDto = courseInterface.addSection(courseDto.id(), new ImportSectionRequest(section, year, semester)); 
+                } else {
+                    throw new NotFoundException("Section " + section + " " +  year + " " + semester + " not found for Course " + courseDto.deptCode() + " " + courseDto.courseNum());
+                }
+            }
+            AllocationCsvDto key = new AllocationCsvDto(studentNum, year, semester);
+            if (allocationMap.containsKey(key)) {
+                allocationMap.get(key).add(new AllocatedSection());
+            }
 
-    //         Allocation saved = allocationRepository.save(allocation);
-    //         importedAllocations.add(allocationMapper.toDto(saved, studentDto, null, sectionDto));
-    //     }
+            Allocation allocation = new Allocation();
+            allocation.setStudentId(studentDto.id());
+            // allocation.setSectionId(sectionDto.id());
+            allocation.setStatus(ApplicationStatus.CONFIRMED);
+            // allocation.setNumberOfHours(0);
 
-    //     return importedAllocations;
-    // }
+            Allocation saved = allocationRepository.save(allocation);
+            importedAllocations.add(allocationMapper.toDto(saved, studentDto, null, sectionDto));
+        }
+
+        return importedAllocations;
+    }
 
 }

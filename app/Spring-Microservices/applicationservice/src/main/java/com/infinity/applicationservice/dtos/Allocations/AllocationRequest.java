@@ -1,12 +1,15 @@
 package com.infinity.applicationservice.dtos.Allocations;
 
+import org.springframework.scheduling.config.Task;
+
 import com.infinity.applicationservice.enums.ApplicationStatus;
+import com.infinity.applicationservice.enums.TaskType;
 
 public record AllocationRequest(
         Long studentId,
         Long applicationId,
         ApplicationStatus status,
-        String task,
+        TaskType task,
         int labPrepHours,
         int gradingHours,
         int sectionHours,

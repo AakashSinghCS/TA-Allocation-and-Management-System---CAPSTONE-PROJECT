@@ -35,6 +35,7 @@ import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.enums.ApplicationType;
+import com.infinity.applicationservice.enums.TaskType;
 import com.infinity.applicationservice.enums.UserRole;
 import com.infinity.applicationservice.feign.CourseInterface;
 import com.infinity.applicationservice.feign.UserInterface;
@@ -89,7 +90,7 @@ public class AllocationControllerTest {
                 1L,
                 101L,
                 1001L,
-                "grading"
+                TaskType.GRADING
         );
         // sampleDto.allocatedSections().add(allocatedSection);
     }
@@ -112,7 +113,7 @@ public class AllocationControllerTest {
                                 1L,
                                 1L,
                                 ApplicationStatus.SENT,
-                                "grading", 0, 10, 0,
+                                TaskType.GRADING, 0, 10, 0,
                                 null);
                 ApplicationDto application = new ApplicationDto(
                                 1L,

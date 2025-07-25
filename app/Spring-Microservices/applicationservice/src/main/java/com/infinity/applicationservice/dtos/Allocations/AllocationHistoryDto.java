@@ -12,9 +12,9 @@ public record AllocationHistoryDto(
     UserDto student,
     ApplicationDto applicationDto,
     ApplicationStatus status,
-    int labPrepHours,
+    double labPrepHours,
     int gradingHours,
-    int sectionHours,
+    double sectionHours,
     List<AllocatedSection> allocatedSections) {
     
 }

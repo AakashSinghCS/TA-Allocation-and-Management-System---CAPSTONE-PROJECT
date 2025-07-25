@@ -1,6 +1,7 @@
 package com.infinity.applicationservice.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.infinity.applicationservice.enums.TaskType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,5 +27,7 @@ public class AllocatedSection {
 
     private Long sectionId;
 
-    private String task;
+    private TaskType task;
+
+    private double hours;
 }
