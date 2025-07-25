@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "4bd4356d-ba70-44d5-8cf4-7b8b2615bae0",
+		"_postman_id": "b3ed367a-8675-473a-ab90-11110e6c7c6b",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "36957617"
+		"_exporter_id": "45669202",
+		"_collection_link": "https://allen-9145341.postman.co/workspace/Allen's-Workspace~5d13c9f6-ede4-4301-81d3-649ab495ae62/collection/45669202-b3ed367a-8675-473a-ab90-11110e6c7c6b?action=share&source=collection_link&creator=45669202"
 	},
 	"item": [
 		{
@@ -2753,7 +2754,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"isConfirmed\": false,\r\n    \"numberOfHours\": 5,\r\n    \"sectionId\": 1\r\n}"
+									"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"isConfirmed\": false,\r\n    \"task\": \"grading\",\r\n    \"gradingHours\": 5,\r\n    \"sectionId\": 1\r\n}"
 								},
 								"url": {
 									"raw": "localhost:8080/allocations/allocate",
@@ -2962,7 +2963,7 @@
 									"raw": ""
 								},
 								"url": {
-									"raw": "localhost:8080/allocations/filter/status/SENT",
+									"raw": "localhost:8080/allocations/filter/status/CONFIRMED",
 									"host": [
 										"localhost"
 									],
@@ -2971,7 +2972,7 @@
 										"allocations",
 										"filter",
 										"status",
-										"SENT"
+										"CONFIRMED"
 									]
 								}
 							},
@@ -3032,7 +3033,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUzNDEwMzAyLCJleHAiOjE3NTM0MTM5MDJ9.KELk8YJ4W0DQhc1lm3LJ2Q6D3JS2DLX3QWStfery6ylP67nDy74J-QaDRJYIzdz1",
 											"type": "string"
 										}
 									]
