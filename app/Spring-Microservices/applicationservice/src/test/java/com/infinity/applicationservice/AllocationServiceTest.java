@@ -2,20 +2,27 @@ package com.infinity.applicationservice;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -674,98 +681,98 @@ class AllocationServiceTest {
                 verify(allocationMapper).toDto(allocation, studentDto, null);
         }
 
-        // @Test
-        // void importPreviousAllocations_createsMissingCourseAndSection_whenAutoCreateIsTrue() {
-        //         Map<String, String> csvData = Map.of(
-        //                         "studentNum", "63260442",
-        //                         "deptCode", "COSC",
-        //                         "courseNum", "499",
-        //                         "section", "001",
-        //                         "year", "2025",
-        //                         "semester", "W1");
-        //         UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
-        //                         63260442, "COSC", 2022, 3, null, null, null, true);
-        //         CourseDto course = new CourseDto(2L, "COSC", "Capstone", "499");
-        //         SectionDto section = new SectionDto(3L, 2025, "W1", "001", SectionType.LECTURE, course);
-        //         Allocation allocation = new Allocation();
-        //         allocation.setId(4L);
-        //         allocation.setStudentId(1L);
-        //         allocation.setStatus(ApplicationStatus.CONFIRMED);
+        @Test
+        void importPreviousAllocations_createsMissingCourseAndSection_whenAutoCreateIsTrue() {
+                Map<String, String> csvData = Map.of(
+                                "studentNum", "63260442",
+                                "deptCode", "COSC",
+                                "courseNum", "499",
+                                "section", "001",
+                                "year", "2025",
+                                "semester", "W1");
+                UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
+                                63260442, "COSC", 2022, 3, null, null, null, true);
+                CourseDto course = new CourseDto(2L, "COSC", "Capstone", "499");
+                SectionDto section = new SectionDto(3L, 2025, "W1", "001", SectionType.LECTURE, course);
+                Allocation allocation = new Allocation();
+                allocation.setId(4L);
+                allocation.setStudentId(1L);
+                allocation.setStatus(ApplicationStatus.CONFIRMED);
 
-        //         AllocationHistoryDto dto = new AllocationHistoryDto(
-        //                         allocation.getId(), student, null, ApplicationStatus.CONFIRMED, 0, 10, 0, List.of());
+                AllocationHistoryDto dto = new AllocationHistoryDto(
+                                allocation.getId(), student, null, ApplicationStatus.CONFIRMED, 0, 10, 0, List.of());
 
-        //         when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
-        //         when(courseInterface.addCourse(any())).thenReturn(course); 
-        //         when(courseInterface.getByCourseIdSectionYearSemester(2L, "001", 2025, "W1"))
-        //                 .thenThrow(new RuntimeException("Not found"));
-        //         when(courseInterface.addSection(eq(2L), any())).thenReturn(section);
-        //         when(allocationRepository.save(any())).thenReturn(allocation);
-        //         when(allocationMapper.toDto(any(), any(), any(), any())).thenReturn(dto);
+                when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
+                when(courseInterface.addCourse(any())).thenReturn(course); 
+                when(courseInterface.getByCourseIdSectionYearSemester(2L, "001", 2025, "W1"))
+                        .thenThrow(new RuntimeException("Not found"));
+                when(courseInterface.addSection(eq(2L), any())).thenReturn(section);
+                when(allocationRepository.save(any())).thenReturn(allocation);
+                when(allocationMapper.toDto(any(), any(), any())).thenReturn(dto);
 
-        //         List<AllocationHistoryDto> result = allocationService.importPreviousAllocations(
-        //                         List.of(csvData), true);
+                List<AllocationHistoryDto> result = allocationService.importPreviousAllocations(
+                                List.of(csvData), true);
 
-        //         assertEquals(1, result.size());
-        //         assertEquals("John", result.get(0).student().firstName());
-        //         verify(courseInterface).addCourse(any());
-        //         verify(courseInterface).addSection(eq(2L), any());
-        // }
+                assertEquals(1, result.size());
+                assertEquals("John", result.get(0).student().firstName());
+                verify(courseInterface).addCourse(any());
+                verify(courseInterface).addSection(eq(2L), any());
+        }
 
-        // @Test
-        // void importPreviousAllocations_throwsNotFoundException_whenAutoCreateIsFalse_andCourseMissing() {
-        //         Map<String, String> csvData = Map.of(
-        //                         "studentNum", "63260442",
-        //                         "deptCode", "COSC",
-        //                         "courseNum", "499",
-        //                         "section", "001",
-        //                         "year", "2025",
-        //                         "semester", "W1");
+        @Test
+        void importPreviousAllocations_throwsNotFoundException_whenAutoCreateIsFalse_andCourseMissing() {
+                Map<String, String> csvData = Map.of(
+                                "studentNum", "63260442",
+                                "deptCode", "COSC",
+                                "courseNum", "499",
+                                "section", "001",
+                                "year", "2025",
+                                "semester", "W1");
 
-        //         UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
-        //                         63260442, "COSC", 2022, 3, null, null, null, true);
+                UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
+                                63260442, "COSC", 2022, 3, null, null, null, true);
 
-        //         when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
-        //         when(courseInterface.getCourseByDeptCodeAndCourseNum("COSC", "499"))
-        //                .thenReturn(ResponseEntity.of(Optional.empty())); // Simulate course not found
+                when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
+                when(courseInterface.getCourseByDeptCodeAndCourseNum("COSC", "499"))
+                       .thenReturn(ResponseEntity.of(Optional.empty())); // Simulate course not found
 
-        //         NullPointerException ex = assertThrows(NullPointerException.class,
-        //                         () -> allocationService.importPreviousAllocations(List.of(csvData), false));
+                NullPointerException ex = assertThrows(NullPointerException.class,
+                                () -> allocationService.importPreviousAllocations(List.of(csvData), false));
 
 
-        //         verify(courseInterface, never()).addCourse(any());
-        //         verify(courseInterface, never()).addSection(anyLong(), any());
-        // }
+                verify(courseInterface, never()).addCourse(any());
+                verify(courseInterface, never()).addSection(anyLong(), any());
+        }
 
-        // @Test
-        // void importPreviousAllocations_throwsNotFoundException_whenAutoCreateIsFalse_andSectionMissing() {
-        //         Map<String, String> csvData = Map.of(
-        //                         "studentNum", "63260442",
-        //                         "deptCode", "COSC",
-        //                         "courseNum", "499",
-        //                         "section", "001",
-        //                         "year", "2025",
-        //                         "semester", "W1");
-        //         UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
-        //                         63260442, "COSC", 2022, 3, null, null, null, true);
-        //         CourseDto course = new CourseDto(2L, "COSC", "499", "Capstone");
+        @Test
+        void importPreviousAllocations_throwsNotFoundException_whenAutoCreateIsFalse_andSectionMissing() {
+                Map<String, String> csvData = Map.of(
+                                "studentNum", "63260442",
+                                "deptCode", "COSC",
+                                "courseNum", "499",
+                                "section", "001",
+                                "year", "2025",
+                                "semester", "W1");
+                UserDto student = new UserDto(2L, "John", "Doe", "student@test.com", List.of(UserRole.STUDENT),
+                                63260442, "COSC", 2022, 3, null, null, null, true);
+                CourseDto course = new CourseDto(2L, "COSC", "499", "Capstone");
 
-        //         when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
-        //         when(courseInterface.getCourseByDeptCodeAndCourseNum("COSC", "499"))
-        //                 .thenReturn(ResponseEntity.ok(course));
-        //         when(courseInterface.getByCourseIdSectionYearSemester(2L, "001", 2025, "W1"))
-        //                 .thenThrow(new RuntimeException("Section not found"));
+                when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(student));
+                when(courseInterface.getCourseByDeptCodeAndCourseNum("COSC", "499"))
+                        .thenReturn(ResponseEntity.ok(course));
+                when(courseInterface.getByCourseIdSectionYearSemester(2L, "001", 2025, "W1"))
+                        .thenThrow(new RuntimeException("Section not found"));
 
-        //         NotFoundException ex = assertThrows(NotFoundException.class,
-        //                         () -> allocationService.importPreviousAllocations(List.of(csvData), false));
+                NotFoundException ex = assertThrows(NotFoundException.class,
+                                () -> allocationService.importPreviousAllocations(List.of(csvData), false));
 
-        //         assertTrue(ex.getMessage().contains("Section"));
-        //         assertTrue(ex.getMessage().contains("not found"));
-        //         assertTrue(ex.getMessage().contains("COSC"));
+                assertTrue(ex.getMessage().contains("Section"));
+                assertTrue(ex.getMessage().contains("not found"));
+                assertTrue(ex.getMessage().contains("COSC"));
 
-        //         verify(courseInterface, never()).addCourse(any());
-        //         verify(courseInterface, never()).addSection(anyLong(), any());
-        // }
+                verify(courseInterface, never()).addCourse(any());
+                verify(courseInterface, never()).addSection(anyLong(), any());
+        }
 
         @Test
         void testdeleteSectionReturnsAffectedCount() {

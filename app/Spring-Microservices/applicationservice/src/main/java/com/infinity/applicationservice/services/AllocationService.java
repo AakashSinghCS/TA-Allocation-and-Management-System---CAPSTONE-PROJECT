@@ -315,21 +315,52 @@ public class AllocationService {
                     throw new NotFoundException("Section " + section + " " +  year + " " + semester + " not found for Course " + courseDto.deptCode() + " " + courseDto.courseNum());
                 }
             }
-            AllocationCsvDto key = new AllocationCsvDto(studentNum, year, semester);
-            if (allocationMap.containsKey(key)) {
-                allocationMap.get(key).add(new AllocatedSection());
-            }
-
+            
+            Application application = new Application(studentDto.id(), List.of(), null, false, null);
+            application.setYear(year);
             Allocation allocation = new Allocation();
             allocation.setStudentId(studentDto.id());
-            // allocation.setSectionId(sectionDto.id());
+            allocation.setApplication(application);
             allocation.setStatus(ApplicationStatus.CONFIRMED);
-            // allocation.setNumberOfHours(0);
+            AllocationCsvDto key = new AllocationCsvDto(studentNum, studentDto.id(), year, semester);
 
-            Allocation saved = allocationRepository.save(allocation);
-            importedAllocations.add(allocationMapper.toDto(saved, studentDto, null, sectionDto));
+            if (allocationMap.containsKey(key)) {
+                AllocatedSection allocatedSection = new AllocatedSection();
+                allocatedSection.setAllocation(allocation);
+                allocatedSection.setSectionId(sectionDto.id());
+                allocatedSection.setTask(null); // Assuming task is not provided in CSV
+                allocatedSection.setHours(0.0); // Assuming hours is not provided in CSV
+                allocationMap.get(key).add(allocatedSection);
+            } else {
+                AllocatedSection allocatedSection = new AllocatedSection();
+                allocatedSection.setAllocation(allocation);
+                allocatedSection.setSectionId(sectionDto.id());
+                allocatedSection.setTask(null); // Assuming task is not provided in CSV
+                allocatedSection.setHours(0.0); // Assuming hours is not provided in CSV
+                List<AllocatedSection> allocatedSections = new ArrayList<>();
+                allocatedSections.add(allocatedSection);
+                allocationMap.put(key, allocatedSections);
+            }
+            // Allocation saved = allocationRepository.save(allocation);
+            // importedAllocations.add(allocationMapper.toDto(saved, studentDto, null, sectionDto));
         }
-
+        for (Map.Entry<AllocationCsvDto, List<AllocatedSection>> entry : allocationMap.entrySet()) {
+            AllocationCsvDto key = entry.getKey();
+            List<AllocatedSection> allocatedSections = entry.getValue();
+            Allocation allocation = new Allocation();
+            allocation.setStudentId(key.studentId());
+            allocation.setStatus(ApplicationStatus.CONFIRMED);
+            allocation.setAllocatedSections(allocatedSections);
+            Application application = new Application();
+            application.setYear(key.year());
+            allocation.setApplication(application);
+            Allocation savedAllocation = allocationRepository.save(allocation);
+            // for (AllocatedSection allocatedSection : allocatedSections) {
+            //     allocatedSection.setAllocation(savedAllocation);
+            //     allocatedSectionRepository.save(allocatedSection);
+            // }
+            importedAllocations.add(allocationMapper.toDto(savedAllocation, studentInterface.getStudentByNum(key.studentNum()).getBody(), null));
+        }
         return importedAllocations;
     }
 

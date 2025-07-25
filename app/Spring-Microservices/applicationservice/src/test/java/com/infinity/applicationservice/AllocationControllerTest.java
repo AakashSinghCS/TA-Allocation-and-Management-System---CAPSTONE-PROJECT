@@ -2,6 +2,7 @@ package com.infinity.applicationservice;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -31,6 +32,7 @@ import com.infinity.applicationservice.controllers.AllocationController;
 import com.infinity.applicationservice.dtos.Allocations.AllocatedSectionDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
+import com.infinity.applicationservice.dtos.Allocations.ImportRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
@@ -243,55 +245,55 @@ public class AllocationControllerTest {
                         jsonPath("$[0].applicationDto.timeSubmitted").value(org.hamcrest.Matchers.startsWith("2025")));
     }
 
-//     @Test
-//     void importAllocations_receivesJsonAndReturnsDtoList() throws Exception {
-//         List<Map<String, String>> requestList = List.of(Map.of(
-//                 "studentNum", "63260442",
-//                 "deptCode", "COSC",
-//                 "courseNum", "499",
-//                 "section", "001",
-//                 "year", "2025",
-//                 "semester", "W1"
-//         ));
+    @Test
+    void importAllocations_receivesJsonAndReturnsDtoList() throws Exception {
+        List<Map<String, String>> requestList = List.of(Map.of(
+                "studentNum", "63260442",
+                "deptCode", "COSC",
+                "courseNum", "499",
+                "section", "001",
+                "year", "2025",
+                "semester", "W1"
+        ));
 
-//         ImportRequest request = new ImportRequest(requestList, true);
+        ImportRequest request = new ImportRequest(requestList, true);
 
-//         when(allocationService.importPreviousAllocations(any(), eq(true))).thenReturn(List.of(sampleDto));
+        when(allocationService.importPreviousAllocations(any(), eq(true))).thenReturn(List.of(sampleDto));
 
-//         mvc.perform(post("/allocations/import")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(mapper.writeValueAsString(request)))
-//            .andExpect(status().isOk())
-//            .andExpect(jsonPath("$", hasSize(1)))
-//            .andExpect(jsonPath("$[0].student.firstName").value("Alice"));
+        mvc.perform(post("/allocations/import")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(mapper.writeValueAsString(request)))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$", hasSize(1)))
+           .andExpect(jsonPath("$[0].student.firstName").value("Alice"));
 
-//         verify(allocationService, times(1)).importPreviousAllocations(any(), eq(true));
-//      }
+        verify(allocationService, times(1)).importPreviousAllocations(any(), eq(true));
+     }
 
-//      @Test
-//      void importAllocations_receivesJsonAndReturnsDtoListFalseAutoCreateCase() throws Exception {
-//         List<Map<String, String>> requestList = List.of(Map.of(
-//                 "studentNum", "63260442",
-//                 "deptCode", "COSC",
-//                 "courseNum", "499",
-//                 "section", "001",
-//                 "year", "2025",
-//                 "semester", "W1"
-//         ));
+     @Test
+     void importAllocations_receivesJsonAndReturnsDtoListFalseAutoCreateCase() throws Exception {
+        List<Map<String, String>> requestList = List.of(Map.of(
+                "studentNum", "63260442",
+                "deptCode", "COSC",
+                "courseNum", "499",
+                "section", "001",
+                "year", "2025",
+                "semester", "W1"
+        ));
 
-//         ImportRequest request = new ImportRequest(requestList, false);
+        ImportRequest request = new ImportRequest(requestList, false);
 
-//         when(allocationService.importPreviousAllocations(any(), eq(false))).thenReturn(List.of(sampleDto));
+        when(allocationService.importPreviousAllocations(any(), eq(false))).thenReturn(List.of(sampleDto));
 
-//         mvc.perform(post("/allocations/import")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(mapper.writeValueAsString(request)))
-//            .andExpect(status().isOk())
-//            .andExpect(jsonPath("$", hasSize(1)))
-//            .andExpect(jsonPath("$[0].student.firstName").value("Alice"));
+        mvc.perform(post("/allocations/import")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(mapper.writeValueAsString(request)))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$", hasSize(1)))
+           .andExpect(jsonPath("$[0].student.firstName").value("Alice"));
 
-//         verify(allocationService, times(1)).importPreviousAllocations(any(), eq(false));
-//      }
+        verify(allocationService, times(1)).importPreviousAllocations(any(), eq(false));
+     }
 
         @Test
         void testDeleteSectionEndpointReturnsCount() throws Exception {
