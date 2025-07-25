@@ -30,7 +30,8 @@ public class NeedMapperTest {
         need.setId(100L);
 
         Prereq prereq = new Prereq();
-        CourseNeed courseNeed = new CourseNeed(mainCourse, need, 2025, "FALL");
+        Semester semester = new Semester(2025, "W1", null, null);
+        CourseNeed courseNeed = new CourseNeed(mainCourse, need, semester);
 
         prereq.setCourseNeed(courseNeed);
         prereq.setPrerequisite(prereqCourse);
@@ -48,7 +49,7 @@ public class NeedMapperTest {
         assertEquals(10, dto.requiredGradingHours());
         assertEquals(5, dto.numHoursCurrentlyAllocated());
         assertEquals(2025, dto.year());
-        assertEquals("FALL", dto.semester());
+        assertEquals("W1", dto.semester());
         assertEquals(1, dto.prerequisites().size());
 
         CourseDto mappedPrereq = dto.prerequisites().get(0);

@@ -23,7 +23,8 @@ public class NeedMapper {
                 .collect(Collectors.toList());
         return new NeedDto(courseNeed.getNeed().getId(), courseNeed.getCourse().getId(),
                 courseNeed.getNeed().getDescription(), courseNeed.getNeed().getRequiredGradingHours(),
-                courseNeed.getNeed().getNumHoursCurrentlyAllocated(), courseNeed.getYear(), courseNeed.getSemester(),
+                courseNeed.getNeed().getNumHoursCurrentlyAllocated(), courseNeed.getSemester().getYear(),
+                courseNeed.getSemester().getSemester(),
                 prereqDtos);
     }
 }

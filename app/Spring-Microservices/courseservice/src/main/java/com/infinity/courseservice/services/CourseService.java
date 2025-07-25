@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.lang.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,16 +33,17 @@ import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.Semester;
 import com.infinity.courseservice.models.StudentTaughtCourse;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
+import com.infinity.courseservice.repositories.SemesterRepository;
 import com.infinity.courseservice.repositories.StudentTaughtCourseRepository;
 import com.infinity.courseservice.utility.CourseMapper;
 import com.infinity.courseservice.utility.SectionMapper;
+import com.infinity.courseservice.utility.StudentTaughtCourseMapper;
 
-import org.springframework.lang.Nullable;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -60,6 +62,8 @@ public class CourseService {
     private final CourseMapper courseMapper;
     private final StudentTaughtCourseRepository stcRepository;
     private final SectionMapper sectionMapper;
+    private final SemesterRepository semesterRepository;
+    private final StudentTaughtCourseMapper studentTaughtCourseMapper;
 
     // private final EnrollmentService enrollmentService;
 
@@ -124,19 +128,12 @@ public class CourseService {
     }
 
     public CourseNeedAndAllocations getCourseNeedAndAllocations(Long courseId, Integer year, String semester) {
-        Section section = sectionRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)
+        Section section = sectionRepository.findByCourseIdAndSemester_YearAndSemester_Semester(courseId, year, semester)
                 .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
         NeedDto need = needService.getNeed(courseId, year, semester);
         List<AllocationHistoryDtoWithCourse> allocations = applicationInterface
                 .getAllocationsBySectionId(section.getId()).getBody();
-  
-        SectionDto sectionDto = new SectionDto(section.getId(), section.getYear(), section.getSemester(),
-                section.getSection(), section.getType(),
-
-                new CourseDto(section.getCourse().getId(),
-                        section.getCourse().getDeptCode(),
-                        section.getCourse().getName(),
-                        section.getCourse().getCourseNum()));
+        SectionDto sectionDto = sectionMapper.sectionToDto(section);
         return new CourseNeedAndAllocations(sectionDto, need, allocations);
 
     }
@@ -187,10 +184,10 @@ public class CourseService {
     ) {
         // fetch filtered Section entities
         List<Section> sections = (courseId != null)
-            ? sectionRepository.findByInstructorIdAndCourseIdAndYearAndSemester(
+            ? sectionRepository.findByInstructorIdAndCourseIdAndSemester_YearAndSemester_Semester(
                   instructorId, courseId, year, semester
               )
-            : sectionRepository.findByInstructorIdAndYearAndSemester(
+            : sectionRepository.findByInstructorIdAndSemester_YearAndSemester_Semester(
                   instructorId, year, semester
               );
 
@@ -204,8 +201,8 @@ public class CourseService {
             try {
                 needDto = needService.getNeed(
                     section.getCourse().getId(),
-                    section.getYear(),
-                    section.getSemester()
+                    section.getSemester().getYear(),
+                    section.getSemester().getSemester()
                 );
             } catch (Exception ignored) {}
 
@@ -224,12 +221,13 @@ public class CourseService {
     public void addStudentTaughtCourse(Long courseId, StudentTaughtCourseRequest request) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("Course not found"));
+        Semester semester = semesterRepository.findByYearAndSemester(request.year(), request.semester())
+                .orElseThrow(() -> new NotFoundException("Semester doesn't exist"));
 
         StudentTaughtCourse record = StudentTaughtCourse.builder()
                 .course(course)
                 .studentId(request.studentId())
-                .semester(request.semester())
-                .year(request.year())
+                .semester(semester)
                 .build();
 
         stcRepository.save(record);
@@ -243,12 +241,7 @@ public class CourseService {
         UserDto student = userInterface.getStudentById(studentId);
 
         return stcRepository.findByStudentId(studentId).stream()
-                .map(record -> new StudentTaughtCourseDto(
-                        student,
-                        new CourseDto(record.getCourse().getId(), record.getCourse().getDeptCode(),
-                                record.getCourse().getName(), record.getCourse().getCourseNum()),
-                        record.getSemester(),
-                        record.getYear()))
+                .map(record -> studentTaughtCourseMapper.toDto(student, record))
                 .toList();
     }
 

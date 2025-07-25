@@ -14,9 +14,11 @@ import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.CourseNeed;
 import com.infinity.courseservice.models.Need;
 import com.infinity.courseservice.models.Prereq;
+import com.infinity.courseservice.models.Semester;
 import com.infinity.courseservice.repositories.CourseNeedRepository;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.NeedRepository;
+import com.infinity.courseservice.repositories.SemesterRepository;
 import com.infinity.courseservice.utility.NeedMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -28,28 +30,34 @@ public class NeedService {
     private final CourseRepository courseRepository;
     private final NeedRepository needRepository;
     private final CourseNeedRepository courseNeedRepository;
+    private final SemesterRepository semesterRepository;
     private final NeedMapper needMapper;
     private final ApplicationInterface applicationInterface;
 
     public NeedDto addNeed(NeedRequest request, Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
-        
-        if (courseNeedRepository.existsByCourseAndYearAndSemester(course, request.year(), request.semester())) {
+        Semester semester = semesterRepository.findByYearAndSemester(request.year(), request.semester())
+                .orElseThrow(() -> new NotFoundException("That semester doesn't exist"));
+
+        if (courseNeedRepository.existsByCourseAndSemester(course, semester)) {
             throw new BadRequestException("Need already exists for course that year and semester");
         }
 
-        if (LocalDateTime.now().isAfter(applicationInterface.getDeadlineByName("student_application_deadline").getBody().endTime())) {
-                throw new BadRequestException("The need update deadline has passed.");
-            }
-        if (LocalDateTime.now().isBefore(applicationInterface.getDeadlineByName("student_application_deadline").getBody().startTime())) {
+        if (LocalDateTime.now()
+                .isAfter(applicationInterface.getDeadlineByName("student_application_deadline").getBody().endTime())) {
+            throw new BadRequestException("The need update deadline has passed.");
+        }
+        if (LocalDateTime.now().isBefore(
+                applicationInterface.getDeadlineByName("student_application_deadline").getBody().startTime())) {
             throw new BadRequestException("The need update is not open yet.");
         }
 
-        Need need = new Need(request.description(), request.requiredGradingHours(), request.numHoursCurrentlyAllocated());
+        Need need = new Need(request.description(), request.requiredGradingHours(),
+                request.numHoursCurrentlyAllocated());
         need = needRepository.save(need);
 
-        CourseNeed courseNeed = new CourseNeed(course, need, request.year(), request.semester());
+        CourseNeed courseNeed = new CourseNeed(course, need, semester);
         courseNeed = courseNeedRepository.save(courseNeed);
         if (request.prerequisiteCourseIds() != null) {
             List<Course> prereqCourses = courseRepository.findAllById(request.prerequisiteCourseIds());
@@ -65,38 +73,43 @@ public class NeedService {
         return needMapper.courseNeedToDto(courseNeed);
     }
 
-
     public NeedDto getNeed(Long courseId, Integer year, String semester) {
-        CourseNeed courseNeed = courseNeedRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)
+        CourseNeed courseNeed = courseNeedRepository
+                .findByCourseIdAndSemester_YearAndSemester_Semester(courseId, year, semester)
                 .orElseThrow(() -> new NotFoundException("Course has no need for that year and semester"));
         return needMapper.courseNeedToDto(courseNeed);
     }
 
     public NeedDto updateNeed(NeedRequest request, Long courseId, Integer year, String semester) {
-        CourseNeed courseNeed = courseNeedRepository.findByCourseIdAndYearAndSemester(courseId, year, semester)
-                        .orElseThrow(() -> new NotFoundException("Course has no need for that year and semester"));
-        if (LocalDateTime.now().isAfter(applicationInterface.getDeadlineByName("instructor_need_update_deadline").getBody().endTime())) {
+        CourseNeed courseNeed = courseNeedRepository
+                .findByCourseIdAndSemester_YearAndSemester_Semester(courseId, year, semester)
+                .orElseThrow(() -> new NotFoundException("Course has no need for that year and semester"));
+        if (LocalDateTime.now().isAfter(
+                applicationInterface.getDeadlineByName("instructor_need_update_deadline").getBody().endTime())) {
             throw new BadRequestException("The application deadline has passed.");
         }
-        if (LocalDateTime.now().isBefore(applicationInterface.getDeadlineByName("instructor_need_update_deadline").getBody().startTime())) {
+        if (LocalDateTime.now().isBefore(
+                applicationInterface.getDeadlineByName("instructor_need_update_deadline").getBody().startTime())) {
             throw new BadRequestException("The application is not open yet.");
         }
+        Semester semesterObj = semesterRepository.findByYearAndSemester(year, semester)
+                .orElseThrow(() -> new NotFoundException("That semester doesn't exist"));
+
         courseNeed.getNeed().setDescription(request.description());
         courseNeed.getNeed().setRequiredGradingHours(request.requiredGradingHours());
         courseNeed.getNeed().setNumHoursCurrentlyAllocated(request.numHoursCurrentlyAllocated());
-        courseNeed.setYear(request.year());
-        courseNeed.setSemester(request.semester());
+        courseNeed.setSemester(semesterObj);
 
         courseNeed.getPrerequisites().clear();
         courseNeedRepository.save(courseNeed);
         if (request.prerequisiteCourseIds() != null) {
-                List<Course> prereqCourses = courseRepository.findAllById(request.prerequisiteCourseIds());
-                for (Course prereq : prereqCourses) {
-                        Prereq p = new Prereq();
-                        p.setCourseNeed(courseNeed);
-                        p.setPrerequisite(prereq);
-                        courseNeed.getPrerequisites().add(p);
-                }
+            List<Course> prereqCourses = courseRepository.findAllById(request.prerequisiteCourseIds());
+            for (Course prereq : prereqCourses) {
+                Prereq p = new Prereq();
+                p.setCourseNeed(courseNeed);
+                p.setPrerequisite(prereq);
+                courseNeed.getPrerequisites().add(p);
+            }
         }
         needRepository.save(courseNeed.getNeed());
         courseNeed = courseNeedRepository.save(courseNeed);
@@ -104,13 +117,12 @@ public class NeedService {
     }
 
     public String deleteNeed(Long courseId, Integer year, String semester) {
-            CourseNeed courseNeed = courseNeedRepository
-                        .findByCourseIdAndYearAndSemester(courseId, year, semester)
-                        .orElseThrow(() -> new NotFoundException("Course has no need for that year and semester"));
+        CourseNeed courseNeed = courseNeedRepository
+                .findByCourseIdAndSemester_YearAndSemester_Semester(courseId, year, semester)
+                .orElseThrow(() -> new NotFoundException("Course has no need for that year and semester"));
         needRepository.delete(courseNeed.getNeed());
         return "Need deleted";
     }
-
 
     public String updateAllocatedHours(Long needId, Integer numHoursAllocated) {
         if (!needRepository.existsById(needId)) {

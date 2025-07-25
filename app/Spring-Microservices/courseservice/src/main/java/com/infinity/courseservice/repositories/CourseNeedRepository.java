@@ -8,12 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.CourseNeed;
+import com.infinity.courseservice.models.Semester;
 
 @Repository
 public interface CourseNeedRepository extends JpaRepository<CourseNeed, Long> {
     List<CourseNeed> findByCourseId(Long courseId);
 
-    Optional<CourseNeed> findByCourseIdAndYearAndSemester(Long courseId, Integer year, String semester);
+    Optional<CourseNeed> findByCourseIdAndSemester_YearAndSemester_Semester(Long courseId, Integer year, String semester);
 
-    boolean existsByCourseAndYearAndSemester(Course course, Integer year, String semester);
+    boolean existsByCourseAndSemester(Course course, Semester semester);
 }

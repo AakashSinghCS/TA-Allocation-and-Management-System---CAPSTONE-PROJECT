@@ -1,14 +1,10 @@
 package com.infinity.courseservice.dtos.QualificationDtos;
 
-import com.infinity.courseservice.enums.SectionType;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDtoNoCourse;
 
 public record QualificationWithSectionDto(
     Long courseId,
-    Long sectionId,
-    Integer year,
-    String semester,
-    String sectionName,
-    SectionType sectionType,
+    SectionDtoNoCourse sectionDto,
     Long qualificationId,
     String courseDeptCode,
     String qualificationDescription
