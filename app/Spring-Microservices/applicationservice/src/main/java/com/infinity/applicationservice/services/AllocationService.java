@@ -116,6 +116,7 @@ public class AllocationService {
         allocationRepository.save(allocation);
         allocatedSectionRepository.save(savedAllocatedSection);
         
+        courseInterface.incrementNumberOfTAs(request.sectionId());
         UserDto student = studentInterface.getStudentById(request.studentId()).getBody();
 
         ApplicationDto applicationDto = null;
@@ -150,12 +151,16 @@ public class AllocationService {
             courseInterface.updateNeedAllocatedHours(need.id(),
                     need.numHoursCurrentlyAllocated() - allocation.getGradingHours());
         }
+        Long sectionId = allocatedSection.getSectionId();
+
         allocatedSectionRepository.delete(allocatedSection);
         allocation = allocationRepository.findById(allocatedSection.getAllocation().getId())
             .orElseThrow(() -> new NotFoundException("Allocation not found"));
         if (allocation.getAllocatedSections().isEmpty()) {
             allocationRepository.delete(allocation);
         }
+
+        courseInterface.decrementNumberOfTAs(sectionId);
         return "Student deallocated";
     }
 

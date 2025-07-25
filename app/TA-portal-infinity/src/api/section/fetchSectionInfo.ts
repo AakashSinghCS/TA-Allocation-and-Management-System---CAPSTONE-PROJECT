@@ -71,6 +71,7 @@ export async function fetchSectionInfo(
     semester:  sectionData.semester,
     section:   sectionData.section,
     type:      sectionData.type,
+    numberOfTAsAllocated: sectionData.numberOfTAsAllocated,
     course:{
       id:        courseData.id,
      deptCode:  courseData.deptCode,

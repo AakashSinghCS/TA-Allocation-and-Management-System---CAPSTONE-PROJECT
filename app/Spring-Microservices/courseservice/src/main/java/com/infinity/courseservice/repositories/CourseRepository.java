@@ -19,7 +19,7 @@ import com.infinity.courseservice.models.Course;
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
   @Query("""
-                  SELECT DISTINCT new CourseSectionScheduleDto(
+                  SELECT DISTINCT new com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto(
                       s.id, c.id, c.deptCode, c.name, c.courseNum, s.section, s.semester.year, s.semester.semester, s.type, ss.day, ss.startTime, ss.endTime,
           CASE WHEN s.id IS NULL THEN true ELSE false END
                   )
@@ -112,21 +112,22 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
   List<Course> findDistinctCoursesByInstructorId(@Param("instructorId") Long instructorId);
   
   @Query(value = """
-        SELECT DISTINCT new CourseSectionScheduleDto(
+        SELECT DISTINCT new com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto(
           s.id, c.id, c.deptCode, c.name, c.courseNum,
-          s.section, s.year, s.semester, s.type,
+          s.section, s.semester.year, s.semester.semester, s.type,
           ss.day, ss.startTime, ss.endTime,
           CASE WHEN s.id IS NULL THEN true ELSE false END
         )
         FROM Course c
-         LEFT JOIN c.sections s
+             LEFT JOIN c.sections s
+         LEFT JOIN s.semester sem
          LEFT JOIN s.sectionSchedules ss
         WHERE (:deptCode   IS NULL OR c.deptCode   = :deptCode)
           AND (:courseNum  IS NULL OR c.courseNum  = :courseNum)
           AND (:name       IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
           AND (:section    IS NULL OR s.section    = :section)
-          AND (:year       IS NULL OR s.year       = :year)
-          AND (:semester   IS NULL OR s.semester   = :semester)
+          AND (:year       IS NULL OR sem.year       = :year)
+          AND (:semester   IS NULL OR sem.semester   = :semester)
           AND (:type       IS NULL OR s.type       = :type)
           AND (:day        IS NULL OR ss.day        = :day)
           AND (:startTime  IS NULL OR ss.startTime = :startTime)
@@ -134,14 +135,15 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
       """, countQuery = """
         SELECT COUNT(DISTINCT s.id)
         FROM Course c
-         LEFT JOIN c.sections s
+             LEFT JOIN c.sections s
+         LEFT JOIN s.semester sem
          LEFT JOIN s.sectionSchedules ss
         WHERE (:deptCode   IS NULL OR c.deptCode   = :deptCode)
           AND (:courseNum  IS NULL OR c.courseNum  = :courseNum)
           AND (:name       IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
           AND (:section    IS NULL OR s.section    = :section)
-          AND (:year       IS NULL OR s.year       = :year)
-          AND (:semester   IS NULL OR s.semester   = :semester)
+          AND (:year       IS NULL OR sem.year       = :year)
+          AND (:semester   IS NULL OR sem.semester   = :semester)
           AND (:type       IS NULL OR s.type       = :type)
           AND (:day        IS NULL OR ss.day        = :day)
           AND (:startTime  IS NULL OR ss.startTime = :startTime)

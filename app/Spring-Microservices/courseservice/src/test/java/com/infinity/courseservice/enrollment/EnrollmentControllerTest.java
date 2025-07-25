@@ -83,7 +83,7 @@ public class EnrollmentControllerTest {
     void testGetActiveEnrollments_returnsList() throws Exception {
         ActiveEnrollmentDto dto = new ActiveEnrollmentDto(
                 new CourseDto(1L, "COSC", "Intro", "111"),
-                new SectionDtoNoCourse(1L, 2024, "W1", "001", null),
+                new SectionDtoNoCourse(1L, 2024, "W1", "001", null, 1),
                 85);
 
         when(enrollmentService.getActiveEnrollmentList(1L)).thenReturn(List.of(dto));
@@ -100,7 +100,7 @@ public class EnrollmentControllerTest {
     null, null,true),
                 List.of(new ActiveEnrollmentDto(
                         new CourseDto(1L, "COSC", "Intro", "111"),
-                        new SectionDtoNoCourse(1L, 2024, "W1", "001", null),
+                        new SectionDtoNoCourse(1L, 2024, "W1", "001", null, 1),
                         85)),
                 List.of(new CompletedCourseDto(
                         new CourseDto(2L, "MATH", "Calc", "101"),

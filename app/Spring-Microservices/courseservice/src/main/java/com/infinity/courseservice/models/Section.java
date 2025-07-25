@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.infinity.courseservice.enums.SectionType;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -40,6 +41,9 @@ public class Section {
     private String section;
 
     private Long instructorId;
+
+    @Column(nullable = false)
+    private int numberOfTAsAllocated = 0;
 
     @Enumerated(EnumType.STRING)
     private SectionType type;

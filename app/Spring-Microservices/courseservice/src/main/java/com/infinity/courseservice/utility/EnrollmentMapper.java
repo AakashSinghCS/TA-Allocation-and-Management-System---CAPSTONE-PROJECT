@@ -34,7 +34,8 @@ public class EnrollmentMapper {
                 section.getSemester().getYear(),
                 section.getSemester().getSemester(),
                 section.getSection(),
-                section.getType());
+                section.getType(),
+                section.getNumberOfTAsAllocated());
     }
 
     public CompletedCourseDto toCompletedCourseDto(StudentCourse studentCourse) {
