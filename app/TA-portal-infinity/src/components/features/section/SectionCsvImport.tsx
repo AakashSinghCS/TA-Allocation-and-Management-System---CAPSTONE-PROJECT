@@ -156,12 +156,14 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         </div>
       )}
       {result && result.includes('Failed: 0') && (
-        <button
-          className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
-          onClick={onClose}
-        >
-          Close this window
-        </button>
+        <div className="flex justify-end">
+          <button
+            className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
+            onClick={onClose}
+          >
+            Close this window
+          </button>
+        </div>
       )}
     </div>
   );
