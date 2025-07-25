@@ -154,10 +154,9 @@ public class SectionService {
         } else {
             summary.append("Section import completed.\n");
         }
-        summary.append("Success: ").append(successCount).append("\n");
-        summary.append("Failed: ").append(errorCount).append("\n");
+        summary.append("Success: ").append(successCount).append(", Failed: ").append(errorCount);
         if (errorCount > 0) {
-            summary.append("\nError details (per row):\n");
+            summary.append("\n\nError details (per row):\n");
             String[] errors = errorMessages.toString().split("\n");
             for (String err : errors) {
                 if (err.contains("duplicate key") || err.toLowerCase().contains("sql") || err.toLowerCase().contains("constraint") || err.toLowerCase().contains("exception during save")) {
