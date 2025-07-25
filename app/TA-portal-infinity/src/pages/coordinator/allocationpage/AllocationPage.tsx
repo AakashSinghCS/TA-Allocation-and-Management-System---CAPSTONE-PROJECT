@@ -131,7 +131,7 @@ const TAAllocationPage: React.FC = () => {
       setInstructor(null);
     }
   };
-  
+
   const loadApp = (a: ApplicationDto) => setSelApp(a);
 
 
