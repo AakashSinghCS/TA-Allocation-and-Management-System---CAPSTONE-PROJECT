@@ -59,9 +59,6 @@ public class AllocationService {
         if (sectionIds.isEmpty()) {
                 throw new NotFoundException("Allocation ID " + allocation.getId() + " has no associated sectionId.");
         }
-        List<SectionDto> sections = sectionIds.stream()
-                .map(sectionId -> courseInterface.getSectionById(sectionId))
-                .collect(Collectors.toList());
 
         ApplicationDto applicationDto = null;
         if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {

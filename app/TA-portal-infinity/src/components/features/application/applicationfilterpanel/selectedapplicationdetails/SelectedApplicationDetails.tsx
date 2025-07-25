@@ -35,7 +35,7 @@ export default function SelectedApplicationDetails({ selApp, history }: Selected
       <section>
         <h2 className="font-bold text-lg">Availabilities</h2>
         <ul className="list-disc pl-4 space-y-1">
-          {selApp.availabilities.map((a, i) => (
+          {selApp.unavailabilities.map((a, i) => (
             <li key={i}>{a.day}: {a.startTime} – {a.endTime}</li>
           ))}
         </ul>

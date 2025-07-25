@@ -216,7 +216,7 @@ export default function ApplicationFilterPanel({
         {!isFetching && displayApps.map(app => (
           <button
             key={`${app.student.id}-${app.timeSubmitted}`}
-            onClick={() => loadApp(app)}
+            onClick={() => {loadApp(app); console.log(app)}}
             className={`block w-full text-left px-3 py-2 rounded ${selApp === app
               ? 'bg-gray-900 text-white'
               : 'bg-gray-200 hover:bg-gray-300'

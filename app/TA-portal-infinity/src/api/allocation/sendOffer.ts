@@ -1,14 +1,20 @@
 import type { OfferDto } from '../../interfaces/application/Application';
 import { fetchWithAuth } from '../Auth/fetchWithAuth';
 
+export type AllocationType =
+    | "GRADING"
+    | "LAB_PREP"
+    | "LAB"
+
 export interface CreateOfferRequest {
   studentId:     number;
   applicationId: number;
   status:        import('../../interfaces/enum/ApplicationStatus').ApplicationStatus;
   // numberOfHours: number;
-  numberOfSectionHours: number;
-  numberOfLabPrepHours : number;
-  numberOfGradingHours : number;
+  task :AllocationType;
+  sectionHours?: number;
+  labPrepHours? : number;
+  gradingHours? : number;
   sectionId:     number;
 }
 

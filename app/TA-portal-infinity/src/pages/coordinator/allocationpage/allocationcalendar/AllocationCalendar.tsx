@@ -45,7 +45,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
         totalSectionHours > 0 &&
         (selCourse?.sectionSchedule || []).some(s =>
             s.day && s.startTime && s.endTime &&
-            isSlotHasOverlap({ day: s.day!, startTime: s.startTime!, endTime: s.endTime! }, selApp?.availabilities || [])
+            isSlotHasOverlap({ day: s.day!, startTime: s.startTime!, endTime: s.endTime! }, selApp?.unavailabilities || [])
         );
 
     const disableOffer = !selCourse || !selApp || loading || !anyHoursPresent || hasUnavailabilityMatch;
@@ -54,7 +54,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
         (selCourse?.sectionSchedule || []).map((slot, i) => {
             const isBad = isSlotHasOverlap(
                 { day: slot.day!, startTime: slot.startTime!, endTime: slot.endTime! },
-                selApp?.availabilities || []
+                selApp?.unavailabilities || []
             );
             return {
                 id: `c${i}`,
@@ -66,9 +66,9 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                 extendedProps: { type: 'section', slotIndex: i, isBad },
             };
         })
-    ), [selCourse, selApp?.availabilities, selectedSectionSlots]);
+    ), [selCourse, selApp?.unavailabilities, selectedSectionSlots]);
 
-    const appEvents = (selApp?.availabilities || []).map((slot, i) => ({
+    const appEvents = (selApp?.unavailabilities || []).map((slot, i) => ({
         id: `app${i}`,
         title: 'Student Unavailability',
         daysOfWeek: [getDayNumber(slot.day)],

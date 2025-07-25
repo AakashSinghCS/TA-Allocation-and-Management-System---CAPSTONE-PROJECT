@@ -2,7 +2,7 @@ import React from 'react';
 
 interface ApplicationSidebarProps {
   formData: any;
-  availability: any[];
+  unavailability: any[];
   submitted: boolean;
   errors: { [key: string]: string };
 }
@@ -58,18 +58,18 @@ const steps = [
   },
 ];
 
-const ApplicationSidebar: React.FC<ApplicationSidebarProps> = ({ formData, availability, submitted }) => (
+const ApplicationSidebar: React.FC<ApplicationSidebarProps> = ({ formData, unavailability, submitted }) => (
   <aside className="w-full sm:w-[320px] self-start bg-white border border-blue-200 shadow-md p-4 md:p-6 rounded-xl mb-8 sm:mb-0 mx-auto sm:mx-0" style={{ maxWidth: 400 }}>
     <h3 className="text-lg font-semibold text-[#040941] mb-4">Application Steps</h3>
     <ul className="space-y-6 text-sm text-gray-700">
       {steps.map((step, idx) => {
         let isDone;
         if (step.key === 'availability') {
-          isDone = step.done(formData, availability, submitted);
+          isDone = step.done(formData, unavailability, submitted);
         } else if (step.key === 'submitted') {
-          isDone = step.done(formData, availability, submitted);
+          isDone = step.done(formData, unavailability, submitted);
         } else {
-          isDone = step.done(formData, availability, submitted);
+          isDone = step.done(formData, unavailability, submitted);
         }
         return (
           <li key={idx} className="flex items-start gap-3">

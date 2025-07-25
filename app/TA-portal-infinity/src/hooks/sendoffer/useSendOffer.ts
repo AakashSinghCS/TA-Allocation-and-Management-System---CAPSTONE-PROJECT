@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { toast } from 'react-toastify';
-import type { CreateOfferRequest } from '../../api/allocation/sendOffer';
-import { sendOffer as apiSendOffer } from '../../api/allocation/sendOffer';
+import { toast, type ToastContentProps, type ToastPromiseParams } from 'react-toastify';
+import type { AllocationType, CreateOfferRequest } from '../../api/allocation/sendOffer';
+import { sendOffer} from '../../api/allocation/sendOffer';
 import type { ApplicationDto } from '../../interfaces/application/Application';
 import type { Need } from '../../interfaces/need/Need';
 
@@ -45,13 +45,13 @@ export function useSendOffer() {
     app: ApplicationDto,
     sectionId: number,
     need: Need,
-    numberOfSectionHours: number,
-    numberOfLabPrepHours: number,
-    numberOfGradingHours: number,
+    sectionHours: number,
+    labPrepHours: number,
+    gradingHours: number,
     hasAvailabilityMatch: boolean,
     onSuccess: () => void
   ) {
-    const error = validate(app, need, hasAvailabilityMatch, numberOfGradingHours,numberOfLabPrepHours,numberOfSectionHours);
+    const error = validate(app, need, hasAvailabilityMatch, sectionHours,labPrepHours,gradingHours);
     if (error) {
       toast.error(error, { position: 'top-right', autoClose: 8000 });
       return;
@@ -63,32 +63,51 @@ export function useSendOffer() {
       return;
     }
 
-    const payload: CreateOfferRequest = {
-      studentId: app.student.id,
-      applicationId,
-      status: 'SENT',
-      // numberOfHours: app.wantWorkingHours,
-      numberOfSectionHours: numberOfSectionHours,
-      numberOfLabPrepHours: numberOfLabPrepHours,
-      numberOfGradingHours: numberOfGradingHours,
-      sectionId,
-    };
+    type HoursPayload = { gradingHours?: number; labPrepHours?: number; sectionHours?: number };
+    const tasks: Array<{ task: AllocationType; hours: HoursPayload }> = [];
+    if (gradingHours > 0)  tasks.push({ task: 'GRADING',   hours: { gradingHours } });
+    if (labPrepHours > 0)  tasks.push({ task: 'LAB_PREP',  hours: { labPrepHours } });
+    if (sectionHours > 0)  tasks.push({ task: 'LAB',       hours: { sectionHours } });
+
+    if (tasks.length === 0) {
+      toast.error("No hours to send.", { position: 'top-right' });
+      return;
+    }
     setLoading(true);
-
-    const promise = apiSendOffer(payload);
-    toast.promise(
-      promise,
-      {
-        pending: `Sending offer to ${app.student.firstName}…`,
-        success: `Offer sent!`,
-        error: `Failed to send offer.`,
-      },
-      { position: 'top-right', autoClose: 5000 }
-    );
-
     try {
-      await promise;
-      onSuccess();
+      for (const { task, hours } of tasks) {
+        const payload: CreateOfferRequest = {
+          studentId:    app.student.id,
+          applicationId,
+          status:       'SENT',
+          task,
+          sectionId,
+          ...hours
+        };
+
+        const label = task === 'GRADING'
+          ? 'grading'
+          : task === 'LAB_PREP'
+            ? 'lab prep'
+            : 'section';
+
+        const promise = sendOffer(payload);
+        toast.promise(
+          promise,
+          {
+            pending: `Sending ${label} offer to ${app.student.firstName}…`,
+            success: `${label.charAt(0).toUpperCase() + label.slice(1)} offer sent!`,
+            error:     {
+            render({ data }: ToastContentProps<Error>) {
+              return data?.message ?? `Failed to send ${label} offer.`;
+            }
+      }
+          },
+          { position: 'top-right', autoClose: 5000 }
+        );
+        await promise;
+        onSuccess();
+      }
     } finally {
       setLoading(false);
     }

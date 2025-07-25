@@ -2,7 +2,7 @@ export type Day =
   | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY'
   | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
 
-export interface AvailabilityDto {
+export interface UnavailabilityDto {
   day: Day;
   startTime: string;  // "HH:mm"
   endTime: string;    // "HH:mm"
@@ -26,7 +26,7 @@ export interface ApplicationRequest {
   preferences: string[];
   wantRemote: boolean;
   wantWorkingHours: number;
-  availabilities: AvailabilityDto[];
+  unavailabilities: UnavailabilityDto[];
   applicationType: ApplicationType;
 }
 
@@ -48,7 +48,7 @@ export interface ApplicationDto {
   wantWorkingHours: number;
   timeSubmitted: string;
   applicationType: ApplicationType;
-  availabilities: AvailabilityDto[];
+  unavailabilities: UnavailabilityDto[];
   transcript?: TranscriptDto;
   offers?: OfferDto[];
 }

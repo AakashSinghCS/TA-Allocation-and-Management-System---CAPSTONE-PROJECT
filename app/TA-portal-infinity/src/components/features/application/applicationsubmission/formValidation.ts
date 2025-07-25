@@ -11,14 +11,14 @@ export interface FormData {
   applicationType: '' | 'UNDERGRADUATE' | 'GRADUATE';
 }
 
-export interface Availability {
+export interface Unavailability {
   id: string;
   day: Day;
   startTime: string;
   endTime: string;
 }
 
-export function validateForm(formData: FormData, availability: Availability[]) {
+export function validateForm(formData: FormData, availability: Unavailability[]) {
   const newErrors: { [k: string]: string } = {};
   if (!formData.firstPreference)   newErrors.firstPreference   = '1st preference is required.';
   if (!availability.length)        newErrors.availability      = 'Pick at least one availability slot.';
@@ -31,7 +31,7 @@ export function validateForm(formData: FormData, availability: Availability[]) {
   return newErrors;
 }
 
-export function buildPayload(formData: FormData, availability: Availability[]): ApplicationRequest {
+export function buildPayload(formData: FormData, unavailability: Unavailability[]): ApplicationRequest {
   return {
     preferences: [
       formData.firstPreference,
@@ -40,7 +40,7 @@ export function buildPayload(formData: FormData, availability: Availability[]): 
     ].filter(p => p),
     wantRemote: formData.wantRemote === 'yes',
     wantWorkingHours: Number(formData.wantWorkingHours),
-    availabilities: availability.map(av => ({
+    unavailabilities: unavailability.map(av => ({
       day: av.day,
       startTime: av.startTime,
       endTime: av.endTime

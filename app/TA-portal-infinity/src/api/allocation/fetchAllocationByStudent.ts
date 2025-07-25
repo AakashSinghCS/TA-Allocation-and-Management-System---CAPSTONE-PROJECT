@@ -8,7 +8,9 @@ interface RawAllocationHistoryDto {
   student: Allocation['student'];
   applicationDto: ApplicationDto;
   status?: string;
-  numberOfHours: number;
+  labPrepHours : number;
+  gradingHours : number;
+  sectionHours : number;
   section: {
     id: number;
     term: string | null;
@@ -62,7 +64,9 @@ export async function fetchAllocationsByStudent(
       student: raw.student,
       application: raw.applicationDto,
       status: raw.status as any as import('../../interfaces/enum/ApplicationStatus').ApplicationStatus,
-      numberOfHours: raw.numberOfHours,
+      labPrepHours: raw.labPrepHours,
+      gradingHours: raw.gradingHours,
+      sectionHours: raw.sectionHours,
       section: mappedSection,
     };
 
