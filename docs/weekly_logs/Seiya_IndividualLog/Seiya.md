@@ -1,3 +1,58 @@
+## Monday (July 22-24)
+
+### Timesheet
+Clockify report
+
+![alt text](./clockify_images/clockify_weekly_log_2025-07-22_07-24_seiya.png)
+
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **Import Sections from CSV** | - Improved feedback messages (text and color)<br>- Added drag-and-drop CSV import<br>- Disabled upload button after click until a new file is selected<br>- Added "Close Window" button after successful import<br>- Implemented sample CSV download. |
+| **2** | **CSV Import for Student Transcript** | - Initial backend and frontend scaffolding for transcript import<br>- Defined required CSV columns and validation rules<br>- Started UI design for transcript upload and preview<br>- Began implementing error handling and feedback for transcrip. |
+
+
+
+
+### Progress Update (since July 21, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: Import Sections from CSV | Complete |
+| #2: CSV Import for Student Transcript | In Progress |
+
+
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to improve the usability and feedback of the CSV import feature and begin work on student transcript import.
+
+
+What was done:
+* Enhanced feedback messages (clearer text and color, concise success/error summaries and removal of raw SQL traces)
+* Added drag-and-drop CSV import functionality
+* Disabled upload button after click until a new file is selected
+* Added a "Close Window" button after successful import
+* Providing a downloadable sample CSV template so users have a clear reference for “import from csv”
+
+
+What was not done:
+* CSV Import for Student Transcript (still in progress)
+    - Backend and frontend integration is underway
+    - UI improvements and validation are ongoing
+    - Automated testing for this feature has not
+
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Finish transcript CSV parsing, validation, and preview UI
+* Implement robust error messages and edge case handling
+* Add automated tests and sample data for transcript import
+
+
+
+
+
 ## Monday (July 18-21)
 
 ### Timesheet
