@@ -1,5 +1,8 @@
 package com.infinity.applicationservice;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -16,6 +19,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -191,4 +201,68 @@ public class ApplicationControllerTest {
                                 .andExpect(jsonPath("$[0].preferences[0]").value("COSC"));
         }
 
+        @TestConfiguration
+    @EnableSpringDataWebSupport
+    static class SpringDataWebConfig {}
+
+    @Test
+    void whenGetAllApplicationsPage_thenReturnsPagedContent() throws Exception {
+        // given
+        Integer year       = 2024;
+        Boolean wantRemote = false;
+        Integer hours      = 6;
+        Subject p1         = Subject.COSC;
+
+        // sample DTO
+        UserDto studentDto = new UserDto(
+            2L, "Alice","Wang","awang@test.com",
+            List.of(UserRole.STUDENT),
+            12345678, "COSC", 2025, 3,
+            null,null,null,true
+        );
+        ApplicationWithStudentDto dto = new ApplicationWithStudentDto(
+            1L,
+            studentDto,
+            List.of(p1, Subject.MATH),
+            ApplicationType.UNDERGRADUATE,
+            wantRemote,
+            hours,
+            LocalDateTime.of(2024,1,1,12,0),
+            Set.of()
+        );
+
+        Page<ApplicationWithStudentDto> page = new PageImpl<>(
+            List.of(dto),
+            PageRequest.of(0, 5, Sort.by("submittedAt").descending()),
+            1
+        );
+
+        when(applicationService.getAllApplications(
+            eq(year), eq(wantRemote), eq(hours),
+            eq(p1), isNull(), isNull(),
+            any(Pageable.class)
+        )).thenReturn(page);
+
+        // when / then
+        mockMvc.perform(get("/applications/getAll/page")
+                    .param("page", "0")
+                    .param("size", "5")
+                    .param("year", year.toString())
+                    .param("wantRemote", wantRemote.toString())
+                    .param("hours", hours.toString())
+                    .param("preference1", p1.name())
+                    .accept(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.content.length()").value(1))
+               .andExpect(jsonPath("$.content[0].student.firstName")
+                          .value("Alice"))
+               .andExpect(jsonPath("$.content[0].wantRemote")
+                          .value(false))
+               .andExpect(jsonPath("$.totalElements")
+                          .value(1))
+               .andExpect(jsonPath("$.size")
+                          .value(5))
+               .andExpect(jsonPath("$.number")
+                          .value(0));
+    }
 }
