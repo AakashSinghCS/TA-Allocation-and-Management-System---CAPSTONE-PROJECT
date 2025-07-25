@@ -623,11 +623,10 @@ class AllocationServiceTest {
                 Allocation allocation = new Allocation();
                 allocation.setId(allocationId);
                 allocation.setStudentId(studentId);
-                allocation.setApplication(application);
+                allocation.setApplication(application); 
                 allocation.setAllocatedSections(List.of(allocatedSection));
-
                 SectionDto sectionDto = new SectionDto(1L, 2025, "Winter", "001", SectionType.LABORATORY,
-                                        new CourseDto(1L, "COSC", "capstone", "499"));
+                                        new CourseDto(1L, "COSC", "capstone", "499"), 1);
                 AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, applicationDto,
                                         ApplicationStatus.CONFIRMED, 0, 10, 0, List.of());
 

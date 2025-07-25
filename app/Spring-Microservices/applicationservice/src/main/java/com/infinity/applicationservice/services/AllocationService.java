@@ -282,7 +282,7 @@ public class AllocationService {
     public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList, boolean autoCreate) {
 
         List<AllocationHistoryDto> importedAllocations = new ArrayList<>();
-        HashMap<AllocationCsvDto, List<AllocatedSection>> allocationMap = new HashMap<>();
+        HashMap<AllocationCsvDto, List<AllocatedSectionDto>> allocationMap = new HashMap<>();
         for (Map<String, String> data : allocationDataList) {
             Integer studentNum = Integer.parseInt(data.get("studentNum").trim());
             String deptCode = data.get("deptCode").trim();
@@ -330,40 +330,32 @@ public class AllocationService {
             AllocationCsvDto key = new AllocationCsvDto(studentNum, studentDto.id(), year, semester);
 
             if (allocationMap.containsKey(key)) {
-                AllocatedSection allocatedSection = new AllocatedSection();
-                allocatedSection.setAllocation(allocation);
-                allocatedSection.setSectionId(sectionDto.id());
-                allocatedSection.setTask(null); // Assuming task is not provided in CSV
-                allocatedSection.setHours(0.0); // Assuming hours is not provided in CSV
+                AllocatedSectionDto allocatedSection = new AllocatedSectionDto(null, allocation.getId(), sectionDto.id(), null);
                 allocationMap.get(key).add(allocatedSection);
             } else {
-                AllocatedSection allocatedSection = new AllocatedSection();
-                allocatedSection.setAllocation(allocation);
-                allocatedSection.setSectionId(sectionDto.id());
-                allocatedSection.setTask(null); // Assuming task is not provided in CSV
-                allocatedSection.setHours(0.0); // Assuming hours is not provided in CSV
-                List<AllocatedSection> allocatedSections = new ArrayList<>();
-                allocatedSections.add(allocatedSection);
-                allocationMap.put(key, allocatedSections);
+                AllocatedSectionDto allocatedSection = new AllocatedSectionDto(null, allocation.getId(), sectionDto.id(), null);
+                allocationMap.put(key, List.of(allocatedSection));
             }
-            // Allocation saved = allocationRepository.save(allocation);
-            // importedAllocations.add(allocationMapper.toDto(saved, studentDto, null, sectionDto));
         }
-        for (Map.Entry<AllocationCsvDto, List<AllocatedSection>> entry : allocationMap.entrySet()) {
+        for (Map.Entry<AllocationCsvDto, List<AllocatedSectionDto>> entry : allocationMap.entrySet()) {
             AllocationCsvDto key = entry.getKey();
-            List<AllocatedSection> allocatedSections = entry.getValue();
+            List<AllocatedSectionDto> allocatedSectionDtos = entry.getValue();
+
             Allocation allocation = new Allocation();
             allocation.setStudentId(key.studentId());
             allocation.setStatus(ApplicationStatus.CONFIRMED);
-            allocation.setAllocatedSections(allocatedSections);
-            Application application = new Application();
-            application.setYear(key.year());
-            allocation.setApplication(application);
             Allocation savedAllocation = allocationRepository.save(allocation);
-            // for (AllocatedSection allocatedSection : allocatedSections) {
-            //     allocatedSection.setAllocation(savedAllocation);
-            //     allocatedSectionRepository.save(allocatedSection);
-            // }
+            
+            List<AllocatedSection> allocatedSections = new ArrayList<>();
+            for (AllocatedSectionDto allocatedSectionDto : allocatedSectionDtos) {
+                AllocatedSection allocatedSection = new AllocatedSection();
+                allocatedSection.setSectionId(allocatedSectionDto.sectionId());
+                allocatedSection.setHours(0.0);
+                allocatedSection.setTask(null);
+                allocatedSection.setAllocation(savedAllocation);
+                allocatedSections.add(allocatedSection);
+                allocatedSectionRepository.save(allocatedSection);
+            }
             importedAllocations.add(allocationMapper.toDto(savedAllocation, studentInterface.getStudentByNum(key.studentNum()).getBody(), null));
         }
         return importedAllocations;
