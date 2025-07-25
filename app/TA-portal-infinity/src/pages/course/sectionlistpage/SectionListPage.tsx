@@ -231,7 +231,7 @@ export default function SectionListPage() {
             >
               ×
             </button>
-            <SectionCsvImport />
+            <SectionCsvImport onClose={() => setShowCsvImport(false)} />
           </div>
         </div>
       )}
