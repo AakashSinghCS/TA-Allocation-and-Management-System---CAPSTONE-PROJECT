@@ -1,7 +1,10 @@
 package com.infinity.applicationservice.controllers;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,7 +26,6 @@ import com.infinity.applicationservice.services.ApplicationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -83,6 +85,20 @@ public class ApplicationController {
         return ResponseEntity.ok(
                 applicationService.getAllApplications(year, wantRemote, hours, preference1, preference2, preference3));
     }
-    
+
+    @GetMapping("/getAll/page")
+    public ResponseEntity<Page<ApplicationWithStudentDto>> getAllApplications(
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Boolean wantRemote,
+            @RequestParam(required = false) Integer hours,
+            @RequestParam(required = false) Subject preference1,
+            @RequestParam(required = false) Subject preference2,
+            @RequestParam(required = false) Subject preference3,
+            Pageable pageable) // Spring will map ?page=0&size=5&sort=… here
+    {
+        Page<ApplicationWithStudentDto> result = applicationService.getAllApplications(
+                year, wantRemote, hours, preference1, preference2, preference3, pageable);
+        return ResponseEntity.ok(result);
+    }
 
 }

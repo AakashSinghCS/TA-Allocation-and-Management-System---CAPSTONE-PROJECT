@@ -11,14 +11,13 @@ describe('Pagination', () => {
 
     const prevButton = screen.getByRole('button', { name: /prev/i });
     const nextButton = screen.getByRole('button', { name: /next/i });
-    const label = screen.getByText(/page 1 of 3/i);
+    expect(screen.getByLabelText('Page 1 of 3')).toBeInTheDocument();
 
     // Prev should be disabled on first page
     expect(prevButton).toBeDisabled();
     // Next should be enabled
     expect(nextButton).toBeEnabled();
     // Label should show correct page numbers (1-based)
-    expect(label).toBeInTheDocument();
 
     // Clicking disabled Prev does nothing
     fireEvent.click(prevButton);
@@ -38,14 +37,13 @@ describe('Pagination', () => {
 
     const prevButton = screen.getByRole('button', { name: /prev/i });
     const nextButton = screen.getByRole('button', { name: /next/i });
-    const label = screen.getByText(/page 3 of 3/i);
+    expect(screen.getByLabelText('Page 3 of 3')).toBeInTheDocument();
 
     // Prev should be enabled
     expect(prevButton).toBeEnabled();
     // Next should be disabled on last page
     expect(nextButton).toBeDisabled();
     // Label should show correct page number
-    expect(label).toBeInTheDocument();
 
     // Clicking Prev calls onPrev once
     fireEvent.click(prevButton);
@@ -64,11 +62,10 @@ describe('Pagination', () => {
 
     const prevButton = screen.getByRole('button', { name: /prev/i });
     const nextButton = screen.getByRole('button', { name: /next/i });
-    const label = screen.getByText(/page 2 of 4/i);
+    expect(screen.getByLabelText('Page 2 of 4')).toBeInTheDocument();
 
     expect(prevButton).toBeEnabled();
     expect(nextButton).toBeEnabled();
-    expect(label).toBeInTheDocument();
 
     fireEvent.click(prevButton);
     fireEvent.click(nextButton);
