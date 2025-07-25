@@ -22,7 +22,7 @@ public class ExamMapper {
         Section section = sectionRepository.findById(exam.getSectionId())
                 .orElseThrow(() -> new NotFoundException("Section not found"));
         
-        String term = section.getSemester() + " " + section.getYear();
+        String term = section.getSemester().getSemester() + " " + section.getSemester().getSemester();
 
         return new ExamDto(
             exam.getId(),
