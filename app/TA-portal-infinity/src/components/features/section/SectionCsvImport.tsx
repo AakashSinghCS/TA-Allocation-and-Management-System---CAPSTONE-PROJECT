@@ -186,16 +186,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         </button>
       </div>
 
-      {/* Improved explanation between download and file upload */}
-      <div className="mb-4">
-        <hr className="my-2" />
-        <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-          <li>Select or drag a CSV file with the required columns to import section data.</li>
-          <li>Only the first 10 rows will be previewed before import.</li>
-          <li><span className="font-semibold">Please make sure your CSV file matches the sample format.</span></li>
-        </ul>
-        <hr className="my-2" />
-      </div>
+      {/* ...existing code... (removed explanation and horizontal rules) */}
 
       {/* Drag-and-drop upload area */}
       <div
