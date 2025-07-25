@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateEntryException.class)
     public ResponseEntity<String> duplicate(DuplicateEntryException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                            .body("DUPLICATE_ENTRY" + ex.getMessage());
+                            .body("Duplicate Entry:  " + ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
