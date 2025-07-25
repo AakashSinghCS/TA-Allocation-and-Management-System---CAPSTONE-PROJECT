@@ -48,7 +48,7 @@ public class AllocationMapperTest {
                 LocalDateTime.now(),
                 Set.of());
 
-        SectionDto section = new SectionDto(4L, 2025, "W1", "001", SectionType.LABORATORY, new CourseDto(1L, "COSC", "Intro", "499"));
+        SectionDto section = new SectionDto(4L, 2025, "W1", "001", SectionType.LABORATORY, new CourseDto(1L, "COSC", "Intro", "499"),1);
 
         AllocationHistoryDto dto = mapper.toDto(allocation, student, applicationDto, section);
 

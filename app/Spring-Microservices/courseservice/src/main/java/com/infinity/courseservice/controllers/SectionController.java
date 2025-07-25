@@ -2,10 +2,12 @@ package com.infinity.courseservice.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,9 +22,12 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
+import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.dtos.SectionDtos.ExportSectionsRequest;
 import com.infinity.courseservice.dtos.SectionDtos.ExportedSectionData;
 import com.infinity.courseservice.services.SectionService;
+import com.infinity.courseservice.exceptions.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class SectionController {
 
     private final SectionService sectionService;
+    
 
     @GetMapping("/get/{id}")
     public ResponseEntity<SectionDto> getSectionById(@PathVariable Long id) {
@@ -150,4 +156,18 @@ public class SectionController {
     // public ResponseEntity<ImportSectionsBatchResponse> importSections(@RequestBody ImportSectionsBatchRequest request) {
     //     return ResponseEntity.ok(sectionService.importSections(request));
     // }
+
+    @PutMapping("/{id}/incrementTA")
+    public ResponseEntity<Void> incrementNumberOfTAs(@PathVariable Long id) {
+        sectionService.incrementNumberOfTAsAllocated(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/decrementTA")
+    public ResponseEntity<Void> decrementNumberOfTAs(@PathVariable Long id) {
+        sectionService.decrementNumberOfTAsAllocated(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

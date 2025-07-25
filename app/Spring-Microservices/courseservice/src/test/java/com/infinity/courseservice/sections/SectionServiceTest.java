@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -95,7 +96,7 @@ public class SectionServiceTest {
         section = new Section(semester, "001", SectionType.LECTURE, course, null);
         section.setId(10L);
         courseDto = new CourseDto(1L, "COSC", "Software Engineering", "310");
-        sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE, courseDto);
+        sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE, courseDto, 1);
     }
 
     @Test
@@ -454,7 +455,7 @@ public class SectionServiceTest {
     @Test
     void testGetSectionWithInstructorIdById_Success() {
         SectionDtoWithInstructorId mappedDto = new SectionDtoWithInstructorId(1L, 1L, 2025, "W1", "001",
-                SectionType.LECTURE, courseDto);
+                SectionType.LECTURE, courseDto, 1);
         section.setId(55L);
 
         when(sectionRepository.findById(55L)).thenReturn(Optional.of(section));
@@ -469,6 +470,64 @@ public class SectionServiceTest {
     void testGetSectionWithInstructorIdById_NotFound() {
         when(sectionRepository.findById(99L)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> sectionService.getSectionWithInstructorIdById(99L));
+    }
+
+    @Test
+    void testIncrementNumberOfTAsAllocated() {
+        Section section = new Section();
+        section.setNumberOfTAsAllocated(2);
+
+        when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
+
+        sectionService.incrementNumberOfTAsAllocated(1L);
+
+        assertEquals(3, section.getNumberOfTAsAllocated());
+        verify(sectionRepository).save(section);
+    }
+
+    @Test
+    void testDecrementNumberOfTAsAllocated() {
+        Section section = new Section();
+        section.setNumberOfTAsAllocated(2);
+
+        when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
+
+        sectionService.decrementNumberOfTAsAllocated(1L);
+
+        assertEquals(1, section.getNumberOfTAsAllocated());
+        verify(sectionRepository).save(section);
+    }
+
+    @Test
+    void testDecrementNumberOfTAsAllocated_DoesNotGoBelowZero() {
+        Section section = new Section();
+        section.setNumberOfTAsAllocated(0);
+
+        when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
+
+        sectionService.decrementNumberOfTAsAllocated(1L);
+
+        // No change
+        assertEquals(0, section.getNumberOfTAsAllocated());
+        verify(sectionRepository, never()).save(any());
+    }
+
+    @Test
+    void testIncrementThrowsIfSectionNotFound() {
+        when(sectionRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () ->
+            sectionService.incrementNumberOfTAsAllocated(99L)
+        );
+    }
+
+    @Test
+    void testDecrementThrowsIfSectionNotFound() {
+        when(sectionRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () ->
+            sectionService.decrementNumberOfTAsAllocated(99L)
+        );
     }
 
 

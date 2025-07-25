@@ -17,6 +17,7 @@ export default interface SectionDetails {
     type?: SectionType,
     year?: number,
     course? : Course,
+    numberOfTAsAllocated?: number
 }
 
 export const sectionTypeOptions: SectionType[] = [
