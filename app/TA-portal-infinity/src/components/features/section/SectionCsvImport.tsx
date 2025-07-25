@@ -16,6 +16,34 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   // Add a flag to track if import is done
   const [imported, setImported] = useState(false);
 
+  // Sample CSV headers
+  const sampleHeaders = [
+    "Dept Code",
+    "Course Number",
+    "Course Name",
+    "Year",
+    "Semester",
+    "Section",
+    "Type",
+    "Day",
+    "Start Time",
+    "End Time"
+  ];
+
+  // Download sample CSV template
+  const handleDownloadSampleCsv = () => {
+    const csvContent = sampleHeaders.join(",") + "\n";
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "section-sample-template.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Reset all UI state for new upload
     setError("");
@@ -31,6 +59,11 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         skipEmptyLines: true,
         complete: (results) => {
           const data = results.data as Record<string, string>[];
+          if (!data || data.length === 0) {
+            setError("CSV file is empty or invalid. Please check the file contents.");
+            setParsedData(null);
+            return;
+          }
           setCsvPreview(data.slice(0, 10)); // Show only the first 10 rows
           setCsvHeaders(results.meta.fields || []);
           setParsedData(data);
@@ -84,18 +117,22 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
       if (contentType && contentType.includes("application/json")) {
         const json = await res.json();
         text = json.message || JSON.stringify(json);
+        // Show more details if available
+        if (json.error || json.errors) {
+          errorDetail = `Import failed: ${text}\nDetails: ${JSON.stringify(json.error || json.errors)}`;
+        }
       } else {
         text = await res.text();
       }
       if (!res.ok) {
-        errorDetail = text ? `Import failed: ${text}` : `Import failed (status ${res.status})`;
+        errorDetail = errorDetail || (text ? `Import failed: ${text}` : `Import failed (status ${res.status})`);
         setError(errorDetail);
       } else {
         setResult(text);
         setImported(true); // Mark as imported
       }
     } catch (err: any) {
-      setError(err?.message ? `Import failed: ${err.message}` : "Import failed.");
+      setError(err?.message ? `Import failed: ${err.message}` : `Import failed.\n${JSON.stringify(err)}`);
     } finally {
       setLoading(false);
     }
@@ -104,14 +141,25 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   return (
     <div className="max-w-2xl min-w-[600px] mx-auto p-4 bg-white rounded shadow">
       <h2 className="text-lg font-bold mb-2">Import Sections from CSV</h2>
+      <div className="mb-4">
+        <button
+          type="button"
+          onClick={handleDownloadSampleCsv}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-semibold"
+        >
+          Download Sample CSV
+        </button>
+      </div>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
+          <label htmlFor="csv-file" className="font-medium text-gray-700">File</label>
           <input
+            accept=".csv"
+            className="block file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
             id="csv-file"
             type="file"
-            accept=".csv"
             onChange={handleFileChange}
-            className="block file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+            disabled={imported}
           />
           <button
             type="submit"
@@ -148,9 +196,14 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           </div>
         </div>
       )}
-      {error && <div className="mt-2 text-red-600">{error}</div>}
+      {error && (
+        <div role="alert" className="mt-2 text-red-600">
+          {error}
+        </div>
+      )}
       {result && (
         <div
+          role="alert"
           className={`mt-2 whitespace-pre-line ${
             result.includes('Failed: 0') ? 'text-green-600' : 'text-red-600'
           }`}
