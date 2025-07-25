@@ -11,7 +11,12 @@ export default function SectionCsvImport() {
   const [parsedData, setParsedData] = useState<Array<Record<string, string>> | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setError(""); // Clear error when a file is selected
+    // Reset all UI state for new upload
+    setError("");
+    setResult("");
+    setCsvPreview(null);
+    setCsvHeaders([]);
+    setParsedData(null);
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
       Papa.parse(selectedFile, {
@@ -29,10 +34,6 @@ export default function SectionCsvImport() {
           setParsedData(null);
         }
       });
-    } else {
-      setCsvPreview(null);
-      setCsvHeaders([]);
-      setParsedData(null);
     }
   };
 
