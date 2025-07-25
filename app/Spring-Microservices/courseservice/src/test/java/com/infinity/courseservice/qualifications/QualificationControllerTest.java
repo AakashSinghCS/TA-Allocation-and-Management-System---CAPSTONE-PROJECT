@@ -140,7 +140,7 @@ class QualificationControllerTest {
     @Test
     void getQualificationsByInstructorId_shouldReturnOk() throws Exception {
         Long instructorId = 5L;
-        SectionDtoNoCourse sectionDto = new SectionDtoNoCourse(10L, 2025, "W1", "001", SectionType.LECTURE);
+        SectionDtoNoCourse sectionDto = new SectionDtoNoCourse(10L, 2025, "W1", "001", SectionType.LECTURE, 1);
         QualificationWithSectionDto dto = new QualificationWithSectionDto(
             1L,
             sectionDto,

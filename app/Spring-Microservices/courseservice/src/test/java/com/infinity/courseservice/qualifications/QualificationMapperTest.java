@@ -64,7 +64,7 @@ class QualificationMapperTest {
         qualification.setDescription("TA'd this course before");
 
         var dummySectionDto = new SectionDtoNoCourse(
-                20L, 2025, "W1", "001", SectionType.LECTURE);
+                20L, 2025, "W1", "001", SectionType.LECTURE, 1);
 
         when(sectionMapper.sectionToDtoNoCourse(section)).thenReturn(dummySectionDto);
 

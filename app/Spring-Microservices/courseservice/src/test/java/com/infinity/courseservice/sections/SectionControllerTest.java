@@ -266,7 +266,7 @@ public class SectionControllerTest {
                 Long sectionId = 300L;
                 Long instructorId = 1L;
                 SectionDtoWithInstructorId response = new SectionDtoWithInstructorId(sectionId, instructorId,2025, "W2", "002", SectionType.LECTURE,
-                                new CourseDto(1L, "COSC", "Networks", "329" ));
+                                new CourseDto(1L, "COSC", "Networks", "329" ), 1);
 
                 when(sectionService.getSectionWithInstructorIdById(sectionId)).thenReturn(response);
 

@@ -30,7 +30,8 @@ public class SectionMapper {
                         section.getCourse().getId(),
                         section.getCourse().getDeptCode(),
                         section.getCourse().getName(),
-                        section.getCourse().getCourseNum()));
+                        section.getCourse().getCourseNum()),
+                section.getNumberOfTAsAllocated());
     }
     
     public SectionDtoNoCourse sectionToDtoNoCourse(Section section) {
@@ -39,7 +40,8 @@ public class SectionMapper {
                 section.getSemester().getYear(),
                 section.getSemester().getSemester(),
                 section.getSection(),
-                section.getType());
+                section.getType(),
+                section.getNumberOfTAsAllocated());
     }
 
     public SectionDtoWithInstructorId sectionDtoWithInstructorId(Section section) {
@@ -50,7 +52,8 @@ public class SectionMapper {
                 section.getSemester().getSemester(),
                 section.getSection(),
                 section.getType(),
-                courseMapper.courseToDto(section.getCourse()));
+                courseMapper.courseToDto(section.getCourse()),
+                section.getNumberOfTAsAllocated());
     }
 
     public ExportedSectionData exportedSectionData(Section section) {

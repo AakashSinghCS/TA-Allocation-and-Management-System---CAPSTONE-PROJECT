@@ -96,7 +96,7 @@ public class SectionServiceTest {
         section = new Section(semester, "001", SectionType.LECTURE, course, null);
         section.setId(10L);
         courseDto = new CourseDto(1L, "COSC", "Software Engineering", "310");
-        sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE, courseDto);
+        sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE, courseDto, 1);
     }
 
     @Test
@@ -455,7 +455,7 @@ public class SectionServiceTest {
     @Test
     void testGetSectionWithInstructorIdById_Success() {
         SectionDtoWithInstructorId mappedDto = new SectionDtoWithInstructorId(1L, 1L, 2025, "W1", "001",
-                SectionType.LECTURE, courseDto);
+                SectionType.LECTURE, courseDto, 1);
         section.setId(55L);
 
         when(sectionRepository.findById(55L)).thenReturn(Optional.of(section));
