@@ -149,10 +149,12 @@ public class SectionService {
 
         // Build improved summary message
         StringBuilder summary = new StringBuilder();
-        if (errorCount > 0) {
-            summary.append("Section import failed.\n");
+        if (successCount > 0 && errorCount == 0) {
+            summary.append("Section import successful.\n");
+        } else if (successCount > 0 && errorCount > 0) {
+            summary.append("Section import partially successful.\n");
         } else {
-            summary.append("Section import completed.\n");
+            summary.append("Section import failed.\n");
         }
         summary.append("Success: ").append(successCount).append(", Failed: ").append(errorCount);
         if (errorCount > 0) {
