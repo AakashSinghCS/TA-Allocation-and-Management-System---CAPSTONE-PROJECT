@@ -23,10 +23,12 @@ describe("SectionsColumn", () => {
 
     // Use the testid from SectionCard's Link:
     const link = screen.getByTestId(`section-link-${id}`);
-    // It should render exactly "COSC 111 001 – Introduction to Computer Science"
-    expect(link).toHaveTextContent(
-      `${dept} ${num} ${sec} – ${name}`
-    );
+    // Check that the course components appear in the link text (course name is separate)
+    expect(link).toHaveTextContent(dept!);
+    expect(link).toHaveTextContent(num!);
+    expect(link).toHaveTextContent(sec!);
+    // Course name appears elsewhere in the card, not in the link
+    expect(screen.getByText(name!)).toBeInTheDocument();
 
     // And since there's at least one section, we should *not* see the empty placeholder:
     expect(

@@ -20,7 +20,7 @@ const arbitaryId = 10;
 const renderer = () =>
   render(
     <MemoryRouter>
-      <InstructorQualificationViewer instructorId={arbitaryId} />
+      <InstructorQualificationViewer instructorId={arbitaryId} deadlinePassed={false} />
     </MemoryRouter>
   );
 

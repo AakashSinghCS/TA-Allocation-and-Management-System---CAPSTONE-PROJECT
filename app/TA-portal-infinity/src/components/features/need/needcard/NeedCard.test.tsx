@@ -11,7 +11,7 @@ describe('NeedCard', () => {
         <NeedCard />
       </MemoryRouter>
     );
-    expect(screen.getByText(/no data/i)).toBeInTheDocument();
+    expect(screen.getByText(/No Requirements Set/i)).toBeInTheDocument();
   });
 
   it('renders description, hours and prerequisites when need is provided', () => {
@@ -29,10 +29,13 @@ describe('NeedCard', () => {
 
     const card = screen.getByTestId('need-card');
 
-    // allocated / required hours
-    expect(card).toHaveTextContent(
-      `Allocated hours: ${need.numHoursCurrentlyAllocated} / Required hours: ${need.requiredGradingHours}`
-    );
+    // Test for individual parts of the text that appear
+    expect(screen.getByText('Comments:')).toBeInTheDocument();
+    expect(screen.getByText('I need smart people')).toBeInTheDocument();
+    expect(screen.getByText('Hours:')).toBeInTheDocument();
+    expect(screen.getAllByText('12')).toHaveLength(2); // Both allocated and required hours
+    expect(screen.getByText('/')).toBeInTheDocument();
+    expect(screen.getByText('Prerequisites:')).toBeInTheDocument();
 
     // each prereq course link
     need.prerequisites!.forEach((course) => {

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
-import { fetchAllSectionsAndNeedAndAllocations } from "../../../api/instructor/fetchAllSectionsAndNeedAndAllocations";
+import { fetchSectionNeedAndAllocations } from "../../../api/instructor/fetchSectionNeedAndAllocations";
 import { fetchDeadlines } from "../../../api/config/fetchDeadlines";
+import { fetchAllExistingYears } from "../../../api/course/sectionfilter/fetchAllExistingYears";
 import type Section from "../../../interfaces/section/Section";
 import type { Deadline } from "../../../interfaces/config/Deadline";
 
@@ -50,9 +51,30 @@ export default function InstructorHomePage() {
       setError("");
       setSectionsLoaded(false);
       try {
-        const data = await fetchAllSectionsAndNeedAndAllocations(userId);
-        setSections(data || []);
+        // Get the most recent year for current term data
+        const years = await fetchAllExistingYears();
+        const mostRecent = years ? Math.max(...years.map(Number)) : -1;
+        const defaultSemester = "W1"; // or you can determine current semester dynamically
+        
+        // Fetch sections with their needs and allocations for current term
+        const sectionsWithNeeds = await fetchSectionNeedAndAllocations(
+          userId, 
+          null, // all courses
+          mostRecent, 
+          defaultSemester
+        ) ?? [];
+        
+        // Filter allocations to show only CONFIRMED status
+        const sectionsWithConfirmedAllocations = sectionsWithNeeds.map(section => ({
+          ...section,
+          allocations: section.allocations?.filter(allocation => allocation.status === "CONFIRMED") ?? []
+        }));
+        
+        console.log(`[InstructorHomePage] Fetched ${sectionsWithConfirmedAllocations.length} sections with confirmed allocations for ${mostRecent} ${defaultSemester}`);
+        
+        setSections(sectionsWithConfirmedAllocations);
       } catch (err) {
+        console.error("Failed to load data:", err);
         setError("Failed to load data");
       } finally {
         setSectionsLoaded(true);
@@ -116,6 +138,7 @@ export default function InstructorHomePage() {
 
   // Metrics
   const totalSections = sections.length;
+  // No need to filter by status since fetchConfirmedAllocationsForSections already returns only confirmed allocations
   const totalAllocations = sections.reduce((sum, s) => sum + (s.allocations?.length || 0), 0);
   const missingNeeds = sections.filter(s => !s.need || !s.need.description);
 
@@ -158,15 +181,15 @@ export default function InstructorHomePage() {
                   <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={{ borderTopColor: '#040941', minHeight: '60px', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
                     <FaUserGraduate size={20} style={{ color: '#040941' }} className="mr-3" />
                     <div>
-                      <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Courses Teaching</div>
+                      <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Sections Teaching</div>
                       <div className="text-lg font-bold text-[#040941]">{totalSections}</div>
                     </div>
                   </div>
-                  {/* TA Allocations */}
+                  {/* Confirmed TA Allocations */}
                   <div className="flex items-center bg-white rounded-2xl shadow-md px-3 py-2 border-t-4" style={{ borderTopColor: '#040941', minHeight: '60px', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
                     <FaUsers size={20} style={{ color: '#040941' }} className="mr-3" />
                     <div>
-                      <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">TA Allocations</div>
+                      <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Confirmed Allocations</div>
                       <div className="text-lg font-bold text-[#040941]">{totalAllocations}</div>
                     </div>
                   </div>
