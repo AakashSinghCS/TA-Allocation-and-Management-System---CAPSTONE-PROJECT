@@ -184,9 +184,17 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         >
           Download Sample CSV
         </button>
+        <div className="flex items-center gap-2 mb-2 mt-6 text-base font-semibold text-gray-700">
+          {/* Upload icon: arrow up into a tray */}
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#334155">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 10l-4-4-4 4" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v12" />
+          </svg>
+          Upload your CSV file
+        </div>
       </div>
 
-      {/* ...existing code... (removed explanation and horizontal rules) */}
 
       {/* Drag-and-drop upload area */}
       <div
@@ -235,13 +243,14 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
       </div>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-          {/* ...existing code... (remove old file input, drag-and-drop now handles file selection) */}
+        </div>
+        <div className="flex justify-end">
           <button
             type="submit"
             disabled={loading || imported}
             className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
           >
-            {loading ? "Importing..." : "Import Sections from CSV"}
+            {loading ? "Importing..." : "Import"}
           </button>
         </div>
       </form>
