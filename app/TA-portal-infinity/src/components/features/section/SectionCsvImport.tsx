@@ -166,11 +166,16 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
 
   return (
     <div className="max-w-2xl min-w-[600px] mx-auto p-4 bg-white rounded shadow">
-      <h2 className="text-lg font-bold mb-2">Import Sections from CSV</h2>
-      <div className="mb-4">
-        <div className="text-sm text-gray-700 mb-2">
-          You can download a sample CSV file for section import.<br />
-          Use this as a reference for the required format and columns.
+      <h2 className="text-3xl font-bold mb-8">Import Sections from CSV</h2>
+      <div className="mb-4 mt-2">
+        <div className="flex items-center gap-2 mb-2 text-base font-bold text-gray-700">
+          {/* Download icon */}
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#334155">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 10l5 5 5-5" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v12" />
+          </svg>
+          Download the sample CSV
         </div>
         <button
           type="button"
