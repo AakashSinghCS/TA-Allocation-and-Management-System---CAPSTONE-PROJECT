@@ -157,38 +157,37 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
       )}
       {result && result.includes('Failed: 0') && (
         <>
-        {/* Can change "Close this window" button position to "left", "center", or "right" by uncommenting the corresponding */}
+        {/* Can change "Close" button position to "left", "center", or "right" by uncommenting the corresponding */}
         {/* left-aligned button */}
           {/* <div className="flex justify-start">
             <button
               className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
               onClick={onClose}
             >
-              Close this window
+              Close 
             </button>
           </div> */}
 
           {/* center-aligned button */}
-          <div className="flex justify-center">
+          {/* <div className="flex justify-center">
             <button
               className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
               onClick={onClose}
             >
-              Close this window
+              Close 
             </button>
-          </div>
+          </div> */}
 
           {/* right-aligned button */}
-          {/*
           <div className="flex justify-end">
             <button
               className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
               onClick={onClose}
             >
-              Close this window
+              Close
             </button>
           </div>
-          */}
+         
           
         </>
       )}
