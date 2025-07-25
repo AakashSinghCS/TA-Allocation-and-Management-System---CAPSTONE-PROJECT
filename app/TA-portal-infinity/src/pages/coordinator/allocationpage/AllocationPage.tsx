@@ -131,32 +131,7 @@ const TAAllocationPage: React.FC = () => {
       setInstructor(null);
     }
   };
-  const onSend = () => {
-    if (!selApp || !selCourse?.id || !selCourse.need) return;
-    if (selCourse.type === 'LECTURE'){
-      toast.warn("Warning: You cannot allocate TAs to a LECTURE.");
-      return;
-    }
-    if ((selCourse.numberOfTAsAllocated ?? 0) >= 1) {
-      toast.warn("Warning: You are assigning more than 1 TA to this section.");
-    }
-    sendOffer(
-      selApp,
-      selCourse.id,
-      selCourse.need,
-      hasAvailabilityMatch,
-      async () => {
-        await loadCourse(selCourse!);
-        // allocation history so Revoke works 
-        if (selApp.student.id && token) {
-          await refreshHistory(selApp.student.id, token);
-        }
-        setShowBanner(true);
-      }
-    );
-  };
-
-
+  
   const loadApp = (a: ApplicationDto) => setSelApp(a);
 
 
@@ -214,7 +189,7 @@ const TAAllocationPage: React.FC = () => {
               />
             </>
           )}
-         
+
           {selCourse && (
             <div className="mt-6 border-t pt-6 space-y-6">
               {/* section details */}
@@ -228,7 +203,8 @@ const TAAllocationPage: React.FC = () => {
                   <p><strong>TAs Allocated:</strong> {selCourse.numberOfTAsAllocated ?? '0'}</p>
                 </div>
               </section>
-
+            </div> // This closing div was missing!
+          )}
 
           {selCourse && (
             <SelectedSectionPanel
@@ -256,7 +232,6 @@ const TAAllocationPage: React.FC = () => {
               setShowBanner={setShowBanner}
             />
           )}
-
         </div>
         <ApplicationFilterPanel
           selApp={selApp}
@@ -265,7 +240,8 @@ const TAAllocationPage: React.FC = () => {
         />
       </div>
       <ToastContainer />
-    </div>
+      </div>
+
   );
 };
 
