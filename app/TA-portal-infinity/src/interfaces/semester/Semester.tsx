@@ -4,6 +4,7 @@ export interface Semester {
   semester: "W1" | "W2" | "S1" | "S2";
   startDate: string;
   endDate: string;
+  active?: boolean;
 }
 
 export type SemesterCreate = Omit<Semester, 'id'>;

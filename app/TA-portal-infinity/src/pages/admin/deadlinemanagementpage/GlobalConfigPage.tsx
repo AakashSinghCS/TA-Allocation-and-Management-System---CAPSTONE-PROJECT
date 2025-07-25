@@ -3,10 +3,14 @@ import { LuCalendarCog } from "react-icons/lu";
 import { useAuth } from '../../../context/AuthContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { showToastConfirmation } from '../../../utility/confirmation/toastConfirmation';
 import { fetchDeadlines, updateDeadline } from "../../../api/admin/FetchDeadline";
 import type { DeadlineDto } from "../../../interfaces/admin/Deadline";
 import { addSemester } from "../../../api/semester/addSemester";
-import type { SemesterCreate } from "../../../interfaces/semester/Semester";
+import { getAllSemesters } from "../../../api/semester/getAllSemesters";
+import { updateSemester } from "../../../api/semester/updateSemester";
+import { deleteSemester } from "../../../api/semester/deleteSemester";
+import type { SemesterCreate, Semester } from "../../../interfaces/semester/Semester";
 
 function formatDeadlineName(name: string): string {
   return name
@@ -26,9 +30,35 @@ const DeadlineManagementPage: React.FC = () => {
   };
   const [termConfig, setTermConfig] = useState(initialTermConfig);
   const [termLoading, setTermLoading] = useState(false);
+  
+  // Semesters state
+  const [semesters, setSemesters] = useState<Semester[]>([]);
+  const [semestersLoading, setSemestersLoading] = useState(true);
+  const [displayedSemesters, setDisplayedSemesters] = useState(5);
+  const [editingSemester, setEditingSemester] = useState<number | null>(null);
+  const [editSemesterData, setEditSemesterData] = useState<Semester | null>(null);
   useEffect(() => {
     setTermConfig(initialTermConfig);
   }, []);
+  
+  // Load semesters on mount
+  useEffect(() => {
+    async function loadSemesters() {
+      setSemestersLoading(true);
+      try {
+        const data = await getAllSemesters(token || "");
+        setSemesters(data);
+      } catch (err) {
+        console.error("Failed to load semesters:", err);
+        toast.error("Failed to load semesters");
+      } finally {
+        setSemestersLoading(false);
+      }
+    }
+    if (token) {
+      loadSemesters();
+    }
+  }, [token]);
   const handleTermChange = (field: string, value: string) => {
     setTermConfig((prev) => ({ ...prev, [field]: value }));
   };
@@ -58,13 +88,15 @@ const DeadlineManagementPage: React.FC = () => {
         startDate: termConfig.startDate,
         endDate: termConfig.endDate
       };
-      
       const success = await addSemester(semesterData, token || "");
       
       if (success) {
         toast.success('Term configuration saved successfully!');
         // Reset form to initial state
         setTermConfig(initialTermConfig);
+        // Reload semesters
+        const data = await getAllSemesters(token || "");
+        setSemesters(data);
       } else {
         toast.error('Failed to save term configuration.');
       }
@@ -73,6 +105,79 @@ const DeadlineManagementPage: React.FC = () => {
       toast.error('Error saving term configuration.');
     } finally {
       setTermLoading(false);
+    }
+  };
+
+  // Semester management functions
+  const handleEditSemester = (semester: Semester) => {
+    setEditingSemester(semester.id || 0);
+    setEditSemesterData({ ...semester });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingSemester(null);
+    setEditSemesterData(null);
+  };
+
+  const handleSaveSemesterEdit = async () => {
+    if (!editSemesterData || !editingSemester) return;
+    
+    try {
+      const success = await updateSemester(editingSemester, editSemesterData, token || "");
+      if (success) {
+        toast.success('Semester updated successfully!');
+        // Reload semesters
+        const data = await getAllSemesters(token || "");
+        setSemesters(data);
+        setEditingSemester(null);
+        setEditSemesterData(null);
+      } else {
+        toast.error('Failed to update semester.');
+      }
+    } catch (error) {
+      console.error("Error updating semester:", error);
+      toast.error('Error updating semester.');
+    }
+  };
+
+  const handleSemesterEditChange = (field: keyof Semester, value: string | number | boolean) => {
+    if (!editSemesterData) return;
+    setEditSemesterData({
+      ...editSemesterData,
+      [field]: value
+    });
+  };
+
+  const handleShowMore = () => {
+    setDisplayedSemesters(prev => prev + 5);
+  };
+
+  const handleDeleteSemester = async (semester: Semester) => {
+    if (!semester.id) return;
+    
+    const confirmed = await showToastConfirmation({
+      title: "Delete Semester",
+      message: `Are you sure you want to delete the semester ${semester.year} ${semester.semester}? This action cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      type: 'danger'
+    });
+    
+    if (!confirmed) return;
+    
+    try {
+      const success = await deleteSemester(semester.id, token || "");
+      if (success) {
+        toast.success('Semester deleted successfully!');
+        // Reload semesters
+        const data = await getAllSemesters(token || "");
+        setSemesters(data);
+      } else {
+        toast.error('Failed to delete semester.');
+      }
+    } catch (error) {
+      console.error("Error deleting semester:", error);
+      toast.error('Error deleting semester.');
     }
   };
   // Deadlines state
@@ -168,57 +273,209 @@ return (
       {/* Global Term Config Section */}
       <div className="mb-8 sm:mb-10">
         <h2 className="text-lg sm:text-xl font-semibold text-[#040941] mb-3">Term Configuration</h2>
-        <div className="flex flex-col sm:flex-row sm:flex-wrap md:flex-row md:items-end gap-4">
-          <div className="flex flex-col">
-            <label className="text-xs text-gray-600 mb-1">Year</label>
-            <input
-              type="number"
-              min="2000"
-              max="2100"
-              value={termConfig.year}
-              onChange={e => handleTermChange("year", e.target.value)}
-              className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-28"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="text-xs text-gray-600 mb-1">Semester</label>
-            <select
-              value={termConfig.semester}
-              onChange={e => handleTermChange("semester", e.target.value)}
-              className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-40"
+        
+        {/* Add New Term Form */}
+        <div className="p-4 rounded-lg mb-6">
+          <h3 className="text-md font-semibold text-[#040941] mb-3">Add New Term</h3>
+          <div className="flex flex-col sm:flex-row sm:flex-wrap md:flex-row md:items-end gap-4">
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-600 mb-1">Year</label>
+              <input
+                type="number"
+                min="2000"
+                max="2100"
+                value={termConfig.year}
+                onChange={e => handleTermChange("year", e.target.value)}
+                className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-28"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-600 mb-1">Semester</label>
+              <select
+                value={termConfig.semester}
+                onChange={e => handleTermChange("semester", e.target.value)}
+                className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-40"
+              >
+                <option value="W1">W1</option>
+                <option value="W2">W2</option>
+                <option value="S1">S1</option>
+                <option value="S2">S2</option>
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-600 mb-1">Start Date</label>
+              <input
+                type="date"
+                value={termConfig.startDate}
+                onChange={e => handleTermChange("startDate", e.target.value)}
+                className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-40"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-600 mb-1">End Date</label>
+              <input
+                type="date"
+                value={termConfig.endDate}
+                onChange={e => handleTermChange("endDate", e.target.value)}
+                className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-40"
+              />
+            </div>
+            <button
+              onClick={handleSaveTerm}
+              disabled={termLoading}
+              className="bg-[#040941] text-white px-4 py-2 rounded hover:opacity-90 text-sm font-semibold shadow mt-2 md:mt-0 disabled:opacity-60"
+              aria-label="save-term"
             >
-              <option value="W1">W1</option>
-              <option value="W2">W2</option>
-              <option value="S1">S1</option>
-              <option value="S2">S2</option>
-            </select>
+              {termLoading ? "Saving..." : "Add Term"}
+            </button>
           </div>
-          <div className="flex flex-col">
-            <label className="text-xs text-gray-600 mb-1">Start Date</label>
-            <input
-              type="date"
-              value={termConfig.startDate}
-              onChange={e => handleTermChange("startDate", e.target.value)}
-              className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-40"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="text-xs text-gray-600 mb-1">End Date</label>
-            <input
-              type="date"
-              value={termConfig.endDate}
-              onChange={e => handleTermChange("endDate", e.target.value)}
-              className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-40"
-            />
-          </div>
-          <button
-            onClick={handleSaveTerm}
-            disabled={termLoading}
-            className="bg-[#040941] text-white px-4 py-2 rounded hover:opacity-90 text-sm font-semibold shadow mt-2 md:mt-0 disabled:opacity-60"
-            aria-label="save-term"
-          >
-            {termLoading ? "Saving..." : "Save Term"}
-          </button>
+        </div>
+
+        {/* Existing Terms Table */}
+        <div>
+          <h3 className="text-md font-semibold text-[#040941] mb-3">Existing Terms</h3>
+          {semestersLoading && <p className="text-blue-600 text-center font-semibold animate-pulse">Loading terms...</p>}
+          
+          {!semestersLoading && semesters.length === 0 && (
+            <p className="text-gray-500 text-center">No terms found.</p>
+          )}
+
+          {!semestersLoading && semesters.length > 0 && (
+            <div className="overflow-x-auto">
+              <table className="min-w-full border-separate border-spacing-y-2 text-xs sm:text-sm md:text-base">
+                <thead>
+                  <tr className="bg-gray-300 text-[#040941] text-left">
+                    <th className="py-2 px-2 sm:px-3 rounded-l-lg font-semibold">Year</th>
+                    <th className="py-2 px-2 sm:px-3 font-semibold">Semester</th>
+                    <th className="py-2 px-2 sm:px-3 font-semibold">Start Date</th>
+                    <th className="py-2 px-2 sm:px-3 font-semibold">End Date</th>
+                    <th className="py-2 px-2 sm:px-3 font-semibold text-center">Active</th>
+                    <th className="py-2 px-2 sm:px-3 rounded-r-lg font-semibold text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {semesters.slice(0, displayedSemesters).map((semester) => (
+                    <tr key={semester.id} className="bg-white hover:bg-blue-50 transition-colors">
+                      <td className="py-2 px-2 sm:px-3 text-[#040941] font-medium align-middle">
+                        {editingSemester === semester.id ? (
+                          <input
+                            type="number"
+                            min="2000"
+                            max="2100"
+                            value={editSemesterData?.year || ""}
+                            onChange={(e) => handleSemesterEditChange("year", parseInt(e.target.value))}
+                            className="border border-blue-200 rounded px-1 py-1 text-xs sm:text-sm w-20"
+                          />
+                        ) : (
+                          semester.year
+                        )}
+                      </td>
+                      <td className="py-2 px-2 sm:px-3 align-middle">
+                        {editingSemester === semester.id ? (
+                          <select
+                            value={editSemesterData?.semester || ""}
+                            onChange={(e) => handleSemesterEditChange("semester", e.target.value)}
+                            className="border border-blue-200 rounded px-1 py-1 text-xs sm:text-sm w-16"
+                          >
+                            <option value="W1">W1</option>
+                            <option value="W2">W2</option>
+                            <option value="S1">S1</option>
+                            <option value="S2">S2</option>
+                          </select>
+                        ) : (
+                          semester.semester
+                        )}
+                      </td>
+                      <td className="py-2 px-2 sm:px-3 align-middle">
+                        {editingSemester === semester.id ? (
+                          <input
+                            type="date"
+                            value={editSemesterData?.startDate || ""}
+                            onChange={(e) => handleSemesterEditChange("startDate", e.target.value)}
+                            className="border border-blue-200 rounded px-1 py-1 text-xs sm:text-sm min-w-[120px]"
+                          />
+                        ) : (
+                          semester.startDate
+                        )}
+                      </td>
+                      <td className="py-2 px-2 sm:px-3 align-middle">
+                        {editingSemester === semester.id ? (
+                          <input
+                            type="date"
+                            value={editSemesterData?.endDate || ""}
+                            onChange={(e) => handleSemesterEditChange("endDate", e.target.value)}
+                            className="border border-blue-200 rounded px-1 py-1 text-xs sm:text-sm min-w-[120px]"
+                          />
+                        ) : (
+                          semester.endDate
+                        )}
+                      </td>
+                      <td className="py-2 px-2 sm:px-3 align-middle text-center">
+                        {editingSemester === semester.id ? (
+                          <input
+                            type="checkbox"
+                            checked={editSemesterData?.active || false}
+                            onChange={(e) => handleSemesterEditChange("active", e.target.checked)}
+                            className="form-checkbox h-4 w-4 text-blue-600"
+                          />
+                        ) : (
+                          <input
+                            type="checkbox"
+                            checked={semester.active || false}
+                            readOnly
+                            className="form-checkbox h-4 w-4 text-blue-600"
+                          />
+                        )}
+                      </td>
+                      <td className="py-2 px-2 sm:px-3 align-middle text-center">
+                        {editingSemester === semester.id ? (
+                          <div className="flex gap-2 justify-center">
+                            <button
+                              onClick={handleSaveSemesterEdit}
+                              className="bg-green-800 text-white px-2 py-1 rounded hover:opacity-90 text-xs font-semibold"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={handleCancelEdit}
+                              className="bg-gray-500 text-white px-2 py-1 rounded hover:opacity-90 text-xs font-semibold"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex gap-1 justify-center">
+                            <button
+                              onClick={() => handleEditSemester(semester)}
+                              className="bg-[#040941] text-white px-2 py-1 rounded hover:opacity-90 text-xs font-semibold"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteSemester(semester)}
+                              className="bg-red-600 text-white px-2 py-1 rounded hover:opacity-90 text-xs font-semibold"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {semesters.length > displayedSemesters && (
+                <div className="text-center mt-4">
+                  <button
+                    onClick={handleShowMore}
+                    className="bg-[#040941] text-white px-4 py-2 rounded hover:opacity-90 text-sm font-semibold"
+                  >
+                    Show More ({semesters.length - displayedSemesters} remaining)
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
