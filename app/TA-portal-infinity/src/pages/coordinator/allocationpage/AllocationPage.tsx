@@ -22,6 +22,7 @@ import SectionSelectionList from './sectionselectionlist/SectionSelectionList';
 import SelectedSectionPanel from './selectedsectionpanel/SelectedSectionPanel';
 import AllocationCalendar from './allocationcalendar/AllocationCalendar';
 import AllocationBanner from './allocationbanner/AllocationBanner';
+import { StrikethroughIcon } from 'lucide-react';
 
 const TAAllocationPage: React.FC = () => {
   const { token } = useAuth();
@@ -140,7 +141,13 @@ const TAAllocationPage: React.FC = () => {
     await loadCourse(selCourse!);
     // allocation history so Revoke works 
     if (selApp.student.id && token) {
-      await refreshHistory(selApp.student.id, token);
+      try{
+        const newHistory = await fetchAllocationsByStudent(selApp.student.id, token);
+        setHistory(newHistory);
+      } catch (err){
+        console.error("Failed to refresh history:", err);
+        setHistory([]);
+      }
     }
     setShowBanner(true);
   }
