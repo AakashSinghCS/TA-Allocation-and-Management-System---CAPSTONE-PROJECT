@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
-import com.infinity.applicationservice.dtos.Applications.AvailabilityDto;
+import com.infinity.applicationservice.dtos.Applications.UnavailabilityDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.models.Application;
@@ -25,8 +25,8 @@ public class ApplicationMapper {
             application.isWantRemote(),
             application.getWantWorkingHours(),
             application.getSubmittedAt(),
-            application.getAvailabilities().stream()
-                .map(a -> new AvailabilityDto(
+            application.getUnavailabilities().stream()
+                .map(a -> new UnavailabilityDto(
                     a.getDay(),
                     a.getStartTime().toString(),
                     a.getEndTime().toString()))
@@ -43,8 +43,8 @@ public class ApplicationMapper {
                 app.isWantRemote(),
                 app.getWantWorkingHours(),
                 app.getSubmittedAt(),
-                app.getAvailabilities().stream()
-                        .map(a -> new AvailabilityDto(a.getDay(), a.getStartTime().toString(),
+                app.getUnavailabilities().stream()
+                        .map(a -> new UnavailabilityDto(a.getDay(), a.getStartTime().toString(),
                                 a.getEndTime().toString()))
                         .collect(Collectors.toSet()));
     }

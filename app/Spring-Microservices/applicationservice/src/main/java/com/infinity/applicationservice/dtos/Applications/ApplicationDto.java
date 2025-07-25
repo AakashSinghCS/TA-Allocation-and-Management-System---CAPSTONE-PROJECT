@@ -15,6 +15,6 @@ public record ApplicationDto(
                 boolean wantRemote,
                 Integer wantWorkingHours,
                 LocalDateTime timeSubmitted,
-                Set<AvailabilityDto> availabilities) {
+                Set<UnavailabilityDto> unavailabilities) {
 
 }

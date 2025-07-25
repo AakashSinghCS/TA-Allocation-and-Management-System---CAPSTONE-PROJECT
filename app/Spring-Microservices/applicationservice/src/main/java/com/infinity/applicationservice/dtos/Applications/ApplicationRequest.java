@@ -16,5 +16,5 @@ public record ApplicationRequest(
         @NotNull ApplicationType applicationType,
         @NotNull(message = "Remote work preference not specified") boolean wantRemote,
         @NotNull(message = "Working hour preferences not specified") @Min(value = 2, message = "The value must be greater than or equal to 2") @Max(value = 12, message = "The value must be less than or equal to 12") Integer wantWorkingHours,
-        Set<AvailabilityDto> availabilities) {
+        Set<UnavailabilityDto> unavailabilities) {
 }

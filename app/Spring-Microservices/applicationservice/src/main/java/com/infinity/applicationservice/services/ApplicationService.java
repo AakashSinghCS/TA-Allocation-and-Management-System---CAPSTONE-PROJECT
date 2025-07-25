@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
-import com.infinity.applicationservice.dtos.Applications.AvailabilityDto;
+import com.infinity.applicationservice.dtos.Applications.UnavailabilityDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
@@ -23,7 +23,7 @@ import com.infinity.applicationservice.exceptions.NotFoundException;
 import com.infinity.applicationservice.feign.NotificationClient;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Application;
-import com.infinity.applicationservice.models.Availability;
+import com.infinity.applicationservice.models.Unavailability;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.utility.ApplicationMapper;
 import com.infinity.applicationservice.utility.EmailMapper;
@@ -55,11 +55,11 @@ public class ApplicationService {
             throw new BadRequestException("The application is not open yet.");
         }
 
-        validateAvailabilities(req);
+        validateUnavailabilities(req);
         Application application = new Application(userIdFromHeader, req.preferences(), req.applicationType(),
                 req.wantRemote(), req.wantWorkingHours());
 
-        mapAvailability(req, application);
+        mapUnavailability(req, application);
 
         applicationRepository.save(application);
 
@@ -104,7 +104,7 @@ public class ApplicationService {
         if (LocalDateTime.now().isBefore(configService.getDeadlineByName("student_application_deadline").startTime())) {
             throw new BadRequestException("The application is not open yet.");
         }
-        validateAvailabilities(req);
+        validateUnavailabilities(req);
         int year = LocalDate.now().getYear();
 
         Application application = applicationRepository
@@ -116,8 +116,8 @@ public class ApplicationService {
         application.setWantRemote(req.wantRemote());
         application.setWantWorkingHours(req.wantWorkingHours());
 
-        application.getAvailabilities().clear();
-        mapAvailability(req, application);
+        application.getUnavailabilities().clear();
+        mapUnavailability(req, application);
 
         applicationRepository.save(application);
         return applicationMapper.toDto(application);
@@ -135,33 +135,33 @@ public class ApplicationService {
                 .toList();
     }
 
-    private void validateAvailabilities(ApplicationRequest req) {
-        if (req.availabilities() != null) {
-            for (AvailabilityDto a : req.availabilities()) {
-                if (a.startTime() == null || a.endTime() == null || a.day() == null) {
-                    throw new BadRequestException("Availability entries must include day, startTime, and endTime.");
+    private void validateUnavailabilities(ApplicationRequest req) {
+        if (req.unavailabilities() != null) {
+            for (UnavailabilityDto u : req.unavailabilities()) {
+                if (u.startTime() == null || u.endTime() == null || u.day() == null) {
+                    throw new BadRequestException("Unavailability entries must include day, startTime, and endTime.");
                 }
-                if (!LocalTime.parse(a.startTime()).isBefore(LocalTime.parse(a.endTime()))) {
+                if (!LocalTime.parse(u.startTime()).isBefore(LocalTime.parse(u.endTime()))) {
                     throw new BadRequestException(
-                            "Start time must be before end time for availability on " + a.day());
+                            "Start time must be before end time for unavailability on " + u.day());
                 }
             }
         }
     }
 
-    private void mapAvailability(ApplicationRequest req, Application application) {
-        if (req.availabilities() != null) {
-            Set<Availability> availabilities = req.availabilities().stream()
-                    .map(a -> {
-                        Availability availability = new Availability();
-                        availability.setDay(a.day());
-                        availability.setStartTime(LocalTime.parse(a.startTime()));
-                        availability.setEndTime(LocalTime.parse(a.endTime()));
-                        availability.setApplication(application);
-                        return availability;
+    private void mapUnavailability(ApplicationRequest req, Application application) {
+        if (req.unavailabilities() != null) {
+            Set<Unavailability> unavailabilities = req.unavailabilities().stream()
+                    .map(u -> {
+                        Unavailability unavailability = new Unavailability();
+                        unavailability.setDay(u.day());
+                        unavailability.setStartTime(LocalTime.parse(u.startTime()));
+                        unavailability.setEndTime(LocalTime.parse(u.endTime()));
+                        unavailability.setApplication(application);
+                        return unavailability;
                     }).collect(Collectors.toSet());
 
-            application.getAvailabilities().addAll(availabilities);
+            application.getUnavailabilities().addAll(unavailabilities);
         }
 
     }

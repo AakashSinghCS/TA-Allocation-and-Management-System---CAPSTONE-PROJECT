@@ -6,6 +6,9 @@ public record AllocationRequest(
         Long studentId,
         Long applicationId,
         ApplicationStatus status,
-        int numberOfHours,
+        String task,
+        int labPrepHours,
+        int gradingHours,
+        int sectionHours,
         Long sectionId) {
 }
