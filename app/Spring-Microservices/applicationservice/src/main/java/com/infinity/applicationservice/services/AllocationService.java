@@ -58,10 +58,14 @@ public class AllocationService {
     private final EmailMapper emailMapper;
     private final AllocatedSectionRepository allocatedSectionRepository;
 
-    public AllocationHistoryDto getAllocationByStudentId(Long studentId) {
+    public AllocationHistoryDto getAllocationByStudentId(Long studentId, Boolean noContentAllowed) {
         Allocation allocation = allocationRepository.findByStudentId(studentId);
         if (allocation == null) {
-            throw new NotFoundException("Allocation not found for student ID: " + studentId);
+            if (noContentAllowed != null && noContentAllowed) {
+                return null;
+            } else {
+                throw new NotFoundException("Allocation not found for student ID: " + studentId);
+            }
         }
         if (allocation.getAllocatedSections().isEmpty()) {
             throw new NotFoundException("Allocation ID " + allocation.getId() + " has no associated sections.");
@@ -104,15 +108,23 @@ public class AllocationService {
             if (allocation.getApplication().getId() != request.applicationId()) {
                 throw new BadRequestException("Student already has an allocation for a different application.");
             }
+            if (allocation.getStatus() == ApplicationStatus.CONFIRMED) {
+                allocationRepository.delete(allocation);
+                allocation = new Allocation();
+                allocation.setApplication(application);
+                allocation.setStudentId(request.studentId());
+                allocation.setStatus(ApplicationStatus.SENT);
+            }
         }
-        if (allocatedSectionRepository.existsBySectionIdAndAllocationId(
-            request.sectionId(), allocation.getId())) {
+        if (allocatedSectionRepository.existsBySectionIdAndAllocationIdAndTask(
+            request.sectionId(), allocation.getId(), request.task())) {
             throw new BadRequestException("You have already allocated this student to that section");
         }
         AllocatedSection savedAllocatedSection = new AllocatedSection();
         savedAllocatedSection.setTask(request.task());
         savedAllocatedSection.setSectionId(request.sectionId());
         savedAllocatedSection.setAllocation(allocation);
+        savedAllocatedSection.setHours(request.hours());
         allocationRepository.save(allocation);
         allocatedSectionRepository.save(savedAllocatedSection);
         

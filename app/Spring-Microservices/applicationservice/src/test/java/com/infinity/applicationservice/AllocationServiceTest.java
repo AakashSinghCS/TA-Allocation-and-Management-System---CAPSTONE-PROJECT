@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +17,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.lenient;
@@ -137,7 +135,7 @@ class AllocationServiceTest {
                 when(allocationMapper.toDto(allocation, studentDto, applicationDto))
                                 .thenReturn(expectedDto);
 
-                AllocationHistoryDto result = allocationService.getAllocationByStudentId(studentId);
+                AllocationHistoryDto result = allocationService.getAllocationByStudentId(studentId, null);
                 assertNotNull(result);
                 assertEquals(expectedDto, result);
                 verify(allocationRepository).findByStudentId(studentId);
@@ -163,16 +161,17 @@ class AllocationServiceTest {
                 allocatedSection.setId(1L);
                 allocatedSection.setSectionId(sectionId);
                 allocatedSection.setAllocation(allocation);
+                allocatedSection.setTask(TaskType.GRADING);
                 allocation.setAllocatedSections(List.of(allocatedSection));
                 when(applicationRepository.findById(applicationId)).thenReturn(Optional.of(application));
                 when(allocationRepository.existsByApplicationId(applicationId)).thenReturn(true);
                 when(allocationRepository.findByApplicationId(applicationId)).thenReturn(allocation);
                 when(applicationRepository.findById(applicationId)).thenReturn(Optional.of(application));
                 // when(allocatedSectionRepository.findById(allocatedSection.getId())).thenReturn(Optional.of(allocatedSection));
-                when(allocatedSectionRepository.existsBySectionIdAndAllocationId(sectionId, allocation.getId()))
+                when(allocatedSectionRepository.existsBySectionIdAndAllocationIdAndTask(sectionId, allocation.getId(), TaskType.GRADING))
                                 .thenThrow(new BadRequestException("You have already allocated this student to that section"));
 
-                AllocationRequest request = new AllocationRequest(1L, 1L, ApplicationStatus.SENT, TaskType.GRADING, 0, 10, 0, sectionId);
+                AllocationRequest request = new AllocationRequest(1L, 1L, TaskType.GRADING, 10, sectionId);
 
                 assertThrows(BadRequestException.class, () -> allocationService.allocateStudent(request));
         }
@@ -186,9 +185,8 @@ class AllocationServiceTest {
                 AllocationRequest request = new AllocationRequest(
                                 studentId,
                                 applicationId,
-                                ApplicationStatus.SENT,
                                 TaskType.GRADING,
-                                0, 10, 0,
+                                10,
                                 sectionId);
 
                 Application application = new Application();
@@ -378,8 +376,8 @@ class AllocationServiceTest {
                 AllocationRequest request = new AllocationRequest(
                                 studentId,
                                 applicationId,
-                                ApplicationStatus.REJECTED, TaskType.GRADING,
-                                0, 5, 0,
+                                TaskType.GRADING,
+                                10,
                                 sectionId);
 
                 when(applicationRepository.findById(applicationId)).thenReturn(Optional.empty());
@@ -636,7 +634,7 @@ class AllocationServiceTest {
                 when(allocationMapper.toDto(allocation, studentDto, applicationDto)).thenReturn(expectedDto);
 
                 // Act
-                AllocationHistoryDto result = allocationService.getAllocationByStudentId(studentId);
+                AllocationHistoryDto result = allocationService.getAllocationByStudentId(studentId, null);
 
                 // Assert
                 assertEquals(expectedDto, result);
@@ -671,7 +669,7 @@ class AllocationServiceTest {
                 when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
                 when(allocationMapper.toDto(allocation, studentDto, null)).thenReturn(expectedDto);
 
-                AllocationHistoryDto result = allocationService.getAllocationByStudentId(studentId);
+                AllocationHistoryDto result = allocationService.getAllocationByStudentId(studentId, null);
 
                 assertEquals(expectedDto, result);
 

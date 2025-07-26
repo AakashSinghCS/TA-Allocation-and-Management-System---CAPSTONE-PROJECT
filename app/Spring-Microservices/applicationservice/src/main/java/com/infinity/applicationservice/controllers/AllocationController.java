@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocatedSectionDto;
@@ -35,8 +36,8 @@ public class AllocationController {
 
     @PreAuthorize("hasAnyRole('COORDINATOR', 'STUDENT')")
     @GetMapping("/student/{studentId}/history")
-    public ResponseEntity<AllocationHistoryDto> getStudentAllocationHistory(@PathVariable Long studentId) {
-        return ResponseEntity.ok(allocationService.getAllocationByStudentId(studentId));
+    public ResponseEntity<AllocationHistoryDto> getStudentAllocationHistory(@PathVariable Long studentId, @RequestParam(name = "noContentAllowed", required = false) Boolean noContentAllowed) {
+        return ResponseEntity.ok(allocationService.getAllocationByStudentId(studentId, noContentAllowed));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
