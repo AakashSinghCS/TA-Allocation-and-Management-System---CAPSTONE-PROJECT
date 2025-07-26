@@ -3,11 +3,11 @@ import type { AllocationType } from "../../../interfaces/allocation/Allocation";
 export function getTaskLabel(task: AllocationType): string {
   switch (task) {
     case "GRADING":
-      return "grading";
+      return "Grading";
     case "LAB_PREP":
-      return "lab‑prep";
+      return "Lab-Prep";
     case "LAB":
-      return "section";
+      return "Lab TA";
     default:
       return task;
   }

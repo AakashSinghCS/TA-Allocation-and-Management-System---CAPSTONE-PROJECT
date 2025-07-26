@@ -95,6 +95,7 @@ export default function ApplicationFilterPanel({
   const totalPages = pageData?.totalPages ?? 0;
 
   const [history, setHistory] = useState<Allocation | null >(null);
+  
   useEffect(() => {
     if (!selApp || !token) return setHistory(null);
     fetchAllocationsByStudent(selApp.student.id, token)

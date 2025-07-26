@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useSendOffer } from "../../../../hooks/sendoffer/useSendOffer";
 import { Check, X } from "lucide-react";
-import type { Allocation } from "../../../../interfaces/allocation/Allocation";
+import type { AllocatedSection, Allocation } from "../../../../interfaces/allocation/Allocation";
 
 interface AllocationCalendarProps {
     selCourse: Section | null;
@@ -23,20 +23,11 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
     const [selectedSectionSlots, setSelectedSectionSlots] = useState<Set<number>>(new Set());
 
     
-    const prevAllocatedInfo = prevAlloc?.allocatedSections?.filter(s => s.sectionId === selCourse?.id) ?? [];
+    const prevAllocatedInfo : AllocatedSection[] = prevAlloc?.allocatedSections?.filter(s => s.sectionId === selCourse?.id) ?? [];
 
-    const hasPrevLabAlloc     = prevAllocatedInfo.some(s => s.task === 'LAB');
-    const hasPrevGradingAlloc = prevAllocatedInfo.some(s => s.task === 'GRADING');
-    const hasPrevLabPrepAlloc = prevAllocatedInfo.some(s => s.task === 'LAB_PREP');
-
-    // useEffect(() => {
-    //     if (alloc) {
-    //         console.log(alloc);
-    //         // setGradingHours(String(alloc.gradingHours ?? ''));
-    //         // setLabPrepHours(String(alloc.labPrepHours ?? ''));
-    //     }
-    // }, [alloc]);
-
+    const hasPrevLabAlloc  :boolean    = prevAllocatedInfo.some(s => s.task === 'LAB');
+    const hasPrevGradingAlloc : boolean = prevAllocatedInfo.some(s => s.task === 'GRADING');
+    const hasPrevLabPrepAlloc : boolean = prevAllocatedInfo.some(s => s.task === 'LAB_PREP');
 
     const requiredGrading: number = selCourse?.need?.requiredGradingHours ?? 0;
     const allocatedGrading: number = selCourse?.need?.numHoursCurrentlyAllocated ?? 0;
@@ -47,9 +38,13 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
         [selCourse]
     );
     useEffect(() => {
-        if(hasPrevLabAlloc) return;
-        setSelectedSectionSlots(new Set(allIdxs));
-    }, [allIdxs]);
+        if(hasPrevLabAlloc) {
+            setSelectedSectionSlots(new Set());}
+        else{
+            setSelectedSectionSlots(new Set(allIdxs));
+        }
+
+    }, [allIdxs, prevAlloc]);
 
     const totalSectionMinutes = useMemo(
         () => calcSectionMinutes(selCourse, selectedSectionSlots),
@@ -75,6 +70,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                 { day: slot.day!, startTime: slot.startTime!, endTime: slot.endTime! },
                 selApp?.unavailabilities || []
             );
+
             return {
                 id: `c${i}`,
                 title: 'Section',
@@ -224,7 +220,24 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                         )}
                     </span>
                 </p>
-
+                <div className="flex items-center gap-2">
+                    <label htmlFor="toggleSections" className="select-none">
+                        Toggle all section slots:
+                    </label>
+                    <input
+                        type="checkbox"
+                        id="toggleSections"
+                        checked={selectedSectionSlots.size === allIdxs.length}
+                        onChange={() => {
+                            if (selectedSectionSlots.size === allIdxs.length) {
+                                setSelectedSectionSlots(new Set());
+                            } else {
+                                setSelectedSectionSlots(new Set(allIdxs));
+                            }
+                        }}
+                        className="cursor-pointer w-5 h-5"
+                    />
+                </div>
                 {/* Hour inputs */}
                 <div className="pt-2 flex flex-wrap gap-4 xl:grid xl:grid-cols-3">
                     {/* Section time */}

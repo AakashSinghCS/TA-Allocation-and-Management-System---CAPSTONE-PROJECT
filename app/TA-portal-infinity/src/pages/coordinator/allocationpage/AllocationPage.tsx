@@ -164,7 +164,6 @@ const TAAllocationPage: React.FC = () => {
 
   const hasOffer = useMemo(() => {
     if (!alloc || !selCourse) return false;
-    // “Does this allocation include any slice for the current course?”
     return alloc.allocatedSections?.some(
       as => as.sectionId === selCourse.id
     );
@@ -209,8 +208,8 @@ const TAAllocationPage: React.FC = () => {
           <AllocationCalendar
             selCourse={selCourse}
             selApp={selApp}
-            // alloc={alloc}
-            prevAlloc={mockAllocation}
+            prevAlloc={alloc}
+            // prevAlloc={mockAllocation}
             onSendOfferSuccess={onSendOfferSuccess}
           />
           {(hasOffer || showBanner) && selApp && selCourse && (
@@ -220,8 +219,8 @@ const TAAllocationPage: React.FC = () => {
               selCourse={selCourse}
               refreshAlloc={realRefreshAlloc}
               token={token}
-              // alloc={alloc}
-              prevAlloc={mockAllocation}
+              prevAlloc={alloc}
+              // prevAlloc={mockAllocation}
               showBanner={showBanner}
               setShowBanner={setShowBanner}
             />

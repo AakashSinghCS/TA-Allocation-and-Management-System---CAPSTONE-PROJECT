@@ -30,7 +30,9 @@ export async function fetchAllocationsByStudent(
       },
     }
   );
-  console.log("b");
+  if (res.status === 204) {
+    return {};
+  }
   if (!res.ok) {
     const errText = await res.text();
     throw new Error(errText || res.statusText);
@@ -47,6 +49,6 @@ export async function fetchAllocationsByStudent(
     sectionHours: raw.sectionHours,
     allocatedSections: raw.allocatedSections
   };
-  console.log(allocation);
+
   return allocation;
 }

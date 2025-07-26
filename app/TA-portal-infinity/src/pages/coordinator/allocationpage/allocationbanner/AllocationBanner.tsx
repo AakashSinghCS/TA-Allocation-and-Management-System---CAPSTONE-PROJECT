@@ -19,9 +19,9 @@ interface AllocationBanner {
 export default function AllocationBanner({ selApp, setSelApp, selCourse, refreshAlloc, token, prevAlloc, showBanner, setShowBanner }: AllocationBanner) {
     if (!selApp || !selCourse) return null;
     const allocation = prevAlloc?.application?.applicationId === selApp.applicationId ? prevAlloc : null;
-    console.log(allocation);
+
     const slicesForSelCourse = allocation?.allocatedSections?.filter(a => a.sectionId === selCourse.id) ?? [];
-    console.log(slicesForSelCourse);
+
     const handleRevoke = async (allocatedSectionId: number) => {
         try {
             const ok = await deallocateAllocation(allocatedSectionId, token || undefined);
