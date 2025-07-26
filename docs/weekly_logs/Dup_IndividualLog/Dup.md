@@ -2822,3 +2822,53 @@ Tommorrow:
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
 - Security improvement.
 - TBA: must discuss with teammates first on what to do.
+
+## Friday 7/25 (7/22~7/25)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July25.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#463](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/463)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#471](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today:
+- I worked on 463 while doing project discussions. I integrated the backend to it, but the backend is not complete, so only some of it is done.
+- I made the revoke button work with the three types of tasks. The Allocation Calendar is responsive to when there exists an allocation of that type of task.
+- The allocation History is now shown on the application details on the right side.
+Tommorrow:
+- complete the integration with fully working backend, and complete the tasks.
+- check for any other bugs that have occured from this integration. Possibly integrate Aakash's changes as well.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+- [UBCO-COSC499-S2025/team-10-capstone-infinity#471](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)
+- Security improvement.
+- TBA: must discuss with teammates first on what to do.
