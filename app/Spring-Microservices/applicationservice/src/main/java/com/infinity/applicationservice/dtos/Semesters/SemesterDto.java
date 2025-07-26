@@ -18,7 +18,8 @@ public record SemesterDto(
     message = "Semester must be W1/W2/S1/S2")
     String semester,
     LocalDate startDate,
-    LocalDate endDate
+    LocalDate endDate,
+    boolean isActive
 ) {
 
 }

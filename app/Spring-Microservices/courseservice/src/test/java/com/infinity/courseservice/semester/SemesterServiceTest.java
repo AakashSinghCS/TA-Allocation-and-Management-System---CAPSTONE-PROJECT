@@ -38,28 +38,35 @@ class SemesterServiceTest {
     @InjectMocks
     private SemesterService semesterService;
 
-    private SemesterDto validDto;
-    private Semester validEntity;
+    private SemesterDto activeDto;
+    private Semester activeEntity;
+    private SemesterDto inactiveDto;
+    private Semester inactiveEntity;
 
     @BeforeEach
     void setUp() {
-        validDto = new SemesterDto(1L, 2025, "W1",
+        activeDto = new SemesterDto(1L, 2025, "W1",
                 LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1), true);
-        validEntity = new Semester(2025, "W1",
+        activeEntity = new Semester(2025, "W1",
                 LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1), true);
-        validEntity.setId(1L);
+        activeEntity.setId(1L);
+        inactiveDto = new SemesterDto(1L, 2026, "S1",
+                LocalDate.of(2026, 6, 13), LocalDate.of(2026, 7, 17), false);
+        inactiveEntity = new Semester(2026, "S1",
+                LocalDate.of(2026, 6, 13), LocalDate.of(2026, 7, 17), false);
+        inactiveEntity.setId(2L);
     }
 
     @Test
     void addSemester_validInput_savesAndReturnsDto() {
-        when(semesterMapper.toSemester(validDto)).thenReturn(validEntity);
-        when(semesterRepository.save(validEntity)).thenReturn(validEntity);
-        when(semesterMapper.toDto(validEntity)).thenReturn(validDto);
+        when(semesterMapper.toSemester(activeDto)).thenReturn(activeEntity);
+        when(semesterRepository.save(activeEntity)).thenReturn(activeEntity);
+        when(semesterMapper.toDto(activeEntity)).thenReturn(activeDto);
 
-        SemesterDto result = semesterService.addSemester(validDto);
+        SemesterDto result = semesterService.addSemester(activeDto);
 
-        assertEquals(validDto, result);
-        verify(semesterRepository).save(validEntity);
+        assertEquals(activeDto, result);
+        verify(semesterRepository).save(activeEntity);
     }
 
     @Test
@@ -80,21 +87,22 @@ class SemesterServiceTest {
 
     @Test
     void addSemester_duplicateEntry_throwsDuplicateEntryException() {
-        when(semesterMapper.toSemester(validDto)).thenReturn(validEntity);
-        when(semesterRepository.save(validEntity))
+        when(semesterMapper.toSemester(activeDto)).thenReturn(activeEntity);
+        when(semesterRepository.save(
+                activeEntity))
                 .thenThrow(new DataIntegrityViolationException("constraint violation"));
 
-        assertThrows(DuplicateEntryException.class, () -> semesterService.addSemester(validDto));
+        assertThrows(DuplicateEntryException.class, () -> semesterService.addSemester(activeDto));
     }
 
     @Test
     void getSemesterById_existingId_returnsDto() {
-        when(semesterRepository.findById(1L)).thenReturn(Optional.of(validEntity));
-        when(semesterMapper.toDto(validEntity)).thenReturn(validDto);
+        when(semesterRepository.findById(1L)).thenReturn(Optional.of(activeEntity));
+        when(semesterMapper.toDto(activeEntity)).thenReturn(activeDto);
 
         SemesterDto result = semesterService.getSemesterById(1L);
 
-        assertEquals(validDto, result);
+        assertEquals(activeDto, result);
     }
 
     @Test
@@ -106,13 +114,14 @@ class SemesterServiceTest {
 
     @Test
     void getAllSemesters_returnsListOfDtos() {
-        when(semesterRepository.findAll()).thenReturn(List.of(validEntity));
-        when(semesterMapper.toDto(validEntity)).thenReturn(validDto);
+        when(semesterRepository.findAllByOrderByStartDateAsc()).thenReturn(List.of(activeEntity, inactiveEntity));
+        when(semesterMapper.toDto(activeEntity)).thenReturn(activeDto);
+        when(semesterMapper.toDto(inactiveEntity)).thenReturn(inactiveDto);
 
         List<SemesterDto> result = semesterService.getAllSemesters();
 
-        assertEquals(1, result.size());
-        assertEquals(validDto, result.get(0));
+        assertEquals(2, result.size());
+        assertEquals(activeDto, result.get(0));
     }
 
     @Test
@@ -120,9 +129,9 @@ class SemesterServiceTest {
         SemesterDto updateDto = new SemesterDto(1L, 2025, "W2",
                 LocalDate.of(2025, 9, 5), LocalDate.of(2025, 12, 5), true);
 
-        when(semesterRepository.findById(1L)).thenReturn(Optional.of(validEntity));
-        when(semesterRepository.save(validEntity)).thenReturn(validEntity);
-        when(semesterMapper.toDto(validEntity)).thenReturn(updateDto);
+        when(semesterRepository.findById(1L)).thenReturn(Optional.of(activeEntity));
+        when(semesterRepository.save(activeEntity)).thenReturn(activeEntity);
+        when(semesterMapper.toDto(activeEntity)).thenReturn(updateDto);
 
         SemesterDto result = semesterService.updateSemester(1L, updateDto);
 
@@ -134,8 +143,9 @@ class SemesterServiceTest {
         SemesterDto updateDto = new SemesterDto(1L, 2025, "W2",
                 LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1), true);
 
-        when(semesterRepository.findById(1L)).thenReturn(Optional.of(validEntity));
-        when(semesterRepository.save(validEntity))
+        when(semesterRepository.findById(1L)).thenReturn(Optional.of(activeEntity));
+        when(semesterRepository.save(
+                activeEntity))
                 .thenThrow(new DataIntegrityViolationException("constraint violation"));
 
         assertThrows(DuplicateEntryException.class, () -> semesterService.updateSemester(1L, updateDto));
@@ -192,5 +202,27 @@ class SemesterServiceTest {
 
         assertEquals(1, result.size());
         assertEquals(dto, result.get(0));
+    }
+
+    @Test
+    void getSemestersByState_returnsMappedSemesters_whenActiveTrue() {
+        when(semesterRepository.findByIsActiveOrderByStartDateAsc(true)).thenReturn(List.of(activeEntity));
+        when(semesterMapper.toDto(activeEntity)).thenReturn(activeDto);
+
+        List<SemesterDto> result = semesterService.getSemestersByState(true);
+
+        assertEquals(1, result.size());
+        assertEquals("W1", result.get(0).semester());
+    }
+
+    @Test
+    void getSemestersByState_returnsMappedSemesters_whenActiveFalse() {
+        when(semesterRepository.findByIsActiveOrderByStartDateAsc(false)).thenReturn(List.of(inactiveEntity));
+        when(semesterMapper.toDto(inactiveEntity)).thenReturn(inactiveDto);
+
+        List<SemesterDto> result = semesterService.getSemestersByState(false);
+
+        assertEquals(1, result.size());
+        assertEquals("S1", result.get(0).semester());
     }
 }

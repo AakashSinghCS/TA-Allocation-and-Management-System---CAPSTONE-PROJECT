@@ -46,6 +46,16 @@ public class SemesterController {
         return ResponseEntity.ok(semesterService.getAllFutureSemesters());
     }
 
+    @GetMapping("/getActive")
+    public ResponseEntity<List<SemesterDto>> getActiveSemesters() {
+        return ResponseEntity.ok(semesterService.getSemestersByState(true));
+    }
+
+    @GetMapping("/getInactive")
+    public ResponseEntity<List<SemesterDto>> getInactiveSemesters() {
+        return ResponseEntity.ok(semesterService.getSemestersByState(false));
+    }
+
     @PostMapping("/add")
     public ResponseEntity<SemesterDto> addSemester(@RequestBody @Valid SemesterDto request) {
         return ResponseEntity.ok(semesterService.addSemester(request));

@@ -13,5 +13,10 @@ import com.infinity.courseservice.models.Semester;
 public interface SemesterRepository extends JpaRepository<Semester, Long> {
     Optional<Semester> findByYearAndSemester(Integer year, String semester);
 
+    List<Semester> findAllByOrderByStartDateAsc();
+
     List<Semester> findByStartDateAfterOrderByStartDateAsc(LocalDate date);
+
+    List<Semester> findByIsActiveOrderByStartDateAsc(boolean isActive);
+
 }

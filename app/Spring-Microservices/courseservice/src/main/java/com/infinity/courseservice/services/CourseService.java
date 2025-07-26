@@ -3,7 +3,6 @@ package com.infinity.courseservice.services;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +10,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.lang.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
