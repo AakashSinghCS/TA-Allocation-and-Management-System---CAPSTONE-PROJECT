@@ -9,6 +9,6 @@ public record AllocationRequest(
         Long studentId,
         Long applicationId,
         TaskType task,
-        int hours,
+        double hours,
         Long sectionId) {
 }

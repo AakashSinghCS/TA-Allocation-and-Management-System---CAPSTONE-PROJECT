@@ -18,10 +18,16 @@ interface RawAllocationHistoryDto {
 
 export async function fetchAllocationsByStudent(
   studentId: number,
-  token: string
+  token: string,
+  noContentAllowed = false 
 ): Promise<Allocation> {
+  const url = new URL(
+    `http://localhost:8080/allocations/student/${studentId}/history`
+  );
+  url.searchParams.set('noContentAllowed', String(noContentAllowed));
+
   const res = await fetch(
-    `http://localhost:8080/allocations/student/${studentId}/history`,
+    url.toString(),
     {
       method: 'GET',
       headers: {

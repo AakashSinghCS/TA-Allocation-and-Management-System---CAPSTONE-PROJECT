@@ -7,13 +7,15 @@ import { fetchWithAuth } from '../Auth/fetchWithAuth';
 export interface CreateOfferRequest {
   studentId:     number;
   applicationId: number;
-  status:        import('../../interfaces/enum/ApplicationStatus').ApplicationStatus;
+  // status:        import('../../interfaces/enum/ApplicationStatus').ApplicationStatus;
   // numberOfHours: number;
   task :AllocationType;
-  sectionHours?: number;
-  labPrepHours? : number;
-  gradingHours? : number;
+  hours : number;
+  // sectionHours?: number;
+  // labPrepHours? : number;
+  // gradingHours? : number;
   sectionId:     number;
+  isConfirmed: boolean;
 }
 
 export async function sendOffer(

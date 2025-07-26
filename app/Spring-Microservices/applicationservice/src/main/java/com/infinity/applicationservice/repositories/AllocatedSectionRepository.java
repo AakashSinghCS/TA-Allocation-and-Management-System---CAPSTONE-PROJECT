@@ -21,4 +21,5 @@ public interface AllocatedSectionRepository extends JpaRepository<AllocatedSecti
 
     Integer deleteAllBySectionId(Long sectionId);
 
+    boolean existsByAllocation_IdAndSectionId(Long allocationId, Long sectionId);
 }

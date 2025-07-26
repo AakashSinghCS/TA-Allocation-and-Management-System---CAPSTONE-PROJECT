@@ -20,6 +20,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -37,7 +38,7 @@ import lombok.NoArgsConstructor;
 public class Application {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -74,8 +75,10 @@ public class Application {
     @PrimaryKeyJoinColumn
     private Transcript transcript;
 
-    @OneToMany(mappedBy = "application")
-    private List<Allocation> allocations = new ArrayList<>();
+     @OneToOne(mappedBy = "application", 
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Allocation allocations;
 
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Unavailability> unavailabilities = new HashSet<>();

@@ -23,7 +23,6 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
     const [labPrepHours, setLabPrepHours] = useState<string>('');
     const [selectedSectionSlots, setSelectedSectionSlots] = useState<Set<number>>(new Set());
 
-    
     const prevAllocatedInfo : AllocatedSection[] = prevAlloc?.allocatedSections?.filter(s => s.sectionId === selCourse?.id) ?? [];
 
     const hasPrevLabAlloc  :boolean    = prevAllocatedInfo.some(s => s.task === 'LAB');
@@ -99,16 +98,22 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
     ].filter((e): e is NonNullable<typeof e> => e !== null);
 
 
-    const onSend = () => {
+    const onSend = async () => {
         if (!selApp || !selCourse?.id || !selCourse.need) return;
         if (selCourse.type === 'LECTURE'){
               toast.warn("Warning: You cannot allocate TAs to a LECTURE.");
               return;
             }
-            if ((selCourse.numberOfTAsAllocated ?? 0) >= 1) {
-              toast.warn("Warning: You are assigning more than 1 TA to this section.");
+        if ((selCourse.numberOfTAsAllocated ?? 0) >= 1) {
+            const ok = window.confirm(
+            "Warning: You are assigning more than 1 TA to this section. Please make sure that it is a task that is not already assigned. Continue?"
+            );
+            if (!ok) {
+            return;
             }
-        sendOffer(
+        }
+        
+        await sendOffer(
             selApp,
             selCourse.id,
             selCourse.need,
@@ -118,6 +123,9 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
             hasUnavailabilityMatch,
             onSendOfferSuccess
         );
+        setGradingHours('');
+        setLabPrepHours('');
+        setSelectedSectionSlots(new Set());
     };
 
     const onEventClick = (info: EventClickArg) => {
@@ -235,6 +243,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                     <input
                         type="checkbox"
                         id="toggleSections"
+                        disabled={hasPrevLabAlloc}
                         checked={selectedSectionSlots.size === allIdxs.length}
                         onChange={() => {
                             if (selectedSectionSlots.size === allIdxs.length) {
@@ -243,7 +252,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                                 setSelectedSectionSlots(new Set(allIdxs));
                             }
                         }}
-                        className="cursor-pointer w-5 h-5"
+                        className="cursor-pointer w-5 h-5 disabled:cursor-not-allowed  disabled:opacity-50 disabled:bg-gray-200"
                     />
                 </div>
                 {/* Hour inputs */}
@@ -283,7 +292,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                     {/* Lab prep hours */}
                     <label className="flex flex-row items-center gap-2 min-w-[220px] flex-1 md:flex-none">
                         <span className="text-sm font-medium whitespace-nowrap">
-                            Lab Prep Hours:
+                            Lab Prep Hours: 
                         </span>
                         <input
                             type="text"

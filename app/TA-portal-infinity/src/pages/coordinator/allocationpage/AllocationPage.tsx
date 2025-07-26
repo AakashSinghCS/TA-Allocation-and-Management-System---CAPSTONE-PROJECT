@@ -158,7 +158,7 @@ const TAAllocationPage: React.FC = () => {
       setAlloc(null);
       return;
     }
-    fetchAllocationsByStudent(selApp.student.id, token)
+    fetchAllocationsByStudent(selApp.student.id, token,true)
       .then(setAlloc)
       .catch(() => setAlloc(null));
   }, [selApp, token]);
