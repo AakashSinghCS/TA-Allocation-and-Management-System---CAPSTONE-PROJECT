@@ -184,6 +184,7 @@ public class ApplicationService {
 
     public Page<ApplicationWithStudentDto> getAllApplications(
             Integer year,
+            String semester,
             Boolean wantRemote,
             Integer hours,
             Subject pref1,
@@ -192,7 +193,7 @@ public class ApplicationService {
             Pageable pageable) {
 
         Page<Application> page = applicationRepository
-                .findByFilters(year, wantRemote, hours, pref1, pref2, pref3, pageable);
+                .findByFilters(year, semester, wantRemote, hours, pref1, pref2, pref3, pageable);
 
         return page.map(app -> applicationMapper.toDtoWithStudent(
                 app,

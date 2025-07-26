@@ -96,6 +96,7 @@ public class ApplicationController {
     @GetMapping("/getAll/page")
     public ResponseEntity<Page<ApplicationWithStudentDto>> getAllApplications(
             @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) String semester,
             @RequestParam(required = false) Boolean wantRemote,
             @RequestParam(required = false) Integer hours,
             @RequestParam(required = false) Subject preference1,
@@ -104,7 +105,7 @@ public class ApplicationController {
             Pageable pageable) // Spring will map ?page=0&size=5&sort=… here
     {
         Page<ApplicationWithStudentDto> result = applicationService.getAllApplications(
-                year, wantRemote, hours, preference1, preference2, preference3, pageable);
+                year, semester, wantRemote, hours, preference1, preference2, preference3, pageable);
         return ResponseEntity.ok(result);
     }
 

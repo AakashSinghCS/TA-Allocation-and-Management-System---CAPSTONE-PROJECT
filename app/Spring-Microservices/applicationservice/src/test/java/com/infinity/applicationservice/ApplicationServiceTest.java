@@ -47,6 +47,7 @@ import com.infinity.applicationservice.enums.UserRole;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
 import com.infinity.applicationservice.exceptions.NotFoundException;
+import com.infinity.applicationservice.feign.CourseInterface;
 import com.infinity.applicationservice.feign.NotificationClient;
 import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Application;
@@ -79,11 +80,14 @@ public class ApplicationServiceTest {
     @Mock
     EmailMapper emailMapper;
 
-    @InjectMocks
-    ApplicationService applicationService;
-
     @Mock
     ConfigService configService;
+
+    @Mock
+    CourseInterface courseInterface;
+
+    @InjectMocks
+    ApplicationService applicationService;
 
     static Set<AvailabilityDto> availabilities;
 
@@ -250,7 +254,7 @@ public class ApplicationServiceTest {
             applicationService.getApplication(1L, 2025, "W1", 1L,
                     List.of("ROLE_STUDENT"));
         });
-        assertEquals("Application with that student id and year doesn't exist", e.getMessage());
+        assertEquals("Application with that student id, year, and semester doesn't exist", e.getMessage());
     }
 
     @Test
@@ -324,7 +328,7 @@ public class ApplicationServiceTest {
             applicationService.updateApplication(applicationRequest, 1L, 2025, "W1", 1L,
                     List.of("ROLE_STUDENT"));
         });
-        assertEquals("Application with that student id and year doesn't exist", e.getMessage());
+        assertEquals("Application with that student id, year, and semester doesn't exist", e.getMessage());
     }
 
     @Test
@@ -497,7 +501,8 @@ public class ApplicationServiceTest {
         // given filter parameters
         Integer year       = 2024;
         Boolean wantRemote = false;
-        Integer hours      = 6;
+        Integer hours = 6;
+        String semester = "W1";
         Subject p1         = Subject.COSC;
         Subject p2         = null;
         Subject p3         = null;
@@ -505,7 +510,7 @@ public class ApplicationServiceTest {
         // sample Application entity
         Application app = new Application(1L, List.of(p1, Subject.MATH),
                                           ApplicationType.UNDERGRADUATE,
-                                          wantRemote, hours);
+                                          wantRemote, hours, 2025, "W1");
         app.setSubmittedAt(LocalDateTime.of(2024,1,1,12,0));
 
         // sample UserDto
@@ -524,6 +529,8 @@ public class ApplicationServiceTest {
             app.getApplicationType(),
             wantRemote,
             hours,
+            year,
+            semester,
             app.getSubmittedAt(),
             Set.of()
         );
@@ -534,7 +541,7 @@ public class ApplicationServiceTest {
 
         // mock repository → page<Application>
         when(applicationRepository.findByFilters(
-            eq(year), eq(wantRemote), eq(hours),
+            eq(year), eq(semester), eq(wantRemote), eq(hours),
             eq(p1), eq(p2), eq(p3),
             eq(pageable)
         )).thenReturn(entityPage);
@@ -547,7 +554,7 @@ public class ApplicationServiceTest {
 
         // when
         Page<ApplicationWithStudentDto> result =
-            applicationService.getAllApplications(year, wantRemote, hours, p1, p2, p3, pageable);
+            applicationService.getAllApplications(year, semester, wantRemote, hours, p1, p2, p3, pageable);
 
         // then
         assertEquals(1, result.getTotalElements());
@@ -555,6 +562,6 @@ public class ApplicationServiceTest {
 
         // verify repository called
         verify(applicationRepository)
-            .findByFilters(year, wantRemote, hours, p1, p2, p3, pageable);
+            .findByFilters(year, semester, wantRemote, hours, p1, p2, p3, pageable);
     }
 }

@@ -52,7 +52,8 @@ public class ApplicationControllerTest {
 
         @Test
         void submitApplication_NullPreferences_BadRequest() throws Exception {
-                ApplicationRequest request = new ApplicationRequest(null, ApplicationType.UNDERGRADUATE,false, 4, 2025, "W1", null);
+                ApplicationRequest request = new ApplicationRequest(null, ApplicationType.UNDERGRADUATE, false, 4, 2025,
+                                "W1", null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -65,7 +66,7 @@ public class ApplicationControllerTest {
 
         @Test
         void submitApplication_EmptyPreferences_BadRequest() throws Exception {
-                ApplicationRequest request = new ApplicationRequest(List.of(), ApplicationType.UNDERGRADUATE,false, 4,
+                ApplicationRequest request = new ApplicationRequest(List.of(), ApplicationType.UNDERGRADUATE, false, 4,
                                 2025, "W1", null);
 
                 mockMvc.perform(post("/applications/add")
@@ -95,7 +96,7 @@ public class ApplicationControllerTest {
         @Test
         void submitApplication_TooFewHours_BadRequest() throws Exception {
                 ApplicationRequest request = new ApplicationRequest(
-                                List.of(Subject.COSC), ApplicationType.UNDERGRADUATE,false, 1, 2025, "W1", null);
+                                List.of(Subject.COSC), ApplicationType.UNDERGRADUATE, false, 1, 2025, "W1", null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -109,7 +110,7 @@ public class ApplicationControllerTest {
         @Test
         void submitApplication_TooManyHours_BadRequest() throws Exception {
                 ApplicationRequest request = new ApplicationRequest(
-                                List.of(Subject.COSC), ApplicationType.UNDERGRADUATE,false, 13, 2025, "W1", null);
+                                List.of(Subject.COSC), ApplicationType.UNDERGRADUATE, false, 13, 2025, "W1", null);
 
                 mockMvc.perform(post("/applications/add")
                                 .header("X-User-Id", "1")
@@ -205,67 +206,66 @@ public class ApplicationControllerTest {
         }
 
         @TestConfiguration
-    @EnableSpringDataWebSupport
-    static class SpringDataWebConfig {}
+        @EnableSpringDataWebSupport
+        static class SpringDataWebConfig {
+        }
 
-    @Test
-    void whenGetAllApplicationsPage_thenReturnsPagedContent() throws Exception {
-        // given
-        Integer year       = 2024;
-        Boolean wantRemote = false;
-        Integer hours      = 6;
-        Subject p1         = Subject.COSC;
+        @Test
+        void whenGetAllApplicationsPage_thenReturnsPagedContent() throws Exception {
+                // given
+                Integer year = 2024;
+                Boolean wantRemote = false;
+                Integer hours = 6;
+                Subject p1 = Subject.COSC;
 
-        // sample DTO
-        UserDto studentDto = new UserDto(
-            2L, "Alice","Wang","awang@test.com",
-            List.of(UserRole.STUDENT),
-            12345678, "COSC", 2025, 3,
-            null,null,null,true
-        );
-        ApplicationWithStudentDto dto = new ApplicationWithStudentDto(
-            1L,
-            studentDto,
-            List.of(p1, Subject.MATH),
-            ApplicationType.UNDERGRADUATE,
-            wantRemote,
-            hours,
-            LocalDateTime.of(2024,1,1,12,0),
-            Set.of()
-        );
+                // sample DTO
+                UserDto studentDto = new UserDto(
+                                2L, "Alice", "Wang", "awang@test.com",
+                                List.of(UserRole.STUDENT),
+                                12345678, "COSC", 2025, 3,
+                                null, null, null, true);
+                ApplicationWithStudentDto dto = new ApplicationWithStudentDto(
+                                1L,
+                                studentDto,
+                                List.of(p1, Subject.MATH),
+                                ApplicationType.UNDERGRADUATE,
+                                wantRemote,
+                                hours,
+                                2025,
+                                "W1",
+                                LocalDateTime.of(2024, 1, 1, 12, 0),
+                                Set.of());
 
-        Page<ApplicationWithStudentDto> page = new PageImpl<>(
-            List.of(dto),
-            PageRequest.of(0, 5, Sort.by("submittedAt").descending()),
-            1
-        );
+                Page<ApplicationWithStudentDto> page = new PageImpl<>(
+                                List.of(dto),
+                                PageRequest.of(0, 5, Sort.by("submittedAt").descending()),
+                                1);
 
-        when(applicationService.getAllApplications(
-            eq(year), eq(wantRemote), eq(hours),
-            eq(p1), isNull(), isNull(),
-            any(Pageable.class)
-        )).thenReturn(page);
+                when(applicationService.getAllApplications(
+                                eq(year), isNull(), eq(wantRemote), eq(hours),
+                                eq(p1), isNull(), isNull(),
+                                any(Pageable.class))).thenReturn(page);
 
-        // when / then
-        mockMvc.perform(get("/applications/getAll/page")
-                    .param("page", "0")
-                    .param("size", "5")
-                    .param("year", year.toString())
-                    .param("wantRemote", wantRemote.toString())
-                    .param("hours", hours.toString())
-                    .param("preference1", p1.name())
-                    .accept(MediaType.APPLICATION_JSON))
-               .andExpect(status().isOk())
-               .andExpect(jsonPath("$.content.length()").value(1))
-               .andExpect(jsonPath("$.content[0].student.firstName")
-                          .value("Alice"))
-               .andExpect(jsonPath("$.content[0].wantRemote")
-                          .value(false))
-               .andExpect(jsonPath("$.totalElements")
-                          .value(1))
-               .andExpect(jsonPath("$.size")
-                          .value(5))
-               .andExpect(jsonPath("$.number")
-                          .value(0));
-    }
+                // when / then
+                mockMvc.perform(get("/applications/getAll/page")
+                                .param("page", "0")
+                                .param("size", "5")
+                                .param("year", year.toString())
+                                .param("wantRemote", wantRemote.toString())
+                                .param("hours", hours.toString())
+                                .param("preference1", p1.name())
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.content.length()").value(1))
+                                .andExpect(jsonPath("$.content[0].student.firstName")
+                                                .value("Alice"))
+                                .andExpect(jsonPath("$.content[0].wantRemote")
+                                                .value(false))
+                                .andExpect(jsonPath("$.totalElements")
+                                                .value(1))
+                                .andExpect(jsonPath("$.size")
+                                                .value(5))
+                                .andExpect(jsonPath("$.number")
+                                                .value(0));
+        }
 }
