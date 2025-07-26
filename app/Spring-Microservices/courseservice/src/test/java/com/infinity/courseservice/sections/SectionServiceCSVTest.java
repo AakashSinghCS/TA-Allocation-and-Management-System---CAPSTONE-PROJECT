@@ -54,7 +54,7 @@ class SectionServiceCSVTest {
         mockCourse.setDeptCode("COSC");
         mockCourse.setCourseNum("111");
         mockCourse.setName("Intro Programming");
-        mockSemester = new Semester(2025, "W1", null, null);
+        mockSemester = new Semester(2025, "W1", null, null, true);
 
         Section section1 = new Section();
         section1.setId(1L);

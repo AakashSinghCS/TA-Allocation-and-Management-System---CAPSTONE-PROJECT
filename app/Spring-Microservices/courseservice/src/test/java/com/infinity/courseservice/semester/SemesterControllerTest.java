@@ -48,7 +48,7 @@ class SemesterControllerTest {
     @BeforeEach
     void setUp() {
         validDto = new SemesterDto(1L, 2025, "W1",
-                LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1));
+                LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1), true);
         mapper.registerModule(new JavaTimeModule());
     }
 
@@ -68,7 +68,7 @@ class SemesterControllerTest {
     @Test
     void addSemester_invalidDates_returnsBadRequest() throws Exception {
         SemesterDto badDto = new SemesterDto(1L, 2025, "W1",
-                LocalDate.of(2025, 12, 1), LocalDate.of(2025, 9, 1));
+                LocalDate.of(2025, 12, 1), LocalDate.of(2025, 9, 1), true);
 
         doThrow(new BadRequestException("Start date must be before end date"))
                 .when(semesterService).addSemester(any(SemesterDto.class));
@@ -101,7 +101,7 @@ class SemesterControllerTest {
     @Test
     void updateSemester_validRequest_returnsUpdatedDto() throws Exception {
         SemesterDto updateDto = new SemesterDto(1L, 2025, "W2",
-            LocalDate.of(2025, 9, 5), LocalDate.of(2025, 12, 5));
+            LocalDate.of(2025, 9, 5), LocalDate.of(2025, 12, 5), true);
 
         when(semesterService.updateSemester(eq(1L), any())).thenReturn(updateDto);
 
@@ -123,7 +123,7 @@ class SemesterControllerTest {
     
     @Test
     void getSemesterByYearAndSemester_returnsOk() throws Exception {
-        SemesterDto dto = new SemesterDto(1L, 2025, "W1", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1));
+        SemesterDto dto = new SemesterDto(1L, 2025, "W1", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1), true);
         when(semesterService.getSemesterByYearAndSemester(2025, "W1")).thenReturn(dto);
 
         mockMvc.perform(get("/semesters/2025/W1"))
@@ -134,7 +134,7 @@ class SemesterControllerTest {
 
     @Test
     void getAllFutureSemesters_returnsList() throws Exception {
-        SemesterDto dto = new SemesterDto(1L, 2026, "W1", LocalDate.now().plusDays(30), LocalDate.now().plusDays(120));
+        SemesterDto dto = new SemesterDto(1L, 2026, "W1", LocalDate.now().plusDays(30), LocalDate.now().plusDays(120), true);
         when(semesterService.getAllFutureSemesters()).thenReturn(List.of(dto));
 
         mockMvc.perform(get("/semesters/getAllFuture"))

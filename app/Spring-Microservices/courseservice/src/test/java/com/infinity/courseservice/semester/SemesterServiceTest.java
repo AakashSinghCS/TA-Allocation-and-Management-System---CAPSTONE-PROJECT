@@ -44,9 +44,9 @@ class SemesterServiceTest {
     @BeforeEach
     void setUp() {
         validDto = new SemesterDto(1L, 2025, "W1",
-                LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1));
+                LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1), true);
         validEntity = new Semester(2025, "W1",
-                LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1));
+                LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1), true);
         validEntity.setId(1L);
     }
 
@@ -65,7 +65,7 @@ class SemesterServiceTest {
     @Test
     void addSemester_startDateAfterEndDate_throwsBadRequest() {
         SemesterDto badDto = new SemesterDto(1L, 2025, "W1",
-                LocalDate.of(2025, 12, 1), LocalDate.of(2025, 9, 1));
+                LocalDate.of(2025, 12, 1), LocalDate.of(2025, 9, 1), true);
 
         assertThrows(BadRequestException.class, () -> semesterService.addSemester(badDto));
     }
@@ -73,7 +73,7 @@ class SemesterServiceTest {
     @Test
     void addSemester_yearMismatch_throwsBadRequest() {
         SemesterDto badDto = new SemesterDto(1L, 2024, "W1",
-                LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1));
+                LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1), true);
 
         assertThrows(BadRequestException.class, () -> semesterService.addSemester(badDto));
     }
@@ -118,7 +118,7 @@ class SemesterServiceTest {
     @Test
     void updateSemester_validInput_returnsUpdatedDto() {
         SemesterDto updateDto = new SemesterDto(1L, 2025, "W2",
-                LocalDate.of(2025, 9, 5), LocalDate.of(2025, 12, 5));
+                LocalDate.of(2025, 9, 5), LocalDate.of(2025, 12, 5), true);
 
         when(semesterRepository.findById(1L)).thenReturn(Optional.of(validEntity));
         when(semesterRepository.save(validEntity)).thenReturn(validEntity);
@@ -132,7 +132,7 @@ class SemesterServiceTest {
     @Test
     void updateSemester_duplicateEntry_throwsDuplicateEntryException() {
         SemesterDto updateDto = new SemesterDto(1L, 2025, "W2",
-                LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1));
+                LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1), true);
 
         when(semesterRepository.findById(1L)).thenReturn(Optional.of(validEntity));
         when(semesterRepository.save(validEntity))
@@ -160,8 +160,8 @@ class SemesterServiceTest {
 
     @Test
     void getSemesterByYearAndSemester_returnsDto_whenFound() {
-        Semester semester = new Semester(2025, "W1", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1));
-        SemesterDto dto = new SemesterDto(1L, 2025, "W1", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1));
+        Semester semester = new Semester(2025, "W1", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1), true);
+        SemesterDto dto = new SemesterDto(1L, 2025, "W1", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 12, 1), true);
 
         when(semesterRepository.findByYearAndSemester(2025, "W1")).thenReturn(Optional.of(semester));
         when(semesterMapper.toDto(semester)).thenReturn(dto);
@@ -181,8 +181,9 @@ class SemesterServiceTest {
     @Test
     void getAllFutureSemesters_returnsMappedList() {
         LocalDate today = LocalDate.now();
-        Semester futureSemester = new Semester(2026, "W1", today.plusMonths(3), today.plusMonths(6));
-        SemesterDto dto = new SemesterDto(1L, 2026, "W1", futureSemester.getStartDate(), futureSemester.getEndDate());
+        Semester futureSemester = new Semester(2026, "W1", today.plusMonths(3), today.plusMonths(6), true);
+        SemesterDto dto = new SemesterDto(1L, 2026, "W1", futureSemester.getStartDate(), futureSemester.getEndDate(),
+                true);
 
         when(semesterRepository.findByStartDateAfterOrderByStartDateAsc(today)).thenReturn(List.of(futureSemester));
         when(semesterMapper.toDto(futureSemester)).thenReturn(dto);

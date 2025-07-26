@@ -339,7 +339,7 @@ public class CourseServiceTest {
 
                 Course course = new Course("COSC", "Networks", "329");
                 course.setId(courseId);
-                Semester semester = new Semester(2025, "W1", null, null);
+                Semester semester = new Semester(2025, "W1", null, null, true);
                 Section section = new Section(semester, "001", SectionType.LABORATORY, course, null);
                 section.setId(1L);
 
@@ -597,7 +597,7 @@ public class CourseServiceTest {
                 course.setId(courseId);
 
                 StudentTaughtCourseRequest request = new StudentTaughtCourseRequest(studentId, 2024, "W1");
-                Semester semester = new Semester(2025, "W1", null, null);
+                Semester semester = new Semester(2025, "W1", null, null, true);
 
                 when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
                 when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(semester));
@@ -624,7 +624,7 @@ public class CourseServiceTest {
                 Course course = new Course("COSC", "Operating Systems", "315");
                 CourseDto courseDto = new CourseDto(1L, "COSC", "Operating Systems", "315");
                 course.setId(1L);
-                Semester semester = new Semester(2025, "W1", null, null);
+                Semester semester = new Semester(2025, "W1", null, null, true);
 
                 UserDto student = new UserDto(2L, "Alice", "Wang", "awang@test.com",
                                                 List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null,

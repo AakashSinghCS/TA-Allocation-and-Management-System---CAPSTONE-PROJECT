@@ -94,7 +94,7 @@ public class NeedServiceTest {
 
         mockNeed = new Need("Marking Labs", 30, 10);
         mockNeed.setId(5L);
-        mockSemester = new Semester(2025, "W1", null, null);
+        mockSemester = new Semester(2025, "W1", null, null, true);
         mockCourseNeed = new CourseNeed(mockCourse, mockNeed, mockSemester);
     }
 
