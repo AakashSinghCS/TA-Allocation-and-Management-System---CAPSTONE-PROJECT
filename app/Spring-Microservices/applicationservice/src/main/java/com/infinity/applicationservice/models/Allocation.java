@@ -14,8 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -38,7 +38,7 @@ public class Allocation {
     @Column(name = "student_id")
     private Long studentId;
     
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "application_id")
     private Application application;
 

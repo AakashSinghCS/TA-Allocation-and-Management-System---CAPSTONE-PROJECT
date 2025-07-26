@@ -23,6 +23,7 @@ import SelectedSectionPanel from './selectedsectionpanel/SelectedSectionPanel';
 import AllocationCalendar from './allocationcalendar/AllocationCalendar';
 import AllocationBanner from './allocationbanner/AllocationBanner';
 import { mockAllocation } from '../../../mocked-objects/allocation/mockAllocations';
+import { StrikethroughIcon } from 'lucide-react';
 
 const TAAllocationPage: React.FC = () => {
   const { token } = useAuth();
@@ -197,6 +198,22 @@ const TAAllocationPage: React.FC = () => {
           )}
 
           {selCourse && (
+            <div className="mt-6 border-t pt-6 space-y-6">
+              {/* section details */}
+              <section>
+                <h2 className="font-bold text-lg">Section Details</h2>
+                <div className="space-y-1 pl-2 text-sm">
+                  <p><strong>Year &amp; Semester:</strong> {selCourse.semester ?? 'N/A'} {selCourse.year ?? 'N/A'}</p>
+                  <p><strong>Section:</strong> {selCourse.section ?? 'N/A'}</p>
+                  <p><strong>Type:</strong> {selCourse.type ?? 'N/A'}</p>
+                  <p><strong>Instructor:</strong> {instructor && instructor.firstName && instructor.lastName ? `${instructor.firstName} ${instructor.lastName}` : 'N/A'}</p>
+                  <p><strong>TAs Allocated:</strong> {selCourse.numberOfTAsAllocated ?? '0'}</p>
+                </div>
+              </section>
+            </div> // This closing div was missing!
+          )}
+
+          {selCourse && (
             <SelectedSectionPanel
               section={selCourse}
               instructor={instructor}
@@ -225,7 +242,6 @@ const TAAllocationPage: React.FC = () => {
               setShowBanner={setShowBanner}
             />
           )}
-
         </div>
         <ApplicationFilterPanel
           selApp={selApp}
@@ -234,7 +250,8 @@ const TAAllocationPage: React.FC = () => {
         />
       </div>
       <ToastContainer />
-    </div>
+      </div>
+
   );
 };
 

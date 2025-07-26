@@ -47,4 +47,11 @@ public interface CourseInterface {
     @PutMapping("/needs/updateAllocatedHours/{needId}")
     public ResponseEntity<String> updateNeedAllocatedHours(@PathVariable Long needId,
             @RequestParam int numAllocatedHours);
+
+    @PutMapping("/sections/{id}/incrementTA")
+    void incrementNumberOfTAs(@PathVariable Long id);
+
+    @PutMapping("/sections/{id}/decrementTA")
+    void decrementNumberOfTAs(@PathVariable Long id);
+
 }

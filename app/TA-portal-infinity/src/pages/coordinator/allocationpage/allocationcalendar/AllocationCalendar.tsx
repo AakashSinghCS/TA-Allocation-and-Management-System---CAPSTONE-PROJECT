@@ -8,6 +8,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { useSendOffer } from "../../../../hooks/sendoffer/useSendOffer";
 import { Check, X } from "lucide-react";
 import type { AllocatedSection, Allocation } from "../../../../interfaces/allocation/Allocation";
+import { toast } from "react-toastify";
 
 interface AllocationCalendarProps {
     selCourse: Section | null;
@@ -100,6 +101,13 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
 
     const onSend = () => {
         if (!selApp || !selCourse?.id || !selCourse.need) return;
+        if (selCourse.type === 'LECTURE'){
+              toast.warn("Warning: You cannot allocate TAs to a LECTURE.");
+              return;
+            }
+            if ((selCourse.numberOfTAsAllocated ?? 0) >= 1) {
+              toast.warn("Warning: You are assigning more than 1 TA to this section.");
+            }
         sendOffer(
             selApp,
             selCourse.id,

@@ -8,10 +8,7 @@ import com.infinity.applicationservice.enums.TaskType;
 public record AllocationRequest(
         Long studentId,
         Long applicationId,
-        ApplicationStatus status,
         TaskType task,
-        int labPrepHours,
-        int gradingHours,
-        int sectionHours,
+        int hours,
         Long sectionId) {
 }

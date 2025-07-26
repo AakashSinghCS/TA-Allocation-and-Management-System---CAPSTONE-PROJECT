@@ -1,6 +1,7 @@
 package com.infinity.applicationservice.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,11 +13,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocatedSectionDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
+import com.infinity.applicationservice.dtos.Allocations.ImportRequest;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.services.AllocationService;
 
@@ -33,8 +36,8 @@ public class AllocationController {
 
     @PreAuthorize("hasAnyRole('COORDINATOR', 'STUDENT')")
     @GetMapping("/student/{studentId}/history")
-    public ResponseEntity<AllocationHistoryDto> getStudentAllocationHistory(@PathVariable Long studentId) {
-        return ResponseEntity.ok(allocationService.getAllocationByStudentId(studentId));
+    public ResponseEntity<AllocationHistoryDto> getStudentAllocationHistory(@PathVariable Long studentId, @RequestParam(name = "noContentAllowed", required = false) Boolean noContentAllowed) {
+        return ResponseEntity.ok(allocationService.getAllocationByStudentId(studentId, noContentAllowed));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
@@ -95,11 +98,11 @@ public class AllocationController {
         Integer affected =allocationService.deleteSection(sectionId);
         return ResponseEntity.ok(affected);
     }
-    // @PostMapping("/import")
-    // public ResponseEntity<List<AllocationHistoryDto>> importAllocations(@RequestBody ImportRequest request) {
-    //     List<Map<String, String>> rows = request.rows();
-    //     boolean autoCreate = request.autoCreateMissing();
-    //     return ResponseEntity.ok(allocationService.importPreviousAllocations(rows, autoCreate));
-    // }
+    @PostMapping("/import")
+    public ResponseEntity<List<AllocationHistoryDto>> importAllocations(@RequestBody ImportRequest request) {
+        List<Map<String, String>> rows = request.rows();
+        boolean autoCreate = request.autoCreateMissing();
+        return ResponseEntity.ok(allocationService.importPreviousAllocations(rows, autoCreate));
+    }
 
 }

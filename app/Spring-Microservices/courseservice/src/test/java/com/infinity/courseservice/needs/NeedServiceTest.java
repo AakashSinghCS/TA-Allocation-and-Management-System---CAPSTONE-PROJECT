@@ -1,29 +1,29 @@
 package com.infinity.courseservice.needs;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
-import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.DeadlineDto;
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedRequest;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -32,10 +32,12 @@ import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.CourseNeed;
 import com.infinity.courseservice.models.Need;
+import com.infinity.courseservice.models.Semester;
 import com.infinity.courseservice.repositories.CourseNeedRepository;
 import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.NeedRepository;
 import com.infinity.courseservice.repositories.PrereqRepository;
+import com.infinity.courseservice.repositories.SemesterRepository;
 import com.infinity.courseservice.services.NeedService;
 import com.infinity.courseservice.utility.NeedMapper;
 
@@ -58,6 +60,9 @@ public class NeedServiceTest {
     @Mock
     private NeedMapper needMapper;
 
+    @Mock
+    private SemesterRepository semesterRepository;
+
     @InjectMocks
     private NeedService needService;
 
@@ -67,6 +72,7 @@ public class NeedServiceTest {
     private Course mockCourse;
     private Need mockNeed;
     private CourseNeed mockCourseNeed;
+    private Semester mockSemester;
 
     @BeforeEach
     void mockDeadline() {
@@ -88,17 +94,19 @@ public class NeedServiceTest {
 
         mockNeed = new Need("Marking Labs", 30, 10);
         mockNeed.setId(5L);
-
-        mockCourseNeed = new CourseNeed(mockCourse, mockNeed, 2025, "W1");
+        mockSemester = new Semester(2025, "W1", null, null);
+        mockCourseNeed = new CourseNeed(mockCourse, mockNeed, mockSemester);
     }
 
     @Test
     void testAddNeed_Success() {
         NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1", List.of(1L));
-        NeedDto needDto = new NeedDto(1L, 1L, "Marking Labs", 30, 10, 2025, "W1", List.of(new CourseDto(1L, "COSC", "Capstone", "499")));
+        NeedDto needDto = new NeedDto(1L, 1L, "Marking Labs", 30, 10, 2025, "W1",
+                List.of(new CourseDto(1L, "COSC", "Capstone", "499")));
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(mockCourse));
-        when(courseNeedRepository.existsByCourseAndYearAndSemester(mockCourse, 2025, "W1")).thenReturn(false);
+        when(courseNeedRepository.existsByCourseAndSemester(mockCourse, mockSemester)).thenReturn(false);
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(mockSemester));
         when(courseNeedRepository.save(any(CourseNeed.class))).thenReturn(mockCourseNeed);
         when(courseRepository.findAllById(request.prerequisiteCourseIds())).thenReturn(List.of(mockCourse));
         when(needMapper.courseNeedToDto(mockCourseNeed)).thenReturn(needDto);
@@ -110,6 +118,27 @@ public class NeedServiceTest {
         assertEquals(2025, result.year());
         assertEquals("W1", result.semester());
         assertEquals("Capstone", result.prerequisites().get(0).name());
+    }
+    
+    @Test
+    void testAddNeed_NoSemester_NotFound() {
+        Long courseId = 1L;
+        mockCourse.setId(courseId);
+        NeedRequest request = new NeedRequest(
+                "Need description",
+                5,
+                2,
+                2025,
+                "Spring",
+                List.of());
+
+        when(courseRepository.findById(courseId))
+                .thenReturn(Optional.of(mockCourse));
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.empty());
+        NotFoundException e = assertThrows(NotFoundException.class, () -> {
+            needService.addNeed(request, courseId);
+        });
+        assertEquals(e.getMessage(), "That semester doesn't exist");
     }
 
     @Test
@@ -134,9 +163,10 @@ public class NeedServiceTest {
             .thenReturn(Optional.of(mockCourse));
 
         // Mock that no duplicate Need exists
-        when(courseNeedRepository.existsByCourseAndYearAndSemester(
-            any(Course.class), eq(2025), eq("Spring")))
-            .thenReturn(false);
+        when(courseNeedRepository.existsByCourseAndSemester(
+            any(Course.class), any(Semester.class)))
+                .thenReturn(false);
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(mockSemester));
 
         // Mock expired deadline
         DeadlineDto expiredDeadline = new DeadlineDto(
@@ -164,9 +194,11 @@ public class NeedServiceTest {
         NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1", null);
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(mockCourse));
-        when(courseNeedRepository.existsByCourseAndYearAndSemester(mockCourse, 2025, "W1")).thenReturn(true);
+        when(courseNeedRepository.existsByCourseAndSemester(mockCourse, mockSemester)).thenReturn(true);
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(mockSemester));
 
-        assertThrows(BadRequestException.class, () -> needService.addNeed(request, 1L));
+        BadRequestException e = assertThrows(BadRequestException.class, () -> needService.addNeed(request, 1L));
+        assertEquals(e.getMessage(), "Need already exists for course that year and semester");
         verify(needRepository, never()).save(any());
     }
 
@@ -181,7 +213,7 @@ public class NeedServiceTest {
 
     @Test
     void testGetNeed_Success() {
-        when(courseNeedRepository.findByCourseIdAndYearAndSemester(1L, 2025, "W1"))
+        when(courseNeedRepository.findByCourseIdAndSemester_YearAndSemester_Semester(1L, 2025, "W1"))
                 .thenReturn(Optional.of(mockCourseNeed));
         NeedDto needDto = new NeedDto(1L, 1L, "Marking Labs", 30, 10, 2025, "W1",
                 List.of(new CourseDto(1L, "COSC", "Capstone", "499"))); 
@@ -194,7 +226,7 @@ public class NeedServiceTest {
 
     @Test
     void testGetNeed_NotFound() {
-        when(courseNeedRepository.findByCourseIdAndYearAndSemester(1L, 2025, "W1")).thenReturn(Optional.empty());
+        when(courseNeedRepository.findByCourseIdAndSemester_YearAndSemester_Semester(1L, 2025, "W1")).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> needService.getNeed(1L, 2025, "W1"));
     }
@@ -205,11 +237,12 @@ public class NeedServiceTest {
         NeedDto needDto = new NeedDto(1L, 1L, "Updated", 40, 20, 2025, "W2",
                 List.of(new CourseDto(2L, "DATA", "Intro to R", "103")));
 // doNothing().when(prereqRepository).deleteByCourseNeed(mockCourseNeed);
-        when(courseNeedRepository.findByCourseIdAndYearAndSemester(1L, 2025, "W1"))
+        when(courseNeedRepository.findByCourseIdAndSemester_YearAndSemester_Semester(1L, 2025, "W1"))
                 .thenReturn(Optional.of(mockCourseNeed));
         when(needRepository.save(any())).thenReturn(mockNeed);
         when(courseNeedRepository.save(any())).thenReturn(mockCourseNeed);
         when(needMapper.courseNeedToDto(mockCourseNeed)).thenReturn(needDto);
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(mockSemester));
 
         NeedDto result = needService.updateNeed(request, 1L, 2025, "W1");
 
@@ -223,14 +256,14 @@ public class NeedServiceTest {
     void testUpdateNeed_NotFound() {
         NeedRequest request = new NeedRequest("Updated", 40, 20, 2025, "W1", null);
 
-        when(courseNeedRepository.findByCourseIdAndYearAndSemester(1L, 2025, "W1")).thenReturn(Optional.empty());
+        when(courseNeedRepository.findByCourseIdAndSemester_YearAndSemester_Semester(1L, 2025, "W1")).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> needService.updateNeed(request, 1L, 2025, "W1"));
     }
 
     @Test
     void testDeleteNeed_Success() {
-        when(courseNeedRepository.findByCourseIdAndYearAndSemester(1L, 2025, "W1"))
+        when(courseNeedRepository.findByCourseIdAndSemester_YearAndSemester_Semester(1L, 2025, "W1"))
                 .thenReturn(Optional.of(mockCourseNeed));
 
         String result = needService.deleteNeed(1L, 2025, "W1");
@@ -255,7 +288,7 @@ public class NeedServiceTest {
 
     @Test
     void testDeleteNeed_NotFound() {
-        when(courseNeedRepository.findByCourseIdAndYearAndSemester(1L, 2025, "W1")).thenReturn(Optional.empty());
+        when(courseNeedRepository.findByCourseIdAndSemester_YearAndSemester_Semester(1L, 2025, "W1")).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> needService.deleteNeed(1L, 2025, "W1"));
     }
