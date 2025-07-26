@@ -7,28 +7,47 @@ import { useEffect, useMemo, useState } from "react";
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useSendOffer } from "../../../../hooks/sendoffer/useSendOffer";
 import { Check, X } from "lucide-react";
+import type { Allocation } from "../../../../interfaces/allocation/Allocation";
 
 interface AllocationCalendarProps {
     selCourse: Section | null;
     selApp: ApplicationDto | null;
     onSendOfferSuccess: () => void;
+    prevAlloc: Allocation | null;
 }
 
-export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selApp }: AllocationCalendarProps) {
+export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selApp, prevAlloc }: AllocationCalendarProps) {
     const { sendOffer, loading } = useSendOffer();
     const [gradingHours, setGradingHours] = useState<string>('');
     const [labPrepHours, setLabPrepHours] = useState<string>('');
     const [selectedSectionSlots, setSelectedSectionSlots] = useState<Set<number>>(new Set());
 
-    const required = selCourse?.need?.requiredGradingHours ?? 0;
-    const allocated = selCourse?.need?.numHoursCurrentlyAllocated ?? 0;
-    const remaining = Math.max(required - allocated, 0);
-    const hoursOK = allocated >= required;
-    const allIdxs = useMemo(
+    
+    const prevAllocatedInfo = prevAlloc?.allocatedSections?.filter(s => s.sectionId === selCourse?.id) ?? [];
+
+    const hasPrevLabAlloc     = prevAllocatedInfo.some(s => s.task === 'LAB');
+    const hasPrevGradingAlloc = prevAllocatedInfo.some(s => s.task === 'GRADING');
+    const hasPrevLabPrepAlloc = prevAllocatedInfo.some(s => s.task === 'LAB_PREP');
+
+    // useEffect(() => {
+    //     if (alloc) {
+    //         console.log(alloc);
+    //         // setGradingHours(String(alloc.gradingHours ?? ''));
+    //         // setLabPrepHours(String(alloc.labPrepHours ?? ''));
+    //     }
+    // }, [alloc]);
+
+
+    const requiredGrading: number = selCourse?.need?.requiredGradingHours ?? 0;
+    const allocatedGrading: number = selCourse?.need?.numHoursCurrentlyAllocated ?? 0;
+    const remaining: number = Math.max(requiredGrading - allocatedGrading, 0);
+    const hoursOK: boolean = allocatedGrading >= requiredGrading;
+    const allIdxs: number[] = useMemo(
         () => (selCourse?.sectionSchedule || []).map((_, i) => i),
         [selCourse]
     );
     useEffect(() => {
+        if(hasPrevLabAlloc) return;
         setSelectedSectionSlots(new Set(allIdxs));
     }, [allIdxs]);
 
@@ -98,6 +117,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
     };
 
     const onEventClick = (info: EventClickArg) => {
+        if(hasPrevLabAlloc) return;
         const { type } = info.event.extendedProps as { type?: string };
         if (type !== 'section') return;
         setSelectedSectionSlots(prev => {
@@ -105,10 +125,8 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
 
             const sectionOn = allIdxs.every(i => selectedSectionSlots.has(i));
             if (sectionOn) {
-                // turn ALL off
                 allIdxs.forEach(i => next.delete(i));
             } else {
-                // turn ALL on
                 allIdxs.forEach(i => next.add(i));
             }
             return next;
@@ -186,8 +204,8 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                     Remaining Grading Hours:{' '}
                     <span className={hoursOK ? 'text-green-600' : 'text-red-600'}>
                         {hoursOK
-                            ? `All met (${allocated} of ${required})`
-                            : `${remaining} needed (Allocated: ${allocated}, Required: ${required})`}
+                            ? `All met (${allocatedGrading} of ${requiredGrading})`
+                            : `${remaining} needed (Allocated: ${allocatedGrading}, Required: ${requiredGrading})`}
                     </span>
                 </p>
                 <p>
@@ -214,9 +232,13 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                         <span className="text-sm font-medium whitespace-nowrap">
                             Selected Total Section Time:
                         </span>
-                        <span className="text-blue-600 font-medium whitespace-nowrap">
-                            {totalSectionHours}h
-                        </span>
+                        {hasPrevLabAlloc ? (
+                            <X className="w-6 h-6 text-gray-400 opacity-50 cursor-not-allowed" />
+                        ) : (
+                            <span className="text-blue-600 font-medium whitespace-nowrap">
+                                {totalSectionHours}h
+                            </span>
+                        )}
                     </label>
 
                     {/* Grading hours */}
@@ -227,9 +249,12 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                         <input
                             type="text"
                             inputMode="decimal"
+                            disabled={hasPrevGradingAlloc}
                             value={gradingHours}
                             onChange={numericOnly(setGradingHours)}
-                            className="w-20 border rounded px-2 py-1 text-right"
+                            className={`w-20 border rounded px-2 py-1 text-right  ${
+                                hasPrevGradingAlloc ? 'opacity-50 cursor-not-allowed' : ''
+                                }`}
                             placeholder="e.g. 10"
                         />
                     </label>
@@ -242,9 +267,12 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                         <input
                             type="text"
                             inputMode="decimal"
+                            disabled={hasPrevLabPrepAlloc}
                             value={labPrepHours}
                             onChange={numericOnly(setLabPrepHours)}
-                            className="w-20 border rounded px-2 py-1 text-right"
+                            className={`w-20 border rounded px-2 py-1 text-right  ${
+                                hasPrevLabPrepAlloc ? 'opacity-50 cursor-not-allowed' : ''
+                                }`}
                             placeholder="e.g. 1.5"
                         />
                     </label>

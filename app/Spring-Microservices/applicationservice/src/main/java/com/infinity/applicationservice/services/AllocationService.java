@@ -274,63 +274,63 @@ public class AllocationService {
         return allocatedSectionRepository.deleteAllBySectionId(sectionId);
     }
 
-    public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList, boolean autoCreate) {
+    // public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList, boolean autoCreate) {
 
-        List<AllocationHistoryDto> importedAllocations = new ArrayList<>();
-        HashMap<AllocationCsvDto, List<AllocatedSection>> allocationMap = new HashMap<>();
-        for (Map<String, String> data : allocationDataList) {
-            Integer studentNum = Integer.parseInt(data.get("studentNum").trim());
-            String deptCode = data.get("deptCode").trim();
-            String courseNum = data.get("courseNum").trim();
-            String section = data.get("section").trim();
-            int year = Integer.parseInt(data.get("year").trim());
-            String semester = data.get("semester").trim();
+    //     List<AllocationHistoryDto> importedAllocations = new ArrayList<>();
+    //     HashMap<AllocationCsvDto, List<AllocatedSection>> allocationMap = new HashMap<>();
+    //     for (Map<String, String> data : allocationDataList) {
+    //         Integer studentNum = Integer.parseInt(data.get("studentNum").trim());
+    //         String deptCode = data.get("deptCode").trim();
+    //         String courseNum = data.get("courseNum").trim();
+    //         String section = data.get("section").trim();
+    //         int year = Integer.parseInt(data.get("year").trim());
+    //         String semester = data.get("semester").trim();
 
             
 
-            UserDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
-            if (studentDto == null) {
-                throw new NotFoundException("Student not found: " + studentNum);
-            }
+    //         UserDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
+    //         if (studentDto == null) {
+    //             throw new NotFoundException("Student not found: " + studentNum);
+    //         }
             
 
-            CourseDto courseDto;
-            try {
-                courseDto = courseInterface.getCourseByDeptCodeAndCourseNum(deptCode, courseNum).getBody();
-            } catch (Exception e) {
-                if (autoCreate) {
-                    courseDto = courseInterface.addCourse(new ImportCourseRequest(deptCode, courseNum));
-                } else {
-                    throw new NotFoundException("Course not found:" + deptCode + " " + courseNum);
-                }
-            }
+    //         CourseDto courseDto;
+    //         try {
+    //             courseDto = courseInterface.getCourseByDeptCodeAndCourseNum(deptCode, courseNum).getBody();
+    //         } catch (Exception e) {
+    //             if (autoCreate) {
+    //                 courseDto = courseInterface.addCourse(new ImportCourseRequest(deptCode, courseNum));
+    //             } else {
+    //                 throw new NotFoundException("Course not found:" + deptCode + " " + courseNum);
+    //             }
+    //         }
 
-            SectionDto sectionDto;
-            try {
-                sectionDto = courseInterface.getByCourseIdSectionYearSemester(courseDto.id(), section, year, semester);
-            } catch (Exception e) {
-                if (autoCreate) {
-                    sectionDto = courseInterface.addSection(courseDto.id(), new ImportSectionRequest(section, year, semester)); 
-                } else {
-                    throw new NotFoundException("Section " + section + " " +  year + " " + semester + " not found for Course " + courseDto.deptCode() + " " + courseDto.courseNum());
-                }
-            }
-            AllocationCsvDto key = new AllocationCsvDto(studentNum, year, semester);
-            if (allocationMap.containsKey(key)) {
-                allocationMap.get(key).add(new AllocatedSection());
-            }
+    //         SectionDto sectionDto;
+    //         try {
+    //             sectionDto = courseInterface.getByCourseIdSectionYearSemester(courseDto.id(), section, year, semester);
+    //         } catch (Exception e) {
+    //             if (autoCreate) {
+    //                 sectionDto = courseInterface.addSection(courseDto.id(), new ImportSectionRequest(section, year, semester)); 
+    //             } else {
+    //                 throw new NotFoundException("Section " + section + " " +  year + " " + semester + " not found for Course " + courseDto.deptCode() + " " + courseDto.courseNum());
+    //             }
+    //         }
+    //         AllocationCsvDto key = new AllocationCsvDto(studentNum, year, semester);
+    //         if (allocationMap.containsKey(key)) {
+    //             allocationMap.get(key).add(new AllocatedSection());
+    //         }
 
-            Allocation allocation = new Allocation();
-            allocation.setStudentId(studentDto.id());
-            // allocation.setSectionId(sectionDto.id());
-            allocation.setStatus(ApplicationStatus.CONFIRMED);
-            // allocation.setNumberOfHours(0);
+    //         Allocation allocation = new Allocation();
+    //         allocation.setStudentId(studentDto.id());
+    //         // allocation.setSectionId(sectionDto.id());
+    //         allocation.setStatus(ApplicationStatus.CONFIRMED);
+    //         // allocation.setNumberOfHours(0);
 
-            Allocation saved = allocationRepository.save(allocation);
-            importedAllocations.add(allocationMapper.toDto(saved, studentDto, null, sectionDto));
-        }
+    //         Allocation saved = allocationRepository.save(allocation);
+    //         importedAllocations.add(allocationMapper.toDto(saved, studentDto, null, sectionDto));
+    //     }
 
-        return importedAllocations;
-    }
+    //     return importedAllocations;
+    // }
 
 }

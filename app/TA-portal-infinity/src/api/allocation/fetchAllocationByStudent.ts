@@ -1,33 +1,25 @@
-import type { Allocation } from '../../interfaces/allocation/Allocation';
+import { type AllocatedSection, type Allocation } from '../../interfaces/allocation/Allocation';
 import type { ApplicationDto } from '../../interfaces/application/Application';
-import type { SectionType } from '../../interfaces/section/SectionDetails';
 import type Section from '../../interfaces/section/Section';
+import type { ApplicationStatus } from '../../interfaces/enum/ApplicationStatus';
+
+
 
 interface RawAllocationHistoryDto {
   id: number;
   student: Allocation['student'];
   applicationDto: ApplicationDto;
-  status?: string;
+  status?: ApplicationStatus;
   labPrepHours : number;
   gradingHours : number;
   sectionHours : number;
-  section: {
-    id: number;
-    term: string | null;
-    section: string;
-    type: SectionType;
-    course: {
-      deptCode: string;
-      name: string;
-      courseNum: string;
-    };
-  };
+  allocatedSections: AllocatedSection[];
 }
 
 export async function fetchAllocationsByStudent(
   studentId: number,
   token: string
-): Promise<Allocation[]> {
+): Promise<Allocation> {
   const res = await fetch(
     `http://localhost:8080/allocations/student/${studentId}/history`,
     {
@@ -38,38 +30,23 @@ export async function fetchAllocationsByStudent(
       },
     }
   );
-
+  console.log("b");
   if (!res.ok) {
     const errText = await res.text();
     throw new Error(errText || res.statusText);
   }
 
-  const rawList: RawAllocationHistoryDto[] = await res.json();
-
-  return rawList.map(raw => {
-    const mappedSection: Section = {
-      id: raw.section.id,
-      section: raw.section.section,
-      type: raw.section.type,
-      semester: raw.section.term ?? undefined,
-      course: {
-        deptCode: raw.section.course.deptCode,
-        courseNum: raw.section.course.courseNum,
-        name: raw.section.course.name,
-      },
-    };
-
-    const allocation: Allocation = {
-      id: raw.id,
-      student: raw.student,
-      application: raw.applicationDto,
-      status: raw.status as any as import('../../interfaces/enum/ApplicationStatus').ApplicationStatus,
-      labPrepHours: raw.labPrepHours,
-      gradingHours: raw.gradingHours,
-      sectionHours: raw.sectionHours,
-      section: mappedSection,
-    };
-
-    return allocation;
-  });
+  const raw: RawAllocationHistoryDto = await res.json();
+  const allocation: Allocation = {
+    id: raw.id,
+    student: raw.student,
+    application: raw.applicationDto,
+    status: raw.status,
+    labPrepHours: raw.labPrepHours,
+    gradingHours: raw.gradingHours,
+    sectionHours: raw.sectionHours,
+    allocatedSections: raw.allocatedSections
+  };
+  console.log(allocation);
+  return allocation;
 }

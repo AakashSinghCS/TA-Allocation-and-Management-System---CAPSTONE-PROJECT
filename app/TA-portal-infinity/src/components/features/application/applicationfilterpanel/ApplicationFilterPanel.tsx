@@ -94,12 +94,12 @@ export default function ApplicationFilterPanel({
   const displayApps = filterByStudentNameAndNum(apps,filters);
   const totalPages = pageData?.totalPages ?? 0;
 
-  const [history, setHistory] = useState<Allocation[]>([]);
+  const [history, setHistory] = useState<Allocation | null >(null);
   useEffect(() => {
-    if (!selApp || !token) return setHistory([]);
+    if (!selApp || !token) return setHistory(null);
     fetchAllocationsByStudent(selApp.student.id, token)
       .then(setHistory)
-      .catch(() => setHistory([]));
+      .catch(() => setHistory(null));
   }, [selApp, token]);
 
   return (

@@ -22,6 +22,7 @@ import SectionSelectionList from './sectionselectionlist/SectionSelectionList';
 import SelectedSectionPanel from './selectedsectionpanel/SelectedSectionPanel';
 import AllocationCalendar from './allocationcalendar/AllocationCalendar';
 import AllocationBanner from './allocationbanner/AllocationBanner';
+import { mockAllocation } from '../../../mocked-objects/allocation/mockAllocations';
 
 const TAAllocationPage: React.FC = () => {
   const { token } = useAuth();
@@ -37,7 +38,7 @@ const TAAllocationPage: React.FC = () => {
   const [selCourse, setSelCourse] = useState<Section | null>(null);
   const [instructor, setInstructor] = useState<{ firstName: string; lastName: string } | null>(null);
   const [selApp, setSelApp] = useState<ApplicationDto | null>(null);
-  const [history, setHistory] = useState<Allocation[]>([]);
+  const [alloc, setAlloc] = useState<Allocation | null>(null);
 
   const loadCourse = async (details: SectionDetails) => {
     if (!details.id) return;
@@ -85,83 +86,89 @@ const TAAllocationPage: React.FC = () => {
     }
   };
   // Helper to fetch allocation history for the selected student
-  const refreshHistory = async (studentId: number, token: string) => {
-    try {
-      //  using fetchSectionIncludeInstructorId to get section with instructorId
-      let section = await fetchSectionIncludeInstructorId(studentId);
-      // If 'need' is missing, fetch it from fetchSectionInfo
-      if (section && !section.need) {
-        try {
-          const sectionWithNeed = await fetchSectionInfo(studentId, token || "");
-          if (sectionWithNeed && sectionWithNeed.need) {
-            section = { ...section, need: sectionWithNeed.need };
-          }
-        } catch (err) {
-          console.error("Failed to fetch section need:", err);
-        }
-      }
-      setSelCourse({
-        ...section,
-        hasCompleted: !!(
-          section?.need?.numHoursCurrentlyAllocated != null &&
-          section?.need?.requiredGradingHours != null &&
-          section.need?.numHoursCurrentlyAllocated >= section.need?.requiredGradingHours
-        ),
-      });
-      // Prefer section.instructor if present, otherwise use instructorId
-      if (section && section.instructor && section.instructor.firstName && section.instructor.lastName) {
-        setInstructor({ firstName: section.instructor.firstName, lastName: section.instructor.lastName });
-      } else if (section && section.instructorId !== undefined && section.instructorId !== null) {
-        try {
-          const instructorObj = await fetchInstructorById(section.instructorId);
-          if (instructorObj && instructorObj.firstName && instructorObj.lastName) {
-            setInstructor({ firstName: instructorObj.firstName, lastName: instructorObj.lastName });
-          } else {
-            setInstructor(null);
-          }
-        } catch (err) {
-          setInstructor(null);
-          console.error("Failed to fetch instructor details:", err);
-        }
-      } else {
-        setInstructor(null);
-      }
-    } catch (err) {
-      console.error("Failed to load section:", err);
-      setInstructor(null);
-    }
-  };
+  // const refreshHistory = async (studentId: number, token: string) => {
+  //   try {
+  //     //  using fetchSectionIncludeInstructorId to get section with instructorId
+  //     let section = await fetchSectionIncludeInstructorId(studentId);
+  //     // If 'need' is missing, fetch it from fetchSectionInfo
+  //     if (section && !section.need) {
+  //       try {
+  //         const sectionWithNeed = await fetchSectionInfo(studentId, token || "");
+  //         if (sectionWithNeed && sectionWithNeed.need) {
+  //           section = { ...section, need: sectionWithNeed.need };
+  //         }
+  //       } catch (err) {
+  //         console.error("Failed to fetch section need:", err);
+  //       }
+  //     }
+  //     setSelCourse({
+  //       ...section,
+  //       hasCompleted: !!(
+  //         section?.need?.numHoursCurrentlyAllocated != null &&
+  //         section?.need?.requiredGradingHours != null &&
+  //         section.need?.numHoursCurrentlyAllocated >= section.need?.requiredGradingHours
+  //       ),
+  //     });
+  //     // Prefer section.instructor if present, otherwise use instructorId
+  //     if (section && section.instructor && section.instructor.firstName && section.instructor.lastName) {
+  //       setInstructor({ firstName: section.instructor.firstName, lastName: section.instructor.lastName });
+  //     } else if (section && section.instructorId !== undefined && section.instructorId !== null) {
+  //       try {
+  //         const instructorObj = await fetchInstructorById(section.instructorId);
+  //         if (instructorObj && instructorObj.firstName && instructorObj.lastName) {
+  //           setInstructor({ firstName: instructorObj.firstName, lastName: instructorObj.lastName });
+  //         } else {
+  //           setInstructor(null);
+  //         }
+  //       } catch (err) {
+  //         setInstructor(null);
+  //         console.error("Failed to fetch instructor details:", err);
+  //       }
+  //     } else {
+  //       setInstructor(null);
+  //     }
+  //   } catch (err) {
+  //     console.error("Failed to load section:", err);
+  //     setInstructor(null);
+  //   }
+  // };
 
   const loadApp = (a: ApplicationDto) => setSelApp(a);
 
+  const realRefreshAlloc = async () =>{
+    if(!selApp) return;
+    if (selApp.student.id && token) {
+        await fetchAllocationsByStudent(selApp.student.id, token)
+        .then(setAlloc)
+        .catch(() => setAlloc(null));
+    }
+  }
 
   const onSendOfferSuccess = async () => {
-    if (!selApp || !selCourse?.id || !selCourse.need) return;
+    if (!selCourse?.id || !selCourse.need) return;
     await loadCourse(selCourse!);
     // allocation history so Revoke works 
-    if (selApp.student.id && token) {
-      await refreshHistory(selApp.student.id, token);
-    }
+    await realRefreshAlloc();
     setShowBanner(true);
   }
 
   useEffect(() => {
     if (!selApp || !token) {
-      setHistory([]);
+      setAlloc(null);
       return;
     }
     fetchAllocationsByStudent(selApp.student.id, token)
-      .then(setHistory)
-      .catch(() => setHistory([]));
+      .then(setAlloc)
+      .catch(() => setAlloc(null));
   }, [selApp, token]);
 
   const hasOffer = useMemo(() => {
-    if (!selApp || !selCourse) return false;
-    return history.some(h =>
-      h.application?.applicationId === selApp.applicationId &&
-      h.section?.id === selCourse?.id
+    if (!alloc || !selCourse) return false;
+    // “Does this allocation include any slice for the current course?”
+    return alloc.allocatedSections?.some(
+      as => as.sectionId === selCourse.id
     );
-  }, [history, selApp, selCourse]);
+  }, [alloc, selCourse]);
 
   return (
     <div className="p-2 min-h-screen space-y-8">
@@ -202,6 +209,8 @@ const TAAllocationPage: React.FC = () => {
           <AllocationCalendar
             selCourse={selCourse}
             selApp={selApp}
+            // alloc={alloc}
+            prevAlloc={mockAllocation}
             onSendOfferSuccess={onSendOfferSuccess}
           />
           {(hasOffer || showBanner) && selApp && selCourse && (
@@ -209,9 +218,10 @@ const TAAllocationPage: React.FC = () => {
               selApp={selApp}
               setSelApp={setSelApp}
               selCourse={selCourse}
-              refreshHistory={refreshHistory}
+              refreshAlloc={realRefreshAlloc}
               token={token}
-              history={history}
+              // alloc={alloc}
+              prevAlloc={mockAllocation}
               showBanner={showBanner}
               setShowBanner={setShowBanner}
             />

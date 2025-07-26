@@ -1,10 +1,8 @@
+import type { AllocationType } from '../../interfaces/allocation/Allocation';
 import type { OfferDto } from '../../interfaces/application/Application';
 import { fetchWithAuth } from '../Auth/fetchWithAuth';
 
-export type AllocationType =
-    | "GRADING"
-    | "LAB_PREP"
-    | "LAB"
+
 
 export interface CreateOfferRequest {
   studentId:     number;

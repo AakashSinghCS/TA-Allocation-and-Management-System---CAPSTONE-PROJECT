@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { toast, type ToastContentProps, type ToastPromiseParams } from 'react-toastify';
-import type { AllocationType, CreateOfferRequest } from '../../api/allocation/sendOffer';
+import type { CreateOfferRequest } from '../../api/allocation/sendOffer';
 import { sendOffer} from '../../api/allocation/sendOffer';
 import type { ApplicationDto } from '../../interfaces/application/Application';
 import type { Need } from '../../interfaces/need/Need';
+import type { AllocationType } from '../../interfaces/allocation/Allocation';
+import { getTaskLabel } from '../../utility/calendar/gettasklabels/getTaskLabel';
 
 /** Computing remaining hours for a section */
 function getRemainingGradingHours(need: Need): number {
@@ -85,12 +87,7 @@ export function useSendOffer() {
           ...hours
         };
 
-        const label = task === 'GRADING'
-          ? 'grading'
-          : task === 'LAB_PREP'
-            ? 'lab prep'
-            : 'section';
-
+        const label = getTaskLabel(task);
         const promise = sendOffer(payload);
         toast.promise(
           promise,

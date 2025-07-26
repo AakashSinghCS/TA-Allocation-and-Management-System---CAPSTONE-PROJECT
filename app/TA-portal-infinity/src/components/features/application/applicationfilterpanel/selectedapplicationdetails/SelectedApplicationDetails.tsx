@@ -4,7 +4,7 @@ import type { ApplicationDto } from "../../../../../interfaces/application/Appli
 
 interface SelectedApplicationDetailsProps {
   selApp: ApplicationDto;
-  history: Allocation[];
+  history: Allocation | null;
 }
 
 export default function SelectedApplicationDetails({ selApp, history }: SelectedApplicationDetailsProps) {
@@ -44,9 +44,9 @@ export default function SelectedApplicationDetails({ selApp, history }: Selected
       {/* Allocation History */}
       <section>
         <h2 className="font-bold text-lg">Allocation History</h2>
-        {history.length > 0 ? (
+        {history  ? (
           <ul className="list-disc pl-4 space-y-1 text-sm">
-            {history.map(h => (
+            {/* {history.map(h => (
               <li key={h.id}>
                 <strong>
                   {h.application?.timeSubmitted
@@ -62,7 +62,7 @@ export default function SelectedApplicationDetails({ selApp, history }: Selected
                   ? `(${h.status.charAt(0) + h.status.slice(1).toLowerCase()})`
                   : '(Pending)'}
               </li>
-            ))}
+            ))} */}
           </ul>
         ) : (
           <p className="text-gray-500 text-sm">No previous allocations</p>
