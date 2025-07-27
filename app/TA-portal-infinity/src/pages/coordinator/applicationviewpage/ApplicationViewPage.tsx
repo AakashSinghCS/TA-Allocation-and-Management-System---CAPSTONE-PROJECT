@@ -8,6 +8,8 @@ import ApplicationStats from '../../../components/features/application/viewtaapp
 import { useAuth } from '../../../context/AuthContext';
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
 import type { ApplicationDto } from '../../../interfaces/application/Application';
+import { fetchSectionIncludeInstructorId } from '../../../api/section/fetchSectionIncludeInstructorId';
+import type Section from '../../../interfaces/section/Section';
 
 const ApplicationPage: React.FC = () => {
   const { token } = useAuth();
@@ -52,22 +54,40 @@ const ApplicationPage: React.FC = () => {
   const handleFilterClick = () => setFilterTrigger(t => t + 1);
   useEffect(() => {
     async function fetchFilteredAllocations() {
-      let allocations: Allocation[] = [];
+      let rawAllocs: Allocation[] = [];
       try {
         if (allocationStatus) {
           // Use new status-based API utility
           const all = await Promise.all(
             allApps.map(() => fetchAllocationByStatus(allocationStatus, token || ''))
           );
-          allocations = all.flat();
+          rawAllocs = all.flat();
         } else {
           // fallback: fetch all allocations for all students in allApps
-          const all = await Promise.all(
-            allApps.map(app => fetchAllocationsByStudent(app.student.id, token || ''))
-          );
-          allocations = all.flat();
+          const nested = await Promise.all(
+          allApps.map(async (app) => {
+            const alloc = await fetchAllocationsByStudent(app.student.id ?? -1, token || '');
+            return alloc ? [alloc] : [];
+          })
+        );
+        rawAllocs = nested.flat();
         }
-        setAllocationHistory(allocations);
+        const enrichedAllocs: Allocation[] = await Promise.all(
+          rawAllocs.map(async alloc => {
+            // gather unique sectionIds from the allocatedSections stubs
+            const sectionIds = Array.from(
+              new Set(alloc.allocatedSections?.map(a => a.sectionId) ?? [])
+            );
+            // fetch each section in parallel
+            const secs = await Promise.all(
+              sectionIds.map((id) => fetchSectionIncludeInstructorId(id))
+            );
+            // attach only the non‑null ones
+            alloc.sections = secs.filter((s): s is Section => !!s);
+            return alloc;
+          })
+        );
+        setAllocationHistory(enrichedAllocs);
       } catch (err) {
         setAllocationHistory([]);
       } finally {
@@ -97,6 +117,16 @@ const ApplicationPage: React.FC = () => {
   const filteredApps = useMemo(() => {
     return allApps.filter((app) => {
       let match = true;
+      const total = allocationHistory
+      .filter(a => a.application?.applicationId === app.applicationId)
+      .reduce(
+        (sum, a) =>
+          sum +
+          (a.sectionHours ?? 0) +
+          (a.labPrepHours ?? 0) +
+          (a.gradingHours ?? 0),
+        0
+      );
       // Application filters
       if (yearSubmitted && !app.timeSubmitted.startsWith(yearSubmitted)) match = false;
       if (studentName && !(`${app.student.firstName} ${app.student.lastName}`.toLowerCase().includes(studentName.toLowerCase()))) match = false;
@@ -123,44 +153,57 @@ const ApplicationPage: React.FC = () => {
         if (!hasStatus) match = false;
       }
       if (allocatedHoursFilter !== '') {
-        const totalAllocatedHours = allocationHistory
-          .filter((alloc) => alloc.application?.applicationId === app.applicationId)
-          .reduce((total, alloc) => total + (alloc.numberOfHours ?? 0), 0);
+        const totalAllocatedHours = total;
         if (totalAllocatedHours !== parseInt(allocatedHoursFilter)) match = false;
       }
       // Allocation advanced filters
       if (allocationDept) {
-        const hasDept = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.section?.course?.deptCode?.toLowerCase() === allocationDept.toLowerCase()
+        const hasDept = allocationHistory.some(alloc =>
+          alloc.application?.applicationId === app.applicationId &&
+          // OLD: alloc.section?.course?.deptCode…
+          alloc.sections?.some(sec =>
+            sec.course?.deptCode?.toLowerCase() === allocationDept.toLowerCase()
+          )
         );
-        if (!hasDept) match = false;
-      }
+      if (!hasDept) match = false;
       if (allocationCourseNum) {
-        const hasCourse = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && String(alloc.section?.course?.courseNum) === allocationCourseNum
-        );
-        if (!hasCourse) match = false;
-      }
+          const hasCourse = allocationHistory.some(alloc =>
+            alloc.application?.applicationId === app.applicationId &&
+            alloc.sections?.some(sec =>
+              String(sec.course?.courseNum) === allocationCourseNum
+            )
+          );
+          if (!hasCourse) match = false;
+        }
       if (allocationSectionYear) {
-        const hasYear = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && String(alloc.section?.year) === allocationSectionYear
+        const hasYear = allocationHistory.some(alloc =>
+          alloc.application?.applicationId === app.applicationId &&
+          alloc.sections?.some(sec =>
+            String(sec.year) === allocationSectionYear
+          )
         );
         if (!hasYear) match = false;
       }
       if (allocationSemester) {
-        const hasSemester = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.section?.semester?.toLowerCase() === allocationSemester.toLowerCase()
+        const hasSemester = allocationHistory.some(alloc =>
+          alloc.application?.applicationId === app.applicationId &&
+          alloc.sections?.some(sec =>
+            sec.semester?.toLowerCase() === allocationSemester.toLowerCase()
+          )
         );
         if (!hasSemester) match = false;
       }
       if (allocationType) {
-        const hasType = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.section?.type?.toLowerCase() === allocationType.toLowerCase()
+        const hasType = allocationHistory.some(alloc =>
+          alloc.application?.applicationId === app.applicationId &&
+          alloc.sections?.some(sec =>
+            sec.type?.toLowerCase() === allocationType.toLowerCase()
+          )
         );
         if (!hasType) match = false;
       }
       return match;
-    });
+    }});
   }, [allApps, allocationHistory, offerSentFilter, allocatedHoursFilter, yearSubmitted, studentName, allocationStatus, allocationDept, allocationCourseNum, allocationSectionYear, allocationSemester, allocationType, filterTrigger]);
 
   const [selectedApp, setSelectedApp] = useState<ApplicationDto | null>(null);
@@ -334,8 +377,8 @@ const ApplicationPage: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Allocation Confirmed</label>
-                  <select value={allocationStatus} onChange={e => setAllocationStatus(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                  <label htmlFor="allocationStatus" className="block text-sm font-medium mb-1">Allocation Confirmed</label>
+                  <select id="allocationStatus" value={allocationStatus} onChange={e => setAllocationStatus(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
                     <option value="">Any</option>
                     <option value="CONFIRMED">Confirmed</option>
                     <option value="REJECTED">Rejected</option>

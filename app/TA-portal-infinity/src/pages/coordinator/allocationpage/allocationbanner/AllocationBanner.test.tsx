@@ -1,159 +1,169 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { vi } from 'vitest';
-import AllocationBanner from './AllocationBanner';
-import type { ApplicationDto } from '../../../../interfaces/application/Application';
-import type Section from '../../../../interfaces/section/Section';
-import type { Allocation } from '../../../../interfaces/allocation/Allocation';
+// __tests__/AllocationBanner.test.tsx
+import React from 'react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 
-// ---------- Hoisted mocks ----------
-type DeallocateFn = (allocationId: number, token?: string) => Promise<boolean>;
-
-const mocks = vi.hoisted(() => ({
-  deallocateMock: vi.fn<DeallocateFn>(),
-  toastSuccess: vi.fn(),
-  toastError: vi.fn(),
-}));
-
+// 1) Hoisted mocks
+vi.mock('react-toastify', () => {
+  const success = vi.fn()
+  const error = vi.fn()
+  return { toast: { success, error } }
+})
 vi.mock('../../../../api/allocation/deallocateAllocation', () => ({
-  deallocateAllocation: mocks.deallocateMock,
-}));
+  deallocateAllocation: vi.fn()
+}))
+vi.mock('../../../../utility/calendar/gettasklabels/getTaskLabel', () => ({
+  getTaskLabel: (task: string) => task.toLowerCase().replace('_', ' ')
+}))
 
-vi.mock('react-toastify', () => ({
-  toast: { success: mocks.toastSuccess, error: mocks.toastError },
-}));
+import AllocationBanner from './AllocationBanner'
+import type { ApplicationDto } from '../../../../interfaces/application/Application'
+import type Section from '../../../../interfaces/section/Section'
+import type { Allocation } from '../../../../interfaces/allocation/Allocation'
+import { toast } from 'react-toastify'
+import { deallocateAllocation } from '../../../../api/allocation/deallocateAllocation'
+import { mockStudentJohnDoe } from '../../../../mocked-objects/user/mockStudents'
 
-// ---------- Test data helpers ----------
-function makeApp(): ApplicationDto {
-  return {
-    applicationId: 11,
-    student: { id: 7, firstName: 'Ada', lastName: 'Lovelace' } as any,
-    wantWorkingHours: 12,
-  } as ApplicationDto;
-}
+// Helpers to get the mocked functions
+const mockToastSuccess = (toast.success as unknown as ReturnType<typeof vi.fn>)
+const mockToastError   = (toast.error   as unknown as ReturnType<typeof vi.fn>)
+const mockDealloc      = (deallocateAllocation as unknown as ReturnType<typeof vi.fn>)
 
-function makeSection(): Section {
-  return {
-    id: 99,
-    course: { deptCode: 'COSC', courseNum: '101' } as any,
-    section: '001',
-  } as unknown as Section;
-}
-
-function makeHistory(withMatch = true): Allocation[] {
-  return withMatch
-    ? [{ id: 555, application: { applicationId: 11 } as any, section: { id: 99 } as any } as Allocation]
-    : [{ id: 777, application: { applicationId: 222 } as any, section: { id: 123 } as any } as Allocation];
-}
-
-// ---------- Render helper ----------
-const setup = ({
-  showBanner = true,
-  historyMatch = true,
-}: {
-  showBanner?: boolean;
-  historyMatch?: boolean;
-} = {}) => {
-  const selApp = makeApp();
-  const selCourse = makeSection();
-  const setSelApp = vi.fn();
-  const refreshHistory = vi.fn();
-  const setShowBanner = vi.fn();
-
-  const token = 'fake-token';
-  const history = makeHistory(historyMatch);
-
-  render(
-    <AllocationBanner
-      selApp={selApp}
-      setSelApp={setSelApp}
-      selCourse={selCourse}
-      refreshHistory={refreshHistory}
-      token={token}
-      history={history}
-      showBanner={showBanner}
-      setShowBanner={setShowBanner}
-    />
-  );
-
-  return { selApp, selCourse, setSelApp, refreshHistory, token, history, setShowBanner };
-};
-
-// ---------- Tests ----------
 describe('AllocationBanner', () => {
+  const baseApp: ApplicationDto = {
+    applicationId: 10,
+    student: mockStudentJohnDoe,
+    applicationType: 'UNDERGRADUATE',
+    preferences: [],
+    wantRemote: false,
+    wantWorkingHours: 0,
+    timeSubmitted: '',
+    unavailabilities: [],
+  }
+  const selCourse: Section = {
+    id: 5,
+    course: { id: 1, deptCode: 'COSC', courseNum: '101', name: 'Intro' },
+    section: '001',
+    type: 'LECTURE',
+    semester: 'W1',
+    year: 2025,
+    need: undefined,
+    allocatedSections: [],
+    allocations: []
+  }
+
+  let setSelApp: ReturnType<typeof vi.fn>
+  let setShowBanner: ReturnType<typeof vi.fn>
+  let refreshAlloc: ReturnType<typeof vi.fn>
+  const token = 'tok'
+
   beforeEach(() => {
-    vi.clearAllMocks();
-  });
+    vi.clearAllMocks()
+    setSelApp = vi.fn()
+    setShowBanner = vi.fn()
+    refreshAlloc = vi.fn()
+  })
 
-  it('renders correct text when showBanner=true (new offer just sent)', () => {
-    setup({ showBanner: true });
+  it('renders Offer Sent and details when showBanner=true', () => {
+    const prevAlloc: Allocation = {
+      id: 1,
+      application: { applicationId: 10, timeSubmitted: '' },
+      status: 'CONFIRMED',
+      labPrepHours: 0,
+      gradingHours: 0,
+      sectionHours: 0,
+      allocatedSections: [ { id: 2, allocationId: 1, sectionId: 5, task: 'LAB', hours: 3 } ],
+    } as any
 
-    expect(screen.getByText('Offer Sent')).toBeInTheDocument();
-    expect(screen.getByText(/You’ve sent an offer to/)).toBeInTheDocument();
-    expect(screen.getByText(/They’ve been offered 12 hours\./)).toBeInTheDocument();
-  });
+    render(
+      <AllocationBanner
+        selApp={baseApp}
+        setSelApp={setSelApp}
+        selCourse={selCourse}
+        refreshAlloc={refreshAlloc}
+        token={token}
+        prevAlloc={prevAlloc}
+        showBanner={true}
+        setShowBanner={setShowBanner}
+      />
+    )
 
-  it('renders correct text when showBanner=false (existing offer)', () => {
-    setup({ showBanner: false });
+    expect(screen.getByText('Offer Sent')).toBeInTheDocument()
+    expect(screen.getByText('John Doe')).toBeInTheDocument()
+    expect(screen.getByText('COSC 101 Section 001')).toBeInTheDocument()
+    expect(screen.getByText('They’ve been offered 3 lab hours.')).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', {
+        name: /Revoke\s+lab\s*\(\s*3\s*h\)/
+      })
+    ).toBeInTheDocument()
+  })
 
-    expect(screen.getByText('Existing Offer')).toBeInTheDocument();
-    expect(screen.getByText(/An offer was already sent to/)).toBeInTheDocument();
-    expect(screen.getByText(/They were offered 12 hours earlier\./)).toBeInTheDocument();
-  });
+  it('handles successful revoke', async () => {
+    mockDealloc.mockResolvedValue(true)
+    const prevAlloc: Allocation = {
+      id: 1,
+      application: { applicationId: 10, timeSubmitted: '' },
+      status: 'CONFIRMED',
+      labPrepHours: 0,
+      gradingHours: 0,
+      sectionHours: 0,
+      allocatedSections: [ { id: 2, allocationId: 1, sectionId: 5, task: 'GRADING', hours: 2 } ],
+    } as any
 
-  it('clicking Revoke deallocates, updates state, refreshes history, and shows success toast', async () => {
-    const { setShowBanner, setSelApp, refreshHistory, selApp, token } = setup({
-      showBanner: true,
-      historyMatch: true,
-    });
+    render(
+      <AllocationBanner
+        selApp={baseApp}
+        setSelApp={setSelApp}
+        selCourse={selCourse}
+        refreshAlloc={refreshAlloc}
+        token={token}
+        prevAlloc={prevAlloc}
+        showBanner={false}
+        setShowBanner={setShowBanner}
+      />
+    )
 
-    mocks.deallocateMock.mockResolvedValueOnce(true);
+    fireEvent.click(screen.getByRole('button', { name: /Revoke grading/ }))
 
-    fireEvent.click(screen.getByRole('button', { name: /revoke/i }));
+    await waitFor(() => {
+      expect(mockDealloc).toHaveBeenCalledWith(2, token)
+      expect(setSelApp).toHaveBeenCalledWith(null)
+      expect(setShowBanner).toHaveBeenCalledWith(false)
+      expect(refreshAlloc).toHaveBeenCalledWith(1, token)
+      expect(mockToastSuccess).toHaveBeenCalledWith('Revoke successful')
+    })
+  })
 
-    await waitFor(() => expect(mocks.deallocateMock).toHaveBeenCalledTimes(1));
-    expect(mocks.deallocateMock).toHaveBeenCalledWith(555, token);
+  it('handles revoke failure', async () => {
+    mockDealloc.mockResolvedValue(false)
+    const prevAlloc: Allocation = {
+      id: 1,
+      application: { applicationId: 10, timeSubmitted: '' },
+      status: 'CONFIRMED',
+      labPrepHours: 0,
+      gradingHours: 0,
+      sectionHours: 0,
+      allocatedSections: [ { id: 3, allocationId: 1, sectionId: 5, task: 'GRADING', hours: 4 } ],
+    } as any
 
-    expect(setShowBanner).toHaveBeenCalledWith(false);
-    expect(setSelApp).toHaveBeenCalledWith(null);
+    render(
+      <AllocationBanner
+        selApp={baseApp}
+        setSelApp={setSelApp}
+        selCourse={selCourse}
+        refreshAlloc={refreshAlloc}
+        token={token}
+        prevAlloc={prevAlloc}
+        showBanner={false}
+        setShowBanner={setShowBanner}
+      />
+    )
 
-    await waitFor(() => expect(refreshHistory).toHaveBeenCalledWith(selApp.student.id, token));
+    fireEvent.click(screen.getByRole('button', { name: /Revoke grading/ }))
 
-    expect(mocks.toastSuccess).toHaveBeenCalledWith('Offer revoked successfully.');
-    expect(mocks.toastError).not.toHaveBeenCalled();
-  });
-
-  it('handles failed deallocation (API returns false) and shows error toast', async () => {
-    const { setShowBanner, setSelApp, refreshHistory } = setup({
-      showBanner: true,
-      historyMatch: true,
-    });
-
-    mocks.deallocateMock.mockResolvedValueOnce(false);
-
-    fireEvent.click(screen.getByRole('button', { name: /revoke/i }));
-
-    await waitFor(() => expect(mocks.deallocateMock).toHaveBeenCalled());
-
-    expect(setShowBanner).not.toHaveBeenCalled();
-    expect(setSelApp).not.toHaveBeenCalled();
-    expect(refreshHistory).not.toHaveBeenCalled();
-
-    expect(mocks.toastError).toHaveBeenCalledWith('Failed to revoke Offer.');
-  });
-
-  it('does nothing if matching allocation is not found', async () => {
-    const { setShowBanner, setSelApp, refreshHistory } = setup({
-      showBanner: true,
-      historyMatch: false,
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: /revoke/i }));
-
-    expect(mocks.deallocateMock).not.toHaveBeenCalled();
-    expect(setShowBanner).not.toHaveBeenCalled();
-    expect(setSelApp).not.toHaveBeenCalled();
-    expect(refreshHistory).not.toHaveBeenCalled();
-    expect(mocks.toastSuccess).not.toHaveBeenCalled();
-    expect(mocks.toastError).not.toHaveBeenCalled();
-  });
-});
+    await waitFor(() => {
+      expect(mockToastError).toHaveBeenCalledWith('Failed to revoke')
+    })
+  })
+})

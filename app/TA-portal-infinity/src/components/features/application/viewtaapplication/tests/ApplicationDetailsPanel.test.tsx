@@ -19,23 +19,29 @@ describe('ApplicationDetailsPanel', () => {
     },
   };
   const allocations = [
-    {
-      numberOfHours: 8,
-      status: 'REJECTED',
-      section: {
-      
+  {
+    id: 10,
+    application: { applicationId: 1 },
+    status: 'REJECTED',
+    labPrepHours: 0,
+    gradingHours: 0,
+    sectionHours: 8,
+    allocatedSections: [
+      { id: 1, allocationId: 10, sectionId: 5, task: 'LAB', hours: 8 }
+    ],
+    sections: [
+      {
+        id: 5,
+        course: { deptCode: 'COSC', courseNum: '121', name: 'Test' },
+        section: '001',
+        type: 'TUTORIAL',
         semester: 'S',
         year: 2024,
-        type: 'TUTORIAL',
-        course:{
-          deptCode: 'COSC',
-          courseNum: '121',
-        },
         instructor: { firstName: 'Bob', lastName: 'Brown' },
-      },
-      application: { applicationId: 1 },
-    },
-  ];
+      }
+    ],
+  } as any,
+];
   const allocationHistory = allocations;
 
   it('renders details and allocations', () => {

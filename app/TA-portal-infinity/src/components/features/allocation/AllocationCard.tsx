@@ -16,7 +16,7 @@ export default function AllocationCard({
 
   if (!allocatedSections.length)
     return (
-      <div className={`${className} w-full overflow-hidden rounded-lg border border-gray-200 
+      <div data-testid="allocation-card" className={`${className} w-full overflow-hidden rounded-lg border border-gray-200 
         bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:border-[#0089b2] 
         flex items-center justify-center p-4 text-center min-h-[120px]`}>
         <div className="space-y-2">

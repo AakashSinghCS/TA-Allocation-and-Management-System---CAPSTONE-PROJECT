@@ -98,7 +98,7 @@ export default function ApplicationFilterPanel({
   
   useEffect(() => {
     if (!selApp || !token) return setHistory(null);
-    fetchAllocationsByStudent(selApp.student.id, token,true)
+    fetchAllocationsByStudent(selApp.student.id ?? -1, token,true)
       .then(setHistory)
       .catch(() => setHistory(null));
   }, [selApp, token]);

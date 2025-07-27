@@ -5,7 +5,7 @@ import type { Allocation } from '../../../interfaces/allocation/Allocation';
 
 const mockAllocation: Allocation = {
   id: 1,
-  numberOfHours: 15,
+  gradingHours: 15,
   student: {
     id: 123,
     firstName: 'Jane',
@@ -16,7 +16,7 @@ const mockAllocation: Allocation = {
 
 const mockAllocationWithoutEmail: Allocation = {
   id: 2,
-  numberOfHours: 20,
+  gradingHours: 20,
   student: {
     id: 456,
     firstName: 'John',
@@ -27,7 +27,7 @@ const mockAllocationWithoutEmail: Allocation = {
 
 const mockAllocationWithoutHours: Allocation = {
   id: 3,
-  numberOfHours: undefined,
+  gradingHours: undefined,
   student: {
     id: 789,
     firstName: 'Alice',
@@ -38,7 +38,7 @@ const mockAllocationWithoutHours: Allocation = {
 
 const mockAllocationWithoutStudent: Allocation = {
   id: 4,
-  numberOfHours: 10,
+  gradingHours: 10,
   student: undefined,
 };
 
@@ -74,12 +74,12 @@ describe('StudentAllocationItem', () => {
 
   it('displays hours allocated correctly', () => {
     renderWithRouter(mockAllocation);
-    expect(screen.getByText('15h')).toBeInTheDocument();
+    expect(screen.getByText('15 Grading Hours')).toBeInTheDocument();
   });
 
-  it('displays 0h when numberOfHours is undefined', () => {
+  it('displays 0h when gradingHours is undefined', () => {
     renderWithRouter(mockAllocationWithoutHours);
-    expect(screen.getByText('0h')).toBeInTheDocument();
+    expect(screen.getByText('0 Grading Hours')).toBeInTheDocument();
   });
 
   it('displays student initials in avatar', () => {
@@ -90,7 +90,7 @@ describe('StudentAllocationItem', () => {
   it('handles student initials when only first name available', () => {
     const allocationWithOnlyFirstName: Allocation = {
       id: 5,
-      numberOfHours: 10,
+      gradingHours: 10,
       student: {
         id: 999,
         firstName: 'Alice',
@@ -155,7 +155,7 @@ describe('StudentAllocationItem', () => {
 
   it('displays hours badge with correct styling', () => {
     renderWithRouter(mockAllocation);
-    const hoursBadge = screen.getByText('15h');
+    const hoursBadge = screen.getByText('15 Grading Hours');
     
     expect(hoursBadge).toHaveClass(
       'inline-flex',
@@ -174,7 +174,7 @@ describe('StudentAllocationItem', () => {
     renderWithRouter(mockAllocationWithoutStudent);
     
     // Should still render the hours
-    expect(screen.getByText('10h')).toBeInTheDocument();
+    expect(screen.getByText('10 Grading Hours')).toBeInTheDocument();
     
     // Should not crash when trying to access student properties
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
@@ -183,7 +183,7 @@ describe('StudentAllocationItem', () => {
   it('handles empty student names gracefully', () => {
     const allocationWithEmptyNames: Allocation = {
       id: 6,
-      numberOfHours: 5,
+      gradingHours: 5,
       student: {
         id: 888,
         firstName: '',
@@ -198,7 +198,7 @@ describe('StudentAllocationItem', () => {
     expect(screen.getByText('empty@example.com')).toBeInTheDocument();
     
     // Should display empty initials
-    expect(screen.getByText('5h')).toBeInTheDocument();
+    expect(screen.getByText('5 Grading Hours')).toBeInTheDocument();
   });
 
   it('maintains proper layout structure', () => {
@@ -212,7 +212,7 @@ describe('StudentAllocationItem', () => {
   it('displays multiple students with different data correctly', () => {
     const { rerender } = renderWithRouter(mockAllocation);
     expect(screen.getByText('Jane Smith')).toBeInTheDocument();
-    expect(screen.getByText('15h')).toBeInTheDocument();
+    expect(screen.getByText('15 Grading Hours')).toBeInTheDocument();
     
     rerender(
       <BrowserRouter>
@@ -221,7 +221,7 @@ describe('StudentAllocationItem', () => {
     );
     
     expect(screen.getByText('John Doe')).toBeInTheDocument();
-    expect(screen.getByText('20h')).toBeInTheDocument();
+    expect(screen.getByText('20 Grading Hours')).toBeInTheDocument();
     expect(screen.queryByText('jane.smith@example.com')).not.toBeInTheDocument();
   });
 });

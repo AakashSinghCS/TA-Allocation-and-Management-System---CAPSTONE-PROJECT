@@ -14,7 +14,7 @@ describe('ApplicationSidebar', () => {
       confirmProfileUpdated: true,
       applicationType: 'UNDERGRADUATE',
     },
-    availability: [{ id: '1', day: 'MONDAY', startTime: '09:00', endTime: '10:00' }],
+    unavailability: [{ id: '1', day: 'MONDAY', startTime: '09:00', endTime: '10:00' }],
     submitted: true,
     errors: {},
   };
@@ -26,7 +26,7 @@ describe('ApplicationSidebar', () => {
     expect(screen.getByText(/Upload Transcript/i)).toBeInTheDocument();
     expect(screen.getByText(/Application Type/i)).toBeInTheDocument();
     expect(screen.getByText(/Remote Preference/i)).toBeInTheDocument();
-    expect(screen.getByText(/Select Availability/i)).toBeInTheDocument();
+    expect(screen.getByText(/Select Unavailability/i)).toBeInTheDocument();
     expect(screen.getByText(/Confirm Profile Update/i)).toBeInTheDocument();
     expect(screen.getByText(/Submit Application/i)).toBeInTheDocument();
   });

@@ -53,7 +53,7 @@ describe('<NeedViewer />', () => {
 
   it('renders the correct number of AllocationCard components', () => {
     renderer();
-    expect(screen.getAllByTestId('allocation-card')).toHaveLength(1);
+    expect(screen.getAllByTestId('allocation-card')).toHaveLength(2);
   });
 
   it('displays the initial filter values', () => {

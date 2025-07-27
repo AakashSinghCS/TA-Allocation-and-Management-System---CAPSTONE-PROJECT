@@ -39,10 +39,10 @@ const steps = [
     done: (formData: any) => !!formData.wantRemote,
   },
   {
-    label: 'Select Availability',
-    description: 'Pick at least one available time slot.',
-    key: 'availability',
-    done: (_: any, availability: any[]) => availability.length > 0,
+    label: 'Select Unavailability',
+    description: 'Pick at least one unavailable time slot.',
+    key: 'unavailability',
+    done: (_: any, unavailability: any[]) => unavailability.length > 0,
   },
   {
     label: 'Confirm Profile Update',

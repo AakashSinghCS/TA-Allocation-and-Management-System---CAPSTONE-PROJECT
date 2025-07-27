@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ApplicationDto } from '../../../../interfaces/application/Application';
-import type { Allocation } from '../../../../interfaces/allocation/Allocation';
+import type { AllocatedSection, Allocation } from '../../../../interfaces/allocation/Allocation';
 
 interface ApplicationDetailsPanelProps {
   selectedApp: ApplicationDto;
@@ -10,6 +10,13 @@ interface ApplicationDetailsPanelProps {
 }
 
 const ApplicationDetailsPanel: React.FC<ApplicationDetailsPanelProps> = ({ selectedApp, allocations, allocationHistory, onClose }) => {
+  
+    if (!selectedApp) return null;
+
+  const hasOffer = allocationHistory.some(
+    (a) => a.application?.applicationId === selectedApp.applicationId
+  );
+
   return (
     <div className="col-span-1 bg-white rounded-2xl shadow-lg border border-blue-100 p-6 absolute right-0 top-0 w-full md:w-[350px] xl:w-[400px] z-10 max-h-[80vh] overflow-y-auto">
       <h2 className="text-xl font-bold mb-4">Application Details</h2>
@@ -33,16 +40,40 @@ const ApplicationDetailsPanel: React.FC<ApplicationDetailsPanelProps> = ({ selec
           <div className="mt-4">
             <h3 className="font-semibold">Allocations</h3>
             <ul className="list-disc list-inside space-y-1">
-              {allocations.map((alloc, idx) => (
-                <li key={idx} className="ml-2">
-                  <div><strong>Section:</strong> {alloc.section?.course?.deptCode} {alloc.section?.course?.courseNum} - {alloc.section?.type} ({alloc.section?.semester} {alloc.section?.year})</div>
-                  <div><strong>Allocated Hours:</strong> {alloc.numberOfHours}</div>
-                  <div><strong>Status:</strong> {alloc.status ? alloc.status.charAt(0) + alloc.status.slice(1).toLowerCase() : 'N/A'}</div>
-                  <div><strong>Instructor:</strong> {alloc.section?.instructor && typeof alloc.section.instructor === 'object' && 'firstName' in alloc.section.instructor
-                    ? `${alloc.section.instructor.firstName} ${alloc.section.instructor.lastName}`
-                    : 'N/A'}</div>
-                </li>
-              ))}
+              {allocations.map((alloc) =>
+                alloc.allocatedSections?.map((stub: AllocatedSection) => {
+                  const sec = alloc.sections?.find(
+                    (s) => s.id === stub.sectionId
+                  );
+                  return (
+                    <li key={`${alloc.id}-${stub.id}`} className="ml-2">
+                      <div>
+                        <strong>Section:</strong>{' '}
+                        {sec ? (
+                          `${sec.course?.deptCode} ${sec.course?.courseNum} - ${sec.type} (${sec.semester} ${sec.year})`
+                        ) : (
+                          'Loading section...'
+                        )}
+                      </div>
+                      <div>
+                        <strong>Allocated Hours:</strong> {stub.hours}
+                      </div>
+                      <div>
+                        <strong>Status:</strong>{' '}
+                        {alloc.status
+                          ? alloc.status.charAt(0) + alloc.status.slice(1).toLowerCase()
+                          : 'N/A'}
+                      </div>
+                      <div>
+                        <strong>Instructor:</strong>{' '}
+                        {sec && sec.instructor
+                          ? `${sec.instructor.firstName} ${sec.instructor.lastName}`
+                          : 'N/A'}
+                      </div>
+                    </li>
+                  );
+                })
+              )}
             </ul>
           </div>
         ) : (
