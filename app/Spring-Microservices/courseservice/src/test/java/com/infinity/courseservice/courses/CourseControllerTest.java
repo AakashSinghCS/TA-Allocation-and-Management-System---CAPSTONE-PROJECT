@@ -264,7 +264,7 @@ public class CourseControllerTest {
         .andExpect(jsonPath("$[0].section.semester").value("W1"))
         .andExpect(jsonPath("$[0].section.course.name").value("Networks"))
         .andExpect(jsonPath("$[0].need.description").value("Grading"))
-        .andExpect(jsonPath("$.allocatedSections.length()").value(1))
+        .andExpect(jsonPath("$[0].allocatedSections.length()").value(1))
         .andExpect(jsonPath("$[0].section.numberOfTAsAllocated").value(1));
         }
 
@@ -307,7 +307,7 @@ public class CourseControllerTest {
                                 .andExpect(jsonPath("$[0].section.semester").value("W1"))
                                 .andExpect(jsonPath("$[0].section.course.name").value("Security"))
                                 .andExpect(jsonPath("$[0].need.description").value("Labs"))
-                                .andExpect(jsonPath("$.allocatedSections.length()").value(1))
+                                .andExpect(jsonPath("$[0].allocatedSections.length()").value(1))
                                 .andExpect(jsonPath("$[0].section.numberOfTAsAllocated").value(1));
         }
 

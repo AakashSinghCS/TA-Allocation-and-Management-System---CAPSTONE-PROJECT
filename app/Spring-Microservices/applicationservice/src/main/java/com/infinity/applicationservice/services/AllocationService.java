@@ -137,6 +137,7 @@ public class AllocationService {
                 allocation.setApplication(application);
                 allocation.setStudentId(request.studentId());
                 allocation.setStatus(ApplicationStatus.SENT);
+                courseInterface.decrementNumberOfTAs(request.sectionId());
             }
         }
         if (allocatedSectionRepository.existsBySectionIdAndAllocationIdAndTask(

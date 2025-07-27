@@ -98,6 +98,28 @@ public class AllocationControllerTest {
         // sampleDto.allocatedSections().add(allocatedSection);
     }
 
+     @Test
+    void testGetAllocationWithStudentById_success() throws Exception {
+        // given
+        Long allocationId = 101L;
+        AllocationHistoryDto dto = new AllocationHistoryDto(
+            allocationId,
+            new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null, null, null, true),
+            new ApplicationDto(1L, 2L, List.of(), ApplicationType.UNDERGRADUATE, false, 10, LocalDateTime.of(2025,7,1,12,0), Set.of()),
+            ApplicationStatus.SENT,
+            0, 10, 0,
+            List.of()
+        );
+        when(allocationService.getAllocationWithStudentById(allocationId)).thenReturn(dto);
+
+        // when / then
+        mvc.perform(get("/allocations/{id}", allocationId))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id").value(101))
+           .andExpect(jsonPath("$.student.firstName").value("Alice"))
+           .andExpect(jsonPath("$.status").value("SENT"));
+    }
+
         @Test
         void testGetStudentAllocationHistory() throws Exception {
                 Long sid = 1L;
@@ -227,6 +249,7 @@ public class AllocationControllerTest {
         mvc.perform(get("/allocations/filter/application/55")
                 .header("X-User-Id", "1")
                 .header("X-User-Roles", "ROLE_COORDINATOR")
+                .param("noContentAllowed", "false")    
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.applicationDto").exists());

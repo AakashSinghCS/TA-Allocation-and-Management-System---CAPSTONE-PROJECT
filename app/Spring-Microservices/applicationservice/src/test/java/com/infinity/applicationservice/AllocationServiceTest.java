@@ -100,6 +100,78 @@ class AllocationServiceTest {
                 lenient().when(configService.getDeadlineByName(anyString()))
                 .thenReturn(dto);
         }
+@Test
+    void getAllocationWithStudentById_success() {
+        // given
+        Long id = 101L, studentId = 2L, appId = 1L;
+        Allocation alloc = new Allocation();
+        alloc.setId(id);
+        alloc.setStudentId(studentId);
+        Application app = new Application(); app.setId(appId);
+        alloc.setApplication(app);
+
+        UserDto studentDto = new UserDto(2L, "Alice","Wang","awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC",2025,3,null,null,LocalDateTime.now(),true);
+        ApplicationDto appDto = new ApplicationDto(appId, studentId, List.of(), ApplicationType.UNDERGRADUATE, false, 10, LocalDateTime.of(2025,7,1,12,0), Set.of());
+        AllocationHistoryDto expected = new AllocationHistoryDto(id, studentDto, appDto, ApplicationStatus.SENT, 0,10,0, List.of());
+
+        when(allocationRepository.findById(id)).thenReturn(Optional.of(alloc));
+        when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
+        when(applicationRepository.findById(appId)).thenReturn(Optional.of(app));
+        when(applicationMapper.toDto(app)).thenReturn(appDto);
+        when(allocationMapper.toDto(alloc, studentDto, appDto)).thenReturn(expected);
+
+        // when
+        AllocationHistoryDto actual = allocationService.getAllocationWithStudentById(id);
+
+        // then
+        assertEquals(expected, actual);
+        verify(allocationRepository).findById(id);
+        verify(userInterface).getStudentById(studentId);
+        verify(applicationRepository).findById(appId);
+        verify(allocationMapper).toDto(alloc, studentDto, appDto);
+    }
+
+    @Test
+    void getAllocationWithStudentById_allocationNotFound_throws() {
+        when(allocationRepository.findById(999L)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class,
+            () -> allocationService.getAllocationWithStudentById(999L));
+    }
+
+    @Test
+    void getAllocationWithStudentById_studentNotFound_throws() {
+        Long id = 101L, studentId = 2L;
+        Allocation alloc = new Allocation();
+        alloc.setId(id);
+        alloc.setStudentId(studentId);
+        when(allocationRepository.findById(id)).thenReturn(Optional.of(alloc));
+        when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.notFound().build());
+
+        assertThrows(NotFoundException.class,
+            () -> allocationService.getAllocationWithStudentById(id));
+    }
+
+    @Test
+    void getAllocationWithStudentById_applicationNotFound_throws() {
+        Long id = 101L, studentId = 2L, appId = 1L;
+        Allocation alloc = new Allocation();
+        alloc.setId(id);
+        alloc.setStudentId(studentId);
+        Application app = new Application(); app.setId(appId);
+        alloc.setApplication(app);
+        UserDto studentDto = new UserDto(
+    2L, "Alice", "Wang", "awang@test.com",
+    List.of(UserRole.STUDENT),
+    12345678, "COSC", 2025, 3, null, null,
+    LocalDateTime.of(2025,7,1,12,0), true
+);
+        when(allocationRepository.findById(id)).thenReturn(Optional.of(alloc));
+        when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
+        when(applicationRepository.findById(appId)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class,
+            () -> allocationService.getAllocationWithStudentById(id));
+    }
 
         @Test
         void getAllocationByStudentId_returnsMappedDtoList() {
