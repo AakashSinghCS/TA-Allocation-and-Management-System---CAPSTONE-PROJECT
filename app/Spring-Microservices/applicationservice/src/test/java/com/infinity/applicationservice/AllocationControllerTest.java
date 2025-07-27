@@ -65,16 +65,19 @@ public class AllocationControllerTest {
         private CourseInterface sectionInterface;
 
         private AllocationHistoryDto sampleDto;
+        private ApplicationDto application;
 
     @BeforeEach
     void setup() {
-        ApplicationDto application = new ApplicationDto(
+        application = new ApplicationDto(
                 1L,
                 1L,
                 List.of(),
                 ApplicationType.UNDERGRADUATE,
                 false,
                 10,
+                2025,
+                "W1",
                 LocalDateTime.of(2025, 7, 1, 12, 0),
                 Set.of());
         sampleDto = new AllocationHistoryDto(
@@ -112,15 +115,6 @@ public class AllocationControllerTest {
                                 ApplicationStatus.SENT,
                                 10,
                                 1001L);
-                ApplicationDto application = new ApplicationDto(
-                                1L,
-                                1L,
-                                List.of(),
-                                ApplicationType.UNDERGRADUATE,
-                                false,
-                                10,
-                                LocalDateTime.now(),
-                                Set.of());
 
         AllocationHistoryDto responseDto = new AllocationHistoryDto(
                 123L,

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4bd4356d-ba70-44d5-8cf4-7b8b2615bae0",
+		"_postman_id": "bc582917-96ea-446b-b143-b16a13090432",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "36957617"
@@ -2475,7 +2475,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"preferences\": [\"COSC\", \"MATH\"],\r\n  \"wantRemote\": false,\r\n  \"wantWorkingHours\": 6,\r\n  \"applicationType\": \"UNDERGRADUATE\",\r\n  \"availabilities\": [\r\n    {\r\n      \"day\": \"MONDAY\",\r\n      \"startTime\": \"14:00\",\r\n      \"endTime\": \"16:00\"\r\n    },\r\n    {\r\n      \"day\": \"WEDNESDAY\",\r\n      \"startTime\": \"09:30\",\r\n      \"endTime\": \"11:30\"\r\n    }\r\n  ]\r\n}\r\n",
+									"raw": "{\r\n  \"preferences\": [\"COSC\", \"MATH\"],\r\n  \"wantRemote\": false,\r\n  \"wantWorkingHours\": 6,\r\n  \"applicationType\": \"UNDERGRADUATE\",\r\n  \"availabilities\": [\r\n    {\r\n      \"day\": \"MONDAY\",\r\n      \"startTime\": \"14:00\",\r\n      \"endTime\": \"16:00\"\r\n    },\r\n    {\r\n      \"day\": \"WEDNESDAY\",\r\n      \"startTime\": \"13:30\",\r\n      \"endTime\": \"15:30\"\r\n    }\r\n  ]\r\n}\r\n",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3943,6 +3943,64 @@
 					"response": []
 				},
 				{
+					"name": "Get active semesters",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/semesters/getActive",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"semesters",
+								"getActive"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get inactive semesters",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/semesters/getInactive",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"semesters",
+								"getInactive"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Add semester",
 					"request": {
 						"auth": {
@@ -3959,7 +4017,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n        \"year\": 2026,\r\n        \"semester\": \"W1\",\r\n        \"startDate\": \"2026-09-03\",\r\n        \"endDate\": \"2026-12-08\"\r\n}",
+							"raw": "{\r\n        \"year\": 2026,\r\n        \"semester\": \"W1\",\r\n        \"startDate\": \"2026-09-03\",\r\n        \"endDate\": \"2026-12-08\",\r\n        \"isActive\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3995,8 +4053,17 @@
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"year\": 2027,\r\n        \"semester\": \"W2\",\r\n        \"startDate\": \"2027-01-03\",\r\n        \"endDate\": \"2027-04-08\",\r\n        \"isActive\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "localhost:8080/semesters/update/1",
+							"raw": "localhost:8080/semesters/update/5",
 							"host": [
 								"localhost"
 							],
@@ -4004,7 +4071,7 @@
 							"path": [
 								"semesters",
 								"update",
-								"1"
+								"5"
 							]
 						}
 					},
