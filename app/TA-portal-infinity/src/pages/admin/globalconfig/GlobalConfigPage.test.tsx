@@ -139,7 +139,8 @@ describe('GlobalConfigPage', () => {
       'mx-auto',
       'flex',
       'flex-col',
-      'py-4',
+      'py-2',
+      'sm:py-4',
       'px-2',
       'sm:px-4',
       'md:px-6',
@@ -155,7 +156,7 @@ describe('GlobalConfigPage', () => {
     // Check for header structure
     const title = screen.getByText('Global Configuration');
     expect(title).toHaveClass(
-      'text-2xl',
+      'text-xl',
       'sm:text-2xl',
       'md:text-3xl',
       'font-bold',
@@ -166,11 +167,13 @@ describe('GlobalConfigPage', () => {
     
     const description = screen.getByText('Manage term and deadline settings');
     expect(description).toHaveClass(
-      'text-sm',
-      'sm:text-base',
-      'md:text-lg',
+      'text-xs',
+      'sm:text-sm',
+      'md:text-base',
+      'lg:text-lg',
       'text-gray-500',
-      'mb-4',
+      'mb-3',
+      'sm:mb-4',
       'md:mb-6'
     );
   });

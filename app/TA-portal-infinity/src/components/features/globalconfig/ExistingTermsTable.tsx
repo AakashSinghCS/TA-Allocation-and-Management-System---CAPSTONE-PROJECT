@@ -185,22 +185,22 @@ const ExistingTermsTable: React.FC<ExistingTermsTableProps> = ({
 
   return (
     <div>
-      <h3 className="text-md font-semibold text-[#040941] mb-3">Existing Terms</h3>
-      {semestersLoading && <p className="text-blue-600 text-center font-semibold animate-pulse">Loading terms...</p>}
+      <h3 className="text-sm sm:text-md font-semibold text-[#040941] mb-2 sm:mb-3">Existing Terms</h3>
+      {semestersLoading && <p className="text-blue-600 text-center font-semibold animate-pulse text-sm">Loading terms...</p>}
       
       {!semestersLoading && semesters.length === 0 && (
-        <p className="text-gray-500 text-center">No terms found.</p>
+        <p className="text-gray-500 text-center text-sm">No terms found.</p>
       )}
 
       {!semestersLoading && semesters.length > 0 && (
         <div className="overflow-x-auto">
-          <table className="min-w-full border-separate border-spacing-y-2 text-xs sm:text-sm md:text-base">
+          <table className="min-w-full border-separate border-spacing-y-2 text-xs sm:text-sm">
             <thead>
               <tr className="bg-gray-300 text-[#040941] text-left">
                 <th className="py-2 px-2 sm:px-3 rounded-l-lg font-semibold">Year</th>
                 <th className="py-2 px-2 sm:px-3 font-semibold">Semester</th>
-                <th className="py-2 px-2 sm:px-3 font-semibold">Start Date</th>
-                <th className="py-2 px-2 sm:px-3 font-semibold">End Date</th>
+                <th className="py-2 px-2 sm:px-3 font-semibold hidden sm:table-cell">Start Date</th>
+                <th className="py-2 px-2 sm:px-3 font-semibold hidden sm:table-cell">End Date</th>
                 <th className="py-2 px-2 sm:px-3 font-semibold text-center">Active</th>
                 <th className="py-2 px-2 sm:px-3 rounded-r-lg font-semibold text-center">Actions</th>
               </tr>
@@ -216,7 +216,7 @@ const ExistingTermsTable: React.FC<ExistingTermsTableProps> = ({
                         max="2100"
                         value={editSemesterData?.year || ""}
                         onChange={(e) => handleSemesterEditChange("year", parseInt(e.target.value))}
-                        className="border border-blue-200 rounded px-1 py-1 text-xs sm:text-sm w-20"
+                        className="border border-blue-200 rounded px-1 py-1 text-xs sm:text-sm w-16 sm:w-20"
                       />
                     ) : (
                       semester.year
@@ -227,7 +227,7 @@ const ExistingTermsTable: React.FC<ExistingTermsTableProps> = ({
                       <select
                         value={editSemesterData?.semester || ""}
                         onChange={(e) => handleSemesterEditChange("semester", e.target.value)}
-                        className="border border-blue-200 rounded px-1 py-1 text-xs sm:text-sm w-16"
+                        className="border border-blue-200 rounded px-1 py-1 text-xs sm:text-sm w-14 sm:w-16"
                       >
                         <option value="W1">W1</option>
                         <option value="W2">W2</option>
@@ -238,7 +238,7 @@ const ExistingTermsTable: React.FC<ExistingTermsTableProps> = ({
                       semester.semester
                     )}
                   </td>
-                  <td className="py-2 px-2 sm:px-3 align-middle">
+                  <td className="py-2 px-2 sm:px-3 align-middle hidden sm:table-cell">
                     {editingSemester === semester.id ? (
                       <input
                         type="date"
@@ -250,7 +250,7 @@ const ExistingTermsTable: React.FC<ExistingTermsTableProps> = ({
                       semester.startDate
                     )}
                   </td>
-                  <td className="py-2 px-2 sm:px-3 align-middle">
+                  <td className="py-2 px-2 sm:px-3 align-middle hidden sm:table-cell">
                     {editingSemester === semester.id ? (
                       <input
                         type="date"
@@ -281,7 +281,7 @@ const ExistingTermsTable: React.FC<ExistingTermsTableProps> = ({
                   </td>
                   <td className="py-2 px-2 sm:px-3 align-middle text-center">
                     {editingSemester === semester.id ? (
-                      <div className="flex gap-2 justify-center">
+                      <div className="flex gap-1 sm:gap-2 justify-center flex-col sm:flex-row">
                         <button
                           onClick={handleSaveSemesterEdit}
                           className="bg-green-800 text-white px-2 py-1 rounded hover:opacity-90 text-xs font-semibold"
@@ -296,7 +296,7 @@ const ExistingTermsTable: React.FC<ExistingTermsTableProps> = ({
                         </button>
                       </div>
                     ) : (
-                      <div className="flex gap-1 justify-center">
+                      <div className="flex gap-1 justify-center flex-col sm:flex-row">
                         <button
                           onClick={() => handleEditSemester(semester)}
                           className="bg-[#040941] text-white px-2 py-1 rounded hover:opacity-90 text-xs font-semibold"
@@ -317,10 +317,10 @@ const ExistingTermsTable: React.FC<ExistingTermsTableProps> = ({
             </tbody>
           </table>
           {semesters.length > displayedSemesters && (
-            <div className="text-center mt-4">
+            <div className="text-center mt-3 sm:mt-4">
               <button
                 onClick={handleShowMore}
-                className="bg-[#040941] text-white px-4 py-2 rounded hover:opacity-90 text-sm font-semibold"
+                className="bg-[#040941] text-white px-3 sm:px-4 py-2 rounded hover:opacity-90 text-sm font-semibold"
               >
                 Show More ({semesters.length - displayedSemesters} remaining)
               </button>

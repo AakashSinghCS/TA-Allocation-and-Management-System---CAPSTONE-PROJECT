@@ -118,9 +118,9 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
   };
 
   return (
-    <div className="p-4 rounded-lg mb-6">
-      <h3 className="text-md font-semibold text-[#040941] mb-3">Add New Term</h3>
-      <div className="flex flex-col sm:flex-row sm:flex-wrap md:flex-row md:items-end gap-4">
+    <div className="p-3 sm:p-4 rounded-lg mb-4 sm:mb-6">
+      <h3 className="text-sm sm:text-md font-semibold text-[#040941] mb-2 sm:mb-3">Add New Term</h3>
+      <div className="flex flex-col sm:flex-row sm:flex-wrap md:flex-row md:items-end gap-3 sm:gap-4">
         <div className="flex flex-col">
           <label htmlFor="year-input" className="text-xs text-gray-600 mb-1">Year</label>
           <input
@@ -130,7 +130,7 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
             max="2100"
             value={termConfig.year}
             onChange={e => handleTermChange("year", e.target.value)}
-            className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-28"
+            className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-full sm:w-28"
           />
         </div>
         <div className="flex flex-col">
@@ -139,7 +139,7 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
             id="semester-select"
             value={termConfig.semester}
             onChange={e => handleTermChange("semester", e.target.value)}
-            className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-40"
+            className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-full sm:w-40"
           >
             <option value="W1">W1</option>
             <option value="W2">W2</option>
@@ -154,7 +154,7 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
             type="date"
             value={termConfig.startDate}
             onChange={e => handleTermChange("startDate", e.target.value)}
-            className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-40"
+            className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-full sm:w-40"
           />
         </div>
         <div className="flex flex-col">
@@ -164,13 +164,13 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
             type="date"
             value={termConfig.endDate}
             onChange={e => handleTermChange("endDate", e.target.value)}
-            className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-40"
+            className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-full sm:w-40"
           />
         </div>
         <button
           onClick={handleSaveTerm}
           disabled={termLoading}
-          className="bg-[#040941] text-white px-4 py-2 rounded hover:opacity-90 text-sm font-semibold shadow mt-2 md:mt-0 disabled:opacity-60"
+          className="bg-[#040941] text-white px-4 py-2 rounded hover:opacity-90 text-sm font-semibold shadow mt-2 md:mt-0 disabled:opacity-60 w-full sm:w-auto"
           aria-label="save-term"
         >
           {termLoading ? "Saving..." : "Add Term"}

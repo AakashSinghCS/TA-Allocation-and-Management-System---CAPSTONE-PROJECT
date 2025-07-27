@@ -60,8 +60,8 @@ const TermConfiguration: React.FC<TermConfigurationProps> = ({ token }) => {
   };
 
   return (
-    <div className="mb-8 sm:mb-10">
-      <h2 className="text-lg sm:text-xl font-semibold text-[#040941] mb-3">Term Configuration</h2>
+    <div className="mb-6 sm:mb-8 lg:mb-10">
+      <h2 className="text-base sm:text-lg md:text-xl font-semibold text-[#040941] mb-2 sm:mb-3">Term Configuration</h2>
       
       {/* Add New Term Form */}
       <AddTermForm token={token} onTermAdded={handleSemestersUpdated} />

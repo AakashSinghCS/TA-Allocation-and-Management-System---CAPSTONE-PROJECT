@@ -349,8 +349,13 @@ describe('DeadlineManagement', () => {
     render(<DeadlineManagement token={mockToken} />);
     
     await waitFor(() => {
-      expect(screen.getByDisplayValue('2024-12-25T14:30')).toBeInTheDocument();
-      expect(screen.getByDisplayValue('2024-12-31T23:59')).toBeInTheDocument();
+      // Since we now have both desktop and mobile inputs, use getAllByDisplayValue
+      const startInputs = screen.getAllByDisplayValue('2024-12-25T14:30');
+      const endInputs = screen.getAllByDisplayValue('2024-12-31T23:59');
+      
+      // Should have 2 inputs each (desktop and mobile)
+      expect(startInputs).toHaveLength(2);
+      expect(endInputs).toHaveLength(2);
     });
   });
 });
