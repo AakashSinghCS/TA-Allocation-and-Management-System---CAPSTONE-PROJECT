@@ -2,12 +2,12 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 import type { Mock } from 'vitest';
-import React from 'react';
 import StudentsAllocatedPage from './StudentsAllocatedPage';
 import { fetchUserDetails } from '../../../../api/user/fetchUserDetails';
 import { fetchAllExistingYears } from '../../../../api/course/sectionfilter/fetchAllExistingYears';
 import { fetchSectionNeedAndAllocations } from '../../../../api/instructor/fetchSectionNeedAndAllocations';
 import { fetchAllInstructorCourses } from '../../../../api/instructor/fetchAllInstructorCourses';
+import { exportToCSV, exportToPDF } from '../../../../components/features/allocatedStudent';
 
 // Mock all the API functions
 vi.mock('../../../../api/user/fetchUserDetails');
@@ -44,10 +44,10 @@ vi.mock('../../../../components/layout/tabnav/TabNav', () => ({
 // Mock the GenericAPIContainer
 vi.mock('../../../../utility/genericapicontainer/GenericAPIContainer', () => ({
   GenericAPIContainer: ({ fetchFunction, render }: any) => {
-    // Simulate calling the fetch function
-    React.useEffect(() => {
+    // Call the fetch function to simulate the behavior
+    if (fetchFunction) {
       fetchFunction();
-    }, [fetchFunction]);
+    }
     
     // Return the render prop with mock data
     return (
@@ -217,8 +217,6 @@ describe('StudentsAllocatedPage', () => {
   });
 
   it('handles export CSV functionality', async () => {
-    const { exportToCSV } = await import('../../../../components/features/allocatedStudent');
-    
     renderComponent();
     
     await waitFor(() => {
@@ -233,8 +231,6 @@ describe('StudentsAllocatedPage', () => {
   });
 
   it('handles export PDF functionality', async () => {
-    const { exportToPDF } = await import('../../../../components/features/allocatedStudent');
-    
     renderComponent();
     
     await waitFor(() => {
