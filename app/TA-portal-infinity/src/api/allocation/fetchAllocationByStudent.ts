@@ -1,20 +1,6 @@
 import { type AllocatedSection, type Allocation } from '../../interfaces/allocation/Allocation';
-import type { ApplicationDto } from '../../interfaces/application/Application';
-import type Section from '../../interfaces/section/Section';
-import type { ApplicationStatus } from '../../interfaces/enum/ApplicationStatus';
+import type  RawAllocationDto  from '../../interfaces/allocation/RawAllocationDto';
 
-
-
-interface RawAllocationHistoryDto {
-  id: number;
-  student: Allocation['student'];
-  applicationDto: ApplicationDto;
-  status?: ApplicationStatus;
-  labPrepHours : number;
-  gradingHours : number;
-  sectionHours : number;
-  allocatedSections: AllocatedSection[];
-}
 
 export async function fetchAllocationsByStudent(
   studentId: number,
@@ -44,7 +30,7 @@ export async function fetchAllocationsByStudent(
     throw new Error(errText || res.statusText);
   }
 
-  const raw: RawAllocationHistoryDto = await res.json();
+  const raw: RawAllocationDto = await res.json();
   const allocation: Allocation = {
     id: raw.id,
     student: raw.student,

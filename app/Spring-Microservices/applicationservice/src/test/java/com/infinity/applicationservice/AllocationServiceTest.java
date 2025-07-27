@@ -480,7 +480,7 @@ class AllocationServiceTest {
                 when(allocationRepository.existsByStudentIdAndApplicationId(1L, 1L)).thenReturn(false);
 
                 assertThrows(AuthorizationException.class, () -> allocationService.getAllocationByApplicationId(1L, 1L,
-                                List.of("ROLE_STUDENT")));
+                                List.of("ROLE_STUDENT"), false));
         }
 
         @Test
@@ -520,7 +520,7 @@ class AllocationServiceTest {
                 when(allocationRepository.existsByStudentIdAndApplicationId(1L, 1L)).thenReturn(true);
 
                 AllocationHistoryDto result = allocationService.getAllocationByApplicationId(1L, 1L,
-                                List.of("ROLE_COORDINATOR"));
+                                List.of("ROLE_COORDINATOR"), false);
 
                 assertEquals(1L, result.applicationDto().studentId());
         }

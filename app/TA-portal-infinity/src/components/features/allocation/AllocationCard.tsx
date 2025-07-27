@@ -1,19 +1,20 @@
 import { Link }from 'react-router-dom'
-import type { Allocation } from "../../../interfaces/allocation/Allocation";
+import type { AllocatedSection, Allocation } from "../../../interfaces/allocation/Allocation";
 import { FaGraduationCap } from "react-icons/fa";
+import { useEffect, useState } from 'react';
+import { fetchAllocationById } from '../../../api/allocation/fetchAllocationById';
 interface AllocationCardProps {
-  allocations?: Allocation[];   // one section can have 0-n allocations
+  allocatedSections?: AllocatedSection[];   // one section can have 0-n allocations
   className?: string;
 }
 
 export default function AllocationCard({
-  allocations = [],
+  allocatedSections = [],
   className = "",
 }: AllocationCardProps) {
-  // We now receive only confirmed allocations from our API
-  // No need to filter here
-  
-  if (!allocations.length)
+  const [allocations, setAllocations] = useState<Allocation[]>([]);
+
+  if (!allocatedSections.length)
     return (
       <div className={`${className} w-full overflow-hidden rounded-lg border border-gray-200 
         bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:border-[#0089b2] 
@@ -31,6 +32,28 @@ export default function AllocationCard({
       </div>
     );
 
+useEffect(() => {
+    if (!allocatedSections.length) {
+      setAllocations([]);
+      return;
+    }
+
+    const uniqueAllocationIds = Array.from(
+      new Set(allocatedSections.map(as => as.allocationId))
+    );
+
+    (async () => {
+      try {
+        const fetchedAllocs = await Promise.all(
+          uniqueAllocationIds.map(id => fetchAllocationById(id))
+        );
+        setAllocations(fetchedAllocs);
+      } catch (err) {
+        console.error("AllocationCard: failed to load allocations", err);
+      }
+    })();
+  }, [allocatedSections]);
+  
   return (
     <div className={`${className} w-full overflow-hidden rounded-lg border border-gray-200 
       bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:border-[#0089b2] p-3`}
@@ -53,10 +76,18 @@ export default function AllocationCard({
                 {allocation.student?.firstName} {allocation.student?.lastName}
               </Link>
             </div>
-            <div className="flex items-center">
+            <div className="flex flex-col gap-1 items-center">
               <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#0089b2] text-white 
                 text-xs font-medium">
-                {allocation.numberOfHours || 0}h
+                TA Hours: {allocation.sectionHours || 0}h
+              </span>
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#0089b2] text-white 
+                text-xs font-medium">
+                Grading Hours: {allocation.gradingHours || 0}h
+              </span>
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#0089b2] text-white 
+                text-xs font-medium">
+                Lab Prep Hours: {allocation.labPrepHours || 0}h
               </span>
             </div>
           </li>

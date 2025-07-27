@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import com.infinity.courseservice.config.FeignClientInterceptor;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocatedSectionDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.DeadlineDto;
@@ -20,7 +21,7 @@ public interface ApplicationInterface {
     public ResponseEntity<List<AllocationHistoryDto>> getStudentAllocationHistory(@PathVariable Long studentId);
 
     @GetMapping("/allocations/filter/section/{sectionId}")
-    ResponseEntity<List<AllocationHistoryDtoWithCourse>> getAllocationsBySectionId(@PathVariable Long sectionId);
+    ResponseEntity<List<AllocatedSectionDto>> getAllocationsBySectionId(@PathVariable Long sectionId);
 
     @GetMapping("/config/{name}")
     ResponseEntity<DeadlineDto> getDeadlineByName(@PathVariable String name);

@@ -1,6 +1,7 @@
 import type { Student } from "../user/Student";
 import type { ApplicationDto } from "../application/Application";
 import type { ApplicationStatus } from "../enum/ApplicationStatus";
+import type Section from "../section/Section";
 
 export type AllocationType =
     | "GRADING"
@@ -10,7 +11,7 @@ export type AllocationType =
 export interface AllocatedSection {
   id: number;
   sectionId: number;
-  // allocationId : number;
+  allocationId : number;
   task: AllocationType;
   hours: number;
 }
@@ -23,4 +24,5 @@ export interface Allocation {
   gradingHours? : number;
   sectionHours? : number;
   allocatedSections?: AllocatedSection[];
+  sections? : Section[];
 }

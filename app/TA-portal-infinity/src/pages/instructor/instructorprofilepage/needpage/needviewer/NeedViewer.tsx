@@ -5,7 +5,7 @@ import type Section from "../../../../../interfaces/section/Section";
 import { Link } from "react-router-dom";
 import type { Need } from "../../../../../interfaces/need/Need";
 import { fetchUpdateNeed } from "../../../../../api/need/fetchUpdateNeed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchDeleteNeed } from "../../../../../api/need/fetchDeleteNeed";
 import { fetchUnassignInstructor } from "../../../../../api/section/instructor/fetchUnassignInstructor";
 import { showToastConfirmation } from "../../../../../utility/confirmation/toastConfirmation";
@@ -15,6 +15,7 @@ import { fetchSectionNeedAndAllocations } from "../../../../../api/instructor/fe
 import type { NeedViewerResponse } from "../InstructorNeedPage";
 import { PiGraduationCapFill } from "react-icons/pi";
 import { toast } from 'react-toastify';
+import type { Allocation } from "../../../../../interfaces/allocation/Allocation";
 
 interface NeedViewerProps {
   instructorId: number;
@@ -117,14 +118,8 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
         selectedYear,
         selectedSemester
       ) ?? [];
-      
-      // Apply the same CONFIRMED filtering 
-      const sectionsWithConfirmedAllocations = sectionsWithNeeds.map(section => ({
-        ...section,
-        allocations: section.allocations?.filter(allocation => allocation.status === "CONFIRMED") ?? []
-      }));
-      
-      setSections(sectionsWithConfirmedAllocations);
+
+      setSections(sectionsWithNeeds);
       toast.success("Search completed successfully");
     } catch (error) {
       console.error("Failed to search sections:", error);
@@ -133,7 +128,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
   };
 
   const isMainSection = (section:Section) =>{
-    if(section.type === "LECTURE" || section.type == "EXPERENTIAL" || section.type=== "SEMINAR"){
+    if(section.type === "LECTURE"){
       return true;
     }else{
       return false;
@@ -237,9 +232,9 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
         <div className="mt-4 pt-3 border-t border-gray-100">
           <div className="flex items-center justify-between text-sm text-gray-600">
             <span>{sections.length} sections found</span>
-            {sections.length > 0 && (
+            {/* {sections.length > 0 && (
               <span>{sections.filter(s => s.allocations && s.allocations.some(a => a.status === "CONFIRMED")).length} with confirmed TAs</span>
-            )}
+            )} */}
           </div>
         </div>
       </div>
@@ -258,7 +253,11 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
           </div>
         )}
 
-        {sections.map((sec, index) => (
+        {sections.map((sec, index) => {
+          const uniqueAllocationIds = Array.from(
+            new Set(sec.allocatedSections?.map(as => as.allocationId))
+          );
+          return(
           <div key={sec?.id} className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
             {/*Horizontal Section Header */}
             <div className="bg-gray-50 border-b border-gray-200 px-4 py-3">
@@ -276,7 +275,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
                   </span>
                   <span className="text-gray-500 text-sm">•</span>
                   <span className="text-gray-600 text-sm">
-                    {sec.allocations?.length || 0} confirmed TAs
+                    {uniqueAllocationIds.length || 0} confirmed TAs
                   </span>
                 </div>
               </div>
@@ -320,12 +319,13 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
                     <PiGraduationCapFill className="w-4 h-4 text-gray-600 mr-2" />
                     Allocated Students
                   </h4>
-                  <AllocationCard allocations={sec.allocations} />
+                  <AllocationCard allocatedSections={sec.allocatedSections} />
                 </div>
               </div>
             </div>
           </div>
-        ))}
+          );
+})}
       </div>
     </div>
   );

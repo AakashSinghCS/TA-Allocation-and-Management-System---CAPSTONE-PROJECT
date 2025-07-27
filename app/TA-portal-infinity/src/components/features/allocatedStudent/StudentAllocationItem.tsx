@@ -39,7 +39,15 @@ export default function StudentAllocationItem({ allocation }: StudentAllocationI
       <div className="flex items-center space-x-2">
         <span className="inline-flex items-center px-2 py-1 rounded bg-[#0089b2] text-white 
           text-xs font-medium">
-          {allocation.numberOfHours || 0}h
+          {allocation.sectionHours || 0} TA Hours
+        </span>
+        <span className="inline-flex items-center px-2 py-1 rounded bg-[#0089b2] text-white 
+          text-xs font-medium">
+          {allocation.gradingHours || 0} Grading Hours
+        </span>
+        <span className="inline-flex items-center px-2 py-1 rounded bg-[#0089b2] text-white 
+          text-xs font-medium">
+          {allocation.labPrepHours || 0} Lab Prep Hours
         </span>
       </div>
     </div>

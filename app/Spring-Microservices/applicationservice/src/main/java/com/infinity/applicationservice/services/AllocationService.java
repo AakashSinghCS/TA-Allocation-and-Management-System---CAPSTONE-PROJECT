@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocatedSectionDto;
@@ -58,6 +59,28 @@ public class AllocationService {
     private final EmailMapper emailMapper;
     private final AllocatedSectionRepository allocatedSectionRepository;
 
+    public AllocationHistoryDto getAllocationWithStudentById ( Long allocationId){
+        Allocation allocation = allocationRepository.findById(allocationId).orElseThrow(() ->
+                new NotFoundException("Allocation not found with id: " + allocationId)
+            );
+
+        Long studentId = allocation.getStudentId();
+        ResponseEntity<UserDto> studentResp = studentInterface.getStudentById(studentId);
+        if (!studentResp.getStatusCode().is2xxSuccessful() || studentResp.getBody() == null) {
+            throw new NotFoundException("Student not found with id: " + studentId);
+        }
+        UserDto student = studentResp.getBody();
+
+        Long appId = allocation.getApplication().getId();
+        Application application = applicationRepository.findById(appId)
+            .orElseThrow(() ->
+                new NotFoundException("Application not found with id: " + appId)
+            );
+        ApplicationDto applicationDto = applicationMapper.toDto(application);
+
+        return allocationMapper.toDto(allocation, student, applicationDto);
+    }
+
     public AllocationHistoryDto getAllocationByStudentId(Long studentId, Boolean noContentAllowed) {
         Allocation allocation = allocationRepository.findByStudentId(studentId);
         if (allocation == null) {
@@ -69,7 +92,7 @@ public class AllocationService {
         }
         if (allocation.getAllocatedSections().isEmpty()) {
             throw new NotFoundException("Allocation ID " + allocation.getId() + " has no associated sections.");
-        }
+        } 
         UserDto student = studentInterface.getStudentById(studentId).getBody();
         List<Long> sectionIds = allocation.getAllocatedSections().stream()
                     .map(AllocatedSection::getSectionId)
@@ -247,18 +270,27 @@ public class AllocationService {
                     allocatedSection.getId(),
                     allocation.getId(),
                     allocatedSection.getSectionId(),
-                    allocatedSection.getTask()
+                    allocatedSection.getTask(),
+                    allocatedSection.getHours()
                 );
             })
             .collect(Collectors.toList());
     }
 
     public AllocationHistoryDto getAllocationByApplicationId(Long appId, Long userIdFromHeader,
-            List<String> headerRoles) {
+            List<String> headerRoles, Boolean noContentAllowed) {
         if (!allocationRepository.existsByStudentIdAndApplicationId(userIdFromHeader, appId) && !headerRoles.contains("ROLE_COORDINATOR")) {
                     throw new AuthorizationException("You don't have permission to access this application");
+                
                 }
         Allocation allocation = allocationRepository.findByApplicationId(appId);
+         if (allocation == null) {
+            if (noContentAllowed != null && noContentAllowed) {
+                return null;
+            } else {
+                throw new NotFoundException("Allocation not found for student ID: " + userIdFromHeader);
+            }
+        }
         return allocationMapper.toDto(allocation, studentInterface.getStudentById(userIdFromHeader).getBody(), applicationMapper.toDto(allocation.getApplication()));
         }
 
@@ -287,7 +319,8 @@ public class AllocationService {
                     allocatedSection.getId(),
                     allocation.getId(),
                     allocatedSection.getSectionId(),
-                    allocatedSection.getTask()
+                    allocatedSection.getTask(),
+                    allocatedSection.getHours()
                 );
             })
             .collect(Collectors.toList());
@@ -350,10 +383,10 @@ public class AllocationService {
             AllocationCsvDto key = new AllocationCsvDto(studentNum, studentDto.id(), year, semester);
 
             if (allocationMap.containsKey(key)) {
-                AllocatedSectionDto allocatedSection = new AllocatedSectionDto(null, allocation.getId(), sectionDto.id(), null);
+                AllocatedSectionDto allocatedSection = new AllocatedSectionDto(null, allocation.getId(), sectionDto.id(), null, -1);
                 allocationMap.get(key).add(allocatedSection);
             } else {
-                AllocatedSectionDto allocatedSection = new AllocatedSectionDto(null, allocation.getId(), sectionDto.id(), null);
+                AllocatedSectionDto allocatedSection = new AllocatedSectionDto(null, allocation.getId(), sectionDto.id(), null, -1);
                 allocationMap.put(key, List.of(allocatedSection));
             }
         }

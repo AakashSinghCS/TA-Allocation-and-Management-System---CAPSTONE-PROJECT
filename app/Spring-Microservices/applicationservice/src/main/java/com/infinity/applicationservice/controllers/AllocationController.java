@@ -34,6 +34,12 @@ public class AllocationController {
 
     private final AllocationService allocationService;
 
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
+    @GetMapping("/{id}")
+    public ResponseEntity<AllocationHistoryDto> getAllocationWithStudentById(@PathVariable Long id) {
+        return ResponseEntity.ok(allocationService.getAllocationWithStudentById(id));
+    }
+
     @PreAuthorize("hasAnyRole('COORDINATOR', 'STUDENT')")
     @GetMapping("/student/{studentId}/history")
     public ResponseEntity<AllocationHistoryDto> getStudentAllocationHistory(@PathVariable Long studentId, @RequestParam(name = "noContentAllowed", required = false) Boolean noContentAllowed) {
@@ -83,8 +89,9 @@ public class AllocationController {
     @GetMapping("/filter/application/{applicationId}")
     public ResponseEntity<AllocationHistoryDto> getAllocationsByApplicationId(@PathVariable Long applicationId,
             @RequestHeader("X-User-Id") Long requesterId,
-            @RequestHeader("X-User-Roles") List<String> roles) {
-        return ResponseEntity.ok(allocationService.getAllocationByApplicationId(applicationId, requesterId, roles));
+            @RequestHeader("X-User-Roles") List<String> roles,
+            @RequestParam(name = "noContentAllowed", required = false) Boolean noContentAllowed) {
+        return ResponseEntity.ok(allocationService.getAllocationByApplicationId(applicationId, requesterId, roles,noContentAllowed));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")

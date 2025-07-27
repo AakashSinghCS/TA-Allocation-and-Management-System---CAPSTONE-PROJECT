@@ -2,6 +2,7 @@ package com.infinity.courseservice.dtos.CourseDtos;
 
 import java.util.List;
 
+import com.infinity.courseservice.dtos.AllocationDtos.AllocatedSectionDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
@@ -9,5 +10,5 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 public record CourseNeedAndAllocations(
         SectionDto section,
         NeedDto need,
-        List<AllocationHistoryDtoWithCourse> allocations
+        List<AllocatedSectionDto> allocatedSections
 ) {}

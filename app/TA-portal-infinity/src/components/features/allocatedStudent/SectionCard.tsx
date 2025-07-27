@@ -7,6 +7,11 @@ interface SectionCardProps {
 }
 
 export default function SectionCard({ section }: SectionCardProps) {
+  const totalHours = section.allocations?.reduce((sum, a) =>
+    sum + (a.labPrepHours ?? 0) + (a.gradingHours ?? 0) + (a.sectionHours ?? 0),
+    0
+  ) ?? 0;
+
   return (
     <div 
       key={section?.id} 
@@ -62,7 +67,7 @@ export default function SectionCard({ section }: SectionCardProps) {
               {section.allocations?.length || 0} Confirmed TA{(section.allocations?.length || 0) !== 1 ? 's' : ''}
             </div>
             <div className="text-xs text-gray-500">
-              {section.allocations?.reduce((total, alloc) => total + (alloc.numberOfHours || 0), 0) || 0} Total Hours
+              {totalHours} Total Hours
             </div>
           </div>
         </div>

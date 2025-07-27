@@ -93,7 +93,7 @@ public class AllocationControllerTest {
                 1L,
                 101L,
                 1001L,
-                TaskType.GRADING
+                TaskType.GRADING,1
         );
         // sampleDto.allocatedSections().add(allocatedSection);
     }
@@ -221,7 +221,7 @@ public class AllocationControllerTest {
 
     @Test
     void getAllocationByApplicationId_returnsFilteredResult() throws Exception {
-        when(allocationService.getAllocationByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR")))
+        when(allocationService.getAllocationByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR"), false))
                 .thenReturn(sampleDto);
 
         mvc.perform(get("/allocations/filter/application/55")
@@ -231,7 +231,7 @@ public class AllocationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.applicationDto").exists());
 
-        verify(allocationService, times(1)).getAllocationByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR"));
+        verify(allocationService, times(1)).getAllocationByApplicationId(55L, 1L, List.of("ROLE_COORDINATOR"), false);
     }
 
     @Test

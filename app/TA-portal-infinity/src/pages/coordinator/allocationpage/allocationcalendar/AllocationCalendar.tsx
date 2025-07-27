@@ -9,7 +9,7 @@ import { useSendOffer } from "../../../../hooks/sendoffer/useSendOffer";
 import { Check, X } from "lucide-react";
 import type { AllocatedSection, Allocation } from "../../../../interfaces/allocation/Allocation";
 import { toast } from "react-toastify";
-
+import { showToastConfirmation } from "../../../../utility/confirmation/toastConfirmation";
 interface AllocationCalendarProps {
     selCourse: Section | null;
     selApp: ApplicationDto | null;
@@ -23,11 +23,11 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
     const [labPrepHours, setLabPrepHours] = useState<string>('');
     const [selectedSectionSlots, setSelectedSectionSlots] = useState<Set<number>>(new Set());
 
-    const prevAllocatedInfo : AllocatedSection[] = prevAlloc?.allocatedSections?.filter(s => s.sectionId === selCourse?.id) ?? [];
+    const prevAllocatedInfo: AllocatedSection[] = prevAlloc?.allocatedSections?.filter(s => s.sectionId === selCourse?.id) ?? [];
 
-    const hasPrevLabAlloc  :boolean    = prevAllocatedInfo.some(s => s.task === 'LAB');
-    const hasPrevGradingAlloc : boolean = prevAllocatedInfo.some(s => s.task === 'GRADING');
-    const hasPrevLabPrepAlloc : boolean = prevAllocatedInfo.some(s => s.task === 'LAB_PREP');
+    const hasPrevLabAlloc: boolean = prevAllocatedInfo.some(s => s.task === 'LAB');
+    const hasPrevGradingAlloc: boolean = prevAllocatedInfo.some(s => s.task === 'GRADING');
+    const hasPrevLabPrepAlloc: boolean = prevAllocatedInfo.some(s => s.task === 'LAB_PREP');
 
     const requiredGrading: number = selCourse?.need?.requiredGradingHours ?? 0;
     const allocatedGrading: number = selCourse?.need?.numHoursCurrentlyAllocated ?? 0;
@@ -38,9 +38,10 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
         [selCourse]
     );
     useEffect(() => {
-        if(hasPrevLabAlloc) {
-            setSelectedSectionSlots(new Set());}
-        else{
+        if (hasPrevLabAlloc) {
+            setSelectedSectionSlots(new Set());
+        }
+        else {
             setSelectedSectionSlots(new Set(allIdxs));
         }
 
@@ -100,19 +101,25 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
 
     const onSend = async () => {
         if (!selApp || !selCourse?.id || !selCourse.need) return;
-        if (selCourse.type === 'LECTURE'){
-              toast.warn("Warning: You cannot allocate TAs to a LECTURE.");
-              return;
-            }
-        if ((selCourse.numberOfTAsAllocated ?? 0) >= 1) {
-            const ok = window.confirm(
-            "Warning: You are assigning more than 1 TA to this section. Please make sure that it is a task that is not already assigned. Continue?"
-            );
-            if (!ok) {
+        if (selCourse.type === 'LECTURE') {
+            toast.warn("Warning: You cannot allocate TAs to a LECTURE.");
             return;
+        }
+        if ((selCourse.numberOfTAsAllocated ?? 0) >= 1) {
+            const confirmed = await showToastConfirmation({
+                title: "Multiple TAs Assigned?",
+                message:
+                    "Warning: You could be assigning more than 1 TA to this section. Please make sure that it is a task not already assigned. Continue?",
+                confirmText: "Continue",
+                cancelText: "Cancel",
+                type: "warning",
+            });
+            if (!confirmed) {
+                // user hit “Cancel”
+                return;
             }
         }
-        
+
         await sendOffer(
             selApp,
             selCourse.id,
@@ -129,7 +136,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
     };
 
     const onEventClick = (info: EventClickArg) => {
-        if(hasPrevLabAlloc) return;
+        if (hasPrevLabAlloc) return;
         const { type } = info.event.extendedProps as { type?: string };
         if (type !== 'section') return;
         setSelectedSectionSlots(prev => {
@@ -282,8 +289,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                             disabled={hasPrevGradingAlloc}
                             value={gradingHours}
                             onChange={numericOnly(setGradingHours)}
-                            className={`w-20 border rounded px-2 py-1 text-right  ${
-                                hasPrevGradingAlloc ? 'opacity-50 cursor-not-allowed' : ''
+                            className={`w-20 border rounded px-2 py-1 text-right  ${hasPrevGradingAlloc ? 'opacity-50 cursor-not-allowed' : ''
                                 }`}
                             placeholder="e.g. 10"
                         />
@@ -292,7 +298,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                     {/* Lab prep hours */}
                     <label className="flex flex-row items-center gap-2 min-w-[220px] flex-1 md:flex-none">
                         <span className="text-sm font-medium whitespace-nowrap">
-                            Lab Prep Hours: 
+                            Lab Prep Hours:
                         </span>
                         <input
                             type="text"
@@ -300,8 +306,7 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                             disabled={hasPrevLabPrepAlloc}
                             value={labPrepHours}
                             onChange={numericOnly(setLabPrepHours)}
-                            className={`w-20 border rounded px-2 py-1 text-right  ${
-                                hasPrevLabPrepAlloc ? 'opacity-50 cursor-not-allowed' : ''
+                            className={`w-20 border rounded px-2 py-1 text-right  ${hasPrevLabPrepAlloc ? 'opacity-50 cursor-not-allowed' : ''
                                 }`}
                             placeholder="e.g. 1.5"
                         />

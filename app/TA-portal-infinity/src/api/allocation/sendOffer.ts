@@ -21,7 +21,7 @@ export interface CreateOfferRequest {
 export async function sendOffer(
   payload: CreateOfferRequest
 ){
-  console.log("sendOffer payload:", payload);
+  // console.log("sendOffer payload:", payload);
   const res = await fetchWithAuth(
     'http://localhost:8080/allocations/allocate',
     {

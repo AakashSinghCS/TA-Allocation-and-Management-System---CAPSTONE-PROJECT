@@ -12,7 +12,9 @@ public class AllocatedSectionMapper {
         AllocatedSectionDto dto = new AllocatedSectionDto(allocatedSection.getId(),
                 allocatedSection.getAllocation().getId(),
                 allocatedSection.getSectionId(),
-                allocatedSection.getTask());
+                allocatedSection.getTask(),
+                allocatedSection.getHours()
+                );
         
 
         return dto;

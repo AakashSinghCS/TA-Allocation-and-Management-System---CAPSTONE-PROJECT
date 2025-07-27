@@ -29,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import com.infinity.courseservice.dtos.AllocationDtos.AllocatedSectionDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.ApplicationDtos.ApplicationDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
@@ -43,6 +44,7 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
 import com.infinity.courseservice.enums.ApplicationStatus;
 import com.infinity.courseservice.enums.SectionType;
+import com.infinity.courseservice.enums.TaskType;
 import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
@@ -346,16 +348,7 @@ public class CourseServiceTest {
                 NeedDto need = new NeedDto(5L, courseId, "Grading", 30, 15, semester.getYear(), semester.getSemester(), null);
                 SectionDto sectionDto = new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
                                                 new CourseDto(1L, "COSC", "Networks", "329"), 1);
-                AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
-                                42L,
-                                new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
-                                                "COSC", 2025, 3, null,
-                                                null, null,
-                                                true),
-                                new ApplicationDto(null, null, null, null, true, null, null, null),
-                                ApplicationStatus.CONFIRMED,
-                                10,
-                               sectionDto);
+                AllocatedSectionDto alloc = new AllocatedSectionDto(1L, 1L, 1L, TaskType.GRADING);
 
                 when(sectionRepository.findByCourseIdAndSemester_YearAndSemester_Semester(courseId, semester
                                 .getYear(), 
@@ -363,7 +356,7 @@ public class CourseServiceTest {
                                 .thenReturn(Optional.of(section));
                 when(needService.getNeed(courseId, semester.getYear(), semester.getSemester())).thenReturn(need);
                 when(applicationInterface.getAllocationsBySectionId(section.getId()))
-                                .thenReturn(ResponseEntity.ok(List.of(dto)));
+                                .thenReturn(ResponseEntity.ok(List.of(alloc)));
                 when(sectionMapper.sectionToDto(any())).thenReturn(sectionDto);
 
                 CourseNeedAndAllocations result = courseService.getCourseNeedAndAllocations(courseId, 
@@ -371,8 +364,7 @@ public class CourseServiceTest {
 
                 assertEquals("Networks", result.section().course().name());
                 assertEquals("Grading", result.need().description());
-                assertEquals(1, result.allocations().size());
-                assertEquals("Alice", result.allocations().get(0).student().firstName());
+                assertEquals(1, result.allocatedSections().size());
         }
 
         @Test
@@ -394,21 +386,11 @@ public class CourseServiceTest {
                                 11L, 2025, "W1", "002", SectionType.LABORATORY,
                                 new CourseDto(1L, "COSC", "Security", "430"),1);
                 NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, 2025, "W1", null);
-                AllocationHistoryDtoWithCourse dto = new AllocationHistoryDtoWithCourse(
-                                42L,
-                                new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                                12345678,
-                                                "COSC", 2025, 3, null, null, null, true),
-                                new ApplicationDto(null, null, null, null, true, null, null, null),
-                                ApplicationStatus.CONFIRMED,
-                                10,
-                                new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
-                                                new CourseDto(1L, "COSC", "CS", "112"),1));
-
+                AllocatedSectionDto alloc = new AllocatedSectionDto(1L, 1L, 1L, TaskType.GRADING);
                 when(sectionService.getInstructorSections(instructorId)).thenReturn(List.of(section1,
                                 section2));
                 when(needService.getNeed(1L, 2025, "W1")).thenReturn(need);
-                when(applicationInterface.getAllocationsBySectionId(any())).thenReturn(ResponseEntity.ok(List.of(dto)));
+                when(applicationInterface.getAllocationsBySectionId(any())).thenReturn(ResponseEntity.ok(List.of(alloc)));
 
                 List<CourseNeedAndAllocations> result = courseService
                                 .getInstructorCourseNeedsAndAllocations(instructorId);
@@ -416,8 +398,6 @@ public class CourseServiceTest {
                 assertEquals(2, result.size());
                 assertEquals("Security", result.get(0).section().course().name());
                 assertEquals("Labs", result.get(0).need().description());
-                assertEquals("Alice",
-                                result.get(0).allocations().get(0).student().firstName());
         assertEquals(1, result.get(0).section().numberOfTAsAllocated());
         }
 
@@ -465,17 +445,7 @@ public class CourseServiceTest {
                 // — a NeedDto and one allocation
                 NeedDto needDto = new NeedDto(10L, courseId, "Labs", 25, 10, year, semester, null);
 
-                AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(
-                                42L,
-                                new UserDto(2L, "Alice", "Wang", "awang@test.com",
-                                                List.of(UserRole.STUDENT), 12345678,
-                                                "COSC", 2025, 3, null, null, null, true),
-                                new ApplicationDto(null, null, null, null, true, null, null, null),
-                                ApplicationStatus.CONFIRMED,
-                                10,
-                                new SectionDto(99L, 2024, "W1", "001", SectionType.LECTURE,
-                                                new CourseDto(1L, "COSC", "CS", "112"),1));
-
+                AllocatedSectionDto alloc = new AllocatedSectionDto(1L, 1L, 1L, TaskType.GRADING);
                 // — stubbing repository, mapper, services
                 when(sectionRepository.findByInstructorIdAndCourseIdAndSemester_YearAndSemester_Semester(
                                 instructorId, courseId, year, semester))
@@ -499,9 +469,7 @@ public class CourseServiceTest {
                 CourseNeedAndAllocations entry = result.get(0);
                 assertEquals(sectionDto, entry.section());
                 assertEquals(needDto, entry.need());
-                assertEquals(1, entry.allocations().size());
-                assertEquals("Alice",
-                                entry.allocations().get(0).student().firstName());
+                assertEquals(1, entry.allocatedSections().size());
         }
 
         @Test
@@ -550,7 +518,7 @@ public class CourseServiceTest {
                 CourseNeedAndAllocations entry = result.get(0);
                 assertEquals(sectionDto, entry.section());
                 assertNull(entry.need());
-                assertTrue(entry.allocations().isEmpty());
+                assertTrue(entry.allocatedSections().isEmpty());
         }
 
         @Test

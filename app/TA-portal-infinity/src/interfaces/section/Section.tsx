@@ -1,4 +1,4 @@
-import type { Allocation } from "../allocation/Allocation";
+import type { AllocatedSection, Allocation } from "../allocation/Allocation";
 import type { Course } from "../course/Course";
 import type { Need } from "../need/Need";
 import type { Instructor } from "../user/Instructor";
@@ -28,6 +28,7 @@ export default interface Section {
     instructor?: Instructor;
     instructorId? : number
     numberOfTAsAllocated?: number
+    allocatedSections? : AllocatedSection[];
 }
 
 export interface SectionProfile{
