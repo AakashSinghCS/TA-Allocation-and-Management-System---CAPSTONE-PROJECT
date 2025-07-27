@@ -2872,3 +2872,52 @@ Tommorrow:
 - [UBCO-COSC499-S2025/team-10-capstone-infinity#471](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)
 - Security improvement.
 - TBA: must discuss with teammates first on what to do.
+
+## Saturday 7/26 (7/25~7/28)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July26.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#463](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/463)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#471](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today:
+1. Allocation Page is now integrated with the backend that Allen has made. Revoke buttons work. Can send offers for the three different types of hours. The application details on the right side of the page (Application Filter Details) show the Allocation History correctly.
+2. The NeedViewer is also integrated with the changes. The three hours show up in the Allocation Card. Likewise for the Instructor's StudentAllocated Page.
+3. Backend changes for the CourseNeedsAndAllocations. The function now sends AllocatedSections rather than Allocations now.
+Next:
+1. Do Issue 471 or prepare for the testing on tuesday
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+- [UBCO-COSC499-S2025/team-10-capstone-infinity#471](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)
+- Security improvement.
+- TBA: must discuss with teammates first on what to do.
