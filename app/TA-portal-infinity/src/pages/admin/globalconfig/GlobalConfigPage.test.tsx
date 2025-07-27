@@ -224,9 +224,9 @@ describe('GlobalConfigPage', () => {
     render(<GlobalConfigPage />);
     
     const title = screen.getByText('Global Configuration');
-    expect(title).toHaveClass('text-[#040941]'); // Brand color consistency
+    expect(title).toHaveClass('text-[#040941]'); 
     
     const description = screen.getByText('Manage term and deadline settings');
-    expect(description).toHaveClass('text-gray-500'); // Consistent gray
+    expect(description).toHaveClass('text-gray-500'); 
   });
 });

@@ -15,7 +15,7 @@ interface DeadlineManagementProps {
 }
 
 const DeadlineManagement: React.FC<DeadlineManagementProps> = ({ token }) => {
-  // Deadlines state
+
   const [deadlines, setDeadlines] = useState<DeadlineDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

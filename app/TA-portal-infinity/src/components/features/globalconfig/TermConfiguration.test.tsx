@@ -209,7 +209,6 @@ describe('TermConfiguration', () => {
     
     render(<TermConfiguration token={mockToken} />);
     
-    // Wait for initial load
     await waitFor(() => {
       expect(screen.getByText(`Semesters count: ${mockSemesters.length}`)).toBeInTheDocument();
     });

@@ -63,7 +63,7 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
       
       if (success) {
         toast.success('Term configuration saved successfully!');
-        // Reset form to initial state
+        
         setTermConfig(initialTermConfig);
         // Reload semesters and notify parent
         const data = await getAllSemesters(token || "");

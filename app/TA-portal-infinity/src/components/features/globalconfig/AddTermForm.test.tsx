@@ -188,7 +188,7 @@ describe('AddTermForm', () => {
   });
 
   it('shows loading state while submitting', async () => {
-    vi.mocked(addSemester).mockImplementation(() => new Promise(() => {})); // Never resolves
+    vi.mocked(addSemester).mockImplementation(() => new Promise(() => {}));
     
     render(<AddTermForm token={mockToken} onTermAdded={mockOnTermAdded} />);
     
