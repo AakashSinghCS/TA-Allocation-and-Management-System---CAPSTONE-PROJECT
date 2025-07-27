@@ -48,9 +48,31 @@ const DeadlineManagementPage: React.FC = () => {
       try {
         const data = await getAllSemesters(token || "");
         setSemesters(data);
-      } catch (err) {
-        console.error("Failed to load semesters:", err);
-        toast.error("Failed to load semesters");
+      } catch (error: any) {
+        console.error("Failed to load semesters:", error);
+        
+        // Handle specific HTTP status codes
+        if (error.response) {
+          const status = error.response.status;
+          const message = error.response.data || error.message;
+          
+          switch (status) {
+            case 404: // NOT FOUND
+              toast.error("No semesters found.");
+              break;
+            case 500: // INTERNAL SERVER ERROR
+              toast.error("Server error while loading semesters. Please try again later.");
+              break;
+            default:
+              toast.error(message || "Failed to load semesters");
+          }
+        } else if (error.request) {
+          // Network error
+          toast.error('Network error. Please check your connection and try again.');
+        } else {
+          // Other error
+          toast.error("Failed to load semesters");
+        }
       } finally {
         setSemestersLoading(false);
       }
@@ -79,6 +101,14 @@ const DeadlineManagementPage: React.FC = () => {
       toast.error("Start date must be before end date.");
       return;
     }
+
+    // Additional validation to match backend logic
+    const startYear = new Date(termConfig.startDate).getFullYear();
+    if (startYear !== termConfig.year) {
+      toast.error("Year must match the start date's year.");
+      return;
+    }
+
     setTermLoading(true);
     
     try {
@@ -88,6 +118,7 @@ const DeadlineManagementPage: React.FC = () => {
         startDate: termConfig.startDate,
         endDate: termConfig.endDate
       };
+      console.log("Adding semester data:", semesterData);
       const success = await addSemester(semesterData, token || "");
       
       if (success) {
@@ -100,9 +131,47 @@ const DeadlineManagementPage: React.FC = () => {
       } else {
         toast.error('Failed to save term configuration.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving term:", error);
-      toast.error('Error saving term configuration.');
+      
+      // Handle specific HTTP status codes and backend exceptions
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data || error.message;
+        
+        switch (status) {
+          case 409: // CONFLICT - DuplicateEntryException
+            if (message.includes("Duplicate Entry")) {
+              toast.error("This semester already exists. Please choose a different year and semester combination.");
+            } else {
+              toast.error("Duplicate entry detected.");
+            }
+            break;
+          case 400: // BAD REQUEST - BadRequestException
+            if (message.includes("Start date must be before end date")) {
+              toast.error("Start date must be before end date.");
+            } else if (message.includes("Year must match the start date's year")) {
+              toast.error("Year must match the start date's year.");
+            } else {
+              toast.error(message || "Invalid data provided.");
+            }
+            break;
+          case 404: // NOT FOUND - NotFoundException
+            toast.error("Resource not found.");
+            break;
+          case 500: // INTERNAL SERVER ERROR
+            toast.error("Internal server error. Please try again later.");
+            break;
+          default:
+            toast.error(message || 'Error saving term configuration.');
+        }
+      } else if (error.request) {
+        // Network error
+        toast.error('Network error. Please check your connection and try again.');
+      } else {
+        // Other error
+        toast.error('Error saving term configuration.');
+      }
     } finally {
       setTermLoading(false);
     }
@@ -122,6 +191,23 @@ const DeadlineManagementPage: React.FC = () => {
   const handleSaveSemesterEdit = async () => {
     if (!editSemesterData || !editingSemester) return;
     
+    // Client-side validation to match backend logic
+    if (editSemesterData.startDate && editSemesterData.endDate) {
+      const startDate = new Date(editSemesterData.startDate);
+      const endDate = new Date(editSemesterData.endDate);
+      
+      if (startDate >= endDate) {
+        toast.error("Start date must be before end date.");
+        return;
+      }
+
+      // Validate year matches start date's year
+      if (editSemesterData.year && startDate.getFullYear() !== editSemesterData.year) {
+        toast.error("Year must match the start date's year.");
+        return;
+      }
+    }
+    
     try {
       const success = await updateSemester(editingSemester, editSemesterData, token || "");
       if (success) {
@@ -134,9 +220,47 @@ const DeadlineManagementPage: React.FC = () => {
       } else {
         toast.error('Failed to update semester.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating semester:", error);
-      toast.error('Error updating semester.');
+      
+      // Handle specific HTTP status codes and backend exceptions
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data || error.message;
+        
+        switch (status) {
+          case 409: // CONFLICT - DuplicateEntryException
+            if (message.includes("Duplicate Entry")) {
+              toast.error("This semester already exists. Please choose a different year and semester combination.");
+            } else {
+              toast.error("Duplicate entry detected.");
+            }
+            break;
+          case 400: // BAD REQUEST - BadRequestException
+            if (message.includes("Start date must be before end date")) {
+              toast.error("Start date must be before end date.");
+            } else if (message.includes("Year must match the start date's year")) {
+              toast.error("Year must match the start date's year.");
+            } else {
+              toast.error(message || "Invalid data provided.");
+            }
+            break;
+          case 404: // NOT FOUND - NotFoundException
+            toast.error(`No semester found with the specified ID.`);
+            break;
+          case 500: // INTERNAL SERVER ERROR
+            toast.error("Internal server error. Please try again later.");
+            break;
+          default:
+            toast.error(message || 'Error updating semester.');
+        }
+      } else if (error.request) {
+        // Network error
+        toast.error('Network error. Please check your connection and try again.');
+      } else {
+        // Other error
+        toast.error('Error updating semester.');
+      }
     }
   };
 
@@ -175,9 +299,41 @@ const DeadlineManagementPage: React.FC = () => {
       } else {
         toast.error('Failed to delete semester.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting semester:", error);
-      toast.error('Error deleting semester.');
+      
+      // Handle specific HTTP status codes and backend exceptions
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data || error.message;
+        
+        switch (status) {
+          case 404: // NOT FOUND - NotFoundException
+            toast.error(`Semester not found. It may have already been deleted.`);
+            // Reload semesters to sync with current state
+            try {
+              const data = await getAllSemesters(token || "");
+              setSemesters(data);
+            } catch (reloadError) {
+              console.error("Error reloading semesters:", reloadError);
+            }
+            break;
+          case 400: // BAD REQUEST
+            toast.error("Invalid request. Unable to delete semester.");
+            break;
+          case 500: // INTERNAL SERVER ERROR
+            toast.error("Internal server error. Please try again later.");
+            break;
+          default:
+            toast.error(message || 'Error deleting semester.');
+        }
+      } else if (error.request) {
+        // Network error
+        toast.error('Network error. Please check your connection and try again.');
+      } else {
+        // Other error
+        toast.error('Error deleting semester.');
+      }
     }
   };
   // Deadlines state
