@@ -266,16 +266,16 @@ const ExistingTermsTable: React.FC<ExistingTermsTableProps> = ({
                     {editingSemester === semester.id ? (
                       <input
                         type="checkbox"
-                        checked={editSemesterData?.active || false}
-                        onChange={(e) => handleSemesterEditChange("active", e.target.checked)}
-                        className="form-checkbox h-4 w-4 text-blue-600"
+                        checked={Boolean(editSemesterData?.isActive)}
+                        onChange={(e) => handleSemesterEditChange("isActive", e.target.checked)}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       />
                     ) : (
                       <input
                         type="checkbox"
-                        checked={semester.active || false}
+                        checked={Boolean(semester.isActive)}
                         readOnly
-                        className="form-checkbox h-4 w-4 text-blue-600"
+                        className="h-4 w-4 text-blue-600 border-gray-300 rounded cursor-default"
                       />
                     )}
                   </td>

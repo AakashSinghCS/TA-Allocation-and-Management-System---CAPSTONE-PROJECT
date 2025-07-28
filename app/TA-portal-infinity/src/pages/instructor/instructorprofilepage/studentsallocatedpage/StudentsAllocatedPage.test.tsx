@@ -219,6 +219,11 @@ describe('StudentsAllocatedPage', () => {
   it('handles export CSV functionality', async () => {
     renderComponent();
     
+    // Wait for initial data to load
+    await waitFor(() => {
+      expect(fetchSectionNeedAndAllocations).toHaveBeenCalledWith(123, null, 2025, 'W1');
+    });
+
     await waitFor(() => {
       const exportButton = screen.getByTestId('export-csv-button');
       expect(exportButton).toBeInTheDocument();
@@ -232,6 +237,11 @@ describe('StudentsAllocatedPage', () => {
 
   it('handles export PDF functionality', async () => {
     renderComponent();
+    
+    // Wait for initial data to load
+    await waitFor(() => {
+      expect(fetchSectionNeedAndAllocations).toHaveBeenCalledWith(123, null, 2025, 'W1');
+    });
     
     await waitFor(() => {
       const exportButton = screen.getByTestId('export-pdf-button');

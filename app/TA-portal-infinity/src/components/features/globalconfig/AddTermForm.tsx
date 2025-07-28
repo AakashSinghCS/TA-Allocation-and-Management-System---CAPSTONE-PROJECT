@@ -14,13 +14,14 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
     year: new Date().getFullYear(),
     semester: "W1",
     startDate: "",
-    endDate: ""
+    endDate: "",
+    isActive: true
   };
   
   const [termConfig, setTermConfig] = useState(initialTermConfig);
   const [termLoading, setTermLoading] = useState(false);
 
-  const handleTermChange = (field: string, value: string) => {
+  const handleTermChange = (field: string, value: string | boolean) => {
     setTermConfig((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -57,7 +58,8 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
         year: parseInt(termConfig.year.toString()),
         semester: termConfig.semester as "W1" | "W2" | "S1" | "S2",
         startDate: termConfig.startDate,
-        endDate: termConfig.endDate
+        endDate: termConfig.endDate,
+        isActive: termConfig.isActive
       };
       const success = await addSemester(semesterData, token || "");
       
@@ -165,6 +167,18 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
             value={termConfig.endDate}
             onChange={e => handleTermChange("endDate", e.target.value)}
             className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-full sm:w-40"
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="text-xs text-gray-600 mb-2" htmlFor="active-checkbox">
+            Active
+          </label>
+          <input
+            id="active-checkbox"
+            type="checkbox"
+            checked={termConfig.isActive}
+            onChange={e => handleTermChange("isActive", e.target.checked)}
+            className="h-6 w-6 appearance-none border border-blue-200 rounded bg-white checked:bg-blue-600 checked:border-blue-600"
           />
         </div>
         <button

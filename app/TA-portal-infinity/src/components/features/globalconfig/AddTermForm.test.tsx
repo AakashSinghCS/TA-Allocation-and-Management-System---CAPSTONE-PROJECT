@@ -24,7 +24,7 @@ const mockSemesters: Semester[] = [
     semester: 'W1',
     startDate: '2024-01-08',
     endDate: '2024-04-12',
-    active: true,
+    isActive: true,
   },
 ];
 
@@ -180,6 +180,7 @@ describe('AddTermForm', () => {
         semester: 'W1',
         startDate: '2024-01-08',
         endDate: '2024-04-12',
+        isActive: true,
       }, mockToken);
     });
     

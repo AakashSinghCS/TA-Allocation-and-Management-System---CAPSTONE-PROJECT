@@ -28,7 +28,7 @@ const mockSemesters: Semester[] = [
     semester: 'W1',
     startDate: '2024-01-08',
     endDate: '2024-04-12',
-    active: true,
+    isActive: true,
   },
   {
     id: 2,
@@ -36,7 +36,7 @@ const mockSemesters: Semester[] = [
     semester: 'S1',
     startDate: '2024-05-06',
     endDate: '2024-08-16',
-    active: false,
+    isActive: false,
   },
   {
     id: 3,
@@ -44,7 +44,7 @@ const mockSemesters: Semester[] = [
     semester: 'W2',
     startDate: '2023-09-05',
     endDate: '2023-12-15',
-    active: false,
+    isActive: false,
   },
 ];
 
@@ -115,7 +115,7 @@ describe('ExistingTermsTable', () => {
       semester: 'W1' as const,
       startDate: '2024-01-08',
       endDate: '2024-04-12',
-      active: false,
+      isActive: false,
     }));
 
     render(
@@ -137,7 +137,7 @@ describe('ExistingTermsTable', () => {
       semester: 'W1' as const,
       startDate: '2024-01-08',
       endDate: '2024-04-12',
-      active: false,
+      isActive: false,
     }));
 
     render(
