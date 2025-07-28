@@ -19,39 +19,54 @@ export interface ValidationResult<T> {
  * enforced server-side with parameterised queries or an ORM.
  */
 export function validateCourseProfile(
-  payload: Partial<CourseProfile>
+  payload: Partial<CourseProfile>,
+  options?: { skipName?: boolean }
 ): ValidationResult<CourseProfile> {
   const errors: string[] = [];
   const sanitized: Partial<CourseProfile> = {};
 
-  /* ---- name ---- */
-  if (payload.name !== undefined) {
-    const raw = payload.name.trim().replace(/\s+/g, " ");
-    if (!reName.test(raw) || looksLikeSqlInjection(raw)) {
-      errors.push("Name contains invalid characters.");
+  /* ---- course name ---- */
+  if (!options?.skipName) {
+    if (payload.name !== undefined) {
+      const raw = payload.name.trim().replace(/\s+/g, " ");
+      if (!raw) {
+        errors.push("Course name is required.");
+      } else if (!reName.test(raw) || looksLikeSqlInjection(raw)) {
+        errors.push("Course name contains invalid characters.");
+      } else {
+        sanitized.name = raw;
+      }
     } else {
-      sanitized.name = raw;
+      errors.push("Course name is required.");
     }
   }
 
   /* ---- deptCode ---- */
   if (payload.deptCode !== undefined) {
     const raw = payload.deptCode.trim().toUpperCase();
-    if (!reDeptCode.test(raw) || looksLikeSqlInjection(raw)) {
+    if (!raw) {
+      errors.push("Department code is required.");
+    } else if (!reDeptCode.test(raw) || looksLikeSqlInjection(raw)) {
       errors.push("Department code must be 4 letters (A-Z).");
     } else {
       sanitized.deptCode = raw;
     }
+  } else {
+    errors.push("Department code is required.");
   }
 
   /* ---- courseNum ---- */
   if (payload.courseNum !== undefined) {
     const raw = payload.courseNum.trim();
-    if (!reCourseNum.test(raw) || looksLikeSqlInjection(raw)) {
+    if (!raw) {
+      errors.push("Course number is required.");
+    } else if (!reCourseNum.test(raw) || looksLikeSqlInjection(raw)) {
       errors.push("Course number must be 3 numerics (no spaces).");
     } else {
       sanitized.courseNum = raw;
     }
+  } else {
+    errors.push("Course number is required.");
   }
 
   return { ok: errors.length === 0, sanitized, errors };
