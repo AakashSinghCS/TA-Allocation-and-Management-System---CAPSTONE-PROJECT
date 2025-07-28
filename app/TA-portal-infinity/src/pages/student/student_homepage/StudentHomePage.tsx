@@ -228,7 +228,7 @@ export default function StudentHomePage() {
                   </span>
                 </div>
                 <Link
-                  to={`/user/taprofile/${userId}`}
+                  to={`/user/profile/${userId}`}
                   className="mt-2 inline-flex items-center gap-1 text-xs font-semibold bg-blue-700 hover:bg-blue-800 text-white rounded px-4 py-2 shadow transition-colors duration-150"
                   style={{ width: "fit-content" }}
                 >

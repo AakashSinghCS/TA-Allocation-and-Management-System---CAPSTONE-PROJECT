@@ -1,6 +1,3 @@
-// src/components/admin/audit/AuditLogsPage.test.tsx
-
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import AuditLogsPage from './AuditLogsPage';
 import { vi } from 'vitest';
@@ -58,7 +55,7 @@ vi.mock('../audittable/AuditTable', () => ({
   ),
 }));
 
-vi.mock('../pagination/Pagination', () => ({
+vi.mock('../../../../utility/pagination/pagination/Pagination', () => ({
   __esModule: true,
   default: (props: any) => (
     <div data-testid="pagination">

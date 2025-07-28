@@ -97,7 +97,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
     setError(""); // Clear error before backend call
     setResult("");
     if (!parsedData || parsedData.length === 0) {
-      setError("Please select a valid CSV file and make sure it is not empty.");
+      setError("Please select a valid CSV file");
       setLoading(false);
       return;
     }
@@ -118,6 +118,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         endTime: row["End Time"] || ""
       });
       const mappedData = parsedData.map(mapCsvRowToSection);
+      
       const token = localStorage.getItem('token');
       const res = await fetch("http://localhost:8080/sections/import-csv", {
         method: "POST",
@@ -127,6 +128,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         },
         body: JSON.stringify(mappedData),
       });
+      
       let errorDetail = "";
       let text = "";
       const contentType = res.headers.get("content-type");

@@ -13,6 +13,38 @@ vi.mock('../../../assets/ubc_image.png?url', () => ({
 }));
 
 describe('ResetPasswordPage', () => {
+  it('shows and toggles password viewer icons for both fields', () => {
+    render(
+      <MemoryRouter initialEntries={['/reset-password?token=abc']}>
+        <ResetPasswordPage />
+      </MemoryRouter>
+    );
+    const newPwdInput = screen.getByLabelText(/New Password/i);
+    const confirmPwdInput = screen.getByLabelText(/Confirm Password/i);
+
+    // Eye icons should not be present before input
+    expect(screen.queryAllByRole('button', { name: /show new password|hide new password|show confirm password|hide confirm password/i })).toHaveLength(0);
+
+    // Enter values
+    fireEvent.change(newPwdInput, { target: { value: 'Password1!' } });
+    fireEvent.change(confirmPwdInput, { target: { value: 'Password1!' } });
+
+    // Eye icons should now be present for both fields
+    expect(screen.getByRole('button', { name: /show new password|hide new password/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /show confirm password|hide confirm password/i })).toBeInTheDocument();
+
+    // Toggle new password visibility
+    fireEvent.click(screen.getByRole('button', { name: /show new password/i }));
+    expect(newPwdInput).toHaveAttribute('type', 'text');
+    fireEvent.click(screen.getByRole('button', { name: /hide new password/i }));
+    expect(newPwdInput).toHaveAttribute('type', 'password');
+
+    // Toggle confirm password visibility
+    fireEvent.click(screen.getByRole('button', { name: /show confirm password/i }));
+    expect(confirmPwdInput).toHaveAttribute('type', 'text');
+    fireEvent.click(screen.getByRole('button', { name: /hide confirm password/i }));
+    expect(confirmPwdInput).toHaveAttribute('type', 'password');
+  });
   const originalFetch = globalThis.fetch;
 
   afterEach(() => {

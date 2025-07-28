@@ -1,227 +1,266 @@
-import React, { useEffect, useState } from 'react';
-import { fetchAllocationsByStudent } from '../../../../api/allocation/fetchAllocationByStudent';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../../../context/AuthContext';
-import type { Allocation } from '../../../../interfaces/allocation/Allocation';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import Pagination from '../../../../utility/pagination/pagination/Pagination';
+import { fetchAllocationsByStudent } from '../../../../api/allocation/fetchAllocationByStudent';
 import type { ApplicationDto } from '../../../../interfaces/application/Application';
-import { generatePath, Link } from 'react-router-dom';
+import type { Allocation } from '../../../../interfaces/allocation/Allocation';
+import { fetchAllExistingYears } from '../../../../api/course/sectionfilter/fetchAllExistingYears';
+import { useApplicationSearchPage } from '../../../../api/application/useApplicationSearchPage';
+import SelectedApplicationDetails from './selectedapplicationdetails/SelectedApplicationDetails';
+import { StatusIndicator } from '../../../ui/statusindicator/StatusIndicator';
 
-interface ApplicationFilterPanelProps {
-  appQ: {
-    pref1: string;
-    pref2: string;
-    wantRemote: string;
-    wantHours: string;
-    studentName: string;
-    studentNum: string;
-  };
-  setAppQ: React.Dispatch<React.SetStateAction<ApplicationFilterPanelProps['appQ']>>;
-  allApps: ApplicationDto[];
+interface Props {
   selApp: ApplicationDto | null;
   loadApp: (app: ApplicationDto) => void;
   colSpanClass?: string;
 }
 
-const ApplicationFilterPanel: React.FC<ApplicationFilterPanelProps> = ({
-  appQ,
-  setAppQ,
-  allApps,
+interface ApplicationFilters {
+  pref1 : string;
+  pref2 : string;
+  pref3 : string;
+  year: string;
+  wantRemote : string;
+  wantHours : string;
+  studentName? : string;
+  studentNum? : string;
+}
+
+export default function ApplicationFilterPanel({
   selApp,
   loadApp,
   colSpanClass = 'lg:col-span-5',
-}) => {
+}: Props) {
   const { token } = useAuth();
-  const [history, setHistory] = useState<Allocation[]>([]);
-  const [filteredApps, setFilteredApps] = useState<ApplicationDto[]>([]);
-  const [filtering, setFiltering] = useState(false);
-  // Internal filtering logic
-  const filterApplications = () => {
-    const filtered = allApps.filter(a => {
-      if (appQ.pref1 && !a.preferences.includes(appQ.pref1)) return false;
-      if (appQ.pref2 && !a.preferences.includes(appQ.pref2)) return false;
-      if (appQ.wantRemote && String(a.wantRemote) !== appQ.wantRemote) return false;
-      if (appQ.wantHours && String(a.wantWorkingHours) !== appQ.wantHours) return false;
-      if (appQ.studentName) {
-        const fullName = `${a.student.firstName} ${a.student.lastName}`.toLowerCase();
-        if (!fullName.includes(appQ.studentName.toLowerCase())) return false;
-      }
-      if (appQ.studentNum && a.student.studentNum !== appQ.studentNum) return false;
-      return true;
-    });
-    setFilteredApps(filtered);
-    setFiltering(true);
-  };
-   
-  // Whenever the selected application changes, fetch its allocation history
-      useEffect(() => {
-        if (!selApp || !token) {
-          setHistory([]);
-          return;
+
+  // 1️⃣ Local filter state:
+  const [filters, setFilters] = useState<ApplicationFilters>({
+    pref1: '',
+    pref2: '',
+    pref3: '',
+    year: '',
+    wantRemote: '',
+    wantHours: '',
+    studentName: '',
+    studentNum: '',
+  });
+
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+
+  const [page, setPage] = useState(0);
+  const pageSize = 5;
+
+  const [years, setYears] = useState<string[]>([]);
+  useEffect(() => {
+    fetchAllExistingYears()
+      .then(arr => {
+        const yearsArr = arr ?? [];
+        setYears(yearsArr);
+
+        if (yearsArr.length > 0) {
+          const latest = String(
+            Math.max(...yearsArr.map(y => Number(y)))
+          );
+          setFilters(f => ({ ...f, year: latest }));
         }
-        fetchAllocationsByStudent(selApp.student.id, token)
-          .then(setHistory)
-          .catch(err => {
-            console.error('Failed to load allocation history', err);
-            setHistory([]);
-          });
-      }, [selApp, token]);
+      })
+      .catch(() => setYears([]));
+  }, []);
 
-  
+  const apiFilters = {
+    year: filters.year ? Number(filters.year) : undefined,
+    wantRemote:
+      filters.wantRemote === ''
+        ? undefined
+        : filters.wantRemote === 'true',
+    hours:
+      filters.wantHours === ''
+        ? undefined
+        : Number(filters.wantHours),
+    preference1: filters.pref1 || undefined,
+    preference2: filters.pref2 || undefined,
+    preference3: filters.pref3 || undefined,
+    // (we could also push studentName/Num into the back‑end,
+    // but for now we keep those client‑side if you like)
+  };
+
+  const {
+    data: pageData,
+    isFetching,
+  } = useApplicationSearchPage(apiFilters, page, pageSize, token!);
+
+  const apps = pageData?.content ?? [];
+  const displayApps = filterByStudentNameAndNum(apps,filters);
+  const totalPages = pageData?.totalPages ?? 0;
+
+  const [history, setHistory] = useState<Allocation[]>([]);
+  useEffect(() => {
+    if (!selApp || !token) return setHistory([]);
+    fetchAllocationsByStudent(selApp.student.id, token)
+      .then(setHistory)
+      .catch(() => setHistory([]));
+  }, [selApp, token]);
+
   return (
-    <div className={`${colSpanClass} bg-white p-3 rounded shadow space-y-4 text-sm`}>
-      <h1 className="font-semibold text-xl">Application Filter</h1>
+    <div className={`${colSpanClass} bg-white p-4 rounded shadow space-y-1 text-sm`}>
+      {/* Header + collapse toggle */}
+      <div className="flex justify-between items-center">
+        <h1 className="font-semibold text-xl">Application Filter</h1>
+      </div>
 
-      {/* Filter controls */}
-      <div className="grid grid-cols-2 gap-2">
+      {/* ───── Basic filters (always visible) ───── */}
+      <div className="grid grid-rows-3 gap-2">
         <select
-          className="border rounded px-2 py-2"
-          value={appQ.pref1}
-          onChange={e => setAppQ(q => ({ ...q, pref1: e.target.value }))}
+         aria-label="Year"
+          className="border rounded px-2 py-1"
+          value={filters.year}
+          onChange={e => setFilters(f => ({ ...f, year: e.target.value }))}
         >
-          <option value="">1st Pref</option>
-          {Array.from(new Set(allApps.flatMap(a => a.preferences)))
+          <option value="">Year</option>
+          {years.map(y => <option key={y} value={y}>{y}</option>)}
+        </select>
+        <select
+         aria-label="1st Pref"
+          className="border rounded px-2 py-1"
+          value={filters.pref1}
+          onChange={e => setFilters(f => ({ ...f, pref1: e.target.value }))}
+          title="Existing 1st Preferences in the Database by Year"
+        >
+          <option value="">Student's 1st Preference</option>
+          {Array.from(new Set(apps.flatMap(a => a.preferences)))
             .sort()
-            .map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
+            .map(p => <option key={p} value={p}>{p}</option>)
+          }
         </select>
         <select
-          className="border rounded px-2 py-2"
-          value={appQ.pref2}
-          onChange={e => setAppQ(q => ({ ...q, pref2: e.target.value }))}
+         aria-label="Hours"
+          className="border rounded px-2 py-1"
+          value={filters.wantHours}
+          onChange={e => setFilters(f => ({ ...f, wantHours: e.target.value }))}
+          title="Existing Requested Hours in the Database by Year"
         >
-          <option value="">2nd Pref</option>
-          {Array.from(new Set(allApps.flatMap(a => a.preferences)))
-            .sort()
-            .map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-        </select>
-        <select
-          className="border rounded px-2 py-2"
-          value={appQ.wantRemote}
-          onChange={e => setAppQ(q => ({ ...q, wantRemote: e.target.value }))}
-        >
-          <option value="">Remote?</option>
-          <option value="true">Yes</option>
-          <option value="false">No</option>
-        </select>
-        <select
-          className="border rounded px-2 py-2"
-          value={appQ.wantHours}
-          onChange={e => setAppQ(q => ({ ...q, wantHours: e.target.value }))}
-        >
-          <option value="">Hours</option>
-          {Array.from(new Set(allApps.map(a => a.wantWorkingHours.toString())))
+          <option value="">Student's Requested Hours</option>
+          {Array.from(new Set(apps.map(a => a.wantWorkingHours.toString())))
             .sort((a, b) => +a - +b)
-            .map(h => <option key={h} value={h}>{h}</option>)}
+            .map(h => <option key={h} value={h}>{h}</option>)
+          }
         </select>
-      </div>
-      <input
-        type="text"
-        placeholder="Student Name"
-        className="border rounded px-2 py-2 w-full"
-        value={appQ.studentName}
-        onChange={e => setAppQ(q => ({ ...q, studentName: e.target.value }))}
-      />
-      <input
-        type="text"
-        placeholder="Student Number"
-        className="border rounded px-2 py-2 w-full"
-        value={appQ.studentNum}
-        onChange={e => setAppQ(q => ({ ...q, studentNum: e.target.value }))}
-      />
-      {/* Filter Button */}
-      <div className="flex justify-end">
-        <button
-          onClick={filterApplications}
-          className="px-6 py-2 bg-[#040941] text-white hover:bg-blue-900 rounded w-full"
-        >
-          Filter
-        </button>
+        
       </div>
 
-      {/* Application list */}
+      {advancedOpen && (
+        <>
+        <div className="grid grid-cols-3 gap-2">
+          <select
+            className="border rounded px-2 py-1"
+            value={filters.pref2}
+            onChange={e => setFilters(f => ({ ...f, pref2: e.target.value }))}
+          >
+            <option value="">2nd Preference</option>
+            {Array.from(new Set(apps.flatMap(a => a.preferences)))
+              .sort()
+              .map(p => <option key={p} value={p}>{p}</option>)
+            }
+          </select>
+
+          <select
+            className="border rounded px-2 py-1"
+            value={filters.pref3}
+            onChange={e => setFilters(f => ({ ...f, pref3: e.target.value }))}
+          >
+            <option value="">3rd Preference</option>
+            {Array.from(new Set(apps.flatMap(a => a.preferences)))
+              .sort()
+              .map(p => <option key={p} value={p}>{p}</option>)
+            }
+          </select>
+
+          <select
+            className="border rounded px-2 py-1"
+            value={filters.wantRemote}
+            onChange={e => setFilters(f => ({ ...f, wantRemote: e.target.value }))}
+          >
+            <option value="">Remote?</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>         
+        </div>
+        <input
+            type="text"
+            placeholder="Student Number"
+            className="border rounded px-2 py-1 w-full"
+            value={filters.studentNum}
+            onChange={e => setFilters(f => ({ ...f, studentNum: e.target.value }))}
+          />
+          <input
+            type="text"
+            placeholder="Student Name"
+            className="border rounded px-2 py-1 w-full"
+            value={filters.studentName}
+            onChange={e => setFilters(f => ({ ...f, studentName: e.target.value }))}
+          />
+        </>
+      )}
+
+      <button onClick={() => setAdvancedOpen(open => !open)}
+        className="w-full border border-gray-300 rounded flex justify-center items-center text-gray-600 hover:bg-gray-100 transition">
+        {advancedOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+      </button>
+      <h1 className="font-semibold text-xl mt-2">Please select an Application</h1>
       <div className="max-h-48 overflow-auto space-y-1 mt-2">
-        <h2 className="font-semibold text-xl">Please select an Application*</h2>
-        {filteredApps.map(app => (
+        {isFetching && <StatusIndicator loading={isFetching}/>}
+        {!isFetching && apps.length === 0 && (
+          <p className="text-gray-500">No applications found</p>
+        )}
+        {!isFetching && displayApps.map(app => (
           <button
             key={`${app.student.id}-${app.timeSubmitted}`}
             onClick={() => loadApp(app)}
-            className={`block w-full text-left px-3 py-2 rounded ${
-              selApp === app ? 'bg-gray-900 text-white' : 'bg-gray-200 hover:bg-gray-300'
-            }`}
+            className={`block w-full text-left px-3 py-2 rounded ${selApp === app
+              ? 'bg-gray-900 text-white'
+              : 'bg-gray-200 hover:bg-gray-300'
+              }`}
           >
             {app.student.firstName} {app.student.lastName} —{' '}
             {new Date(app.timeSubmitted).toLocaleString()}
           </button>
         ))}
-        {filteredApps.length === 0 && <p className="text-gray-500">No applications</p>}
       </div>
 
-      {/* Details sections inside panel */}
+      <Pagination
+        page={page}
+        pageCount={totalPages}
+        onPrev={() => setPage(p => Math.max(0, p - 1))}
+        onNext={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+      />
+      
       {selApp && (
-        <div className="mt-6 border-t pt-4 space-y-6">
-          {/* Applicant Details */}
-          <section>
-            <h2 className="font-bold text-lg">Applicant Details</h2>
-            <div className="space-y-1 pl-2">
-              <p><strong>Name:</strong>
-                  {selApp.student.firstName} {selApp.student.lastName}
-                </p>
-              <p><strong>User ID:</strong> {selApp.student.id}</p>
-              <p><strong>Student Number:</strong> {selApp.student.studentNum || 'N/A'}</p>
-            </div>
-          </section>
-
-          {/* Application Details */}
-          <section>
-            <h2 className="font-bold text-lg">Application Details</h2>
-            <div className="space-y-1 pl-2">
-              <p><strong>Preferences:</strong> {selApp.preferences.join(', ')}</p>
-              <p><strong>Remote?</strong> {selApp.wantRemote ? 'Yes' : 'No'}</p>
-              <p><strong>Desired Hours:</strong> {selApp.wantWorkingHours}</p>
-              <p><strong>Submitted:</strong> {new Date(selApp.timeSubmitted).toLocaleString()}</p>
-            </div>
-          </section>
-
-          {/* Availabilities */}
-          <section>
-            <h2 className="font-bold text-lg">Availabilities</h2>
-            <ul className="list-disc pl-4 space-y-1">
-              {selApp.availabilities.map((a, i) => (
-                <li key={i}>{a.day}: {a.startTime} – {a.endTime}</li>
-              ))}
-            </ul>
-          </section>
-
-          {/* Allocation History */}
-            <section>
-          <h2 className="font-bold text-lg">Allocation History</h2>
-          {history.length > 0 ? (
-            <ul className="list-disc pl-4 space-y-1 text-sm">
-              {history.map(h => (
-                <li key={h.id}>
-                  <strong>
-                  {h.application?.timeSubmitted
-                    ? new Date(h.application.timeSubmitted).toLocaleString()
-                    : 'N/A'}
-                  </strong>{' '}
-                  — {h.section?.course?.deptCode || 'N/A'}{' '}
-                  {h.section?.course?.courseNum || ''} Section{' '}
-                  {h.section?.section || ''} — {h.numberOfHours ?? 'N/A'}h{' '}
-                  {h.status === 'CONFIRMED' ? '(Confirmed)' : h.status ? `(${h.status.charAt(0) + h.status.slice(1).toLowerCase()})` : '(Pending)'}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500 text-sm">No previous allocations</p>
-          )}
-        </section>
-
-        </div>
+        <SelectedApplicationDetails 
+          selApp={selApp} 
+          history={history} 
+        />
       )}
     </div>
   );
-};
+}
 
-export default ApplicationFilterPanel;
+function filterByStudentNameAndNum (apps:ApplicationDto[], filters:ApplicationFilters){
+    // ── Client‑side name/number filtering ──
+  let displayApps = apps.filter(app => {
+    // 1) Name match?
+    const fullName = `${app.student.firstName} ${app.student.lastName}`.toLowerCase();
+    const nameMatch = filters.studentName
+      ? fullName.includes(filters.studentName.toLowerCase())
+      : true;
+
+    const studentNumStr = String(app.student.studentNum ?? '');
+    const filterNumStr  = String(filters.studentNum ?? '');
+    const numMatch = filterNumStr
+      ? studentNumStr.includes(filterNumStr)
+      : true;
+
+    return nameMatch && numMatch;
+  });
+  return displayApps;
+}

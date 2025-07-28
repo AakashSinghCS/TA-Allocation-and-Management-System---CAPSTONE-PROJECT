@@ -5,7 +5,7 @@ import Navbar from '../../../components/layout/login_navbar/Navbar';
 
 import { useAuth, parseJwt } from '../../../context/AuthContext';
 import { UserRole } from '../../../interfaces/enum/UserRole';
-import { CheckCircle, AlertTriangle } from 'lucide-react';
+import { CheckCircle, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 import { looksLikeSqlInjection } from '../../../utility/validation/sqlinjection/looksLikeSqlInjection';
 
 interface RawJwt {
@@ -22,6 +22,7 @@ const LoginPage: React.FC = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loginMessage, setLoginMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formError, setFormError] = useState('');
@@ -150,24 +151,38 @@ const LoginPage: React.FC = () => {
                 >
                   Password
                 </label>
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={e => {
-                    setPassword(e.target.value);
-                    setPasswordError('');
-                    setFormError('');
-                  }}
-                  onInvalid={() =>
-                    setPasswordError(
-                      'Password must be at least 8 characters and include uppercase, number, and special character'
-                    )
-                  }
-                  onInput={() => setPasswordError('')}
-                  required
-                  className="w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-[#040941] focus:border-[#040941] bg-white"
-                />
+                <div className="relative flex items-center">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={e => {
+                      setPassword(e.target.value);
+                      setPasswordError('');
+                      setFormError('');
+                    }}
+                    onInvalid={() =>
+                      setPasswordError(
+                        'Password must be at least 8 characters and include uppercase, number, and special character'
+                      )
+                    }
+                    onInput={() => setPasswordError('')}
+                    required
+                    className="w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-[#040941] focus:border-[#040941] bg-white pr-10"
+                  />
+                  {password && (
+                    <button
+                      type="button"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#040941] focus:outline-none"
+                      tabIndex={-1}
+                      style={{ pointerEvents: 'auto' }}
+                    >
+                      {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
+                    </button>
+                  )}
+                </div>
                 {passwordError && (
                   <p className="text-sm text-red-600 mt-1">
                     {passwordError}

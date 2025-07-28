@@ -12,7 +12,8 @@ describe("SectionCsvImport", () => {
     localStorage.clear();
   });
 
-  it("shows error if no file is selected", async () => {
+  it("disables Import CSV button if no file is selected", () => {
+    // The UI disables the Import CSV button when no file is selected, so error message is not shown.
     render(<SectionCsvImport />);
     // Try to submit with no file selected
     const button = screen.getByRole("button", { name: /import/i });

@@ -21,30 +21,29 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "section",
-       uniqueConstraints = {
-           @UniqueConstraint(
-               name = "uk_section_unique_row",
-               columnNames = {"course_id", "section_year", "semester", "section", "type"})
-       })
+@Table(name = "section", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_section_unique_row", 
+                columnNames = { "course_id", "semester_id", "section","type" })
+})
 public class Section {
     @Id
     @GeneratedValue()
 
     private Long id;
 
-    @Column(name = "section_year")
-    private Integer year;
-
-    private String semester;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
 
     private String section;
 
     private Long instructorId;
+
+    @Column(nullable = false)
+    private int numberOfTAsAllocated = 0;
 
     @Enumerated(EnumType.STRING)
     private SectionType type;
@@ -54,8 +53,7 @@ public class Section {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    public Section(Integer year, String semester, String section, SectionType type, Course course, Long instructorId) {
-        this.year = year;
+    public Section(Semester semester, String section, SectionType type, Course course, Long instructorId) {
         this.semester = semester;
         this.section = section;
         this.type = type;
@@ -66,8 +64,7 @@ public class Section {
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SectionSchedule> sectionSchedules;
 
-    public Section(Integer year, String semester, String section, SectionType type, Long instructorId, Course course) {
-        this.year = year;
+    public Section(Semester semester, String section, SectionType type, Long instructorId, Course course) {
         this.semester = semester;
         this.section = section;
         this.type = type;

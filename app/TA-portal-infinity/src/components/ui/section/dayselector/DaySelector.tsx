@@ -21,16 +21,17 @@ export default function DaySelector({mode, onChange}:DaySelectorProps) {
   const bigStyle ="mt-1 block w-full rounded border border-gray-400 px-3 py-2"
   const smallOrBig = `${mode ==='small'?smallStyle:bigStyle}`
 
-  useEffect(()=>{
-    onChange(selectedDay);
-  },[selectedDay])
-
   return (
 
       <select
         id="day"
         value={selectedDay ?? ""}
-        onChange={(e) => setSelectedDay(e.target.value)}
+        onChange={(e) => {
+          const v = e.target.value;
+          const next = v === "" ? null : v;
+          setSelectedDay(next);
+          onChange(next);
+        }}
         className={smallOrBig}
       >
         <option value="">Day</option>

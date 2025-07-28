@@ -4,8 +4,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import SectionListPage from './SectionListPage';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// ------------- quick section factory -------------
 const makeSection = (id: number) => ({
   id,
   sectionDetails: {
@@ -15,12 +15,14 @@ const makeSection = (id: number) => ({
     name: `Intro ${id}`,
   },
 });
+const mockUseSectionSearchPage = vi.fn()
 
-// ------------- DATA-LAYER MOCKS ------------------
-const mockFetchFiltered = vi.fn();
-vi.mock('../../../api/course/sectionfilter/fetchFilteredSections', () => ({
-  fetchFilteredSections: (...args: any[]) => mockFetchFiltered(...args),
-}));
+vi.mock(
+  '../../../api/course/sectionfilter/useSectionFilter',
+  () => ({
+    useSectionSearchPage: () => mockUseSectionSearchPage(),
+  }),
+)
 
 vi.mock(
   '../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections',
@@ -102,7 +104,13 @@ describe('<SectionListPage />', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockFetchFiltered.mockResolvedValue([s1]); // what the filter returns
+     mockUseSectionSearchPage.mockReturnValue({
+      data: { content: [s1], totalPages: 1 },
+      isFetching: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    })
     vi.spyOn(window, "confirm").mockReturnValue(true)
     vi.spyOn(window, "prompt").mockReturnValue("DELETE")
   });
@@ -131,16 +139,18 @@ describe('<SectionListPage />', () => {
     mockDelCourse.mockResolvedValueOnce({}); // pretend API success
     fireEvent.click(screen.getByTestId('del-1'));
 
-    // we refresh filters after deletion → second call
-    await waitFor(() => expect(mockFetchFiltered).toHaveBeenCalledTimes(2));
+
     expect(mockDelCourse).toHaveBeenCalledWith(1);
   });
 
   it('uploads CSV and shows success message', async () => {
+    const queryClient = new QueryClient();
     render(
+      <QueryClientProvider client={queryClient}>
       <MemoryRouter>
         <SectionListPage />
       </MemoryRouter>
+      </QueryClientProvider>
     );
 
     // Open modal using the first matching button

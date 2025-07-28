@@ -159,7 +159,7 @@ public class EnrollmentServiceTest {
         StudentCourse course = mock(StudentCourse.class);
         ActiveEnrollmentDto dto = new ActiveEnrollmentDto(
                 new CourseDto(1L, "COSC", "Intro", "111"),
-                new SectionDtoNoCourse(1L, 2025, "W1", "001", SectionType.LECTURE), 90);
+                new SectionDtoNoCourse(1L, 2025, "W1", "001", SectionType.LECTURE, 1), 90);
 
         when(studentCourseRepository.findAllByStudentIdAndStatus(1L, EnrollmentStatus.ENROLLED))
                 .thenReturn(List.of(course));

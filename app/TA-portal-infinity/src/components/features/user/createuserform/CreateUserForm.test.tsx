@@ -13,8 +13,27 @@ describe('CreateUserForm', () => {
     fireEvent.change(screen.getByLabelText(/Role\*/i),             { target: { value: 'STUDENT' } });
 
     const [pwdInput, confirmInput] = screen.getAllByLabelText(/Password\*/i);
+
+    // Eye icons should not be present before input
+    expect(screen.queryAllByRole('button', { name: /show password|hide password|show confirm password|hide confirm password/i })).toHaveLength(0);
+
     fireEvent.change(pwdInput,     { target: { value: 'Password1!' } });
     fireEvent.change(confirmInput, { target: { value: 'Different1!' } });
+
+    // Eye icons should now be present for both fields
+    expect(screen.getByRole('button', { name: /show password|hide password/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /show confirm password|hide confirm password/i })).toBeInTheDocument();
+
+    // Toggle password visibility for both fields
+    fireEvent.click(screen.getByRole('button', { name: /show password/i }));
+    expect(pwdInput).toHaveAttribute('type', 'text');
+    fireEvent.click(screen.getByRole('button', { name: /hide password/i }));
+    expect(pwdInput).toHaveAttribute('type', 'password');
+
+    fireEvent.click(screen.getByRole('button', { name: /show confirm password/i }));
+    expect(confirmInput).toHaveAttribute('type', 'text');
+    fireEvent.click(screen.getByRole('button', { name: /hide confirm password/i }));
+    expect(confirmInput).toHaveAttribute('type', 'password');
 
     fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
 
@@ -34,6 +53,10 @@ describe('CreateUserForm', () => {
     const [pwdIn, confirmIn] = screen.getAllByLabelText(/Password\*/i);
     fireEvent.change(pwdIn,     { target: { value: 'Password1!' } });
     fireEvent.change(confirmIn, { target: { value: 'Password1!' } });
+
+    // Eye icons should now be present for both fields
+    expect(screen.getByRole('button', { name: /show password|hide password/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /show confirm password|hide confirm password/i })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
 
