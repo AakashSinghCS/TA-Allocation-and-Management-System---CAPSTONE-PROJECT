@@ -14,5 +14,6 @@ public record CourseFilterRequest(
         SectionType type,
         String day,
         LocalTime startTime,
-        LocalTime endTime
+        LocalTime endTime,
+        String searchText
         ) {}
