@@ -161,7 +161,7 @@ public class CourseControllerTest {
                 CourseFilterRequest filterRequest = new CourseFilterRequest(
                                 "COSC", null, null, null,
                                 2025, "W1", SectionType.LABORATORY, "Wed",
-                                LocalTime.of(14, 0), LocalTime.of(15, 30));
+                                LocalTime.of(14, 0), LocalTime.of(15, 30), null);
 
                 CourseSectionScheduleDto dto1 = new CourseSectionScheduleDto(
                                 1L, 3L, "COSC", "Distributed Systems", "455", "001",

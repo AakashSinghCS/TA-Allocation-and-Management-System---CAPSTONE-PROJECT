@@ -100,7 +100,7 @@ export default function SectionFilter({
     <div className={mode === 'small' ? "space-y-1 text-sm" : "space-y-4"}>
       <input
         type="text"
-        placeholder="Search courses (e.g. 'math 101 winter')"
+        placeholder="Search courses (e.g. 'COSC 101 W1')"
         value={rawSearchText}
         onChange={(e) => setRawSearchText(e.target.value)}
         className={mode === 'small' ? inputStyleSmall : inputStyleBig}
