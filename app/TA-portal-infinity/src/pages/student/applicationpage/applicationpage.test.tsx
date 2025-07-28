@@ -5,6 +5,20 @@ vi.mock('../../../api/application/DeleteApplication', () => ({
 vi.mock('../../../api/course/getAllDeptCodes', () => ({
   getAllDeptCodes: vi.fn(() => Promise.resolve(['COSC', 'MATH', 'PHYS'])),
 }));
+vi.mock('../../../api/semester/getActiveSemesters', () => ({
+  getActiveSemesters: vi.fn(() => Promise.resolve([
+    { year: 2025, semester: 'W1' },
+    { year: 2025, semester: 'W2' }
+  ])),
+}));
+vi.mock('../../../api/admin/FetchDeadline', () => ({
+  fetchDeadlines: vi.fn(() => Promise.resolve([
+    {
+      name: 'student_application_deadline',
+      endTime: '2025-12-31T23:59:59Z'
+    }
+  ])),
+}));
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ApplicationPage from './ApplicationPage';
@@ -164,18 +178,25 @@ describe('ApplicationPage', () => {
     expect(screen.getByText(/Availability:/i)).toBeInTheDocument();
   });
 
-  it('handles file input, preference select, and application type radio', async () => {
+  it('handles year/semester inputs, preference select, and application type radio', async () => {
     renderWithProviders();
 
     await screen.findByLabelText(/1st Preference/i);
 
-    const file = new File(['dummy content'], 'test.pdf', { type: 'application/pdf' });
+    // Test year input
+    const yearInput = screen.getByLabelText(/Year/i);
+    fireEvent.change(yearInput, { target: { value: '2024' } });
+    expect((yearInput as HTMLInputElement).value).toBe('2024');
+
+    // Test semester select
+    const semesterSelect = screen.getByLabelText(/Semester/i);
+    fireEvent.change(semesterSelect, { target: { value: 'W1' } });
+    expect((semesterSelect as HTMLSelectElement).value).toBe('W1');
+
+    // Test preference select
     const select = screen.getByLabelText(/1st Preference/i);
     fireEvent.change(select, { target: { value: 'COSC' } });
     expect((select as HTMLSelectElement).value).toBe('COSC');
-
-    const fileInput = screen.getByLabelText(/choose file/i);
-    fireEvent.change(fileInput, { target: { files: [file] } });
 
     const radios = screen.getAllByRole('radio', { name: /Application Type/i });
 
@@ -183,9 +204,5 @@ describe('ApplicationPage', () => {
     expect(gradRadio).toBeDefined();
     fireEvent.click(gradRadio!);
     expect((gradRadio as HTMLInputElement).checked).toBe(true);
-
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('test.pdf')).toBeInTheDocument();
-    });
   });
 });

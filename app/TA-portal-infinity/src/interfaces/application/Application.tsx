@@ -23,6 +23,8 @@ export interface OfferDto {
 
 import type { ApplicationType } from '../enum/ApplicationType';
 export interface ApplicationRequest {
+  year: number;
+  semester: string;
   preferences: string[];
   wantRemote: boolean;
   wantWorkingHours: number;
@@ -34,6 +36,9 @@ export interface ApplicationRequest {
 export interface ApplicationDto {
    id?:             number;
   applicationId?:  number;
+  studentId?:      number;
+  year:            number;
+  semester:        string;
   student: {
     id: number;                
     firstName: string;

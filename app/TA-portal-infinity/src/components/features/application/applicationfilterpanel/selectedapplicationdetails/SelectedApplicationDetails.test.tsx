@@ -1,4 +1,3 @@
-// __tests__/SelectedApplicationDetails.test.tsx
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
@@ -25,6 +24,8 @@ describe('SelectedApplicationDetails', () => {
       enrollmentYear: 2024,
       schoolYear: "3"
     },
+    year: 2024,
+    semester: 'Fall',
     applicationType: "UNDERGRADUATE",
     preferences: ['Pref1', 'Pref2'],
     wantRemote: true,

@@ -3,6 +3,8 @@ import { getAllDeptCodes } from '../../../../api/course/getAllDeptCodes';
 import { useAuth } from '../../../../context/AuthContext';
 import type { DeadlineDto } from '../../../../interfaces/admin/Deadline';
 import { fetchDeadlines } from '../../../../api/admin/FetchDeadline';
+import { getActiveSemesters } from '../../../../api/semester/getActiveSemesters';
+import type { Semester } from '../../../../interfaces/semester/Semester';
 import { toast } from "react-toastify";
 
 
@@ -13,11 +15,13 @@ interface ApplicationFormProps {
   handleSubmit: (e: React.FormEvent) => void;
   children?: React.ReactNode;
   isUpdate?: boolean;
+  existingTerms?: Set<string>;
 }
 
-const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, handleChange, handleSubmit, children, isUpdate }) => {
+const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, handleChange, handleSubmit, children, isUpdate, existingTerms = new Set() }) => {
   const [deptCodes, setDeptCodes] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [activeSemesters, setActiveSemesters] = useState<Semester[]>([]);
   const { token, userId, userRoles } = useAuth();
 
   const [applicationDeadline, setApplicationDeadline] = useState<DeadlineDto | null>(null);
@@ -26,19 +30,34 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    getAllDeptCodes(token ?? undefined, userId, userRoles)
-      .then((codes) => {
+    
+    const fetchData = async () => {
+      try {
+        // Fetch department codes
+        const codes = await getAllDeptCodes(token ?? undefined, userId, userRoles);
         if (isMounted) {
           setDeptCodes(Array.isArray(codes) ? codes : []);
-          setLoading(false);
         }
-      })
-      .catch(() => {
+        
+        // Fetch active semesters
+        const semesters = await getActiveSemesters(token ?? '');
         if (isMounted) {
-          setDeptCodes([]); // fallback to empty array
+          setActiveSemesters(semesters);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setDeptCodes([]);
+          setActiveSemesters([]);
+        }
+      } finally {
+        if (isMounted) {
           setLoading(false);
         }
-      });
+      }
+    };
+    
+    fetchData();
+    
     return () => {
       isMounted = false;
     };
@@ -68,6 +87,112 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 md:space-y-10 lg:space-y-12" role="form">
+      {/* Term Selection */}
+      <section>
+        <h2 className="text-lg font-semibold mb-4">Term Selection</h2>
+        <div className="space-y-4">
+          <div>
+            <label className="block mb-3 font-semibold text-lg md:text-lg">
+              Select Terms* (Choose one or more terms to apply for)
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {Array.isArray(activeSemesters) && activeSemesters.map(sem => {
+                const termValue = `${sem.year}-${sem.semester}`;
+                const isSelected = formData.selectedTerms.includes(termValue);
+                const hasExistingApplication = existingTerms.has(termValue);
+                return (
+                  <label 
+                    key={termValue} 
+                    className={`
+                      flex items-center p-3 border rounded-lg cursor-pointer transition-all relative
+                      ${isSelected 
+                        ? (hasExistingApplication 
+                            ? 'border-orange-500 bg-orange-50 text-orange-700' 
+                            : 'border-blue-500 bg-blue-50 text-blue-700')
+                        : (hasExistingApplication 
+                            ? 'border-orange-300 bg-orange-25 hover:border-orange-400 hover:bg-orange-50' 
+                            : 'border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50')
+                      }
+                    `}
+                  >
+                    <input
+                      type="checkbox"
+                      className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      checked={isSelected}
+                      onChange={(e) => {
+                        const currentTerms = [...formData.selectedTerms];
+                        if (e.target.checked) {
+                          if (!currentTerms.includes(termValue)) {
+                            currentTerms.push(termValue);
+                          }
+                        } else {
+                          const index = currentTerms.indexOf(termValue);
+                          if (index > -1) {
+                            currentTerms.splice(index, 1);
+                          }
+                        }
+                        const event = {
+                          target: {
+                            name: 'selectedTerms',
+                            value: currentTerms
+                          }
+                        } as any;
+                        handleChange(event);
+                      }}
+                    />
+                    <span className="font-medium">
+                      {sem.year} {sem.semester}
+                    </span>
+                    {hasExistingApplication && (
+                      <span className="ml-auto text-xs font-semibold text-orange-600 bg-orange-100 px-2 py-1 rounded-full">
+                        Already Applied
+                      </span>
+                    )}
+                  </label>
+                );
+              })}
+            </div>
+            {formData.selectedTerms.length > 0 && (
+              <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                <p className="text-sm text-black-700 font-medium mb-2">
+                  Selected Terms ({formData.selectedTerms.length}):
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {formData.selectedTerms.map((term: string) => {
+                    const [year, semester] = term.split('-');
+                    return (
+                      <span 
+                        key={term}
+                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                      >
+                        {year} {semester}
+                        <button
+                          type="button"
+                          className="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-blue-200"
+                          onClick={() => {
+                            const currentTerms = formData.selectedTerms.filter((t: string) => t !== term);
+                            const event = {
+                              target: {
+                                name: 'selectedTerms',
+                                value: currentTerms
+                              }
+                            } as any;
+                            handleChange(event);
+                          }}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            {errors.selectedTerms && <p className="text-sm text-red-600 mt-1">{errors.selectedTerms}</p>}
+          </div>
+        </div>
+      </section>
+      
       {/* Subject Preferences */}
       <section>
         <h2 className="text-lg font-semibold mb-4">Subject Preferences</h2>
@@ -141,34 +266,6 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
       {formData.wantWorkingHours && Number(formData.wantWorkingHours) < 2 && (
         <p className="text-sm text-red-600 mt-1">The value must be greater than or equal to 2</p>
       )}
-    </section>
-
-    {/* Transcript Upload */}
-    <section>
-      <label className="block mb-2 font-semibold text-base md:text-lg" htmlFor="transcriptFile">Upload Transcript*</label>
-      <div className="flex items-center gap-3">
-        <label className="bg-[#040941] text-white px-6 py-2 rounded cursor-pointer hover:bg-[#030735] text-base md:text-base min-h-[36px] md:min-h-[40px] flex items-center" htmlFor="transcriptFile">
-          Choose File
-          <input
-            id="transcriptFile"
-            type="file"
-            name="transcriptFile"
-            accept=".pdf,.doc,.docx"
-            onChange={handleChange}
-            className="hidden"
-            aria-label="Choose File"
-          />
-        </label>
-        <input
-          type="text"
-          readOnly
-          value={formData.transcriptFile?.name || ''}
-          placeholder="No file chosen"
-          className="flex-1 px-3 py-2 text-[#040941] bg-white text-base md:text-base min-h-[36px] md:min-h-[40px]"
-          aria-label="Transcript File Name"
-        />
-      </div>
-      {errors.transcriptFile && <p className="text-sm text-red-600 mt-1">{errors.transcriptFile}</p>}
     </section>
 
     {/* Application Type */}

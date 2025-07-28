@@ -21,6 +21,8 @@ describe('ApplicationViewPage', () => {
   it('renders and filters applications', async () => {
     const mockApp :ApplicationDto= {
       applicationId: 1,
+      year: 2024,
+      semester: 'Fall',
       preferences: ['COSC 111'],
       wantRemote: true,
       wantWorkingHours: 10,

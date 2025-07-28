@@ -38,6 +38,8 @@ const mockApplications: ApplicationDto[] = [
       enrollmentYear: 2022,
       schoolYear: '2nd',
     },
+    year: 2024,
+    semester: 'Fall',
     applicationType: 'UNDERGRADUATE',
     preferences: ['Computer Science'],
     wantRemote: true,

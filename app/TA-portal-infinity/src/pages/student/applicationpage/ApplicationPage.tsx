@@ -1,21 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import type { DateSelectArg, EventClickArg } from '@fullcalendar/core';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useAuth } from '../../../context/AuthContext';
 import type { ApplicationRequest, ApplicationDto, Day } from '../../../interfaces/application/Application';
-import { fetchExistingApplication } from '../../../api/application/FetchExistingApplication';
+import { fetchApplicationsByStudent } from '../../../api/application/FetchApplicationsByStudent';
 
-
-import ApplicationForm from '../../../components/features/application/applicationsubmission/ApplicationForm';
+import TermSelector from '../../../components/features/application/applicationsubmission/TermSelector';
+import TermForm from '../../../components/features/application/applicationsubmission/TermForm';
 import ApplicationSidebar from '../../../components/features/application/applicationsubmission/ApplicationSidebar';
 import ApplicationDetails from '../../../components/features/application/applicationsubmission/ApplicationDetails';
 import { dayMap, getDateForDay, colorByDay } from '../../../components/features/application/applicationsubmission/availabilityUtils';
-import { validateForm, buildPayload } from '../../../components/features/application/applicationsubmission/formValidation';
+import { validateTermForm, buildTermPayload } from '../../../components/features/application/applicationsubmission/formValidation';
 import { getApplicationUrls, getCommonHeaders } from '../../../components/features/application/applicationsubmission/apiHelpers';
 import { updateApplication } from '../../../api/application/UpdateApplication';
 import type { DeadlineDto } from '../../../interfaces/admin/Deadline';
@@ -29,21 +28,15 @@ interface Availability {
 }
 
 const ApplicationPage: React.FC = () => {
-  const [formData, setFormData] = useState({
-    firstPreference: '',
-    secondPreference: '',
-    thirdPreference: '',
-    wantWorkingHours: '',
-    wantRemote: '',
-    transcriptFile: null as File | null,
-    confirmProfileUpdated: false,
-    applicationType: '' as '' | 'UNDERGRADUATE' | 'GRADUATE',
-  });
+  const [selectedTerms, setSelectedTerms] = useState<string[]>([]);
+  const [termFormsData, setTermFormsData] = useState<{[termKey: string]: any}>({});
   const [availability, setAvailability] = useState<Availability[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [submitted, setSubmitted] = useState(false);
   const [savedApp, setSavedApp] = useState<ApplicationDto | null>(null);
-  const navigate = useNavigate();
+  const [existingApplications, setExistingApplications] = useState<ApplicationDto[]>([]);
+  const [existingTerms, setExistingTerms] = useState<Set<string>>(new Set());
+  const [activeFormTab, setActiveFormTab] = useState<string>('');
 const calendarRef = useRef<FullCalendar>(null);
 const { token, userId, userRoles } = useAuth();
 const [showDetails, setShowDetails] = useState(false);
@@ -51,15 +44,64 @@ const [applicationDeadline, setApplicationDeadline] = useState<DeadlineDto | nul
 const [deadlineError, setDeadlineError] = useState("");
 
 useEffect(() => {
-  async function loadExisting() {
-    const year = new Date().getFullYear();
+  async function loadExistingApplications() {
     if (userId !== null && token) {
-      const result = await fetchExistingApplication(Number(userId), year, token, userRoles);
-      if (result) setSavedApp(result);
+      try {
+        const applications = await fetchApplicationsByStudent(Number(userId), token);
+        setExistingApplications(applications);
+        
+        // Create a set of existing terms for quick lookup
+        const termSet = new Set<string>();
+        applications.forEach(app => {
+          const termKey = `${app.year}-${app.semester}`;
+          termSet.add(termKey);
+        });
+        setExistingTerms(termSet);
+        
+        // Set the most recent application as savedApp for display
+        if (applications.length > 0) {
+          const mostRecent = applications.sort((a, b) => 
+            new Date(b.timeSubmitted).getTime() - new Date(a.timeSubmitted).getTime()
+          )[0];
+          setSavedApp(mostRecent);
+          
+          // Load ALL existing applications into forms, not just the most recent
+          applications.forEach(app => {
+            const termKey = `${app.year}-${app.semester}`;
+            updateTermFormData(termKey, {
+              firstPreference: app.preferences[0] || '',
+              secondPreference: app.preferences[1] || '',
+              thirdPreference: app.preferences[2] || '',
+              wantWorkingHours: app.wantWorkingHours.toString(),
+              wantRemote: app.wantRemote ? 'yes' : 'no',
+              applicationType: app.applicationType,
+              confirmProfileUpdated: true
+            });
+          });
+          
+          // Set selected terms to all existing applications
+          const allTermKeys = applications.map(app => `${app.year}-${app.semester}`);
+          setSelectedTerms(allTermKeys);
+          
+          // Set active tab to the most recent
+          setActiveFormTab(`${mostRecent.year}-${mostRecent.semester}`);
+          
+          // Load availability from the most recent application 
+          const existingAvailability = mostRecent.availabilities.map((av, index) => ({
+            id: `${av.day}-${av.startTime}-${av.endTime}-${index}`,
+            day: av.day,
+            startTime: av.startTime,
+            endTime: av.endTime
+          }));
+          setAvailability(existingAvailability);
+        }
+      } catch (error) {
+        console.error('Failed to load existing applications:', error);
+      }
     }
   }
-  if (userId !== null && token) loadExisting();
-}, [userId, token, userRoles]);
+  if (userId !== null && token) loadExistingApplications();
+}, [userId, token]);
 
 useEffect(() => {
   async function loadDeadline() {
@@ -83,21 +125,135 @@ const deadlinePassed =
     !! applicationDeadline &&
     new Date(applicationDeadline.endTime) < new Date();
 
+  // Helper function to initialize form data for a term
+  const initializeTermForm = (termKey: string) => ({
+    firstPreference: '',
+    secondPreference: '',
+    thirdPreference: '',
+    wantWorkingHours: '',
+    wantRemote: '',
+    confirmProfileUpdated: false,
+    applicationType: '' as '' | 'UNDERGRADUATE' | 'GRADUATE',
+  });
+
+  // Helper function to get form data for a specific term
+  const getTermFormData = (termKey: string) => {
+    return termFormsData[termKey] || initializeTermForm(termKey);
+  };
+
+  // Helper function to update form data for a specific term
+  const updateTermFormData = (termKey: string, updates: any) => {
+    setTermFormsData(prev => ({
+      ...prev,
+      [termKey]: { ...getTermFormData(termKey), ...updates }
+    }));
+  };
+
+  // Helper function to clear all forms
+  const clearForm = () => {
+    setSelectedTerms([]);
+    setTermFormsData({});
+    setAvailability([]);
+    setActiveFormTab('');
+  };
+
+  // Helper function to load application data into the form
+  const loadApplicationIntoForm = (application: ApplicationDto) => {
+    const termKey = `${application.year}-${application.semester}`;
+    setSelectedTerms([termKey]);
+    setActiveFormTab(termKey);
+    
+    updateTermFormData(termKey, {
+      firstPreference: application.preferences[0] || '',
+      secondPreference: application.preferences[1] || '',
+      thirdPreference: application.preferences[2] || '',
+      wantWorkingHours: application.wantWorkingHours.toString(),
+      wantRemote: application.wantRemote ? 'yes' : 'no',
+      applicationType: application.applicationType,
+      confirmProfileUpdated: true
+    });
+    
+    // Load availability
+    const existingAvailability = application.availabilities.map((av, index) => ({
+      id: `${av.day}-${av.startTime}-${av.endTime}-${index}`,
+      day: av.day,
+      startTime: av.startTime,
+      endTime: av.endTime
+    }));
+    setAvailability(existingAvailability);
+  };
+
+  const handleTermSelection = (termKey: string, isSelected: boolean) => {
+    if (isSelected) {
+      setSelectedTerms(prev => [...prev, termKey]);
+      // Initialize form data for new term
+      if (!termFormsData[termKey]) {
+        const existingApp = existingApplications.find(app => 
+          `${app.year}-${app.semester}` === termKey
+        );
+        if (existingApp) {
+          // Pre-populate with existing application data
+          updateTermFormData(termKey, {
+            firstPreference: existingApp.preferences[0] || '',
+            secondPreference: existingApp.preferences[1] || '',
+            thirdPreference: existingApp.preferences[2] || '',
+            wantWorkingHours: existingApp.wantWorkingHours.toString(),
+            wantRemote: existingApp.wantRemote ? 'yes' : 'no',
+            applicationType: existingApp.applicationType,
+            confirmProfileUpdated: true
+          });
+          
+          // Load availability from existing app
+          const existingAvailability = existingApp.availabilities.map((av, index) => ({
+            id: `${av.day}-${av.startTime}-${av.endTime}-${index}`,
+            day: av.day,
+            startTime: av.startTime,
+            endTime: av.endTime
+          }));
+          setAvailability(existingAvailability);
+        } else {
+          // Initialize with default values
+          setTermFormsData(prev => ({
+            ...prev,
+            [termKey]: initializeTermForm(termKey)
+          }));
+        }
+      }
+      // Set as active tab if it's the first selection or no active tab
+      if (selectedTerms.length === 0 || !activeFormTab) {
+        setActiveFormTab(termKey);
+      }
+    } else {
+      setSelectedTerms(prev => prev.filter(term => term !== termKey));
+      // Remove form data for deselected term
+      setTermFormsData(prev => {
+        const updated = { ...prev };
+        delete updated[termKey];
+        return updated;
+      });
+      // Switch to first available term if removing active tab
+      if (activeFormTab === termKey) {
+        const remainingTerms = selectedTerms.filter(term => term !== termKey);
+        setActiveFormTab(remainingTerms.length > 0 ? remainingTerms[0] : '');
+      }
+    }
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value, type, checked, files } = e.target as HTMLInputElement;
+    if (!activeFormTab) return;
+    
+    const { name, value, type, checked } = e.target as HTMLInputElement;
+    
     if (type === 'checkbox' && name === 'confirmProfileUpdated') {
-      setFormData(prev => ({ ...prev, confirmProfileUpdated: checked }));
-    } else if (type === 'file') {
-      setFormData(prev => ({
-        ...prev,
-        transcriptFile: files?.[0] ?? null,
-      }));
+      updateTermFormData(activeFormTab, { confirmProfileUpdated: checked });
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      updateTermFormData(activeFormTab, { [name]: value });
     }
-    setErrors(prev => ({ ...prev, [name]: '' }));
+    
+    // Clear errors for this field
+    setErrors(prev => ({ ...prev, [`${activeFormTab}-${name}`]: '' }));
   };
 
   const handleDateSelect = (info: DateSelectArg) => {
@@ -122,95 +278,138 @@ const deadlinePassed =
  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
-  // client-side validation ---
-  const newErrors = validateForm(formData, availability);
-  if (Object.keys(newErrors).length) {
-    setErrors(newErrors);
+  if (selectedTerms.length === 0) {
+    setErrors({ general: 'Please select at least one term to apply for.' });
+    return;
+  }
+
+  // Validate all selected term forms
+  const allErrors: { [key: string]: string } = {};
+  const validTerms: string[] = [];
+
+  for (const termKey of selectedTerms) {
+    const termData = getTermFormData(termKey);
+    const termErrors = validateTermForm(termData, availability);
+    
+    if (Object.keys(termErrors).length > 0) {
+      // Prefix errors with term key for identification
+      Object.keys(termErrors).forEach(field => {
+        allErrors[`${termKey}-${field}`] = termErrors[field];
+      });
+    } else {
+      validTerms.push(termKey);
+    }
+  }
+
+  if (Object.keys(allErrors).length > 0) {
+    setErrors(allErrors);
     return;
   }
 
   setErrors({});
   setSubmitted(true);
 
-  //assemble our payload
-  const payload = buildPayload(formData, availability);
-            {/* Application Type */}
-            <section>
-              <label className="block mb-2 font-semibold">Application Type*</label>
-              <div className="flex gap-6">
-                {(['UNDERGRADUATE', 'GRADUATE'] as const).map(type => {
-                  const id = `applicationType-${type.toLowerCase()}`;
-                  return (
-                    <label key={type} htmlFor={id} className="inline-flex items-center space-x-2">
-                      <input
-                        id={id}
-                        type="radio"
-                        name="applicationType"
-                        value={type}
-                        checked={formData.applicationType === type}
-                        onChange={handleChange}
-                        className="form-radio text-indigo-600"
-                      />
-                      <span className="capitalize">{type.toLowerCase()}</span>
-                    </label>
-                  );
-                })}
-              </div>
-              {errors.applicationType && (
-                <p className="text-sm text-red-600 mt-1">{errors.applicationType}</p>
-              )}
-            </section>
-
-
   // preparing URLs & headers
-  const { addUrl, updateUrl } = getApplicationUrls(userId ?? '');
+  const { addUrl } = getApplicationUrls(userId ?? '');
   const commonHeaders = getCommonHeaders(token ?? '', userId ?? '', userRoles);
 
   try {
-    let resp = await fetch(addUrl, {
-      method: 'POST',
-      headers: commonHeaders,
-      body: JSON.stringify(payload),
-    });
+    const results = [];
+    let hasErrors = false;
+    
+    // Submit each term application
+    for (const termKey of validTerms) {
+      const [year, semester] = termKey.split('-');
+      const termData = getTermFormData(termKey);
+      const payload = buildTermPayload(termData, parseInt(year), semester, availability);
 
-    // if duplicate‐year error, fall back to PUT update
-    if (resp.status === 400) {
-      const errTxt = await resp.text();
-      console.warn('Add failed:', errTxt);
-      if (errTxt.includes('already submitted')) {
-        // Use the new updateApplication helper
-        try {
-          const dto = await updateApplication(userId ?? '', payload, token ?? '', userRoles);
-          setSavedApp(dto);
-          toast.success('Application updated successfully!', { autoClose: 2500 });
-          return;
-        } catch (updateErr) {
-          console.error('Update failed:', updateErr);
-          setErrors(prev => ({ ...prev, form: 'Failed to update application. Please try again later.' }));
-          toast.error('Failed to update application. Please try again.', { autoClose: 3500 });
-          return;
+      try {
+        let resp = await fetch(addUrl, {
+          method: 'POST',
+          headers: commonHeaders,
+          body: JSON.stringify(payload),
+        });
+
+        // if duplicate‐year error, fall back to PUT update
+        if (resp.status === 400) {
+          const errTxt = await resp.text();
+          console.warn('Add failed:', errTxt);
+          if (errTxt.includes('already submitted')) {
+            // Use the new updateApplication helper
+            try {
+              const dto = await updateApplication(userId ?? '', payload, token ?? '', userRoles);
+              results.push(dto);
+              continue;
+            } catch (updateErr) {
+              console.error('Update failed:', updateErr);
+              hasErrors = true;
+              continue;
+            }
+          } else {
+            console.error('Server validation failed:', errTxt);
+            hasErrors = true;
+            continue;
+          }
         }
-      } else {
-        console.error('Server validation failed:', errTxt);
-        throw new Error(errTxt);
+        
+        if (!resp.ok) {
+          const errTxt = await resp.text();
+          console.error('Final server error:', errTxt);
+          hasErrors = true;
+          continue;
+        }
+
+        // success! parse & store DTO
+        const dto: ApplicationDto = await resp.json();
+        results.push(dto);
+        
+      } catch (err) {
+        console.error('Error submitting application for', payload.year, payload.semester, ':', err);
+        hasErrors = true;
       }
     }
-    if (!resp.ok) {
-      const errTxt = await resp.text();
-      console.error('Final server error:', errTxt);
-      throw new Error(`HTTP ${resp.status}: ${errTxt}`);
+    
+    if (results.length > 0) {
+      // Refresh existing applications after successful submission
+      try {
+        const updatedApplications = await fetchApplicationsByStudent(Number(userId), token || '');
+        setExistingApplications(updatedApplications);
+        
+        // Update existing terms set
+        const termSet = new Set<string>();
+        updatedApplications.forEach(app => {
+          const termKey = `${app.year}-${app.semester}`;
+          termSet.add(termKey);
+        });
+        setExistingTerms(termSet);
+        
+        // Set the most recent application as savedApp for display
+        const mostRecent = updatedApplications.sort((a, b) => 
+          new Date(b.timeSubmitted).getTime() - new Date(a.timeSubmitted).getTime()
+        )[0];
+        setSavedApp(mostRecent);
+      } catch (refreshError) {
+        console.error('Failed to refresh applications after submission:', refreshError);
+        // Still use the first result if refresh fails
+        setSavedApp(results[0]);
+      }
+      
+      if (hasErrors) {
+        toast.success(`${results.length} application(s) submitted successfully, but some failed. Please check and resubmit if needed.`, { autoClose: 4000 });
+      } else {
+        toast.success(`All ${results.length} application(s) submitted successfully!`, { autoClose: 3000 });
+      }
+    } else {
+      throw new Error('All applications failed to submit');
     }
-
-    // success! parse & store DTO
-    const dto: ApplicationDto = await resp.json();
-    setSavedApp(dto);
 
   } catch (err) {
     console.error(err);
     setErrors(prev => ({
       ...prev,
-      form: 'Failed to submit application. Please try again later.'
+      form: 'Failed to submit applications. Please try again later.'
     }));
+    toast.error('Failed to submit applications. Please try again.', { autoClose: 3500 });
   }
 };
 
@@ -218,18 +417,29 @@ const deadlinePassed =
     <div className="min-h-screen px-2 sm:px-4 md:px-6 py-6 md:py-12">
       <div className="max-w-[1100px] mx-auto w-full">
 
-        {/* always show submission confirmation if savedApp exists */}
-        {savedApp && (
-          <div className="mb-6 rounded-lg border-l-4 border-yellow-500 bg-yellow-100 p-3 text-yellow-800 flex items-center justify-between">
+        {/* Dynamic warning message based on selected terms */}
+        {selectedTerms.some((term: string) => existingTerms.has(term)) && (
+          <div className="mb-6 rounded-lg border-l-4 border-orange-500 bg-orange-100 p-3 text-orange-800 flex items-center justify-between">
             <span>
-              An application for this year has already been submitted. You can view it below — any changes you make will update it.
+              {(() => {
+                const existingSelectedTerms = selectedTerms.filter((term: string) => existingTerms.has(term));
+                const termsList = existingSelectedTerms.map(term => {
+                  const [year, semester] = term.split('-');
+                  return `${year} ${semester}`;
+                }).join(', ');
+                return existingSelectedTerms.length === 1 
+                  ? `You have already submitted an application for ${termsList}. Any changes you make will update that application.`
+                  : `You have already submitted applications for ${termsList}. Any changes you make will update those applications.`;
+              })()}
             </span>
           </div>
         )}
 
-      {/* heading change if exists */}
+      {/* heading change based on whether any selected terms have existing applications */}
       <h1 className="text-3xl font-bold text-[#040941] mb-10">
-        {savedApp ? 'Update Your TA Application' : 'TA Application Submission'}
+        {selectedTerms.some((term: string) => existingTerms.has(term)) 
+          ? 'Update Your TA Application(s)' 
+          : 'TA Application Submission'}
       </h1>
       {applicationDeadline && (
       <p className="text-md text-gray-700 mb-6">
@@ -253,155 +463,294 @@ const deadlinePassed =
 
         <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr_320px] gap-8 md:gap-12 lg:gap-14">
           <div className="w-full">
-          <ApplicationForm
-            formData={formData}
-            errors={errors}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-            isUpdate={!!savedApp}
-          >
-            {/* Availability Calendar */}
-            <section>
-              <h2 className="text-lg font-semibold mb-2">Availability*</h2>
-              <div className="bg-white rounded shadow p-2">
-                <FullCalendar
-                  ref={calendarRef as any}
-                  plugins={[timeGridPlugin, interactionPlugin]}
-                  initialView="timeGridWeek"
-                  allDaySlot={false}
-                  headerToolbar={false}
-                  slotMinTime="06:00:00"
-                  slotMaxTime={`18:00:00`}
-                  height="auto"
-                  selectable
-                  selectMirror
-                  select={handleDateSelect}
-                  eventClick={handleEventClick}
-                  events={availability.map(av => ({
-                    id: av.id,
-                    start: getDateForDay(av.day, av.startTime),
-                    end: getDateForDay(av.day, av.endTime),
-                    backgroundColor: colorByDay[av.day],
-                    borderColor: colorByDay[av.day],
-                  }))}
-                  dayHeaderFormat={{ weekday: 'long' }}
-                  slotEventOverlap={false}
-                  expandRows={true}
-                  contentHeight="auto"
-                />
-              </div>
-              {errors.availability && <p className="text-sm text-red-600 mt-1">{errors.availability}</p>}
-            </section>
-          </ApplicationForm>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Term Selection */}
+              <TermSelector
+                selectedTerms={selectedTerms}
+                existingTerms={existingTerms}
+                onTermToggle={handleTermSelection}
+              />
+
+              {/* Show error for general validation */}
+              {errors.general && (
+                <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded p-3">
+                  {errors.general}
+                </div>
+              )}
+
+              {/* Term Forms Tabs */}
+              {selectedTerms.length > 0 && (
+                <div className="bg-white border rounded-lg">
+                  {/* Tab Headers */}
+                  {selectedTerms.length > 1 && (
+                    <div className="border-b border-gray-200">
+                      <nav className="flex space-x-8 px-6" aria-label="Terms">
+                        {selectedTerms.map(termKey => {
+                          const [year, semester] = termKey.split('-');
+                          const isActive = activeFormTab === termKey;
+                          const hasExisting = existingTerms.has(termKey);
+                          return (
+                            <button
+                              key={termKey}
+                              type="button"
+                              onClick={() => setActiveFormTab(termKey)}
+                              className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                                isActive
+                                  ? 'border-blue-500 text-blue-600'
+                                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                              }`}
+                            >
+                              {year} {semester}
+                              {hasExisting && (
+                                <span className="ml-2 text-xs text-orange-600">(Update)</span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </nav>
+                    </div>
+                  )}
+
+                  {/* Active Form Content */}
+                  <div className="p-6">
+                    {(selectedTerms.length === 1 ? selectedTerms : [activeFormTab]).filter(Boolean).map(termKey => (
+                      <div key={termKey} className={selectedTerms.length > 1 && termKey !== activeFormTab ? 'hidden' : ''}>
+                        <TermForm
+                          termKey={termKey}
+                          formData={getTermFormData(termKey)}
+                          errors={errors}
+                          handleChange={handleChange}
+                          isUpdate={existingTerms.has(termKey)}
+                        />
+                      </div>
+                    ))}
+
+                    {/* Availability Calendar */}
+                    <section className="mt-6">
+                      <h2 className="text-lg font-semibold mb-2">Availability*</h2>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Select your available time slots by dragging on the calendar. This applies to all selected terms.
+                      </p>
+                      <div className="bg-white rounded shadow p-2">
+                        <FullCalendar
+                          ref={calendarRef as any}
+                          plugins={[timeGridPlugin, interactionPlugin]}
+                          initialView="timeGridWeek"
+                          allDaySlot={false}
+                          headerToolbar={false}
+                          slotMinTime="06:00:00"
+                          slotMaxTime={`18:00:00`}
+                          height="auto"
+                          selectable
+                          selectMirror
+                          select={handleDateSelect}
+                          eventClick={handleEventClick}
+                          events={availability.map(av => ({
+                            id: av.id,
+                            start: getDateForDay(av.day, av.startTime),
+                            end: getDateForDay(av.day, av.endTime),
+                            backgroundColor: colorByDay[av.day],
+                            borderColor: colorByDay[av.day],
+                          }))}
+                          dayHeaderFormat={{ weekday: 'long' }}
+                          slotEventOverlap={false}
+                          expandRows={true}
+                          contentHeight="auto"
+                        />
+                      </div>
+                      {errors.availability && <p className="text-sm text-red-600 mt-1">{errors.availability}</p>}
+                    </section>
+
+                    {/* Submit Button */}
+                    <div className="mt-8 flex justify-end">
+                      <button
+                        type="submit"
+                        disabled={selectedTerms.length === 0}
+                        className={`px-6 py-3 rounded-lg font-medium ${
+                          selectedTerms.length === 0
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500'
+                        }`}
+                      >
+                        {selectedTerms.some(term => existingTerms.has(term)) 
+                          ? `Update Application${selectedTerms.length > 1 ? 's' : ''}` 
+                          : `Submit Application${selectedTerms.length > 1 ? 's' : ''}`
+                        }
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </form>
           </div>
 
-         
           {/* Sidebar Progress Tracker */}
-          <ApplicationSidebar
-            formData={formData}
-            availability={availability}
-            submitted={submitted}
-            errors={errors}
-          />
-        </div>
-        {/* Submission confirmation always visible if savedApp exists */}
-        {savedApp && (
-          <div className="mt-6 w-full mb-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white border-t-4 border-[#040941] px-3 md:px-4 py-3 rounded-b-xl shadow">
-              <div className="flex flex-wrap items-center gap-x-4 md:gap-x-6 gap-y-2 min-w-0 flex-1 text-sm md:text-base">
-                <span className="font-semibold text-[#040941]">Application ID:</span>
-                <span className="text-gray-700 truncate max-w-[120px]">{savedApp.id || savedApp.applicationId || 'N/A'}</span>
-                <span className="font-semibold text-[#040941] ml-4">Submitted at:</span>
-                <span className="text-gray-700">{new Date(savedApp.timeSubmitted).toLocaleString()}</span>
-                <span className="ml-4 text-green-700 font-semibold">Submitted </span>
+          <div className="bg-white border rounded-lg p-6 h-fit">
+            <h3 className="font-semibold text-lg mb-4">Application Progress</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Terms Selected</span>
+                <span className={`text-sm font-medium ${selectedTerms.length > 0 ? 'text-green-600' : 'text-gray-400'}`}>
+                  {selectedTerms.length > 0 ? `${selectedTerms.length} selected` : 'None'}
+                </span>
               </div>
-              <div className="flex gap-2 flex-wrap mt-2 md:mt-0">
-                <button
-                  className="px-4 py-2 bg-[#040941] text-white rounded hover:bg-[#030735] transition-colors"
-                  onClick={() => setShowDetails((prev) => !prev)}
-                  aria-expanded={showDetails}
-                  aria-controls="application-details-row"
-                >
-                  {showDetails ? 'Hide Details' : 'View Application'}
-                </button>
-                <button
-                  className="px-4 py-2 bg-red-700 text-white rounded hover:bg-red-700 transition-colors"
-                  onClick={async () => {
-                    if (!savedApp) return;
-                    const toastId = toast(
-                      <div>
-                        <div className="font-semibold mb-2">Delete Application?</div>
-                        <div className="mb-3 text-sm text-gray-700">Are you sure you want to delete this application? This action cannot be undone.</div>
-                        <div className="flex gap-2 justify-end">
-                          <button
-                            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-800"
-                            onClick={() => toast.dismiss(toastId)}
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            className="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white"
-                            onClick={async () => {
-                              toast.dismiss(toastId);
-                              try {
-                                const { deleteApplication } = await import('../../../api/application/DeleteApplication');
-                                if (typeof userId !== 'number' && typeof userId !== 'string') throw new Error('No valid user ID found.');
-                                if (!token) throw new Error('No valid authentication token found.');
-                                await deleteApplication(Number(userId), token, userId, userRoles);
-                                setSavedApp(null);
-                                setSubmitted(false);
-                                setShowDetails(false);
-                                setFormData({
-                                  firstPreference: '',
-                                  secondPreference: '',
-                                  thirdPreference: '',
-                                  wantWorkingHours: '',
-                                  wantRemote: '',
-                                  transcriptFile: null,
-                                  confirmProfileUpdated: false,
-                                  applicationType: '',
-                                });
-                                setAvailability([]);
-                                toast.success('Application deleted successfully.', { autoClose: 2500 });
-                              } catch (err: any) {
-                                if (err.message && err.message.includes('403')) {
-                                  toast.error('You do not have permission to delete this application.', { autoClose: 3500 });
-                                }  else if (err.message.includes('Failed to delete application')) {
-                                  toast.error('This application has allocations and cannot be deleted.', { autoClose: 3500 });
-                                }  else {
-                                  toast.error('Failed to delete application. Please try again.', { autoClose: 3500 });
-                                }
-                                console.error(err);
-                              }
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>,
-                      {
-                        autoClose: false,
-                        closeOnClick: false,
-                        draggable: false,
-                        closeButton: false,
-                        position: "top-right",
-                        style: { marginTop: 80 },
-                      }
-                    );
-                  }}
-                >
-                  Delete Application
-                </button>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Availability</span>
+                <span className={`text-sm font-medium ${availability.length > 0 ? 'text-green-600' : 'text-gray-400'}`}>
+                  {availability.length > 0 ? `${availability.length} slots` : 'None'}
+                </span>
               </div>
+              {selectedTerms.map(termKey => {
+                const [year, semester] = termKey.split('-');
+                const formData = getTermFormData(termKey);
+                const isComplete = formData.firstPreference && formData.wantWorkingHours && formData.applicationType && formData.confirmProfileUpdated;
+                return (
+                  <div key={termKey} className="flex items-center justify-between">
+                    <span className="text-sm">{year} {semester}</span>
+                    <span className={`text-sm font-medium ${isComplete ? 'text-green-600' : 'text-gray-400'}`}>
+                      {isComplete ? 'Complete' : 'Incomplete'}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
-            {showDetails && savedApp && (
-              <ApplicationDetails savedApp={savedApp} />
-            )}
+          </div>
+        </div>
+        {/* Submission confirmation for all existing applications */}
+        {existingApplications.length > 0 && (
+          <div className="mt-6 w-full mb-6 space-y-4">
+            {existingApplications
+              .sort((a, b) => new Date(b.timeSubmitted).getTime() - new Date(a.timeSubmitted).getTime())
+              .map((app) => (
+              <div key={`${app.year}-${app.semester}-${app.id}`} className="bg-white border-t-4 border-[#040941] px-3 md:px-4 py-3 rounded-b-xl shadow">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div className="flex flex-wrap items-center gap-x-4 md:gap-x-6 gap-y-2 min-w-0 flex-1 text-sm md:text-base">
+                    <span className="font-semibold text-[#040941]">Application ID:</span>
+                    <span className="text-gray-700 truncate max-w-[120px]">{app.id || app.applicationId || 'N/A'}</span>
+                    <span className="font-semibold text-[#040941] ml-4">Term:</span>
+                    <span className="text-gray-700">{app.year} {app.semester}</span>
+                    <span className="font-semibold text-[#040941] ml-4">Submitted at:</span>
+                    <span className="text-gray-700">{new Date(app.timeSubmitted).toLocaleString()}</span>
+                    <span className="ml-4 text-green-700 font-semibold">Submitted</span>
+                  </div>
+                  <div className="flex gap-2 flex-wrap mt-2 md:mt-0">
+                    <button
+                      className="px-4 py-2 bg-[#040941] text-white rounded hover:bg-[#030735] transition-colors"
+                      onClick={() => {
+                        if (savedApp?.id === app.id) {
+                          setShowDetails((prev) => !prev);
+                        } else {
+                          setSavedApp(app);
+                          setShowDetails(true);
+                        }
+                      }}
+                      aria-expanded={showDetails && savedApp?.id === app.id}
+                      aria-controls="application-details-row"
+                    >
+                      {(showDetails && savedApp?.id === app.id) ? 'Hide Details' : 'View Application'}
+                    </button>
+                    <button
+                      className="px-4 py-2 bg-red-700 text-white rounded hover:bg-red-700 transition-colors"
+                      onClick={async () => {
+                        if (!app) return;
+                        const toastId = toast(
+                          <div>
+                            <div className="font-semibold mb-2">Delete Application?</div>
+                            <div className="mb-3 text-sm text-gray-700">Are you sure you want to delete this application for {app.year} {app.semester}? This action cannot be undone.</div>
+                            <div className="flex gap-2 justify-end">
+                              <button
+                                className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-800"
+                                onClick={() => toast.dismiss(toastId)}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white"
+                                onClick={async () => {
+                                  toast.dismiss(toastId);
+                                  try {
+                                    const { deleteApplication } = await import('../../../api/application/DeleteApplication');
+                                    if (typeof userId !== 'number' && typeof userId !== 'string') throw new Error('No valid user ID found.');
+                                    if (!token) throw new Error('No valid authentication token found.');
+                                    await deleteApplication(
+                                      Number(userId),
+                                      app.year!,
+                                      app.semester!,
+                                      token,
+                                      userId,
+                                      userRoles
+                                    );
+                                    
+                                    // Refresh existing applications after deletion
+                                    try {
+                                      const updatedApplications = await fetchApplicationsByStudent(Number(userId), token);
+                                      setExistingApplications(updatedApplications);
+                                      
+                                      // Update existing terms set
+                                      const termSet = new Set<string>();
+                                      updatedApplications.forEach(application => {
+                                        const termKey = `${application.year}-${application.semester}`;
+                                        termSet.add(termKey);
+                                      });
+                                      setExistingTerms(termSet);
+                                      
+                                      // Set the most recent application as savedApp for display, or null if none
+                                      if (updatedApplications.length > 0) {
+                                        const mostRecent = updatedApplications.sort((a, b) => 
+                                          new Date(b.timeSubmitted).getTime() - new Date(a.timeSubmitted).getTime()
+                                        )[0];
+                                        setSavedApp(mostRecent);
+                                      } else {
+                                        setSavedApp(null);
+                                      }
+                                    } catch (refreshError) {
+                                      console.error('Failed to refresh applications after deletion:', refreshError);
+                                      setSavedApp(null);
+                                    }
+                                    
+                                    setSubmitted(false);
+                                    setShowDetails(false);
+                                    clearForm();
+                                    toast.success('Application deleted successfully.', { autoClose: 2500 });
+                                  } catch (err: any) {
+                                    if (err.message && err.message.includes('403')) {
+                                      toast.error('You do not have permission to delete this application.', { autoClose: 3500 });
+                                    } else if (err.message.includes('Failed to delete application')) {
+                                      toast.error('This application has allocations and cannot be deleted.', { autoClose: 3500 });
+                                    } else {
+                                      toast.error('Failed to delete application. Please try again.', { autoClose: 3500 });
+                                    }
+                                    console.error(err);
+                                  }
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>,
+                          {
+                            autoClose: false,
+                            closeOnClick: false,
+                            draggable: false,
+                            closeButton: false,
+                            position: "top-right",
+                            style: { marginTop: 80 },
+                          }
+                        );
+                      }}
+                    >
+                      Delete Application
+                    </button>
+                  </div>
+                </div>
+                {showDetails && savedApp?.id === app.id && (
+                  <ApplicationDetails savedApp={app} />
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>
-
-      {/* Toast container for notifications */}
       <ToastContainer limit={2} />
     </div>
   );
