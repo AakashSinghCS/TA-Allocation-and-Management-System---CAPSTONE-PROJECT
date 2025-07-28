@@ -8,7 +8,8 @@ import type Section from "../../../interfaces/section/Section";
 import UpdateExamModal from "../exampage/UpdateExamModal";
 import {Calendar, Clock } from "lucide-react";
 
-const ExamsDashboard = () => {
+const ExamsDashboard = ({ onRef, assignmentRefMap,}: {onRef?: (fn: () => void) => void; assignmentRefMap?: React.MutableRefObject<Record<number, () => void>>; }) => {
+
   const { token } = useAuth();
   const [exams, setExams] = useState<ExamDto[]>([]);
   const [sectionMap, setSectionMap] = useState<Record<number, Section>>({});
@@ -17,14 +18,21 @@ const ExamsDashboard = () => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
 
+  const load = async () => {
+    const fetchedExams = await fetchExams();
+    await fetchExtraDetails(fetchedExams);
+  };
+
   useEffect(() => {
-    const load = async () => {
-      const fetchedExams = await fetchExams();
-      await fetchExtraDetails(fetchedExams);
-    };
+    if (onRef) {
+      onRef(load);
+    }
+  }, [onRef]);
+
+  useEffect(() => {
     load();
   }, []);
-
+  
   const fetchExams = async () => {
     try {
       const res = await fetch("http://localhost:8080/exams", {
@@ -158,7 +166,14 @@ const ExamsDashboard = () => {
             </div>
 
             <div className="pt-4">
-              <AssignedStudentsList examId={exam.id} />
+              <AssignedStudentsList 
+                examId={exam.id}
+                onRef={(fn) => {
+                  if (assignmentRefMap) {
+                    assignmentRefMap.current[exam.id] = fn;
+                  }
+                }}
+              />
             </div>
           </div>
         ))

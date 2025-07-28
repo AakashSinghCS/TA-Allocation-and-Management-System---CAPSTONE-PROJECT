@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,9 @@ import ExamsDashboard from "./ExamsDashboard";
 
 
 const CreateExamPage = () => {
+  const dashboardRef = useRef<() => void>(() => {});
+  const assignmentRefMap = useRef<Record<number, () => void>>({});
+
   const [deptCodes, setDeptCodes] = useState<string[]>([]);
   const [courseNums, setCourseNums] = useState<string[]>([]);
   const [sections, setSections] = useState<string[]>([]);
@@ -209,7 +212,7 @@ const CreateExamPage = () => {
     }
 
     const [starthour, startminute] = startTime.split(":").map(Number);
-    const [endhour, endminute] = startTime.split(":").map(Number);
+    const [endhour, endminute] = endTime.split(":").map(Number);
 
     const starttotalmin = starthour * 60 + startminute;
     const endtotalmin = endhour * 60 + endminute;
@@ -260,6 +263,7 @@ const CreateExamPage = () => {
 
         toast.success('Exam created successfully!');
         await fetchExamsAndUpdateDropdown();
+        dashboardRef.current?.();
         setSelectedDeptCode('');
         setSelectedCourseNum('');
         setCourseId(null);
@@ -370,6 +374,8 @@ const CreateExamPage = () => {
         }
 
         toast.success("Student assigned to exam successfully!");
+
+        assignmentRefMap.current[selectedExamId!]?.();
 
         setStudentName('');
         setStudentNum('');
@@ -613,7 +619,10 @@ const CreateExamPage = () => {
             <div className="max-w-7xl mx-auto px-4">
                 <hr className="my-7" />
                 <h2 className="text-2xl font-bold mb-4 text-center">Exams & Assignments</h2>
-                <ExamsDashboard />
+                <ExamsDashboard 
+                    onRef={(fn) => (dashboardRef.current = fn)}
+                    assignmentRefMap={assignmentRefMap}
+                />
             </div>
         </div>
     </div>

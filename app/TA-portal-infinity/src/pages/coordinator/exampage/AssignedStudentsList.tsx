@@ -9,6 +9,7 @@ import UpdateAssignmentModal from "./UpdateAssignmentModal";
 
 interface AssignedStudentsListProps {
   examId: number;
+  onRef?: (fn: () => void) => void;
 }
 
 interface StudentDto {
@@ -20,7 +21,7 @@ interface StudentDto {
   year: number;
 }
 
-const AssignedStudentsList: React.FC<AssignedStudentsListProps> = ({ examId }) => {
+const AssignedStudentsList: React.FC<AssignedStudentsListProps> = ({ examId, onRef }) => {
   const [assignments, setAssignments] = useState<ExamAssignmentDto[]>([]);
   const [studentMap, setStudentMap] = useState<Record<number, StudentDto>>({});
   const { token } = useAuth();
@@ -30,6 +31,12 @@ const AssignedStudentsList: React.FC<AssignedStudentsListProps> = ({ examId }) =
   useEffect(() => {
     fetchAssignments();
   }, [examId]);
+
+  useEffect(() => {
+    if (onRef){
+      onRef(fetchAssignments);
+    }
+  }, [onRef, examId]);
 
   const fetchAssignments = async () => {
     try {
