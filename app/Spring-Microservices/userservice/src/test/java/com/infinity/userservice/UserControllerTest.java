@@ -3,42 +3,34 @@ package com.infinity.userservice;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.hamcrest.Matchers.hasSize;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.data.web.SortHandlerMethodArgumentResolver;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.userservice.controllers.UserController;
@@ -75,7 +67,7 @@ public class UserControllerTest {
         @EnableSpringDataWebSupport
         static class PageableConfig {
                 // no beans needed; the annotation is enough
-        }   
+        }
 
         @Test
         void testGetUserById_Forbidden() throws Exception {
@@ -398,6 +390,47 @@ public class UserControllerTest {
                                 .andExpect(jsonPath("$.firstName").value("John"))
                                 .andExpect(jsonPath("$.roles").isArray())
                                 .andExpect(jsonPath("$.roles[0]").value("STUDENT"));
+
+        }
+
+        @Test
+        void whenSearchStudentsByNumber_thenReturnsMatchingList_NoPage() throws Exception {
+                LocalDateTime fixedTime = LocalDateTime.of(2023, 1, 1, 12, 0);
+                UserDto student = new UserDto(
+                                1L, "Alice", "Smith", "alice@example.com",
+                                List.of(UserRole.STUDENT),
+                                12345678, "computer science", 2023, 1,
+                                null, null, fixedTime, true);
+                when(userService.search("STUDENT", "", "", 12345678, null)).thenReturn(List.of(student));
+
+                mockMvc.perform(get("/users/search")
+                                .param("role", "STUDENT")
+                                .param("universityNumber", "12345678")
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.length()").value(1))
+                                .andExpect(jsonPath("$[0].firstName").value("Alice"))
+                                .andExpect(jsonPath("$[0].studentNum").value(12345678))
+                                .andExpect(jsonPath("$[0].program").value("computer science"));
+        }
+
+        @Test
+        void whenSearchInstructorsByName_thenReturnsMatchingList_NoPage() throws Exception {
+                LocalDateTime fixedTime = LocalDateTime.of(2023, 1, 1, 12, 0);
+                UserDto instructor = new UserDto(
+                                2L, "Bob", "Jones", "bob@example.com",
+                                List.of(UserRole.INSTRUCTOR),
+                                null, null, null, null,
+                                87654321, "computerscience", fixedTime, true);
+                when(userService.search("INSTRUCTOR", "Bob","", 0,null)).thenReturn(List.of(instructor));
+                mockMvc.perform(get("/users/search")
+                .param("role", "INSTRUCTOR")
+                                .param("firstname", "Bob")
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.length()").value(1))
+                                .andExpect(jsonPath("$[0].lastName").value("Jones"))
+                                .andExpect(jsonPath("$[0].employeeNum").value(87654321));
 
         }
 }
