@@ -208,6 +208,32 @@ const CreateExamPage = () => {
       return;
     }
 
+    const [starthour, startminute] = startTime.split(":").map(Number);
+    const [endhour, endminute] = startTime.split(":").map(Number);
+
+    const starttotalmin = starthour * 60 + startminute;
+    const endtotalmin = endhour * 60 + endminute;
+
+    const minallowed = 8 * 60;
+    const maxallowed = 20 * 60;
+
+    if (starttotalmin < minallowed || starttotalmin > maxallowed) {
+        toast.warn("Start time must be between 08:00 and 20:00.");
+        return;
+    }
+
+    if (endtotalmin < minallowed || endtotalmin > maxallowed) {
+        toast.warn("End time must be between 08:00 and 20:00.");
+        return;
+    }
+
+    if (endtotalmin <= starttotalmin) {
+        toast.error("End time must be after start time.");
+        return;
+    }
+
+
+
     const token = localStorage.getItem('token');
 
     try {
