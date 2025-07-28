@@ -4,9 +4,10 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { CalendarClock, CalendarX2 } from "lucide-react";
 import { allocationsToEvents } from "./allocationsToEvents";
-import { getNextUpcomingSchedules } from "./ScheduleUtils";
+import { getNextUpcomingSchedules, getSemesterRanges } from "./ScheduleUtils";
 import { exportCSV, exportICS } from "./ScheduleExport";
 import type { ScheduleRow } from "./ScheduleViewer.types";
+import { useAuth } from "../../../context/AuthContext";
 
 function renderEventContent(eventInfo: any) {
   return (
@@ -19,8 +20,51 @@ function renderEventContent(eventInfo: any) {
 }
 
 const ScheduleCalendar: React.FC<{ scheduleRows: ScheduleRow[] }> = ({ scheduleRows }) => {
+  const { token } = useAuth();
   const calendarRef = useRef<FullCalendar>(null);
-  const events = allocationsToEvents(scheduleRows);
+  const [events, setEvents] = useState<any[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(false);
+  const [semesterRanges, setSemesterRanges] = useState<Record<string, { start: string; end: string }>>({});
+  const [currentSemester, setCurrentSemester] = useState<{year: number, semester: string} | null>(null);
+  
+  useEffect(() => {
+    async function loadEvents() {
+      if (!token) return;
+      setEventsLoading(true);
+      try {
+        const eventsData = await allocationsToEvents(scheduleRows, token);
+        setEvents(eventsData);
+      } catch (error) {
+        console.error('Failed to load events:', error);
+        setEvents([]);
+      } finally {
+        setEventsLoading(false);
+      }
+    }
+    loadEvents();
+  }, [scheduleRows, token]);
+
+  useEffect(() => {
+    async function loadSemesterRanges() {
+      if (!token) return;
+      try {
+        const ranges = await getSemesterRanges(token);
+        setSemesterRanges(ranges);
+        
+        // Find the current/most relevant semester from the schedule rows
+        if (scheduleRows.length > 0) {
+          const firstRow = scheduleRows[0];
+          if (firstRow.year && firstRow.semester) {
+            setCurrentSemester({ year: firstRow.year, semester: firstRow.semester });
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load semester ranges:', error);
+      }
+    }
+    loadSemesterRanges();
+  }, [token, scheduleRows]);
+  
   const getInitialWeekStart = () => {
     const today = new Date();
     const weekStart = new Date(today);
@@ -45,6 +89,28 @@ const ScheduleCalendar: React.FC<{ scheduleRows: ScheduleRow[] }> = ({ scheduleR
   };
   const startOfWeek = getStartOfWeek();
   const endOfWeek = getEndOfWeek(startOfWeek);
+  
+  // Get semester date range for display
+  const getSemesterDisplayRange = () => {
+    if (!currentSemester) {
+      return { start: startOfWeek, end: endOfWeek, semesterLabel: 'Current Week' };
+    }
+    
+    const semesterKey = `${currentSemester.year}-${currentSemester.semester}`;
+    const semesterRange = semesterRanges[semesterKey];
+    
+    if (!semesterRange) {
+      return { start: startOfWeek, end: endOfWeek, semesterLabel: `${currentSemester.year} ${currentSemester.semester}` };
+    }
+    
+    return {
+      start: new Date(semesterRange.start),
+      end: new Date(semesterRange.end),
+      semesterLabel: `${currentSemester.year} ${currentSemester.semester}`
+    };
+  };
+  
+  const semesterDisplay = getSemesterDisplayRange();
   const format = (d: Date) => d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
   useEffect(() => {
@@ -65,7 +131,13 @@ const ScheduleCalendar: React.FC<{ scheduleRows: ScheduleRow[] }> = ({ scheduleR
               <div className="absolute left-0 top-0 w-full h-12 rounded-xl" style={{ background: "#f3f4f6", zIndex: 0 }}></div>
               <div className="relative flex items-center justify-center w-full h-12 px-4" style={{ zIndex: 1 }}>
                 <button className="text-2xl text-gray-400 hover:text-blue-700 mr-2" onClick={() => setWeekOffset(weekOffset - 1)}>&#60;</button>
-                <span className="text-lg font-semibold text-[#040941] text-center">{format(startOfWeek)} to {format(endOfWeek)}</span>
+                <div className="flex justify-center items-center w-full">
+                  <div style={{ minWidth: 260, textAlign: 'center' }} className="text-lg font-semibold text-[#040941]">
+                    {startOfWeek.getFullYear()} {startOfWeek.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                    {' to '}
+                    {endOfWeek.getFullYear()} {endOfWeek.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                  </div>
+                </div>
                 <button className="text-2xl text-gray-400 hover:text-blue-700 ml-2" onClick={() => setWeekOffset(weekOffset + 1)}>&#62;</button>
               </div>
             </div>

@@ -53,18 +53,21 @@ export default function StudentHomePage() {
       setCourses(crs);
       setProfileQuestions(qs || []);
 
-      // Student has only one application at a time, so fetch allocation for that application
+      // Fetch allocations for all applications
       let appsWithDetails: any[] = [];
       if (apps.length > 0) {
-        const app = apps[0];
-        let allocation = null;
-        try {
-          const allocations = await fetchAllocationByApplicationId(app.id ?? app.applicationId ?? 0, token);
-          allocation = allocations && allocations.length > 0 ? allocations[0] : null;
-        } catch (err) {
-          console.error('fetchAllocationByApplicationId error:', err);
-        }
-        appsWithDetails = [{ ...app, allocation }];
+        appsWithDetails = await Promise.all(
+          apps.map(async (app) => {
+            let allocation = null;
+            try {
+              const allocations = await fetchAllocationByApplicationId(app.id ?? app.applicationId ?? 0, token);
+              allocation = allocations && allocations.length > 0 ? allocations[0] : null;
+            } catch (err) {
+              console.error('fetchAllocationByApplicationId error:', err);
+            }
+            return { ...app, allocation };
+          })
+        );
       }
       setApplications(appsWithDetails);
       // Build notifications
@@ -297,7 +300,9 @@ export default function StudentHomePage() {
                         </div>
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 bg-blue-50/60 rounded-lg px-4 py-3">
                           <div className="flex flex-col">
-                            <span className="font-medium text-blue-900">{app.preferences?.join(", ") || "No preferences"}</span>
+                            <span className="font-medium text-blue-900">
+                              {app.year} {app.semester} - {app.preferences?.join(", ") || "No preferences"}
+                            </span>
                             <span className="text-xs text-gray-500">{new Date(app.timeSubmitted).toLocaleString()}</span>
                           </div>
                           <div className="flex flex-wrap items-center gap-3">

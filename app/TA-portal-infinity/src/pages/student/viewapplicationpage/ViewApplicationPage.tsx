@@ -19,7 +19,8 @@ type ApplicationWithAllocation = ApplicationDto & { allocation?: Allocation };
 
 const ViewApplicationPage = () => {
   const [applications, setApplications] = useState<ApplicationWithAllocation[]>([]);
-  const [yearSubmitted, setYearSubmitted] = useState("");
+  const [year, setYear] = useState("");
+  const [semester, setSemester] = useState("");
   const [prefContains, setPrefContains] = useState("");
   const [remotePref, setRemotePref] = useState("");
   const [loading, setLoading] = useState(false);
@@ -204,7 +205,8 @@ const ViewApplicationPage = () => {
   };
 
   const resetFilters = () => {
-    setYearSubmitted("");
+    setYear("");
+    setSemester("");
     setPrefContains("");
     setRemotePref("");
     setFiltersApplied(false);
@@ -213,7 +215,8 @@ const ViewApplicationPage = () => {
   const filteredApps = filtersApplied
     ? applications.filter((app) => {
         let match = true;
-        if (yearSubmitted && !app.timeSubmitted.startsWith(yearSubmitted)) match = false;
+        if (year && String(app.year) !== year) match = false;
+        if (semester && app.semester.toLowerCase() !== semester.toLowerCase()) match = false;
         if (prefContains && !app.preferences.some(p => p && p.toLowerCase().includes(prefContains.toLowerCase()))) match = false;
         if (remotePref && ((remotePref === 'true' && !app.wantRemote) || (remotePref === 'false' && app.wantRemote))) match = false;
         return match;
@@ -231,8 +234,12 @@ const ViewApplicationPage = () => {
               <h3 className="font-semibold text-[#040941] text-lg mb-2">Filters</h3>
               <div className="flex flex-col gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Year Submitted</label>
-                  <input type="text" value={yearSubmitted} onChange={e => setYearSubmitted(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. 2025" />
+                  <label className="block text-sm font-medium mb-1">Year</label>
+                  <input type="text" value={year} onChange={e => setYear(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. 2025" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Semester</label>
+                  <input type="text" value={semester} onChange={e => setSemester(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. Winter" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Preference Contains</label>
@@ -251,6 +258,9 @@ const ViewApplicationPage = () => {
                 <button onClick={applyFilters} className="px-4 py-2 bg-[#040941] text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition">Filter</button>
                 <button onClick={resetFilters} className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-400 transition">Reset</button>
               </div>
+              <div className="mt-2 text-sm text-[#040941] font-semibold">
+                Total Results: {filteredApps.length}
+              </div>
             </div>
           </div>
           {/* Application Cards */}
@@ -266,9 +276,6 @@ const ViewApplicationPage = () => {
                   const sectionDetails = app.allocation?.section;
                   return (
                     <div key={cardId} className="bg-white rounded-2xl shadow-lg border border-blue-100 p-10 flex flex-col gap-6 min-h-[520px] relative overflow-hidden w-full transition-all duration-300 hover:shadow-2xl hover:border-blue-300" style={{ maxWidth: '900px', margin: '0 auto' }}>
-                      {/* Decorative background */}
-                      <div className="absolute right-0 top-0 opacity-10 pointer-events-none select-none">
-                      </div>
                       {app.student ? (
                         <div className="flex items-center gap-2 mb-1 z-10">
                           <div className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-lg font-bold text-[#040941]">

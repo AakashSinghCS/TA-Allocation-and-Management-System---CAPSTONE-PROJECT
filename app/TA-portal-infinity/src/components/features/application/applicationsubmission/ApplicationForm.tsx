@@ -92,7 +92,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
         <h2 className="text-lg font-semibold mb-4">Term Selection</h2>
         <div className="space-y-4">
           <div>
-            <label className="block mb-3 font-semibold text-lg md:text-lg">
+            <label className="block mb-3 font-semibold text-lg md:text-lg" id="selectTermsLabel">
               Select Terms* (Choose one or more terms to apply for)
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -117,6 +117,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
                   >
                     <input
                       type="checkbox"
+                      aria-label={`${sem.year} ${sem.semester}`}
                       className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       checked={isSelected}
                       onChange={(e) => {
@@ -210,6 +211,11 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
                 <select
                   id={pref}
                   name={pref}
+                  aria-label={
+                    pref === 'firstPreference' ? '1st Preference*' :
+                    pref === 'secondPreference' ? '2nd Preference*' :
+                    '3rd Preference*'
+                  }
                   value={formData[pref]}
                   onChange={handleChange}
                   className="w-full border rounded px-3 py-2 text-base md:text-base min-h-[36px] md:min-h-[40px]"

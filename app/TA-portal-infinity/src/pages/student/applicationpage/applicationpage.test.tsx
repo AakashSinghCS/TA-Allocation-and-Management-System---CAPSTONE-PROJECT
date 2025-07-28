@@ -177,13 +177,33 @@ describe('ApplicationPage', () => {
     });
   });
 
-  it('handles year/semester inputs, preference select, and application type radio', async () => {
+
+  it('handles year/semester term selection, preference select, and application type radio', async () => {
     renderWithProviders();
     // Wait for department codes to load first
     await waitFor(() => expect(screen.queryByText(/Loading department codes/i)).not.toBeInTheDocument());
+
+    // Check for term selection checkboxes and labels
+    expect(screen.getAllByText((_, element) => {
+      return element?.textContent?.includes('Select Terms') || false;
+    })[0]).toBeInTheDocument();
     
-    // Check if any term checkboxes are available (this is more realistic)
-    const termCheckboxes = screen.queryAllByRole('checkbox');
-    expect(termCheckboxes.length).toBeGreaterThan(0);
+    // Select a term to trigger the form rendering
+    const w1Checkbox = screen.getByLabelText(/2025 W1/i);
+    expect(w1Checkbox).toBeInTheDocument();
+    fireEvent.click(w1Checkbox);
+    
+    // Wait for the form to update after term selection
+    await waitFor(() => {
+      // Check for preference select fields - these should appear when a term is selected
+      expect(screen.getByLabelText(/1st Preference/i)).toBeInTheDocument();
+    });
+    
+    expect(screen.getByLabelText(/2nd Preference/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/3rd Preference/i)).toBeInTheDocument();
+
+    // Check for application type radio buttons by their values
+    expect(screen.getByDisplayValue('UNDERGRADUATE')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('GRADUATE')).toBeInTheDocument();
   });
 });
