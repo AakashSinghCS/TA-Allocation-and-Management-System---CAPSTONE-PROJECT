@@ -7,14 +7,27 @@ interface SectionCardProps {
 }
 
 export default function SectionCard({ section }: SectionCardProps) {
-  const totalHours = section.allocations?.reduce((sum, a) =>
-    sum + (a.labPrepHours ?? 0) + (a.gradingHours ?? 0) + (a.sectionHours ?? 0),
-    0
-  ) ?? 0;
+  const seen = new Set<number>();
+  const uniqueAllocs = section.allocations?.filter(a => {
+    if (!a.id) return false;
+    if (seen.has(a.id)) return false;
+    seen.add(a.id);
+    return true;
+  });
+  const totalHours = uniqueAllocs?.reduce((sum, alloc) => {
+    const forThisSection = alloc.allocatedSections
+      ?.filter(s => s.sectionId === section.id);
+
+    if (!forThisSection) return 0;
+    const sectionSum = forThisSection
+      .reduce((hSum, s) => hSum + s.hours, 0);
+
+    return sum + sectionSum;
+  }, 0);
 
   return (
-    <div 
-      key={section?.id} 
+    <div
+      key={section?.id}
       className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
     >
       {/* Combined Section and Allocation Info */}
@@ -32,7 +45,7 @@ export default function SectionCard({ section }: SectionCardProps) {
               <span className="text-sm text-gray-500">•</span>
               <span className="text-sm text-gray-600">{section.course?.name}</span>
             </div>
-            
+
             {/* Section Details */}
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <span className="inline-flex items-center px-2 py-1 rounded bg-[#040941] text-white text-xs font-medium">
@@ -61,10 +74,10 @@ export default function SectionCard({ section }: SectionCardProps) {
               </div>
             )}
           </div>
-          
+
           <div className="text-right">
             <div className="text-sm font-medium text-gray-900">
-              {section.allocations?.length || 0} Confirmed TA{(section.allocations?.length || 0) !== 1 ? 's' : ''}
+              {uniqueAllocs?.length || 0} Confirmed TA{(section.allocations?.length || 0) !== 1 ? 's' : ''}
             </div>
             <div className="text-xs text-gray-500">
               {totalHours} Total Hours
@@ -77,8 +90,8 @@ export default function SectionCard({ section }: SectionCardProps) {
           <h4 className="text-sm font-medium text-gray-700 mb-3">Confirmed TAs</h4>
           <div className="space-y-2">
             {section.allocations && section.allocations.length > 0 ? (
-              section.allocations.map((allocation) => (
-                <StudentAllocationItem key={allocation.id} allocation={allocation} />
+              uniqueAllocs?.map((allocation) => (
+                <StudentAllocationItem key={allocation.id} allocation={allocation} sectionId={section.id ?? -1} />
               ))
             ) : (
               <div className="text-center py-4 text-gray-500 text-sm">

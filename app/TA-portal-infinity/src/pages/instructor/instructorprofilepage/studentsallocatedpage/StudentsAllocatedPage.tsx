@@ -78,7 +78,7 @@ export default function StudentsAllocatedPage() {
 
 
         const enrichedSections = await getAllocations(mostRecent, defaultSemester);
-        console.log(enrichedSections);
+
         setSections(enrichedSections);
         setCourseList(allAssignedCourses);
         setExistingYears(years ?? []);

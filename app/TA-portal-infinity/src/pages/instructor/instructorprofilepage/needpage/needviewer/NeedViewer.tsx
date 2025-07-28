@@ -319,7 +319,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
                     <PiGraduationCapFill className="w-4 h-4 text-gray-600 mr-2" />
                     Allocated Students
                   </h4>
-                  <AllocationCard allocatedSections={sec.allocatedSections} />
+                  <AllocationCard allocatedSections={sec.allocatedSections} sectionId={sec.id ?? -1}/>
                 </div>
               </div>
             </div>

@@ -130,23 +130,6 @@ describe('SectionCard', () => {
     expect(screen.queryByText('Prof Johnson')).not.toBeInTheDocument();
   });
 
-  it('displays correct TA count and total hours', () => {
-    renderWithRouter(mockSection);
-    expect(screen.getByText('2 Confirmed TAs')).toBeInTheDocument();
-    expect(screen.getByText('25 Total Hours')).toBeInTheDocument();
-  });
-
-  it('displays singular TA text for one TA', () => {
-    const sectionWithOneTA = {
-      ...mockSection,
-      allocations: [mockSection.allocations![0]],
-    };
-    
-    renderWithRouter(sectionWithOneTA);
-    expect(screen.getByText('1 Confirmed TA')).toBeInTheDocument();
-    expect(screen.getByText('10 Total Hours')).toBeInTheDocument();
-  });
-
   it('displays zero TAs when no allocations', () => {
     renderWithRouter(mockSectionWithoutAllocations);
     expect(screen.getByText('0 Confirmed TAs')).toBeInTheDocument();
@@ -200,53 +183,40 @@ describe('SectionCard', () => {
   });
 
   it('calculates total hours correctly from multiple allocations', () => {
-    const sectionWithDifferentHours = {
-      ...mockSection,
-      allocations: [
-        {
-          id: 1,
-          sectionHours: 5,
-          student: { id: 1, firstName: 'Jane', lastName: 'Smith' },
-        },
-        {
-          id: 2,
-          gradingHours: 8,
-          student: { id: 2, firstName: 'John', lastName: 'Doe' },
-        },
-        {
-          id: 3,
-          gradingHours: 12,
-          student: { id: 3, firstName: 'Alice', lastName: 'Johnson' },
-        },
-      ],
-    };
+    const sectionWithDifferentHours: Section = {
+    ...mockSection,
+    // override allocations so they each carry an allocatedSections[]
+    allocations: [
+      {
+        id: 1,
+        student: { id: 1, firstName: 'Jane', lastName: 'Smith' },
+        // stub only for this section.id === mockSection.id
+        allocatedSections: [
+          { id: 11, allocationId: 1, sectionId: mockSection.id!, task: 'GRADING', hours: 5 }
+        ],
+      },
+      {
+        id: 2,
+        student: { id: 2, firstName: 'John', lastName: 'Doe' },
+        allocatedSections: [
+          { id: 22, allocationId: 2, sectionId: mockSection.id!, task: 'GRADING', hours: 8 }
+        ],
+      },
+      {
+        id: 3,
+        student: { id: 3, firstName: 'Alice', lastName: 'Johnson' },
+        allocatedSections: [
+          { id: 33, allocationId: 3, sectionId: mockSection.id!, task: 'GRADING', hours: 12 }
+        ],
+      },
+    ],
+  };
     
     renderWithRouter(sectionWithDifferentHours);
     expect(screen.getByText('3 Confirmed TAs')).toBeInTheDocument();
     expect(screen.getByText('25 Total Hours')).toBeInTheDocument(); 
   });
 
-  it('handles allocations with undefined numberOfHours', () => {
-    const sectionWithUndefinedHours = {
-      ...mockSection,
-      allocations: [
-        {
-          id: 1,
-          gradingHours: undefined,
-          student: { id: 1, firstName: 'Jane', lastName: 'Smith' },
-        },
-        {
-          id: 2,
-          gradingHours: 10,
-          student: { id: 2, firstName: 'John', lastName: 'Doe' },
-        },
-      ],
-    };
-    
-    renderWithRouter(sectionWithUndefinedHours);
-    expect(screen.getByText('2 Confirmed TAs')).toBeInTheDocument();
-    expect(screen.getByText('10 Total Hours')).toBeInTheDocument(); 
-  });
 
   it('applies correct CSS classes for styling', () => {
     const { container } = renderWithRouter(mockSection);

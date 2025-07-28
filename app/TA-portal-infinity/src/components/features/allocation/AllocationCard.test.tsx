@@ -8,15 +8,16 @@ import { fetchAllocationById } from '../../../api/allocation/fetchAllocationById
 import { mockStudentJohnDoe } from '../../../mocked-objects/user/mockStudents';
 import type { Allocation } from '../../../interfaces/allocation/Allocation';
 
-// 1) Mock the API to return a single Allocation object
+// 1) Mock fetchAllocationById so that each Allocation includes its allocatedSections
 vi.mock('../../../api/allocation/fetchAllocationById', () => ({
-  fetchAllocationById: vi.fn().mockImplementation((id: number) =>
+  fetchAllocationById: vi.fn((id: number) =>
+    // grab the stubs for this allocationId from the mockAllocatedSections
     Promise.resolve({
       id,
       student: mockStudentJohnDoe,
-      sectionHours: 6,
-      gradingHours: 0,
-      labPrepHours: 0,
+      allocatedSections: mockAllocatedSections.filter(
+        (as) => as.allocationId === id
+      ),
     } as Allocation)
   ),
 }));
@@ -29,45 +30,43 @@ describe('AllocationCard', () => {
   it('shows placeholder when no allocations are passed', () => {
     render(
       <MemoryRouter>
-        <AllocationCard />
+        <AllocationCard allocatedSections={[]} sectionId={42} />
       </MemoryRouter>
     );
-    expect(
-      screen.getByText(/No Confirmed TAs/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/No Confirmed TAs/i)).toBeInTheDocument();
   });
 
-  it('fetches and renders exactly one Allocation card with correct hours', async () => {
+  it('fetches and renders exactly one Allocation card with the correct stub‑hours badges', async () => {
+    // pick a sectionId that actually exists in mockAllocatedSections
+    const sectionId = mockAllocatedSections[0].sectionId;
+
     render(
       <MemoryRouter>
-        <AllocationCard allocatedSections={mockAllocatedSections} />
+        <AllocationCard
+          allocatedSections={mockAllocatedSections}
+          sectionId={sectionId}
+        />
       </MemoryRouter>
     );
 
-    // 2) It should call fetchAllocationById exactly once
+    // 2) It should call fetchAllocationById once for each unique allocationId
+    const uniqueIds = Array.from(
+      new Set(mockAllocatedSections.map((as) => as.allocationId))
+    );
     await waitFor(() => {
-      expect(fetchAllocationById).toHaveBeenCalledTimes(1);
-      expect(fetchAllocationById).toHaveBeenCalledWith(mockAllocatedSections[0].allocationId);
+      expect(fetchAllocationById).toHaveBeenCalledTimes(uniqueIds.length);
+      // spot‑check the first one
+      expect(fetchAllocationById).toHaveBeenCalledWith(
+        mockAllocatedSections[0].allocationId
+      );
     });
 
-    // 3) There should be exactly one list-item rendered
     const items = await screen.findAllByRole('listitem');
-    expect(items).toHaveLength(1);
+    expect(items).toHaveLength(uniqueIds.length);
 
-    // 4) Within that card, you see the student’s name…
-    expect(
-      await screen.findByText('John Doe')
-    ).toBeInTheDocument();
+    expect(await screen.findByText('John Doe')).toBeInTheDocument();
 
-    // …and the three badges with the right counts:
-    expect(
-      screen.getByText('TA Hours: 6h')
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Grading Hours: 0h')
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Lab Prep Hours: 0h')
-    ).toBeInTheDocument();
+    expect(screen.getByText('2.5 Lab-Prep Hours')).toBeInTheDocument();
+    expect(screen.getByText('2 Grading Hours')).toBeInTheDocument();
   });
 });
