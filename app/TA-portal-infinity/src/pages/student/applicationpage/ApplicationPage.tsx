@@ -11,8 +11,8 @@ import { fetchApplicationsByStudent } from '../../../api/application/FetchApplic
 
 import TermSelector from '../../../components/features/application/applicationsubmission/TermSelector';
 import TermForm from '../../../components/features/application/applicationsubmission/TermForm';
-import ApplicationSidebar from '../../../components/features/application/applicationsubmission/ApplicationSidebar';
 import ApplicationDetails from '../../../components/features/application/applicationsubmission/ApplicationDetails';
+import ApplicationSidebar from '../../../components/features/application/applicationsubmission/ApplicationSidebar';
 import { dayMap, getDateForDay, colorByDay } from '../../../components/features/application/applicationsubmission/availabilityUtils';
 import { validateTermForm, buildTermPayload } from '../../../components/features/application/applicationsubmission/formValidation';
 import { getApplicationUrls, getCommonHeaders } from '../../../components/features/application/applicationsubmission/apiHelpers';
@@ -202,8 +202,7 @@ const deadlinePassed =
             applicationType: existingApp.applicationType,
             confirmProfileUpdated: true
           });
-          
-          // Load availability from existing app
+          // Only set availability if this is an existing application
           const existingAvailability = existingApp.availabilities.map((av, index) => ({
             id: `${av.day}-${av.startTime}-${av.endTime}-${index}`,
             day: av.day,
@@ -217,6 +216,8 @@ const deadlinePassed =
             ...prev,
             [termKey]: initializeTermForm(termKey)
           }));
+          // Clear calendar for new application
+          setAvailability([]);
         }
       }
       // Set as active tab if it's the first selection or no active tab
@@ -280,6 +281,12 @@ const deadlinePassed =
 
   if (selectedTerms.length === 0) {
     setErrors({ general: 'Please select at least one term to apply for.' });
+    return;
+  }
+
+  // Client-side validation for calendar slots
+  if (availability.length === 0) {
+    setErrors(prev => ({ ...prev, availability: 'Please select at least one available time slot on the calendar.' }));
     return;
   }
 
@@ -419,7 +426,7 @@ const deadlinePassed =
 
         {/* Dynamic warning message based on selected terms */}
         {selectedTerms.some((term: string) => existingTerms.has(term)) && (
-          <div className="mb-6 rounded-lg border-l-4 border-orange-500 bg-orange-100 p-3 text-orange-800 flex items-center justify-between">
+          <div className="mb-6 rounded-lg border-l-4 border-amber-600 bg-amber-50 p-3 text-red-800 flex items-center justify-between">
             <span>
               {(() => {
                 const existingSelectedTerms = selectedTerms.filter((term: string) => existingTerms.has(term));
@@ -584,37 +591,12 @@ const deadlinePassed =
             </form>
           </div>
 
-          {/* Sidebar Progress Tracker */}
-          <div className="bg-white border rounded-lg p-6 h-fit">
-            <h3 className="font-semibold text-lg mb-4">Application Progress</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Terms Selected</span>
-                <span className={`text-sm font-medium ${selectedTerms.length > 0 ? 'text-green-600' : 'text-gray-400'}`}>
-                  {selectedTerms.length > 0 ? `${selectedTerms.length} selected` : 'None'}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Availability</span>
-                <span className={`text-sm font-medium ${availability.length > 0 ? 'text-green-600' : 'text-gray-400'}`}>
-                  {availability.length > 0 ? `${availability.length} slots` : 'None'}
-                </span>
-              </div>
-              {selectedTerms.map(termKey => {
-                const [year, semester] = termKey.split('-');
-                const formData = getTermFormData(termKey);
-                const isComplete = formData.firstPreference && formData.wantWorkingHours && formData.applicationType && formData.confirmProfileUpdated;
-                return (
-                  <div key={termKey} className="flex items-center justify-between">
-                    <span className="text-sm">{year} {semester}</span>
-                    <span className={`text-sm font-medium ${isComplete ? 'text-green-600' : 'text-gray-400'}`}>
-                      {isComplete ? 'Complete' : 'Incomplete'}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          {/* Sidebar Progress Tracker (Stepper) */}
+          <ApplicationSidebar
+            selectedTerms={selectedTerms}
+            availability={availability}
+            getTermFormData={getTermFormData}
+          />
         </div>
         {/* Submission confirmation for all existing applications */}
         {existingApplications.length > 0 && (

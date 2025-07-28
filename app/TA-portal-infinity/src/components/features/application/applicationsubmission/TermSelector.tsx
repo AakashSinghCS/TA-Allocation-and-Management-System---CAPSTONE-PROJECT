@@ -51,19 +51,19 @@ const TermSelector: React.FC<TermSelectorProps> = ({
 
   if (activeSemesters.length === 0) {
     return (
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center">
         <div className="flex justify-center mb-4">
-          <svg className="w-12 h-12 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-12 h-12 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
         </div>
-        <h3 className="text-lg font-semibold text-yellow-800 mb-2">
+        <h3 className="text-lg font-semibold text-amber-800 mb-2">
           Applications Currently Unavailable
         </h3>
-        <p className="text-yellow-700 mb-4">
+        <p className="text-amber-700 mb-4">
           There are no active application periods at this time. TA applications are only available during designated enrollment periods.
         </p>
-        <div className="bg-yellow-100 border border-yellow-300 rounded-md p-3 text-sm text-yellow-800">
+        <div className="bg-amber-100 border border-amber-300 rounded-md p-3 text-sm text-amber-800">
           <p className="font-medium mb-1">What you can do:</p>
           <ul className="text-left space-y-1">
             <li>• Check back during the next application period</li>
@@ -93,10 +93,10 @@ const TermSelector: React.FC<TermSelectorProps> = ({
                 flex items-center p-3 border rounded-lg cursor-pointer transition-all relative
                 ${isSelected 
                   ? (hasExistingApplication 
-                      ? 'border-orange-500 bg-orange-50 text-orange-700' 
-                      : 'border-blue-500 bg-blue-50 text-blue-700')
+                      ? 'border-gray-500 bg-gray-50 text-gray-700' 
+                      : 'border-gray-500 bg-gray-50 text-gray-700')
                   : (hasExistingApplication 
-                      ? 'border-orange-300 bg-orange-25 hover:border-orange-400 hover:bg-orange-50' 
+                      ? 'border-gray-500 bg-orange-25 hover:border-orange-400 hover:bg-orange-50' 
                       : 'border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50')
                 }
               `}
@@ -111,7 +111,7 @@ const TermSelector: React.FC<TermSelectorProps> = ({
                 {sem.year} {sem.semester}
               </span>
               {hasExistingApplication && (
-                <span className="ml-auto text-xs font-semibold text-orange-600 bg-orange-100 px-2 py-1 rounded-full">
+                <span className="ml-auto text-xs font-semibold text-amber-600 bg-amber-100 px-2 py-1 rounded-full">
                   Already Applied
                 </span>
               )}
@@ -121,8 +121,8 @@ const TermSelector: React.FC<TermSelectorProps> = ({
       </div>
       
       {selectedTerms.length > 0 && (
-        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <h4 className="font-semibold text-blue-800 mb-2">Selected Terms:</h4>
+        <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+          <h4 className="font-semibold text-black mb-2">Selected Terms:</h4>
           <div className="flex flex-wrap gap-2">
             {selectedTerms.map(termKey => {
               const [year, semester] = termKey.split('-');
@@ -132,7 +132,7 @@ const TermSelector: React.FC<TermSelectorProps> = ({
                   key={termKey}
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
                     hasExisting 
-                      ? 'bg-orange-100 text-orange-800 border border-orange-300'
+                      ? 'bg-amber-100 text-amber-800 border border-amber-300'
                       : 'bg-blue-100 text-blue-800 border border-blue-300'
                   }`}
                 >

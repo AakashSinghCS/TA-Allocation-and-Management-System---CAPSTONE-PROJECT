@@ -182,7 +182,8 @@ const TermForm: React.FC<TermFormProps> = ({
 
       {/* Profile Confirmation */}
       <section>
-        <div className="flex items-start space-x-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <label className="block mb-2 font-semibold text-base md:text-lg" htmlFor={`${termKey}-confirmProfileUpdated`}>Profile Confirmation*</label>
+        <div className="flex items-start space-x-3 p-4 rounded-lg">
           <input
             id={`${termKey}-confirmProfileUpdated`}
             type="checkbox"

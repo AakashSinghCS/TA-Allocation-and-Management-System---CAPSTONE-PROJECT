@@ -86,7 +86,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
       new Date(applicationDeadline.endTime) < new Date();
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 md:space-y-10 lg:space-y-12" role="form">
+    <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-xl p-6 space-y-8 md:space-y-10 lg:space-y-12" role="form">
       {/* Term Selection */}
       <section>
         <h2 className="text-lg font-semibold mb-4">Term Selection</h2>
@@ -320,22 +320,6 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
 
     {children}
 
-    {/* Profile Confirmation */}
-    <section className="flex items-start">
-      <input
-        id="confirmProfileUpdated"
-        type="checkbox"
-        name="confirmProfileUpdated"
-        checked={formData.confirmProfileUpdated}
-        onChange={handleChange}
-        className="mt-1 mr-2 min-h-[14px] min-w-[14px] md:min-h-[18px] md:min-w-[18px]"
-      />
-      <label htmlFor="confirmProfileUpdated" className="text-base md:text-base text-gray-700">
-        I confirm that I have updated my profile, as it will be used in the TA allocation decision process.*
-      </label>
-    </section>
-    {errors.confirmProfileUpdated && <p className="text-sm text-red-600 mt-1">{errors.confirmProfileUpdated}</p>}
-
     {/* Buttons */}
     <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
       <button
@@ -363,6 +347,22 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ formData, errors, han
         {isUpdate ? 'Update Application' : 'Submit Application'}
       </button>
     </div>
+
+    {/* Profile Confirmation (last field) */}
+    <section className="flex items-start mt-8">
+      <input
+        id="confirmProfileUpdated"
+        type="checkbox"
+        name="confirmProfileUpdated"
+        checked={formData.confirmProfileUpdated}
+        onChange={handleChange}
+        className="mt-1 mr-2 min-h-[14px] min-w-[14px] md:min-h-[18px] md:min-w-[18px]"
+      />
+      <label htmlFor="confirmProfileUpdated" className="text-base md:text-base text-gray-700">
+        I confirm that I have updated my profile, as it will be used in the TA allocation decision process.*
+      </label>
+    </section>
+    {errors.confirmProfileUpdated && <p className="text-sm text-red-600 mt-1">{errors.confirmProfileUpdated}</p>}
   </form>
   );
 };
