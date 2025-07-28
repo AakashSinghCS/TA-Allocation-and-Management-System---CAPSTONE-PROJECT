@@ -170,16 +170,18 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-xs text-gray-600 mb-2" htmlFor="active-checkbox">
+          <label className="text-xs text-gray-600 mb-1" htmlFor="active-checkbox">
             Active
           </label>
-          <input
-            id="active-checkbox"
-            type="checkbox"
-            checked={termConfig.isActive}
-            onChange={e => handleTermChange("isActive", e.target.checked)}
-            className="h-6 w-6 appearance-none border border-blue-200 rounded bg-white checked:bg-blue-600 checked:border-blue-600"
-          />
+          <div className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-full sm:w-16 h-8 flex items-center justify-center">
+            <input
+              id="active-checkbox"
+              type="checkbox"
+              checked={termConfig.isActive}
+              onChange={e => handleTermChange("isActive", e.target.checked)}
+              className="w-5 h-5 accent-blue-600 border border-blue-200 rounded"
+            />
+          </div>
         </div>
         <button
           onClick={handleSaveTerm}

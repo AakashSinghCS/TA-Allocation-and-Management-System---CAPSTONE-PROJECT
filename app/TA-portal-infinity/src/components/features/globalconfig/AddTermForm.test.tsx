@@ -45,6 +45,7 @@ describe('AddTermForm', () => {
     expect(screen.getByLabelText('Semester')).toBeInTheDocument();
     expect(screen.getByLabelText('Start Date')).toBeInTheDocument();
     expect(screen.getByLabelText('End Date')).toBeInTheDocument();
+    expect(screen.getByLabelText('Active')).toBeInTheDocument();
     expect(screen.getByText('Add Term')).toBeInTheDocument();
   });
 
@@ -60,6 +61,13 @@ describe('AddTermForm', () => {
     
     const semesterSelect = screen.getByLabelText('Semester') as HTMLSelectElement;
     expect(semesterSelect.value).toBe('W1');
+  });
+
+  it('initializes with Active checkbox checked', () => {
+    render(<AddTermForm token={mockToken} onTermAdded={mockOnTermAdded} />);
+    
+    const activeCheckbox = screen.getByLabelText('Active') as HTMLInputElement;
+    expect(activeCheckbox.checked).toBe(true);
   });
 
   it('updates year when changed', async () => {
@@ -97,6 +105,19 @@ describe('AddTermForm', () => {
     await user.type(endDateInput, '2024-04-12');
     
     expect((endDateInput as HTMLInputElement).value).toBe('2024-04-12');
+  });
+
+  it('updates active checkbox when changed', async () => {
+    render(<AddTermForm token={mockToken} onTermAdded={mockOnTermAdded} />);
+    
+    const activeCheckbox = screen.getByLabelText('Active') as HTMLInputElement;
+    expect(activeCheckbox.checked).toBe(true);
+    
+    await user.click(activeCheckbox);
+    expect(activeCheckbox.checked).toBe(false);
+    
+    await user.click(activeCheckbox);
+    expect(activeCheckbox.checked).toBe(true);
   });
 
   it('shows error when start date is missing', async () => {
@@ -186,6 +207,37 @@ describe('AddTermForm', () => {
     
     expect(toast.success).toHaveBeenCalledWith('Term configuration saved successfully!');
     expect(mockOnTermAdded).toHaveBeenCalledWith(mockSemesters);
+  });
+
+  it('submits form with inactive checkbox when unchecked', async () => {
+    vi.mocked(addSemester).mockResolvedValue(true);
+    vi.mocked(getAllSemesters).mockResolvedValue(mockSemesters);
+    
+    render(<AddTermForm token={mockToken} onTermAdded={mockOnTermAdded} />);
+    
+    const yearInput = screen.getByLabelText('Year');
+    const startDateInput = screen.getByLabelText('Start Date');
+    const endDateInput = screen.getByLabelText('End Date');
+    const activeCheckbox = screen.getByLabelText('Active');
+    
+    await user.clear(yearInput);
+    await user.type(yearInput, '2024');
+    await user.type(startDateInput, '2024-01-08');
+    await user.type(endDateInput, '2024-04-12');
+    await user.click(activeCheckbox); // Uncheck it
+    
+    const submitButton = screen.getByText('Add Term');
+    await user.click(submitButton);
+    
+    await waitFor(() => {
+      expect(addSemester).toHaveBeenCalledWith({
+        year: 2024,
+        semester: 'W1',
+        startDate: '2024-01-08',
+        endDate: '2024-04-12',
+        isActive: false, // Should be false when unchecked
+      }, mockToken);
+    });
   });
 
   it('shows loading state while submitting', async () => {
@@ -289,12 +341,14 @@ describe('AddTermForm', () => {
     const semesterSelect = screen.getByLabelText('Semester') as HTMLSelectElement;
     const startDateInput = screen.getByLabelText('Start Date') as HTMLInputElement;
     const endDateInput = screen.getByLabelText('End Date') as HTMLInputElement;
+    const activeCheckbox = screen.getByLabelText('Active') as HTMLInputElement;
     
     await user.clear(yearInput);
     await user.type(yearInput, '2025');
     await user.selectOptions(semesterSelect, 'S1');
     await user.type(startDateInput, '2025-01-08');
     await user.type(endDateInput, '2025-04-12');
+    await user.click(activeCheckbox); // Uncheck it
     
     const submitButton = screen.getByText('Add Term');
     await user.click(submitButton);
@@ -304,6 +358,7 @@ describe('AddTermForm', () => {
       expect(semesterSelect.value).toBe('W1');
       expect(startDateInput.value).toBe('');
       expect(endDateInput.value).toBe('');
+      expect(activeCheckbox.checked).toBe(true); // Should reset to true
     });
   });
 });
