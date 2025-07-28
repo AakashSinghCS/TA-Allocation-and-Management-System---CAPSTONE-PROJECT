@@ -511,6 +511,12 @@ const CreateExamPage = () => {
                                 console.error("Error fetching availabilities:", err);
                                 setAvailabilities([]);
                             }
+
+                            const selected = matchingStudents.find((s) => s.id === studentId);
+                            if (selected) {
+                                setStudentName(`${selected.firstName} ${selected.lastName}`);
+                                setStudentNum(String(selected.studentNum));
+                            }
                         } else {
                             setAvailabilities([]);
                         }
