@@ -84,7 +84,7 @@ export default function UpdateExamModal({
         {error && <p className="text-red-500 mb-2">{error}</p>}
 
         <label className="block mb-2">
-          Exam Date
+          Date
           <input
             type="date"
             className="w-full mt-1 border rounded px-3 py-2"

@@ -2,6 +2,23 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import CreateExamPage from "../../../pages/coordinator/exampage/CreateExamPage";
 import { AuthProvider } from "../../../context/AuthContext";
 import { BrowserRouter } from "react-router-dom";
+import { toast } from "react-toastify";
+
+vi.mock("react-toastify", async () => {
+  const actual = await vi.importActual<typeof import("react-toastify")>("react-toastify");
+
+  return {
+    ...actual,
+    toast: {
+      error: vi.fn(),
+      success: vi.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+    },
+    ToastContainer: (props: any) => <div data-testid="toast-container" {...props} />,
+  };
+});
+
 
 describe("CreateExamPage", () => {
   beforeEach(() => {
@@ -30,18 +47,16 @@ describe("CreateExamPage", () => {
   });
 
   it("shows alert on empty exam form submit", async () => {
-    window.alert = vi.fn();
     fireEvent.click(screen.getByRole("button", { name: "Create Exam" }));
     await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith("Please fill in all fields.");
+      expect(toast.error).toHaveBeenCalledWith("Please fill in all fields.");
     });
   });
 
   it("shows alert on empty assign form submit", async () => {
-    window.alert = vi.fn();
     fireEvent.click(screen.getByText("Assign"));
     await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith("Please fill in all fields.");
+      expect(toast.error).toHaveBeenCalledWith("Please fill in all fields.");
     });
   });
 

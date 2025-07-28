@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "4bd4356d-ba70-44d5-8cf4-7b8b2615bae0",
+		"_postman_id": "49eebaa5-c84e-45d9-92ac-5b4c18467e9d",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "36957617"
+		"_exporter_id": "45690522"
 	},
 	"item": [
 		{
@@ -1619,6 +1619,142 @@
 									"path": [
 										"exams",
 										"assignments",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Availability by StudentId",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"date\": \"2025-08-10\",\r\n    \"startTime\": \"09:00\",\r\n    \"endTime\": \"12:00\"\r\n  },\r\n  {\r\n    \"date\": \"2025-08-11\",\r\n    \"startTime\": \"09:00\",\r\n    \"endTime\": \"12:00\"\r\n  }\r\n]\r\n"
+								},
+								"url": {
+									"raw": "localhost:8080/exams/1/availability",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"exams",
+										"1",
+										"availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get assignmentby examid",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/exams/assignments/byexam/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"exams",
+										"assignments",
+										"byexam",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete assignment by assignId",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/exams/assignments/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"exams",
+										"assignments",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update assignment by examId and StudentId",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUzNDE4MDUwLCJleHAiOjE3NTM0MjE2NTB9.6_QkWGnTClDrOd6y1YPKgLXuXW1OWMI_54aYstI7HLb5yIDoHvDeKx6sNo42MBwp",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"task\": \"PREPARATION\",\n    \"date\": \"2025-07-20\",\n    \"startTime\": \"10:00\",\n    \"endTime\": \"16:00\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/exams/assignments/1/student/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"exams",
+										"assignments",
+										"1",
+										"student",
 										"1"
 									]
 								}
@@ -3633,6 +3769,408 @@
 							"path": [
 								"public",
 								"email"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Qualification Service",
+			"item": [
+				{
+					"name": "instructor add qualification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"courseId\":1,\"description\":\"know 10 languages\", \"deptCode\": \"MATH\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/qualifications/instructor/addQualification",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"instructor",
+								"addQualification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "instructor delete qualification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"description\":\"know 10 languages\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/qualifications/instructor/deleteQualification",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"instructor",
+								"deleteQualification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find qualification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/qualifications/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by deptCode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/qualifications/byDepartment/MATH",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"byDepartment",
+								"MATH"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "student update qualification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"qualificationIds\":[1]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/qualifications/1/studentUpdateQualification",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"1",
+								"studentUpdateQualification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by student id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/qualifications/findByStudentId/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"findByStudentId",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by instructor id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbnN0cnVjdG9yQHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX0lOU1RSVUNUT1IiXSwiaWF0IjoxNzUwNzQxMTIxfQ.lzraD92vBLDDFN8WM-jc2CkkpE5lsR6HruJOWXYruqBgKJ94jhf0YsaTzaSQeqWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/qualifications/instructor/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"qualifications",
+								"instructor",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Semesters",
+			"item": [
+				{
+					"name": "Get Semester",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/semesters/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"semesters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all semesters",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/semesters/getAll",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"semesters",
+								"getAll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add semester",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"year\": 2026,\r\n        \"semester\": \"W1\",\r\n        \"startDate\": \"2026-09-03\",\r\n        \"endDate\": \"2026-12-08\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/semesters/add",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"semesters",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update semester",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/semesters/update/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"semesters",
+								"update",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete semester",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/semesters/delete/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"semesters",
+								"delete",
+								"1"
 							]
 						}
 					},

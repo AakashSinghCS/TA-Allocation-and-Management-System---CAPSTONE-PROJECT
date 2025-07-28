@@ -63,7 +63,8 @@ const ExamsDashboard = () => {
     }
   };
 
-  const fetchExtraDetails = async (exams: ExamDto[]) => {
+  const fetchExtraDetails = async (exams: ExamDto[]| undefined) => {
+    if (!exams || exams.length === 0) return;
     const sections: Record<number, Section> = {};
     const courses: Record<number, Course> = {};
 

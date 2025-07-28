@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
 import {BookCheck} from "lucide-react";
 import {Clock} from "lucide-react";
+import UpdateAssignmentModal from "./UpdateAssignmentModal";
+
 
 interface AssignedStudentsListProps {
   examId: number;
@@ -22,6 +24,8 @@ const AssignedStudentsList: React.FC<AssignedStudentsListProps> = ({ examId }) =
   const [assignments, setAssignments] = useState<ExamAssignmentDto[]>([]);
   const [studentMap, setStudentMap] = useState<Record<number, StudentDto>>({});
   const { token } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState<ExamAssignmentDto | null>(null);
 
   useEffect(() => {
     fetchAssignments();
@@ -77,8 +81,39 @@ const AssignedStudentsList: React.FC<AssignedStudentsListProps> = ({ examId }) =
   };
 
   const handleUpdate = (assignment: ExamAssignmentDto) => {
-    // TODO: Open a modal or inline form to update assignment info
-    console.log("Update clicked for:", assignment);
+    setSelectedAssignment(assignment);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedAssignment(null);
+  };
+
+  const handleAssignmentUpdate = async (updated: ExamAssignmentDto) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/exams/assignments/${updated.examId}/student/${updated.studentId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updated),
+        }
+      );
+
+      if (response.ok) {
+        toast.success("Assignment updated successfully");
+        fetchAssignments();
+        handleModalClose();
+      } else {
+        toast.error("Failed to update assignment");
+      }
+    } catch {
+      toast.error("Error updating assignment");
+    }
   };
 
   return (
@@ -122,6 +157,14 @@ const AssignedStudentsList: React.FC<AssignedStudentsListProps> = ({ examId }) =
             );
           })}
         </ul>
+      )}
+      {selectedAssignment && (
+        <UpdateAssignmentModal
+        isOpen={isModalOpen}
+        assignment={selectedAssignment}
+        onUpdate={handleAssignmentUpdate}
+        onClose={handleModalClose}
+        />
       )}
     </div>
   );
