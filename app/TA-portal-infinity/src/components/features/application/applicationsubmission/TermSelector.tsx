@@ -90,7 +90,8 @@ const TermSelector: React.FC<TermSelectorProps> = ({
             <label 
               key={termValue} 
               className={`
-                flex items-center p-3 border rounded-lg cursor-pointer transition-all relative
+                flex items-center p-2 border rounded-md cursor-pointer transition-all relative min-w-0
+                text-base sm:text-sm
                 ${isSelected 
                   ? (hasExistingApplication 
                       ? 'border-gray-500 bg-gray-50 text-gray-700' 
@@ -103,15 +104,15 @@ const TermSelector: React.FC<TermSelectorProps> = ({
             >
               <input
                 type="checkbox"
-                className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="mr-2 h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 checked={isSelected}
                 onChange={(e) => onTermToggle(termValue, e.target.checked)}
               />
-              <span className="font-medium">
+              <span className="font-medium text-base sm:text-sm">
                 {sem.year} {sem.semester}
               </span>
               {hasExistingApplication && (
-                <span className="ml-auto text-xs font-semibold text-amber-600 bg-amber-100 px-2 py-1 rounded-full">
+                <span className="ml-auto text-xs font-semibold text-amber-600 bg-amber-100 px-1.5 py-0.5 rounded-full">
                   Already Applied
                 </span>
               )}

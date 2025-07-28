@@ -4,7 +4,6 @@ import React from 'react';
 
 interface SidebarProps {
   selectedTerms: string[];
-  availability: any[];
   getTermFormData: (termKey: string) => any;
 }
 
@@ -25,9 +24,9 @@ const progressBar = (percent: number) => (
   </div>
 );
 
-const ApplicationSidebar: React.FC<SidebarProps> = ({ selectedTerms, availability, getTermFormData }) => {
+const ApplicationSidebar: React.FC<SidebarProps> = ({ selectedTerms, getTermFormData }) => {
   return (
-    <div className="bg-white shadow-xl rounded-xl p-6 h-fit">
+    <div className="p-0 h-fit relative">
       <h3 className="font-bold text-xl mb-5 text-[#040941] flex items-center gap-2">
         Application Progress
       </h3>
@@ -35,10 +34,6 @@ const ApplicationSidebar: React.FC<SidebarProps> = ({ selectedTerms, availabilit
         <div className="flex items-center gap-2">
           <span className="font-medium text-gray-700">Terms Selected:</span>
           <span className={`font-semibold ${selectedTerms.length > 0 ? 'text-green-600' : 'text-gray-400'}`}>{selectedTerms.length > 0 ? `${selectedTerms.length}` : 'None'}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-medium text-gray-700">Availability:</span>
-          <span className={`font-semibold ${availability.length > 0 ? 'text-green-600' : 'text-gray-400'}`}>{availability.length > 0 ? `${availability.length} slots` : 'None'}</span>
         </div>
       </div>
       <div className="space-y-4">
@@ -58,7 +53,7 @@ const ApplicationSidebar: React.FC<SidebarProps> = ({ selectedTerms, availabilit
             // Progress calculation (out of 4 main fields)
             const filled = [formData.firstPreference, formData.wantWorkingHours, formData.applicationType, formData.confirmProfileUpdated].filter(Boolean).length;
             const percent = Math.round((filled / 4) * 100);
-            if (isComplete) return null; // Hide completed terms
+            if (isComplete) return null; 
             return (
               <div key={termKey} className="rounded-lg shadow flex flex-col px-4 py-3 gap-2">
                 <div className="flex items-center gap-4">
@@ -100,14 +95,14 @@ const ApplicationSidebar: React.FC<SidebarProps> = ({ selectedTerms, availabilit
           if (!formData.confirmProfileUpdated) missingFields.push('Profile');
           return missingFields.length === 0;
         }) && (
-          <div className="text-sm text-green-600">All selected terms are complete!</div>
+          <div className="text-sm text-green-600">All selected term applications are complete!</div>
         )}
         {/* Info banner to view submitted applications */}
         <div className="w-full mt-6">
           <div className="bg-blue-100 border border-blue-300 rounded-lg px-4 py-3 flex items-center gap-3">
             <Info className="w-5 h-5 text-blue-600 flex-shrink-0" />
-            <span className="text-sm text-blue-900 flex-1">
-              You can <a href="http://localhost:5173/user/student/view-applications" target="_blank" rel="noopener noreferrer" className="underline text-blue-700 hover:text-blue-900 font-medium">view your submitted TA applications</a> and check their status anytime.
+            <span className="text-sm text-[#040941] flex-1">
+              You can <a href="/user/student/view-applications" rel="noopener noreferrer" className="underline text-blue-700 hover:text-blue-900 font-medium">view your submitted TA applications</a> and check their status anytime.
             </span>
           </div>
         </div>

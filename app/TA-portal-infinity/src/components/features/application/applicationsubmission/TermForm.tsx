@@ -57,14 +57,23 @@ const TermForm: React.FC<TermFormProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-        <h3 className="text-xl font-bold text-blue-800 mb-2">
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+        <h3 className="text-xl font-bold text-blue-900 mb-2">
           Application for {year} {semester}
           {isUpdate && <span className="ml-2 text-sm font-normal text-orange-600">(Updating Existing)</span>}
         </h3>
-        <p className="text-blue-700">
+        <p className="text-blue-900">
           Complete the form below for your {year} {semester} TA application.
         </p>
+        {/* Show per-term availability slot count */}
+        {formData.availability && Array.isArray(formData.availability) ? (
+          <div className="mt-2 text-sm text-gray-800">
+            <span className="font-semibold">Availability:</span>
+            <span className="ml-2">
+              {formData.availability.length > 0 ? `${formData.availability.length} slot${formData.availability.length > 1 ? 's' : ''}` : 'None'}
+            </span>
+          </div>
+        ) : null}
       </div>
 
       {/* Course Preferences */}
@@ -86,7 +95,7 @@ const TermForm: React.FC<TermFormProps> = ({
                   name={pref}
                   value={formData[pref] || ''}
                   onChange={handleChange}
-                  className="w-full border rounded px-3 py-2 text-base md:text-base min-h-[36px] md:min-h-[40px]"
+        className="w-full border rounded-md px-2 py-1.5 text-base sm:text-sm min-h-[32px]"
                   disabled={loading}
                 >
                   <option value="">Select</option>
@@ -115,7 +124,7 @@ const TermForm: React.FC<TermFormProps> = ({
           name="wantWorkingHours"
           value={formData.wantWorkingHours || ''}
           onChange={handleChange}
-          className="w-full border rounded px-3 py-2 text-base md:text-base min-h-[36px] md:min-h-[40px]"
+        className="w-full border rounded-md px-2 py-1.5 text-base sm:text-sm min-h-[32px]"
           placeholder="Enter hours"
           min={2}
           max={30}
@@ -143,7 +152,7 @@ const TermForm: React.FC<TermFormProps> = ({
                 value={type}
                 checked={formData.applicationType === type}
                 onChange={handleChange}
-                className="form-radio text-indigo-600"
+                className="form-radio text-indigo-600 min-h-[32px]"
                 aria-labelledby={`${termKey}-applicationTypeLabel`}
               />
               <span className="capitalize">{type.toLowerCase()}</span>
@@ -168,7 +177,7 @@ const TermForm: React.FC<TermFormProps> = ({
                 value={option}
                 checked={formData.wantRemote === option}
                 onChange={handleChange}
-                className="form-radio text-indigo-600"
+                className="form-radio text-indigo-600 min-h-[32px]"
                 aria-labelledby={`${termKey}-remoteWorkPreferenceLabel`}
               />
               <span className="capitalize">{option}</span>
@@ -183,16 +192,16 @@ const TermForm: React.FC<TermFormProps> = ({
       {/* Profile Confirmation */}
       <section>
         <label className="block mb-2 font-semibold text-base md:text-lg" htmlFor={`${termKey}-confirmProfileUpdated`}>Profile Confirmation*</label>
-        <div className="flex items-start space-x-3 p-4 rounded-lg">
+        <div className="flex items-center gap-3">
           <input
             id={`${termKey}-confirmProfileUpdated`}
             type="checkbox"
             name="confirmProfileUpdated"
             checked={formData.confirmProfileUpdated || false}
             onChange={handleChange}
-            className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
           />
-          <label htmlFor={`${termKey}-confirmProfileUpdated`} className="text-sm font-medium text-gray-900">
+          <label htmlFor={`${termKey}-confirmProfileUpdated`} className="text-sm font-base text-gray-900">
             I confirm that my profile information is up-to-date and accurate.*
           </label>
         </div>

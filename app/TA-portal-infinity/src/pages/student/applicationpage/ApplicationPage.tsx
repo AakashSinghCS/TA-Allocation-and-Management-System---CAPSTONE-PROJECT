@@ -39,7 +39,7 @@ const ApplicationPage: React.FC = () => {
   const [activeFormTab, setActiveFormTab] = useState<string>('');
 const calendarRef = useRef<FullCalendar>(null);
 const { token, userId, userRoles } = useAuth();
-const [showDetails, setShowDetails] = useState(false);
+const [expandedAppId, setExpandedAppId] = useState<number | null>(null);
 const [applicationDeadline, setApplicationDeadline] = useState<DeadlineDto | null>(null);
 const [deadlineError, setDeadlineError] = useState("");
 
@@ -420,23 +420,30 @@ const deadlinePassed =
   }
 };
 
+  // Controls whether the details view for an application is shown (used for sidebar/details expansion)
+  function setShowDetails(show: boolean) {
+    if (!show) {
+      setExpandedAppId(null);
+      setSavedApp(null);
+    }
+    // If you want to show details for a specific app, you should setExpandedAppId and setSavedApp accordingly elsewhere.
+    // This function is mainly used to hide details.
+  }
+
   return (
     <div className="min-h-screen px-2 sm:px-4 md:px-6 py-6 md:py-12">
       <div className="max-w-[1100px] mx-auto w-full">
 
-        {/* Dynamic warning message based on selected terms */}
-        {selectedTerms.some((term: string) => existingTerms.has(term)) && (
+        {/* Always show message if there are any existing applications */}
+        {existingApplications.length > 0 && (
           <div className="mb-6 rounded-lg border-l-4 border-amber-600 bg-amber-50 p-3 text-red-800 flex items-center justify-between">
             <span>
               {(() => {
-                const existingSelectedTerms = selectedTerms.filter((term: string) => existingTerms.has(term));
-                const termsList = existingSelectedTerms.map(term => {
-                  const [year, semester] = term.split('-');
-                  return `${year} ${semester}`;
-                }).join(', ');
-                return existingSelectedTerms.length === 1 
-                  ? `You have already submitted an application for ${termsList}. Any changes you make will update that application.`
-                  : `You have already submitted applications for ${termsList}. Any changes you make will update those applications.`;
+                // List all terms for which applications exist
+                const termsList = existingApplications
+                  .map(app => `${app.year} ${app.semester}`)
+                  .join(', ');
+                return `You have already submitted applications for ${termsList}. Any changes you make will update those applications.`;
               })()}
             </span>
           </div>
@@ -487,7 +494,7 @@ const deadlinePassed =
 
               {/* Term Forms Tabs */}
               {selectedTerms.length > 0 && (
-                <div className="bg-white border rounded-lg">
+                <div>
                   {/* Tab Headers */}
                   {selectedTerms.length > 1 && (
                     <div className="border-b border-gray-200">
@@ -519,7 +526,7 @@ const deadlinePassed =
                   )}
 
                   {/* Active Form Content */}
-                  <div className="p-6">
+                  <div>
                     {(selectedTerms.length === 1 ? selectedTerms : [activeFormTab]).filter(Boolean).map(termKey => (
                       <div key={termKey} className={selectedTerms.length > 1 && termKey !== activeFormTab ? 'hidden' : ''}>
                         <TermForm
@@ -563,6 +570,7 @@ const deadlinePassed =
                           slotEventOverlap={false}
                           expandRows={true}
                           contentHeight="auto"
+                          hiddenDays={[0, 6]}
                         />
                       </div>
                       {errors.availability && <p className="text-sm text-red-600 mt-1">{errors.availability}</p>}
@@ -573,10 +581,10 @@ const deadlinePassed =
                       <button
                         type="submit"
                         disabled={selectedTerms.length === 0}
-                        className={`px-6 py-3 rounded-lg font-medium ${
+                        className={`px-6 py-2 rounded-lg font-medium ${
                           selectedTerms.length === 0
                             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            : 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500'
+                            : 'bg-[#040941] text-white hover:bg-[#030735] focus:ring-2 focus:ring-blue-500'
                         }`}
                       >
                         {selectedTerms.some(term => existingTerms.has(term)) 
@@ -594,7 +602,6 @@ const deadlinePassed =
           {/* Sidebar Progress Tracker (Stepper) */}
           <ApplicationSidebar
             selectedTerms={selectedTerms}
-            availability={availability}
             getTermFormData={getTermFormData}
           />
         </div>
@@ -604,7 +611,7 @@ const deadlinePassed =
             {existingApplications
               .sort((a, b) => new Date(b.timeSubmitted).getTime() - new Date(a.timeSubmitted).getTime())
               .map((app) => (
-              <div key={`${app.year}-${app.semester}-${app.id}`} className="bg-white border-t-4 border-[#040941] px-3 md:px-4 py-3 rounded-b-xl shadow">
+              <div key={`${app.year}-${app.semester}-${app.id}`} className="relative px-6 py-5 bg-gray-50 border-l-4 border-blue-900">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="flex flex-wrap items-center gap-x-4 md:gap-x-6 gap-y-2 min-w-0 flex-1 text-sm md:text-base">
                     <span className="font-semibold text-[#040941]">Application ID:</span>
@@ -619,17 +626,19 @@ const deadlinePassed =
                     <button
                       className="px-4 py-2 bg-[#040941] text-white rounded hover:bg-[#030735] transition-colors"
                       onClick={() => {
-                        if (savedApp?.id === app.id) {
-                          setShowDetails((prev) => !prev);
+                        const appUniqueId = typeof app.id === 'number' ? app.id : (typeof app.applicationId === 'number' ? app.applicationId : null);
+                        if (expandedAppId === appUniqueId) {
+                          setExpandedAppId(null);
+                          setSavedApp(null);
                         } else {
+                          setExpandedAppId(appUniqueId);
                           setSavedApp(app);
-                          setShowDetails(true);
                         }
                       }}
-                      aria-expanded={showDetails && savedApp?.id === app.id}
+                      aria-expanded={expandedAppId === (typeof app.id === 'number' ? app.id : app.applicationId)}
                       aria-controls="application-details-row"
                     >
-                      {(showDetails && savedApp?.id === app.id) ? 'Hide Details' : 'View Application'}
+                      {(expandedAppId === (typeof app.id === 'number' ? app.id : app.applicationId)) ? 'Hide Details' : 'View Application'}
                     </button>
                     <button
                       className="px-4 py-2 bg-red-700 text-white rounded hover:bg-red-700 transition-colors"
@@ -691,7 +700,7 @@ const deadlinePassed =
                                     }
                                     
                                     setSubmitted(false);
-                                    setShowDetails(false);
+                                    setExpandedAppId(null);
                                     clearForm();
                                     toast.success('Application deleted successfully.', { autoClose: 2500 });
                                   } catch (err: any) {
@@ -725,9 +734,10 @@ const deadlinePassed =
                     </button>
                   </div>
                 </div>
-                {showDetails && savedApp?.id === app.id && (
-                  <ApplicationDetails savedApp={app} />
-                )}
+                {(() => {
+                  const appUniqueId = typeof app.id === 'number' ? app.id : (typeof app.applicationId === 'number' ? app.applicationId : null);
+                  return expandedAppId === appUniqueId ? <ApplicationDetails savedApp={app} /> : null;
+                })()}
               </div>
             ))}
           </div>
