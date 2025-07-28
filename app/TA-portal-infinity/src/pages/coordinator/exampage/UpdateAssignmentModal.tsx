@@ -31,7 +31,26 @@ const UpdateAssignmentModal: React.FC<UpdateAssignmentModalProps> = ({
       return;
     }
 
-    if (new Date(`1970-01-01T${endTime}`) <= new Date(`1970-01-01T${startTime}`)) {
+    const [startHour, startMinute] = startTime.split(":").map(Number);
+    const [endHour, endMinute] = endTime.split(":").map(Number);
+      
+    const startTotalMin = startHour * 60 + startMinute;
+    const endTotalMin = endHour * 60 + endMinute;
+      
+    const minAllowed = 8 * 60;
+    const maxAllowed = 20 * 60;
+    
+    if (startTotalMin < minAllowed || startTotalMin > maxAllowed) {
+      toast.warn("Start time must be between 08:00 and 20:00.");
+      return;
+    }
+    
+    if (endTotalMin < minAllowed || endTotalMin > maxAllowed) {
+      toast.warn("End time must be between 08:00 and 20:00.");
+      return;
+    }
+      
+    if (endTotalMin <= startTotalMin) {
       toast.error("End time must be after start time.");
       return;
     }
@@ -117,9 +136,9 @@ const UpdateAssignmentModal: React.FC<UpdateAssignmentModalProps> = ({
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="px-4 py-2 bg-[#040941] text-white rounded hover:bg-blue-700"
             >
-              Save Changes
+              Update
             </button>
           </div>
         </form>

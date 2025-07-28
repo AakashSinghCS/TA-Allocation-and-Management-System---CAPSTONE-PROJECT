@@ -29,19 +29,31 @@ export default function UpdateExamModal({
         return;
     }
 
-    const start = new Date(`${date}T${startTime}`);
-    const end = new Date(`${date}T${endTime}`);
-
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-        toast.error("Invalid time format.");
-        setLoading(false);
-        return;
+    const [startHour, startMinute] = startTime.split(":").map(Number);
+    const [endHour, endMinute] = endTime.split(":").map(Number);
+      
+    const startTotalMin = startHour * 60 + startMinute;
+    const endTotalMin = endHour * 60 + endMinute;
+      
+    const minAllowed = 8 * 60;
+    const maxAllowed = 20 * 60;
+    
+    if (startTotalMin < minAllowed || startTotalMin > maxAllowed) {
+      toast.warn("Start time must be between 08:00 and 20:00.");
+      setLoading(false);
+      return;
     }
-
-    if (end <= start) {
-        toast.error("End time must be after start time.");
-        setLoading(false);
-        return;
+    
+    if (endTotalMin < minAllowed || endTotalMin > maxAllowed) {
+      toast.warn("End time must be between 08:00 and 20:00.");
+      setLoading(false);
+      return;
+    }
+      
+    if (endTotalMin <= startTotalMin) {
+      toast.error("End time must be after start time.");
+      setLoading(false);
+      return;
     }
 
     try {
