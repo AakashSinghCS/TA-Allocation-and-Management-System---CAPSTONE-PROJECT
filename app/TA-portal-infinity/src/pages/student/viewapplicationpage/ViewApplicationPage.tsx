@@ -158,11 +158,25 @@ const ViewApplicationPage = () => {
           })
         );
       } else {
-        setError("Failed to accept the offer. Please try again.");
+        // Try to parse error response for backend message
+        let errorMsg = "Failed to accept the offer. Please try again.";
+        try {
+          const text = await resp.text();
+          if (text && text.includes("Course has no need for that year and semester")) {
+            errorMsg = "This course does not have a TA need for the selected year and semester. Please contact your coordinator.";
+          } else if (text) {
+            errorMsg = text;
+          }
+        } catch {}
+        setError(errorMsg);
       }
     } catch (e: any) {
       console.error('[handleAccept] error:', e);
-      setError(e.message);
+      let errorMsg = e?.message || "Failed to accept the offer. Please try again.";
+      if (errorMsg.includes("Course has no need for that year and semester")) {
+        errorMsg = "This course does not have a TA need for the selected year and semester. Please contact your coordinator.";
+      }
+      setError(errorMsg);
     } finally {
       setActionLoading(null);
     }
@@ -352,12 +366,18 @@ const ViewApplicationPage = () => {
                               e.preventDefault();
                               toast.error("The application deadline has passed. You can no longer submit.");
                               return;
-                            } 
+                            }
                             if (
                               app.allocation &&
                               typeof app.allocation.id === 'number' &&
                               typeof (app.id ?? app.applicationId) === 'number'
                             ) {
+                              // Debug log for allocationId and appId
+                              console.log('Accept Offer clicked:', {
+                                allocationId: app.allocation.id,
+                                appId: app.id ?? app.applicationId,
+                                app,
+                              });
                               handleAccept(app.allocation.id as number, (app.id ?? app.applicationId) as number);
                             }
                           }}
