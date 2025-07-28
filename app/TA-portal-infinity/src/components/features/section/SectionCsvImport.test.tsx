@@ -18,7 +18,7 @@ describe("SectionCsvImport", () => {
     // Try to submit with no file selected
     const button = screen.getByRole("button", { name: /import/i });
     fireEvent.click(button);
-    await waitFor(() => {
+    waitFor(() => {
       const alert = screen.getByRole('alert');
       expect(alert).toHaveTextContent(/please select a valid csv file/i);
     });
