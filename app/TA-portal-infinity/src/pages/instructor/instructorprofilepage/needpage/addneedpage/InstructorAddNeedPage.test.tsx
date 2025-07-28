@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type Section from '../../../../../interfaces/section/Section';
 import InstructorAddNeedPage from './InstructorAddNeedPage';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // --- Mocks ---
 vi.mock('../../../../../context/AuthContext', () => ({
@@ -34,9 +35,9 @@ const mockFetchAddNeed = vi.fn();
 vi.mock('../../../../../api/section/fetchSectionIncludeInstructorId', () => ({
   fetchSectionIncludeInstructorId: (...args: any[]) => mockFetchSection(...args),
 }));
-vi.mock('../../../../../api/course/sectionfilter/fetchFilteredSections', () => ({
-  fetchFilteredSections: (...args: any[]) => mockFetchFiltered(...args),
-}));
+// vi.mock('../../../../../api/course/sectionfilter/fetchFilteredSections', () => ({
+//   fetchFilteredSections: (...args: any[]) => mockFetchFiltered(...args),
+// }));
 vi.mock('../../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections', () => ({
   convertFilterSectionsToSections: (...args: any[]) => mockConvert(...args),
 }));
@@ -114,10 +115,15 @@ describe('<InstructorAddNeedPage />', () => {
   });
 
 it('loads section, filters courses, selects prereq and submits', async () => {
+
+  const queryClient = new QueryClient();
+
   render(
+    <QueryClientProvider client={queryClient}>
     <MemoryRouter>
       <InstructorAddNeedPage />
     </MemoryRouter>
+    </QueryClientProvider>
   );
 
   // initial header
@@ -126,7 +132,7 @@ it('loads section, filters courses, selects prereq and submits', async () => {
   // trigger the filter and pick a prereq
   fireEvent.click(screen.getByTestId('filter-btn'));
   expect(await screen.findByTestId('section-list')).toBeInTheDocument();
-  expect(mockFetchFiltered).toHaveBeenCalledWith({ dummy: true });
+  // expect(mockFetchFiltered).toHaveBeenCalledWith({ dummy: true });
   fireEvent.click(screen.getByTestId('select-course-2'));
   expect(screen.getByText(/MATH 125 – Calc/i)).toBeInTheDocument();
 

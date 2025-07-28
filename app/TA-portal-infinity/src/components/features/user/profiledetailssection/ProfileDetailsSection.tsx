@@ -172,6 +172,7 @@ function filterFieldsByRole<T>(baseFields: (keyof T)[], recordRoles: UserRole[])
         );
     }
     // remove student-specific fields for non-students
+
     if (!recordRoles.includes("STUDENT")) {
         displayFields = displayFields.filter(
             (k) =>

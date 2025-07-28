@@ -27,6 +27,7 @@ export default interface Section {
     allocations?: Allocation[];
     instructor?: Instructor;
     instructorId? : number
+    numberOfTAsAllocated?: number
 }
 
 export interface SectionProfile{
