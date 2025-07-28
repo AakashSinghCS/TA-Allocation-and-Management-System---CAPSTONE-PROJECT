@@ -21,6 +21,7 @@ export interface OfferDto {
   description: string;
 }
 
+import type { Allocation } from '../allocation/Allocation';
 import type { ApplicationType } from '../enum/ApplicationType';
 import type { Student } from '../user/Student';
 export interface ApplicationRequest {
@@ -33,7 +34,7 @@ export interface ApplicationRequest {
 
 
 export interface ApplicationDto {
-   id?:             number;
+  id?:             number;
   applicationId?:  number;
   student: Student;
   preferences: string[];
@@ -44,4 +45,5 @@ export interface ApplicationDto {
   unavailabilities: UnavailabilityDto[];
   transcript?: TranscriptDto;
   offers?: OfferDto[];
+  allocation? :Allocation;
 }

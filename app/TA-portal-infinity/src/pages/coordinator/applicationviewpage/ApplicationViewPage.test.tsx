@@ -71,7 +71,7 @@ describe('ApplicationViewPage', () => {
     vi.clearAllMocks()
   })
 
-    it('renders header and stats and card after load', async () => {
+  it('renders header and stats and card after load', async () => {
     render(<ApplicationViewPage />)
 
     // Header always present
@@ -88,36 +88,47 @@ describe('ApplicationViewPage', () => {
     await waitFor(() => {
       expect(fetchAllocationsByStudent).toHaveBeenCalled();
     });
-     // Re-read stats after allocations loaded
+    // Re-read stats after allocations loaded
     const statsAfter = JSON.parse((screen.getByTestId('stats').textContent || '{}'))
     expect(statsAfter.appsWithOffer).toBe(1)
     expect(statsAfter.appsWithConfirmed).toBe(1)
-    //TODO: UNCOMMENT IF APPLICATIONVIEWPGE WORKS:
-    //  expect(statsAfter.filteredCount).toBe(statsAfter.totalApplications)
 
-    // const card = await screen.findByTestId('card')
-    // expect(card).toHaveTextContent('card:123')
+    expect(statsAfter.filteredCount).toBe(statsAfter.totalApplications)
+
+    const card = await screen.findByTestId('card')
+    expect(card).toHaveTextContent('card:123')
   })
 
-  it('filters allocations when filter button clicked', async () => {
-    render(<ApplicationViewPage />)
+  it('filters the displayed cards when filter button is clicked', async () => {
+    render(<ApplicationViewPage />);
+
     // Wait for initial load
-    await screen.findByTestId('stats')
+    await screen.findByTestId('stats');
 
-    // Change allocation status filter
-    fireEvent.change(screen.getByLabelText(/Allocation Confirmed/i), { target: { value: 'CONFIRMED' } })
-    const allocPanel = screen.getByText(/Allocation & Offer Related Filters/i)
-      .closest('div'); // or another suitable container element
+    // 1) Confirm we start with exactly 1 card
+    expect(screen.getAllByTestId('card')).toHaveLength(1);
 
-    // now search only within that panel
-    const { getByRole } = within(allocPanel!);
-    const allocFilterBtn = getByRole('button', { name: /Filter/i });
+    // 2) Find the "Allocation Confirmed" select and the Filter button
+    const filterPanel = screen.getByText(/Allocation & Offer Related Filters/i)
+      .closest('div')!;
+    const { getByLabelText, getByRole } = within(filterPanel);
+    const statusSelect = getByLabelText(/Allocation Confirmed/i);
+    const filterBtn = getByRole('button', { name: /Filter/i });
 
-    fireEvent.click(allocFilterBtn);
+    // 3) Select CONFIRMED and click — mockAlloc.status is CONFIRMED, so 1 card remains
+    fireEvent.change(statusSelect, { target: { value: 'CONFIRMED' } });
+    fireEvent.click(filterBtn);
 
-    // Should call fetchAllocationByStatus for each app
     await waitFor(() => {
-      expect(fetchAllocationByStatus).toHaveBeenCalledWith('CONFIRMED', 'fake-token');
+      expect(screen.getAllByTestId('card')).toHaveLength(1);
     });
-  })
-})
+
+    // 4) Select REJECTED and click — no card has status REJECTED, so 0 cards
+    fireEvent.change(statusSelect, { target: { value: 'REJECTED' } });
+    fireEvent.click(filterBtn);
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('card')).toBeNull();
+    });
+  });
+});

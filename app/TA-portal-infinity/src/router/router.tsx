@@ -24,7 +24,6 @@ const ScheduleViewer = lazy(() => import("../pages/student/scheduleviewer/Schedu
 
 const InstructorProfilePage = lazy(() => import("../pages/instructor/instructorprofilepage/InstructorProfilePage"));
 const InstructorNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/InstructorNeedPage"));
-const InstructorComparerPage = lazy(() => import("../pages/instructor/instructorprofilepage/comparerpage/InstructorComparerPage"));
 const InstructorQualificationPage = lazy(() => import("../pages/instructor/instructorprofilepage/qualificationpage/InstructorQualificationPage"));
 const InstructorAddSectionPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage"));
 const InstructorAddNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage"));

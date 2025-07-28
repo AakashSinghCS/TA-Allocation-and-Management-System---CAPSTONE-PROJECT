@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import ApplicationDetailsPanel from '../ApplicationDetailsPanel';
+import type { EnrichedAllocatedSection } from '../../../../../pages/coordinator/applicationviewpage/ApplicationViewPage';
 
 describe('ApplicationDetailsPanel', () => {
   const selectedApp = {
@@ -18,29 +19,28 @@ describe('ApplicationDetailsPanel', () => {
       schoolYear: '3',
     },
   };
-  const allocations = [
+  const allocations: EnrichedAllocatedSection[] = [
   {
-    id: 10,
-    application: { applicationId: 1 },
-    status: 'REJECTED',
-    labPrepHours: 0,
-    gradingHours: 0,
-    sectionHours: 8,
-    allocatedSections: [
-      { id: 1, allocationId: 10, sectionId: 5, task: 'LAB', hours: 8 }
-    ],
-    sections: [
-      {
-        id: 5,
-        course: { deptCode: 'COSC', courseNum: '121', name: 'Test' },
-        section: '001',
-        type: 'TUTORIAL',
-        semester: 'S',
-        year: 2024,
-        instructor: { firstName: 'Bob', lastName: 'Brown' },
-      }
-    ],
-  } as any,
+    // these two come from your AllocatedSection
+    id:            1,
+    sectionId:     5,
+    allocationId: 10,
+    task:         "LAB",
+    hours:         8,
+
+    // these come from your “enrichment”
+    applicationId: 1,
+    status:      "REJECTED",
+    section: {
+      id:        5,
+      course:   { deptCode: "COSC", courseNum: "121", name: "Test" },
+      section:  "001",
+      type:     "TUTORIAL",
+      semester: "S",
+      year:     2024,
+      instructor: { firstName: "Bob", lastName: "Brown" }
+    }
+  }
 ];
   const allocationHistory = allocations;
 
@@ -49,8 +49,7 @@ describe('ApplicationDetailsPanel', () => {
     render(
       <ApplicationDetailsPanel
         selectedApp={selectedApp as any}
-        allocations={allocations as any}
-        allocationHistory={allocationHistory as any}
+        allocations={allocations}
         onClose={onClose}
       />
     );
@@ -76,8 +75,7 @@ describe('ApplicationDetailsPanel', () => {
     render(
       <ApplicationDetailsPanel
         selectedApp={selectedApp as any}
-        allocations={[]} 
-        allocationHistory={[]} 
+        allocations={[]}
         onClose={onClose}
       />
     );

@@ -1,5 +1,6 @@
 import React from "react";
 import type Section from "../../../interfaces/section/Section";
+import type { AllocationType } from "../../../interfaces/allocation/Allocation";
 
 interface TAAllocationsCardProps {
   sections: Section[];
@@ -8,6 +9,11 @@ interface TAAllocationsCardProps {
   expandedAlloc: {sectionId: number, allocIdx: number} | null;
   setExpandedAlloc: React.Dispatch<React.SetStateAction<{sectionId: number, allocIdx: number} | null>>;
 }
+const TASK_LABEL: Record<AllocationType, string> = {
+  LAB:      "Section Hours Allocated",
+  GRADING:  "Grading Hours Allocated",
+  LAB_PREP: "Lab Prep Hours Allocated"
+};
 
 export const TAAllocationsCard: React.FC<TAAllocationsCardProps> = ({ sections, visibleAlloc, setVisibleAlloc, expandedAlloc, setExpandedAlloc }) => (
   <div className="bg-white rounded-lg shadow p-0 flex flex-col justify-between">
@@ -27,7 +33,11 @@ export const TAAllocationsCard: React.FC<TAAllocationsCardProps> = ({ sections, 
               </span>
               {section.allocations && section.allocations.length > 0 ? (
                 <ul className="ml-4 mt-1">
-                  {section.allocations.map((alloc, idx) => (
+                  {section.allocations.map((alloc, idx) => {
+                    const tasksForThisSection = alloc.allocatedSections
+                    ?.filter(as => as.sectionId === section.id) 
+                    ?? [];
+                    return(
                     <li key={alloc.id || idx} className="text-sm text-gray-700 mb-2">
                       <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-2">
@@ -68,12 +78,20 @@ export const TAAllocationsCard: React.FC<TAAllocationsCardProps> = ({ sections, 
                             <div><span className="font-semibold">School Year:</span> {alloc.student?.schoolYear ?? 'N/A'}</div>
                             <div><span className="font-semibold">Email:</span> {alloc.student?.email ?? 'N/A'}</div>
                             <div><span className="font-semibold">Roles:</span> {alloc.student?.roles?.join(', ') ?? 'N/A'}</div>
-                            <div><span className="font-semibold">Hours Allocated:</span> {typeof alloc.numberOfHours === 'number' ? alloc.numberOfHours : 'N/A'}</div>
+                            {tasksForThisSection.map(taskAlloc => (
+                              <div key={taskAlloc.task}>
+                                <span className="font-semibold">
+                                  {TASK_LABEL[taskAlloc.task]}:
+                                </span>{" "}
+                                {taskAlloc.hours}
+                              </div>
+                            ))}
                           </div>
                         )}
                       </div>
                     </li>
-                  ))}
+                    );
+                  })}
                 </ul>
               ) : (
                 <span className="text-sm text-gray-500 ml-4 mt-1">No TA allocated yet</span>

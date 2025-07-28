@@ -11,7 +11,7 @@ export async function fetchAllocationsByStudent(
     `http://localhost:8080/allocations/student/${studentId}/history`
   );
   url.searchParams.set('noContentAllowed', String(noContentAllowed));
-
+  
   const res = await fetch(
     url.toString(),
     {
