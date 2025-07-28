@@ -27,7 +27,6 @@ const CreateExamPage = () => {
   const [courseId, setCourseId] = useState<number | null>(null);
   const [sectionId, setSectionId] = useState<number | null>(null);
 
-  const [term, setTerm] = useState('');
   const [date, setDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -206,7 +205,7 @@ const CreateExamPage = () => {
 
 
   const handleSubmit = async () => {
-    if (!courseId || !sectionId || !term || !date || !startTime || !endTime) {
+    if (!courseId || !sectionId || !date || !startTime || !endTime) {
       toast.error('Please fill in all fields.');
       return;
     }
@@ -249,7 +248,6 @@ const CreateExamPage = () => {
             body: JSON.stringify({
                 courseId,
                 sectionId,
-                term,
                 date: date.toISOString().split('T')[0],
                 startTime,
                 endTime,
@@ -269,7 +267,6 @@ const CreateExamPage = () => {
         setCourseId(null);
         setSelectedSection('');
         setSectionId(null);
-        setTerm('');
         setDate(null);
         setStartTime('');
         setEndTime('');
@@ -434,19 +431,6 @@ const CreateExamPage = () => {
                     {sections.map(sec => (
                         <option key={sec} value={sec}>{sec}</option>
                     ))}
-                </select>
-
-                <label className="block mb-2">Semester</label>
-                <select
-                    value={term}
-                    onChange={e => setTerm(e.target.value)}
-                    className="w-full mb-4 p-2 border rounded"
-                >
-                    <option value="">Select Semester</option>
-                    <option value="W1">W1</option>
-                    <option value="W2">W2</option>
-                    <option value="S1">S1</option>
-                    <option value="S2">S2</option>
                 </select>
 
                 <label className="block mb-2">Exam Date</label>
