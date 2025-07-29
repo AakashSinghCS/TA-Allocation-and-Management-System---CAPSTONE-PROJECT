@@ -37,6 +37,8 @@ export default function SectionFilter({
   const [name, setName] = useState<string | null>(null);
   const [type, setType] = useState<SectionType | null>(null);
   const [day, setDay] = useState<string | null>(null);
+  const [rawSearchText, setRawSearchText] = useState<string>('');
+  const [searchText, setSearchText] = useState<string | null>(null);
   const [times, setTimes] = useState<SearchTimes>({ startTime: null, endTime: null });
   const [dCCNSYS, setdCCNSYS] = useState<DeptCodeCourseNumSectionYearSemesterProps>({
     deptCode: null,
@@ -59,6 +61,7 @@ export default function SectionFilter({
       day,
       startTime: times.startTime,
       endTime: times.endTime,
+      searchText,
     });
   }, [
     name,
@@ -66,8 +69,18 @@ export default function SectionFilter({
     dCCNSYS.year, dCCNSYS.semester,
     type, day,
     times.startTime, times.endTime,
+    searchText,
     onFilterChange
   ]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearchText(rawSearchText.trim() === '' ? null : rawSearchText.trim());
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [rawSearchText]);
+
 
   // const smallStyle = "mt-1 block w-full rounded border border-gray-400 px-2 py-1"
   // const bigStyle = "mt-1 block w-full rounded border border-gray-400 px-3 py-2"
@@ -85,6 +98,15 @@ export default function SectionFilter({
 
   return (
     <div className={mode === 'small' ? "space-y-1 text-sm" : "space-y-4"}>
+      <input
+        type="text"
+        placeholder="Search courses (e.g. 'COSC 101 W1')"
+        value={rawSearchText}
+        onChange={(e) => setRawSearchText(e.target.value)}
+        className={mode === 'small' ? inputStyleSmall : inputStyleBig}
+      />
+
+
       {mode === 'small' ? (
         <div
           className="grid gap-2"

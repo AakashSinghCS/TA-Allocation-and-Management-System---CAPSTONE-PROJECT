@@ -278,7 +278,8 @@ public class CourseServiceTest {
                                 SectionType.LABORATORY,
                                 "Wed",
                                 LocalTime.of(14, 0),
-                                LocalTime.of(15, 30));
+                                LocalTime.of(15, 30),
+                                null);
 
                 CourseSectionScheduleDto dto1 = new CourseSectionScheduleDto(
                                 1L, 3L, "COSC", "Distributed Systems", "455", "001",
@@ -308,6 +309,7 @@ public class CourseServiceTest {
                                 eq(filter.day()),
                                 eq(filter.startTime()),
                                 eq(filter.endTime()),
+                                eq(filter.searchText()),
                                 eq(pageable))).thenReturn(page);
 
                 // exercise
@@ -330,6 +332,7 @@ public class CourseServiceTest {
                                                 filter.day(),
                                                 filter.startTime(),
                                                 filter.endTime(),
+                                                filter.searchText(),
                                                 pageable);
         }
 

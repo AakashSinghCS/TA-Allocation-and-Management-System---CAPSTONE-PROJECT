@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
@@ -7,9 +7,16 @@ import { useAuth } from '../../../context/AuthContext';
 import { fetchAllExistingCourseNums } from "../../../api/course/sectionfilter/fetchAllExistingCourseNums";
 import type { StudentOrInstructorOrCoordinator } from '../../../interfaces/user/User';
 import type { ExamAvailabilityDto } from '../../../interfaces/exam/ExamAvailability';
+import { toast } from "react-toastify";
+import { ToastContainer } from 'react-toastify';
+import ExamsDashboard from "./ExamsDashboard"; 
+
 
 
 const CreateExamPage = () => {
+  const dashboardRef = useRef<() => void>(() => {});
+  const assignmentRefMap = useRef<Record<number, () => void>>({});
+
   const [deptCodes, setDeptCodes] = useState<string[]>([]);
   const [courseNums, setCourseNums] = useState<string[]>([]);
   const [sections, setSections] = useState<string[]>([]);
@@ -20,7 +27,6 @@ const CreateExamPage = () => {
   const [courseId, setCourseId] = useState<number | null>(null);
   const [sectionId, setSectionId] = useState<number | null>(null);
 
-  const [term, setTerm] = useState('');
   const [date, setDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -199,10 +205,36 @@ const CreateExamPage = () => {
 
 
   const handleSubmit = async () => {
-    if (!courseId || !sectionId || !term || !date || !startTime || !endTime) {
-      alert('Please fill in all fields.');
+    if (!courseId || !sectionId || !date || !startTime || !endTime) {
+      toast.error('Please fill in all fields.');
       return;
     }
+
+    const [starthour, startminute] = startTime.split(":").map(Number);
+    const [endhour, endminute] = endTime.split(":").map(Number);
+
+    const starttotalmin = starthour * 60 + startminute;
+    const endtotalmin = endhour * 60 + endminute;
+
+    const minallowed = 8 * 60;
+    const maxallowed = 20 * 60;
+
+    if (starttotalmin < minallowed || starttotalmin > maxallowed) {
+        toast.warn("Start time must be between 08:00 and 20:00.");
+        return;
+    }
+
+    if (endtotalmin < minallowed || endtotalmin > maxallowed) {
+        toast.warn("End time must be between 08:00 and 20:00.");
+        return;
+    }
+
+    if (endtotalmin <= starttotalmin) {
+        toast.error("End time must be after start time.");
+        return;
+    }
+
+
 
     const token = localStorage.getItem('token');
 
@@ -216,7 +248,6 @@ const CreateExamPage = () => {
             body: JSON.stringify({
                 courseId,
                 sectionId,
-                term,
                 date: date.toISOString().split('T')[0],
                 startTime,
                 endTime,
@@ -228,28 +259,28 @@ const CreateExamPage = () => {
             throw new Error(`Failed to create exam: ${response.status} ${errTxt}`);
         }
 
-        alert('Exam created successfully!');
+        toast.success('Exam created successfully!');
         await fetchExamsAndUpdateDropdown();
+        dashboardRef.current?.();
         setSelectedDeptCode('');
         setSelectedCourseNum('');
         setCourseId(null);
         setSelectedSection('');
         setSectionId(null);
-        setTerm('');
         setDate(null);
         setStartTime('');
         setEndTime('');
 
     } catch (err) {
         console.error('Error creating exam:', err);
-        alert('Failed to create exam.');
+        toast.error('Failed to create exam.');
     }
   };
 
   const handleAssign = async () => {
     const token = localStorage.getItem("token");
     if (!selectedStudentId || !selectedExamId || !task || !assignStartTime || !assignEndTime) {
-        alert("Please fill in all fields.");
+        toast.error("Please fill in all fields.");
         return;
     }
 
@@ -263,23 +294,23 @@ const CreateExamPage = () => {
     const maxAllowed = 20 * 60;
 
     if (startTotalMin < minAllowed || startTotalMin > maxAllowed) {
-        alert("Start time must be between 08:00 and 20:00.");
+        toast.warn("Start time must be between 08:00 and 20:00.");
         return;
     }
 
     if (endTotalMin < minAllowed || endTotalMin > maxAllowed) {
-        alert("End time must be between 08:00 and 20:00.");
+        toast.warn("End time must be between 08:00 and 20:00.");
         return;
     }
 
     if (endTotalMin <= startTotalMin) {
-        alert("End time must be after start time.");
+        toast.error("End time must be after start time.");
         return;
     }
 
     const selectedExam = exams.find(e => e.id === selectedExamId);
     if (!selectedExam) {
-        alert("Selected exam not found.");
+        toast.error("Selected exam not found.");
         return;
     }
 
@@ -294,7 +325,7 @@ const CreateExamPage = () => {
     };
 
     if (task === "COORDINATION" && (formatTime(assignStartTime) !== formatTime(selectedExam.startTime) || formatTime(assignEndTime) !== formatTime(selectedExam.endTime))) {
-        alert(`For Coordination task, the assigned time must match the exam time.\n\nExam Start Time: ${formatTo12Hour(selectedExam.startTime)}\nExam End Time: ${formatTo12Hour(selectedExam.endTime)}`);
+        toast.warn(`For Coordination task, the assigned time must match the exam time.\n\nExam Start Time: ${formatTo12Hour(selectedExam.startTime)}\nExam End Time: ${formatTo12Hour(selectedExam.endTime)}`);
         return;
     }
 
@@ -307,14 +338,14 @@ const CreateExamPage = () => {
         });
 
         if (!appRes.ok) {
-            const errText = await appRes.text();
-            throw new Error(`Application fetch failed: ${appRes.status} ${errText}`);
+            toast.error('Student does not have a graduate application submitted.');
+            return;
         }
 
         const appData = await appRes.json();
 
         if (appData.applicationType !== "GRADUATE") {
-            alert("Only graduate students can be assigned to exams.");
+            toast.warn("Only graduate students can be assigned to exams.");
             return;
         }
 
@@ -339,7 +370,9 @@ const CreateExamPage = () => {
             throw new Error(`Error assigning: ${res.status} - ${txt}`);
         }
 
-        alert("Student assigned to exam successfully!");
+        toast.success("Student assigned to exam successfully!");
+
+        assignmentRefMap.current[selectedExamId!]?.();
 
         setStudentName('');
         setStudentNum('');
@@ -348,220 +381,239 @@ const CreateExamPage = () => {
         setAssignStartTime('');
         setAssignEndTime('');
         setSelectedExamId(null);
+        setAvailabilities([]);
 
     } catch (err) {
         console.error("Assignment error:", err);
-        alert("Failed to assign student.");
+        toast.error("Failed to assign student.");
     }
   };
 
   return (
-    <div>
-        <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow mt-10">
-            <h2 className="text-2xl font-bold mb-4">Create Exam</h2>
+    <div className="max-w-8xl mx-auto px-4">
+        <div className="flex flex-col lg:flex-row gap-8 justify-center items-start mt-10">
+            <div className="w-full lg:w-[45%] p-6 bg-white rounded shadow min-h-[813px] flex flex-col justify-between">
+                <h2 className="text-2xl font-bold mb-4">Create Exam</h2>
 
-            <label className="block mb-2">Department Code</label>
-            <select
-                value={selectedDeptCode}
-                onChange={e => setSelectedDeptCode(e.target.value)}
-                className="w-full mb-4 p-2 border rounded"
-            >
-                <option value="">Select Department</option>
-                {deptCodes.map(code => (
-                    <option key={code} value={code}>{code}</option>
-                ))}
-            </select>
+                <label className="block mb-2">Department Code</label>
+                <select
+                    value={selectedDeptCode}
+                    onChange={e => setSelectedDeptCode(e.target.value)}
+                    className="w-full mb-4 p-2 border rounded"
+                >
+                    <option value="">Select Department</option>
+                    {deptCodes.map(code => (
+                        <option key={code} value={code}>{code}</option>
+                    ))}
+                </select>
 
-            <label className="block mb-2">Course Number</label>
-            <select
-                value={selectedCourseNum}
-                onChange={e => setSelectedCourseNum(e.target.value)}
-                className="w-full mb-4 p-2 border rounded"
-                disabled={!selectedDeptCode}
-            >
-                <option value="">Select Course</option>
-                {courseNums.map(num => (
-                    <option key={num} value={num}>{num}</option>
-                ))}
-            </select>
+                <label className="block mb-2">Course Number</label>
+                <select
+                    value={selectedCourseNum}
+                    onChange={e => setSelectedCourseNum(e.target.value)}
+                    className="w-full mb-4 p-2 border rounded"
+                    disabled={!selectedDeptCode}
+                >
+                    <option value="">Select Course</option>
+                    {courseNums.map(num => (
+                        <option key={num} value={num}>{num}</option>
+                    ))}
+                </select>
 
-            <label className="block mb-2">Section</label>
-            <select
-                value={selectedSection}
-                onChange={e => setSelectedSection(e.target.value)}
-                className="w-full mb-4 p-2 border rounded"
-                disabled={!courseId}
-            >
-                <option value="">Select Section</option>
-                {sections.map(sec => (
-                    <option key={sec} value={sec}>{sec}</option>
-                ))}
-            </select>
+                <label className="block mb-2">Section</label>
+                <select
+                    value={selectedSection}
+                    onChange={e => setSelectedSection(e.target.value)}
+                    className="w-full mb-4 p-2 border rounded"
+                    disabled={!courseId}
+                >
+                    <option value="">Select Section</option>
+                    {sections.map(sec => (
+                        <option key={sec} value={sec}>{sec}</option>
+                    ))}
+                </select>
 
-            <label className="block mb-2">Semester</label>
-            <select
-                value={term}
-                onChange={e => setTerm(e.target.value)}
-                className="w-full mb-4 p-2 border rounded"
-            >
-                <option value="">Select Semester</option>
-                <option value="W1">W1</option>
-                <option value="W2">W2</option>
-                <option value="S1">S1</option>
-                <option value="S2">S2</option>
-            </select>
+                <label className="block mb-2">Exam Date</label>
+                <DatePicker
+                    selected={date}
+                    onChange={(d: Date | null) => {
+                        if (d) setDate(d);
+                    }}
+                    className="w-full mb-4 p-2 border rounded"
+                    dateFormat="yyyy-MM-dd"
+                    placeholderText="Select a date"
+                />
 
-            <label className="block mb-2">Exam Date</label>
-            <DatePicker
-                selected={date}
-                onChange={(d: Date | null) => {
-                    if (d) setDate(d);
-                }}
-                className="w-full mb-4 p-2 border rounded"
-                dateFormat="yyyy-MM-dd"
-                placeholderText="Select a date"
-            />
+                <label className="block mb-2">Start Time (HH:MM)</label>
+                <input
+                    type="time"
+                    value={startTime}
+                    onChange={e => setStartTime(e.target.value)}
+                    className="w-full mb-4 p-2 border rounded"
+                    step="60"
+                />
 
-            <label className="block mb-2">Start Time (HH:MM)</label>
-            <input
-                type="time"
-                value={startTime}
-                onChange={e => setStartTime(e.target.value)}
-                className="w-full mb-4 p-2 border rounded"
-                step="60"
-            />
+                <label className="block mb-2">End Time (HH:MM)</label>
+                <input
+                    type="time"
+                    value={endTime}
+                    onChange={e => setEndTime(e.target.value)}
+                    className="w-full mb-6 p-2 border rounded"
+                    step="60"
+                />
 
-            <label className="block mb-2">End Time (HH:MM)</label>
-            <input
-                type="time"
-                value={endTime}
-                onChange={e => setEndTime(e.target.value)}
-                className="w-full mb-6 p-2 border rounded"
-                step="60"
-            />
+                <button
+                    onClick={handleSubmit}
+                    className="bg-[#040941] text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
+                >
+                    Create Exam
+                </button>
+            </div>
 
-            <button
-                onClick={handleSubmit}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
-            >
-                Create Exam
-            </button>
-        </div>
+            <div className="w-full lg:w-[45%] p-6 bg-white rounded shadow min-h-[813px] flex flex-col justify-between">
+                <h2 className="text-2xl font-bold mb-4">Assign Student to Exam</h2>
 
-        <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow mt-10">
-            <h2 className="text-2xl font-bold mb-4">Assign Student to Exam</h2>
+                <label className="block mb-2">Student Name</label>
+                <input
+                    type="text"
+                    value={studentName}
+                    onChange={e => setStudentName(e.target.value)}
+                    className="w-full mb-4 p-2 border rounded"
+                    placeholder="e.g. John"
+                />
 
-            <label className="block mb-2">Student Name</label>
-            <input
-                type="text"
-                value={studentName}
-                onChange={e => setStudentName(e.target.value)}
-                className="w-full mb-4 p-2 border rounded"
-                placeholder="e.g. John"
-            />
+                <label className="block mb-2">Student Number</label>
+                <input
+                    type="text"
+                    value={studentNum}
+                    onChange={e => setStudentNum(e.target.value)}
+                    className="w-full mb-4 p-2 border rounded"
+                    placeholder="e.g. 12345678"
+                />
 
-            <label className="block mb-2">Student Number</label>
-            <input
-                type="text"
-                value={studentNum}
-                onChange={e => setStudentNum(e.target.value)}
-                className="w-full mb-4 p-2 border rounded"
-                placeholder="e.g. 12345678"
-            />
+                <label className="block mb-2">Select Matching Student</label>
+                <select
+                    value={selectedStudentId || ''}
+                    onChange={async (e) => {
+                        const studentId = Number(e.target.value);
+                        setSelectedStudentId(studentId);
 
-            <label className="block mb-2">Select Matching Student</label>
-            <select
-                value={selectedStudentId || ''}
-                onChange={async (e) => {
-                    const studentId = Number(e.target.value);
-                    setSelectedStudentId(studentId);
+                        if (studentId) {
+                            const token = localStorage.getItem("token");
+                            try {
+                                const res = await fetch(`http://localhost:8080/exams/${studentId}/availability`, {
+                                    headers: { Authorization: `Bearer ${token}` }
+                                });
+                                if (!res.ok) throw new Error("Failed to fetch availability");
+                                const data = await res.json();
+                                setAvailabilities(data);
+                            } catch (err) {
+                                console.error("Error fetching availabilities:", err);
+                                setAvailabilities([]);
+                            }
 
-                    if (studentId) {
-                        const token = localStorage.getItem("token");
-                        try {
-                            const res = await fetch(`http://localhost:8080/exams/${studentId}/availability`, {
-                                headers: { Authorization: `Bearer ${token}` }
-                            });
-                            if (!res.ok) throw new Error("Failed to fetch availability");
-                            const data = await res.json();
-                            setAvailabilities(data);
-                        } catch (err) {
-                            console.error("Error fetching availabilities:", err);
+                            const selected = matchingStudents.find((s) => s.id === studentId);
+                            if (selected) {
+                                setStudentName(`${selected.firstName} ${selected.lastName}`);
+                                setStudentNum(String(selected.studentNum));
+                            }
+                        } else {
                             setAvailabilities([]);
                         }
-                    } else {
-                        setAvailabilities([]);
-                    }
-                }}
-                className="w-full mb-4 p-2 border rounded"
-            >
-                <option value="">Select a student</option>
-                {matchingStudents.map((s) => (
-                    <option key={s.id} value={s.id}>
-                        {s.firstName} {s.lastName} ({s.studentNum})
-                    </option>
-                ))}
-            </select>
+                    }}
+                    className="w-full mb-4 p-2 border rounded"
+                >
+                    <option value="">Select a student</option>
+                    {matchingStudents.map((s) => (
+                        <option key={s.id} value={s.id}>
+                            {s.firstName} {s.lastName} ({s.studentNum})
+                        </option>
+                    ))}
+                </select>
 
-            {availabilities.length > 0 && (
-                <div className="mb-4">
-                    <h3 className="font-semibold mb-2">Student Availability:</h3>
-                    <ul className="list-disc ml-6">
-                        {availabilities.map((a) => (
-                            <li key={a.id}>
-                                {a.date} | {a.startTime} – {a.endTime}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+                {availabilities.length > 0 && (
+                    <div className="mb-4">
+                        <h3 className="font-semibold mb-2">Student Availability:</h3>
+                        <ul className="list-disc ml-6">
+                            {availabilities.map((a) => (
+                                <li key={a.id}>
+                                    {a.date} | {a.startTime} – {a.endTime}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
 
-            <label className="block mb-2">Select Exam</label>
-            <select
-                value={selectedExamId || ''}
-                onChange={e => setSelectedExamId(Number(e.target.value))}
-                className="w-full mb-4 p-2 border rounded"
-            >
-                <option value="">Select exam</option>
-                {examDisplayOptions.map((exam) => (
-                    <option key={exam.id} value={exam.id}>{exam.label}</option>
-                ))}
-            </select>
+                <label className="block mb-2">Select Exam</label>
+                <select
+                    value={selectedExamId || ''}
+                    onChange={e => setSelectedExamId(Number(e.target.value))}
+                    className="w-full mb-4 p-2 border rounded"
+                >
+                    <option value="">Select exam</option>
+                    {examDisplayOptions.map((exam) => (
+                        <option key={exam.id} value={exam.id}>{exam.label}</option>
+                    ))}
+                </select>
 
-            <label className="block mb-2">Task</label>
-            <select
-                value={task}
-                onChange={e => setTask(e.target.value)}
-                className="w-full mb-4 p-2 border rounded"
-            >
-                <option value="">Select task</option>
-                <option value="MARKING">Marking</option>
-                <option value="PREPARATION">Preparation</option>
-                <option value="COORDINATION">Coordination</option>
-            </select>
+                <label className="block mb-2">Task</label>
+                <select
+                    value={task}
+                    onChange={e => setTask(e.target.value)}
+                    className="w-full mb-4 p-2 border rounded"
+                >
+                    <option value="">Select task</option>
+                    <option value="MARKING">Marking</option>
+                    <option value="PREPARATION">Preparation</option>
+                    <option value="COORDINATION">Coordination</option>
+                </select>
 
-            <label className="block mb-2">Start Time</label>
-            <input
-                type="time"
-                value={assignStartTime}
-                onChange={e => setAssignStartTime(e.target.value)}
-                className="w-full mb-4 p-2 border rounded"
+                <label className="block mb-2">Start Time</label>
+                <input
+                    type="time"
+                    value={assignStartTime}
+                    onChange={e => setAssignStartTime(e.target.value)}
+                    className="w-full mb-4 p-2 border rounded"
+                />
+
+                <label className="block mb-2">End Time</label>
+                <input
+                    type="time"
+                    value={assignEndTime}
+                    onChange={e => setAssignEndTime(e.target.value)}
+                    className="w-full mb-6 p-2 border rounded"
+                />
+
+                <button
+                    onClick={handleAssign}
+                    className="bg-[#040941] text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
+                >
+                    Assign
+                </button>
+            </div>
+
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
             />
-
-            <label className="block mb-2">End Time</label>
-            <input
-                type="time"
-                value={assignEndTime}
-                onChange={e => setAssignEndTime(e.target.value)}
-                className="w-full mb-6 p-2 border rounded"
-            />
-
-            <button
-                onClick={handleAssign}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full"
-            >
-                Assign
-            </button>
+        </div>
+        <div className="mt-10 w-full">
+            <div className="max-w-7xl mx-auto px-4">
+                <hr className="my-7" />
+                <h2 className="text-2xl font-bold mb-4 text-center">Exams & Assignments</h2>
+                <ExamsDashboard 
+                    onRef={(fn) => (dashboardRef.current = fn)}
+                    assignmentRefMap={assignmentRefMap}
+                />
+            </div>
         </div>
     </div>
   );
