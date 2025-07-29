@@ -8,7 +8,18 @@ export interface RequestSubmitQuestions {
   }[];
 }
 
-export async function fetchSubmitQuestions(studentId : number, request : RequestSubmitQuestions): Promise<boolean> {
+export interface SubmissionError {
+  questionId: number;
+  message: string;
+}
+
+export interface SubmissionResult {
+  success: boolean;
+  errors?: SubmissionError[];
+  message?: string;
+}
+
+export async function fetchSubmitQuestions(studentId : number, request : RequestSubmitQuestions): Promise<SubmissionResult> {
   const url = `${BASE}/${studentId}/answers`;
   const token = localStorage.getItem("token");
 
@@ -21,10 +32,31 @@ export async function fetchSubmitQuestions(studentId : number, request : Request
       },
       body: JSON.stringify(request),
     });
-    return res.ok;
+
+    if (res.ok) {
+      return { success: true };
+    } else {
+      // error response
+      try {
+        const errorData = await res.json();
+        return {
+          success: false,
+          message: errorData.message || `Server error: ${res.status} ${res.statusText}`,
+          errors: errorData.errors || []
+        };
+      } catch {
+        return {
+          success: false,
+          message: `Server error: ${res.status} ${res.statusText}`
+        };
+      }
+    }
   } catch (err) {
     console.error("Something went wrong:", err);
-    return false;
+    return {
+      success: false,
+      message: "Network error. Please check your connection and try again."
+    };
   }
 }
 

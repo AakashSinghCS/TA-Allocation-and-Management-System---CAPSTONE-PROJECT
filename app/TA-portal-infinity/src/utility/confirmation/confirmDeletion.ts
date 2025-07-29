@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 export function confirmDeletion (subject:string, extraInfo:string):boolean {
     const firstConfirm = window.confirm(`Really delete the ${subject}?`);
     if(!firstConfirm) return false;

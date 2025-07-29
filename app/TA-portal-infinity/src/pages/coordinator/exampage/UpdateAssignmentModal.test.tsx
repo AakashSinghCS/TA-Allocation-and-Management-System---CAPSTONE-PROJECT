@@ -31,7 +31,6 @@ describe("UpdateAssignmentModal", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
-
   it("renders the modal with initial values", () => {
     render(
       <UpdateAssignmentModal
@@ -67,7 +66,7 @@ describe("UpdateAssignmentModal", () => {
     fireEvent.change(screen.getByLabelText("Start Time"), { target: { value: "14:00" } });
     fireEvent.change(screen.getByLabelText("End Time"), { target: { value: "10:00" } });
 
-    fireEvent.click(screen.getByRole("button", { name: "Save Changes" }));
+    fireEvent.click(screen.getByRole("button", { name: "Update" }));
 
     expect(toastErrorSpy).toHaveBeenCalledWith("End time must be after start time.");
     expect(onUpdate).not.toHaveBeenCalled();
