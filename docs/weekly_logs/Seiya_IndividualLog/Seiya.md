@@ -1,3 +1,60 @@
+## Monday (July 25-28)
+
+### Timesheet
+Clockify report
+
+![alt text](./clockify_images/clockify_weekly_log_2025-07-25_07-28_seiya.png)
+
+
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **Course & Section Creation – Inline CSV Import** | • Implemented in‑page import with inline styling<br>• Integrated drag‑and‑drop upload into Course & Section Creation view                                                                                          |
+| **2** | **Section CSV Import Refinements**         | • Added automatic page reload after successful import<br>• Enhanced preview with row numbers and taller viewport<br>• Re‑positioned modal close button for better UX<br>• Replaced sample CSV with clearer example |
+| **3** | **CSV Import for Student Transcript** | - Initial backend and frontend scaffolding for transcript import<br>- Defined required CSV columns and validation rules<br>- Started UI design for transcript upload and preview<br>- Began implementing error handling and feedback for transcrip. |
+
+
+
+### Progress Update (since July 24, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: Course & Section Creation – Inline CSV Import | Complete |
+| #2: Section CSV Import Refinements | Complete |
+| #3: CSV Import for Student Transcript | In Progress |
+
+
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to 
+
+
+What was done:
+* Inline CSV import was added to the Course and Section Creation page with drag and drop and consistent styling
+* The existing Section CSV import was refined with automatic reload, a taller preview that now shows row numbers, a better modal layout, and a clearer sample file
+* A first pass of backend endpoints, database schema, and frontend scaffold for Transcript CSV import is in place
+
+
+What was not done:
+* Full validation, error messaging, and data persistence for Transcript CSV import
+* Integration and unit tests for the transcript flow
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Complete the Transcript CSV import end to end, including backend validation rules, migrations, and full preview and feedback on the frontend
+* Add unit and integration tests for all CSV import paths
+
+
+
+
+
+
+
+
+
+
+
 ## Thursday (July 22-24)
 
 ### Timesheet
