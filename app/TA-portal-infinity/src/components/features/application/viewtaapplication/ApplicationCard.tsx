@@ -1,4 +1,7 @@
 import React from 'react';
+import { useEffect, useState } from 'react';
+import { fetchSectionIncludeInstructorId } from '../../../../api/section/fetchSectionIncludeInstructorId';
+import { fetchInstructorById } from '../../../../api/section/instructor/fetchInstructorById';
 import type { ApplicationDto } from '../../../../interfaces/application/Application';
 import type { Allocation } from '../../../../interfaces/allocation/Allocation';
 
@@ -12,6 +15,38 @@ interface ApplicationCardProps {
 }
 
 const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, allocations, isAllocated, isExpanded, onExpand, onCollapse }) => {
+  // State to hold enriched allocation info
+  const [enrichedAllocations, setEnrichedAllocations] = useState<Allocation[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function enrichAllocations() {
+      const results = await Promise.all(allocations.map(async alloc => {
+        if (typeof alloc.section?.id !== 'number') return alloc;
+        let section = alloc.section;
+        // Fetch full section info (with instructor)
+        try {
+          const sec = await fetchSectionIncludeInstructorId(Number(section.id));
+          if (sec) {
+            section = { ...section, ...sec };
+            // If instructorId present but instructor missing, fetch instructor
+            if (!section.instructor && sec.instructorId) {
+              const inst = await fetchInstructorById(sec.instructorId);
+              if (inst && inst.firstName && inst.lastName) {
+                section.instructor = { firstName: inst.firstName, lastName: inst.lastName };
+              }
+            }
+          }
+        } catch (err) {
+          // fallback: use original section
+        }
+        return { ...alloc, section };
+      }));
+      if (isMounted) setEnrichedAllocations(results);
+    }
+    enrichAllocations();
+    return () => { isMounted = false; };
+  }, [allocations]);
   return (
     <div className={`bg-white rounded-2xl shadow-lg border border-blue-100 p-4 flex flex-col gap-2 hover:shadow-2xl transition relative ${isExpanded ? 'ring-2 ring-blue-400' : ''} w-full h-full min-h-[240px] sm:w-[98%] md:w-[98%] xl:w-[98%] mx-auto`}>
       {/* Unexpanded summary */}
@@ -93,34 +128,44 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, allocations, isA
           {/* Allocation Info */}
           <div>
             <h4 className="font-semibold text-[#040941] mb-0.5 text-sm">Allocation Info</h4>
-            {allocations.length > 0 ? (
+            {enrichedAllocations.length > 0 ? (
               <ul className="list-none space-y-1">
-                {allocations
-                  .filter((alloc, idx, arr) => {
-                    // Remove duplicates by section id if available
-                    if (alloc.section && alloc.section.sectionId) {
-                      return arr.findIndex(a => a.section?.sectionId === alloc.section.sectionId) === idx;
+                {enrichedAllocations.filter((alloc, idx, arr) => {
+                  const key = `${alloc.section?.section ?? ''}-${alloc.section?.type ?? ''}-${alloc.section?.year ?? ''}-${alloc.section?.semester ?? ''}`;
+                  return arr.findIndex(a => `${a.section?.section ?? ''}-${a.section?.type ?? ''}-${a.section?.year ?? ''}-${a.section?.semester ?? ''}` === key) === idx;
+                }).map((alloc, idx) => {
+                  let instructorDisplay: React.ReactNode = 'N/A';
+                  if (alloc.section?.instructor && typeof alloc.section.instructor === 'object' && alloc.section.instructor.firstName && alloc.section.instructor.lastName) {
+                    // to get instructor id from section
+                    const instructorId = alloc.section.instructor.id || alloc.section.instructorId;
+                    if (instructorId) {
+                      instructorDisplay = (
+                        <a
+                          href={`http://localhost:5173/user/profile/${instructorId}`}
+                          className="text-blue-900 hover:underline"
+                        >
+                          {alloc.section.instructor.firstName} {alloc.section.instructor.lastName}
+                        </a>
+                      );
+                    } else {
+                      instructorDisplay = `${alloc.section.instructor.firstName} ${alloc.section.instructor.lastName}`;
                     }
-                    // If no sectionId, keep all
-                    return true;
-                  })
-                  .map((alloc, idx) => (
+                  } else if (typeof alloc.section?.instructor === 'string') {
+                    instructorDisplay = alloc.section.instructor;
+                  }
+                  return (
                     <li key={idx} className="ml-1">
                       <div className="text-xs space-y-0.5">
-                        <div><strong>Section:</strong> {alloc.section?.course?.deptCode ?? 'N/A'} {alloc.section?.course?.courseNum ?? ''}</div>
-                        <div><strong>Semester:</strong> {alloc.section?.semester ?? 'N/A'}</div>
-                        <div><strong>Year:</strong> {alloc.section?.year ?? 'N/A'}</div>
-                        <div><strong>Type:</strong> {alloc.section?.type ?? 'N/A'}</div>
+                        <div><strong>Year &amp; Semester:</strong> {alloc.section?.semester || 'N/A'} {alloc.section?.year || 'N/A'}</div>
+                        <div><strong>Section:</strong> {alloc.section?.section || 'N/A'}</div>
+                        <div><strong>Type:</strong> {alloc.section?.type || 'N/A'}</div>
+                        <div><strong>Instructor:</strong> {instructorDisplay}</div>
                         <div><strong>Allocated Hours:</strong> {alloc.numberOfHours ?? 'N/A'}</div>
                         <div><strong>Status:</strong> {alloc.status ? alloc.status.charAt(0) + alloc.status.slice(1).toLowerCase() : 'N/A'}</div>
-                        <div><strong>Instructor:</strong> {
-                          alloc.section?.instructor && typeof alloc.section.instructor === 'object' && alloc.section.instructor.firstName && alloc.section.instructor.lastName
-                            ? `${alloc.section.instructor.firstName} ${alloc.section.instructor.lastName}`
-                            : (typeof alloc.section?.instructor === 'string' ? alloc.section.instructor : 'N/A')
-                        }</div>
                       </div>
                     </li>
-                  ))}
+                  );
+                })}
               </ul>
             ) : (
               <div className="text-gray-500 text-xs">No allocations for this application.</div>
