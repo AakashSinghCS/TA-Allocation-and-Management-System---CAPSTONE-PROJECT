@@ -1,6 +1,7 @@
 package com.infinity.courseservice.controllers;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -96,5 +97,25 @@ public class ExamController {
     public void deleteAvailability(@PathVariable Long studentId) {
         examService.deleteAvailabilityByStudentId(studentId);
     }
+
+    @GetMapping("/assignments/byexam/{examId}")
+    public List<ExamAssignmentDto> getAssignmentsForExam(@PathVariable Long examId) {
+        return examService.getAssignmentsForExam(examId);
+    }
+
+    @DeleteMapping("/assignments/{assignmentId}")
+    public void unassignStudentFromExam(@PathVariable Long assignmentId) {
+        examService.unassignStudentFromExam(assignmentId);
+    }
+
+    @PutMapping("/assignments/{examId}/student/{studentId}")
+    public ResponseEntity<ExamAssignmentDto> updateAssignment(
+        @PathVariable Long examId,
+        @PathVariable Long studentId,
+        @RequestBody ExamAssignmentDto updatedDto) {
+        ExamAssignmentDto updated = examService.updateAssignmentByStudentId(examId, studentId, updatedDto);
+        return ResponseEntity.ok(updated);
+    }
+
 
 }

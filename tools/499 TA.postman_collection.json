@@ -3,7 +3,7 @@
 		"_postman_id": "bc582917-96ea-446b-b143-b16a13090432",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "36957617"
+		"_exporter_id": "45690522"
 	},
 	"item": [
 		{
@@ -1619,6 +1619,142 @@
 									"path": [
 										"exams",
 										"assignments",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Availability by StudentId",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"date\": \"2025-08-10\",\r\n    \"startTime\": \"09:00\",\r\n    \"endTime\": \"12:00\"\r\n  },\r\n  {\r\n    \"date\": \"2025-08-11\",\r\n    \"startTime\": \"09:00\",\r\n    \"endTime\": \"12:00\"\r\n  }\r\n]\r\n"
+								},
+								"url": {
+									"raw": "localhost:8080/exams/1/availability",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"exams",
+										"1",
+										"availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get assignmentby examid",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/exams/assignments/byexam/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"exams",
+										"assignments",
+										"byexam",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete assignment by assignId",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/exams/assignments/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"exams",
+										"assignments",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update assignment by examId and StudentId",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUzNDE4MDUwLCJleHAiOjE3NTM0MjE2NTB9.6_QkWGnTClDrOd6y1YPKgLXuXW1OWMI_54aYstI7HLb5yIDoHvDeKx6sNo42MBwp",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"task\": \"PREPARATION\",\n    \"date\": \"2025-07-20\",\n    \"startTime\": \"10:00\",\n    \"endTime\": \"16:00\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/exams/assignments/1/student/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"exams",
+										"assignments",
+										"1",
+										"student",
 										"1"
 									]
 								}

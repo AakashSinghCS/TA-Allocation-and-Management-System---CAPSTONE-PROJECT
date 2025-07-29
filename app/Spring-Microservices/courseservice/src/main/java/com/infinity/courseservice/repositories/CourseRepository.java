@@ -112,42 +112,61 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
   List<Course> findDistinctCoursesByInstructorId(@Param("instructorId") Long instructorId);
 
   @Query(value = """
-        SELECT DISTINCT new com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto(
-          s.id, c.id, c.deptCode, c.name, c.courseNum,
-          s.section, s.semester.year, s.semester.semester, s.type,
-          ss.day, ss.startTime, ss.endTime,
-          CASE WHEN s.id IS NULL THEN true ELSE false END
-        )
-        FROM Course c
-             LEFT JOIN c.sections s
-         LEFT JOIN s.semester sem
-         LEFT JOIN s.sectionSchedules ss
-        WHERE (:deptCode   IS NULL OR c.deptCode   = :deptCode)
-          AND (:courseNum  IS NULL OR c.courseNum  = :courseNum)
-          AND (:name       IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
-          AND (:section    IS NULL OR s.section    = :section)
-          AND (:year       IS NULL OR sem.year       = :year)
-          AND (:semester   IS NULL OR sem.semester   = :semester)
-          AND (:type       IS NULL OR s.type       = :type)
-          AND (:day        IS NULL OR ss.day        = :day)
-          AND (:startTime  IS NULL OR ss.startTime = :startTime)
-          AND (:endTime    IS NULL OR ss.endTime   = :endTime)
-      """, countQuery = """
-        SELECT COUNT(DISTINCT s.id)
-        FROM Course c
-             LEFT JOIN c.sections s
-         LEFT JOIN s.semester sem
-         LEFT JOIN s.sectionSchedules ss
-        WHERE (:deptCode   IS NULL OR c.deptCode   = :deptCode)
-          AND (:courseNum  IS NULL OR c.courseNum  = :courseNum)
-          AND (:name       IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
-          AND (:section    IS NULL OR s.section    = :section)
-          AND (:year       IS NULL OR sem.year       = :year)
-          AND (:semester   IS NULL OR sem.semester   = :semester)
-          AND (:type       IS NULL OR s.type       = :type)
-          AND (:day        IS NULL OR ss.day        = :day)
-          AND (:startTime  IS NULL OR ss.startTime = :startTime)
-          AND (:endTime    IS NULL OR ss.endTime   = :endTime)
+      SELECT DISTINCT new com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto(
+        s.id, c.id, c.deptCode, c.name, c.courseNum,
+        s.section, s.semester.year, s.semester.semester, s.type,
+        ss.day, ss.startTime, ss.endTime,
+        CASE WHEN s.id IS NULL THEN true ELSE false END
+      )
+      FROM Course c
+           LEFT JOIN c.sections s
+       LEFT JOIN s.semester sem
+       LEFT JOIN s.sectionSchedules ss
+      WHERE (:deptCode   IS NULL OR c.deptCode   = :deptCode)
+        AND (:courseNum  IS NULL OR c.courseNum  = :courseNum)
+        AND (:name       IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
+        AND (:section    IS NULL OR s.section    = :section)
+        AND (:year       IS NULL OR sem.year       = :year)
+        AND (:semester   IS NULL OR sem.semester   = :semester)
+        AND (:type       IS NULL OR s.type       = :type)
+        AND (:day        IS NULL OR ss.day        = :day)
+        AND (:startTime  IS NULL OR ss.startTime = :startTime)
+            AND (:endTime    IS NULL OR ss.endTime   = :endTime)
+
+        AND (
+              :searchText IS NULL OR
+              LOWER(c.deptCode) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+              LOWER(c.name) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+              LOWER(c.courseNum) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+              LOWER(s.section) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+              LOWER(sem.semester) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+              CAST(sem.year AS string) LIKE CONCAT('%', :searchText, '%')
+              )
+        """, countQuery = """
+          SELECT COUNT(DISTINCT s.id)
+          FROM Course c
+               LEFT JOIN c.sections s
+               LEFT JOIN s.semester sem
+               LEFT JOIN s.sectionSchedules ss
+          WHERE (:deptCode   IS NULL OR c.deptCode   = :deptCode)
+            AND (:courseNum  IS NULL OR c.courseNum  = :courseNum)
+            AND (:name       IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
+            AND (:section    IS NULL OR s.section    = :section)
+            AND (:year       IS NULL OR sem.year     = :year)
+            AND (:semester   IS NULL OR sem.semester = :semester)
+            AND (:type       IS NULL OR s.type       = :type)
+            AND (:day        IS NULL OR ss.day       = :day)
+            AND (:startTime  IS NULL OR ss.startTime = :startTime)
+            AND (:endTime    IS NULL OR ss.endTime   = :endTime)
+            AND (
+                :searchText IS NULL OR
+                LOWER(c.deptCode) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+                LOWER(c.name) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+                LOWER(c.courseNum) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+                LOWER(s.section) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+                LOWER(sem.semester) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+                CAST(sem.year AS string) LIKE CONCAT('%', :searchText, '%')
+            )
       """)
   Page<CourseSectionScheduleDto> courseFilter(
       @Param("deptCode") String deptCode,
@@ -160,5 +179,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
       @Param("day") String day,
       @Param("startTime") java.time.LocalTime startTime,
       @Param("endTime") java.time.LocalTime endTime,
+      @Param("searchText") String searchText,
       Pageable pageable);
 }

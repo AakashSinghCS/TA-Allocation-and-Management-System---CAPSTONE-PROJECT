@@ -122,7 +122,7 @@ public class CourseService {
         return courseRepository.courseFilter(
             filter.deptCode(), filter.courseNum(), filter.name(), filter.section(),
             filter.year(), filter.semester(), filter.type(), filter.day(), filter.startTime(), filter.endTime(),
-            pageable                                 
+            filter.searchText(), pageable                                 
         );
     }
 
