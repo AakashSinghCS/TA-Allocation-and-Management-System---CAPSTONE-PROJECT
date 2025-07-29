@@ -8,5 +8,6 @@ public record SectionDto(
         String semester,
         String section,
         SectionType type,
-        CourseDto course) {
+        CourseDto course,
+        Integer numberOfTAsAllocated) {
 }

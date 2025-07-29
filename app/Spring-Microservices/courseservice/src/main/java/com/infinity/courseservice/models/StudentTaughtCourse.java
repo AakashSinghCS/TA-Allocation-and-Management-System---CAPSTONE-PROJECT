@@ -1,6 +1,5 @@
 package com.infinity.courseservice.models;
 
-import com.infinity.courseservice.enums.Semester;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,16 +20,13 @@ public class StudentTaughtCourse {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "semester_id")
     private Semester semester;
 
-    @Column(name = "student_year")
-    private int year;
-
-    public StudentTaughtCourse(Long studentId, Course course, Semester semester, int year){
+    public StudentTaughtCourse(Long studentId, Course course, Semester semester){
         this.studentId = studentId;
         this.course = course;
         this.semester = semester;
-        this.year = year;
     }
 }

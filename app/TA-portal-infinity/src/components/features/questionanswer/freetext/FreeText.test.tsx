@@ -20,7 +20,8 @@ describe('<FreeText />', () => {
   it('can fill out the text', async () => {
     render(<FreeTextTestWrapper />);
 
-    expect(screen.getByText(mockTaProfileQuestion3.description!)).toBeInTheDocument();
+    // The question description is no longer rendered in the FreeText component itself
+    // It should be handled by the parent component
 
     const textarea = screen.getByPlaceholderText('Type your answer here...') as HTMLTextAreaElement;
     expect(textarea).toBeInTheDocument();

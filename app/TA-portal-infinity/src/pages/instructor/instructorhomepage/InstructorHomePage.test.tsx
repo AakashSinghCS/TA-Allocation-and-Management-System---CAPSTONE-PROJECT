@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import InstructorHomePage from './InstructorHomePage';
 import { vi } from 'vitest';
 
@@ -20,8 +20,10 @@ vi.mock('../../../api/config/fetchDeadlines', () => ({
 }));
 
 describe('InstructorHomePage', () => {
-  it('renders loading initially', () => {
+  it('renders loading initially', async () => {
     render(<InstructorHomePage />);
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    // Wait for the loading text to appear
+    await screen.findByText(/loading/i);
+    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
   });
 });

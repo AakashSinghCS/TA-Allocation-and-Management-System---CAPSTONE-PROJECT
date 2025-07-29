@@ -157,5 +157,31 @@ public class ExamService {
                 .toList();
     }
 
+    public List<ExamAssignmentDto> getAssignmentsForExam(Long examId) {
+        List<ExamAssignment> assignments = assignmentRepository.findByExamId(examId);
+        return assignments.stream()
+                .map(examMapper::mapAssignment)
+                .toList();
+    }
+
+    public void unassignStudentFromExam(Long assignmentId) {
+        if (!assignmentRepository.existsById(assignmentId)) {
+            throw new NotFoundException("Exam assignment not found");
+        }
+        assignmentRepository.deleteById(assignmentId);
+    }
+
+    public ExamAssignmentDto updateAssignmentByStudentId(Long examId, Long studentId, ExamAssignmentDto updatedDto) {
+        ExamAssignment assignment = assignmentRepository
+            .findByExamIdAndStudentId(examId, studentId)
+            .orElseThrow(() -> new NotFoundException("Assignment not found for student and exam"));
+
+        assignment.setStartTime(updatedDto.startTime());
+        assignment.setEndTime(updatedDto.endTime());
+        assignment.setTask(updatedDto.task());
+
+        ExamAssignment saved = assignmentRepository.save(assignment);
+        return examMapper.mapAssignment(saved);
+    }
     
 }

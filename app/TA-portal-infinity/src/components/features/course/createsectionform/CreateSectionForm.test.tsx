@@ -28,9 +28,13 @@ describe('CreateSectionForm', () => {
       </MemoryRouter>
     );
 
-    // Change the semester dropdown
-    const semesterSelect = screen.getByLabelText(/Semester/i);
-    fireEvent.change(semesterSelect, { target: { value: 'S1' } });
+    // Fill required fields (match actual label texts)
+    fireEvent.change(screen.getByLabelText(/Dept Code/i), { target: { value: 'COSC' } });
+    fireEvent.change(screen.getByLabelText(/Course Num/i), { target: { value: '111' } });
+    fireEvent.change(screen.getByLabelText(/Section Code/i), { target: { value: '001' } });
+    fireEvent.change(screen.getByLabelText(/Year/i), { target: { value: '2025' } });
+    fireEvent.change(screen.getByLabelText(/Semester/i), { target: { value: 'S1' } });
+    fireEvent.change(screen.getByLabelText(/Section Type/i), { target: { value: 'LECTURE' } });
 
     // Submit the form
     const submitButton = screen.getByRole('button', { name: /Create Section/i });

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import DeptCodeDropdown from "../../../ui/section/deptcodedropdown/DeptCodeDropdown";
 import SemesterDropdown from "../../../ui/section/semesterdropdown/SemesterDropdown";
-
+import { useRef, useMemo } from 'react';
 import {
   fetchAllExistingCourseNums,
 } from "../../../../api/course/sectionfilter/fetchAllExistingCourseNums";
@@ -34,7 +34,22 @@ export default function DropdownContainer({ allExistingDeptCodesAndYears, mode, 
   const [sectionData, setSectionData] = useState<string[] | null>(null);
   // const [semesterData, setSemesterData] = useState<string[] | null>(null);
   const semesterData = ["W1","W2","S1","S2"];
+  const initializedYear = useRef(false);
 
+  const maxYear = useMemo(() => {
+    const ys = allExistingDeptCodesAndYears?.years ?? [];
+    const nums = ys.map(Number).filter(n => !Number.isNaN(n));
+    return nums.length ? Math.max(...nums) : null;
+  }, [allExistingDeptCodesAndYears?.years]);
+
+  useEffect(() => {
+    if (!initializedYear.current && maxYear !== null) {
+      setSelectedYear(String(maxYear));
+      onChange({ year: maxYear });
+      initializedYear.current = true;
+    }
+  }, [maxYear, onChange]);
+  
   useEffect(() => {
     setSelectedCourseNum(null);
     setCourseNumData(null);

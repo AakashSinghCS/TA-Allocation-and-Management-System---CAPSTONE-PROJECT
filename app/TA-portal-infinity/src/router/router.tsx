@@ -29,13 +29,14 @@ const InstructorQualificationPage = lazy(() => import("../pages/instructor/instr
 const InstructorAddSectionPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage"));
 const InstructorAddNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage"));
 const InstructorHomePage = lazy(() => import("../pages/instructor/instructorhomepage/InstructorHomePage"));
+const StudentsAllocatedPage = lazy(() => import("../pages/instructor/instructorprofilepage/studentsallocatedpage/StudentsAllocatedPage"));
 
 const CoordinatorHomePage = lazy(() => import("../pages/coordinator/coordinator_homepage/CoordinatorHomePage"));
 const AllocationPage = lazy(() => import("../pages/coordinator/allocationpage/AllocationPage"));
 const ApplicationViewPage = lazy(() => import("../pages/coordinator/applicationviewpage/ApplicationViewPage"));
 const UserBrowsingPage = lazy(() => import("../pages/coordinator/userbrowsingpage/UserBrowsingPage"));
 const ManualCreateUserPage = lazy(() => import("../pages/coordinator/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage"));
-const GlobalConfigPage = lazy(() => import("../pages/admin/deadlinemanagementpage/GlobalConfigPage"));
+const GlobalConfigPage = lazy(() => import("../pages/admin/globalconfig/GlobalConfigPage"));
 
 const CourseProfilePage = lazy(() => import("../pages/course/courseprofilepage/CourseProfilePage"));
 const SectionListPage = lazy(() => import("../pages/course/sectionlistpage/SectionListPage"));
@@ -68,6 +69,7 @@ export const router = createBrowserRouter([
       { path: "taprofile/:userId/qualifications", element: <Suspense fallback={<div>Loading...</div>}><StudentQualificationPage /></Suspense> },
       // { path: "instructorprofile/:instructorId", element: <Suspense fallback={<div>Loading...</div>}><InstructorProfilePage /></Suspense> },
       { path: "instructorprofile/:userId/need", element: <Suspense fallback={<div>Loading...</div>}><InstructorNeedPage /></Suspense> },
+      { path: "instructorprofile/:userId/students", element: <Suspense fallback={<div>Loading...</div>}><StudentsAllocatedPage /></Suspense> },
       // { path: "instructorprofile/:instructorId/compare", element: <Suspense fallback={<div>Loading...</div>}><InstructorComparerPage /></Suspense> },
       { path: "instructorprofile/:userId/qualifications", element: <Suspense fallback={<div>Loading...</div>}><InstructorQualificationPage /></Suspense> },
       { path: "sectionprofile/:sectionId", element: <Suspense fallback={<div>Loading...</div>}><CourseProfilePage /></Suspense> },

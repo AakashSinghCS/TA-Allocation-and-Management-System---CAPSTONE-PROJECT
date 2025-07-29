@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuditEvents } from '../../../../api/admin/audit/useAuditEvents';
 import AuditTable from '../audittable/AuditTable';
-import Pagination from '../pagination/Pagination';
+import Pagination from '../../../../utility/pagination/pagination/Pagination';
 import AuditFilters from '../auditfilters/AuditFilters';
 import AuditDetailModal from '../auditdetailmodal/AuditDetailModal';
 import { ToastContainer, toast } from 'react-toastify';

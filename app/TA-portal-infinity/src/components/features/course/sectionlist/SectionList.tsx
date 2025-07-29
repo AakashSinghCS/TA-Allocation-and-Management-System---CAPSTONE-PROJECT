@@ -150,10 +150,12 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
 
               {mode !== 'instructorPrereqCourse' && sortedSections.map((sec) => {
                 if (!sec?.id) return;
+                // Format time to HH:mm (remove seconds if present)
+                const formatTime = (t: string) => t.length === 8 && t[2] === ':' && t[5] === ':' ? t.slice(0,5) : t;
                 const times = (sec.sectionSchedule ?? [])
                   .map((s) =>
                     s.day && s.startTime && s.endTime
-                      ? `${abbreviateDay(s.day) ?? "?"}-${s.startTime}-${s.endTime}`
+                      ? `${abbreviateDay(s.day) ?? "?"}-${formatTime(s.startTime)}-${formatTime(s.endTime)}`
                       : ''
                   )
                   .filter((t) => t)

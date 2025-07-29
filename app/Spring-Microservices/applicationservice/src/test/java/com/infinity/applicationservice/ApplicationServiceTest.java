@@ -31,6 +31,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 
 import com.infinity.applicationservice.dtos.DeadlineDto;
@@ -577,4 +581,69 @@ public class ApplicationServiceTest {
                 assertTrue(dto.preferences().contains(Subject.COSC));
         }
 
+    @Test
+    void testGetAllApplications_page() {
+        // given filter parameters
+        Integer year       = 2024;
+        Boolean wantRemote = false;
+        Integer hours      = 6;
+        Subject p1         = Subject.COSC;
+        Subject p2         = null;
+        Subject p3         = null;
+
+        // sample Application entity
+        Application app = new Application(1L, List.of(p1, Subject.MATH),
+                                          ApplicationType.UNDERGRADUATE,
+                                          wantRemote, hours);
+        app.setSubmittedAt(LocalDateTime.of(2024,1,1,12,0));
+
+        // sample UserDto
+        UserDto studentDto = new UserDto(
+            2L, "Alice","Wang","awang@test.com",
+            List.of(UserRole.STUDENT),
+            12345678, "COSC", 2025, 3,
+            null,null,null,true
+        );
+
+        // expected DTO
+        ApplicationWithStudentDto outDto = new ApplicationWithStudentDto(
+            1L,
+            studentDto,
+            app.getSubjectPreferences(),
+            app.getApplicationType(),
+            wantRemote,
+            hours,
+            app.getSubmittedAt(),
+            Set.of()
+        );
+
+        // pageable & page-of-entity setup
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<Application> entityPage = new PageImpl<>(List.of(app), pageable, 1);
+
+        // mock repository → page<Application>
+        when(applicationRepository.findByFilters(
+            eq(year), eq(wantRemote), eq(hours),
+            eq(p1), eq(p2), eq(p3),
+            eq(pageable)
+        )).thenReturn(entityPage);
+
+        // mock user client & mapper
+        when(userInterface.getStudentById(app.getStudentId()))
+            .thenReturn(ResponseEntity.ok(studentDto));
+        when(applicationMapper.toDtoWithStudent(app, studentDto))
+            .thenReturn(outDto);
+
+        // when
+        Page<ApplicationWithStudentDto> result =
+            applicationService.getAllApplications(year, wantRemote, hours, p1, p2, p3, pageable);
+
+        // then
+        assertEquals(1, result.getTotalElements());
+        assertEquals(outDto, result.getContent().get(0));
+
+        // verify repository called
+        verify(applicationRepository)
+            .findByFilters(year, wantRemote, hours, p1, p2, p3, pageable);
+    }
 }

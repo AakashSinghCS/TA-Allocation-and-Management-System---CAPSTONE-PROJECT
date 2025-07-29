@@ -5,6 +5,8 @@ import Header from "./components/layout/header/Header";
 import Footer from "./components/layout/footer/Footer";
 import SideNav from "./components/layout/sidebar/SideBar";
 import { useState } from "react";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function App() {
   const { isAuthenticated } = useAuth();
@@ -35,6 +37,21 @@ export default function App() {
         </main>
         <Footer />
       </div>
+      
+      {/* ToastContainer for global toast notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        className="toast-container"
+      />
     </div>
   );
 }

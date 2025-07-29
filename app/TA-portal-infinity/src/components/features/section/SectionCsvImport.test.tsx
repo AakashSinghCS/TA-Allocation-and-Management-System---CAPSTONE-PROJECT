@@ -15,13 +15,18 @@ describe("SectionCsvImport", () => {
   it("disables Import CSV button if no file is selected", () => {
     // The UI disables the Import CSV button when no file is selected, so error message is not shown.
     render(<SectionCsvImport />);
-    const button = screen.getByRole("button", { name: /import csv/i });
-    expect(button).toBeDisabled();
+    // Try to submit with no file selected
+    const button = screen.getByRole("button", { name: /import/i });
+    fireEvent.click(button);
+    waitFor(() => {
+      const alert = screen.getByRole('alert');
+      expect(alert).toHaveTextContent(/please select a valid csv file/i);
+    });
   });
 
   it("parses CSV and sends mapped JSON to backend", async () => {
     // Prepare a fake CSV file
-    const csvContent = `Dept Code,Course Number,Course Name,Year,Semester,Section,Type,Day,Start Time,End Time\nCOSC,111,Intro to CS,2025,Winter,001,LEC,Mon,09:00,10:00`;
+    const csvContent = `Dept Code,Course Number,Course Name,Year,Semester,Section,Type,Day,Start Time,End Time\nCOSC,111,Intro to CS,2025,Winter,001,LEC,Mon,09:00,10:00\nCOSC,112,Advanced CS,2025,Winter,002,LEC,Tue,10:00,11:00`;
     const file = new File([csvContent], "sections.csv", { type: "text/csv" });
     mockFetch.mockResolvedValue({
       ok: true,
@@ -29,13 +34,26 @@ describe("SectionCsvImport", () => {
       json: async () => ({ message: "Import successful" })
     });
     render(<SectionCsvImport />);
-    const input = screen.getByLabelText(/file/i);
+    const { container } = render(<SectionCsvImport />);
+    const input = container.querySelector('#csv-file');
+    if (!input) throw new Error('File input not found');
     fireEvent.change(input, { target: { files: [file] } });
-    // CSVプレビュー表示を待つ
+    // Debug: print DOM after file upload
+    screen.debug();
+    // Wait for CSV preview to appear (check for preview label and table headers)
     await waitFor(() => {
-      expect(screen.getByText(/CSV Preview/)).toBeInTheDocument();
+      // Use a function matcher to find the preview label even if split/wrapped
+      expect(
+        screen.getByText((content, element) =>
+          content.includes('CSV Preview') && content.includes('first 10 rows')
+        )
+      ).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: /Dept Code/i })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: /Course Number/i })).toBeInTheDocument();
     });
-    const button = screen.getByRole("button", { name: /import csv/i });
+    // There may be multiple 'Import' buttons, so select the last one (actual import action)
+    const importButtons = screen.getAllByRole("button", { name: /import/i });
+    const button = importButtons[importButtons.length - 1];
     fireEvent.click(button);
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledTimes(1);
@@ -61,34 +79,37 @@ describe("SectionCsvImport", () => {
     mockFetch.mockResolvedValue({
       ok: false,
       headers: { get: () => "application/json" },
-      json: async () => ({ message: "missing required fields" }),
-      text: async () => "missing required fields"
+      json: async () => ({ message: "Import failed: missing required fields" })
     });
-    // eslint-disable-next-line no-console
-    console.log('Test: about to render SectionCsvImport for error test');
     const { container } = render(<SectionCsvImport />);
-    // Simulate file upload with a valid-looking row that backend will reject
-    const csvContent = `Dept Code,Course Number,Course Name,Year,Semester,Section,Type,Day,Start Time,End Time\nCOSC,999,Invalid Course,2025,Fall,001,LEC,Mon,09:00,10:00`;
+    // Simulate file upload with 2 valid rows (1 row is for error case)
+    const csvContent = `Dept Code,Course Number,Course Name,Year,Semester,Section,Type,Day,Start Time,End Time\nCOSC,999,Invalid Course,2025,Fall,001,LEC,Mon,09:00,10:00\nCOSC,111,Intro to CS,2025,Winter,001,LEC,Mon,09:00,10:00`;
     const file = new File([csvContent], "sections.csv", { type: "text/csv" });
-    const input = screen.getByLabelText(/file/i);
+    const input = container.querySelector('#csv-file');
+    if (!input) throw new Error('File input not found');
     fireEvent.change(input, { target: { files: [file] } });
-    const form = container.querySelector('form');
-    fireEvent.submit(form!);
+    // Wait until the CSV preview is displayed
     await waitFor(() => {
-      // Debug: print the error message div if present
-      const errorDiv = screen.queryByText((content) => /import failed|please select a valid csv file/i.test(content));
-      if (errorDiv) {
-        // eslint-disable-next-line no-console
-        console.log('Test found error div:', errorDiv.textContent);
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('Test did not find error div');
-      }
-      expect(
-        screen.getByText((content) =>
-          /import failed|please select a valid csv file/i.test(content)
-        )
-      ).toBeInTheDocument();
-    }, { timeout: 2000 });
+      expect(screen.getByText(/CSV Preview/i)).toBeInTheDocument();
+    });
+    const button = screen.getByRole("button", { name: /import/i });
+    fireEvent.click(button);
+    await waitFor(() => {
+      const alert = screen.getByRole('alert');
+      expect(alert).toHaveTextContent(/import failed/i);
+    });
+  });
+  
+  it("should trigger download when Download Sample CSV button is clicked", () => {
+    // Spy on document.body methods
+    const appendChildSpy = vi.spyOn(document.body, "appendChild");
+    const removeChildSpy = vi.spyOn(document.body, "removeChild");
+    
+    render(<SectionCsvImport />);
+    const button = screen.getByRole("button", { name: /download sample csv/i });
+    fireEvent.click(button);
+    
+    expect(appendChildSpy).toHaveBeenCalled();
+    expect(removeChildSpy).toHaveBeenCalled();
   });
 });

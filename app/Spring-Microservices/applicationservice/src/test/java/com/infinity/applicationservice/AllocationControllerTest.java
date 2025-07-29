@@ -86,7 +86,7 @@ public class AllocationControllerTest {
                 ApplicationStatus.SENT,
                 10,
                 new SectionDto(1001L, 2024, "W1", "T01", SectionType.TUTORIAL,
-                        new CourseDto(1L, "COSC", "Capstone", "499")));
+                        new CourseDto(1L, "COSC", "Capstone", "499"),1));
     }
 
         @Test
@@ -100,7 +100,8 @@ public class AllocationControllerTest {
                 .andExpect(jsonPath("$[0].id").value(101))
                 .andExpect(jsonPath("$[0].student.firstName").value("Alice"))
                 .andExpect(jsonPath("$[0].section.section").value("T01"))
-                .andExpect(jsonPath("$[0].status").value("SENT"));
+                .andExpect(jsonPath("$[0].status").value("SENT"))
+                .andExpect(jsonPath("$[0].section.numberOfTAsAllocated").value(1));
     }
 
         @Test
@@ -129,7 +130,7 @@ public class AllocationControllerTest {
                 ApplicationStatus.SENT,
                 10,
                 new SectionDto(1001L, 2025, "Fall", "T01", SectionType.TUTORIAL,
-                        new CourseDto(1L, "COSC", "Capstone", "499")));
+                        new CourseDto(1L, "COSC", "Capstone", "499"),1));
 
                         Long userIdFromHeader = 1L;
         when(allocationService.allocateStudent(any(AllocationRequest.class),eq(userIdFromHeader))).thenReturn(responseDto);
@@ -143,7 +144,8 @@ public class AllocationControllerTest {
                 .andExpect(jsonPath("$.student.firstName").value("Alice"))
                 .andExpect(jsonPath("$.numberOfHours").value(10))
                 .andExpect(jsonPath("$.section.section").value("T01"))
-                .andExpect(jsonPath("$.status").value("SENT"));
+                .andExpect(jsonPath("$.status").value("SENT"))
+                .andExpect(jsonPath("$.section.numberOfTAsAllocated").value(1));
     }
 
     @Test
