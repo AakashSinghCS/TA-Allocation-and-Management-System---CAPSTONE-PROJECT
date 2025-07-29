@@ -1,3 +1,207 @@
+## Monday (July 18-21)
+
+### Timesheet
+Clockify report
+
+![alt text](./clockify_images/clockify_weekly_log_2025-07-18_07-21_seiya.png)
+
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **CSV Import – clean up** | Modified file-upload UI with validation, removed unused dependencies, and cleaned up duplicate tests. |
+| **2** | **Course and Section page – split-pane UI** | Make the layout clearer by visually separating the two areas on the same page. |
+
+
+
+
+### Progress Update (since July 17, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: CSV Import – clean up | Complete |
+| #2: Course and Section page – split-pane UI | In Progress |
+
+
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to complete the CSV Import cleanup and to deliver a major UI improvement by implementing a split-pane layout for Course Creation and Section Creation.
+
+What was done:
+* Finished CSV Import cleanup: Modified file-upload UI with validation, pruned unused packages, and removed duplicate tests
+* Styled the page with Course Creation on the left and Section Creation on the right, delivering a major UI improvement
+
+
+
+What was not done:
+* Providing a downloadable sample CSV template for reference
+* Improving CSV import feedback (concise success/error summaries and removal of raw SQL traces)
+* Moving the Import workflow to its own dedicated page
+
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Enhance Course /Section Creation UX by strengthening form validation and finalizing UI
+* Deliver a downloadable CSV template so users have a clear reference for “import from csv”
+* Improve CSV import feedback by replacing raw output and long SQL traces with concise, user-friendly summaries
+* Relocate the Import workflow onto its own page (time-boxed evaluation: implement if it can be done quickly)
+
+
+
+------------------------------------------------------------------------------------------------------
+
+## Thursday (July 15-17)
+
+### Timesheet
+Clockify report
+
+![alt text](./clockify_images/clockify_weekly_log_2025-07-15_07-17_seiya.png)
+
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **CSV Export Refactor** | Align backend export logic with PapaParse JSON and verify round‑trip with sample CSV files. |
+| **2** | **CSV Import Refactor** | Unify import pipeline to consume PapaParse JSON and add robust field, type. |
+| **3** | **Move CSV Import to Dedicated Page** | Replace modal with a standalone `/import` page and set up routing, layout, and file uploads progress feedback (state management indicator). |
+| **4** | **CSV Preview UI Enhancement** | Render data rows (`<tbody>`), improve styling, and add label and id for the file input to improve accessibility. |
+| **5** | **Test Suite Strengthening** | Add `SectionServiceTest.java` (normal and edge cases) and update `SectionCsvImport.test.tsx`; target at least 85 percent coverage. |
+| **6** | **Error Handling Improvements** | Provide clear, actionable messages for duplicate data, unique‑constraint violations, and format errors. |
+
+
+
+### Progress Update (since July 14, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: CSV Export Refactor | Complete |
+| #2: CSV Import Refactor | Complete |
+| #3: Move CSV Import to Dedicated Page | In Progress |
+| #4: CSV Preview UI Enhancement | In Progress |
+| #5: Test Suite Strengthening | Complete |
+| #6: Error Handling Improvements | Complete |
+
+
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to migrate both CSV import and export to Papaparse on the frontend (exchanging JSON with the backend), increase automated‑test coverage, and improve error messaging.
+
+What was done:
+* Refactored CSV Export / Import so that both now use Papaparse on the frontend and exchange the same JSON schema with the Spring Boot backend.
+* Added SectionServiceTest.java and updated SectionCsvImport.test.tsx, pushing overall test coverage above 85 %.
+* Fixed the CSV preview table so it renders all data rows correctly.
+* Implemented clear error messages for duplicate records, unique‑key violations, and invalid formats.
+
+
+What was not done:
+* The full migration of the import workflow to a dedicated page.
+* Some styling polishment tasks were deferred.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Provide a downloadable sample CSV template so users have a clear reference for "import from csv"
+* Improve CSV import feedback: replace the current raw output (e.g., “JSON import completed. Success: 1, Errors: 4” followed by long SQL duplicate‑key traces) with concise, user‑friendly success and error summaries  (updating the messages and removing long SQL traces)
+* Move the Import workflow to its own page (do this cycle if it can be completed quickly)
+* Improve the UX for Create Section / Create Course: either split them into separate pages or clearly separate the two areas on the same page
+
+
+------------------------------------------------------------------------------------------------------
+## Monday (July 11-14)
+
+### Timesheet
+Clockify report
+
+![alt text](./clockify_images/clockify_weekly_log_2025-07-11_07-14_seiya.png)
+
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **CSV Import Backend** | Finish the parser, add field/type/time validation, and return structured error messages. |
+| **2** | **CSV Import Frontend** | Build the upload form and preview table, show basic progress, and wire calls to the backend. |
+| **3** | **CSV Import Integration** | Complete frontend-backend integration. |
+| **4** | **CSV Import Testing** | Write unit + integration test scenarios for CSV import feature. |
+
+
+
+
+### Progress Update (since July 10, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: CSV Import Backend | Complete |
+| #2: CSV Import Frontend | Complete |
+| #3: CSV Import Integration | Complete |
+| #4: CSV Import Testing | In Progress |
+
+
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to deliver a fully‑functional CSV import end‑to‑end and to begin comprehensive testing.
+
+What was done:
+* Backend parser and validation completed; returns clear error objects.
+* Frontend upload flow built with file preview and basic progress indicator.
+* Frontend‑backend integration verified with real CSV files; large‑file handling works.
+
+
+What was not done:
+* The test suite has not been created yet. writing tests will begin next cycle.
+
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Finish CSV Testing: add unit and edge‑case tests
+* Migrate both CSV import and export to Papaparse on the frontend and align the shared JSON schema, as suggested by Alex.
+
+------------------------------------------------------------------------------------------------------
+## Monday (July 8-10)
+
+### Timesheet
+Clockify report
+
+![alt text](./clockify_images/clockify_weekly_log_2025-07-08_07-10_seiya.png)
+
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **CSV Export** | Create backend export endpoint, link it to the UI download button, and verify round‑trip with sample CSVs. |
+| **2** | **CSV Import** | Build the backend parser, set validation rules (required fields, data types, timestamps), and sketch the upload flow on the frontend. |
+
+
+
+
+### Progress Update (since July 7, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: CSV Export Implementation | Complete |
+| #2:  CSV Import Implementation | In Progress |
+
+
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to deliver a working CSV export and to start implementing CSV import.
+
+
+What was done:
+* Completed CSV Export: backend endpoint, UI download flow, and round‑trip tests all pass.
+* Drafted CSV Import design: backend parsing started and validation requirements defined.
+
+What was not done:
+* Frontend upload form and full validation for CSV Import are still pending.
+
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Finish CSV Import: complete backend logic, build the upload form, and add validation + error handling.
+* Integrate import/export workflows and expand the test suite to cover import scenarios.
+
+
+
+------------------------------------------------------------------------------------------------------
+
 ## Monday (July 4-7)
 
 ### Timesheet
