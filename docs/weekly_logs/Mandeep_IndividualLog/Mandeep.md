@@ -1817,7 +1817,7 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 | TASK/ISSUE # | DESCRIPTION                                  | STATUS      |
 |--------------|----------------------------------------------|-------------|
 | [#490](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/490)         | Worked on application flow updates            | In Progress |
-| [#499]/[#489] (https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/499) (https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/489)   | Finalized PR for global config integration    | Completed   |
+| [#499]/[#489](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/499) (https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/489)   | Finalized PR for global config integration    | Completed   |
 
 ## Cycle Goal Review
 
@@ -1831,7 +1831,7 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                                            | TYPE                   |
 |--------------|------------------------------------------------------------------------|------------------------|
-| [#509] (https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/509)        | Start improving profile question page for both student and coordinator sides | Application Enhancement |
+| [#509](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/509)        | Start improving profile question page for both student and coordinator sides | Application Enhancement |
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1854,8 +1854,8 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 | TASK/ISSUE # | DESCRIPTION                                         | STATUS      |
 |--------------|-----------------------------------------------------|-------------|
 | [#509](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/509)         | Started working on profile question page improvements | In Progress |
-| [#507] (https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/507)        | Finalized major PR and merged                        | Completed   |
-| [#501]  (https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/501)       | Reviewed PR and joined team meeting                  | Completed   |
+| [#507](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/507)        | Finalized major PR and merged                        | Completed   |
+| [#501](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/501)       | Reviewed PR and joined team meeting                  | Completed   |
 
 ## Cycle Goal Review
 
@@ -1869,7 +1869,7 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                         | TYPE                   |
 |--------------|-----------------------------------------------------|------------------------|
-| [#510] (https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/510)       | Improve course related pages including the details one(s),     | UI and bug fixes  |
+| [#510](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/510)       | Improve course related pages including the details one(s),     | UI and bug fixes  |
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
