@@ -120,10 +120,13 @@ export default function SectionCsvImportInline() {
   };
 
   return (
-    <div className="w-full bg-white rounded shadow p-6">
+    <div className="w-full max-w-4xl min-w-[800px] bg-white rounded shadow p-6 mx-auto">
       <div className="text-lg font-bold text-gray-800 mb-1">Import Sections from CSV</div>
-      <div className="text-gray-600 mb-4 text-sm">
-        Import multiple sections at once by uploading a CSV file. Only .csv files are supported.
+      <div className="text-gray-600 mb-1 text-sm">
+        You can import multiple sections at once by uploading a CSV file (only .csv files are supported).
+      </div>
+      <div className="text-gray-500 mb-4 text-sm">
+        To avoid formatting issues, please download and use the provided sample template.
       </div>
       <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-2 text-base font-bold text-gray-700">

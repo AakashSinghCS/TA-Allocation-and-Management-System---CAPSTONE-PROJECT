@@ -167,8 +167,14 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   };
 
   return (
-    <div className="max-w-2xl min-w-[600px] mx-auto p-4 bg-white rounded shadow">
-      <h2 className="text-3xl font-bold mb-8">Import Sections from CSV</h2>
+    <div className="max-w-4xl min-w-[800px] mx-auto p-4 bg-white rounded shadow">
+      <h2 className="text-3xl font-bold mb-2">Import Sections from CSV</h2>
+      <div className="text-gray-600 mb-1 text-base">
+        You can import multiple sections at once by uploading a CSV file (only .csv files are supported).
+      </div>
+      <div className="text-gray-500 mb-6 text-base">
+        To avoid formatting issues, please download and use the provided sample template.
+      </div>
       <div className="mb-4 mt-2">
         <div className="flex items-center gap-2 mb-2 text-base font-bold text-gray-700">
           {/* Download icon */}
