@@ -100,15 +100,13 @@ public class ApplicationServiceTest {
     @BeforeEach
     void mockDeadline() {
         DeadlineDto dto = new DeadlineDto(
-            "student_application_deadline",
-            LocalDateTime.now().minusDays(1),
-            LocalDateTime.now().plusDays(1)
-        );
+                "student_application_deadline",
+                LocalDateTime.now().minusDays(1),
+                LocalDateTime.now().plusDays(1));
 
         lenient().when(configService.getDeadlineByName(anyString()))
-            .thenReturn(dto);
+                .thenReturn(dto);
     }
-
 
     @Test
     void testSubmitApplication_AlreadySubmitted_BadRequest() {
@@ -127,28 +125,26 @@ public class ApplicationServiceTest {
     void testSubmitApplication_DeadlinePassed_BadRequest() {
         // Arrange
         ApplicationRequest applicationRequest = new ApplicationRequest(
-            List.of(Subject.COSC),
-            ApplicationType.UNDERGRADUATE,
-            false,
-            6,
-            2025, "W1",
-            availabilities
-        );
+                List.of(Subject.COSC),
+                ApplicationType.UNDERGRADUATE,
+                false,
+                6,
+                2025, "W1",
+                availabilities);
 
         // Mock repository: no previous submission
         when(applicationRepository.existsByStudentIdAndYearAndSemester(anyLong(), anyInt(), any()))
-            .thenReturn(false);
+                .thenReturn(false);
 
         // Mock deadline that already expired
         DeadlineDto expiredDeadline = new DeadlineDto(
-            "student_application_deadline",
-            LocalDateTime.now().minusDays(2),
-            LocalDateTime.now().minusDays(1)
-        );
+                "student_application_deadline",
+                LocalDateTime.now().minusDays(2),
+                LocalDateTime.now().minusDays(1));
 
         // Mock configService
         when(configService.getDeadlineByName(anyString()))
-            .thenReturn(expiredDeadline);
+                .thenReturn(expiredDeadline);
 
         // Act + Assert
         BadRequestException e = assertThrows(BadRequestException.class, () -> {
@@ -158,7 +154,6 @@ public class ApplicationServiceTest {
         assertEquals("The application deadline has passed.", e.getMessage());
     }
 
-
     @Test
     void testSubmitApplication_MissingAvailabilityFields_BadRequest() {
         Set<AvailabilityDto> badAvailabilities = new HashSet<>();
@@ -166,7 +161,6 @@ public class ApplicationServiceTest {
         ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC),
                 ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1",
                 badAvailabilities);
-
 
         GlobalDeadline testEntity2 = configRepository.findByName("student_application_deadline");
         System.out.println("REPO RETURN TEST in TEST: " + testEntity2);
@@ -259,9 +253,11 @@ public class ApplicationServiceTest {
 
     @Test
     void testGetApplication_Success() {
-        Application application = new Application(1L, List.of(Subject.COSC), ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1");
+        Application application = new Application(1L, List.of(Subject.COSC), ApplicationType.UNDERGRADUATE, false, 6,
+                2025, "W1");
 
-        when(applicationRepository.findByStudentIdAndYearAndSemester(1L, 2025, "W1")).thenReturn(Optional.of(application));
+        when(applicationRepository.findByStudentIdAndYearAndSemester(1L, 2025, "W1"))
+                .thenReturn(Optional.of(application));
 
         ApplicationDto mockedDto = new ApplicationDto(
                 1L,
@@ -335,37 +331,33 @@ public class ApplicationServiceTest {
     void testUpdateApplication_DeadlinePassed_BadRequest() {
         // Arrange
         ApplicationRequest request = new ApplicationRequest(
-            List.of(Subject.COSC),
-            ApplicationType.UNDERGRADUATE,
-            false,
-            6, 2025, "W1",
-            Set.of(new AvailabilityDto(Day.MONDAY, "09:00", "10:00"))
-        );
+                List.of(Subject.COSC),
+                ApplicationType.UNDERGRADUATE,
+                false,
+                6, 2025, "W1",
+                Set.of(new AvailabilityDto(Day.MONDAY, "09:00", "10:00")));
 
         // Mock configService returning expired deadline
         DeadlineDto expiredDeadline = new DeadlineDto(
-            "student_application_deadline",
-            LocalDateTime.now().minusDays(2),
-            LocalDateTime.now().minusDays(1)
-        );
+                "student_application_deadline",
+                LocalDateTime.now().minusDays(2),
+                LocalDateTime.now().minusDays(1));
 
         when(configService.getDeadlineByName(anyString()))
-            .thenReturn(expiredDeadline);
+                .thenReturn(expiredDeadline);
 
         // Act + Assert
         BadRequestException e = assertThrows(BadRequestException.class, () -> {
             applicationService.updateApplication(
-                request,
-                1L, // studentId
-                2025, "W1",
-                1L, // userIdFromHeader (same user, so authorized)
-                List.of("ROLE_STUDENT")
-            );
+                    request,
+                    1L, // studentId
+                    2025, "W1",
+                    1L, // userIdFromHeader (same user, so authorized)
+                    List.of("ROLE_STUDENT"));
         });
 
         assertEquals("The application deadline has passed.", e.getMessage());
     }
-
 
     @Test
     void testUpdateApplication_Success() {
@@ -374,7 +366,8 @@ public class ApplicationServiceTest {
 
         Application application = new Application(1L, List.of(Subject.DATA, Subject.MATH, Subject.PHYS),
                 ApplicationType.UNDERGRADUATE, true, 12, 2025, "W1");
-        when(applicationRepository.findByStudentIdAndYearAndSemester(1L, 2025, "W1")).thenReturn(Optional.of(application));
+        when(applicationRepository.findByStudentIdAndYearAndSemester(1L, 2025, "W1"))
+                .thenReturn(Optional.of(application));
 
         ApplicationDto mockedDto = new ApplicationDto(
                 1L,
@@ -420,8 +413,10 @@ public class ApplicationServiceTest {
 
     @Test
     void testGetAllApplications_Success() {
-        Application app1 = new Application(1L, List.of(Subject.COSC), ApplicationType.UNDERGRADUATE, false, 6,2025, "W1");
-        Application app2 = new Application(1L, List.of(Subject.DATA), ApplicationType.UNDERGRADUATE, true, 12, 2025, "W1");
+        Application app1 = new Application(1L, List.of(Subject.COSC), ApplicationType.UNDERGRADUATE, false, 6, 2025,
+                "W1");
+        Application app2 = new Application(1L, List.of(Subject.DATA), ApplicationType.UNDERGRADUATE, true, 12, 2025,
+                "W1");
 
         List<Application> applications = List.of(app1, app2);
 
@@ -463,11 +458,12 @@ public class ApplicationServiceTest {
 
     @Test
     void testGetAllApplicationsWithStudentData() {
-        Application app = new Application(1L, List.of(Subject.COSC, Subject.MATH), ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1");
+        Application app = new Application(1L, List.of(Subject.COSC, Subject.MATH), ApplicationType.UNDERGRADUATE, false,
+                6, 2025, "W1");
         app.setSubmittedAt(LocalDateTime.of(2024, 1, 1, 12, 0));
 
         UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null, true);
+                12345678, "COSC", 2025, 3, null, null, null, true);
 
         ApplicationWithStudentDto expectedDto = new ApplicationWithStudentDto(
                 1L,
@@ -499,41 +495,39 @@ public class ApplicationServiceTest {
     @Test
     void testGetAllApplications_page() {
         // given filter parameters
-        Integer year       = 2024;
+        Integer year = 2024;
         Boolean wantRemote = false;
         Integer hours = 6;
         String semester = "W1";
-        Subject p1         = Subject.COSC;
-        Subject p2         = null;
-        Subject p3         = null;
+        Subject p1 = Subject.COSC;
+        Subject p2 = null;
+        Subject p3 = null;
 
         // sample Application entity
         Application app = new Application(1L, List.of(p1, Subject.MATH),
-                                          ApplicationType.UNDERGRADUATE,
-                                          wantRemote, hours, 2025, "W1");
-        app.setSubmittedAt(LocalDateTime.of(2024,1,1,12,0));
+                ApplicationType.UNDERGRADUATE,
+                wantRemote, hours, 2025, "W1");
+        app.setSubmittedAt(LocalDateTime.of(2024, 1, 1, 12, 0));
 
         // sample UserDto
         UserDto studentDto = new UserDto(
-            2L, "Alice","Wang","awang@test.com",
-            List.of(UserRole.STUDENT),
-            12345678, "COSC", 2025, 3,
-            null,null,null,true
-        );
+                2L, "Alice", "Wang", "awang@test.com",
+                List.of(UserRole.STUDENT),
+                12345678, "COSC", 2025, 3,
+                null, null, null, true);
 
         // expected DTO
         ApplicationWithStudentDto outDto = new ApplicationWithStudentDto(
-            1L,
-            studentDto,
-            app.getSubjectPreferences(),
-            app.getApplicationType(),
-            wantRemote,
-            hours,
-            year,
-            semester,
-            app.getSubmittedAt(),
-            Set.of()
-        );
+                1L,
+                studentDto,
+                app.getSubjectPreferences(),
+                app.getApplicationType(),
+                wantRemote,
+                hours,
+                year,
+                semester,
+                app.getSubmittedAt(),
+                Set.of());
 
         // pageable & page-of-entity setup
         Pageable pageable = PageRequest.of(0, 5);
@@ -541,20 +535,19 @@ public class ApplicationServiceTest {
 
         // mock repository → page<Application>
         when(applicationRepository.findByFilters(
-            eq(year), eq(semester), eq(wantRemote), eq(hours),
-            eq(p1), eq(p2), eq(p3),
-            eq(pageable)
-        )).thenReturn(entityPage);
+                eq(year), eq(semester), eq(wantRemote), eq(hours),
+                eq(p1), eq(p2), eq(p3),
+                eq(pageable))).thenReturn(entityPage);
 
         // mock user client & mapper
         when(userInterface.getStudentById(app.getStudentId()))
-            .thenReturn(ResponseEntity.ok(studentDto));
+                .thenReturn(ResponseEntity.ok(studentDto));
         when(applicationMapper.toDtoWithStudent(app, studentDto))
-            .thenReturn(outDto);
+                .thenReturn(outDto);
 
         // when
-        Page<ApplicationWithStudentDto> result =
-            applicationService.getAllApplications(year, semester, wantRemote, hours, p1, p2, p3, pageable);
+        Page<ApplicationWithStudentDto> result = applicationService.getAllApplications(year, semester, wantRemote,
+                hours, p1, p2, p3, pageable);
 
         // then
         assertEquals(1, result.getTotalElements());
@@ -562,6 +555,34 @@ public class ApplicationServiceTest {
 
         // verify repository called
         verify(applicationRepository)
-            .findByFilters(year, semester, wantRemote, hours, p1, p2, p3, pageable);
+                .findByFilters(year, semester, wantRemote, hours, p1, p2, p3, pageable);
+    }
+
+    @Test
+    void testGetAllApplicationYears() {
+        // given
+        List<Integer> expectedYears = List.of(2023, 2024, 2025);
+        when(applicationRepository.findDistinctYears()).thenReturn(expectedYears);
+
+        // when
+        List<Integer> result = applicationService.getAllApplicationYears();
+
+        // then
+        assertEquals(expectedYears, result);
+        verify(applicationRepository).findDistinctYears();
+    }
+
+    @Test
+    void testGetAllApplicationSemesters() {
+        // given
+        List<String> expectedSemesters = List.of("W1", "W2", "S1", "S2");
+        when(applicationRepository.findDistinctSemesters()).thenReturn(expectedSemesters);
+
+        // when
+        List<String> result = applicationService.getAllApplicationSemesters();
+
+        // then
+        assertEquals(expectedSemesters, result);
+        verify(applicationRepository).findDistinctSemesters();
     }
 }

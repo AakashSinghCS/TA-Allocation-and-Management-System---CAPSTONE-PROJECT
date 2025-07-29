@@ -5,7 +5,8 @@ import Pagination from '../../../../utility/pagination/pagination/Pagination';
 import { fetchAllocationsByStudent } from '../../../../api/allocation/fetchAllocationByStudent';
 import type { ApplicationDto } from '../../../../interfaces/application/Application';
 import type { Allocation } from '../../../../interfaces/allocation/Allocation';
-import { fetchAllExistingYears } from '../../../../api/course/sectionfilter/fetchAllExistingYears';
+import { fetchAllApplicationYears } from '../../../../api/application/fetchAllApplicationYears';
+import { fetchAllApplicationSemesters } from '../../../../api/application/fetchAllApplicationSemesters';
 import { useApplicationSearchPage } from '../../../../api/application/useApplicationSearchPage';
 import SelectedApplicationDetails from './selectedapplicationdetails/SelectedApplicationDetails';
 import { StatusIndicator } from '../../../ui/statusindicator/StatusIndicator';
@@ -21,6 +22,7 @@ interface ApplicationFilters {
   pref2 : string;
   pref3 : string;
   year: string;
+  semester: string;
   wantRemote : string;
   wantHours : string;
   studentName? : string;
@@ -40,6 +42,7 @@ export default function ApplicationFilterPanel({
     pref2: '',
     pref3: '',
     year: '',
+    semester: '',
     wantRemote: '',
     wantHours: '',
     studentName: '',
@@ -51,9 +54,12 @@ export default function ApplicationFilterPanel({
   const [page, setPage] = useState(0);
   const pageSize = 5;
 
-  const [years, setYears] = useState<string[]>([]);
+  const [years, setYears] = useState<number[]>([]);
+  const [semesters, setSemesters] = useState<string[]>([]);
+  
   useEffect(() => {
-    fetchAllExistingYears()
+    // Fetch all application years
+    fetchAllApplicationYears()
       .then(arr => {
         const yearsArr = arr ?? [];
         setYears(yearsArr);
@@ -66,10 +72,19 @@ export default function ApplicationFilterPanel({
         }
       })
       .catch(() => setYears([]));
+
+    // Fetch all application semesters
+    fetchAllApplicationSemesters()
+      .then(arr => {
+        const semestersArr = arr ?? [];
+        setSemesters(semestersArr);
+      })
+      .catch(() => setSemesters([]));
   }, []);
 
   const apiFilters = {
     year: filters.year ? Number(filters.year) : undefined,
+    semester: filters.semester || undefined,
     wantRemote:
       filters.wantRemote === ''
         ? undefined
@@ -110,7 +125,7 @@ export default function ApplicationFilterPanel({
       </div>
 
       {/* ───── Basic filters (always visible) ───── */}
-      <div className="grid grid-rows-3 gap-2">
+      <div className="grid grid-rows-4 gap-2">
         <select
          aria-label="Year"
           className="border rounded px-2 py-1"
@@ -119,6 +134,15 @@ export default function ApplicationFilterPanel({
         >
           <option value="">Year</option>
           {years.map(y => <option key={y} value={y}>{y}</option>)}
+        </select>
+        <select
+         aria-label="Semester"
+          className="border rounded px-2 py-1"
+          value={filters.semester}
+          onChange={e => setFilters(f => ({ ...f, semester: e.target.value }))}
+        >
+          <option value="">Semester</option>
+          {semesters.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
         <select
          aria-label="1st Pref"
@@ -130,8 +154,7 @@ export default function ApplicationFilterPanel({
           <option value="">Student's 1st Preference</option>
           {Array.from(new Set(apps.flatMap(a => a.preferences)))
             .sort()
-            .map(p => <option key={p} value={p}>{p}</option>)
-          }
+            .map(p => <option key={p} value={p}>{p}</option>)}
         </select>
         <select
          aria-label="Hours"
@@ -143,10 +166,8 @@ export default function ApplicationFilterPanel({
           <option value="">Student's Requested Hours</option>
           {Array.from(new Set(apps.map(a => a.wantWorkingHours.toString())))
             .sort((a, b) => +a - +b)
-            .map(h => <option key={h} value={h}>{h}</option>)
-          }
+            .map(h => <option key={h} value={h}>{h}</option>)}
         </select>
-        
       </div>
 
       {advancedOpen && (
@@ -222,8 +243,7 @@ export default function ApplicationFilterPanel({
               : 'bg-gray-200 hover:bg-gray-300'
               }`}
           >
-            {app.student.firstName} {app.student.lastName} —{' '}
-            {new Date(app.timeSubmitted).toLocaleString()}
+            {app.student.firstName} {app.student.lastName} — {app.year} {app.semester} — {new Date(app.timeSubmitted).toLocaleString()}
           </button>
         ))}
       </div>

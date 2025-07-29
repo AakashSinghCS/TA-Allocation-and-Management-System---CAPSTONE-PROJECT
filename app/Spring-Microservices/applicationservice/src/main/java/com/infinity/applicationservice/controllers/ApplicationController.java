@@ -58,7 +58,8 @@ public class ApplicationController {
             @PathVariable String semester,
             @RequestHeader("X-User-Id") Long requesterId,
             @RequestHeader("X-User-Roles") List<String> roles) {
-        return ResponseEntity.ok(applicationService.updateApplication(req, studentId, year, semester, requesterId, roles));
+        return ResponseEntity
+                .ok(applicationService.updateApplication(req, studentId, year, semester, requesterId, roles));
     }
 
     @DeleteMapping("/delete/{studentId}/{year}/{semester}")
@@ -77,8 +78,6 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.getAllApplicationsByStudentId(studentId, requesterId, roles));
     }
 
-
-
     @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/getAll")
     public ResponseEntity<List<ApplicationWithStudentDto>> getAllApplications(
@@ -90,7 +89,8 @@ public class ApplicationController {
             @RequestParam(required = false) Subject preference2,
             @RequestParam(required = false) Subject preference3) {
         return ResponseEntity.ok(
-                applicationService.getAllApplications(year, semester, wantRemote, hours, preference1, preference2, preference3));
+                applicationService.getAllApplications(year, semester, wantRemote, hours, preference1, preference2,
+                        preference3));
     }
 
     @GetMapping("/getAll/page")
@@ -107,6 +107,18 @@ public class ApplicationController {
         Page<ApplicationWithStudentDto> result = applicationService.getAllApplications(
                 year, semester, wantRemote, hours, preference1, preference2, preference3, pageable);
         return ResponseEntity.ok(result);
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/allYears")
+    public ResponseEntity<List<Integer>> getAllApplicationYears() {
+        return ResponseEntity.ok(applicationService.getAllApplicationYears());
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/allSemesters")
+    public ResponseEntity<List<String>> getAllApplicationSemesters() {
+        return ResponseEntity.ok(applicationService.getAllApplicationSemesters());
     }
 
 }

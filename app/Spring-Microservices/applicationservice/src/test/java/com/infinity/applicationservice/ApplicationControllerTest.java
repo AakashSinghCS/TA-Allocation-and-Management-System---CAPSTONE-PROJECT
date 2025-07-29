@@ -268,4 +268,31 @@ public class ApplicationControllerTest {
                                 .andExpect(jsonPath("$.number")
                                                 .value(0));
         }
+
+        @Test
+        void testGetAllApplicationYears() throws Exception {
+                List<Integer> years = List.of(2023, 2024, 2025);
+                when(applicationService.getAllApplicationYears()).thenReturn(years);
+
+                mockMvc.perform(get("/applications/allYears"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.length()").value(3))
+                                .andExpect(jsonPath("$[0]").value(2023))
+                                .andExpect(jsonPath("$[1]").value(2024))
+                                .andExpect(jsonPath("$[2]").value(2025));
+        }
+
+        @Test
+        void testGetAllApplicationSemesters() throws Exception {
+                List<String> semesters = List.of("W1", "W2", "S1", "S2");
+                when(applicationService.getAllApplicationSemesters()).thenReturn(semesters);
+
+                mockMvc.perform(get("/applications/allSemesters"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.length()").value(4))
+                                .andExpect(jsonPath("$[0]").value("W1"))
+                                .andExpect(jsonPath("$[1]").value("W2"))
+                                .andExpect(jsonPath("$[2]").value("S1"))
+                                .andExpect(jsonPath("$[3]").value("S2"));
+        }
 }

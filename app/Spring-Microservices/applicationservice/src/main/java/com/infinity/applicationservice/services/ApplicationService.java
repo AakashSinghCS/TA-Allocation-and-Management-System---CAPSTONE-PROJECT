@@ -49,7 +49,7 @@ public class ApplicationService {
             throw new BadRequestException("You have already submitted an application for this year and semester.");
         }
         courseInterface.getSemesterByYearAndSemester(req.year(), req.semester());
-          
+
         if (LocalDateTime.now().isAfter(configService.getDeadlineByName("student_application_deadline").endTime())) {
             throw new BadRequestException("The application deadline has passed.");
         }
@@ -77,13 +77,15 @@ public class ApplicationService {
             throw new AuthorizationException("Not allowed");
         }
         Application application = applicationRepository.findByStudentIdAndYearAndSemester(studentId, year, semester)
-                .orElseThrow(() -> new NotFoundException("Application with that student id, year, and semester doesn't exist"));
+                .orElseThrow(() -> new NotFoundException(
+                        "Application with that student id, year, and semester doesn't exist"));
 
         return applicationMapper.toDto(application);
     }
 
     @Transactional
-    public String deleteApplication(Long studentId, Integer year, String semester,Long userIdFromHeader, List<String> headerRoles) {
+    public String deleteApplication(Long studentId, Integer year, String semester, Long userIdFromHeader,
+            List<String> headerRoles) {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
         }
@@ -95,7 +97,8 @@ public class ApplicationService {
     }
 
     @Transactional
-    public ApplicationDto updateApplication(ApplicationRequest req, Long studentId, Integer year, String semester, Long userIdFromHeader,
+    public ApplicationDto updateApplication(ApplicationRequest req, Long studentId, Integer year, String semester,
+            Long userIdFromHeader,
             List<String> headerRoles) {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
@@ -111,7 +114,8 @@ public class ApplicationService {
 
         Application application = applicationRepository
                 .findByStudentIdAndYearAndSemester(studentId, year, semester)
-                .orElseThrow(() -> new NotFoundException("Application with that student id, year, and semester doesn't exist"));
+                .orElseThrow(() -> new NotFoundException(
+                        "Application with that student id, year, and semester doesn't exist"));
 
         application.setSubjectPreferences(req);
         application.setApplicationType(req.applicationType());
@@ -170,7 +174,8 @@ public class ApplicationService {
 
     }
 
-    public List<ApplicationWithStudentDto> getAllApplications(Integer year, String semester, Boolean wantRemote, Integer hours,
+    public List<ApplicationWithStudentDto> getAllApplications(Integer year, String semester, Boolean wantRemote,
+            Integer hours,
             Subject preference1, Subject preference2, Subject preference3) {
 
         List<Application> applications = applicationRepository.findByFilters(year, semester, wantRemote, hours,
@@ -198,5 +203,13 @@ public class ApplicationService {
         return page.map(app -> applicationMapper.toDtoWithStudent(
                 app,
                 userInterface.getStudentById(app.getStudentId()).getBody()));
+    }
+
+    public List<Integer> getAllApplicationYears() {
+        return applicationRepository.findDistinctYears();
+    }
+
+    public List<String> getAllApplicationSemesters() {
+        return applicationRepository.findDistinctSemesters();
     }
 }
