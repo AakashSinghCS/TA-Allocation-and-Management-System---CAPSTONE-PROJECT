@@ -1961,3 +1961,161 @@ Retrospective: Process is going well. Team members are working hard to get their
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Complete additions in exams page for coordinator and begin next assigned task. 
+
+## Friday 7/25 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.25.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+  * #2: Team meeting
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 70% complete.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met with team after our meeting with the professor to discuss next steps. Took advice on the workflow for the exam page i am creating. Will integrate recommendations tomorrow. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task.
+
+## Saturday 7/26 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.26.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 90% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Most functionality is working, updating exam works but the page has to be refreshed to see changes. Same issue for assignment updates. Delete buttons will be added tomorrow. I also ran into a bug where I was getting multiple toasts, will fix that tomorrow as well. I also have to add time validation. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task.
+
+## Sunday 7/27 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.27.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: All update and delete buttons work as expected. The exam/assignment card is updated instantly upon update/delete. No need to refresh the page now. Added time validation to create an exam form and assign student to exam form.  
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task.
+
+## Monday 7/28 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.28.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Modifications: Exam Page - need to add time validation to update buttons as well. And upon creating an exam or assignment, the new data should be loaded in the below Exams & assignments section without the need to refresh the page.
+  * #2: Team meeting
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: When an exam or assignment is created, the exams & assignment section is instantly updated without the need to refresh the page. I also added the same time validation as in the forms to the update buttons in exams & assignments. Also, in the assign student to exam form, once a matching student is selected, the student name and student number fields are auto populated.
+We also had a team meeting today to discuss regarding the peer testing event tomorrow. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned task.
+
