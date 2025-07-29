@@ -1,3 +1,54 @@
+## Monday (July 25-28)
+
+### Timesheet
+Clockify report
+![alt text](./jul25-28.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allow applications to be semester specific - backend [477](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/477)
+  * Tidying up various loose ends (missing endpoints, small features, bugs, will put in the issues when completed in future logs)
+
+### Progress Update (since July 24th 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Backend for global config for term <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/428">428</a>
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Allow applications to be semester specific - backend <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/477">477</a>
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Have backend search that searches all parameters for course from text<a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/500">500</a>
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I finished the backend portion of the application for specific semesters, and now Mandeep has finished up the frontend and just waiting for it to be merged. I also did a small fix to add back a search bar for courses that is based on the fields using text rather than all the drop downs in frontend and backend.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * First needing to help merge a number of PR's that were waiting for the peer testing to finish, then I will go into Allen's PR's and clean them up since he's been unresponsive to the github comments. After that, I will address various bugs that are needed for the final project submission.
+
 ## Thursday (July 22-24)
 
 ### Timesheet
