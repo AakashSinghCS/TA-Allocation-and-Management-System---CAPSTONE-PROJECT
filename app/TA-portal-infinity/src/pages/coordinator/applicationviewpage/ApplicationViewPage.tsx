@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { fetchAllApplicationYears } from '../../../api/application/fetchAllApplicationYears';
+import { fetchAllApplicationSemesters } from '../../../api/application/fetchAllApplicationSemesters';
 import { fetchAllocationByStatus } from '../../../api/allocation/fetchAllocationByStatus';
 import { fetchAllocationsByStudent } from '../../../api/allocation/fetchAllocationByStudent';
 import { fetchApplications } from '../../../api/application/FetchApplications';
@@ -28,9 +30,21 @@ const ApplicationPage: React.FC = () => {
   // const [loadingSections, setLoadingSections] = useState(false);
   // Application filters
   const [yearSubmitted, setYearSubmitted] = useState('');
+  const [semesterSubmitted, setSemesterSubmitted] = useState('');
   const [studentName, setStudentName] = useState('');
   const [prefContains, setPrefContains] = useState('');
   const [remotePref, setRemotePref] = useState('');
+  const [availableYears, setAvailableYears] = useState<number[]>([]);
+  const [availableSemesters, setAvailableSemesters] = useState<string[]>([]);
+  // Fetch available years and semesters for dropdowns (same as ApplicationFilterPanel)
+  useEffect(() => {
+    fetchAllApplicationYears()
+      .then(arr => setAvailableYears(arr ?? []))
+      .catch(() => setAvailableYears([]));
+    fetchAllApplicationSemesters()
+      .then(arr => setAvailableSemesters(arr ?? []))
+      .catch(() => setAvailableSemesters([]));
+  }, []);
   // Allocation filters (advanced)
   const [allocationStatus, setAllocationStatus] = useState('');
   const [allocationDept, setAllocationDept] = useState('');
@@ -98,7 +112,8 @@ const ApplicationPage: React.FC = () => {
     return allApps.filter((app) => {
       let match = true;
       // Application filters
-      if (yearSubmitted && !app.timeSubmitted.startsWith(yearSubmitted)) match = false;
+      if (yearSubmitted && String(app.year) !== yearSubmitted) match = false;
+      if (semesterSubmitted && app.semester !== semesterSubmitted) match = false;
       if (studentName && !(`${app.student.firstName} ${app.student.lastName}`.toLowerCase().includes(studentName.toLowerCase()))) match = false;
       if (prefContains && !app.preferences.some(p => p.toLowerCase().includes(prefContains.toLowerCase()))) match = false;
       if (remotePref && ((remotePref === 'true' && !app.wantRemote) || (remotePref === 'false' && app.wantRemote))) match = false;
@@ -219,8 +234,22 @@ const ApplicationPage: React.FC = () => {
                   <input type="text" value={studentName} onChange={e => setStudentName(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. John" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Year Submitted</label>
-                  <input type="text" value={yearSubmitted} onChange={e => setYearSubmitted(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. 2025" />
+                  <label className="block text-sm font-medium mb-1">Year</label>
+                  <select value={yearSubmitted} onChange={e => setYearSubmitted(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                    <option value="">Any</option>
+                    {availableYears.map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Semester</label>
+                  <select value={semesterSubmitted} onChange={e => setSemesterSubmitted(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                    <option value="">Any</option>
+                    {availableSemesters.map(sem => (
+                      <option key={sem} value={sem}>{sem}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Preference Contains</label>

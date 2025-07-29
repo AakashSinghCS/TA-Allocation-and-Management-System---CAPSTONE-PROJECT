@@ -32,6 +32,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, allocations, isA
         </div>
       </div>
       <div className="flex flex-col gap-0.5 text-xs">
+        <span><strong>Year:</strong> {app.year} &nbsp; <strong>Semester:</strong> {app.semester}</span>
         <span><strong>Preferences:</strong> {app.preferences.join(', ')}</span>
         <span><strong>Remote:</strong> {app.wantRemote ? 'Yes' : 'No'}</span>
         <span><strong>Hours Requested:</strong> {app.wantWorkingHours}</span>
@@ -62,6 +63,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, allocations, isA
           <div className="mb-1">
             <h4 className="font-semibold text-[#040941] mb-0.5 text-sm">Application Info</h4>
             <div className="text-xs space-y-0.5">
+              <div><strong>Year:</strong> {app.year} &nbsp; <strong>Semester:</strong> {app.semester}</div>
               <div><strong>Preferences:</strong> {app.preferences.join(', ')}</div>
               <div><strong>Remote Preference:</strong> {app.wantRemote ? 'Yes' : 'No'}</div>
               <div><strong>Hours Requested:</strong> {app.wantWorkingHours}</div>
@@ -93,21 +95,32 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, allocations, isA
             <h4 className="font-semibold text-[#040941] mb-0.5 text-sm">Allocation Info</h4>
             {allocations.length > 0 ? (
               <ul className="list-none space-y-1">
-                {allocations.map((alloc, idx) => (
-                  <li key={idx} className="ml-1">
-                    <div className="text-xs space-y-0.5">
-                      <div><strong>Section:</strong> {alloc.section?.course?.deptCode} {alloc.section?.course?.courseNum}</div>
-                      <div><strong>Semester:</strong> {alloc.section?.semester ? alloc.section.semester : <span className="text-gray-400">N/A</span>}</div>
-                      <div><strong>Year:</strong> {alloc.section?.year ? alloc.section.year : <span className="text-gray-400">N/A</span>}</div>
-                      <div><strong>Type:</strong> {alloc.section?.type ? alloc.section.type : <span className="text-gray-400">N/A</span>}</div>
-                      <div><strong>Allocated Hours:</strong> {alloc.numberOfHours}</div>
-                      <div><strong>Status:</strong> {alloc.status ? alloc.status.charAt(0) + alloc.status.slice(1).toLowerCase() : 'N/A'}</div>
-                      <div><strong>Instructor:</strong> {alloc.section?.instructor && typeof alloc.section.instructor === 'object' && 'firstName' in alloc.section.instructor
-                        ? `${alloc.section.instructor.firstName} ${alloc.section.instructor.lastName}`
-                        : 'N/A'}</div>
-                    </div>
-                  </li>
-                ))}
+                {allocations
+                  .filter((alloc, idx, arr) => {
+                    // Remove duplicates by section id if available
+                    if (alloc.section && alloc.section.sectionId) {
+                      return arr.findIndex(a => a.section?.sectionId === alloc.section.sectionId) === idx;
+                    }
+                    // If no sectionId, keep all
+                    return true;
+                  })
+                  .map((alloc, idx) => (
+                    <li key={idx} className="ml-1">
+                      <div className="text-xs space-y-0.5">
+                        <div><strong>Section:</strong> {alloc.section?.course?.deptCode ?? 'N/A'} {alloc.section?.course?.courseNum ?? ''}</div>
+                        <div><strong>Semester:</strong> {alloc.section?.semester ?? 'N/A'}</div>
+                        <div><strong>Year:</strong> {alloc.section?.year ?? 'N/A'}</div>
+                        <div><strong>Type:</strong> {alloc.section?.type ?? 'N/A'}</div>
+                        <div><strong>Allocated Hours:</strong> {alloc.numberOfHours ?? 'N/A'}</div>
+                        <div><strong>Status:</strong> {alloc.status ? alloc.status.charAt(0) + alloc.status.slice(1).toLowerCase() : 'N/A'}</div>
+                        <div><strong>Instructor:</strong> {
+                          alloc.section?.instructor && typeof alloc.section.instructor === 'object' && alloc.section.instructor.firstName && alloc.section.instructor.lastName
+                            ? `${alloc.section.instructor.firstName} ${alloc.section.instructor.lastName}`
+                            : (typeof alloc.section?.instructor === 'string' ? alloc.section.instructor : 'N/A')
+                        }</div>
+                      </div>
+                    </li>
+                  ))}
               </ul>
             ) : (
               <div className="text-gray-500 text-xs">No allocations for this application.</div>
