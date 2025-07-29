@@ -1816,8 +1816,8 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                  | STATUS      |
 |--------------|----------------------------------------------|-------------|
-| #490         | Worked on application flow updates            | In Progress |
-| #499/#489    | Finalized PR for global config integration    | Completed   |
+| [#490](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/490)         | Worked on application flow updates            | In Progress |
+| [#499]/[#489]    | Finalized PR for global config integration    | Completed   |
 
 ## Cycle Goal Review
 
@@ -1831,7 +1831,7 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                                            | TYPE                   |
 |--------------|------------------------------------------------------------------------|------------------------|
-| #509         | Start improving profile question page for both student and coordinator sides | Application Enhancement |
+| [#509]         | Start improving profile question page for both student and coordinator sides | Application Enhancement |
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1853,9 +1853,9 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                         | STATUS      |
 |--------------|-----------------------------------------------------|-------------|
-| #509         | Started working on profile question page improvements | In Progress |
-| #507         | Finalized major PR and merged                        | Completed   |
-| #501         | Reviewed PR and joined team meeting                  | Completed   |
+| [#509]         | Started working on profile question page improvements | In Progress |
+| [#507]         | Finalized major PR and merged                        | Completed   |
+| [#501]         | Reviewed PR and joined team meeting                  | Completed   |
 
 ## Cycle Goal Review
 
@@ -1869,7 +1869,7 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                         | TYPE                   |
 |--------------|-----------------------------------------------------|------------------------|
-| #510        | Improve course related pages including the details one(s),     | UI and bug fixes  |
+| [#510]        | Improve course related pages including the details one(s),     | UI and bug fixes  |
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1890,7 +1890,7 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                         | STATUS      |
 |--------------|-----------------------------------------------------|-------------|
-| #509         | Improved profile question page (student & coordinator) | Completed   |
+| [#509]         | Improved profile question page (student & coordinator) | Completed   |
 | PR reviews   | Approved and reviewed open PRs                         | Completed   |
 
 ## Cycle Goal Review
@@ -1905,4 +1905,4 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                                                               | TYPE               |
 |--------------|-------------------------------------------------------------------------------------------|--------------------|
-| #510        | Improve course related pages including the details one(s),                              | UI and bug fixes  |
+| [#510]       | Improve course related pages including the details one(s),                              | UI and bug fixes  |
