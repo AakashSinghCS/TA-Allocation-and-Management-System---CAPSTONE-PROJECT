@@ -332,9 +332,10 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           <div className="flex justify-center">
             <button
               className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
-              onClick={onClose}
+              // onClick={onClose} // Use this if we want to just close the modal without reload
+              onClick={() => window.location.reload()} // Reloads the page after import
             >
-              Close 
+              Close
             </button>
           </div>
 
