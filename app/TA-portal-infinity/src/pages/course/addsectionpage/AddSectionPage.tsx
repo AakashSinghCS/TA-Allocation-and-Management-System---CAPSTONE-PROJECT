@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import CreateSectionForm, { type CreateSectionData } from '../../../components/features/course/createsectionform/CreateSectionForm';
 import { fetchCreateSection, type SectionAddDtoRequest } from '../../../api/section/fetchCreateSection';
 import { fetchCreateCourse, type CourseAddDtoRequest } from '../../../api/course/fetchCreateCourse';
-import CsvUpload from '../../../components/features/csv/csvupload/CsvUpload';
+import SectionCsvImportInline from '../../../components/features/section/SectionCsvImportInline';
 import type { CourseProfile } from '../../../interfaces/course/Course';
 import { validateCourseProfile } from '../../../utility/validation/course/validateCourseProfile';
 import { validateSectionProfile } from '../../../utility/validation/section/validateSectionProfile';
@@ -57,10 +57,7 @@ export default function AddSectionPage() {
     }
   };
 
-  const handleFileUpload = (file: File) => {
-    // TODO: implement CSV upload
-    console.log('CSV file:', file);
-  };
+
 
   return (
     <div className="container mx-auto p-4 w-full max-w-5xl z-10">
@@ -88,10 +85,8 @@ export default function AddSectionPage() {
           <CreateSectionForm onCreateSection={handleCreateSection} mode="section" />
         </div>
       </div>
-      <div className="mt-10 shadow-lg p-6 rounded-2xl border border-gray-200 bg-gray-50">
-        <h2 className="text-xl font-semibold mb-2 text-gray-700">Import Sections from CSV</h2>
-        <p className="mb-4 text-gray-600 text-sm">Import multiple sections at once by uploading a CSV file. Only .csv files are supported.</p>
-        <CsvUpload onFileUpload={handleFileUpload} />
+      <div className="mt-10 w-full max-w-none">
+        <SectionCsvImportInline />
       </div>
     </div>
   );
