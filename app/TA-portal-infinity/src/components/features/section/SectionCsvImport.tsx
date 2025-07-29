@@ -167,7 +167,20 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   };
 
   return (
-    <div className="max-w-4xl min-w-[800px] mx-auto p-4 bg-white rounded shadow">
+    <div className="relative max-w-4xl min-w-[800px] mx-auto p-4 bg-white rounded shadow">
+      {/* Close (X) button inside top-right */}
+      {onClose && (
+        <button
+          type="button"
+          aria-label="Close"
+          onClick={onClose}
+          className="absolute top-3 right-3 z-10 text-gray-400 hover:text-gray-700 focus:outline-none"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      )}
       <h2 className="text-3xl font-bold mb-2">Import Sections from CSV</h2>
       <div className="text-gray-600 mb-1 text-base">
         You can import multiple sections at once by uploading a CSV file (only .csv files are supported).
