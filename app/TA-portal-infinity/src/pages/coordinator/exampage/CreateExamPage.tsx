@@ -442,6 +442,7 @@ const CreateExamPage = () => {
                     className="w-full mb-4 p-2 border rounded"
                     dateFormat="yyyy-MM-dd"
                     placeholderText="Select a date"
+                    minDate={new Date()}
                 />
 
                 <label className="block mb-2">Start Time (HH:MM)</label>
