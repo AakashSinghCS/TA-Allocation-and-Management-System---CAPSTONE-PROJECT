@@ -20,7 +20,8 @@ describe('<SingleChoice />', () => {
   it('renders all answers and calls onSelect with the chosen id', async () => {
     render(<SingleChoiceTestWrapper />);
 
-    expect(screen.getByText(mockTaProfileQuestion1.description!)).toBeInTheDocument();
+    // The question description is no longer rendered in the SingleChoice component itself
+    // It should be handled by the parent component
 
     const yesRadio = screen.getByLabelText('Yes') as HTMLInputElement;
     const noRadio = screen.getByLabelText('No') as HTMLInputElement;

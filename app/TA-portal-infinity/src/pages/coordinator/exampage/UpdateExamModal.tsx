@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import type { ExamDto } from "../../../interfaces/exam/Exam";
-import {toast, ToastContainer} from "react-toastify"
+import {toast, ToastContainer} from "react-toastify";
+import DatePicker from "react-datepicker";
+
 
 interface UpdateExamModalProps {
   exam: ExamDto;
@@ -13,7 +15,10 @@ export default function UpdateExamModal({
   closeModal,
   onUpdate,
 }: UpdateExamModalProps) {
-  const [date, setDate] = useState(exam.date);
+  const [date, setDate] = useState<Date | null>(() => {
+    const [year, month, day] = exam.date.split("-").map(Number);
+    return new Date(year, month - 1, day); 
+  });
   const [startTime, setStartTime] = useState(exam.startTime);
   const [endTime, setEndTime] = useState(exam.endTime);
   const [loading, setLoading] = useState(false);
@@ -61,7 +66,7 @@ export default function UpdateExamModal({
 
       const updatedExam: ExamDto = {
         ...exam,
-        date,
+        date: date ? formatDateToYyyyMmDdLocal(date) : "",
         startTime,
         endTime,
       };
@@ -88,6 +93,13 @@ export default function UpdateExamModal({
     }
   };
 
+  function formatDateToYyyyMmDdLocal(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
   return (
     <div className="fixed inset-0 z-50 bg-transparent backdrop-blur-sm flex items-center justify-center">
       <div className="bg-white rounded-lg shadow p-6 w-[90%] max-w-md">
@@ -95,35 +107,40 @@ export default function UpdateExamModal({
 
         {error && <p className="text-red-500 mb-2">{error}</p>}
 
-        <label className="block mb-2">
-          Date
-          <input
-            type="date"
-            className="w-full mt-1 border rounded px-3 py-2"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
+        <div className="mb-3">
+          <label className="block mb-1">Date</label>
+          <DatePicker
+            selected={date}
+            onChange={(d: Date | null) => setDate(d)}
+            dateFormat="yyyy-MM-dd"
+            minDate={new Date()}
+            placeholderText="Select a date"
           />
-        </label>
+        </div>
+        
+        <div className="mb-3">
+          <label className="block mb-1">
+            Start Time
+            <input
+              type="time"
+              className="w-full mt-1 border rounded px-3 py-2"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+            />
+          </label>
+        </div>
 
-        <label className="block mb-2">
-          Start Time
-          <input
-            type="time"
-            className="w-full mt-1 border rounded px-3 py-2"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-          />
-        </label>
-
-        <label className="block mb-4">
-          End Time
-          <input
-            type="time"
-            className="w-full mt-1 border rounded px-3 py-2"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-          />
-        </label>
+        <div className="mb-3">
+          <label className="block mb-1">
+            End Time
+            <input
+              type="time"
+              className="w-full mt-1 border rounded px-3 py-2"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+            />
+          </label>
+        </div>
 
         <div className="flex justify-end gap-2">
           <button

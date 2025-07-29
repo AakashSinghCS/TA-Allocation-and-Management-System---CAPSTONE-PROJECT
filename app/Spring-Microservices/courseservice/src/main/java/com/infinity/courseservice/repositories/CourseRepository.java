@@ -133,16 +133,16 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         AND (:startTime  IS NULL OR ss.startTime = :startTime)
             AND (:endTime    IS NULL OR ss.endTime   = :endTime)
 
-        AND (
-              :searchText IS NULL OR
-              LOWER(c.deptCode) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
-              LOWER(c.name) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
-              LOWER(c.courseNum) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
-              LOWER(s.section) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
-              LOWER(sem.semester) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
-              CAST(sem.year AS string) LIKE CONCAT('%', :searchText, '%')
-              )
-        """, countQuery = """
+              AND (
+                    :searchText IS NULL OR
+                    LOWER(c.deptCode) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+                    LOWER(c.name) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+                    LOWER(c.courseNum) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+                    LOWER(s.section) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+                    LOWER(sem.semester) LIKE LOWER(CONCAT('%', :searchText, '%')) OR
+                    CAST(sem.year AS string) LIKE CONCAT('%', :searchText, '%')
+                    )
+              """, countQuery = """
           SELECT COUNT(DISTINCT s.id)
           FROM Course c
                LEFT JOIN c.sections s
