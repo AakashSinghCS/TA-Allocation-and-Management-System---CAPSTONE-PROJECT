@@ -263,10 +263,11 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
       {csvPreview && csvPreview.length > 0 && (
         <div className="mt-4">
           <div className="font-semibold mb-2">CSV Preview (first 10 rows):</div>
-          <div className="overflow-auto max-h-64 border rounded">
+          <div className="overflow-auto max-h-96 border rounded">
             <table className="min-w-[600px] w-full text-xs">
               <thead>
                 <tr>
+                  <th className="px-2 py-1 border-b border-r bg-gray-100 text-left">#</th>
                   {csvHeaders.map((header) => (
                     <th key={header} className="px-2 py-1 border-b bg-gray-100 text-left">{header}</th>
                   ))}
@@ -275,6 +276,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
               <tbody>
                 {csvPreview.map((row, idx) => (
                   <tr key={idx}>
+                    <td className="px-2 py-1 border-b border-r text-gray-400 font-mono">{idx + 1}</td>
                     {csvHeaders.map((header) => (
                       <td key={header} className="px-2 py-1 border-b">{row[header]}</td>
                     ))}
@@ -339,7 +341,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
             </button>
           </div>
 
-          {/* right-aligned button */}
+        {/* right-aligned button */}
           {/* <div className="flex justify-end">
             <button
               className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
