@@ -5,7 +5,8 @@ import ApplicationFilterPanel from './ApplicationFilterPanel'
 import { useAuth } from '../../../../context/AuthContext'
 import { fetchAllocationsByStudent } from '../../../../api/allocation/fetchAllocationByStudent'
 import { useApplicationSearchPage } from '../../../../api/application/useApplicationSearchPage'
-import { fetchAllExistingYears } from '../../../../api/course/sectionfilter/fetchAllExistingYears'
+import { fetchAllApplicationYears } from '../../../../api/application/fetchAllApplicationYears'
+import { fetchAllApplicationSemesters } from '../../../../api/application/fetchAllApplicationSemesters'
 import type { ApplicationDto } from '../../../../interfaces/application/Application'
 import type { UseQueryResult } from '@tanstack/react-query'
 import type PageableResponse from '../../../../interfaces/admin/audit/PageableResponse'
@@ -14,7 +15,8 @@ import type PageableResponse from '../../../../interfaces/admin/audit/PageableRe
 vi.mock('../../../../context/AuthContext')
 vi.mock('../../../../api/allocation/fetchAllocationByStudent')
 vi.mock('../../../../api/application/useApplicationSearchPage')
-vi.mock('../../../../api/course/sectionfilter/fetchAllExistingYears')
+vi.mock('../../../../api/application/fetchAllApplicationYears')
+vi.mock('../../../../api/application/fetchAllApplicationSemesters')
 
 // 2) Stub out the child details component
 vi.mock(
@@ -25,7 +27,8 @@ vi.mock(
 const mockUseAuth = vi.mocked(useAuth)
 const mockFetchAlloc = vi.mocked(fetchAllocationsByStudent)
 const mockUseAppPage = vi.mocked(useApplicationSearchPage)
-const mockFetchYears = vi.mocked(fetchAllExistingYears)
+const mockFetchYears = vi.mocked(fetchAllApplicationYears)
+const mockFetchSemesters = vi.mocked(fetchAllApplicationSemesters)
 
 const mockApplications: ApplicationDto[] = [
   {
@@ -67,7 +70,8 @@ describe('ApplicationFilterPanel', () => {
     })
 
     mockFetchAlloc.mockResolvedValue([])
-    mockFetchYears.mockResolvedValue(['2024', '2023'])
+    mockFetchYears.mockResolvedValue([2024, 2023])
+    mockFetchSemesters.mockResolvedValue(['W1', 'W2', 'S1', 'S2'])
 
     const fakeSuccess = {
       data: {

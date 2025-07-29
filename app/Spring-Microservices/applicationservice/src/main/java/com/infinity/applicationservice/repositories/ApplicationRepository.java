@@ -61,6 +61,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
                """, countQuery = """
                SELECT count(a) FROM Application a
                WHERE (:year IS NULL OR a.year = :year)
+                 AND (:semester IS NULL OR a.semester = :semester)
                  AND (:wantRemote IS NULL OR a.wantRemote = :wantRemote)
                  AND (:hours IS NULL OR a.wantWorkingHours = :hours)
                  AND (:preference1 IS NULL OR a.subjectPreference1 = :preference1

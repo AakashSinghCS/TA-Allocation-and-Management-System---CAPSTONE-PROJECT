@@ -64,12 +64,7 @@ export default function ApplicationFilterPanel({
         const yearsArr = arr ?? [];
         setYears(yearsArr);
 
-        if (yearsArr.length > 0) {
-          const latest = String(
-            Math.max(...yearsArr.map(y => Number(y)))
-          );
-          setFilters(f => ({ ...f, year: latest }));
-        }
+        // Do NOT preset year filter, leave blank
       })
       .catch(() => setYears([]));
 
@@ -83,8 +78,6 @@ export default function ApplicationFilterPanel({
   }, []);
 
   const apiFilters = {
-    year: filters.year ? Number(filters.year) : undefined,
-    semester: filters.semester || undefined,
     wantRemote:
       filters.wantRemote === ''
         ? undefined
@@ -96,8 +89,9 @@ export default function ApplicationFilterPanel({
     preference1: filters.pref1 || undefined,
     preference2: filters.pref2 || undefined,
     preference3: filters.pref3 || undefined,
-    // (we could also push studentName/Num into the back‑end,
-    // but for now we keep those client‑side if you like)
+    // Only include year and semester if they have values
+    ...(filters.year !== '' && { year: Number(filters.year) }),
+    ...(filters.semester !== '' && { semester: filters.semester }),
   };
 
   const {
