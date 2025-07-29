@@ -10,9 +10,9 @@ interface TAAllocationsCardProps {
   setExpandedAlloc: React.Dispatch<React.SetStateAction<{sectionId: number, allocIdx: number} | null>>;
 }
 const TASK_LABEL: Record<AllocationType, string> = {
-  LAB:      "Section Hours Allocated",
-  GRADING:  "Grading Hours Allocated",
-  LAB_PREP: "Lab Prep Hours Allocated"
+  LAB:      "TA Hours",
+  GRADING:  "Grading Hours",
+  LAB_PREP: "Lab Prep Hours"
 };
 
 export const TAAllocationsCard: React.FC<TAAllocationsCardProps> = ({ sections, visibleAlloc, setVisibleAlloc, expandedAlloc, setExpandedAlloc }) => (

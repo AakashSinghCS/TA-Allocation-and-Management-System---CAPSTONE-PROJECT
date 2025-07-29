@@ -16,6 +16,7 @@ import type { NeedViewerResponse } from "../InstructorNeedPage";
 import { PiGraduationCapFill } from "react-icons/pi";
 import { toast } from 'react-toastify';
 import type { Allocation } from "../../../../../interfaces/allocation/Allocation";
+import { fetchAllocationById } from "../../../../../api/allocation/fetchAllocationById";
 
 interface NeedViewerProps {
   instructorId: number;
@@ -32,6 +33,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
     initial ? Math.max(...initial.existingYears.map(Number)) : -1
   );
   const [selectedSemester, setSelectedSemester] = useState<string>("W1");
+  const [confirmedCounts, setConfirmedCounts] = useState<Record<number, number>>({});
 
   const onDeleteNeed = async (need: Need) => {
     try {
@@ -135,6 +137,38 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
     }
   }
 
+  useEffect(() => {
+    // collect every allocationId across all sections
+    const allIds = sections.flatMap(sec =>
+      sec.allocatedSections?.map(as => as.allocationId) ?? []
+    );
+    const uniqueIds = Array.from(new Set(allIds));
+    if (!uniqueIds.length) return setConfirmedCounts({});
+
+    (async () => {
+      const allocs: Allocation[] = await Promise.all(
+        uniqueIds.map(id => fetchAllocationById(id))
+      );
+
+      const confirmed = allocs.filter(a => a.status === 'CONFIRMED');
+
+      const counts: Record<number, number> = {};
+      confirmed.forEach(a => {
+
+      const sectionIds = Array.from(
+        new Set(
+          a.allocatedSections?.map(stub => stub.sectionId) ?? []
+        )
+      );
+
+      sectionIds.forEach(sectionId => {
+        counts[sectionId] = (counts[sectionId] || 0) + 1;
+      });
+    });
+      setConfirmedCounts(counts);
+    })();
+  }, [sections]);
+  
   return (
     <div className={"space-y-8 " + className}>
       {/* Filter Section */}
@@ -254,9 +288,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
         )}
 
         {sections.map((sec, index) => {
-          const uniqueAllocationIds = Array.from(
-            new Set(sec.allocatedSections?.map(as => as.allocationId))
-          );
+           const confirmed = confirmedCounts[sec.id ?? -1] ?? 0;
           return(
           <div key={sec?.id} className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
             {/*Horizontal Section Header */}
@@ -275,7 +307,7 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
                   </span>
                   <span className="text-gray-500 text-sm">•</span>
                   <span className="text-gray-600 text-sm">
-                    {uniqueAllocationIds.length || 0} confirmed TAs
+                    {confirmed} confirmed allocations
                   </span>
                 </div>
               </div>

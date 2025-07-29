@@ -214,16 +214,23 @@ describe('StudentsAllocatedPage', () => {
   });
 
   it('handles export PDF functionality', async () => {
-    const { exportToPDF } = await import('../../../../components/features/allocatedStudent');
-    renderComponent();
-    await waitFor(() => {
-      expect(screen.getByTestId('export-pdf-button')).toBeInTheDocument();
-    });
-    fireEvent.click(screen.getByTestId('export-pdf-button'));
-    expect(exportToPDF).toHaveBeenCalledWith(expect.arrayContaining([
+  const { exportToPDF } = await import(
+    '../../../../components/features/allocatedStudent'
+  );
+  renderComponent();
+
+  // wait for the section to actually render (data loaded)
+  await waitFor(() => expect(screen.getByTestId('section-card')).toBeInTheDocument());
+
+  // now click the export button
+  fireEvent.click(screen.getByTestId('export-pdf-button'));
+
+  expect(exportToPDF).toHaveBeenCalledWith(
+    expect.arrayContaining([
       expect.objectContaining({ id: 1 })
-    ]));
-  });
+    ])
+  );
+});
 
   it('handles API errors gracefully', async () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

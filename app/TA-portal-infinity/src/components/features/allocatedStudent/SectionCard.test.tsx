@@ -112,7 +112,7 @@ describe('SectionCard', () => {
 
   it('displays need information when available', () => {
     renderWithRouter(mockSection);
-    expect(screen.getByText('25/30 hrs')).toBeInTheDocument();
+    expect(screen.getByText('30 req. grading hrs')).toBeInTheDocument();
   });
 
   it('does not display need information when not available', () => {

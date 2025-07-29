@@ -174,7 +174,7 @@ const totalGrading = allocations.reduce(
                       <div><strong>Type:</strong> {sec?.type ?sec.type : <span className="text-gray-400">N/A</span>}</div>
                       <div><strong>Grading:</strong> {entry.gradingHours}h</div>
                       <div><strong>Lab‑Prep:</strong> {entry.labPrepHours}h</div>
-                      <div><strong>Section:</strong> {entry.sectionHours}h</div>
+                      <div><strong>TA:</strong> {entry.sectionHours}h</div>
                       <div><strong>Status:</strong> {statusText}</div>
                       <div><strong>Instructor:</strong> {sec?.instructor && typeof sec.instructor === 'object' && 'firstName' in sec.instructor
                         ? `${sec.instructor.firstName} ${sec.instructor.lastName}`

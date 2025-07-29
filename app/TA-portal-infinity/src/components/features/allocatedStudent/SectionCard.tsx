@@ -59,7 +59,7 @@ export default function SectionCard({ section }: SectionCardProps) {
               </span>
               {section.need && (
                 <span className="inline-flex items-center px-2 py-1 rounded bg-gray-50 text-gray-700 text-xs font-medium">
-                  {section.need.numHoursCurrentlyAllocated || 0}/{section.need.requiredGradingHours || 0} hrs
+                  {section.need.requiredGradingHours} req. grading hrs
                 </span>
               )}
             </div>

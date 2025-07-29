@@ -7,7 +7,7 @@ interface StudentAllocationItemProps {
 }
 
 export default function StudentAllocationItem({ allocation, sectionId }: StudentAllocationItemProps) {
-  console.log(allocation);
+
   const stubs: AllocatedSection[] =
     allocation.allocatedSections?.filter((s) => s.sectionId === sectionId) || [];
 

@@ -18,6 +18,7 @@ vi.mock('../../../api/allocation/fetchAllocationById', () => ({
       allocatedSections: mockAllocatedSections.filter(
         (as) => as.allocationId === id
       ),
+      status: 'CONFIRMED',
     } as Allocation)
   ),
 }));

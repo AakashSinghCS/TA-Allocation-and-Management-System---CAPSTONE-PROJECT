@@ -15,6 +15,7 @@ export default function AllocationCard({
   className = "",
   sectionId
 }: AllocationCardProps) {
+  const [allocations, setAllocations] = useState<Allocation[]>([]);
   if (!allocatedSections.length)
     return (
       <div data-testid="allocation-card" className={`${className} w-full overflow-hidden rounded-lg border border-gray-200 
@@ -33,31 +34,31 @@ export default function AllocationCard({
       </div>
     );
 
-  const [allocations, setAllocations] = useState<Allocation[]>([]);
+
+
 
   useEffect(() => {
-  if (!allocatedSections.length) {
-    setAllocations([]);
-    return;
-  }
-
-  // compute inside effect
-  const uniqueAllocationIds = Array.from(
-    new Set(allocatedSections.map(as => as.allocationId))
-  );
-
-  (async () => {
-    try {
-      const fetchedAllocs = await Promise.all(
-        uniqueAllocationIds.map(id => fetchAllocationById(id))
-      );
-      setAllocations(fetchedAllocs);
-    } catch (err) {
-      console.error("AllocationCard: failed to load allocations", err);
+    if (!allocatedSections.length) {
+      setAllocations([]);
+      return;
     }
-  })();
 
-}, [allocatedSections]); 
+    // compute inside effect
+    const uniqueAllocationIds = Array.from(
+      new Set(allocatedSections.map(as => as.allocationId))
+    );
+    (async () => {
+      try {
+        const fetched = await Promise.all(
+          uniqueAllocationIds.map(id => fetchAllocationById(id))
+        );
+        setAllocations(fetched.filter(a => a.status === 'CONFIRMED'));
+      } catch (err) {
+        console.error("AllocationCard: failed to load allocations", err);
+      }
+    })();
+
+  }, [allocatedSections]);
 
 
   return (
@@ -95,10 +96,10 @@ export default function AllocationCard({
                     {s.hours}
                     {' '}
                     {getTaskLabel(s.task)}
-                   {' '} Hours
+                    {' '} Hours
                   </span>
                 ))}
-               
+
               </div>
             </li>
           );
