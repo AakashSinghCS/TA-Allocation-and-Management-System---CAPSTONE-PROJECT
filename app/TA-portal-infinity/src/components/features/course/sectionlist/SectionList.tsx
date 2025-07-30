@@ -87,8 +87,11 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
       <tbody>
         {sortedCourseIds.map((courseId) => {
           const group = groups[courseId];
-          // Sort this group's sections by type order
+          // Sort this group's sections by section (string, ascending), then by type order
           const sortedSections = [...group].sort((a, b) => {
+            const secA = a.section ?? "";
+            const secB = b.section ?? "";
+            if (secA !== secB) return secA.localeCompare(secB);
             const indexA = a?.type
               ? sectionTypeOptions.indexOf(a.type)
               : Infinity;
