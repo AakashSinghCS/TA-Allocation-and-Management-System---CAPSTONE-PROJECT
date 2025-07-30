@@ -1,6 +1,5 @@
 // SectionFilter.test.tsx
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, beforeEach, vi, expect } from 'vitest';
 
@@ -92,6 +91,7 @@ describe('SectionFilter', () => {
       day: null,
       startTime: null,
       endTime: null,
+      searchText: null
     });
   });
 
@@ -161,4 +161,24 @@ describe('SectionFilter', () => {
       expect.objectContaining({ name: 'Intro to Foo' })
     );
   });
+
+  it('updates searchText after debounce delay', async () => {
+    render(
+      <MemoryRouter>
+        <SectionFilter onFilterChange={onFilterChange} mode="small" />
+      </MemoryRouter>
+    );
+
+    onFilterChange.mockClear();
+
+    const input = screen.getByPlaceholderText(/Search courses/i);
+    fireEvent.change(input, { target: { value: 'math 101' } });
+
+    await waitFor(() => {
+      expect(onFilterChange).toHaveBeenCalledWith(
+        expect.objectContaining({ searchText: 'math 101' })
+      );
+    }, { timeout: 500 });
+  });
+
 });

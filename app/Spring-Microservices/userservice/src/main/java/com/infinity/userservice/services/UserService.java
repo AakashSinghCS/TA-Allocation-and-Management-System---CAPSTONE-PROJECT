@@ -1,5 +1,6 @@
 package com.infinity.userservice.services;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -325,6 +326,41 @@ public class UserService {
             throw new BadRequestException("User is not an instructor");
         }
         return userMapper.toDto(user);
-    }    
+    }
+    
+    public List<UserDto> search(
+            String role,
+            String firstname,
+            String lastname,
+            int universityNumber,
+            Long userId) {
+        List<User> users;
+
+        if (userId != null && userId > 0) {
+            users = userRepository.findById(userId)
+                    .map(Collections::singletonList)
+                    .orElse(Collections.emptyList());
+        } else if (universityNumber > 0) {
+            users = new ArrayList<>();
+            userRepository.findByStudentNum(universityNumber)
+                    .ifPresent(users::add);
+            userRepository.findByEmployeeNum(universityNumber)
+                    .ifPresent(users::add);
+        } else {
+            if (role == null || role.isBlank()) {
+                return Collections.emptyList();
+            }
+            UserRole targetRole = UserRole.valueOf(role.trim().toUpperCase());
+            String fn = firstname == null ? "" : firstname.trim();
+            String ln = lastname == null ? "" : lastname.trim();
+            users = userRepository
+                    .findByRoles_NameAndFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(
+                            targetRole, fn, ln);
+        }
+        return users.stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+
+    }
 
 }

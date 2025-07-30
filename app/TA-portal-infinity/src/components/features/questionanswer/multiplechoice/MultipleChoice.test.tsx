@@ -26,7 +26,8 @@ describe('<MutlipleChoice />', () => {
   it('renders all answers and calls onToggle', async () => {
     render(<MultipleChoiceTestWrapper />);
 
-    expect(screen.getByText(mockTaProfileQuestion2.description!)).toBeInTheDocument();
+    // The question description is no longer rendered in the MultipleChoice component itself
+    // It should be handled by the parent component
 
     const javaCheckbox = screen.getByLabelText('Java') as HTMLInputElement;
     const pythonCheckbox = screen.getByLabelText('Python') as HTMLInputElement;

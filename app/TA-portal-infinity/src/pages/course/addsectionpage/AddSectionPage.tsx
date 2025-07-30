@@ -13,7 +13,8 @@ export default function AddSectionPage() {
 
   const handleCreateSection = async (data: CreateSectionData) => {
     const courseProfile = extractCourseProfile(data);
-    const { ok, sanitized, errors } = validateCourseProfile(courseProfile);
+    // For section creation, skip course name validation
+    const { ok, sanitized, errors } = validateCourseProfile(courseProfile, { skipName: !data.isCourse });
     if (!ok) {
       alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
       return;
@@ -62,17 +63,35 @@ export default function AddSectionPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 w-full max-w-3xl z-10">
-      <h1 className="text-2xl font-bold mb-4">Add Section or Course</h1>
-      <div className="space-y-8">
-        <div className="shadow-lg p-4 rounded-2xl shadow-sm">
-          <h2 className="text-xl font-semibold mb-2">Add Section or Course Manually</h2>
-          <CreateSectionForm onCreateSection={handleCreateSection} />
+    <div className="container mx-auto p-4 w-full max-w-5xl z-10">
+      <h1 className="text-2xl font-bold mb-8 text-center">Course & Section Creation</h1>
+      
+      {/* If we want to force vertical stacking for all screen sizes, use: */}
+        {/* 
+          <div className="flex flex-col gap-8"> 
+        */}
+      {/* (This will stack Course Creation and Section Creation vertically on all devices.) */}
+
+
+      {/* flex-col md:flex-row: vertical on mobile, horizontal (side-by-side) on desktop */}
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Course Creation Area */}
+        <div className="flex-1 bg-white shadow-lg p-6 rounded-2xl border border-blue-200">
+          <h2 className="text-xl font-semibold mb-2 text-blue-700">Course Creation</h2>
+          <p className="mb-4 text-gray-600 text-sm">Create a new course. This is for adding a new course to the system. If the course already exists, use the section creation form instead.</p>
+          <CreateSectionForm onCreateSection={handleCreateSection} mode="course" />
         </div>
-        <div className="shadow-lg p-4 rounded-2xl shadow-sm">
-          <h2 className="text-xl font-semibold mb-2">Upload Sections via CSV</h2>
-          <CsvUpload onFileUpload={handleFileUpload} />
+        {/* Section Creation Area */}
+        <div className="flex-1 bg-white shadow-lg p-6 rounded-2xl border border-green-200">
+          <h2 className="text-xl font-semibold mb-2 text-green-700">Section Creation</h2>
+          <p className="mb-4 text-gray-600 text-sm">Add a section to an existing course. Make sure the course already exists before adding a section.</p>
+          <CreateSectionForm onCreateSection={handleCreateSection} mode="section" />
         </div>
+      </div>
+      <div className="mt-10 shadow-lg p-6 rounded-2xl border border-gray-200 bg-gray-50">
+        <h2 className="text-xl font-semibold mb-2 text-gray-700">Import Sections from CSV</h2>
+        <p className="mb-4 text-gray-600 text-sm">Import multiple sections at once by uploading a CSV file. Only .csv files are supported.</p>
+        <CsvUpload onFileUpload={handleFileUpload} />
       </div>
     </div>
   );

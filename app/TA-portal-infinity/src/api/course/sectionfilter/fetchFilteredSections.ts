@@ -14,6 +14,7 @@ export interface FilterSectionsProps {
     day?: string | null;
     startTime?: string | null; //14:00. LocalTime type in backend.
     endTime?: string | null;
+    searchText?: string | null;
     isCourse?: boolean | null;
 }
 
