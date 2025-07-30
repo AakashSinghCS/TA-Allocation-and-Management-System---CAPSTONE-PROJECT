@@ -239,27 +239,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
         </div>
       )}
 
-      {/* Show Course Name field for Course Creation (required) */}
-      {mode === 'course' && (
-        <div>
-          <label htmlFor='name' className="text-sm block mb-1">Course Name{' '}<span className="text-red-500">*</span></label>
-          <input
-            id="name"
-            value={form.name ?? ""}
-            onChange={e => {
-              handleChange('name', e.target.value);
-              if (courseErrors.name) setCourseErrors(errors => ({ ...errors, name: undefined }));
-            }}
-            className={`w-full border rounded px-2 py-1${courseErrors.name ? ' border-red-500' : ''}`}
-            placeholder='e.g. Introduction to Computer Science'
-          />
-          {courseErrors.name && (
-            <div className="text-red-600 text-xs mt-1">{courseErrors.name}</div>
-          )}
-        </div>
-      )}
-
-      {/* (Removed duplicate Section Creation info message) */}
+      {/* Dept Code (first) */}
       <div>
         <label htmlFor="deptCode" className="text-sm block mb-1">
           Dept Code{' '}<span className="text-red-500">*</span>
@@ -298,6 +278,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
           <div className="text-red-600 text-xs mt-1">{sectionErrors.deptCode}</div>
         )}
       </div>
+      {/* Course Num (second) */}
       <div>
         <label htmlFor='courseNum' className="text-sm block mb-1">
           Course Num{' '}<span className="text-red-500">*</span>
@@ -316,7 +297,6 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
             {!form.deptCode ? (
               <option value="" disabled>
                 Please select Dept Code first
-                {/* Select Dept Code first */}
               </option>
             ) : (
               <option value="">-- Select Course Num --</option>
@@ -344,6 +324,25 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
           <div className="text-red-600 text-xs mt-1">{sectionErrors.courseNum}</div>
         )}
       </div>
+      {/* Course Name (third) */}
+      {mode === 'course' && (
+        <div>
+          <label htmlFor='name' className="text-sm block mb-1">Course Name{' '}<span className="text-red-500">*</span></label>
+          <input
+            id="name"
+            value={form.name ?? ""}
+            onChange={e => {
+              handleChange('name', e.target.value);
+              if (courseErrors.name) setCourseErrors(errors => ({ ...errors, name: undefined }));
+            }}
+            className={`w-full border rounded px-2 py-1${courseErrors.name ? ' border-red-500' : ''}`}
+            placeholder='e.g. Introduction to Computer Science'
+          />
+          {courseErrors.name && (
+            <div className="text-red-600 text-xs mt-1">{courseErrors.name}</div>
+          )}
+        </div>
+      )}
 
       {/* Only show section-related fields in section mode or when mode is undefined (legacy) */}
       {(mode === 'section' || mode === undefined) && (
