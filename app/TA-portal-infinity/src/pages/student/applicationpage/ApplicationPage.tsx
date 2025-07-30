@@ -21,7 +21,7 @@ import { updateApplication } from '../../../api/application/UpdateApplication';
 import type { DeadlineDto } from '../../../interfaces/admin/Deadline';
 import { fetchDeadlines } from '../../../api/admin/FetchDeadline';
 
-interface Availability {
+interface Unavailability {
   id: string;
   day: Day;
   startTime: string;
@@ -39,7 +39,7 @@ const ApplicationPage: React.FC = () => {
     confirmProfileUpdated: false,
     applicationType: '' as '' | 'UNDERGRADUATE' | 'GRADUATE',
   });
-  const [availability, setAvailability] = useState<Availability[]>([]);
+  const [unavailability, setUnavailability] = useState<Unavailability[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [submitted, setSubmitted] = useState(false);
   const [savedApp, setSavedApp] = useState<ApplicationDto | null>(null);
@@ -109,21 +109,21 @@ const deadlinePassed =
       hour12: false, hour: '2-digit', minute: '2-digit'
     });
     const id = `${day}-${startTime}-${endTime}`;
-    setAvailability(prev => [...prev, { id, day, startTime, endTime }]);
+    setUnavailability(prev => [...prev, { id, day, startTime, endTime }]);
     info.view.calendar.unselect();
   };
 
   const handleEventClick = (info: EventClickArg) => {
     const id = info.event.id;
     info.event.remove();
-    setAvailability(prev => prev.filter(av => av.id !== id));
+    setUnavailability(prev => prev.filter(av => av.id !== id));
   };
 
  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
   // client-side validation ---
-  const newErrors = validateForm(formData, availability);
+  const newErrors = validateForm(formData, unavailability);
   if (Object.keys(newErrors).length) {
     setErrors(newErrors);
     return;
@@ -133,7 +133,7 @@ const deadlinePassed =
   setSubmitted(true);
 
   //assemble our payload
-  const payload = buildPayload(formData, availability);
+  const payload = buildPayload(formData, unavailability);
             {/* Application Type */}
             <section>
               <label className="block mb-2 font-semibold">Application Type*</label>
@@ -262,7 +262,7 @@ const deadlinePassed =
           >
             {/* Availability Calendar */}
             <section>
-              <h2 className="text-lg font-semibold mb-2">Availability*</h2>
+              <h2 className="text-lg font-semibold mb-2">Unavailability*</h2>
               <div className="bg-white rounded shadow p-2">
                 <FullCalendar
                   ref={calendarRef as any}
@@ -277,7 +277,7 @@ const deadlinePassed =
                   selectMirror
                   select={handleDateSelect}
                   eventClick={handleEventClick}
-                  events={availability.map(av => ({
+                  events={unavailability.map(av => ({
                     id: av.id,
                     start: getDateForDay(av.day, av.startTime),
                     end: getDateForDay(av.day, av.endTime),
@@ -290,7 +290,7 @@ const deadlinePassed =
                   contentHeight="auto"
                 />
               </div>
-              {errors.availability && <p className="text-sm text-red-600 mt-1">{errors.availability}</p>}
+              {errors.unavailability && <p className="text-sm text-red-600 mt-1">{errors.unavailability}</p>}
             </section>
           </ApplicationForm>
           </div>
@@ -299,7 +299,7 @@ const deadlinePassed =
           {/* Sidebar Progress Tracker */}
           <ApplicationSidebar
             formData={formData}
-            availability={availability}
+            unavailability={unavailability}
             submitted={submitted}
             errors={errors}
           />
@@ -361,7 +361,7 @@ const deadlinePassed =
                                   confirmProfileUpdated: false,
                                   applicationType: '',
                                 });
-                                setAvailability([]);
+                                setUnavailability([]);
                                 toast.success('Application deleted successfully.', { autoClose: 2500 });
                               } catch (err: any) {
                                 if (err.message && err.message.includes('403')) {

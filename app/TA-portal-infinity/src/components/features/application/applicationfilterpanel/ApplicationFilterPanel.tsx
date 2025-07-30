@@ -94,12 +94,13 @@ export default function ApplicationFilterPanel({
   const displayApps = filterByStudentNameAndNum(apps,filters);
   const totalPages = pageData?.totalPages ?? 0;
 
-  const [history, setHistory] = useState<Allocation[]>([]);
+  const [history, setHistory] = useState<Allocation | null >(null);
+  
   useEffect(() => {
-    if (!selApp || !token) return setHistory([]);
-    fetchAllocationsByStudent(selApp.student.id, token)
+    if (!selApp || !token) return setHistory(null);
+    fetchAllocationsByStudent(selApp.student.id ?? -1, token,true)
       .then(setHistory)
-      .catch(() => setHistory([]));
+      .catch(() => setHistory(null));
   }, [selApp, token]);
 
   return (
@@ -216,7 +217,7 @@ export default function ApplicationFilterPanel({
         {!isFetching && displayApps.map(app => (
           <button
             key={`${app.student.id}-${app.timeSubmitted}`}
-            onClick={() => loadApp(app)}
+            onClick={() => {loadApp(app); console.log(app)}}
             className={`block w-full text-left px-3 py-2 rounded ${selApp === app
               ? 'bg-gray-900 text-white'
               : 'bg-gray-200 hover:bg-gray-300'

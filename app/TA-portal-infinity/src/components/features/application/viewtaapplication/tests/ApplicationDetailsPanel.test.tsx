@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import ApplicationDetailsPanel from '../ApplicationDetailsPanel';
+import type { EnrichedAllocatedSection } from '../../../../../pages/coordinator/applicationviewpage/ApplicationViewPage';
 
 describe('ApplicationDetailsPanel', () => {
   const selectedApp = {
@@ -18,24 +19,29 @@ describe('ApplicationDetailsPanel', () => {
       schoolYear: '3',
     },
   };
-  const allocations = [
-    {
-      numberOfHours: 8,
-      status: 'REJECTED',
-      section: {
-      
-        semester: 'S',
-        year: 2024,
-        type: 'TUTORIAL',
-        course:{
-          deptCode: 'COSC',
-          courseNum: '121',
-        },
-        instructor: { firstName: 'Bob', lastName: 'Brown' },
-      },
-      application: { applicationId: 1 },
-    },
-  ];
+  const allocations: EnrichedAllocatedSection[] = [
+  {
+    // these two come from your AllocatedSection
+    id:            1,
+    sectionId:     5,
+    allocationId: 10,
+    task:         "LAB",
+    hours:         8,
+
+    // these come from your “enrichment”
+    applicationId: 1,
+    status:      "REJECTED",
+    section: {
+      id:        5,
+      course:   { deptCode: "COSC", courseNum: "121", name: "Test" },
+      section:  "001",
+      type:     "TUTORIAL",
+      semester: "S",
+      year:     2024,
+      instructor: { firstName: "Bob", lastName: "Brown" }
+    }
+  }
+];
   const allocationHistory = allocations;
 
   it('renders details and allocations', () => {
@@ -43,8 +49,7 @@ describe('ApplicationDetailsPanel', () => {
     render(
       <ApplicationDetailsPanel
         selectedApp={selectedApp as any}
-        allocations={allocations as any}
-        allocationHistory={allocationHistory as any}
+        allocations={allocations}
         onClose={onClose}
       />
     );
@@ -70,8 +75,7 @@ describe('ApplicationDetailsPanel', () => {
     render(
       <ApplicationDetailsPanel
         selectedApp={selectedApp as any}
-        allocations={[]} 
-        allocationHistory={[]} 
+        allocations={[]}
         onClose={onClose}
       />
     );

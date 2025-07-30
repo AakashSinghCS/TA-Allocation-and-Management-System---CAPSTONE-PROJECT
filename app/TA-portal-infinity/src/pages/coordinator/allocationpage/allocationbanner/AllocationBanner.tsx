@@ -1,33 +1,51 @@
 import type { ApplicationDto } from "../../../../interfaces/application/Application";
 import type Section from "../../../../interfaces/section/Section";
 import { deallocateAllocation } from '../../../../api/allocation/deallocateAllocation';
-import { useState } from "react";
 import { toast } from 'react-toastify';
 import type { Allocation } from "../../../../interfaces/allocation/Allocation";
+import { getTaskLabel } from "../../../../utility/calendar/gettasklabels/getTaskLabel";
 
 interface AllocationBanner {
-    selApp : ApplicationDto;
-    setSelApp :  React.Dispatch<React.SetStateAction<ApplicationDto | null>>;
+    selApp: ApplicationDto;
+    setSelApp: React.Dispatch<React.SetStateAction<ApplicationDto | null>>;
     selCourse: Section;
-    refreshHistory: (studentId: number, token : string) => void;
-    token : string | null;
-    history: Allocation[];
+    refreshAlloc: (studentId: number, token: string) => void;
+    token: string | null;
+    prevAlloc: Allocation | null;
     showBanner: boolean;
     setShowBanner: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function AllocationBanner({ selApp, setSelApp, selCourse, refreshHistory, token, history, showBanner, setShowBanner}:AllocationBanner) {
+export default function AllocationBanner({ selApp, setSelApp, selCourse, refreshAlloc, token, prevAlloc, showBanner, setShowBanner }: AllocationBanner) {
+    if (!selApp || !selCourse) return null;
+    const allocation = prevAlloc?.application?.applicationId === selApp.applicationId ? prevAlloc : null;
 
+    const slicesForSelCourse = allocation?.allocatedSections?.filter(a => a.sectionId === selCourse.id) ?? [];
+
+    const handleRevoke = async (allocatedSectionId: number) => {
+        try {
+            const ok = await deallocateAllocation(allocatedSectionId, token || undefined);
+            if (!ok) throw new Error();
+
+            setSelApp(null);
+            setShowBanner(false);
+            if (selApp.student.id && token) await refreshAlloc(selApp.student.id, token);
+            toast.success('Revoke successful');
+        } catch {
+            toast.error('Failed to revoke');
+        }
+    };
 
     return (
         <div
             className="
+            gap-y-2
             mt-4
             bg-[#e8f1ff]
             border-l-4 border-[#040941]
             rounded-md
             p-4
-            flex flex-col md:flex-row md:items-center md:justify-between
+            flex flex-col md:items-start md:justify-between
             shadow
           "
             role="status"
@@ -44,7 +62,7 @@ export default function AllocationBanner({ selApp, setSelApp, selCourse, refresh
                 {/* message changes */}
                 <p className="text-sm text-gray-700">
                     {showBanner
-                        ? `You’ve just sent an offer to `
+                        ? `You’ve sent an offer to `
                         : `An offer was already sent to `}
                     <strong>
                         {selApp.student.firstName} {selApp.student.lastName}
@@ -55,42 +73,33 @@ export default function AllocationBanner({ selApp, setSelApp, selCourse, refresh
                         {selCourse.course?.courseNum}{' '}
                         Section {selCourse?.section}
                     </strong>
-                    .{' '}
-                    {showBanner
-                        ? `They’ve been offered ${selApp.wantWorkingHours} hours.`
-                        : `They were offered ${selApp.wantWorkingHours} hours earlier.`}
+                    .
                 </p>
+                {slicesForSelCourse.map(slice => {
+                     const label = getTaskLabel(slice.task);
+                     return (
+                       <p key={slice.id} className="text-sm text-gray-700">
+                         {showBanner
+                           ? `They’ve been offered ${slice.hours} ${label} hours.`
+                           : `They were offered ${slice.hours} ${label} hours earlier.`}
+                       </p>
+                     );
+                   })}
             </div>
 
-            {/* actions */}
-            <div className="mt-2 md:mt-0 flex items-center space-x-3">
-                <button
-                    onClick={async () => {
-                        if (!selApp || !selCourse) return;
-                        // Find the allocation for this app+section
-                        const allocation = history.find(h =>
-                            h.application?.applicationId === selApp.applicationId &&
-                            h.section?.id === selCourse.id
-                        );
-                        if (!allocation || allocation.id == null) return;
-                        try {
-                            const ok = await deallocateAllocation(allocation.id, token || undefined);
-                            if (!ok) throw new Error('Failed to deallocate');
-                            setShowBanner(false);
-                            setSelApp(null);
-                            toast.success('Offer revoked successfully.');
-                            if (selApp.student.id && token) {
-                                await refreshHistory(selApp.student.id, token);
-                            }
-                        } catch (e) {
-                            toast.error('Failed to revoke Offer.');
-                        }
-                    }}
-                    className="text-sm bg-[#040941] text-white px-3 py-1 rounded hover:bg-[#03072a] transition"
-                >
-                    Revoke
-                </button>
-            </div>
+            {slicesForSelCourse.length > 0 &&
+                <div className="mt-2 md:mt-0 flex w-full justify-center space-x-3">
+                    {slicesForSelCourse.map(as => (
+                        <button
+                            key={as.id}
+                            onClick={() => handleRevoke(as.id)}
+                            className="text-sm bg-[#040941] text-white px-3 py-1 rounded hover:bg-[#03072a] transition"
+                        >
+                            Revoke {getTaskLabel(as.task)} ({as.hours} h)
+                        </button>
+                    ))}
+                </div>
+            }
         </div>
     );
 }

@@ -1,129 +1,176 @@
 import FullCalendar from "@fullcalendar/react";
+import { type EventClickArg } from '@fullcalendar/core';
 import type Section from "../../../../interfaces/section/Section";
 import type { ApplicationDto } from "../../../../interfaces/application/Application";
 import { getDayNumber } from "../../../../utility/calendar/calendarUtils";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useSendOffer } from "../../../../hooks/sendoffer/useSendOffer";
+import { Check, X } from "lucide-react";
+import type { AllocatedSection, Allocation } from "../../../../interfaces/allocation/Allocation";
 import { toast } from "react-toastify";
-
+import { showToastConfirmation } from "../../../../utility/confirmation/toastConfirmation";
 interface AllocationCalendarProps {
     selCourse: Section | null;
     selApp: ApplicationDto | null;
     onSendOfferSuccess: () => void;
+    prevAlloc: Allocation | null;
 }
 
-export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selApp }: AllocationCalendarProps) {
+export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selApp, prevAlloc }: AllocationCalendarProps) {
     const { sendOffer, loading } = useSendOffer();
-    const required = selCourse?.need?.requiredGradingHours ?? 0;
-    const allocated = selCourse?.need?.numHoursCurrentlyAllocated ?? 0;
-    const remaining = Math.max(required - allocated, 0);
-    const hoursOK = allocated >= required;
-    // All course slots must be fully covered by student availability
-    const hasAvailabilityMatch = (selCourse?.sectionSchedule || [])
-        .filter(slot => slot.day && slot.startTime && slot.endTime)
-        .every(slot =>
-            isSlotFullyCovered({ day: slot.day!, startTime: slot.startTime!, endTime: slot.endTime! }, selApp?.availabilities || [])
+    const [gradingHours, setGradingHours] = useState<string>('');
+    const [labPrepHours, setLabPrepHours] = useState<string>('');
+    const [selectedSectionSlots, setSelectedSectionSlots] = useState<Set<number>>(new Set());
+
+    const prevAllocatedInfo: AllocatedSection[] = prevAlloc?.allocatedSections?.filter(s => s.sectionId === selCourse?.id) ?? [];
+
+    const hasPrevLabAlloc: boolean = prevAllocatedInfo.some(s => s.task === 'LAB');
+    const hasPrevGradingAlloc: boolean = prevAllocatedInfo.some(s => s.task === 'GRADING');
+    const hasPrevLabPrepAlloc: boolean = prevAllocatedInfo.some(s => s.task === 'LAB_PREP');
+
+    const requiredGrading: number = selCourse?.need?.requiredGradingHours ?? 0;
+    const allocatedGrading: number = selCourse?.need?.numHoursCurrentlyAllocated ?? 0;
+    const remaining: number = Math.max(requiredGrading - allocatedGrading, 0);
+    const hoursOK: boolean = allocatedGrading >= requiredGrading;
+    const allIdxs: number[] = useMemo(
+        () => (selCourse?.sectionSchedule || []).map((_, i) => i),
+        [selCourse]
+    );
+    useEffect(() => {
+        if (hasPrevLabAlloc) {
+            setSelectedSectionSlots(new Set());
+        }
+        else {
+            setSelectedSectionSlots(new Set(allIdxs));
+        }
+
+    }, [allIdxs, prevAlloc]);
+
+    const totalSectionMinutes = useMemo(
+        () => calcSectionMinutes(selCourse, selectedSectionSlots),
+        [selCourse, selectedSectionSlots]
+    );
+    const totalSectionHours = +(totalSectionMinutes / 60).toFixed(2);
+
+    const anyHoursPresent =
+        totalSectionHours > 0 || ((+gradingHours || 0) + (+labPrepHours || 0)) > 0;
+
+    const hasUnavailabilityMatch =
+        totalSectionHours > 0 &&
+        (selCourse?.sectionSchedule || []).some(s =>
+            s.day && s.startTime && s.endTime &&
+            isSlotHasOverlap({ day: s.day!, startTime: s.startTime!, endTime: s.endTime! }, selApp?.unavailabilities || [])
         );
 
-    const courseEvents = (selCourse?.sectionSchedule || []).map((slot, i) => {
-        const dayNum = getDayNumber(slot.day);
-        const isMatched = selApp?.availabilities.every(av =>
-            dayNum === getDayNumber(av.day) &&
-            slot.endTime !== undefined && slot.startTime !== undefined &&
-            av.startTime < slot.endTime && av.endTime > slot.startTime
-        ) ?? false;
-        return {
-            id: `c${i}`,
-            title: 'Course Slot',
-            daysOfWeek: [dayNum],
-            startTime: slot.startTime,
-            endTime: slot.endTime,
-            backgroundColor: isMatched ? 'rgba(16,185,129,0.8)' : '#3B82F6CC',
-        };
-    });
+    const disableOffer = !selCourse || !selApp || loading || !anyHoursPresent || hasUnavailabilityMatch;
 
-    const appEvents = (selApp?.availabilities || []).map((slot, i) => ({
+    const courseEvents = useMemo(() => (
+        (selCourse?.sectionSchedule || []).map((slot, i) => {
+            const isBad = isSlotHasOverlap(
+                { day: slot.day!, startTime: slot.startTime!, endTime: slot.endTime! },
+                selApp?.unavailabilities || []
+            );
+
+            return {
+                id: `c${i}`,
+                title: 'Section',
+                daysOfWeek: [getDayNumber(slot.day)],
+                startTime: slot.startTime,
+                endTime: slot.endTime,
+                backgroundColor: colorForSection(i, isBad, selectedSectionSlots),
+                extendedProps: { type: 'section', slotIndex: i, isBad },
+            };
+        })
+    ), [selCourse, selApp?.unavailabilities, selectedSectionSlots]);
+
+    const appEvents = (selApp?.unavailabilities || []).map((slot, i) => ({
         id: `app${i}`,
-        title: 'Student Availability',
+        title: 'Student Unavailability',
         daysOfWeek: [getDayNumber(slot.day)],
         startTime: slot.startTime,
         endTime: slot.endTime,
-        backgroundColor: 'rgba(35, 38, 39, 0.3)',
+        extendedProps: { type: 'unavail' },
     }));
 
-    // Computing segments of student availability that match course slots
-    const bgMatchedEvents = useMemo(() => {
-        return (selCourse?.sectionSchedule || []).flatMap((slot, i) => {
-            if (!slot.day || !slot.startTime || !slot.endTime) return [];
-            if (isSlotFullyCovered({ day: slot.day, startTime: slot.startTime, endTime: slot.endTime }, selApp?.availabilities || [])) {
-                return [{
-                    id: `matched-${i}`,
-                    daysOfWeek: [getDayNumber(slot.day)],
-                    startTime: slot.startTime,
-                    endTime: slot.endTime,
-                    title: 'Matched Avail',
-                    backgroundColor: 'rgb(5, 168, 81)',
-                }];
-            } else {
-                return [{
-                    id: `unmatched-${i}`,
-                    daysOfWeek: [getDayNumber(slot.day)],
-                    startTime: slot.startTime,
-                    endTime: slot.endTime,
-                    title: 'Unmatched Slot',
-                    backgroundColor: 'rgba(239,68,68,0.8)',
-                }];
-            }
-        });
-    }, [selCourse, selApp?.availabilities]);
-
-    // Combine all events into a single list
     const events = [
         ...courseEvents,
         ...appEvents,
-        ...bgMatchedEvents,
     ].filter((e): e is NonNullable<typeof e> => e !== null);
 
 
-    const onSend = () => {
+    const onSend = async () => {
         if (!selApp || !selCourse?.id || !selCourse.need) return;
-        if (selCourse.type === 'LECTURE'){
-              toast.warn("Warning: You cannot allocate TAs to a LECTURE.");
-              return;
+        if (selCourse.type === 'LECTURE') {
+            toast.warn("Warning: You cannot allocate TAs to a LECTURE.");
+            return;
+        }
+        if ((selCourse.numberOfTAsAllocated ?? 0) >= 1) {
+            const confirmed = await showToastConfirmation({
+                title: "Multiple TAs Assigned?",
+                message:
+                    "Warning: You could be assigning more than 1 TA to this section. Please make sure that it is a task not already assigned. Continue?",
+                confirmText: "Continue",
+                cancelText: "Cancel",
+                type: "warning",
+            });
+            if (!confirmed) {
+                // user hit “Cancel”
+                return;
             }
-            if ((selCourse.numberOfTAsAllocated ?? 0) >= 1) {
-              toast.warn("Warning: You are assigning more than 1 TA to this section.");
-            }
-        sendOffer(
+        }
+
+        await sendOffer(
             selApp,
             selCourse.id,
             selCourse.need,
-            hasAvailabilityMatch,
+            Number(totalSectionHours),
+            Number(labPrepHours),
+            Number(gradingHours),
+            hasUnavailabilityMatch,
             onSendOfferSuccess
         );
+        setGradingHours('');
+        setLabPrepHours('');
+        setSelectedSectionSlots(new Set());
+    };
+
+    const onEventClick = (info: EventClickArg) => {
+        if (hasPrevLabAlloc) return;
+        const { type } = info.event.extendedProps as { type?: string };
+        if (type !== 'section') return;
+        setSelectedSectionSlots(prev => {
+            const next = new Set(prev);
+
+            const sectionOn = allIdxs.every(i => selectedSectionSlots.has(i));
+            if (sectionOn) {
+                allIdxs.forEach(i => next.delete(i));
+            } else {
+                allIdxs.forEach(i => next.add(i));
+            }
+            return next;
+        });
     };
 
     return (
         <>
             <h1 className="font-semibold text-xl">Weekly Calendar</h1>
-            <div className="flex items-center space-x-6 mb-2">
+            <div className="flex items-center space-x-6 mb-2 w-full">
                 <div className="flex items-center space-x-1">
-                    <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: '#3B82F6CC' }} />
-                    <span className="text-sm">Course Slot</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                    <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(16,185,129,0.8)' }} />
-                    <span className="text-sm">Matched Slot</span>
+                    <span className="w-8 h-4 block rounded-sm" style={{ background: GREEN }} />
+                    <span className="text-sm">No Overlap</span>
                 </div>
                 <div className="flex items-center space-x-1">
                     <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(239,68,68,0.8)' }} />
-                    <span className="text-sm">UnMatched Slot</span>
+                    <span className="text-sm">Overlap Exists</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                    <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(35, 38, 39, 0.3)' }} />
-                    <span className="text-sm">Student Availability</span>
+                    <span className="w-8 h-4 block rounded-sm" style={{ backgroundColor: 'rgba(156,163,175,0.45)' }} />
+                    <span className="text-sm">Section Toggled Off</span>
                 </div>
+                <span className="ml-auto text-xs">
+                    Click on a section to toggle hours
+                </span>
             </div>
             <FullCalendar
                 key={selCourse?.id ?? 'none'}
@@ -132,33 +179,163 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
                 headerToolbar={false}
                 allDaySlot={false}
                 slotMinTime="06:00:00"
-                slotMaxTime="20:00:00"
+                slotMaxTime="21:00:00"
                 slotEventOverlap={true}
                 dayHeaderFormat={{ weekday: 'short' }}
                 slotLabelFormat={{ hour: 'numeric', minute: '2-digit' }}
                 events={events}
+                eventClick={onEventClick}
+                eventClassNames={(arg) => {
+                    const t = arg.event.extendedProps.type;
+                    if (t === 'unavail') {
+                        return ['cursor-not-allowed', 'fc-unavail']; // add custom class
+                    }
+                    if (t === 'section') {
+                        return [
+                            'cursor-pointer',
+                            'transition',
+                            'hover:opacity-90',
+                            'hover:ring-2',
+                            'hover:ring-blue-400',
+                            'rounded-sm'
+                        ];
+                    }
+                    return [];
+                }}
+                eventDidMount={(info) => {
+                    const { type } = info.event.extendedProps as { type?: string };
+                    if (type === 'unavail') {
+                        // stripes
+                        info.el.style.backgroundImage =
+                            'repeating-linear-gradient(135deg, rgba(35,38,39,0.3) 0 8px, rgba(35,38,39,0.6) 8px 16px)';
+                        info.el.style.backgroundColor = 'transparent'; // prevent solid override
+                        info.el.setAttribute('title', 'Student is NOT available here (forbidden)');
+                    }
+                    if (type === 'section') {
+                        info.el.setAttribute('title', 'Click to toggle section hours');
+                    }
+                }}
                 height="auto"
             />
-            <div className="bg-gray-100 p-4 rounded space-y-1">
+            <div className="bg-gray-100 p-4 rounded-md space-y-3">
+
                 <p>
-                    Remaining Hours:{' '}
+                    Remaining Grading Hours:{' '}
                     <span className={hoursOK ? 'text-green-600' : 'text-red-600'}>
                         {hoursOK
-                            ? `All met (${allocated} of ${required})`
-                            : `${remaining} needed (Allocated: ${allocated}, Required: ${required})`}
+                            ? `All met (${allocatedGrading} of ${requiredGrading})`
+                            : `${remaining} needed (Allocated: ${allocatedGrading}, Required: ${requiredGrading})`}
                     </span>
                 </p>
                 <p>
-                    Availability Match:{' '}
-                    <span className={hasAvailabilityMatch ? 'text-green-600' : 'text-red-600'}>
-                        {hasAvailabilityMatch ? 'Yes' : 'No'}
+                    Unavailability Match:{' '}
+                    <span
+                        className={`${hasUnavailabilityMatch ? 'text-red-600' : 'text-[#00c89c]'} inline-flex items-center gap-1`}
+                    >
+                        {hasUnavailabilityMatch ? (
+                            <>
+                                Yes <X className="w-4 h-4" />
+                            </>
+                        ) : (
+                            <>
+                                No <Check className="w-4 h-4" />
+                            </>
+                        )}
                     </span>
                 </p>
+                <div className="flex items-center gap-2">
+                    <label htmlFor="toggleSections" className="select-none">
+                        Toggle all section slots:
+                    </label>
+                    <input
+                        type="checkbox"
+                        id="toggleSections"
+                        disabled={hasPrevLabAlloc}
+                        checked={selectedSectionSlots.size === allIdxs.length}
+                        onChange={() => {
+                            if (selectedSectionSlots.size === allIdxs.length) {
+                                setSelectedSectionSlots(new Set());
+                            } else {
+                                setSelectedSectionSlots(new Set(allIdxs));
+                            }
+                        }}
+                        className="cursor-pointer w-5 h-5 disabled:cursor-not-allowed  disabled:opacity-50 disabled:bg-gray-200"
+                    />
+                </div>
+                {/* Hour inputs */}
+                <div className="pt-2 flex flex-wrap gap-4 xl:grid xl:grid-cols-3">
+                    {/* Section time */}
+                    <label className="flex flex-row items-center gap-2 min-w-[220px] flex-1 md:flex-none">
+                        <span className="text-sm font-medium whitespace-nowrap">
+                            Selected Total Section Time:
+                        </span>
+                        {hasPrevLabAlloc ? (
+                            <X className="w-6 h-6 text-gray-400 opacity-50 cursor-not-allowed" />
+                        ) : (
+                            <span className="text-blue-600 font-medium whitespace-nowrap">
+                                {totalSectionHours}h
+                            </span>
+                        )}
+                    </label>
+
+                    {/* Grading hours */}
+                    <label className="flex flex-row items-center gap-2 min-w-[220px] flex-1 md:flex-none">
+                        <span className="text-sm font-medium whitespace-nowrap">
+                            Grading Hours:
+                        </span>
+                        <input
+                            type="text"
+                            inputMode="decimal"
+                            disabled={hasPrevGradingAlloc}
+                            value={gradingHours}
+                            onChange={numericOnly(setGradingHours)}
+                            className={`w-20 border rounded px-2 py-1 text-right  ${hasPrevGradingAlloc ? 'opacity-50 cursor-not-allowed' : ''
+                                }`}
+                            placeholder="e.g. 10"
+                        />
+                    </label>
+
+                    {/* Lab prep hours */}
+                    <label className="flex flex-row items-center gap-2 min-w-[220px] flex-1 md:flex-none">
+                        <span className="text-sm font-medium whitespace-nowrap">
+                            Lab Prep Hours:
+                        </span>
+                        <input
+                            type="text"
+                            inputMode="decimal"
+                            disabled={hasPrevLabPrepAlloc}
+                            value={labPrepHours}
+                            onChange={numericOnly(setLabPrepHours)}
+                            className={`w-20 border rounded px-2 py-1 text-right  ${hasPrevLabPrepAlloc ? 'opacity-50 cursor-not-allowed' : ''
+                                }`}
+                            placeholder="e.g. 1.5"
+                        />
+                    </label>
+                </div>
+
+                {/* Sum line */}
+                <div className="mt-3 border-t pt-3 text-sm flex flex-wrap items-center justify-center gap-2">
+                    <span className="px-2 py-0.5 rounded-md bg-blue-200 text-blue-800 font-medium whitespace-nowrap">
+                        Section {totalSectionHours}
+                    </span>
+                    <span className="font-medium">+</span>
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-200 text-emerald-800 font-medium whitespace-nowrap">
+                        Grading {gradingHours || 0}
+                    </span>
+                    <span className="font-medium">+</span>
+                    <span className="px-2 py-0.5 rounded-md bg-amber-200 text-amber-800 font-medium whitespace-nowrap">
+                        Lab Prep {labPrepHours || 0}
+                    </span>
+                    <span className="font-medium">=</span>
+                    <span className="px-2 py-0.5 rounded-md bg-slate-300 text-slate-900 font-semibold whitespace-nowrap">
+                        {Number(totalSectionHours) + Number(gradingHours) + Number(labPrepHours)}
+                    </span>
+                </div>
             </div>
             <div className="flex justify-end">
                 <button
                     onClick={onSend}
-                    disabled={!selCourse || !selApp || loading}
+                    disabled={disableOffer}
                     className="px-6 py-2 bg-[#040941] text-white rounded disabled:opacity-50"
                 >
                     {loading ? 'Sending…' : 'Send Offer'}
@@ -168,24 +345,60 @@ export default function AllocationCalendar({ selCourse, onSendOfferSuccess, selA
     )
 }
 
-// Convert "HH:mm" to minutes since midnight
 function timeToMinutes(t: string) {
     const [h, m] = t.split(":").map(Number);
     return h * 60 + m;
 }
 
-// Check if a course slot is fully covered by any student availability (numerical time comparison)
-function isSlotFullyCovered(
+function rangesOverlap(startA: number, endA: number, startB: number, endB: number) {
+    return startA < endB && endA > startB; // strict overlap check
+}
+
+function slotOverlapsAnyBlock(
     slot: { day: string; startTime: string; endTime: string },
-    avails: { day: string; startTime: string; endTime: string }[]
+    blocks: { day: string; startTime: string; endTime: string }[]
 ) {
     const dayNum = getDayNumber(slot.day);
     const slotStart = timeToMinutes(slot.startTime);
     const slotEnd = timeToMinutes(slot.endTime);
-    return avails.some(a => {
-        if (getDayNumber(a.day) !== dayNum) return false;
-        const availStart = timeToMinutes(a.startTime);
-        const availEnd = timeToMinutes(a.endTime);
-        return availStart <= slotStart && availEnd >= slotEnd;
+
+    return blocks.some(b => {
+        if (getDayNumber(b.day) !== dayNum) return false;
+        const bStart = timeToMinutes(b.startTime);
+        const bEnd = timeToMinutes(b.endTime);
+        return rangesOverlap(slotStart, slotEnd, bStart, bEnd);
     });
 }
+
+function isSlotHasOverlap(
+    slot: { day: string; startTime: string; endTime: string },
+    blocks: { day: string; startTime: string; endTime: string }[]
+) {
+    return slotOverlapsAnyBlock(slot, blocks);
+}
+
+function calcSectionMinutes(section: Section | null | undefined, on: Set<number>): number {
+    if (!section?.sectionSchedule) return 0;
+    return section.sectionSchedule.reduce((sum, slot, idx) => {
+        if (!on.has(idx) || !slot.startTime || !slot.endTime) return sum;
+        return sum + (timeToMinutes(slot.endTime) - timeToMinutes(slot.startTime));
+    }, 0);
+}
+
+const numericOnly =
+    (setter: (v: string) => void) =>
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            const v = e.target.value.replace(/[^\d.]/g, ''); // allow digits & one dot
+            // optional: keep only first dot
+            const cleaned = v.replace(/^(\d*\.\d*).*$/, '$1');
+            setter(cleaned);
+        };
+
+const GREY = 'rgba(156,163,175,0.45)'; // off
+const RED = '#EF4444CC';              // overlap
+const GREEN = 'rgba(16,185,129,0.8)';   // clean
+
+const colorForSection = (idx: number, isBad: boolean, on: Set<number>) => {
+    if (!on.has(idx)) return GREY;
+    return isBad ? RED : GREEN;
+};
