@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infinity.applicationservice.controllers.ApplicationController;
+import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
@@ -294,5 +295,27 @@ public class ApplicationControllerTest {
                                 .andExpect(jsonPath("$[1]").value("W2"))
                                 .andExpect(jsonPath("$[2]").value("S1"))
                                 .andExpect(jsonPath("$[3]").value("S2"));
+        }
+
+        @Test
+        void testGetAllActiveApplications() throws Exception {
+                UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
+                                12345678, "COSC", 2025, 3, null, null, null, true);
+                ApplicationDto dto = new ApplicationDto(
+                                1L,
+                                1L,
+                                List.of(Subject.COSC, Subject.MATH),
+                                ApplicationType.UNDERGRADUATE,
+                                false,
+                                6,
+                                2025, "W1",
+                                LocalDateTime.of(2024, 1, 1, 12, 0),
+                                Set.of());
+
+                when(applicationService.getAllActiveApplications(1L, 1L, List.of("ROLE_STUDENT")))
+                                .thenReturn(List.of(dto));
+                when(applicationService.getAllActiveApplicationsByStudentId(1L, 1L, List.of("ROLE_STUDENT"))).thenReturn(List.of(dto));
+
+
         }
 }

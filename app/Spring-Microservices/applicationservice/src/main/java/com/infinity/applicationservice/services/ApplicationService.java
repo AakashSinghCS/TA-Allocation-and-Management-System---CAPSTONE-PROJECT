@@ -227,8 +227,8 @@ public class ApplicationService {
         List<Application> applications = new ArrayList<>();
         for (SemesterDto semester : semesterDtos) {
             try{
-            applicationRepository.findByStudentIdAndYearAndSemester(studentId, semester.year(), semester.semester())
-                    .orElseThrow(() -> new NotFoundException("No applications exist for this user"));
+            applications.add(applicationRepository.findByStudentIdAndYearAndSemester(studentId, semester.year(), semester.semester())
+                    .orElseThrow(() -> new NotFoundException("No applications exist for this user")));
         } catch (NotFoundException e) {}
         }
         return applications.stream()
