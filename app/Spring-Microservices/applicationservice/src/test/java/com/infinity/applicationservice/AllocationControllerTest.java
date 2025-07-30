@@ -108,7 +108,7 @@ public class AllocationControllerTest {
         AllocationHistoryDto dto = new AllocationHistoryDto(
             allocationId,
             new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null, null, null, true),
-            new ApplicationDto(1L, 2L, List.of(), ApplicationType.UNDERGRADUATE, false, 10, LocalDateTime.of(2025,7,1,12,0), Set.of()),
+            application,
             ApplicationStatus.SENT,
             0, 10, 0,
             List.of()

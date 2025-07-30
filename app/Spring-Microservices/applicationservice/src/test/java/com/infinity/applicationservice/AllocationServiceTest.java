@@ -121,15 +121,13 @@ class AllocationServiceTest {
         Application app = new Application(); app.setId(appId);
         alloc.setApplication(app);
 
-        UserDto studentDto = new UserDto(2L, "Alice","Wang","awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC",2025,3,null,null,LocalDateTime.now(),true);
-        ApplicationDto appDto = new ApplicationDto(appId, studentId, List.of(), ApplicationType.UNDERGRADUATE, false, 10, LocalDateTime.of(2025,7,1,12,0), Set.of());
-        AllocationHistoryDto expected = new AllocationHistoryDto(id, studentDto, appDto, ApplicationStatus.SENT, 0,10,0, List.of());
+        AllocationHistoryDto expected = new AllocationHistoryDto(id, studentDto, applicationDto, ApplicationStatus.SENT, 0,10,0, List.of());
 
         when(allocationRepository.findById(id)).thenReturn(Optional.of(alloc));
         when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
         when(applicationRepository.findById(appId)).thenReturn(Optional.of(app));
-        when(applicationMapper.toDto(app)).thenReturn(appDto);
-        when(allocationMapper.toDto(alloc, studentDto, appDto)).thenReturn(expected);
+        when(applicationMapper.toDto(app)).thenReturn(applicationDto);
+        when(allocationMapper.toDto(alloc, studentDto, applicationDto)).thenReturn(expected);
 
         // when
         AllocationHistoryDto actual = allocationService.getAllocationWithStudentById(id);
@@ -139,7 +137,7 @@ class AllocationServiceTest {
         verify(allocationRepository).findById(id);
         verify(userInterface).getStudentById(studentId);
         verify(applicationRepository).findById(appId);
-        verify(allocationMapper).toDto(alloc, studentDto, appDto);
+        verify(allocationMapper).toDto(alloc, studentDto, applicationDto);
     }
 
     @Test
@@ -170,12 +168,6 @@ class AllocationServiceTest {
         alloc.setStudentId(studentId);
         Application app = new Application(); app.setId(appId);
         alloc.setApplication(app);
-        UserDto studentDto = new UserDto(
-    2L, "Alice", "Wang", "awang@test.com",
-    List.of(UserRole.STUDENT),
-    12345678, "COSC", 2025, 3, null, null,
-    LocalDateTime.of(2025,7,1,12,0), true
-);
         when(allocationRepository.findById(id)).thenReturn(Optional.of(alloc));
         when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
         when(applicationRepository.findById(appId)).thenReturn(Optional.empty());

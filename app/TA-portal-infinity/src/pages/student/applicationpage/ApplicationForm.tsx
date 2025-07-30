@@ -7,7 +7,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { dayMap, getDateForDay, colorByDay } from '../../../components/features/application/applicationsubmission/availabilityUtils';
 
-interface Availability {
+interface Unavailability {
   id: string;
   day: Day;
   startTime: string;
@@ -20,7 +20,7 @@ interface ApplicationFormProps {
   termFormsData: { [termKey: string]: any };
   errors: { [key: string]: string };
   activeFormTab: string;
-  availability: Availability[];
+  unavailability: Unavailability[];
   calendarRef: React.RefObject<FullCalendar>;
   handleTermSelection: (termKey: string, isSelected: boolean) => void;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
@@ -37,7 +37,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
   termFormsData,
   errors,
   activeFormTab,
-  availability,
+  unavailability,
   calendarRef,
   handleTermSelection,
   handleChange,
@@ -106,9 +106,9 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
                 />
               </div>
             ))}
-            {/* Availability Calendar */}
+            {/* Unavailability Calendar */}
             <section className="mt-6">
-              <h2 className="text-lg font-semibold mb-2">Availability*</h2>
+              <h2 className="text-lg font-semibold mb-2">Unavailability*</h2>
               <p className="text-sm text-gray-600 mb-4">
                 Select your available time slots by dragging on the calendar. This applies to all selected terms.
               </p>
@@ -126,12 +126,12 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
                   selectMirror
                   select={handleDateSelect}
                   eventClick={handleEventClick}
-                  events={availability.map(av => ({
-                    id: av.id,
-                    start: getDateForDay(av.day, av.startTime),
-                    end: getDateForDay(av.day, av.endTime),
-                    backgroundColor: colorByDay[av.day],
-                    borderColor: colorByDay[av.day],
+                  events={unavailability.map(uv => ({
+                    id: uv.id,
+                    start: getDateForDay(uv.day, uv.startTime),
+                    end: getDateForDay(uv.day, uv.endTime),
+                    backgroundColor: colorByDay[uv.day],
+                    borderColor: colorByDay[uv.day],
                   }))}
                   dayHeaderFormat={{ weekday: 'long' }}
                   slotEventOverlap={false}
@@ -140,7 +140,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
                   hiddenDays={[0, 6]}
                 />
               </div>
-              {errors.availability && <p className="text-sm text-red-600 mt-1">{errors.availability}</p>}
+              {errors.unavailability && <p className="text-sm text-red-600 mt-1">{errors.unavailability}</p>}
             </section>
             {/* Submit Button */}
             <div className="mt-8 flex justify-end">

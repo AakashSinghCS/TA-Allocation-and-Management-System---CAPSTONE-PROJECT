@@ -43,7 +43,7 @@ useEffect(() => {
   async function loadExistingApplications() {
     if (userId !== null && token) {
       try {
-        const applications = await fetchApplicationsByStudent(Number(userId), token);
+        const applications = await fetchApplicationsByStudent(Number(userId));
         setExistingApplications(applications);
         
         // Create a set of existing terms for quick lookup
@@ -362,7 +362,7 @@ const deadlinePassed =
     if (results.length > 0) {
       try {
   
-        const updatedApplications = await fetchApplicationsByStudent(Number(userId), token || '');
+        const updatedApplications = await fetchApplicationsByStudent(Number(userId));
         setExistingApplications(updatedApplications);
         
         // Update existing terms set
