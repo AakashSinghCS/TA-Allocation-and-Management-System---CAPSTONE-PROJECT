@@ -2,11 +2,11 @@ import { useState, useEffect, type FormEvent } from 'react';
 import { getAllDeptCodes } from '../../../../api/course/getAllDeptCodes';
 import { validateCourseProfile } from '../../../../utility/validation/course/validateCourseProfile';
 import { sectionTypeOptions, type SectionType } from '../../../../interfaces/section/SectionDetails';
-
 import { useNavigate } from 'react-router-dom';
 import UserBrowsingViewer from '../../../../pages/coordinator/userbrowsingpage/userbrowsingviewer/UserBrowsingViewer';
 import type { Instructor } from '../../../../interfaces/user/Instructor';
 import { timeOptions } from '../../../ui/section/timeselector/TimeSelector';
+import { fetchAllExistingCourseNums } from '../../../../api/course/sectionfilter/fetchAllExistingCourseNums';
 export interface SectionScheduleInput {
   day: string
   startTime: string
@@ -31,8 +31,6 @@ interface Props {
 }
 
 export default function CreateSectionForm({ onCreateSection, mode }: Props) {
-  const navigate = useNavigate()
-  const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
   // form state
   const [form, setForm] = useState<CreateSectionData>({
     name: null,
@@ -45,10 +43,28 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
     instructorId: null,
     sectionSchedules: null,
     isCourse: mode === 'course' ? true : false
-  })
+  });
+  // Course Num options for section creation
+  const [courseNumOptions, setCourseNumOptions] = useState<string[]>([]);
+  useEffect(() => {
+    if (mode === 'section' && form.deptCode) {
+      fetchAllExistingCourseNums(form.deptCode)
+        .then((nums: string[] | null) => {
+          if (Array.isArray(nums)) setCourseNumOptions(nums);
+          else setCourseNumOptions([]);
+        })
+        .catch(() => setCourseNumOptions([]));
+    } else {
+      setCourseNumOptions([]);
+    }
+  }, [mode, form.deptCode]);
+  const navigate = useNavigate();
+  const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
+
   // error state for course and section creation
   const [courseErrors, setCourseErrors] = useState<{[k: string]: string | undefined}>({});
   const [sectionErrors, setSectionErrors] = useState<{[k: string]: string | undefined}>({});
+
 
   // Dept Code options for section creation
   const [deptCodeOptions, setDeptCodeOptions] = useState<string[]>([]);
@@ -57,7 +73,6 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
       const token = localStorage.getItem('token') || undefined;
       getAllDeptCodes(token)
         .then((codes) => {
-          console.log('DeptCode API result:', codes);
           if (Array.isArray(codes)) {
             setDeptCodeOptions(codes);
           } else if (codes && Array.isArray(codes.data)) {
@@ -66,12 +81,10 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
             setDeptCodeOptions([]);
           }
         })
-        .catch((err) => {
-          console.error('DeptCode API error:', err);
-          setDeptCodeOptions([]);
-        });
+        .catch(() => setDeptCodeOptions([]));
     }
   }, [mode]);
+
 
   const handleChange = <K extends keyof CreateSectionData>(
     key: K,
@@ -279,17 +292,34 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
         <label htmlFor='courseNum' className="text-sm block mb-1">
           Course Num{' '}<span className="text-red-500">*</span>
         </label>
-        <input
-          id="courseNum"
-          value={form.courseNum}
-          onChange={e =>  {
-            handleChange('courseNum', e.target.value);
-            if (courseErrors.courseNum) setCourseErrors(errors => ({ ...errors, courseNum: undefined }));
-            if (sectionErrors.courseNum) setSectionErrors(errors => ({ ...errors, courseNum: undefined }));
-          }}
-          className={`w-full border rounded px-2 py-1${(courseErrors.courseNum || sectionErrors.courseNum) ? ' border-red-500' : ''}`}
-          placeholder='e.g. 499'
-        />
+        {mode === 'section' ? (
+          <select
+            id="courseNum"
+            value={form.courseNum}
+            onChange={e => {
+              handleChange('courseNum', e.target.value);
+              if (sectionErrors.courseNum) setSectionErrors(errors => ({ ...errors, courseNum: undefined }));
+            }}
+            className={`w-full border rounded px-2 py-1${sectionErrors.courseNum ? ' border-red-500' : ''}`}
+            disabled={!form.deptCode}
+          >
+            <option value="">-- Select Course Num --</option>
+            {courseNumOptions.map(num => (
+              <option key={num} value={num}>{num}</option>
+            ))}
+          </select>
+        ) : (
+          <input
+            id="courseNum"
+            value={form.courseNum}
+            onChange={e =>  {
+              handleChange('courseNum', e.target.value);
+              if (courseErrors.courseNum) setCourseErrors(errors => ({ ...errors, courseNum: undefined }));
+            }}
+            className={`w-full border rounded px-2 py-1${courseErrors.courseNum ? ' border-red-500' : ''}`}
+            placeholder='e.g. 499'
+          />
+        )}
         {mode === 'course' && courseErrors.courseNum && (
           <div className="text-red-600 text-xs mt-1">{courseErrors.courseNum}</div>
         )}
