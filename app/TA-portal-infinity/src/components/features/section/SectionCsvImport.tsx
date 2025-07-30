@@ -305,7 +305,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           type="button"
           onClick={handleSubmit}
           disabled={loading || imported}
-          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-[#040941] text-white hover:bg-[#232a5c]'} `}
         >
           {loading ? "Importing..." : "Import"}
         </button>
@@ -321,11 +321,13 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         </div>
       )}
       <div className="flex justify-end mt-6">
+         {/* Import button */}
         <button
           type="button"
           onClick={handleSubmit}
           disabled={loading || imported}
-          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          // className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-[#040941] text-white hover:bg-[#232a5c]'} `}
         >
           {loading ? "Importing..." : "Import"}
         </button>
