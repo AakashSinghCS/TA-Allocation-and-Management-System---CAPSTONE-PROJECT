@@ -1,7 +1,6 @@
 import { Info } from 'lucide-react';
 import React from 'react';
 
-
 interface SidebarProps {
   selectedTerms: string[];
   getTermFormData: (termKey: string) => any;

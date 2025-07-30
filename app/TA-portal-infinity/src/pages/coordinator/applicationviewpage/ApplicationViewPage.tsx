@@ -8,13 +8,23 @@ import ApplicationCard from '../../../components/features/application/viewtaappl
 import ApplicationDetailsPanel from '../../../components/features/application/viewtaapplication/ApplicationDetailsPanel';
 import ApplicationStats from '../../../components/features/application/viewtaapplication/ApplicationStats';
 import { useAuth } from '../../../context/AuthContext';
-import type { Allocation } from '../../../interfaces/allocation/Allocation';
+import type { AllocatedSection, Allocation } from '../../../interfaces/allocation/Allocation';
 import type { ApplicationDto } from '../../../interfaces/application/Application';
+import { fetchSectionIncludeInstructorId } from '../../../api/section/fetchSectionIncludeInstructorId';
+import type Section from '../../../interfaces/section/Section';
+  export type EnrichedAllocatedSection = AllocatedSection & {
+  status?: string;
+  applicationId?: number;
+  section?: Section;
+};
 
 const ApplicationPage: React.FC = () => {
   const { token } = useAuth();
   const [allApps, setAllApps] = useState<ApplicationDto[]>([]);
-  const [allocationHistory, setAllocationHistory] = useState<Allocation[]>([]);
+  // const [allocationHistory, setAllocationHistory] = useState<Allocation[]>([]);
+
+  const [allocations, setAllocations] = useState<EnrichedAllocatedSection[]>([]);
+  const [selectedAppId, setSelectedAppId] = useState<number | null>(null);
   // const [appQ, setAppQ] = useState({
   //   pref1: '',
   //   pref2: '',
@@ -64,35 +74,54 @@ const ApplicationPage: React.FC = () => {
   // Filtering allocations only when filter button is clicked
   const [filterTrigger, setFilterTrigger] = useState(0);
   const handleFilterClick = () => setFilterTrigger(t => t + 1);
-  useEffect(() => {
-    async function fetchFilteredAllocations() {
-      let allocations: Allocation[] = [];
-      try {
-        if (allocationStatus) {
-          // Use new status-based API utility
-          const all = await Promise.all(
-            allApps.map(() => fetchAllocationByStatus(allocationStatus, token || ''))
-          );
-          allocations = all.flat();
-        } else {
-          // fallback: fetch all allocations for all students in allApps
-          const all = await Promise.all(
-            allApps.map(app => fetchAllocationsByStudent(app.student.id, token || ''))
-          );
-          allocations = all.flat();
-        }
-        setAllocationHistory(allocations);
-      } catch (err) {
-        setAllocationHistory([]);
-      } finally {
-        setAllocationsLoading(false);
-      }
+useEffect(() => {
+  if (allApps.length === 0) return;
+
+  async function loadAllocations() {
+    try {
+      // 1) fetch every student’s full Allocation
+      const rawAllocs = await Promise.all(
+        allApps.map(app =>
+          fetchAllocationsByStudent(app.student.id!, token || '', true)
+        )
+      );
+
+      // 2) flatten stubs, carrying along status + applicationId
+      const stubs: EnrichedAllocatedSection[] = rawAllocs.flatMap(alloc =>
+        (alloc.allocatedSections ?? []).map(stub => ({
+          ...stub,
+          status: alloc.status,
+          applicationId: alloc.application?.applicationId
+        }))
+      );
+
+      // 3) fetch each unique Section exactly once
+      const sectionIds = Array.from(new Set(stubs.map(s => s.sectionId)));
+      const sections = await Promise.all(
+        sectionIds.map(id => fetchSectionIncludeInstructorId(id))
+      );
+      const sectionById = Object.fromEntries(
+        sections
+          .filter((s): s is Section => !!s)
+          .map(s => [s.id, s] as [number, Section])
+      );
+
+      // 4) attach the Section object back onto each stub
+      const enriched = stubs.map(s => ({
+        ...s,
+        section: sectionById[s.sectionId]
+      }));
+
+      setAllocations(enriched);
+    } catch {
+      setAllocations([]);
     }
-    // Fetch allocations on initial load (when allApps changes) and on filter click
-    if (allApps.length > 0) {
-      fetchFilteredAllocations();
-    }
-  }, [filterTrigger, allApps, allocationStatus, token]);
+  }
+
+  loadAllocations();
+}, [allApps, token]);
+
+  const selectedApp = allApps.find(a => a.id === selectedAppId) || null;
 
   // Handle section filter changes
   // const handleSectionFilter = async (filters: any) => {
@@ -108,83 +137,53 @@ const ApplicationPage: React.FC = () => {
   // };
 
   // Filter applications based on various filters
-  const filteredApps = useMemo(() => {
-    return allApps.filter((app) => {
+   const filteredApps = useMemo(() => {
+    return allApps.filter(app => {
+      const myStubs = allocations.filter(s => s.applicationId === app.applicationId);
       let match = true;
-      // Application filters
+
+      // Example: Year submitted
       if (yearSubmitted && String(app.year) !== yearSubmitted) match = false;
       if (semesterSubmitted && app.semester !== semesterSubmitted) match = false;
       if (studentName && !(`${app.student.firstName} ${app.student.lastName}`.toLowerCase().includes(studentName.toLowerCase()))) match = false;
       if (prefContains && !app.preferences.some(p => p.toLowerCase().includes(prefContains.toLowerCase()))) match = false;
       if (remotePref && ((remotePref === 'true' && !app.wantRemote) || (remotePref === 'false' && app.wantRemote))) match = false;
-      // Offer sent: true if any allocation exists for this application
-      if (offerSentFilter === 'true') {
-        const hasOffer = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId
-        );
-        if (!hasOffer) match = false;
-      }
-      if (offerSentFilter === 'false') {
-        const hasOffer = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId
-        );
-        if (hasOffer) match = false;
-      }
+      // ... other app-level filters
+
+      // Offer sent filter
+      if (offerSentFilter === 'true' && myStubs.length === 0) match = false;
+      if (offerSentFilter === 'false' && myStubs.length > 0) match = false;
+
       // Allocation status filter
-      if (allocationStatus) {
-        const hasStatus = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.status === allocationStatus
-        );
-        if (!hasStatus) match = false;
+      if (allocationStatus && !myStubs.some(s => s.status === allocationStatus)) match = false;
+
+      // Allocated hours filter
+      if (allocatedHoursFilter) {
+        const total = myStubs.reduce((sum, s) => sum + s.hours, 0);
+        if (total !== Number(allocatedHoursFilter)) match = false;
       }
-      if (allocatedHoursFilter !== '') {
-        const totalAllocatedHours = allocationHistory
-          .filter((alloc) => alloc.application?.applicationId === app.applicationId)
-          .reduce((total, alloc) => total + (alloc.numberOfHours ?? 0), 0);
-        if (totalAllocatedHours !== parseInt(allocatedHoursFilter)) match = false;
-      }
-      // Allocation advanced filters
-      if (allocationDept) {
-        const hasDept = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.section?.course?.deptCode?.toLowerCase() === allocationDept.toLowerCase()
-        );
-        if (!hasDept) match = false;
-      }
-      if (allocationCourseNum) {
-        const hasCourse = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && String(alloc.section?.course?.courseNum) === allocationCourseNum
-        );
-        if (!hasCourse) match = false;
-      }
-      if (allocationSectionYear) {
-        const hasYear = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && String(alloc.section?.year) === allocationSectionYear
-        );
-        if (!hasYear) match = false;
-      }
-      if (allocationSemester) {
-        const hasSemester = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.section?.semester?.toLowerCase() === allocationSemester.toLowerCase()
-        );
-        if (!hasSemester) match = false;
-      }
-      if (allocationType) {
-        const hasType = allocationHistory.some(
-          (alloc) => alloc.application?.applicationId === app.applicationId && alloc.section?.type?.toLowerCase() === allocationType.toLowerCase()
-        );
-        if (!hasType) match = false;
-      }
+
+      // Advanced: dept, course, year, semester, type
+      if (allocationDept && !myStubs.some(s => s.section?.course?.deptCode?.toLowerCase() === allocationDept.toLowerCase())) match = false;
+      if (allocationCourseNum && !myStubs.some(s => String(s.section?.course?.courseNum) === allocationCourseNum)) match = false;
+      if (allocationSectionYear && !myStubs.some(s => String(s.section?.year) === allocationSectionYear)) match = false;
+      if (allocationSemester && !myStubs.some(s => s.section?.semester?.toLowerCase() === allocationSemester.toLowerCase())) match = false;
+      if (allocationType && !myStubs.some(s => s.section?.type?.toLowerCase() === allocationType.toLowerCase())) match = false;
+
       return match;
     });
-  }, [allApps, allocationHistory, offerSentFilter, allocatedHoursFilter, yearSubmitted, studentName, allocationStatus, allocationDept, allocationCourseNum, allocationSectionYear, allocationSemester, allocationType, filterTrigger]);
+  }, [allApps, allocations, yearSubmitted, studentName, prefContains, remotePref, offerSentFilter, allocationStatus, allocatedHoursFilter, allocationDept, allocationCourseNum, allocationSectionYear, allocationSemester, allocationType]);
+  // const [selectedApp, setSelectedApp] = useState<ApplicationDto | null>(null);
+ const totalApplications = allApps.length;
+  const appsWithOffer = new Set(allocations.map(s => s.applicationId)).size;
+  const appsWithConfirmed = new Set(
+    allocations.filter(s => s.status === 'CONFIRMED').map(s => s.applicationId)
+  ).size;
+  const appsWithOfferWaiting = allApps.filter(app => {
+    const stubs = allocations.filter(s => s.applicationId === app.applicationId);
+    return stubs.length > 0 && !stubs.some(s => s.status === 'CONFIRMED');
+  }).length;
 
-  const [selectedApp, setSelectedApp] = useState<ApplicationDto | null>(null);
-  const allocations = useMemo(() => {
-    if (!selectedApp) return [];
-    return allocationHistory.filter(
-      (alloc) => alloc.application?.applicationId === selectedApp.applicationId
-    );
-  }, [selectedApp, allocationHistory]);
 
   const [expandedAppId, setExpandedAppId] = useState<number | null>(null);
   const [expandAll, setExpandAll] = useState(false);
@@ -212,7 +211,7 @@ const ApplicationPage: React.FC = () => {
       setExpandedAppId(null);
     }
     setAllocationsLoading(false);
-  }, [allocationHistory]);
+  }, [allocations]);
 
   // Reset expanded card when filters change
   useEffect(() => {
@@ -287,16 +286,13 @@ const ApplicationPage: React.FC = () => {
               {showStats ? (
                 <>
                   <ApplicationStats
-                    totalApplications={allApps.length}
-                    appsWithOffer={allApps.filter(app => allocationHistory.some(alloc => alloc.application?.applicationId === app.applicationId)).length}
-                    appsWithConfirmed={allApps.filter(app => allocationHistory.some(alloc => alloc.application?.applicationId === app.applicationId && alloc.status === 'CONFIRMED')).length}
-                    appsWithOfferWaiting={allApps.filter(app => {
-                      const appAllocs = allocationHistory.filter(alloc => alloc.application?.applicationId === app.applicationId);
-                      return appAllocs.length > 0 && !appAllocs.some(alloc => alloc.status === 'CONFIRMED');
-                    }).length}
-                    filteredCount={filteredApps.length}
-                    compact
-                  />
+                    totalApplications={totalApplications}
+                  appsWithOffer={appsWithOffer}
+                  appsWithConfirmed={appsWithConfirmed}
+                  appsWithOfferWaiting={appsWithOfferWaiting}
+                  filteredCount={filteredApps.length}
+                  compact
+                />
                   <div className="flex items-center justify-between mt-2 mb-1">
                     <div className="flex items-center gap-2 text-xs text-gray-500">
                       <svg className="w-4 h-4 text-gray-400 p-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
@@ -319,18 +315,24 @@ const ApplicationPage: React.FC = () => {
               <div className="col-span-1 sm:col-span-2 xl:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 xl:gap-8 justify-items-stretch items-stretch">
                 {filteredApps.length > 0 ? (
                   filteredApps.map((app) => {
-                    const allocations = allocationHistory.filter((alloc) => alloc.application?.applicationId === app.applicationId);
-                    const isAllocated = allocations.length > 0;
-                    const isExpanded = expandAll || expandedAppId === app.applicationId;
+                    const hasAnyOffer = allocations.some(
+                      s => s.applicationId === app.applicationId
+                    );
+                    // const allocation = allocationHistory.filter((alloc) => alloc.application?.applicationId === app.applicationId);
+                    // const isAllocated = allocations.length > 0;
+                    // const isExpanded = expandAll || expandedAppId === app.applicationId;
                     return (
                       <ApplicationCard
                         key={app.applicationId}
                         app={app}
-                        allocations={allocations}
-                        isAllocated={isAllocated}
-                        isExpanded={isExpanded}
-                        onExpand={() => { if (app.applicationId !== undefined) setExpandedAppId(app.applicationId); }}
-                        onCollapse={() => setExpandedAppId(null)}
+                        // allocation={allocation}
+                        allocations={allocations.filter(
+                          s => s.applicationId === app.applicationId
+                        )}
+                        isAllocated={hasAnyOffer}
+                        isExpanded={selectedAppId === app.id}
+                        onExpand={() => setSelectedAppId(app.id!)}
+                        onCollapse={() => setSelectedAppId(null)}
                       />
                     );
                   })
@@ -339,14 +341,13 @@ const ApplicationPage: React.FC = () => {
                 )}
               </div>
               {/* Details Panel */}
-              {selectedApp && (
+              {/* {selectedApp && (
                 <ApplicationDetailsPanel
                   selectedApp={selectedApp}
                   allocations={allocations}
-                  allocationHistory={allocationHistory}
-                  onClose={() => setSelectedApp(null)}
+                  onClose={() => setSelectedAppId(null)}
                 />
-              )}
+              )} */}
             </div>
           </div>
           {/* Allocation Filters */}
@@ -363,8 +364,8 @@ const ApplicationPage: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Allocation Confirmed</label>
-                  <select value={allocationStatus} onChange={e => setAllocationStatus(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                  <label htmlFor="allocationStatus" className="block text-sm font-medium mb-1">Allocation Confirmed</label>
+                  <select id="allocationStatus" value={allocationStatus} onChange={e => setAllocationStatus(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
                     <option value="">Any</option>
                     <option value="CONFIRMED">Confirmed</option>
                     <option value="REJECTED">Rejected</option>

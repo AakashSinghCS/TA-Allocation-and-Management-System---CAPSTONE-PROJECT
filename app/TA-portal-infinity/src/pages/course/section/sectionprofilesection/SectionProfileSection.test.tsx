@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { vi, type Mock } from 'vitest';
 import type Section from '../../../../interfaces/section/Section';
@@ -46,6 +46,7 @@ describe('createProfileDetails helper', () => {
 
 describe('SectionProfileSection component', () => {
   const onSaveSchedule: Mock = vi.fn(async () => true);
+  const onDeleteSchedule : Mock = vi.fn(async () => true);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -60,6 +61,7 @@ describe('SectionProfileSection component', () => {
           fieldLabels={labels}
           isCoordinator={true}
           onSaveSchedule={onSaveSchedule}
+          onDeleteSchedule={onDeleteSchedule}
         />
       </MemoryRouter>
     );
@@ -79,7 +81,7 @@ describe('SectionProfileSection component', () => {
     expect(scheduleItem).toHaveTextContent('08:00');
     expect(scheduleItem).toHaveTextContent('09:30');
     // Update Schedule button
-    expect(screen.getByText('Update Schedule')).toBeInTheDocument();
+    expect(screen.getByLabelText('Update Schedule')).toBeInTheDocument();
     // Add Schedule button
     expect(screen.getByText('+ Add Schedule')).toBeInTheDocument();
   });
@@ -93,11 +95,12 @@ describe('SectionProfileSection component', () => {
           fieldLabels={labels}
           isCoordinator={true}
           onSaveSchedule={onSaveSchedule}
+          onDeleteSchedule={onDeleteSchedule}
         />
       </MemoryRouter>
     );
 
-    fireEvent.click(screen.getByText('Update Schedule'));
+    fireEvent.click(screen.getByLabelText('Update Schedule'));
     // EditSectionSchedule Save/Cancel exist
     expect(screen.getAllByText('Save').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Cancel').length).toBeGreaterThan(0);
@@ -112,6 +115,7 @@ describe('SectionProfileSection component', () => {
           fieldLabels={labels}
           isCoordinator={true}
           onSaveSchedule={onSaveSchedule}
+          onDeleteSchedule={onDeleteSchedule}
         />
       </MemoryRouter>
     );
@@ -120,4 +124,37 @@ describe('SectionProfileSection component', () => {
     expect(screen.getAllByText('Save').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Cancel').length).toBeGreaterThan(0);
   });
+  it('calls onDeleteSchedule when user confirms deletion', async () => {
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+    render(
+      <MemoryRouter>
+        <SectionProfileSection
+          section={dummySection}
+          profileFields={fields}
+          fieldLabels={labels}
+          isCoordinator={true}
+          onSaveSchedule={onSaveSchedule}
+          onDeleteSchedule={onDeleteSchedule}
+        />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByLabelText('Update Schedule'));
+
+
+    const delBtn = screen.getByRole('button', { name: /delete/i });
+
+    fireEvent.click(delBtn);
+
+    await waitFor(() => {
+      expect(onDeleteSchedule).toHaveBeenCalledTimes(1);
+    });
+
+    // Verify it was called with the slot id
+    expect(onDeleteSchedule).toHaveBeenCalledWith(dummySection.sectionSchedule![0].id);
+
+    confirmSpy.mockRestore();
+  });
+  
 });

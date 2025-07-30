@@ -1,11 +1,22 @@
 import { Link } from "react-router-dom";
-import type { Allocation } from "../../../interfaces/allocation/Allocation";
+import type { AllocatedSection, Allocation } from "../../../interfaces/allocation/Allocation";
 
 interface StudentAllocationItemProps {
   allocation: Allocation;
+  sectionId: number;
 }
 
-export default function StudentAllocationItem({ allocation }: StudentAllocationItemProps) {
+export default function StudentAllocationItem({ allocation, sectionId }: StudentAllocationItemProps) {
+
+  const stubs: AllocatedSection[] =
+    allocation.allocatedSections?.filter((s) => s.sectionId === sectionId) || [];
+
+  // if you want to show them grouped by task:
+  const hoursByTask = stubs.reduce<Record<string, number>>((acc, s) => {
+    acc[s.task] = (acc[s.task] || 0) + s.hours;
+    return acc;
+  }, {});
+
   return (
     <div 
       key={allocation.id} 
@@ -36,11 +47,21 @@ export default function StudentAllocationItem({ allocation }: StudentAllocationI
           )}
         </div>
       </div>
+      
       <div className="flex items-center space-x-2">
-        <span className="inline-flex items-center px-2 py-1 rounded bg-[#0089b2] text-white 
-          text-xs font-medium">
-          {allocation.numberOfHours || 0}h
-        </span>
+         {stubs.map((s) => (
+          <span
+            key={s.id}
+            className="inline-flex items-center px-2 py-1 rounded bg-[#0089b2] text-white text-xs font-medium"
+          >
+            {s.hours}{" "}
+            {s.task === "GRADING"
+              ? "Grading Hours"
+              : s.task === "LAB_PREP"
+              ? "Lab Prep Hours"
+              : "TA Hours"}
+          </span>
+        ))}
       </div>
     </div>
   );

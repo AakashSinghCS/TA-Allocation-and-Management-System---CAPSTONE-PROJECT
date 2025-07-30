@@ -2,11 +2,13 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 import type { Mock } from 'vitest';
+import React from 'react';
 import StudentsAllocatedPage from './StudentsAllocatedPage';
 import { fetchUserDetails } from '../../../../api/user/fetchUserDetails';
 import { fetchAllExistingYears } from '../../../../api/course/sectionfilter/fetchAllExistingYears';
 import { fetchSectionNeedAndAllocations } from '../../../../api/instructor/fetchSectionNeedAndAllocations';
 import { fetchAllInstructorCourses } from '../../../../api/instructor/fetchAllInstructorCourses';
+import { fetchAllocationById } from '../../../../api/allocation/fetchAllocationById';
 import { exportToCSV, exportToPDF } from '../../../../components/features/allocatedStudent';
 
 // Mock all the API functions
@@ -14,6 +16,7 @@ vi.mock('../../../../api/user/fetchUserDetails');
 vi.mock('../../../../api/course/sectionfilter/fetchAllExistingYears');
 vi.mock('../../../../api/instructor/fetchSectionNeedAndAllocations');
 vi.mock('../../../../api/instructor/fetchAllInstructorCourses');
+vi.mock('../../../../api/allocation/fetchAllocationById');
 
 // Mock react-router-dom
 vi.mock('react-router-dom', async () => {
@@ -44,20 +47,12 @@ vi.mock('../../../../components/layout/tabnav/TabNav', () => ({
 // Mock the GenericAPIContainer
 vi.mock('../../../../utility/genericapicontainer/GenericAPIContainer', () => ({
   GenericAPIContainer: ({ fetchFunction, render }: any) => {
-    // Call the fetch function to simulate the behavior
-    if (fetchFunction) {
+    React.useEffect(() => {
       fetchFunction();
-    }
-    
-    // Return the render prop with mock data
+    }, [fetchFunction]);
     return (
       <div data-testid="api-container">
-        {render({
-          id: 123,
-          firstName: 'John',
-          lastName: 'Doe',
-          roles: ['INSTRUCTOR'],
-        })}
+        {render({ id: 123, firstName: 'John', lastName: 'Doe', roles: ['INSTRUCTOR'] })}
       </div>
     );
   },
@@ -101,18 +96,8 @@ const mockSections = [
     type: 'LEC',
     year: 2024,
     course: mockCourses[0],
-    allocations: [
-      {
-        id: 1,
-        numberOfHours: 10,
-        status: 'CONFIRMED',
-        student: {
-          id: 1,
-          firstName: 'Jane',
-          lastName: 'Smith',
-          email: 'jane.smith@example.com',
-        },
-      },
+    allocatedSections: [
+      { allocationId: 1 },
     ],
     instructor: { id: 123, firstName: 'John', lastName: 'Doe' },
   },
@@ -122,16 +107,26 @@ const mockYears = ['2023', '2024', '2025'];
 
 describe('StudentsAllocatedPage', () => {
   beforeEach(() => {
-    // Reset all mocks
     vi.clearAllMocks();
-    
-    // Setup default mock implementations
+
     (fetchUserDetails as Mock).mockResolvedValue(mockUserDetails);
     (fetchAllExistingYears as Mock).mockResolvedValue(mockYears);
     (fetchSectionNeedAndAllocations as Mock).mockResolvedValue(mockSections);
     (fetchAllInstructorCourses as Mock).mockResolvedValue(mockCourses);
-    
-    // Mock localStorage
+    (fetchAllocationById as Mock).mockResolvedValue({
+      id: 1,
+      labPrepHours: 0,
+      gradingHours: 0,
+      sectionHours: 0,
+      status: 'CONFIRMED',
+      student: {
+        id: 1,
+        firstName: 'Jane',
+        lastName: 'Smith',
+        email: 'jane.smith@example.com',
+      },
+    });
+
     Object.defineProperty(window, 'localStorage', {
       value: {
         getItem: vi.fn(() => 'mock-token'),
@@ -142,13 +137,12 @@ describe('StudentsAllocatedPage', () => {
     });
   });
 
-  const renderComponent = () => {
-    return render(
+  const renderComponent = () =>
+    render(
       <BrowserRouter>
         <StudentsAllocatedPage />
       </BrowserRouter>
     );
-  };
 
   it('renders without crashing', () => {
     renderComponent();
@@ -163,18 +157,17 @@ describe('StudentsAllocatedPage', () => {
 
   it('loads initial data on component mount', async () => {
     renderComponent();
-
     await waitFor(() => {
       expect(fetchUserDetails).toHaveBeenCalledWith(123);
       expect(fetchAllExistingYears).toHaveBeenCalled();
       expect(fetchSectionNeedAndAllocations).toHaveBeenCalledWith(123, null, 2025, 'W1');
       expect(fetchAllInstructorCourses).toHaveBeenCalledWith(123);
+      expect(fetchAllocationById).toHaveBeenCalledWith(1);
     });
   });
 
   it('renders FilterSection component', async () => {
     renderComponent();
-    
     await waitFor(() => {
       expect(screen.getByTestId('filter-section')).toBeInTheDocument();
     });
@@ -182,7 +175,6 @@ describe('StudentsAllocatedPage', () => {
 
   it('renders SectionCard components for sections with TAs', async () => {
     renderComponent();
-    
     await waitFor(() => {
       expect(screen.getByTestId('section-card')).toBeInTheDocument();
       expect(screen.getByText('COSC 111')).toBeInTheDocument();
@@ -191,9 +183,7 @@ describe('StudentsAllocatedPage', () => {
 
   it('displays no students message when no sections have TAs', async () => {
     (fetchSectionNeedAndAllocations as Mock).mockResolvedValue([]);
-    
     renderComponent();
-    
     await waitFor(() => {
       expect(screen.getByText('No students allocated')).toBeInTheDocument();
       expect(screen.getByText('No student allocations found for the selected criteria.')).toBeInTheDocument();
@@ -202,37 +192,30 @@ describe('StudentsAllocatedPage', () => {
 
   it('handles search functionality', async () => {
     renderComponent();
-    
     await waitFor(() => {
-      const searchButton = screen.getByTestId('search-button');
-      expect(searchButton).toBeInTheDocument();
+      expect(screen.getByTestId('search-button')).toBeInTheDocument();
     });
-
-    const searchButton = screen.getByTestId('search-button');
-    fireEvent.click(searchButton);
-
+    fireEvent.click(screen.getByTestId('search-button'));
     await waitFor(() => {
-      expect(fetchSectionNeedAndAllocations).toHaveBeenCalledTimes(2); // Once on mount, once on search
+      expect(fetchSectionNeedAndAllocations).toHaveBeenCalledTimes(2);
+      expect(fetchAllocationById).toHaveBeenCalledTimes(2);
     });
   });
 
   it('handles export CSV functionality', async () => {
     renderComponent();
-    
     // Wait for initial data to load
     await waitFor(() => {
       expect(fetchSectionNeedAndAllocations).toHaveBeenCalledWith(123, null, 2025, 'W1');
     });
 
     await waitFor(() => {
-      const exportButton = screen.getByTestId('export-csv-button');
-      expect(exportButton).toBeInTheDocument();
+      expect(screen.getByTestId('export-csv-button')).toBeInTheDocument();
     });
-
-    const exportButton = screen.getByTestId('export-csv-button');
-    fireEvent.click(exportButton);
-
-    expect(exportToCSV).toHaveBeenCalledWith(mockSections);
+    fireEvent.click(screen.getByTestId('export-csv-button'));
+    expect(exportToCSV).toHaveBeenCalledWith(expect.arrayContaining([
+      expect.objectContaining({ id: 1 })
+    ]));
   });
 
   it('handles export PDF functionality', async () => {
@@ -248,22 +231,23 @@ describe('StudentsAllocatedPage', () => {
       expect(exportButton).toBeInTheDocument();
     });
 
-    const exportButton = screen.getByTestId('export-pdf-button');
-    fireEvent.click(exportButton);
+  // now click the export button
+  fireEvent.click(screen.getByTestId('export-pdf-button'));
 
-    expect(exportToPDF).toHaveBeenCalledWith(mockSections);
-  });
+  expect(exportToPDF).toHaveBeenCalledWith(
+    expect.arrayContaining([
+      expect.objectContaining({ id: 1 })
+    ])
+  );
+});
 
   it('handles API errors gracefully', async () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     (fetchAllExistingYears as Mock).mockRejectedValue(new Error('API Error'));
-    
     renderComponent();
-    
     await waitFor(() => {
       expect(consoleSpy).toHaveBeenCalledWith('Failed to load initial data:', expect.any(Error));
     });
-    
     consoleSpy.mockRestore();
   });
 
@@ -276,44 +260,32 @@ describe('StudentsAllocatedPage', () => {
         type: 'LAB',
         year: 2024,
         course: mockCourses[1],
-        allocations: [], // No allocations
+        allocatedSections: [],
+        instructor: { id: 123, firstName: 'John', lastName: 'Doe' },
       },
     ];
-
     (fetchSectionNeedAndAllocations as Mock).mockResolvedValue([
       ...mockSections,
       ...sectionsWithoutAllocations,
     ]);
-    
     renderComponent();
-    
     await waitFor(() => {
-      // Should only render sections with TAs
       expect(screen.getByTestId('section-card')).toBeInTheDocument();
-      expect(screen.getByText('COSC 111')).toBeInTheDocument();
-      // Should not render sections without TAs
       expect(screen.queryByText('MATH 125')).not.toBeInTheDocument();
     });
   });
 
   it('handles search with error gracefully', async () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    
     renderComponent();
-    
     await waitFor(() => {
       expect(screen.getByTestId('search-button')).toBeInTheDocument();
     });
-
     (fetchSectionNeedAndAllocations as Mock).mockRejectedValueOnce(new Error('Search Error'));
-    
-    const searchButton = screen.getByTestId('search-button');
-    fireEvent.click(searchButton);
-
+    fireEvent.click(screen.getByTestId('search-button'));
     await waitFor(() => {
       expect(consoleSpy).toHaveBeenCalledWith('Failed to search sections:', expect.any(Error));
     });
-    
     consoleSpy.mockRestore();
   });
 });

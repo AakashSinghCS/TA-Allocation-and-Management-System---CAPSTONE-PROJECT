@@ -1,4 +1,4 @@
-import type { Allocation } from "../../interfaces/allocation/Allocation";
+import type { AllocatedSection, Allocation } from "../../interfaces/allocation/Allocation";
 import type { Course } from "../../interfaces/course/Course";
 import type { Need } from "../../interfaces/need/Need";
 import type Section from "../../interfaces/section/Section";
@@ -16,7 +16,8 @@ interface SectionDto {
 interface SectionsAndNeedAndAllocations {
   section: SectionDto,
   need: Need,
-  allocations: Allocation[]
+  // allocations: Allocation[]
+  allocatedSections : AllocatedSection[];
 }
 
 export interface SectionsNeedsAndAllocations {
@@ -58,7 +59,7 @@ export async function fetchSectionNeedAndAllocations(instructorId: number, cours
       name: entry.section.course.name,
     },
     need: entry.need,
-    allocations: entry.allocations,
+    allocatedSections : entry.allocatedSections
   }));
   } catch (err) {
     return null;

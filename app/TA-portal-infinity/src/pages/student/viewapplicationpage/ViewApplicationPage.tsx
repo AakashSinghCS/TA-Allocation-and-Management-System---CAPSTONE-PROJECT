@@ -13,11 +13,15 @@ import { fetchSectionInfo } from "../../../api/section/fetchSectionInfo";
 import type { DeadlineDto } from '../../../interfaces/admin/Deadline';
 import { fetchDeadlines } from '../../../api/admin/FetchDeadline';
 import { toast, ToastContainer } from "react-toastify";
+import { fetchSectionIncludeInstructorId } from "../../../api/section/fetchSectionIncludeInstructorId";
+import type Section from "../../../interfaces/section/Section";
+import { useAuth } from "../../../context/AuthContext";
 
 
 type ApplicationWithAllocation = ApplicationDto & { allocation?: Allocation };
 
 const ViewApplicationPage = () => {
+  const {userId} = useAuth();
   const [applications, setApplications] = useState<ApplicationWithAllocation[]>([]);
   const [year, setYear] = useState("");
   const [semester, setSemester] = useState("");
@@ -31,86 +35,71 @@ const ViewApplicationPage = () => {
   const [expandedCard, setExpandedCard] = useState<number | null>(null);
   const [offerDeadline, setOfferDeadline] = useState<DeadlineDto | null>(null);
   const [deadlineError, setDeadlineError] = useState("");
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setError("Authentication token is missing");
-      return;
-    }
-
-  
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-      console.warn('Could not decode JWT:', e);
-    }
-
-
-    const decoded = decodeToken(token);
-    const userIdFromToken = decoded?.userId;
-    if (!userIdFromToken) {
-      setError("Failed to extract userId from token");
-      return;
-    }
-
+useEffect(() => {
+  // wrap your chain in one async function
+  const loadApps = async () => {
     setLoading(true);
-    fetchApplicationsByStudent(userIdFromToken, token)
-      .then(async (data: ApplicationDto[]) => {
-        // For each application, fetch allocation, section info, and student info if needed
-        const appsWithDetails = await Promise.all(
-          data.map(async (app) => {
-            let allocation: Allocation | null = null;
-            let sectionInfo: any = null;
-            try {
-              const allocations = await fetchAllocationByApplicationId(app.id ?? app.applicationId ?? 0, token);
-              allocation = allocations && allocations.length > 0 ? allocations[0] : null;
-              if (allocation && 'isConfirmed' in allocation) {
-                delete allocation.isConfirmed;
-              }
-              // Always fetch section info (with instructor) if allocation.section exists and has id
-              let sectionId: number | undefined = undefined;
-              if (allocation && allocation.section && allocation.section.id) {
-                sectionId = allocation.section.id;
-              }
-              if (sectionId) {
-                try {
-                  // Use fetchSectionIncludeInstructorId to get section details with instructor
-                  const { fetchSectionIncludeInstructorId } = await import("../../../api/section/fetchSectionIncludeInstructorId");
-                  const sectionDetails = await fetchSectionIncludeInstructorId(sectionId);
-                  if (allocation && sectionDetails) {
-                    allocation.section = sectionDetails;
-                    
-                  }
-                } catch (e) {
-                  console.error('DEBUG: fetchSectionIncludeInstructorId failed for sectionId', sectionId, e);
-                }
-              }
-            } catch (err) {
-              console.error('Allocation fetch error:', err);
-              allocation = null;
+    try {
+      const apps = await fetchApplicationsByStudent(userId);
+      const appsWithDetails = await Promise.all(
+        apps.map(async app => {
+          // 1) Fetch allocation
+          let allocation: Allocation | null = null;
+          try {
+            const fetchedAlloc = await fetchAllocationByApplicationId(
+              app.id ?? app.applicationId ?? 0,);
+            // remove deprecated field if present
+            if (fetchedAlloc && 'isConfirmed' in fetchedAlloc) {
+              delete (fetchedAlloc as any).isConfirmed;
             }
-            // If student info is missing or incomplete, trying to fetch it using student.id
-            if (!app.student || !app.student.firstName) {
-              const studentId = app.student?.id ?? (app as any).studentId;
-              if (studentId) {
-                try {
-                  const student = await fetchUserDetails<Student>(studentId);
-                  return { ...app, student, allocation };
-                } catch {
-                  return { ...app, allocation };
-                }
+            if(!fetchedAlloc) return;
+            // 2) Pull out unique sectionIds
+            const allocatedSecs = fetchedAlloc.allocatedSections ?? [];
+            const uniqueSectionIds = Array.from(
+              new Set(allocatedSecs.map(as => as.sectionId))
+            );
+
+            // 3) Fetch each section in parallel
+            let  rawSections :(Section | null)[] = await Promise.all(
+              uniqueSectionIds.map(id => fetchSectionIncludeInstructorId(id))
+            );  
+            const sections: Section[] = rawSections.filter(
+              (s): s is Section => s !== null
+            );
+            fetchedAlloc.sections = sections;
+            allocation = fetchedAlloc;
+          } catch (allocErr) {
+            console.error('Allocation fetch error:', allocErr);
+          }
+
+          // 5) Ensure student info is filled
+          let student = app.student;
+          if (!student?.firstName) {
+            const studentId = student?.id ?? (app as any).studentId;
+            if (studentId) {
+              try {
+                student = await fetchUserDetails<Student>(studentId);
+              } catch (stuErr) {
+                console.error('Student fetch error:', stuErr);
               }
-              return { ...app, allocation };
             }
-            return { ...app, allocation };
-          })
-        );
-        setApplications(appsWithDetails as ApplicationWithAllocation[]);
-      })
-      .catch((e: Error) => setError(e.message))
-      .finally((): void => setLoading(false));
-  }, []);
+          }
+
+          // 6) Return the enriched record
+          return { ...app, student, allocation };
+        })
+      );
+
+      setApplications(appsWithDetails as ApplicationWithAllocation[]);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadApps();
+}, [userId]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -287,7 +276,7 @@ const ViewApplicationPage = () => {
                 filteredApps.map((app, idx) => {
                   const cardId = app.id ?? idx;
                   const expanded = expandedCard === cardId;
-                  const sectionDetails = app.allocation?.section;
+                  const sectionDetails = app.allocation?.sections;
                   return (
                     <div key={cardId} className="bg-white rounded-2xl shadow-lg border border-blue-100 p-10 flex flex-col gap-6 min-h-[520px] relative overflow-hidden w-full transition-all duration-300 hover:shadow-2xl hover:border-blue-300" style={{ maxWidth: '900px', margin: '0 auto' }}>
                       {app.student ? (
@@ -341,7 +330,36 @@ const ViewApplicationPage = () => {
                     {app.allocation.status === 'CONFIRMED' && (
                       <div className="mt-1 flex flex-col gap-2 p-4 bg-gray-50 border-[#040941] rounded-lg">
                         <span className="text-green-800 font-semibold text-lg">Success! Your allocation is now confirmed!</span>
-                        <span>
+                        {app.allocation.sections?.map(section => {
+                          const tasks = app.allocation?.allocatedSections
+                            ?.filter(as => as.sectionId === section.id) ?? [];
+
+                          return (
+                            <div key={section.id} className="p-3">
+                              <div className="font-medium">
+                                {section.course?.deptCode} {section.course?.courseNum} — {section.section} (
+                                {section.type}, {section.semester} {section.year})
+                              </div>
+                              <div className="mt-1">
+                                <strong>Instructor:</strong>{' '}
+                                {section.instructor?.firstName
+                                  ? `${section.instructor.firstName} ${section.instructor.lastName}`
+                                  : 'TBD'}
+                              </div>
+                              <div className="mt-2">
+                                <strong>Tasks &amp; Hours:</strong>
+                                <ul className="list-disc list-inside ml-4">
+                                  {tasks.map(ts => (
+                                    <li key={ts.task}>
+                                      {ts.task.replace('_', ' ')}: {ts.hours} hrs
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        {/* <span>
                           <strong>Section:</strong> {app.allocation.section?.course?.deptCode || 'N/A'}
                           {app.allocation.section?.course?.courseNum ? ` ${app.allocation.section.course.courseNum}` : ''}
                           {app.allocation.section?.section ? ` - ${app.allocation.section.section}` : ''}
@@ -349,7 +367,7 @@ const ViewApplicationPage = () => {
                           {app.allocation.section?.semester || app.allocation.section?.year ? ` [${app.allocation.section.semester || ''} ${app.allocation.section.year || ''}]` : ''}
                         </span>
                         <span><strong>Hours:</strong> {app.allocation.numberOfHours ?? 'N/A'}</span>
-                        <span><strong>Instructor:</strong> {app.allocation.section?.instructor && typeof app.allocation.section.instructor === 'object' && 'firstName' in app.allocation.section.instructor ? `${app.allocation.section.instructor.firstName} ${app.allocation.section.instructor.lastName}` : 'N/A'}</span>
+                        <span><strong>Instructor:</strong> {app.allocation.section?.instructor && typeof app.allocation.section.instructor === 'object' && 'firstName' in app.allocation.section.instructor ? `${app.allocation.section.instructor.firstName} ${app.allocation.section.instructor.lastName}` : 'N/A'}</span> */}
                       </div>
                     )}
                     {app.allocation.status === 'REJECTED' && (
@@ -469,31 +487,68 @@ const ViewApplicationPage = () => {
                       {expanded && (
                         <div className="mt-2 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm animate-fade-in">
                           <div className="mb-2 font-semibold text-blue-900">Section Details</div>
-                          {sectionDetails ? (
-                            <>
-                              <div><strong>Course:</strong> {sectionDetails.course?.deptCode || 'N/A'} {sectionDetails.course?.courseNum || ''}</div>
-                              <div><strong>Section:</strong> {sectionDetails.section || 'N/A'}</div>
-                              <div><strong>Type:</strong> {sectionDetails.type || 'N/A'}</div>
-                               <div><strong>Semester:</strong> {app.allocation?.section?.semester ?? sectionDetails.semester ?? 'N/A'}</div>
-                               <div><strong>Year:</strong> {app.allocation?.section?.year ?? sectionDetails.year ?? 'N/A'}</div>
-                              {/* Show schedule from sectionSchedule array if present, else fallback to schedule string, else show message */}
-                              {app.allocation?.section?.sectionSchedule && app.allocation.section.sectionSchedule.length > 0 ? (
-                                <div>
+                          {app.allocation?.sections?.length ? (
+                            app.allocation.sections.map(section => {
+                            const tasks = app.allocation?.allocatedSections
+                              ?.filter(as => as.sectionId === section.id) ?? [];
+                            return (
+                              <div key={section.id} className="mb-4">
+                                <div className="font-semibold">
+                                  {section.course?.deptCode} {section.course?.courseNum} — {section.section}
+                                </div>
+                                <div><strong>Type:</strong> {section.type}</div>
+                                <div><strong>Semester:</strong> {section.semester} {section.year}</div>
+                                <div className="mt-1">
                                   <strong>Schedule:</strong>
-                                  <ul className="ml-4 list-disc">
-                                    {app.allocation.section.sectionSchedule.map((sch, i) => (
-                                      <li key={i}>
-                                        {sch.day || 'N/A'} {sch.startTime && sch.endTime ? `${sch.startTime} - ${sch.endTime}` : ''}
+                                  {section.sectionSchedule?.length ? (
+                                    <ul className="list-disc list-inside ml-4">
+                                      {section.sectionSchedule.map((sch,i) => (
+                                        <li key={i}>
+                                          {sch.day} {sch.startTime}–{sch.endTime}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  ) : (
+                                    <span> No schedule info.</span>
+                                  )}
+                                </div>
+                                <div className="mt-2">
+                                  <strong>Tasks &amp; Hours:</strong>
+                                  <ul className="list-disc list-inside ml-4">
+                                    {tasks.map(ts => (
+                                      <li key={ts.task}>
+                                        {ts.task.replace('_', ' ')}: {ts.hours} hrs
                                       </li>
                                     ))}
                                   </ul>
                                 </div>
-                              ) : (sectionDetails as any).schedule && String((sectionDetails as any).schedule).trim() !== '' ? (
-                                <div><strong>Schedule:</strong> {(sectionDetails as any).schedule}</div>
-                              ) : (
-                                <div className="text-gray-500">No schedule info available.</div>
-                              )}
-                            </>
+                              </div>
+                            );
+                          })
+                            // <>
+                            //   <div><strong>Course:</strong> {sectionDetails.course?.deptCode || 'N/A'} {sectionDetails.course?.courseNum || ''}</div>
+                            //   <div><strong>Section:</strong> {sectionDetails.section || 'N/A'}</div>
+                            //   <div><strong>Type:</strong> {sectionDetails.type || 'N/A'}</div>
+                            //    <div><strong>Semester:</strong> {app.allocation?.section?.semester ?? sectionDetails.semester ?? 'N/A'}</div>
+                            //    <div><strong>Year:</strong> {app.allocation?.section?.year ?? sectionDetails.year ?? 'N/A'}</div>
+                            //   {/* Show schedule from sectionSchedule array if present, else fallback to schedule string, else show message */}
+                            //   {app.allocation?.section?.sectionSchedule && app.allocation.section.sectionSchedule.length > 0 ? (
+                            //     <div>
+                            //       <strong>Schedule:</strong>
+                            //       <ul className="ml-4 list-disc">
+                            //         {app.allocation.section.sectionSchedule.map((sch, i) => (
+                            //           <li key={i}>
+                            //             {sch.day || 'N/A'} {sch.startTime && sch.endTime ? `${sch.startTime} - ${sch.endTime}` : ''}
+                            //           </li>
+                            //         ))}
+                            //       </ul>
+                            //     </div>
+                            //   ) : (sectionDetails as any).schedule && String((sectionDetails as any).schedule).trim() !== '' ? (
+                            //     <div><strong>Schedule:</strong> {(sectionDetails as any).schedule}</div>
+                            //   ) : (
+                            //     <div className="text-gray-500">No schedule info available.</div>
+                            //   )}
+                            // </>
                           ) : (
                             <div className="text-gray-500">No section details available.</div>
                           )}

@@ -1,18 +1,27 @@
+import type { AllocationType } from '../../interfaces/allocation/Allocation';
 import type { OfferDto } from '../../interfaces/application/Application';
 import { fetchWithAuth } from '../Auth/fetchWithAuth';
+
+
 
 export interface CreateOfferRequest {
   studentId:     number;
   applicationId: number;
-  status:        import('../../interfaces/enum/ApplicationStatus').ApplicationStatus;
-  numberOfHours: number;
+  // status:        import('../../interfaces/enum/ApplicationStatus').ApplicationStatus;
+  // numberOfHours: number;
+  task :AllocationType;
+  hours : number;
+  // sectionHours?: number;
+  // labPrepHours? : number;
+  // gradingHours? : number;
   sectionId:     number;
+  isConfirmed: boolean;
 }
 
 export async function sendOffer(
   payload: CreateOfferRequest
 ){
-  console.log("sendOffer payload:", payload);
+  // console.log("sendOffer payload:", payload);
   const res = await fetchWithAuth(
     'http://localhost:8080/allocations/allocate',
     {

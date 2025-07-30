@@ -19,22 +19,29 @@ describe('ApplicationCard', () => {
     },
   };
   const allocations = [
-    {
-      numberOfHours: 5,
-      status: 'CONFIRMED',
-      section: {
-        sectionDetails: {
-          deptCode: 'COSC',
-          courseNum: '111',
-          semester: 'W',
-          year: 2024,
-          type: 'LECTURE',
-        },
-        instructor: { firstName: 'Jane', lastName: 'Smith' },
-      },
-      application: { applicationId: 1 },
-    },
-  ];
+  {
+    id: 10,
+    application: { applicationId: 1 },
+    status: 'REJECTED',
+    labPrepHours: 0,
+    gradingHours: 0,
+    sectionHours: 8,
+    allocatedSections: [
+      { id: 1, allocationId: 10, sectionId: 5, task: 'LAB', hours: 8 }
+    ],
+    sections: [
+      {
+        id: 5,
+        course: { deptCode: 'COSC', courseNum: '121', name: 'Test' },
+        section: '001',
+        type: 'TUTORIAL',
+        semester: 'S',
+        year: 2024,
+        instructor: { firstName: 'Bob', lastName: 'Brown' },
+      }
+    ],
+  } as any,
+];
 
   it('renders summary info and expands/collapses details', () => {
     const onExpand = vi.fn();

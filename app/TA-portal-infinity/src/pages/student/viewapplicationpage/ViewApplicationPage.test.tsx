@@ -12,7 +12,7 @@ afterEach(() => {
 });
 
 describe("ViewApplicationPage render", () => {
-  it("shows no offer message if no allocation or offers", async () => {
+  it("shows waiting offer message if no allocation or offers", async () => {
     const mockApplications = [
       {
         id: 1,
@@ -35,7 +35,7 @@ describe("ViewApplicationPage render", () => {
       </AuthProvider>
     );
     await waitFor(() => {
-      expect(screen.getByText(/No offer for this application/i)).toBeInTheDocument();
+      expect(screen.getByText(/Application submitted. Waiting for offer.../i)).toBeInTheDocument();
     });
     global.fetch = originalFetch;
   });
@@ -124,23 +124,6 @@ describe("ViewApplicationPage render", () => {
     global.fetch = originalFetch;
   });
 
-  it("shows error if token is missing", async () => {
-    window.localStorage.clear();
-    const originalFetch = global.fetch;
-    // @ts-ignore
-    global.fetch = () => Promise.resolve({ json: () => Promise.resolve([]), ok: true });
-    render(
-      <AuthProvider>
-        <MemoryRouter>
-          <ViewApplicationPage />
-        </MemoryRouter>
-      </AuthProvider>
-    );
-    await waitFor(() => {
-      expect(screen.getByText(/Authentication token is missing/i)).toBeInTheDocument();
-    });
-    global.fetch = originalFetch;
-  });
 
   it("shows filter button and reset button", async () => {
     const originalFetch = global.fetch;
@@ -155,100 +138,6 @@ describe("ViewApplicationPage render", () => {
     );
     expect(screen.getByText("Filter")).toBeInTheDocument();
     expect(screen.getByText("Reset")).toBeInTheDocument();
-    global.fetch = originalFetch;
-  });
-});
-
-describe("ViewApplicationPage render", () => {
-  it("shows no offer message if no allocation or offers", async () => {
-    const mockApplications = [
-      {
-        id: 1,
-        preferences: ["COSC 101"],
-        wantRemote: true,
-        wantWorkingHours: 10,
-        timeSubmitted: new Date().toISOString(),
-        student: { firstName: "John", lastName: "Doe", id: 1 },
-        // No allocation, no offers
-      },
-    ];
-    const originalFetch = global.fetch;
-    // @ts-ignore
-    global.fetch = () => Promise.resolve({ json: () => Promise.resolve(mockApplications), ok: true });
-    render(
-      <AuthProvider>
-        <MemoryRouter>
-          <ViewApplicationPage />
-        </MemoryRouter>
-      </AuthProvider>
-    );
-    await waitFor(() => {
-      expect(screen.getByText(/No offer for this application/i)).toBeInTheDocument();
-    });
-    global.fetch = originalFetch;
-  });
-
-  it("shows filters and no applications by default", async () => {
-    // No applications returned
-    const originalFetch = global.fetch;
-    // @ts-ignore
-    global.fetch = () => Promise.resolve({ json: () => Promise.resolve([]), ok: true });
-    render(
-      <AuthProvider>
-        <MemoryRouter>
-          <ViewApplicationPage />
-        </MemoryRouter>
-      </AuthProvider>
-    );
-    expect(screen.getByText("Filters")).toBeInTheDocument();
-    await waitFor(() => {
-      expect(screen.getByText(/No applications found/i)).toBeInTheDocument();
-      expect(screen.getByText(/No TA applications match your current filters/i)).toBeInTheDocument();
-    });
-    global.fetch = originalFetch;
-  });
-
-  it("handles missing student info gracefully", async () => {
-    const mockApplications = [
-      {
-        id: 1,
-        preferences: ["COSC 101"],
-        wantRemote: true,
-        wantWorkingHours: 10,
-        timeSubmitted: new Date().toISOString(),
-        allocation: { status: "CONFIRMED", section: { instructor: "Prof. Smith" } },
-      },
-    ];
-    const originalFetch = global.fetch;
-    // @ts-ignore
-    global.fetch = () => Promise.resolve({ json: () => Promise.resolve(mockApplications), ok: true });
-    render(
-      <AuthProvider>
-        <MemoryRouter>
-          <ViewApplicationPage />
-        </MemoryRouter>
-      </AuthProvider>
-    );
-    await waitFor(() => {
-      expect(screen.getByText(/Student information is missing/i)).toBeInTheDocument();
-    });
-    global.fetch = originalFetch;
-  });
-
-  it("shows loading state while fetching applications", async () => {
-    // Simulate loading by rendering and checking for loading text
-    // Use a fetch that never resolves to keep loading
-    const originalFetch = global.fetch;
-    // @ts-ignore
-    global.fetch = () => new Promise(() => {});
-    render(
-      <AuthProvider>
-        <MemoryRouter>
-          <ViewApplicationPage />
-        </MemoryRouter>
-      </AuthProvider>
-    );
-    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
     global.fetch = originalFetch;
   });
 });

@@ -16,7 +16,7 @@ import ApplicationList from './ApplicationList';
 import type { DateSelectArg, EventClickArg } from '@fullcalendar/core';
 import { dayMap } from '../../../components/features/application/applicationsubmission/availabilityUtils';
 
-interface Availability {
+interface Unavailability {
   id: string;
   day: Day;
   startTime: string;
@@ -26,7 +26,7 @@ interface Availability {
 const ApplicationPage: React.FC = () => {
   const [selectedTerms, setSelectedTerms] = useState<string[]>([]);
   const [termFormsData, setTermFormsData] = useState<{[termKey: string]: any}>({});
-  const [availability, setAvailability] = useState<Availability[]>([]);
+  const [unavailability, setUnavailability] = useState<Unavailability[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [submitted, setSubmitted] = useState(false);
   const [savedApp, setSavedApp] = useState<ApplicationDto | null>(null);
@@ -82,13 +82,13 @@ useEffect(() => {
           setActiveFormTab(`${mostRecent.year}-${mostRecent.semester}`);
           
           // Load availability from the most recent application 
-          const existingAvailability = mostRecent.availabilities.map((av, index) => ({
-            id: `${av.day}-${av.startTime}-${av.endTime}-${index}`,
-            day: av.day,
-            startTime: av.startTime,
-            endTime: av.endTime
+          const existingUnavailability = mostRecent.unavailabilities.map((uv, index) => ({
+            id: `${uv.day}-${uv.startTime}-${uv.endTime}-${index}`,
+            day: uv.day,
+            startTime: uv.startTime,
+            endTime: uv.endTime
           }));
-          setAvailability(existingAvailability);
+          setUnavailability(existingUnavailability);
         }
       } catch (error) {
         console.error('Failed to load existing applications:', error);
@@ -148,7 +148,7 @@ const deadlinePassed =
   const clearForm = () => {
     setSelectedTerms([]);
     setTermFormsData({});
-    setAvailability([]);
+    setUnavailability([]);
     setActiveFormTab('');
   };
 
@@ -169,13 +169,13 @@ const deadlinePassed =
     });
     
     // Load availability
-    const existingAvailability = application.availabilities.map((av, index) => ({
-      id: `${av.day}-${av.startTime}-${av.endTime}-${index}`,
-      day: av.day,
-      startTime: av.startTime,
-      endTime: av.endTime
+    const existingUnavailability = application.unavailabilities.map((uv, index) => ({
+      id: `${uv.day}-${uv.startTime}-${uv.endTime}-${index}`,
+      day: uv.day,
+      startTime: uv.startTime,
+      endTime: uv.endTime
     }));
-    setAvailability(existingAvailability);
+    setUnavailability(existingUnavailability);
   };
 
   const handleTermSelection = (termKey: string, isSelected: boolean) => {
@@ -198,20 +198,20 @@ const deadlinePassed =
             confirmProfileUpdated: true
           });
           // Only set availability if this is an existing application
-          const existingAvailability = existingApp.availabilities.map((av, index) => ({
-            id: `${av.day}-${av.startTime}-${av.endTime}-${index}`,
-            day: av.day,
-            startTime: av.startTime,
-            endTime: av.endTime
+          const existingUnavailability = existingApp.unavailabilities.map((uv, index) => ({
+            id: `${uv.day}-${uv.startTime}-${uv.endTime}-${index}`,
+            day: uv.day,
+            startTime: uv.startTime,
+            endTime: uv.endTime
           }));
-          setAvailability(existingAvailability);
+          setUnavailability(existingUnavailability);
         } else {
           // Initialize with default values
           setTermFormsData(prev => ({
             ...prev,
             [termKey]: initializeTermForm(termKey)
           }));
-          setAvailability([]);
+          setUnavailability([]);
         }
       }
       // Set as active tab if it's the first selection or no active tab
@@ -258,14 +258,14 @@ const deadlinePassed =
       hour12: false, hour: '2-digit', minute: '2-digit'
     });
     const id = `${day}-${startTime}-${endTime}`;
-    setAvailability(prev => [...prev, { id, day, startTime, endTime }]);
+    setUnavailability(prev => [...prev, { id, day, startTime, endTime }]);
     info.view.calendar.unselect();
   };
 
   const handleEventClick = (info: EventClickArg) => {
     const id = info.event.id;
     info.event.remove();
-    setAvailability(prev => prev.filter(av => av.id !== id));
+    setUnavailability(prev => prev.filter(av => av.id !== id));
   };
 
  const handleSubmit = async (e: React.FormEvent) => {
@@ -275,18 +275,13 @@ const deadlinePassed =
     setErrors({ general: 'Please select at least one term to apply for.' });
     return;
   }
-  // Client-side validation for calendar slots
-  if (availability.length === 0) {
-    setErrors(prev => ({ ...prev, availability: 'Please select at least one available time slot on the calendar.' }));
-    return;
-  }
   // Validate all selected term forms
   const allErrors: { [key: string]: string } = {};
   const validTerms: string[] = [];
 
   for (const termKey of selectedTerms) {
     const termData = getTermFormData(termKey);
-    const termErrors = validateTermForm(termData, availability);
+    const termErrors = validateTermForm(termData, unavailability);
     
     if (Object.keys(termErrors).length > 0) {
       // Prefix errors with term key for identification
@@ -304,7 +299,6 @@ const deadlinePassed =
   }
   setErrors({});
   setSubmitted(true);
-
   // preparing URLs & headers
   const { addUrl } = getApplicationUrls(userId ?? '');
   const commonHeaders = getCommonHeaders(token ?? '', userId ?? '', userRoles);
@@ -317,7 +311,7 @@ const deadlinePassed =
     for (const termKey of validTerms) {
       const [year, semester] = termKey.split('-');
       const termData = getTermFormData(termKey);
-      const payload = buildTermPayload(termData, parseInt(year), semester, availability);
+      const payload = buildTermPayload(termData, parseInt(year), semester, unavailability);
 
       try {
         let resp = await fetch(addUrl, {
@@ -448,7 +442,7 @@ const deadlinePassed =
               termFormsData={termFormsData}
               errors={errors}
               activeFormTab={activeFormTab}
-              availability={availability}
+              unavailability={unavailability}
               calendarRef={calendarRef}
               handleTermSelection={handleTermSelection}
               handleChange={handleChange}

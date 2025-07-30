@@ -21,18 +21,18 @@ export interface TermFormData {
   applicationType: '' | 'UNDERGRADUATE' | 'GRADUATE';
 }
 
-export interface Availability {
+export interface Unavailability {
   id: string;
   day: Day;
   startTime: string;
   endTime: string;
 }
 
-export function validateForm(formData: FormData, availability: Availability[]) {
+export function validateForm(formData: FormData, unavailability: Unavailability[]) {
   const newErrors: { [k: string]: string } = {};
   if (!formData.selectedTerms.length)     newErrors.selectedTerms      = 'At least one term is required.';
   if (!formData.firstPreference)          newErrors.firstPreference    = '1st preference is required.';
-  if (!availability.length)               newErrors.availability       = 'Pick at least one availability slot.';
+  if (!unavailability.length)               newErrors.unavailability       = 'Pick at least one unavailability slot.';
   if (!formData.wantWorkingHours)         newErrors.wantWorkingHours   = 'Hours requested is required.';
   if (!formData.wantRemote)               newErrors.wantRemote         = 'Select a remote work preference.';
   if (!formData.confirmProfileUpdated)
@@ -41,10 +41,10 @@ export function validateForm(formData: FormData, availability: Availability[]) {
   return newErrors;
 }
 
-export function validateTermForm(termData: TermFormData, availability: Availability[]) {
+export function validateTermForm(termData: TermFormData, unavailability: Unavailability[]) {
   const newErrors: { [k: string]: string } = {};
   if (!termData.firstPreference)          newErrors.firstPreference    = '1st preference is required.';
-  if (!availability.length)               newErrors.availability       = 'Pick at least one availability slot.';
+  if (!unavailability.length)               newErrors.unavailability       = 'Pick at least one unavailability slot.';
   if (!termData.wantWorkingHours)         newErrors.wantWorkingHours   = 'Hours requested is required.';
   if (!termData.wantRemote)               newErrors.wantRemote         = 'Select a remote work preference.';
   if (!termData.confirmProfileUpdated)
@@ -53,7 +53,7 @@ export function validateTermForm(termData: TermFormData, availability: Availabil
   return newErrors;
 }
 
-export function buildPayload(formData: FormData, availability: Availability[]): ApplicationRequest[] {
+export function buildPayload(formData: FormData, unavailability: Unavailability[]): ApplicationRequest[] {
   return formData.selectedTerms.map(term => {
     const [year, semester] = term.split('-');
     return {
@@ -67,16 +67,16 @@ export function buildPayload(formData: FormData, availability: Availability[]): 
       wantRemote: formData.wantRemote === 'yes',
       wantWorkingHours: Number(formData.wantWorkingHours),
       applicationType: formData.applicationType as 'UNDERGRADUATE' | 'GRADUATE',
-      availabilities: availability.map(av => ({
-        day: av.day,
-        startTime: av.startTime,
-        endTime: av.endTime
+      unavailabilities: unavailability.map(uv => ({
+        day: uv.day,
+        startTime: uv.startTime,
+        endTime: uv.endTime
       }))
     };
   });
 }
 
-export function buildTermPayload(termData: TermFormData, year: number, semester: string, availability: Availability[]): ApplicationRequest {
+export function buildTermPayload(termData: TermFormData, year: number, semester: string, unavailability: Unavailability[]): ApplicationRequest {
   return {
     year: year,
     semester: semester,
@@ -88,10 +88,10 @@ export function buildTermPayload(termData: TermFormData, year: number, semester:
     wantRemote: termData.wantRemote === 'yes',
     wantWorkingHours: Number(termData.wantWorkingHours),
     applicationType: termData.applicationType as 'UNDERGRADUATE' | 'GRADUATE',
-    availabilities: availability.map(av => ({
-      day: av.day,
-      startTime: av.startTime,
-      endTime: av.endTime
+    unavailabilities: unavailability.map(uv => ({
+      day: uv.day,
+      startTime: uv.startTime,
+      endTime: uv.endTime
     }))
   };
 }

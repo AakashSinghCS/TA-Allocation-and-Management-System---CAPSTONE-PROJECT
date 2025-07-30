@@ -10,6 +10,7 @@ import { fetchAllApplicationSemesters } from '../../../../api/application/fetchA
 import type { ApplicationDto } from '../../../../interfaces/application/Application'
 import type { UseQueryResult } from '@tanstack/react-query'
 import type PageableResponse from '../../../../interfaces/admin/audit/PageableResponse'
+import { mockStudentJohnDoe } from '../../../../mocked-objects/user/mockStudents'
 
 // 1) Mock all external dependencies
 vi.mock('../../../../context/AuthContext')
@@ -32,15 +33,7 @@ const mockFetchSemesters = vi.mocked(fetchAllApplicationSemesters)
 
 const mockApplications: ApplicationDto[] = [
   {
-    student: {
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      studentNum: '123456',
-      program: 'BSc Computer Science',
-      enrollmentYear: 2022,
-      schoolYear: '2nd',
-    },
+    student: mockStudentJohnDoe,
     year: 2024,
     semester: 'Fall',
     applicationType: 'UNDERGRADUATE',
@@ -48,7 +41,7 @@ const mockApplications: ApplicationDto[] = [
     wantRemote: true,
     wantWorkingHours: 20,
     timeSubmitted: '2024-01-15T10:00:00Z',
-    availabilities: [
+    unavailabilities: [
       { day: 'MONDAY', startTime: '09:00', endTime: '17:00' },
     ],
   },
@@ -69,7 +62,7 @@ describe('ApplicationFilterPanel', () => {
       userId: 1,
     })
 
-    mockFetchAlloc.mockResolvedValue([])
+    mockFetchAlloc.mockResolvedValue({})
     mockFetchYears.mockResolvedValue([2024, 2023])
     mockFetchSemesters.mockResolvedValue(['W1', 'W2', 'S1', 'S2'])
 
@@ -168,7 +161,8 @@ describe('ApplicationFilterPanel', () => {
     await waitFor(() => {
       expect(mockFetchAlloc).toHaveBeenCalledWith(
         mockApplications[0].student.id,
-        'mock-token'
+        'mock-token',
+        true
       )
     })
 
