@@ -251,7 +251,7 @@ public class AllocationService {
                     throw new AuthorizationException("You don't have permission to access this application");
                 }
         Allocation allocation = allocationRepository.findByApplicationId(appId);
-        return allocationMapper.toDto(allocation, studentInterface.getStudentById(userIdFromHeader).getBody(), applicationMapper.toDto(allocation.getApplication()));
+        return allocationMapper.toDto(allocation, studentInterface.getStudentById(allocation.getStudentId()).getBody(), applicationMapper.toDto(allocation.getApplication()));
         }
 
     public List<AllocationHistoryDto> getAllocationsByApplicationYear(int year) {
