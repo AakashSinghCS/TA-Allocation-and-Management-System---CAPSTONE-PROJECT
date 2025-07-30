@@ -28,9 +28,10 @@ export interface CreateSectionData {
 interface Props {
   onCreateSection: (data: CreateSectionData) => void;
   mode?: 'course' | 'section';
+  refreshOptions?: number;
 }
 
-export default function CreateSectionForm({ onCreateSection, mode }: Props) {
+export default function CreateSectionForm({ onCreateSection, mode, refreshOptions }: Props) {
   // form state
   const [form, setForm] = useState<CreateSectionData>({
     name: null,
@@ -83,7 +84,7 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
         })
         .catch(() => setDeptCodeOptions([]));
     }
-  }, [mode]);
+  }, [mode, refreshOptions]);
 
 
   const handleChange = <K extends keyof CreateSectionData>(
