@@ -60,7 +60,7 @@ export default function AddSectionPage() {
 
 
   return (
-    <div className="container mx-auto p-4 w-full max-w-5xl z-10">
+    <div className="container ml-0 mr-auto p-2 w-full max-w-5xl z-10">
       <h1 className="text-2xl font-bold mb-8 text-center">Course & Section Creation</h1>
       
       {/* If we want to force vertical stacking for all screen sizes, use: */}
@@ -73,7 +73,7 @@ export default function AddSectionPage() {
       {/* flex-col md:flex-row: vertical on mobile, horizontal (side-by-side) on desktop */}
       <div className="flex flex-col md:flex-row gap-8">
         {/* Course Creation Area */}
-        <div className="flex-1 bg-white shadow-lg p-6 rounded-2xl border border-blue-200">
+        <div className="flex-1 md:basis-[420px] md:min-w-[380px] bg-white shadow-lg p-6 rounded-2xl border border-blue-200">
           <h2 className="text-xl font-semibold mb-2 text-blue-700">Course Creation</h2>
           <p className="mb-4 text-gray-600 text-sm">Create a new course. This is for adding a new course to the system. If the course already exists, use the section creation form instead.</p>
           <CreateSectionForm onCreateSection={handleCreateSection} mode="course" />
