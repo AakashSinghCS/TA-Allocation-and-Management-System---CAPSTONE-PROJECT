@@ -455,7 +455,7 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
       <div className="flex gap-3">
         <button
           type="submit"
-          className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] transition-colors flex-1"
+          className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#232a5c] transition-colors flex-1"
         >
           {mode === 'course' ? 'Create Course' : mode === 'section' ? 'Create Section' : 'Create Section'}
         </button>
