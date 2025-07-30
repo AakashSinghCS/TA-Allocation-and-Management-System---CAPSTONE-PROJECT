@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "b3ed367a-8675-473a-ab90-11110e6c7c6b",
+		"_postman_id": "bc582917-96ea-446b-b143-b16a13090432",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45669202",
-		"_collection_link": "https://allen-9145341.postman.co/workspace/Allen's-Workspace~5d13c9f6-ede4-4301-81d3-649ab495ae62/collection/45669202-b3ed367a-8675-473a-ab90-11110e6c7c6b?action=share&source=collection_link&creator=45669202"
+		"_exporter_id": "45690522"
 	},
 	"item": [
 		{
@@ -1625,6 +1624,142 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Delete Availability by StudentId",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"date\": \"2025-08-10\",\r\n    \"startTime\": \"09:00\",\r\n    \"endTime\": \"12:00\"\r\n  },\r\n  {\r\n    \"date\": \"2025-08-11\",\r\n    \"startTime\": \"09:00\",\r\n    \"endTime\": \"12:00\"\r\n  }\r\n]\r\n"
+								},
+								"url": {
+									"raw": "localhost:8080/exams/1/availability",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"exams",
+										"1",
+										"availability"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get assignmentby examid",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/exams/assignments/byexam/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"exams",
+										"assignments",
+										"byexam",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete assignment by assignId",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/exams/assignments/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"exams",
+										"assignments",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update assignment by examId and StudentId",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUzNDE4MDUwLCJleHAiOjE3NTM0MjE2NTB9.6_QkWGnTClDrOd6y1YPKgLXuXW1OWMI_54aYstI7HLb5yIDoHvDeKx6sNo42MBwp",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"task\": \"PREPARATION\",\n    \"date\": \"2025-07-20\",\n    \"startTime\": \"10:00\",\n    \"endTime\": \"16:00\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/exams/assignments/1/student/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"exams",
+										"assignments",
+										"1",
+										"student",
+										"1"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -2476,7 +2611,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"preferences\": [\"COSC\", \"MATH\"],\r\n  \"wantRemote\": false,\r\n  \"wantWorkingHours\": 6,\r\n  \"applicationType\": \"UNDERGRADUATE\",\r\n  \"availabilities\": [\r\n    {\r\n      \"day\": \"MONDAY\",\r\n      \"startTime\": \"14:00\",\r\n      \"endTime\": \"16:00\"\r\n    },\r\n    {\r\n      \"day\": \"WEDNESDAY\",\r\n      \"startTime\": \"09:30\",\r\n      \"endTime\": \"11:30\"\r\n    }\r\n  ]\r\n}\r\n",
+									"raw": "{\r\n  \"preferences\": [\"COSC\", \"MATH\"],\r\n  \"wantRemote\": false,\r\n  \"wantWorkingHours\": 6,\r\n  \"applicationType\": \"UNDERGRADUATE\",\r\n  \"availabilities\": [\r\n    {\r\n      \"day\": \"MONDAY\",\r\n      \"startTime\": \"14:00\",\r\n      \"endTime\": \"16:00\"\r\n    },\r\n    {\r\n      \"day\": \"WEDNESDAY\",\r\n      \"startTime\": \"13:30\",\r\n      \"endTime\": \"15:30\"\r\n    }\r\n  ]\r\n}\r\n",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2754,7 +2889,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"isConfirmed\": false,\r\n    \"task\": \"grading\",\r\n    \"gradingHours\": 5,\r\n    \"sectionId\": 1\r\n}"
+									"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"task\": \"GRADING\",\r\n    \"hours\": 5,\r\n    \"sectionId\": 1\r\n}"
 								},
 								"url": {
 									"raw": "localhost:8080/allocations/allocate",
@@ -2963,7 +3098,7 @@
 									"raw": ""
 								},
 								"url": {
-									"raw": "localhost:8080/allocations/filter/status/CONFIRMED",
+									"raw": "localhost:8080/allocations/filter/status/SENT",
 									"host": [
 										"localhost"
 									],
@@ -2972,7 +3107,7 @@
 										"allocations",
 										"filter",
 										"status",
-										"CONFIRMED"
+										"SENT"
 									]
 								}
 							},
@@ -3033,7 +3168,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUzNDEwMzAyLCJleHAiOjE3NTM0MTM5MDJ9.KELk8YJ4W0DQhc1lm3LJ2Q6D3JS2DLX3QWStfery6ylP67nDy74J-QaDRJYIzdz1",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
 											"type": "string"
 										}
 									]
@@ -3944,6 +4079,64 @@
 					"response": []
 				},
 				{
+					"name": "Get active semesters",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/semesters/getActive",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"semesters",
+								"getActive"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get inactive semesters",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/semesters/getInactive",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"semesters",
+								"getInactive"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Add semester",
 					"request": {
 						"auth": {
@@ -3960,7 +4153,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n        \"year\": 2026,\r\n        \"semester\": \"W1\",\r\n        \"startDate\": \"2026-09-03\",\r\n        \"endDate\": \"2026-12-08\"\r\n}",
+							"raw": "{\r\n        \"year\": 2026,\r\n        \"semester\": \"W1\",\r\n        \"startDate\": \"2026-09-03\",\r\n        \"endDate\": \"2026-12-08\",\r\n        \"isActive\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3996,8 +4189,17 @@
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"year\": 2027,\r\n        \"semester\": \"W2\",\r\n        \"startDate\": \"2027-01-03\",\r\n        \"endDate\": \"2027-04-08\",\r\n        \"isActive\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "localhost:8080/semesters/update/1",
+							"raw": "localhost:8080/semesters/update/5",
 							"host": [
 								"localhost"
 							],
@@ -4005,7 +4207,7 @@
 							"path": [
 								"semesters",
 								"update",
-								"1"
+								"5"
 							]
 						}
 					},

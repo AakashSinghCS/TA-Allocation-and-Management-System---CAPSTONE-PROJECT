@@ -97,7 +97,8 @@ describe('<AddSectionPage />', () => {
       </MemoryRouter>,
     );
 
-    fireEvent.click(screen.getByTestId('btn-course'));
+    const courseButtons = screen.getAllByTestId('btn-course');
+    fireEvent.click(courseButtons[0]);
 
     await waitFor(() =>
       expect(mockCreateCourse).toHaveBeenCalledWith({
@@ -120,12 +121,12 @@ describe('<AddSectionPage />', () => {
       </MemoryRouter>,
     );
 
-    fireEvent.click(screen.getByTestId('btn-section'));
+    const sectionButtons = screen.getAllByTestId('btn-section');
+    fireEvent.click(sectionButtons[0]);
 
     await waitFor(() =>
       expect(mockCreateSection).toHaveBeenCalledWith({
         deptCode: 'COSC',
-        name: 'Security',
         courseNum: '430',
         section: '001',
         type: 'LECTURE',
@@ -133,7 +134,7 @@ describe('<AddSectionPage />', () => {
         semester: 'W1',
         sectionSchedules: [],
         instructorId: 7,
-      }),
+      })
     );
 
     expect(mockNavigate).toHaveBeenCalledWith(

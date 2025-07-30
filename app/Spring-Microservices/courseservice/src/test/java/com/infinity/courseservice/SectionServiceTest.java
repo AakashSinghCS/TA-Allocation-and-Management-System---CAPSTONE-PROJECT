@@ -486,7 +486,7 @@ public class SectionServiceTest {
         var data = new SectionCsvData("", "", "", null, "", "", "", "", "",
                 "");
         String result = sectionService.importSectionsFromJson(List.of(data));
-        assertTrue(result.contains("Errors: 1"));
+        assertTrue(result.contains("Failed: 1"));
         assertTrue(result.contains("Missing required fields"));
     }
 
@@ -497,7 +497,7 @@ public class SectionServiceTest {
         Course course = new Course("COSC", "Intro to CS", "111");
         when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
         String result = sectionService.importSectionsFromJson(List.of(data));
-        assertTrue(result.contains("Errors: 1"));
+        assertTrue(result.contains("Failed: 1"));
         assertTrue(result.contains("Invalid section type"));
     }
 
@@ -512,8 +512,10 @@ public class SectionServiceTest {
                 SectionType.LECTURE)).thenReturn(Optional.empty());
         when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.empty());
         String result = sectionService.importSectionsFromJson(List.of(data));
-        assertTrue(result.contains("Errors: 1"));
-        assertTrue(result.contains("That semester doesn't exist"));
+        System.out.println(result);
+
+        assert(result.contains("That semester doesn't exist"));
+        assertTrue(result.contains("Section import failed"));
     }
 
     @Test
@@ -526,7 +528,7 @@ public class SectionServiceTest {
                 SectionType.LECTURE)).thenReturn(Optional.empty());
         when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(semester));
         String result = sectionService.importSectionsFromJson(List.of(data));
-        assertTrue(result.contains("Errors: 1"));
+        assertTrue(result.contains("Failed: 1"));
         assertTrue(result.contains("Invalid time format"));
     }
 }

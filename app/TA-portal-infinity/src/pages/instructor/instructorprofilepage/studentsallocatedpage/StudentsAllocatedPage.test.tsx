@@ -9,6 +9,7 @@ import { fetchAllExistingYears } from '../../../../api/course/sectionfilter/fetc
 import { fetchSectionNeedAndAllocations } from '../../../../api/instructor/fetchSectionNeedAndAllocations';
 import { fetchAllInstructorCourses } from '../../../../api/instructor/fetchAllInstructorCourses';
 import { fetchAllocationById } from '../../../../api/allocation/fetchAllocationById';
+import { exportToCSV, exportToPDF } from '../../../../components/features/allocatedStudent';
 
 // Mock all the API functions
 vi.mock('../../../../api/user/fetchUserDetails');
@@ -202,7 +203,6 @@ describe('StudentsAllocatedPage', () => {
   });
 
   it('handles export CSV functionality', async () => {
-    const { exportToCSV } = await import('../../../../components/features/allocatedStudent');
     renderComponent();
     await waitFor(() => {
       expect(screen.getByTestId('export-csv-button')).toBeInTheDocument();
@@ -214,13 +214,12 @@ describe('StudentsAllocatedPage', () => {
   });
 
   it('handles export PDF functionality', async () => {
-  const { exportToPDF } = await import(
-    '../../../../components/features/allocatedStudent'
-  );
-  renderComponent();
-
-  // wait for the section to actually render (data loaded)
-  await waitFor(() => expect(screen.getByTestId('section-card')).toBeInTheDocument());
+    renderComponent();
+    
+    await waitFor(() => {
+      const exportButton = screen.getByTestId('export-pdf-button');
+      expect(exportButton).toBeInTheDocument();
+    });
 
   // now click the export button
   fireEvent.click(screen.getByTestId('export-pdf-button'));

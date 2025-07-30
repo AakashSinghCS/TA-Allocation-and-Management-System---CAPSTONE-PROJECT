@@ -220,7 +220,7 @@ const handleFilterChange = useCallback((f: FilterSectionsProps) => {
             >
               ×
             </button>
-            <SectionCsvImport />
+            <SectionCsvImport onClose={() => setShowCsvImport(false)} />
           </div>
         </div>
       )}

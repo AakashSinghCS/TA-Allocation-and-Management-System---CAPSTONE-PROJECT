@@ -34,7 +34,7 @@ const AllocationPage = lazy(() => import("../pages/coordinator/allocationpage/Al
 const ApplicationViewPage = lazy(() => import("../pages/coordinator/applicationviewpage/ApplicationViewPage"));
 const UserBrowsingPage = lazy(() => import("../pages/coordinator/userbrowsingpage/UserBrowsingPage"));
 const ManualCreateUserPage = lazy(() => import("../pages/coordinator/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage"));
-const GlobalConfigPage = lazy(() => import("../pages/admin/deadlinemanagementpage/GlobalConfigPage"));
+const GlobalConfigPage = lazy(() => import("../pages/admin/globalconfig/GlobalConfigPage"));
 
 const CourseProfilePage = lazy(() => import("../pages/course/courseprofilepage/CourseProfilePage"));
 const SectionListPage = lazy(() => import("../pages/course/sectionlistpage/SectionListPage"));

@@ -71,6 +71,29 @@ public class UserController {
         return userService.searchUsersByPage(pageable, role, firstname, lastname, universityNumber, userId);
     }
 
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/search")
+     public ResponseEntity<List<UserDto>> searchUsers(
+        @RequestParam(required = false) String role,
+
+
+
+            @RequestParam(required = false, defaultValue = "") String firstname,
+
+
+             @RequestParam(required = false, defaultValue = "") String lastname,
+
+
+            @RequestParam(required = false, defaultValue = "0") int universityNumber,
+
+
+             @RequestParam(required = false) Long userId) {
+
+         List<UserDto> results = userService.search(role, firstname, lastname, universityNumber, userId);
+
+         return ResponseEntity.ok(results);
+     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/changeRole/{id}")
     public ResponseEntity<UserDto> changeRole(@PathVariable Long id, @RequestBody RoleChangeRequest request,
