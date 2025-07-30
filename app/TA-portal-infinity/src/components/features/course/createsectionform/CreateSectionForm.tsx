@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
+import { getAllDeptCodes } from '../../../../api/course/getAllDeptCodes';
 import { validateCourseProfile } from '../../../../utility/validation/course/validateCourseProfile';
 import { sectionTypeOptions, type SectionType } from '../../../../interfaces/section/SectionDetails';
 
@@ -48,6 +49,29 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
   // error state for course and section creation
   const [courseErrors, setCourseErrors] = useState<{[k: string]: string | undefined}>({});
   const [sectionErrors, setSectionErrors] = useState<{[k: string]: string | undefined}>({});
+
+  // Dept Code options for section creation
+  const [deptCodeOptions, setDeptCodeOptions] = useState<string[]>([]);
+  useEffect(() => {
+    if (mode === 'section') {
+      const token = localStorage.getItem('token') || undefined;
+      getAllDeptCodes(token)
+        .then((codes) => {
+          console.log('DeptCode API result:', codes);
+          if (Array.isArray(codes)) {
+            setDeptCodeOptions(codes);
+          } else if (codes && Array.isArray(codes.data)) {
+            setDeptCodeOptions(codes.data);
+          } else {
+            setDeptCodeOptions([]);
+          }
+        })
+        .catch((err) => {
+          console.error('DeptCode API error:', err);
+          setDeptCodeOptions([]);
+        });
+    }
+  }, [mode]);
 
   const handleChange = <K extends keyof CreateSectionData>(
     key: K,
@@ -217,17 +241,33 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
         <label htmlFor="deptCode" className="text-sm block mb-1">
           Dept Code{' '}<span className="text-red-500">*</span>
         </label>
-        <input
-          id="deptCode"
-          value={form.deptCode}
-          onChange={e =>  {
-            handleChange('deptCode', e.target.value);
-            if (courseErrors.deptCode) setCourseErrors(errors => ({ ...errors, deptCode: undefined }));
-            if (sectionErrors.deptCode) setSectionErrors(errors => ({ ...errors, deptCode: undefined }));
-          }}
-          className={`w-full border rounded px-2 py-1${(courseErrors.deptCode || sectionErrors.deptCode) ? ' border-red-500' : ''}`}
-          placeholder=" e.g. COSC"
-        />
+        {mode === 'section' ? (
+          <select
+            id="deptCode"
+            value={form.deptCode}
+            onChange={e => {
+              handleChange('deptCode', e.target.value);
+              if (sectionErrors.deptCode) setSectionErrors(errors => ({ ...errors, deptCode: undefined }));
+            }}
+            className={`w-full border rounded px-2 py-1${sectionErrors.deptCode ? ' border-red-500' : ''}`}
+          >
+            <option value="">-- Select Dept Code --</option>
+            {deptCodeOptions.map(code => (
+              <option key={code} value={code}>{code}</option>
+            ))}
+          </select>
+        ) : (
+          <input
+            id="deptCode"
+            value={form.deptCode}
+            onChange={e =>  {
+              handleChange('deptCode', e.target.value);
+              if (courseErrors.deptCode) setCourseErrors(errors => ({ ...errors, deptCode: undefined }));
+            }}
+            className={`w-full border rounded px-2 py-1${courseErrors.deptCode ? ' border-red-500' : ''}`}
+            placeholder=" e.g. COSC"
+          />
+        )}
         {mode === 'course' && courseErrors.deptCode && (
           <div className="text-red-600 text-xs mt-1">{courseErrors.deptCode}</div>
         )}
