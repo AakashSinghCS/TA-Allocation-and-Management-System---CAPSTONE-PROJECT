@@ -30,7 +30,7 @@ public class NeedMapperTest {
         need.setId(100L);
 
         Prereq prereq = new Prereq();
-        Semester semester = new Semester(2025, "W1", null, null);
+        Semester semester = new Semester(2025, "W1", null, null, true);
         CourseNeed courseNeed = new CourseNeed(mainCourse, need, semester);
 
         prereq.setCourseNeed(courseNeed);

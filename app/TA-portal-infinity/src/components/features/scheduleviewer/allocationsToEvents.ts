@@ -1,9 +1,15 @@
-import { getSemesterRanges, getAllWeekdaysInRange, dayMap } from "./ScheduleUtils";
+import { getSemesterRanges, getAllWeekdaysInRange } from "./ScheduleUtils";
 import type { ScheduleRow } from "./ScheduleViewer.types";
 
-export function allocationsToEvents(scheduleRows: ScheduleRow[]) {
+export async function allocationsToEvents(scheduleRows: ScheduleRow[], token: string) {
   const events: any[] = [];
+  
+  // Get semester ranges once for all allocations
+  const semesterRanges = await getSemesterRanges(token);
+  
   scheduleRows.forEach(a => {
+    const semesterKey = `${a.year}-${a.semester}`;
+    const semesterRange = semesterRanges[semesterKey];
     if (a.date && a.startTime && a.endTime) {
       const eventStart = new Date(`${a.date}T${a.startTime}`);
       const eventEnd = new Date(`${a.date}T${a.endTime}`);
@@ -18,6 +24,10 @@ export function allocationsToEvents(scheduleRows: ScheduleRow[]) {
           status: a.status ?? "",
           course: a.course,
           section: a.section,
+          semester: a.semester,
+          year: a.year,
+          semesterStart: semesterRange?.start ?? '',
+          semesterEnd: semesterRange?.end ?? ''
         },
       });
 
@@ -38,7 +48,8 @@ export function allocationsToEvents(scheduleRows: ScheduleRow[]) {
         };
         normalizedDay = dayFullNames[normalizedDay] || normalizedDay;
       }
-      const semesterRange = getSemesterRanges(a.year)[a.semester];
+      const semesterKey = `${a.year}-${a.semester}`;
+      const semesterRange = semesterRanges[semesterKey];
       if (!semesterRange) return;
       const allDates = getAllWeekdaysInRange(normalizedDay, semesterRange.start, semesterRange.end);
       const [startHour, startMinute] = a.startTime.split(":").map(Number);
@@ -58,6 +69,10 @@ export function allocationsToEvents(scheduleRows: ScheduleRow[]) {
             status: a.status ?? "",
             course: a.course,
             section: a.section,
+            semester: a.semester,
+            year: a.year,
+            semesterStart: semesterRange?.start ?? '',
+            semesterEnd: semesterRange?.end ?? ''
           },
         });
       });

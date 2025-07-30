@@ -25,16 +25,16 @@ public class SemesterSeeder {
         List<Semester> predefined = List.of(
                 new Semester(2025, "W1",
                         LocalDate.parse("2025-09-03"),
-                        LocalDate.parse("2025-12-08")),
+                        LocalDate.parse("2025-12-08"), true),
                 new Semester(2026, "W2",
-                        LocalDate.parse("2025-09-03"),
-                        LocalDate.parse("2025-12-08")),
+                        LocalDate.parse("2026-01-03"),
+                        LocalDate.parse("2026-04-08"), true),
                 new Semester(2025, "S1",
                         LocalDate.parse("2025-05-14"),
-                        LocalDate.parse("2025-06-17")),
+                        LocalDate.parse("2025-06-17"), false),
                 new Semester(2025, "S2",
                         LocalDate.parse("2025-07-02"),
-                        LocalDate.parse("2025-08-08")));
+                        LocalDate.parse("2025-08-08"), false));
 
         Set<String> existingKeys = semesterRepository.findAll().stream()
                 .map(s -> s.getYear() + "-" + s.getSemester())

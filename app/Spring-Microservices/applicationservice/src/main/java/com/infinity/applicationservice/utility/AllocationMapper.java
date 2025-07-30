@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
-import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.models.Allocation;
 
@@ -14,16 +13,17 @@ public class AllocationMapper {
     public AllocationHistoryDto toDto(
             Allocation allocation,
             UserDto student,
-            ApplicationDto applicationDto,
-            SectionDto section) {
+            ApplicationDto applicationDto) {
 
         return new AllocationHistoryDto(
             allocation.getId(),
             student,
             applicationDto,
             allocation.getStatus(),
-            allocation.getNumberOfHours(),
-            section
+            allocation.getLabPrepHours(),
+            allocation.getGradingHours(),
+            allocation.getSectionHours(),
+            allocation.getAllocatedSections()
         );
     }
 }

@@ -22,9 +22,7 @@ const ApplicationPage = lazy(() => import("../pages/student/applicationpage/Appl
 const ViewApplicationPage = lazy(() => import("../pages/student/viewapplicationpage/ViewApplicationPage"));
 const ScheduleViewer = lazy(() => import("../pages/student/scheduleviewer/ScheduleViewer"));
 
-const InstructorProfilePage = lazy(() => import("../pages/instructor/instructorprofilepage/InstructorProfilePage"));
 const InstructorNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/InstructorNeedPage"));
-const InstructorComparerPage = lazy(() => import("../pages/instructor/instructorprofilepage/comparerpage/InstructorComparerPage"));
 const InstructorQualificationPage = lazy(() => import("../pages/instructor/instructorprofilepage/qualificationpage/InstructorQualificationPage"));
 const InstructorAddSectionPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/addsectionpage/InstructorAddSectionPage"));
 const InstructorAddNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/addneedpage/InstructorAddNeedPage"));
@@ -36,7 +34,7 @@ const AllocationPage = lazy(() => import("../pages/coordinator/allocationpage/Al
 const ApplicationViewPage = lazy(() => import("../pages/coordinator/applicationviewpage/ApplicationViewPage"));
 const UserBrowsingPage = lazy(() => import("../pages/coordinator/userbrowsingpage/UserBrowsingPage"));
 const ManualCreateUserPage = lazy(() => import("../pages/coordinator/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage"));
-const GlobalConfigPage = lazy(() => import("../pages/admin/deadlinemanagementpage/GlobalConfigPage"));
+const GlobalConfigPage = lazy(() => import("../pages/admin/globalconfig/GlobalConfigPage"));
 
 const CourseProfilePage = lazy(() => import("../pages/course/courseprofilepage/CourseProfilePage"));
 const SectionListPage = lazy(() => import("../pages/course/sectionlistpage/SectionListPage"));

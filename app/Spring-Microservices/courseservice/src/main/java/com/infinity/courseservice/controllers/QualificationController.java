@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.courseservice.dtos.QualificationDtos.QualificationDto;
-import com.infinity.courseservice.dtos.QualificationDtos.QualificationDto;
 import com.infinity.courseservice.dtos.QualificationDtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationDtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.QualificationDtos.StudentQualiRequest;

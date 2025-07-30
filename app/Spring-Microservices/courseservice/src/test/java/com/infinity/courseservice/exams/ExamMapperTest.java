@@ -38,7 +38,7 @@ class ExamMapperTest {
         Course course = new Course();
         course.setId(1L);
 
-        Semester semester = new Semester(2025, "W1", null, null);
+        Semester semester = new Semester(2025, "W1", null, null, true);
 
         Section section = new Section();
         section.setId(2L);

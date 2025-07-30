@@ -1,22 +1,33 @@
 import React from "react";
 import { createEvents } from "ics";
-import { dayMap, getSemesterRanges, getAllWeekdaysInRange } from "./ScheduleUtils";
+import { getSemesterRanges, getAllWeekdaysInRange } from "./ScheduleUtils";
 import type { ScheduleRow } from "./ScheduleViewer.types";
 
 // CSV Export schedule
-export function exportCSV(scheduleRows: ScheduleRow[]) {
-  const header = ["Course", "Section", "Instructor", "Day", "Start Time", "End Time", "Semester", "Year", "Number Of Hours"];
-  const rows = scheduleRows.map(a => [
-    a.course,
-    a.section,
-    a.instructor,
-    a.day,
-    a.startTime,
-    a.endTime,
-    a.semester,
-    a.year,
-    a.numberOfHours,
-  ]);
+export async function exportCSV(scheduleRows: ScheduleRow[]) {
+  const header = [
+    "Course", "Section", "Instructor", "Day", "Start Time", "End Time", "Semester", "Year", "Semester Start", "Semester End", "Number Of Hours"
+  ];
+  // Assume all rows have same year/semester, or fetch for each row
+  // For each row, get semester start/end
+  const semesterRanges = await getSemesterRanges(""); // If you have a token, pass it here
+  const rows = scheduleRows.map(a => {
+    const semesterKey = `${a.year}-${a.semester}`;
+    const semesterRange = semesterRanges[semesterKey] || { start: "", end: "" };
+    return [
+      a.course,
+      a.section,
+      a.instructor,
+      a.day,
+      a.startTime,
+      a.endTime,
+      a.semester,
+      a.year,
+      semesterRange.start,
+      semesterRange.end,
+      a.numberOfHours,
+    ];
+  });
   const csvContent = [header, ...rows].map(r => r.join(",")).join("\n");
   const blob = new Blob([csvContent], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
@@ -28,11 +39,13 @@ export function exportCSV(scheduleRows: ScheduleRow[]) {
 }
 
 // ICS Export for schedule
-export function exportICS(scheduleRows: ScheduleRow[]) {
+export async function exportICS(scheduleRows: ScheduleRow[]) {
+  const semesterRanges = await getSemesterRanges("");
   const events = scheduleRows
     .filter(a => a.day && a.startTime && a.endTime)
     .flatMap(a => {
-      const semesterRange = getSemesterRanges(a.year)[a.semester];
+      const semesterKey = `${a.year}-${a.semester}`;
+      const semesterRange = semesterRanges[semesterKey];
       if (!semesterRange) return [];
       let normalizedDay = a.day;
       if (normalizedDay.length === 3) {

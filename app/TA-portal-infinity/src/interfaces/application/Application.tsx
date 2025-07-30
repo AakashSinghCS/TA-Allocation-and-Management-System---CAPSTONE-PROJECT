@@ -2,7 +2,7 @@ export type Day =
   | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY'
   | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
 
-export interface AvailabilityDto {
+export interface UnavailabilityDto {
   day: Day;
   startTime: string;  // "HH:mm"
   endTime: string;    // "HH:mm"
@@ -21,34 +21,34 @@ export interface OfferDto {
   description: string;
 }
 
+import type { Allocation } from '../allocation/Allocation';
 import type { ApplicationType } from '../enum/ApplicationType';
+import type { Student } from '../user/Student';
 export interface ApplicationRequest {
+  year: number;
+  semester: string;
   preferences: string[];
   wantRemote: boolean;
   wantWorkingHours: number;
-  availabilities: AvailabilityDto[];
+  unavailabilities: UnavailabilityDto[];
   applicationType: ApplicationType;
 }
 
 
 export interface ApplicationDto {
-   id?:             number;
+  id?:             number;
   applicationId?:  number;
-  student: {
-    id: number;                
-    firstName: string;
-    lastName: string;
-    studentNum: string | null;
-    program: string | null;
-    enrollmentYear: number | null;
-    schoolYear: string | null;
-  };
+  studentId?:      number;
+  year:            number;
+  semester:        string;
+  student: Student;
   preferences: string[];
   wantRemote: boolean;
   wantWorkingHours: number;
   timeSubmitted: string;
   applicationType: ApplicationType;
-  availabilities: AvailabilityDto[];
+  unavailabilities: UnavailabilityDto[];
   transcript?: TranscriptDto;
   offers?: OfferDto[];
+  allocation? :Allocation;
 }

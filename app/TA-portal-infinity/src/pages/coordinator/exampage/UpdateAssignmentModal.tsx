@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type ExamAssignmentDto  from "../../../interfaces/exam/ExamAssignment";
 import {toast} from "react-toastify";
+import DatePicker from "react-datepicker";
 
 interface UpdateAssignmentModalProps {
   isOpen: boolean;
@@ -18,7 +19,7 @@ const UpdateAssignmentModal: React.FC<UpdateAssignmentModalProps> = ({
   onClose,
 }) => {
   const [task, setTask] = useState(assignment.task);
-  const [date, setDate] = useState(assignment.date);
+  const [date, setDate] = useState<Date | null>(new Date(assignment.date));
   const [startTime, setStartTime] = useState(assignment.startTime);
   const [endTime, setEndTime] = useState(assignment.endTime);
 
@@ -59,11 +60,18 @@ const UpdateAssignmentModal: React.FC<UpdateAssignmentModalProps> = ({
     onUpdate({
       ...assignment,
       task,
-      date,
+      date: date ? formatDateToYyyyMmDdLocal(date) : "",
       startTime,
       endTime,
     });
   };
+
+  function formatDateToYyyyMmDdLocal(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
 
   return (
     <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex justify-center items-center z-50">
@@ -92,13 +100,13 @@ const UpdateAssignmentModal: React.FC<UpdateAssignmentModalProps> = ({
 
           <div>
             <label htmlFor="date" className="block mb-2">Date</label>
-            <input
-              id="date"
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full mt-1 border rounded px-3 py-2"
-              required
+            <DatePicker
+              selected={date}
+              onChange={(d: Date | null) => setDate(d)}
+              className="w-full border rounded px-3 py-2"
+              dateFormat="yyyy-MM-dd"
+              minDate={new Date()}
+              placeholderText="Select a date"
             />
           </div>
 

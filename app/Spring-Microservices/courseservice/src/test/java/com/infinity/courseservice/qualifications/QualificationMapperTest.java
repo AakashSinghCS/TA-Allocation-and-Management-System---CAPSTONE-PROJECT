@@ -49,7 +49,7 @@ class QualificationMapperTest {
         Course course = new Course();
         course.setId(10L);
 
-        Semester semester = new Semester(2025, "W1", null, null);
+        Semester semester = new Semester(2025, "W1", null, null, true);
 
         Section section = new Section();
         section.setId(20L);

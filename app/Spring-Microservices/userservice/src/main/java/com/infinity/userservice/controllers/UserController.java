@@ -58,6 +58,7 @@ public class UserController {
         return ResponseEntity.ok("User deleted");
     }
 
+
     @PreAuthorize("hasAnyRole('COORDINATOR', 'ADMIN')")
     @GetMapping("/search/page")
     public Page<UserDto> searchUsersByPage(

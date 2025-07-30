@@ -1,11 +1,11 @@
 package com.infinity.applicationservice.dtos.Allocations;
 
-import com.infinity.applicationservice.enums.ApplicationStatus;
+import com.infinity.applicationservice.enums.TaskType;
 
 public record AllocationRequest(
         Long studentId,
         Long applicationId,
-        ApplicationStatus status,
-        int numberOfHours,
+        TaskType task,
+        double hours,
         Long sectionId) {
 }

@@ -11,9 +11,11 @@ import com.infinity.applicationservice.enums.Subject;
 public record ApplicationWithStudentDto(Long applicationId,
                 UserDto student,
                 List<Subject> preferences,
-        ApplicationType applicationType,
+                ApplicationType applicationType,
                 boolean wantRemote,
                 Integer wantWorkingHours,
+                Integer year,
+                String semester,
                 LocalDateTime timeSubmitted,
-                Set<AvailabilityDto> availabilities) {
+                Set<UnavailabilityDto> unavailabilities) {
 }

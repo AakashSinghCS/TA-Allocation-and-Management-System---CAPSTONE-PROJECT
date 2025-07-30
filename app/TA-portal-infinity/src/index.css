@@ -33,7 +33,19 @@
   }
 }
 
+@layer base {
+/* deletes the highlighting of the column in calendar*/
+.fc {
+  --fc-today-bg-color: transparent;   /* FC v6 uses this var */
+}
 
+/* belt & suspenders */
+.fc .fc-day-today,
+.fc .fc-timegrid-col.fc-day-today,
+.fc .fc-daygrid-day.fc-day-today {
+  background: transparent !important;
+}
+}
 /* a {
   font-weight: 500;
   color: #ffffff;

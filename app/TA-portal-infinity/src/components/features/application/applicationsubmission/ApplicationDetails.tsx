@@ -20,11 +20,11 @@ const ApplicationDetails: React.FC<ApplicationDetailsProps> = ({ savedApp }) => 
       <div><span className="font-semibold">Remote:</span> {savedApp.wantRemote ? 'Yes' : 'No'}</div>
       <div><span className="font-semibold">Requested Hours:</span> {savedApp.wantWorkingHours}</div>
       <div className="sm:col-span-2 md:col-span-3">
-        <span className="font-semibold">Availability:</span>
+        <span className="font-semibold">Unavailability:</span>
         <ul className="list-disc list-inside ml-4 inline">
-          {savedApp.availabilities?.length ? (
-            savedApp.availabilities.map((a, i) => (
-              <li key={i} className="inline-block mr-4">{a.day} {a.startTime}–{a.endTime}</li>
+          {savedApp.unavailabilities?.length ? (
+            savedApp.unavailabilities.map((u, i) => (
+              <li key={i} className="inline-block mr-4">{u.day} {u.startTime}–{u.endTime}</li>
             ))
           ) : (
             <li>N/A</li>

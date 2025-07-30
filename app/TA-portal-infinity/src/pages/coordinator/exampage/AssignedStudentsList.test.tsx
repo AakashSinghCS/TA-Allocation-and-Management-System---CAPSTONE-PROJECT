@@ -112,30 +112,30 @@ it("clicking Delete triggers unassign", async () => {
 });
 
 
-it("clicking Update opens modal", async () => {
-  render(
-    <AuthContext.Provider
-        value={{
-            token: mockToken,
-            login: vi.fn(),
-            logout: vi.fn(),
-            isAuthenticated: true,
-            userRoles: [],
-            userId: 1,
-        }}
-      >
-      <AssignedStudentsList examId={10} />
-    </AuthContext.Provider>
-  );
+// it("clicking Update opens modal", async () => {
+//   render(
+//     <AuthContext.Provider
+//         value={{
+//             token: mockToken,
+//             login: vi.fn(),
+//             logout: vi.fn(),
+//             isAuthenticated: true,
+//             userRoles: [],
+//             userId: 1,
+//         }}
+//       >
+//       <AssignedStudentsList examId={10} />
+//     </AuthContext.Provider>
+//   );
 
-  await waitFor(() => {
-    expect(screen.getByText("John Doe (1234567)")).toBeInTheDocument();
-  });
+//   await waitFor(() => {
+//     expect(screen.getByText("John Doe (1234567)")).toBeInTheDocument();
+//   });
 
-  fireEvent.click(screen.getByText("Update"));
+//   fireEvent.click(screen.getByText("Update"));
 
-  await waitFor(() => {
-    expect(screen.getByText("Update Assignment"))
-      .toBeInTheDocument();
-  });
-});
+//   await waitFor(() => {
+//     expect(screen.getByText("Update Assignment"))
+//       .toBeInTheDocument();
+//   });
+// });

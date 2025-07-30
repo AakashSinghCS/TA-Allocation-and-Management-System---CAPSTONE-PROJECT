@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { dayMap, getSemesterRanges } from "./ScheduleUtils";
 import type { ScheduleRow } from "./ScheduleViewer.types";
+import { useAuth } from "../../../context/AuthContext";
 
-const ScheduleViewerTable: React.FC<{ scheduleRows: ScheduleRow[]; startOfWeek: Date }> = ({ scheduleRows, startOfWeek }) => (
+const ScheduleViewerTable: React.FC<{ scheduleRows: ScheduleRow[]; startOfWeek: Date }> = ({ scheduleRows, startOfWeek }) => {
+  const { token } = useAuth();
+  const [semesterRanges, setSemesterRanges] = useState<Record<string, { start: string; end: string }>>({});
+
+  useEffect(() => {
+    async function loadSemesterRanges() {
+      if (!token) return;
+      try {
+        const ranges = await getSemesterRanges(token);
+        setSemesterRanges(ranges);
+      } catch (error) {
+        console.error('Failed to load semester ranges:', error);
+      }
+    }
+    loadSemesterRanges();
+  }, [token]);
+
+  return (
   <div className="overflow-x-auto">
     <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
       <thead>
@@ -58,9 +76,9 @@ const ScheduleViewerTable: React.FC<{ scheduleRows: ScheduleRow[]; startOfWeek: 
                 <span className="text-red-400 text-xs">No schedule</span>
               )}
             </td>
-            <td className="px-4 py-2 text-blue-900">{a.semester}</td>
-            <td className="px-4 py-2 text-gray-700">{a.date ?? getSemesterRanges(a.year)[a.semester]?.start ?? "N/A"}</td>
-            <td className="px-4 py-2 text-gray-700">{a.date ?? getSemesterRanges(a.year)[a.semester]?.end ?? "N/A"}</td>
+            <td className="px-4 py-2 text-blue-900">{a.year} {a.semester}</td>
+            <td className="px-4 py-2 text-gray-700">{a.date ?? semesterRanges[`${a.year}-${a.semester}`]?.start ?? "N/A"}</td>
+            <td className="px-4 py-2 text-gray-700">{a.date ?? semesterRanges[`${a.year}-${a.semester}`]?.end ?? "N/A"}</td>
             <td className="px-4 py-2">
               <span className={`px-2 py-1 rounded-full text-xs font-bold shadow-sm ${a.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                 {a.status}
@@ -71,7 +89,8 @@ const ScheduleViewerTable: React.FC<{ scheduleRows: ScheduleRow[]; startOfWeek: 
         ))}
       </tbody>
     </table>
-  </div>
-);
+    </div>
+  );
+};
 
 export default ScheduleViewerTable;

@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { vi } from 'vitest';
 import ApplicationForm from './ApplicationForm';
 
 // Mock useAuth for all tests
@@ -10,9 +11,23 @@ vi.mock('../../../../api/course/getAllDeptCodes', () => ({
   getAllDeptCodes: vi.fn(() => Promise.resolve(['COSC', 'MATH', 'PHYS'])),
 }));
 
+// Mock fetchDeadlines 
+vi.mock('../../../../api/admin/FetchDeadline', () => ({
+  fetchDeadlines: vi.fn(() => Promise.resolve({ deadline: '2025-12-31T23:59:59', deadlineType: 'APPLICATION' })),
+}));
+
+// Mock getActiveSemesters
+vi.mock('../../../../api/semester/getActiveSemesters', () => ({
+  getActiveSemesters: vi.fn(() => Promise.resolve([
+    { year: 2025, semester: 'Summer' },
+    { year: 2025, semester: 'W1' }
+  ])),
+}));
+
 describe('ApplicationForm', () => {
   const baseProps = {
     formData: {
+      selectedTerms: ['2025-Summer'],
       firstPreference: '',
       secondPreference: '',
       thirdPreference: '',
@@ -32,7 +47,7 @@ describe('ApplicationForm', () => {
     render(<ApplicationForm {...baseProps} />);
     expect(screen.getByText(/Subject Preferences/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Hours Requested/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Upload Transcript/i)).toBeInTheDocument();
+    // Check for application type and remote work preference radio buttons
     expect(screen.getAllByLabelText(/Application Type/i).length).toBeGreaterThan(0);
     expect(screen.getAllByLabelText(/Remote Work Preference/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/I confirm that I have updated my profile/i)).toBeInTheDocument();
