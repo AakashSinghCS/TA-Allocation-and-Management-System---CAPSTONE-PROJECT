@@ -53,13 +53,24 @@ export default function AddSectionPage() {
       }
 
       const result = await fetchCreateSection(sectionAddDtoRequest);
-      if (result) {
+      if (result && result.success) {
         setSectionCreated(true);
         if (sectionCreatedTimeout.current) clearTimeout(sectionCreatedTimeout.current);
         sectionCreatedTimeout.current = setTimeout(() => setSectionCreated(false), 3000);
       } else {
-        // If fetchCreateSection does not return error details, show a generic message covering both possible causes.
-        alert("Failed to create section.\nPossible reasons:\n- The combination of Year and Semester does not exist.\n- The section is a duplicate.\nPlease check the Year/Semester and try again.");
+        let msg = "Failed to create section.";
+        if (result?.error) {
+          // Debug: log the actual error response
+          console.log("Section creation error response:", result.error);
+          if (result.error.toLowerCase().includes("semester doesn't exist")) {
+            msg = "Failed to create section. The combination of Year and Semester does not exist.";
+          } else if (result.error.toLowerCase().includes("already exists") || result.error.toLowerCase().includes("duplicate")) {
+            msg = "Failed to create section. The section is a duplicate.";
+          } else {
+            msg = `Failed to create section. ${result.error}`;
+          }
+        }
+        alert(msg);
       }
     }
   };

@@ -32,8 +32,7 @@ interface Props {
 }
 
 export default function CreateSectionForm({ onCreateSection, mode, refreshOptions }: Props) {
-  // form state
-  const [form, setForm] = useState<CreateSectionData>({
+  const initialForm: CreateSectionData = {
     name: null,
     deptCode: '',
     courseNum: '',
@@ -44,7 +43,9 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
     instructorId: null,
     sectionSchedules: null,
     isCourse: mode === 'course' ? true : false
-  });
+  };
+  // form state
+  const [form, setForm] = useState<CreateSectionData>(initialForm);
   // Course Num options for section creation
   const [courseNumOptions, setCourseNumOptions] = useState<string[]>([]);
   useEffect(() => {
@@ -185,6 +186,9 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
         : undefined,
     };
     onCreateSection(cleanedForm);
+    if (mode === 'section') {
+      setForm(initialForm); // reset form after section creation
+    }
   }
 
   // disable flag
