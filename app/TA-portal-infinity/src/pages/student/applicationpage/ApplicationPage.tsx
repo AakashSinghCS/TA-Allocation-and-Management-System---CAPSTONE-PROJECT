@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../../../context/AuthContext';
 import type { ApplicationDto, Day } from '../../../interfaces/application/Application';
-import { fetchApplicationsByStudent } from '../../../api/application/FetchApplicationsByStudent';
+import { fetchApplicationsByStudent } from '../../../api/application/FetchActiveApplicationsByStudent';
 import ApplicationSidebar from '../../../components/features/application/applicationsubmission/ApplicationSidebar';
 import { validateTermForm, buildTermPayload } from '../../../components/features/application/applicationsubmission/formValidation';
 import { getApplicationUrls, getCommonHeaders } from '../../../components/features/application/applicationsubmission/apiHelpers';
