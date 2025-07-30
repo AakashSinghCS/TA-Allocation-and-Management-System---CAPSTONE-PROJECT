@@ -105,7 +105,7 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
       setSectionErrors({});
       if (errors.length > 0) return;
     } else if (mode === 'section' || (mode === undefined && !form.isCourse)) {
-      // Section Creation: validate deptCode, courseNum, section, type, and semester
+      // Section Creation: validate deptCode, courseNum, section, type, semester, and year
       const { errors } = validateCourseProfile({
         deptCode: form.deptCode,
         courseNum: form.courseNum,
