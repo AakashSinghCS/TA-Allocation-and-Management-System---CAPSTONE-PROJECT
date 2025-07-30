@@ -105,7 +105,7 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
       setSectionErrors({});
       if (errors.length > 0) return;
     } else if (mode === 'section' || (mode === undefined && !form.isCourse)) {
-      // Section Creation: validate deptCode and courseNum only
+      // Section Creation: validate deptCode, courseNum, section, type, and semester
       const { errors } = validateCourseProfile({
         deptCode: form.deptCode,
         courseNum: form.courseNum,
@@ -115,9 +115,22 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
         if (msg.toLowerCase().includes('department code')) errMap.deptCode = msg;
         if (msg.toLowerCase().includes('course number')) errMap.courseNum = msg;
       });
+      // Custom validation for section, type, semester, and year
+      if (!form.section || form.section.trim() === '') {
+        errMap.section = 'Section code is required.';
+      }
+      if (!form.type || String(form.type).trim() === '') {
+        errMap.type = 'Section type is required.';
+      }
+      if (!form.semester || form.semester.trim() === '') {
+        errMap.semester = 'Semester is required.';
+      }
+      if (form.year === null || form.year === undefined || String(form.year).trim() === '') {
+        errMap.year = 'Year is required.';
+      }
       setSectionErrors(errMap);
       setCourseErrors({});
-      if (errors.length > 0) return;
+      if (Object.keys(errMap).length > 0) return;
     }
     setCourseErrors({});
     setSectionErrors({});
@@ -249,19 +262,22 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
       {(mode === 'section' || mode === undefined) && (
         <fieldset disabled={disabled} className="space-y-4">
           <div>
-            <label htmlFor='sectionCode' className="text-sm block mb-1">Section Code</label>
+            <label htmlFor='sectionCode' className="text-sm block mb-1">Section Code <span className="text-red-500">*</span></label>
             <input
               id="sectionCode"
               value={form.section ?? ""}
               onChange={e => 
                 handleChange('section', e.target.value)
               }
-              className="w-full border rounded px-2 py-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className={`w-full border rounded px-2 py-1${sectionErrors.section ? ' border-red-500' : ''} disabled:bg-gray-100 disabled:cursor-not-allowed`}
               placeholder="e.g. L01 or 001"
             />
+            {sectionErrors.section && (
+              <div className="text-red-600 text-xs mt-1">Section code is required.</div>
+            )}
           </div>
           <div>
-            <label htmlFor='year' className="text-sm block mb-1">Year</label>
+            <label htmlFor='year' className="text-sm block mb-1">Year <span className="text-red-500">*</span></label>
             <input
               id='year'
               type="number"
@@ -274,19 +290,22 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
                     : null
                 )
               }
-              className="w-full border rounded px-2 py-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className={`w-full border rounded px-2 py-1${sectionErrors.year ? ' border-red-500' : ''} disabled:bg-gray-100 disabled:cursor-not-allowed`}
               placeholder="e.g. 2025"
             />
+            {sectionErrors.year && (
+              <div className="text-red-600 text-xs mt-1">Year is required.</div>
+            )}
           </div>
           <div>
-            <label htmlFor="semester" className="text-sm block mb-1">Semester</label>
+            <label htmlFor="semester" className="text-sm block mb-1">Semester <span className="text-red-500">*</span></label>
             <select
               id="semester"
               value={form.semester ?? ""}
               onChange={e =>  
                 handleChange('semester', e.target.value)
               }
-              className="w-full border rounded px-2 py-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className={`w-full border rounded px-2 py-1${sectionErrors.semester ? ' border-red-500' : ''} disabled:bg-gray-100 disabled:cursor-not-allowed`}
             >
               <option value="">Select…</option>
               <option value="W1">W1</option>
@@ -294,9 +313,12 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
               <option value="S1">S1</option>
               <option value="S2">S2</option>
             </select>
+            {sectionErrors.semester && (
+              <div className="text-red-600 text-xs mt-1">Semester is required.</div>
+            )}
           </div>
           <div>
-            <label htmlFor='type' className="text-sm block mb-1">Section Type</label>
+            <label htmlFor='type' className="text-sm block mb-1">Section Type <span className="text-red-500">*</span></label>
             <select
               id="type"
               value={form.type ?? ""}
@@ -305,7 +327,7 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
                 handleChange("type", val === "" ? null : val as SectionType);
               }
               }
-              className="w-full border rounded px-2 py-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className={`w-full border rounded px-2 py-1${sectionErrors.type ? ' border-red-500' : ''} disabled:bg-gray-100 disabled:cursor-not-allowed`}
             >
               <option value="">Select…</option>
               {sectionTypeOptions.map(t => (
@@ -314,6 +336,9 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
                 </option>
               ))}
             </select>
+            {sectionErrors.type && (
+              <div className="text-red-600 text-xs mt-1">Section type is required.</div>
+            )}
           </div>
           <div>
             <label htmlFor='instructorId' className="text-sm block mb-1">Instructor ID</label>
