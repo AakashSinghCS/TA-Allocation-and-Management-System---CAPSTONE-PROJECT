@@ -78,6 +78,13 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.getAllApplicationsByStudentId(studentId, requesterId, roles));
     }
 
+    @GetMapping("/getAllActive/{studentId}")
+    public ResponseEntity<List<ApplicationDto>> getAllActiveApplicationsByStudentId(@PathVariable Long studentId,
+            @RequestHeader("X-User-Id") Long requesterId,
+            @RequestHeader("X-User-Roles") List<String> roles) {
+        return ResponseEntity.ok(applicationService.getAllActiveApplicationsByStudentId(studentId, requesterId, roles));
+    }
+
     @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/getAll")
     public ResponseEntity<List<ApplicationWithStudentDto>> getAllApplications(

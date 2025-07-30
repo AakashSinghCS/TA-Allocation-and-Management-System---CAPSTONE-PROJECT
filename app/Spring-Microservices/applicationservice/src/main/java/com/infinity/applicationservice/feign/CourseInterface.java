@@ -1,5 +1,7 @@
 package com.infinity.applicationservice.feign;
 
+import java.util.List;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,4 +61,6 @@ public interface CourseInterface {
     @PutMapping("/sections/{id}/decrementTA")
     void decrementNumberOfTAs(@PathVariable Long id);
 
+     @GetMapping("/semesters/getActive")
+     public ResponseEntity<List<SemesterDto>> getActiveSemesters();
 }

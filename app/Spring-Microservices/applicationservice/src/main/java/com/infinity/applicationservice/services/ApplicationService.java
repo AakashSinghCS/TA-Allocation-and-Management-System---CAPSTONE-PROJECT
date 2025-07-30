@@ -2,6 +2,7 @@ package com.infinity.applicationservice.services;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
 import com.infinity.applicationservice.dtos.Applications.UnavailabilityDto;
+import com.infinity.applicationservice.dtos.Semesters.SemesterDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
@@ -211,5 +213,26 @@ public class ApplicationService {
 
     public List<String> getAllApplicationSemesters() {
         return applicationRepository.findDistinctSemesters();
+    }
+
+    public List<ApplicationDto> getAllActiveApplicationsByStudentId(Long studentId, Long userIdFromHeader,
+            List<String> headerRoles) {
+        if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
+            throw new AuthorizationException("Not allowed");
+        }
+        List<SemesterDto> semesterDtos = courseInterface.getActiveSemesters().getBody();
+        if (semesterDtos == null) {
+            throw new NotFoundException("No active semesters");
+        }
+        List<Application> applications = new ArrayList<>();
+        for (SemesterDto semester : semesterDtos) {
+            try{
+            applicationRepository.findByStudentIdAndYearAndSemester(studentId, semester.year(), semester.semester())
+                    .orElseThrow(() -> new NotFoundException("No applications exist for this user"));
+        } catch (NotFoundException e) {}
+        }
+        return applications.stream()
+                .map(applicationMapper::toDto)
+                .toList();
     }
 }
