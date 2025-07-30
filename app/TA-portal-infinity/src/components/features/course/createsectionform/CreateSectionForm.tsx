@@ -121,7 +121,19 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
     }
     setCourseErrors({});
     setSectionErrors({});
-    onCreateSection({ ...form, instructorId: selectedInstructor?.id });
+    // Convert empty string or missing values to undefined before sending
+    const cleanedForm = {
+      ...form,
+      section: form.section && form.section.trim() !== '' ? form.section : undefined,
+      year: form.year !== null && form.year !== undefined && String(form.year).trim() !== '' ? form.year : undefined,
+      semester: form.semester && form.semester.trim() !== '' ? form.semester : undefined,
+      type: form.type && String(form.type).trim() !== '' ? form.type : undefined,
+      instructorId: selectedInstructor?.id ?? undefined,
+      sectionSchedules: (form.sectionSchedules && form.sectionSchedules.length > 0)
+        ? form.sectionSchedules
+        : undefined,
+    };
+    onCreateSection(cleanedForm);
   }
 
   // disable flag
