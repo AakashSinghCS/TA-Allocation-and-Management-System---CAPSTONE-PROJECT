@@ -52,13 +52,14 @@ export default function AddSectionPage() {
         instructorId: data.instructorId
       }
 
-      const success = await fetchCreateSection(sectionAddDtoRequest);
-      if (success) {
+      const result = await fetchCreateSection(sectionAddDtoRequest);
+      if (result) {
         setSectionCreated(true);
         if (sectionCreatedTimeout.current) clearTimeout(sectionCreatedTimeout.current);
         sectionCreatedTimeout.current = setTimeout(() => setSectionCreated(false), 3000);
       } else {
-        alert("Failed to create section. Are you sure it's not a duplicate?")
+        // If fetchCreateSection does not return error details, show a generic message covering both possible causes.
+        alert("Failed to create section.\nPossible reasons:\n- The combination of Year and Semester does not exist.\n- The section is a duplicate.\nPlease check the Year/Semester and try again.");
       }
     }
   };
