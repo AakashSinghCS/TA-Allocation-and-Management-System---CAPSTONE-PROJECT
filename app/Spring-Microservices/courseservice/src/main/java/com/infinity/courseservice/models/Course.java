@@ -2,6 +2,7 @@ package com.infinity.courseservice.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -63,4 +64,13 @@ public class Course {
         this.name = other.name;
         this.courseNum = other.courseNum;
     }
+    public Course(Optional<Course> other) {
+    if (other.isPresent()) {
+        Course course = other.get();
+        this.id = course.getId();
+        this.deptCode = course.getDeptCode();
+        this.name = course.getName();
+        this.courseNum = course.getCourseNum();
+    }
+}
 }

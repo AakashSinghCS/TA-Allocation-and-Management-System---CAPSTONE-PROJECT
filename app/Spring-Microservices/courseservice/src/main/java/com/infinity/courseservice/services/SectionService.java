@@ -57,7 +57,7 @@ public class SectionService {
      * Accepts a list of SectionCsvData objects.
      * Returns import result summary.
      */
-    public String importSectionsFromJson(List<SectionCsvData> sections) {
+    public String importSectionsFromJson(List<SectionCsvData> sections, Long userIdFromHeader) {
         int successCount = 0;
         int errorCount = 0;
         StringBuilder errorMessages = new StringBuilder();
@@ -89,14 +89,32 @@ public class SectionService {
                 Course course;
                 if (courseOpt.isPresent()) {
                     course = courseOpt.get();
+                    Course after = new Course(course);
                     // Update course name if needed
                     if (!course.getName().equals(sectionCsvData.name())) {
                         course.setName(sectionCsvData.name());
+                        after.setName(sectionCsvData.name());
                         courseRepository.save(course);
+                        auditService.record(
+                            userIdFromHeader,
+                            ActionOptions.UPDATE,
+                            "Course",   
+                            courseOpt,               
+                            after,           
+                            course.getId()   
+                        );
                     }
                 } else {
                     course = new Course(sectionCsvData.deptCode(), sectionCsvData.name(), sectionCsvData.courseNum());
                     course = courseRepository.save(course);
+                    auditService.record(
+                        userIdFromHeader,
+                        ActionOptions.CREATE,
+                        "Course",   
+                        null,               
+                        course,           
+                        course.getId()   
+                    );
                 }
 
                 // Convert type string to SectionType enum
@@ -129,6 +147,15 @@ public class SectionService {
                         null // instructorId (not in JSON)
                     );
                     section = sectionRepository.save(section);
+
+                    auditService.record(
+                            userIdFromHeader,
+                            ActionOptions.CREATE,
+                            "Section",   
+                            null,               
+                            section,           
+                            section.getId()   
+                        );
                 }
 
                 // Parse schedule times
@@ -153,7 +180,15 @@ public class SectionService {
                     SectionSchedule schedule = new SectionSchedule(
                         sectionCsvData.day(), startTime, endTime, section
                     );
-                    sectionScheduleRepository.save(schedule);
+                    SectionSchedule saved = sectionScheduleRepository.save(schedule);
+                    auditService.record(
+                            userIdFromHeader,
+                            ActionOptions.CREATE,
+                            "SectionSchedule",   
+                            null,               
+                            saved,           
+                            saved.getId()   
+                        );
                 }
 
                 successCount++;
@@ -250,11 +285,21 @@ public class SectionService {
         return sectionMapper.sectionToDto(section);
     }
 
-    public String deleteSection(Long sectionId) {
-        if (!sectionRepository.existsById(sectionId)) {
-            throw new NotFoundException("No section with id " + sectionId);
-        }
-        sectionRepository.deleteById(sectionId);
+    public String deleteSection(Long sectionId, Long userIdFromHeader) {
+        Section toDelete = sectionRepository
+            .findById(sectionId)
+            .orElseThrow(() -> new NotFoundException(
+               "No section with id " + sectionId));
+        sectionRepository.delete(toDelete);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "Section",   
+            toDelete,               
+            null,           
+            toDelete.getId()   
+        );
 
         Integer allocationsAffected = applicationInterface.setSectionIdNull(sectionId).getBody();
         Integer enrollmentsAffected = enrollmentService.clearSectionFromStudentCourses(sectionId);
@@ -263,14 +308,22 @@ public class SectionService {
     }
 
     @Transactional
-    public SectionScheduleDto addSectionSchedule(Long sectionId, CourseRequest request) {
+    public SectionScheduleDto addSectionSchedule(Long sectionId, CourseRequest request, Long userIdFromHeader) {
         Section section = sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new NotFoundException("section not found"));
         LocalTime startTime = request.startTime() != null ? LocalTime.parse(request.startTime()) : null;
         LocalTime endTime = request.endTime() != null ? LocalTime.parse(request.endTime()) : null;
         SectionSchedule sectionSchedule = new SectionSchedule(request.day(), startTime, endTime, section);
         try {
-            sectionScheduleRepository.save(sectionSchedule);
+            SectionSchedule saved = sectionScheduleRepository.save(sectionSchedule);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.CREATE,
+                "SectionSchedule",   
+                null,               
+                saved,           
+                saved.getId()   
+            );
         } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException("Schedule already exists " + ex);
         }

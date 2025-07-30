@@ -654,7 +654,7 @@ public class CourseServiceTest {
                 savedEntity.setId(555L);
                 when(studentTaughtCourseRepository.save(any(StudentTaughtCourse.class)))
                                 .thenReturn(savedEntity);
-
+                
 
                 UserDto fakeStudentDto = new UserDto(
                                 studentId,
@@ -680,8 +680,9 @@ public class CourseServiceTest {
                                 savedEntity.getSemester().getYear(),
                                 savedEntity.getSemester().getSemester()
                                 );
-
-                when(stcMapper.toDto(savedEntity))
+                when(userInterface.getStudentById(studentId))
+                                .thenReturn(fakeStudentDto);
+                when(stcMapper.toDto(fakeStudentDto,savedEntity))
                                 .thenReturn(expectedDto);
 
                 StudentTaughtCourseRequest request = new StudentTaughtCourseRequest(
@@ -750,7 +751,7 @@ public class CourseServiceTest {
                                 .build();
                 
 
-                StudentTaughtCourseDto stcDto = new StudentTaughtCourseDto(student, courseDto, 2023, "S2");
+                StudentTaughtCourseDto stcDto = new StudentTaughtCourseDto(10L,student, courseDto, 2023, "S2");
 
                 when(studentTaughtCourseRepository.findByStudentId(studentId)).thenReturn(List.of(record));
                 when(userInterface.getStudentById(studentId))

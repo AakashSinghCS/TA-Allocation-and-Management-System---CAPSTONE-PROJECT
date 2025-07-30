@@ -67,15 +67,17 @@ public class SectionController {
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("/deleteSection/{sectionId}")
-    public ResponseEntity<String> deleteSection(@PathVariable Long sectionId) {
-        return ResponseEntity.ok(sectionService.deleteSection(sectionId));
+    public ResponseEntity<String> deleteSection(@PathVariable Long sectionId,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.deleteSection(sectionId,userIdFromHeader));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addSectionSchedule/{sectionId}")
     public ResponseEntity<SectionScheduleDto> addSectionSchedule(@PathVariable Long sectionId,
-            @RequestBody CourseRequest request) {
-        return ResponseEntity.ok(sectionService.addSectionSchedule(sectionId, request));
+            @RequestBody CourseRequest request
+            ,@RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.addSectionSchedule(sectionId, request,userIdFromHeader));
     }
 
     @GetMapping("getSectionSchedules/{sectionId}")

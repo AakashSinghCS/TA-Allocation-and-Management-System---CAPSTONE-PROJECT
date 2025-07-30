@@ -74,7 +74,6 @@ public class Section {
 
     public Section(Section other){
         this.id = other.id;
-        this.year = other.year;
         this.semester= other.semester;
         this.section = other.section;
         this.instructorId= other.instructorId;

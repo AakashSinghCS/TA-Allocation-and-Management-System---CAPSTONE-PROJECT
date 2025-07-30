@@ -76,16 +76,18 @@ public class SectionControllerTest {
         @Test
         void testAddSectionSchedule() throws Exception {
                 Long sectionId = 200L;
+                Long userIdFromHeader = 1L;
                 CourseRequest request = new CourseRequest(null, null, null, null, null, null, null, "Mon", "09:00",
                                 "10:00",null);
                 SectionScheduleDto response = new SectionScheduleDto("Mon", LocalTime.of(9, 0), LocalTime.of(10, 0),
                                 sectionId, 2L);
 
-                when(sectionService.addSectionSchedule(eq(sectionId), any(CourseRequest.class))).thenReturn(response);
+                when(sectionService.addSectionSchedule(eq(sectionId), any(CourseRequest.class), eq(userIdFromHeader))).thenReturn(response);
 
                 mockMvc.perform(post("/sections/addSectionSchedule/{sectionId}", sectionId)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
+                                .content(objectMapper.writeValueAsString(request))
+                                .header("X-User-Id",userIdFromHeader))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.day").value("Mon"))
                                 .andExpect(jsonPath("$.startTime").value("09:00:00"))
@@ -135,13 +137,14 @@ public class SectionControllerTest {
 
         @Test
         void testDeleteSection() throws Exception {
-
+                Long userIdFromHeader = 1L;
                 String response = "Section deleted";
 
-                when(sectionService.deleteSection(any())).thenReturn(response);
+                when(sectionService.deleteSection(any(),eq(userIdFromHeader))).thenReturn(response);
 
                 mockMvc.perform(delete("/sections/deleteSection/1")
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-User-Id", userIdFromHeader))
                                 .andExpect(status().isOk());
         }
 
@@ -183,10 +186,10 @@ public class SectionControllerTest {
 
         @Test
         void testDeleteSectionSchedule() throws Exception {
-
+                Long userIdFromHeader = 1L;
                 String response = "Section schedule deleted";
 
-                when(sectionService.deleteSection(any())).thenReturn(response);
+                when(sectionService.deleteSection(any(), eq(userIdFromHeader))).thenReturn(response);
 
                 mockMvc.perform(delete("/sections/deleteSectionSchedule/1")
                                 .contentType(MediaType.APPLICATION_JSON))
