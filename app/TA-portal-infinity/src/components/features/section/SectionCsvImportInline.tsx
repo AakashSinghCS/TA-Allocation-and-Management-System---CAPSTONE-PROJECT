@@ -244,7 +244,8 @@ export default function SectionCsvImportInline() {
           type="button"
           onClick={handleSubmit}
           disabled={loading || imported}
-          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-[#040941] text-white hover:bg-[#232a5c]'} `}
+          style={{ minWidth: 100 }}
         >
           {loading ? "Importing..." : "Import"}
         </button>
