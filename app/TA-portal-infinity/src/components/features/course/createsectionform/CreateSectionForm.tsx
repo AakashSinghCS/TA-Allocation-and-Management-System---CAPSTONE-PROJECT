@@ -125,7 +125,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
     }))
   }
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (mode === 'course' || (mode === undefined && form.isCourse)) {
       const { errors } = validateCourseProfile({
@@ -185,9 +185,14 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
         ? form.sectionSchedules
         : undefined,
     };
-    onCreateSection(cleanedForm);
+    // onCreateSection returns a Promise<boolean> for section mode
     if (mode === 'section') {
-      setForm(initialForm); // reset form after section creation
+      const result = await onCreateSection(cleanedForm);
+      if (result === true) {
+        setForm(initialForm); // reset only on success
+      }
+    } else {
+      onCreateSection(cleanedForm);
     }
   }
 

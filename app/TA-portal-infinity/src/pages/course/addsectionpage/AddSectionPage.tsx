@@ -15,7 +15,7 @@ export default function AddSectionPage() {
   const [sectionCreated, setSectionCreated] = useState(false);
   const sectionCreatedTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const handleCreateSection = async (data: CreateSectionData) => {
+  const handleCreateSection = async (data: CreateSectionData): Promise<boolean | void> => {
     const courseProfile = extractCourseProfile(data);
     // For section creation, skip course name validation
     const { ok, sanitized, errors } = validateCourseProfile(courseProfile, { skipName: !data.isCourse });
@@ -57,6 +57,7 @@ export default function AddSectionPage() {
         setSectionCreated(true);
         if (sectionCreatedTimeout.current) clearTimeout(sectionCreatedTimeout.current);
         sectionCreatedTimeout.current = setTimeout(() => setSectionCreated(false), 3000);
+        return true;
       } else {
         let msg = "Failed to create section.";
         if (result?.error) {
@@ -71,6 +72,7 @@ export default function AddSectionPage() {
           }
         }
         alert(msg);
+        return false;
       }
     }
   };
