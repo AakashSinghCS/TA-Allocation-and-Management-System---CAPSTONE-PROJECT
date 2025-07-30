@@ -2922,7 +2922,7 @@ Next:
 - Security improvement.
 - TBA: must discuss with teammates first on what to do.
 
-## Saturday 7/26 (7/25~7/28)
+## Monday 7/28 (7/25~7/28)
 
 ### Timesheet
 Clockify report
@@ -2967,6 +2967,54 @@ Today:
 
 Next:
 1. Do Issue 471 or prepare for the testing on tuesday
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+- [UBCO-COSC499-S2025/team-10-capstone-infinity#471](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)
+
+
+## Tuesday 7/29 (7/29~8/1)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July29.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#463](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/463)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#471](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today:
+1. Merged develop, then I added deletion of sections, addition of section schedules, importing CSV into the auditing cycle.
+There was a testing event today in Class.
+
+Next:
+1. Finish section-service in the auditing cycle.
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
 - [UBCO-COSC499-S2025/team-10-capstone-infinity#471](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)
