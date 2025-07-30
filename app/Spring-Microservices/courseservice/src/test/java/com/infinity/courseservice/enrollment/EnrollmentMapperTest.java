@@ -46,7 +46,7 @@ public class EnrollmentMapperTest {
 
     @Test
     void testToSectionDtoNoCourse_validSection() {
-        Semester semester = new Semester(2024, "W1", null, null);
+        Semester semester = new Semester(2024, "W1", null, null, true);
         Section section = new Section();
         section.setId(10L);
         section.setSemester(semester);
@@ -86,7 +86,7 @@ public class EnrollmentMapperTest {
     @Test
     void testToActiveEnrollmentDto() {
         Course course = new Course("COSC", "Intro", "110");
-        Semester semester = new Semester(2024, "W1", null, null);
+        Semester semester = new Semester(2024, "W1", null, null, true);
         course.setId(1L);
 
         Section section = new Section();
@@ -114,7 +114,7 @@ public class EnrollmentMapperTest {
 
         Course course2 = new Course("MATH", "Calc", "101");
         course2.setId(2L);
-        Semester semester = new Semester(2024, "W1", null, null);
+        Semester semester = new Semester(2024, "W1", null, null, true);
 
         Section section = new Section();
         section.setId(3L);

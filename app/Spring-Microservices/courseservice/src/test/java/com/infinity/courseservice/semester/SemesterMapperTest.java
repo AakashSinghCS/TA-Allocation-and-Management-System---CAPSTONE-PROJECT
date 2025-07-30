@@ -45,7 +45,7 @@ class SemesterMapperTest {
                 2024,
                 "S1",
                 LocalDate.of(2024, 5, 1),
-                LocalDate.of(2024, 8, 1));
+                LocalDate.of(2024, 8, 1), true);
 
         Semester semester = semesterMapper.toSemester(dto);
 

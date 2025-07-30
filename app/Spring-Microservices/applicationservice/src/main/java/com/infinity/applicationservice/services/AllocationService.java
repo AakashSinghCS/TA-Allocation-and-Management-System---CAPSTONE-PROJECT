@@ -1,6 +1,5 @@
 package com.infinity.applicationservice.services;
 
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -160,7 +159,8 @@ public class AllocationService {
         UserDto student = studentInterface.getStudentById(request.studentId()).getBody();
 
         ApplicationDto applicationDto = null;
-        //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
+        // If it's preferable to throw an exception than let Application be null, change
+        // please change this to an NotFoundException.
         if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
             applicationDto = applicationMapper.toDto(allocation.getApplication());
             notificationClient.sendEmail(emailMapper.allocationEmailRequest(student));
@@ -168,10 +168,10 @@ public class AllocationService {
         allocation = allocationRepository.findByStudentId(request.studentId());
         return allocationMapper.toDto(allocation, student, applicationDto);
     }
-    
+
     public String deallocateStudent(Long allocatedSectionId) {
         AllocatedSection allocatedSection = allocatedSectionRepository.findById(allocatedSectionId)
-            .orElseThrow(() -> new NotFoundException("Allocated section not found"));
+                    .orElseThrow(() -> new NotFoundException("Allocated section not found"));
         Allocation allocation = allocationRepository.findById(allocatedSection.getAllocation().getId())
             .orElseThrow(() -> new NotFoundException("Allocation not found"));
         if (allocation.getStatus() == ApplicationStatus.CONFIRMED) {
@@ -186,8 +186,7 @@ public class AllocationService {
                 Optional.ofNullable(allocation.getSectionHours()).orElse(0.0) - allocatedSection.getHours());
             }
             SectionDto section = courseInterface.getSectionById(allocatedSection.getSectionId());
-            NeedDto need = courseInterface.getNeed(allocation.getApplication().getId(), section.year(),
-                    section.semester());
+            NeedDto need = courseInterface.getNeed(section.course().id(), section.year(), section.semester());
             courseInterface.updateNeedAllocatedHours(need.id(),
                     need.numHoursCurrentlyAllocated() - allocation.getGradingHours());
         }
@@ -208,11 +207,10 @@ public class AllocationService {
         return "Student deallocated";
     }
 
-
     @Transactional
     public void updateConfirmationStatus(Long allocationId, ApplicationStatus status) {
         Allocation allocation = allocationRepository.findById(allocationId)
-            .orElseThrow(() -> new NotFoundException("Allocation not found"));
+                .orElseThrow(() -> new NotFoundException("Allocation not found"));
         if (LocalDateTime.now()
                 .isBefore(configService.getDeadlineByName("student_offer_accept_deadline").startTime())) {
             throw new BadRequestException("The application is not open yet.");
@@ -242,24 +240,25 @@ public class AllocationService {
                         Optional.ofNullable(allocation.getSectionHours()).orElse(0.0) + allocatedSection.getHours());
                 }
             }
-        }        
+        }
         allocation.setStatus(status);
         allocationRepository.save(allocation);
     }
 
     public List<AllocationHistoryDto> getAllocationsByConfirmationStatus(ApplicationStatus status) {
         return allocationRepository.findAll().stream()
-            .filter(a -> a.getStatus() == status)
-            .map(allocation -> {
-                UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
-                ApplicationDto applicationDto = null;
-                //If it's preferable to throw an exception than let Application be null, change please change this to an NotFoundException.
-                if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
-                    applicationDto = applicationMapper.toDto(allocation.getApplication());
-                }
-                return allocationMapper.toDto(allocation, student, applicationDto);
-            })
-            .collect(Collectors.toList());
+                .filter(a -> a.getStatus() == status)
+                .map(allocation -> {
+                    UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
+                        ApplicationDto applicationDto = null;
+                    // If it's preferable to throw an exception than let Application be null, change
+                    // please change this to an NotFoundException.
+                    if (allocation.getApplication() != null && allocation.getApplication().getId() != null) {
+                        applicationDto = applicationMapper.toDto(allocation.getApplication());
+                    }
+                    return allocationMapper.toDto(allocation, student, applicationDto);
+                })
+                .collect(Collectors.toList());
     }
 
     public List<AllocatedSectionDto> getAllocationsBySectionId(Long sectionId) {
@@ -297,7 +296,7 @@ public class AllocationService {
 
     public List<AllocationHistoryDto> getAllocationsByApplicationYear(int year) {
         return allocationRepository.findAll().stream()
-            .filter(a -> a.getApplication() != null &&
+                .filter(a -> a.getApplication() != null &&
                         a.getApplication().getSubmittedAt().getYear() == year)
             .map(allocation -> {
                 UserDto student = studentInterface.getStudentById(allocation.getStudentId()).getBody();
@@ -327,13 +326,13 @@ public class AllocationService {
             .collect(Collectors.toList());
     }
 
-
     @Transactional
     public Integer deleteSection(Long sectionId) {
         return allocatedSectionRepository.deleteAllBySectionId(sectionId);
     }
 
-    public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList, boolean autoCreate) {
+    public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList,
+            boolean autoCreate) {
 
         List<AllocationHistoryDto> importedAllocations = new ArrayList<>();
         HashMap<AllocationCsvDto, List<AllocatedSectionDto>> allocationMap = new HashMap<>();
@@ -351,7 +350,6 @@ public class AllocationService {
             if (studentDto == null) {
                 throw new NotFoundException("Student not found: " + studentNum);
             }
-            
 
             CourseDto courseDto;
             try {
@@ -369,14 +367,15 @@ public class AllocationService {
                 sectionDto = courseInterface.getByCourseIdSectionYearSemester(courseDto.id(), section, year, semester);
             } catch (Exception e) {
                 if (autoCreate) {
-                    sectionDto = courseInterface.addSection(courseDto.id(), new ImportSectionRequest(section, year, semester)); 
+                    sectionDto = courseInterface.addSection(courseDto.id(),
+                            new ImportSectionRequest(section, year, semester));
                 } else {
-                    throw new NotFoundException("Section " + section + " " +  year + " " + semester + " not found for Course " + courseDto.deptCode() + " " + courseDto.courseNum());
+                    throw new NotFoundException("Section " + section + " " + year + " " + semester
+                            + " not found for Course " + courseDto.deptCode() + " " + courseDto.courseNum());
                 }
             }
             
-            Application application = new Application(studentDto.id(), List.of(), null, false, null);
-            application.setYear(year);
+            Application application = new Application(studentDto.id(), List.of(), null, false, null, year, semester);
             Allocation allocation = new Allocation();
             allocation.setStudentId(studentDto.id());
             allocation.setApplication(application);

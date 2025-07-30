@@ -12,7 +12,8 @@ public class SemesterMapper {
                 semester.getYear(),
                 semester.getSemester(),
                 semester.getStartDate(),
-                semester.getEndDate());
+                semester.getEndDate(),
+                semester.isActive());
     }
     
     public Semester toSemester(SemesterDto semester) {
@@ -20,6 +21,7 @@ public class SemesterMapper {
                 semester.year(),
                 semester.semester(),
                 semester.startDate(),
-                semester.endDate());
+                semester.endDate(),
+                semester.isActive());
     }
 }

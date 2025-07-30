@@ -54,6 +54,8 @@ export default function SelectedApplicationDetails({ selApp, history }: Selected
       <section>
         <h2 className="font-bold text-lg">Application Details</h2>
         <div className="space-y-1 pl-2">
+          <p><strong>Year:</strong> {selApp.year}</p>
+          <p><strong>Semester:</strong> {selApp.semester}</p>
           <p><strong>Preferences:</strong> {selApp.preferences.join(', ')}</p>
           <p><strong>Remote?</strong> {selApp.wantRemote ? 'Yes' : 'No'}</p>
           <p><strong>Desired Hours:</strong> {selApp.wantWorkingHours}</p>

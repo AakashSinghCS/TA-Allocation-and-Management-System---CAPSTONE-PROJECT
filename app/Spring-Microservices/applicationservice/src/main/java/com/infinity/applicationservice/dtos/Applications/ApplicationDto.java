@@ -8,13 +8,15 @@ import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.Subject;
 
 public record ApplicationDto(
-                Long applicationId,
-                Long studentId,
-                List<Subject> preferences,
-                ApplicationType applicationType,
-                boolean wantRemote,
-                Integer wantWorkingHours,
-                LocalDateTime timeSubmitted,
-                Set<UnavailabilityDto> unavailabilities) {
+        Long applicationId,
+        Long studentId,
+        List<Subject> preferences,
+        ApplicationType applicationType,
+        boolean wantRemote,
+        Integer wantWorkingHours,
+        Integer year,
+        String semester,
+        LocalDateTime timeSubmitted,
+        Set<UnavailabilityDto> unavailabilities) {
 
 }

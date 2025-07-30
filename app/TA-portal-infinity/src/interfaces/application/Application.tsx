@@ -25,6 +25,8 @@ import type { Allocation } from '../allocation/Allocation';
 import type { ApplicationType } from '../enum/ApplicationType';
 import type { Student } from '../user/Student';
 export interface ApplicationRequest {
+  year: number;
+  semester: string;
   preferences: string[];
   wantRemote: boolean;
   wantWorkingHours: number;
@@ -36,6 +38,9 @@ export interface ApplicationRequest {
 export interface ApplicationDto {
   id?:             number;
   applicationId?:  number;
+  studentId?:      number;
+  year:            number;
+  semester:        string;
   student: Student;
   preferences: string[];
   wantRemote: boolean;

@@ -1,5 +1,7 @@
 package com.infinity.applicationservice.feign;
 
+import java.util.List;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import com.infinity.applicationservice.dtos.Allocations.ImportSectionRequest;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Needs.NeedDto;
+import com.infinity.applicationservice.dtos.Semesters.SemesterDto;
 
 @FeignClient(name = "COURSE-SERVICE", configuration = FeignClientInterceptor.class)
 public interface CourseInterface {
@@ -46,7 +49,11 @@ public interface CourseInterface {
     
     @PutMapping("/needs/updateAllocatedHours/{needId}")
     public ResponseEntity<String> updateNeedAllocatedHours(@PathVariable Long needId,
-            @RequestParam int numAllocatedHours);
+                    @RequestParam int numAllocatedHours);
+            
+        @GetMapping("/semesters/{year}/{semester}")
+        public ResponseEntity<SemesterDto> getSemesterByYearAndSemester(@PathVariable Integer year,
+                        @PathVariable String semester);
 
     @PutMapping("/sections/{id}/incrementTA")
     void incrementNumberOfTAs(@PathVariable Long id);
@@ -54,4 +61,6 @@ public interface CourseInterface {
     @PutMapping("/sections/{id}/decrementTA")
     void decrementNumberOfTAs(@PathVariable Long id);
 
+     @GetMapping("/semesters/getActive")
+     public ResponseEntity<List<SemesterDto>> getActiveSemesters();
 }

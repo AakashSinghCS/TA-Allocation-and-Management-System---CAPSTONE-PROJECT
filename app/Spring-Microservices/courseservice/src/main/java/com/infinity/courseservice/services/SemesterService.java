@@ -1,5 +1,6 @@
 package com.infinity.courseservice.services;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -30,7 +31,7 @@ public class SemesterService {
     }
     
     public List<SemesterDto> getAllSemesters() {
-        List<Semester> semesters = semesterRepository.findAll();
+        List<Semester> semesters = semesterRepository.findAllByOrderByStartDateAsc();
         return semesters.stream()
             .map(semesterMapper::toDto)
             .toList();
@@ -55,6 +56,7 @@ public class SemesterService {
         semester.setSemester(request.semester());
         semester.setStartDate(request.startDate());
         semester.setEndDate(request.endDate());
+        semester.setActive(request.isActive());
         try {
             semester = semesterRepository.save(semester);
         } catch (DataIntegrityViolationException e) {
@@ -81,6 +83,27 @@ public class SemesterService {
                 request.startDate().getYear() != request.year()) {
             throw new BadRequestException("Year must match the start date's year");
         }
+    }
+
+    public SemesterDto getSemesterByYearAndSemester(Integer year, String semester) {
+        Semester semesterObj = semesterRepository.findByYearAndSemester(year, semester)
+                .orElseThrow(() -> new NotFoundException("Semester doesn't exist"));
+        return semesterMapper.toDto(semesterObj);
+    }
+
+    public List<SemesterDto> getAllFutureSemesters() {
+        LocalDate currentDate = LocalDate.now();
+        List<Semester> semesters = semesterRepository.findByStartDateAfterOrderByStartDateAsc(currentDate);
+        return semesters.stream()
+                .map(semesterMapper::toDto)
+                .toList();
+    }
+
+    public List<SemesterDto> getSemestersByState(boolean state) {
+        List<Semester> semesters = semesterRepository.findByIsActiveOrderByStartDateAsc(state);
+        return semesters.stream()
+                .map(semesterMapper::toDto)
+                .toList();
     }
 
 }

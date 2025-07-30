@@ -1,10 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import type { ApplicationDto } from '../../../../interfaces/application/Application';
-import type { AllocatedSection, Allocation, AllocationType } from '../../../../interfaces/allocation/Allocation';
 import type { ApplicationStatus } from '../../../../interfaces/enum/ApplicationStatus';
-import { fetchSectionIncludeInstructorId } from '../../../../api/section/fetchSectionIncludeInstructorId';
 import type Section from '../../../../interfaces/section/Section';
-import { getTaskLabel } from '../../../../utility/calendar/gettasklabels/getTaskLabel';
 import type { EnrichedAllocatedSection } from '../../../../pages/coordinator/applicationviewpage/ApplicationViewPage';
 
 interface ApplicationCardProps {
@@ -26,7 +23,6 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, isAllocated, all
       sectionHours: number;
       status?: ApplicationStatus;
     }> = {};
-
     allocations.forEach(stub => {
       const id = stub.sectionId;
       if (!groups[id]) {
@@ -95,6 +91,7 @@ const totalGrading = allocations.reduce(
         </div>
       </div>
       <div className="flex flex-col gap-0.5 text-xs">
+        <span><strong>Year:</strong> {app.year} &nbsp; <strong>Semester:</strong> {app.semester}</span>
         <span><strong>Preferences:</strong> {app.preferences.join(', ')}</span>
         <span><strong>Remote:</strong> {app.wantRemote ? 'Yes' : 'No'}</span>
         <span><strong>Hours Requested:</strong> {app.wantWorkingHours}</span>
@@ -125,6 +122,7 @@ const totalGrading = allocations.reduce(
           <div className="mb-1">
             <h4 className="font-semibold text-[#040941] mb-0.5 text-sm">Application Info</h4>
             <div className="text-xs space-y-0.5">
+              <div><strong>Year:</strong> {app.year} &nbsp; <strong>Semester:</strong> {app.semester}</div>
               <div><strong>Preferences:</strong> {app.preferences.join(', ')}</div>
               <div><strong>Remote Preference:</strong> {app.wantRemote ? 'Yes' : 'No'}</div>
               <div><strong>Hours Requested:</strong> {app.wantWorkingHours}</div>
@@ -141,7 +139,7 @@ const totalGrading = allocations.reduce(
                 className="text-blue-900 hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
-              >
+                >
                 {app.student.firstName} {app.student.lastName}
               </a></div>
               <div><strong>Student #:</strong> {app.student.studentNum}</div>
@@ -151,9 +149,9 @@ const totalGrading = allocations.reduce(
             </div>
           </div>
           <hr className="my-1" />
-          {/* Allocation Info */}
+            {/* Allocation Info */}
           <div>
-            <h4 className="font-semibold text-[#040941] mb-0.5 text-sm">Allocation Info</h4>
+              <h4 className="font-semibold text-[#040941] mb-0.5 text-sm">Allocation Info</h4>
             {sectionGroups.length>0 ? (
               <ul className="list-none space-y-1">
                 {sectionGroups?.map((entry,idx) => {

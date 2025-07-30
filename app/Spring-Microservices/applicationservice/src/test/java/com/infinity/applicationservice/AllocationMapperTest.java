@@ -41,6 +41,8 @@ public class AllocationMapperTest {
                 ApplicationType.UNDERGRADUATE,
                 false,
                 6,
+                2025,
+                "W1",
                 LocalDateTime.now(),
                 Set.of());
 

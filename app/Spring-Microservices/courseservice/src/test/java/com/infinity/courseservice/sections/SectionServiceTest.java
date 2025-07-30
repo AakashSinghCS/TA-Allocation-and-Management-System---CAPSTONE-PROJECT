@@ -92,7 +92,7 @@ public class SectionServiceTest {
         course.setId(1L);
         request = new SectionAddDtoRequest("COSC", "Test", "123", "001",
                 SectionType.LECTURE, 2025, "W1", null, null);
-        semester = new Semester(2025, "W1", null, null);
+        semester = new Semester(2025, "W1", null, null, true);
         section = new Section(semester, "001", SectionType.LECTURE, course, null);
         section.setId(10L);
         courseDto = new CourseDto(1L, "COSC", "Software Engineering", "310");

@@ -29,7 +29,7 @@ class StudentTaughtCourseMapperTest {
     @Test
     void toDto_mapsCorrectly() {
         Course course = new Course();
-        Semester semester = new Semester(2024, "W2", null, null);
+        Semester semester = new Semester(2024, "W2", null, null, true);
 
         StudentTaughtCourse record = new StudentTaughtCourse();
         record.setCourse(course);

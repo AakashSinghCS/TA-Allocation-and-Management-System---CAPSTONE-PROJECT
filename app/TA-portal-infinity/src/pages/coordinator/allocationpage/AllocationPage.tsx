@@ -210,7 +210,7 @@ const TAAllocationPage: React.FC = () => {
                   <p><strong>TAs Allocated:</strong> {selCourse.numberOfTAsAllocated ?? '0'}</p>
                 </div>
               </section>
-            </div> // This closing div was missing!
+            </div> 
           )}
 
           {selCourse && (

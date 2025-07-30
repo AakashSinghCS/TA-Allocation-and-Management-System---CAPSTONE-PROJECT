@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { fetchAllocationByStatus } from '../../../api/allocation/fetchAllocationByStatus';
 import { fetchAllocationsByStudent } from '../../../api/allocation/fetchAllocationByStudent';
+import { fetchAllApplicationSemesters } from '../../../api/application/fetchAllApplicationSemesters';
+import { fetchAllApplicationYears } from '../../../api/application/fetchAllApplicationYears';
 import { fetchApplications } from '../../../api/application/FetchApplications';
+import { fetchSectionIncludeInstructorId } from '../../../api/section/fetchSectionIncludeInstructorId';
 import ApplicationCard from '../../../components/features/application/viewtaapplication/ApplicationCard';
-import ApplicationDetailsPanel from '../../../components/features/application/viewtaapplication/ApplicationDetailsPanel';
 import ApplicationStats from '../../../components/features/application/viewtaapplication/ApplicationStats';
 import { useAuth } from '../../../context/AuthContext';
-import type { AllocatedSection, Allocation } from '../../../interfaces/allocation/Allocation';
+import type { AllocatedSection } from '../../../interfaces/allocation/Allocation';
 import type { ApplicationDto } from '../../../interfaces/application/Application';
-import { fetchSectionIncludeInstructorId } from '../../../api/section/fetchSectionIncludeInstructorId';
 import type Section from '../../../interfaces/section/Section';
   export type EnrichedAllocatedSection = AllocatedSection & {
   status?: string;
@@ -38,9 +38,21 @@ const ApplicationPage: React.FC = () => {
   // const [loadingSections, setLoadingSections] = useState(false);
   // Application filters
   const [yearSubmitted, setYearSubmitted] = useState('');
+  const [semesterSubmitted, setSemesterSubmitted] = useState('');
   const [studentName, setStudentName] = useState('');
   const [prefContains, setPrefContains] = useState('');
   const [remotePref, setRemotePref] = useState('');
+  const [availableYears, setAvailableYears] = useState<number[]>([]);
+  const [availableSemesters, setAvailableSemesters] = useState<string[]>([]);
+  // Fetch available years and semesters for dropdowns (same as ApplicationFilterPanel)
+  useEffect(() => {
+    fetchAllApplicationYears()
+      .then(arr => setAvailableYears(arr ?? []))
+      .catch(() => setAvailableYears([]));
+    fetchAllApplicationSemesters()
+      .then(arr => setAvailableSemesters(arr ?? []))
+      .catch(() => setAvailableSemesters([]));
+  }, []);
   // Allocation filters (advanced)
   const [allocationStatus, setAllocationStatus] = useState('');
   const [allocationDept, setAllocationDept] = useState('');
@@ -66,20 +78,22 @@ useEffect(() => {
   async function loadAllocations() {
     try {
       // 1) fetch every student’s full Allocation
+      const uniqueStudentIds = Array.from(new Set(allApps.map(app => app.student.id)));
+
       const rawAllocs = await Promise.all(
-        allApps.map(app =>
-          fetchAllocationsByStudent(app.student.id!, token || '', true)
+        uniqueStudentIds.map(studentId =>
+          fetchAllocationsByStudent(studentId!, token || '', true)
         )
       );
 
-      // 2) flatten stubs, carrying along status + applicationId
       const stubs: EnrichedAllocatedSection[] = rawAllocs.flatMap(alloc =>
         (alloc.allocatedSections ?? []).map(stub => ({
           ...stub,
           status: alloc.status,
-          applicationId: alloc.application?.applicationId
+          applicationId: alloc.application?.applicationId // inject here
         }))
       );
+
 
       // 3) fetch each unique Section exactly once
       const sectionIds = Array.from(new Set(stubs.map(s => s.sectionId)));
@@ -129,7 +143,8 @@ useEffect(() => {
       let match = true;
 
       // Example: Year submitted
-      if (yearSubmitted && !app.timeSubmitted.startsWith(yearSubmitted)) match = false;
+      if (yearSubmitted && String(app.year) !== yearSubmitted) match = false;
+      if (semesterSubmitted && app.semester !== semesterSubmitted) match = false;
       if (studentName && !(`${app.student.firstName} ${app.student.lastName}`.toLowerCase().includes(studentName.toLowerCase()))) match = false;
       if (prefContains && !app.preferences.some(p => p.toLowerCase().includes(prefContains.toLowerCase()))) match = false;
       if (remotePref && ((remotePref === 'true' && !app.wantRemote) || (remotePref === 'false' && app.wantRemote))) match = false;
@@ -218,8 +233,22 @@ useEffect(() => {
                   <input type="text" value={studentName} onChange={e => setStudentName(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. John" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Year Submitted</label>
-                  <input type="text" value={yearSubmitted} onChange={e => setYearSubmitted(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. 2025" />
+                  <label className="block text-sm font-medium mb-1">Year</label>
+                  <select value={yearSubmitted} onChange={e => setYearSubmitted(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                    <option value="">Any</option>
+                    {availableYears.map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Semester</label>
+                  <select value={semesterSubmitted} onChange={e => setSemesterSubmitted(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                    <option value="">Any</option>
+                    {availableSemesters.map(sem => (
+                      <option key={sem} value={sem}>{sem}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Preference Contains</label>

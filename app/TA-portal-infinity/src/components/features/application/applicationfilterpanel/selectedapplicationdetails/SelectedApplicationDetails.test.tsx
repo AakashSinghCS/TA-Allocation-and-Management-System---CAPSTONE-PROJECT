@@ -33,8 +33,18 @@ describe('SelectedApplicationDetails', () => {
   })
 
   const baseApp: ApplicationDto = {
-    student: mockStudentJohnDoe,
-    applicationType: 'UNDERGRADUATE',
+    student: {
+      id: 123,
+      firstName: 'John',
+      lastName: 'Doe',
+      studentNum: 456789,
+      program: 'someprogram',
+      enrollmentYear: 2024,
+      schoolYear: 3
+    },
+    year: 2024,
+    semester: 'Fall',
+    applicationType: "UNDERGRADUATE",
     preferences: ['Pref1', 'Pref2'],
     wantRemote: true,
     wantWorkingHours: 2,
@@ -66,12 +76,12 @@ describe('SelectedApplicationDetails', () => {
     ).toBeInTheDocument()
     expect(
       screen.getByText((_, node) =>
-        node?.tagName === 'P' && node.textContent === 'User ID: 1'
+        node?.tagName === 'P' && node.textContent === 'User ID: 123'
       )
     ).toBeInTheDocument()
     expect(
       screen.getByText((_, node) =>
-        node?.tagName === 'P' && node.textContent === 'Student Number: 12345678'
+        node?.tagName === 'P' && node.textContent === 'Student Number: 456789'
       )
     ).toBeInTheDocument()
 

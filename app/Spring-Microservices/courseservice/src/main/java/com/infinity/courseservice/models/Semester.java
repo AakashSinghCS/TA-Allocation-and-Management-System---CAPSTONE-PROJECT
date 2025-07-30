@@ -32,10 +32,13 @@ public class Semester {
 
     private LocalDate endDate;
 
-    public Semester(Integer year, String semester, LocalDate startDate, LocalDate endDate) {
+    private boolean isActive;
+
+    public Semester(Integer year, String semester, LocalDate startDate, LocalDate endDate, boolean isActive) {
         this.year = year;
         this.semester = semester;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.isActive = isActive;
     }
 }

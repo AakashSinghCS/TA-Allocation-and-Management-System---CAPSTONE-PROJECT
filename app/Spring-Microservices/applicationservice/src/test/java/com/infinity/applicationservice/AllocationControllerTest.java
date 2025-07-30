@@ -63,18 +63,21 @@ public class AllocationControllerTest {
         private CourseInterface sectionInterface;
 
         private AllocationHistoryDto sampleDto;
+        private ApplicationDto application;
 
         private AllocatedSectionDto allocatedSection;
 
     @BeforeEach
     void setup() {
-        ApplicationDto applicationDto = new ApplicationDto(
+        application = new ApplicationDto(
                 1L,
                 1L,
                 List.of(),
                 ApplicationType.UNDERGRADUATE,
                 false,
                 10,
+                2025,
+                "W1",
                 LocalDateTime.of(2025, 7, 1, 12, 0),
                 Set.of()
         );
@@ -84,7 +87,7 @@ public class AllocationControllerTest {
                 new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null,
                                                 null, null,true),
-                applicationDto,
+                application,
                 ApplicationStatus.SENT,
                 1, 10, 4,
                 List.of() // <-- Use an empty list or a test list for allocatedSections
@@ -105,7 +108,7 @@ public class AllocationControllerTest {
         AllocationHistoryDto dto = new AllocationHistoryDto(
             allocationId,
             new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678, "COSC", 2025, 3, null, null, null, true),
-            new ApplicationDto(1L, 2L, List.of(), ApplicationType.UNDERGRADUATE, false, 10, LocalDateTime.of(2025,7,1,12,0), Set.of()),
+            application,
             ApplicationStatus.SENT,
             0, 10, 0,
             List.of()
@@ -139,15 +142,6 @@ public class AllocationControllerTest {
                                 1L,
                                 TaskType.GRADING, 10,
                                 null);
-                ApplicationDto application = new ApplicationDto(
-                                1L,
-                                1L,
-                                List.of(),
-                                ApplicationType.UNDERGRADUATE,
-                                false,
-                                10,
-                                LocalDateTime.now(),
-                                Set.of());
 
                 AllocationHistoryDto responseDto = new AllocationHistoryDto(
                         123L,

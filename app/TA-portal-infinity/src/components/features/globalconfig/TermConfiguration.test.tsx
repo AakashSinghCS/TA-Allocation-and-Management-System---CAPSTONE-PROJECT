@@ -56,7 +56,7 @@ const mockSemesters: Semester[] = [
     semester: 'W1',
     startDate: '2024-01-08',
     endDate: '2024-04-12',
-    active: true,
+    isActive: true,
   },
   {
     id: 2,
@@ -64,7 +64,7 @@ const mockSemesters: Semester[] = [
     semester: 'S1',
     startDate: '2024-05-06',
     endDate: '2024-08-16',
-    active: false,
+    isActive: false,
   },
 ];
 

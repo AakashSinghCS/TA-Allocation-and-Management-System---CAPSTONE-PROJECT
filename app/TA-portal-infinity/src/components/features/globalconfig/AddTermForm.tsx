@@ -14,13 +14,14 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
     year: new Date().getFullYear(),
     semester: "W1",
     startDate: "",
-    endDate: ""
+    endDate: "",
+    isActive: true
   };
   
   const [termConfig, setTermConfig] = useState(initialTermConfig);
   const [termLoading, setTermLoading] = useState(false);
 
-  const handleTermChange = (field: string, value: string) => {
+  const handleTermChange = (field: string, value: string | boolean) => {
     setTermConfig((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -57,7 +58,8 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
         year: parseInt(termConfig.year.toString()),
         semester: termConfig.semester as "W1" | "W2" | "S1" | "S2",
         startDate: termConfig.startDate,
-        endDate: termConfig.endDate
+        endDate: termConfig.endDate,
+        isActive: termConfig.isActive
       };
       const success = await addSemester(semesterData, token || "");
       
@@ -166,6 +168,20 @@ const AddTermForm: React.FC<AddTermFormProps> = ({ token, onTermAdded }) => {
             onChange={e => handleTermChange("endDate", e.target.value)}
             className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-full sm:w-40"
           />
+        </div>
+        <div className="flex flex-col">
+          <label className="text-xs text-gray-600 mb-1" htmlFor="active-checkbox">
+            Active
+          </label>
+          <div className="border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-full sm:w-16 h-8 flex items-center justify-center">
+            <input
+              id="active-checkbox"
+              type="checkbox"
+              checked={termConfig.isActive}
+              onChange={e => handleTermChange("isActive", e.target.checked)}
+              className="w-5 h-5 accent-blue-600 border border-blue-200 rounded"
+            />
+          </div>
         </div>
         <button
           onClick={handleSaveTerm}
