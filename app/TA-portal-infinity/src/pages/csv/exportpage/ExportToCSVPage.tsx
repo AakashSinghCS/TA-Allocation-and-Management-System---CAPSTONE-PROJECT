@@ -214,6 +214,7 @@ export default function ExportToCSVPage() {
               mode="instructorAddSection"
               onSelect={toggleSelect}
               askForConfirmation={true}
+              selectedSections={selected}
             />
           )}
         </div>

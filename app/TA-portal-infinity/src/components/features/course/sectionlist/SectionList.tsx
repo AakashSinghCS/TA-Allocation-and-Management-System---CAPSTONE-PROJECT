@@ -14,7 +14,12 @@ interface Props {
 }
 
 
-export default function SectionList({ sections, onDeleted, onSelect, onSelectCourse, mode = 'coordinator',askForConfirmation=false }: Props) {
+// Add prop for selectedSections (for highlighting/UX)
+interface SectionListProps extends Props {
+  selectedSections?: Section[];
+}
+
+export default function SectionList({ sections, onDeleted, onSelect, onSelectCourse, mode = 'coordinator', askForConfirmation = false, selectedSections = [] }: SectionListProps) {
   if (!sections || sections.length === 0) {
     return <p className="p-4 text-center text-gray-500">No section found.</p>;
   }
@@ -164,8 +169,10 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                   .filter((t) => t)
                   .join(', ');
                 const sid = sec?.id;
+                // Highlight if selected
+                const isSelected = selectedSections.some(s => s.id === sid);
                 return (
-                  <tr key={`${sid}-${times}`}>
+                  <tr key={`${sid}-${times}`} className={isSelected ? "bg-blue-100" : undefined}>
                     <td className="border border-gray-300 px-3 py-2 truncate">
                       {sec.course?.deptCode} {sec.course?.courseNum} - {sec.course?.name}
                     </td>
@@ -200,7 +207,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                               onClick={() => onSelect?.(sec)}
                               className="cursor-pointer text-[#0089b2] hover:text-[#00b5bc]"
                             >
-                              Select
+                              {isSelected ? 'Selected' : 'Select'}
                             </button>
                           ) : (mode === 'coordinator') ? (
                             <div>
