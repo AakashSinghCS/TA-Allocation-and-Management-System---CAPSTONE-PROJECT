@@ -222,10 +222,9 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
       {/* Show required info for Section Creation (no Course Name field) */}
       {mode === 'section' && (
         <div className="mb-2 text-sm text-gray-500">
-          Dept Code and Course Num are required fields for section creation.<br />
+          Dept Code, Course Num, Section Code, Year, Semester, and Section Type are required fields for section creation.<br />
           <span className="text-gray-400">
-            You can create the section without entering Section Code, Year, Semester, Section Type, Instructor ID, or Section Schedules.<br />
-            You can edit them later.
+            You can create the section without entering Instructor ID or Section Schedules. These fields are optional and can be edited later.<br />
           </span>
         </div>
       )}
