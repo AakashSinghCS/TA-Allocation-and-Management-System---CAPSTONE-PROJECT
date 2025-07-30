@@ -53,6 +53,7 @@ import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.SectionSchedule;
 import com.infinity.courseservice.models.Semester;
 import com.infinity.courseservice.models.StudentTaughtCourse;
 import com.infinity.courseservice.repositories.CourseRepository;
@@ -143,8 +144,13 @@ public class CourseServiceTest {
                                 null, null, null);
                 Course savedCourse = new Course("COSC", "Distributed Systems", "455");
                 CourseDto courseDto = new CourseDto(1L, "COSC", "Distributed Systems", "455");
-
-                when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);
+                savedCourse.setId(courseDto.id());
+                when(courseRepository.save(any(Course.class)))
+                        .thenAnswer(invocation -> {
+                                Course toSave = invocation.getArgument(0);
+                                toSave.setId(courseDto.id());
+                                return toSave;
+                        });
                 when(courseMapper.courseToDto(savedCourse)).thenReturn(courseDto);
 
                 CourseDto dto = courseService.addCourse(request, userIdFromHeader);
@@ -653,9 +659,12 @@ public class CourseServiceTest {
                                 .build();
                 savedEntity.setId(555L);
                 when(studentTaughtCourseRepository.save(any(StudentTaughtCourse.class)))
-                                .thenReturn(savedEntity);
+                        .thenAnswer(invocation -> {
+                                StudentTaughtCourse toSave = invocation.getArgument(0);
+                                toSave.setId(savedEntity.getId());
+                                return toSave;
+                        });
                 
-
                 UserDto fakeStudentDto = new UserDto(
                                 studentId,
                                 "First",

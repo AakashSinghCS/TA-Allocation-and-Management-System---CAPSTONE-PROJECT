@@ -13,7 +13,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 
 @Entity
@@ -25,6 +27,8 @@ import lombok.NoArgsConstructor;
                name = "uk_sectionSchedule_unique_row",
                columnNames = {"section_id", "schedule_day", "startTime", "endTime"})
        })
+@EqualsAndHashCode(exclude = "section")
+@ToString(exclude = "section")
 public class SectionSchedule {
 
     @Id
@@ -48,5 +52,12 @@ public class SectionSchedule {
         this.startTime = startTime;
         this.endTime = endTime;
         this.section = section;
+    }
+
+    public SectionSchedule(SectionSchedule other){
+        this.day = other.day;
+        this.startTime = other.startTime;
+        this.endTime = other.endTime;
+        this.section = other.section;
     }
 }

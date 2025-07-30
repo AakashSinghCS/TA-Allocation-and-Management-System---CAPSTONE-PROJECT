@@ -55,11 +55,12 @@ public class SectionControllerTest {
                 Long courseId = 1L;
                 Long userIdFromHeader = 1L;
                 CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025,
-                                "W1", null, null, null,null);
+                                "W1", null, null, null, null);
                 SectionDto response = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE,
-                                new CourseDto(1L, "COSC", "Security", "430"),1);
+                                new CourseDto(1L, "COSC", "Security", "430"), 1);
 
-                when(sectionService.addSection(eq(courseId), any(SectionAddDtoRequest.class), eq(userIdFromHeader))).thenReturn(response);
+                when(sectionService.addSection(eq(courseId), any(SectionAddDtoRequest.class), eq(userIdFromHeader)))
+                                .thenReturn(response);
 
                 mockMvc.perform(post("/sections/addSection/{courseId}", courseId)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -78,16 +79,17 @@ public class SectionControllerTest {
                 Long sectionId = 200L;
                 Long userIdFromHeader = 1L;
                 CourseRequest request = new CourseRequest(null, null, null, null, null, null, null, "Mon", "09:00",
-                                "10:00",null);
+                                "10:00", null);
                 SectionScheduleDto response = new SectionScheduleDto("Mon", LocalTime.of(9, 0), LocalTime.of(10, 0),
                                 sectionId, 2L);
 
-                when(sectionService.addSectionSchedule(eq(sectionId), any(CourseRequest.class), eq(userIdFromHeader))).thenReturn(response);
+                when(sectionService.addSectionSchedule(eq(sectionId), any(CourseRequest.class), eq(userIdFromHeader)))
+                                .thenReturn(response);
 
                 mockMvc.perform(post("/sections/addSectionSchedule/{sectionId}", sectionId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
-                                .header("X-User-Id",userIdFromHeader))
+                                .header("X-User-Id", userIdFromHeader))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.day").value("Mon"))
                                 .andExpect(jsonPath("$.startTime").value("09:00:00"))
@@ -97,9 +99,8 @@ public class SectionControllerTest {
         @Test
         void testGetSectionById() throws Exception {
                 Long sectionId = 300L;
-                SectionDto response = new SectionDto(sectionId,2025, "W2", "002", SectionType.LECTURE,
-                                new CourseDto(1L, "COSC", "Networks", "329"),1
-                                );
+                SectionDto response = new SectionDto(sectionId, 2025, "W2", "002", SectionType.LECTURE,
+                                new CourseDto(1L, "COSC", "Networks", "329"), 1);
 
                 when(sectionService.getSectionById(sectionId)).thenReturn(response);
 
@@ -117,11 +118,12 @@ public class SectionControllerTest {
         void testUpdateSection() throws Exception {
                 Long userIdFromHeader = 1L;
                 CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025,
-                                "W1", null, null, null,null);
+                                "W1", null, null, null, null);
                 SectionDto response = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE,
-                                   new CourseDto(1L, "COSC", "Security", "430"),1);
+                                new CourseDto(1L, "COSC", "Security", "430"), 1);
 
-                when(sectionService.updateSection(any(), any(CourseRequest.class),eq(userIdFromHeader))).thenReturn(response);
+                when(sectionService.updateSection(any(), any(CourseRequest.class), eq(userIdFromHeader)))
+                                .thenReturn(response);
 
                 mockMvc.perform(put("/sections/updateSection/1")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -140,7 +142,7 @@ public class SectionControllerTest {
                 Long userIdFromHeader = 1L;
                 String response = "Section deleted";
 
-                when(sectionService.deleteSection(any(),eq(userIdFromHeader))).thenReturn(response);
+                when(sectionService.deleteSection(any(), eq(userIdFromHeader))).thenReturn(response);
 
                 mockMvc.perform(delete("/sections/deleteSection/1")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -168,16 +170,19 @@ public class SectionControllerTest {
 
         @Test
         void testUpdateSectionSchedule() throws Exception {
+                Long userIdFromHeader = 1L;
                 CourseRequest request = new CourseRequest("COSC", "Security", "430", "001", SectionType.LECTURE, 2025,
-                                "W1", null, null, null,null);
-                SectionScheduleDto response = new SectionScheduleDto("Tue", LocalTime.parse("10:00"), 
+                                "W1", null, null, null, null);
+                SectionScheduleDto response = new SectionScheduleDto("Tue", LocalTime.parse("10:00"),
                                 LocalTime.parse("11:00"), 1L, 2L);
 
-                when(sectionService.updateSectionSchedule(any(), any(CourseRequest.class))).thenReturn(response);
+                when(sectionService.updateSectionSchedule(any(), any(CourseRequest.class), eq(userIdFromHeader)))
+                                .thenReturn(response);
 
                 mockMvc.perform(put("/sections/updateSectionSchedule/1")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
+                                .content(objectMapper.writeValueAsString(request))
+                                .header("X-User-Id", userIdFromHeader))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.day").value("Tue"))
                                 .andExpect(jsonPath("$.startTime").value("10:00:00"))
@@ -192,18 +197,22 @@ public class SectionControllerTest {
                 when(sectionService.deleteSection(any(), eq(userIdFromHeader))).thenReturn(response);
 
                 mockMvc.perform(delete("/sections/deleteSectionSchedule/1")
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-User-Id", userIdFromHeader))
                                 .andExpect(status().isOk());
         }
 
         @Test
         void testAssignInstructor() throws Exception {
+                Long userIdFromHeader = 1L;
                 AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L);
-                when(sectionService.assignInstructor(eq(request))).thenReturn("Instructor assigned to section 101");
+                when(sectionService.assignInstructor(eq(request), eq(userIdFromHeader)))
+                                .thenReturn("Instructor assigned to section 101");
 
                 mockMvc.perform(post("/sections/assignInstructor")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
+                                .content(objectMapper.writeValueAsString(request))
+                                .header("X-User-Id", userIdFromHeader))
                                 .andExpect(status().isOk())
                                 .andExpect(content().string("Instructor assigned to section 101"));
         }
@@ -212,12 +221,13 @@ public class SectionControllerTest {
         void testUnassignInstructor() throws Exception {
                 Long sectionId = 101L;
                 Long instructorId = 99L;
-
-                when(sectionService.unassignInstructor(sectionId, instructorId))
+                Long userIdFromHeader = 1L;
+                when(sectionService.unassignInstructor(sectionId, instructorId, userIdFromHeader))
                                 .thenReturn("Instructor unassigned from 101");
 
                 mockMvc.perform(delete("/sections/unassignInstructor/{sectionId}/{instructorId}", sectionId,
-                                instructorId))
+                                instructorId)
+                                .header("X-User-Id", userIdFromHeader))
                                 .andExpect(status().isOk())
                                 .andExpect(content().string("Instructor unassigned from 101"));
         }
@@ -227,9 +237,9 @@ public class SectionControllerTest {
                 Long instructorId = 99L;
                 List<SectionDto> sections = List.of(
                                 new SectionDto(10L, 2025, "W1", "001", SectionType.LECTURE,
-                                                new CourseDto(1L, "COSC", "Security", "430"),1),
+                                                new CourseDto(1L, "COSC", "Security", "430"), 1),
                                 new SectionDto(11L, 2025, "W1", "002", SectionType.LABORATORY,
-                                                new CourseDto(2L, "COSC", "AI", "310"),1));
+                                                new CourseDto(2L, "COSC", "AI", "310"), 1));
 
                 when(sectionService.getInstructorSections(instructorId)).thenReturn(sections);
 
@@ -241,39 +251,41 @@ public class SectionControllerTest {
         }
 
         @Test
-    @WithMockUser(roles = "COORDINATOR")
-    void addEndpoint_ReturnsTrue() throws Exception {
-        // Arrange: mock service
-        when(sectionService.add(any(SectionAddDtoRequest.class))).thenReturn(true);
+        @WithMockUser(roles = "COORDINATOR")
+        void addEndpoint_ReturnsTrue() throws Exception {
+                Long userIdFromHeader = 1L;
+                when(sectionService.add(any(SectionAddDtoRequest.class),eq(userIdFromHeader))).thenReturn(true);
 
-        String json = """
-            {
-              "deptCode":"COSC",
-              "name":"Intro to CS",
-              "courseNum":"111",
-              "section":"001",
-              "type":"LECTURE",
-              "year":2024,
-              "semester":"W1",
-              "instructorId":42,
-              "sectionSchedules":[{"day":"Monday","startTime":"08:00","endTime":"09:30","sectionId":null}]
-            }
-        """;
+                String json = """
+                                    {
+                                      "deptCode":"COSC",
+                                      "name":"Intro to CS",
+                                      "courseNum":"111",
+                                      "section":"001",
+                                      "type":"LECTURE",
+                                      "year":2024,
+                                      "semester":"W1",
+                                      "instructorId":42,
+                                      "sectionSchedules":[{"day":"Monday","startTime":"08:00","endTime":"09:30","sectionId":null}]
+                                    }
+                                """;
 
-        // Act & Assert: use full controller path
-        mockMvc.perform(post("/sections/add")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isOk())
-                .andExpect(content().string("true"));
-    }
+                // Act & Assert: use full controller path
+                mockMvc.perform(post("/sections/add")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json)
+                                .header("X-User-Id",userIdFromHeader))
+                                .andExpect(status().isOk())
+                                .andExpect(content().string("true"));
+        }
 
-     @Test
+        @Test
         void testGetSectionWithInstructorIdById() throws Exception {
                 Long sectionId = 300L;
                 Long instructorId = 1L;
-                SectionDtoWithInstructorId response = new SectionDtoWithInstructorId(sectionId, instructorId,2025, "W2", "002", SectionType.LECTURE,
-                                new CourseDto(1L, "COSC", "Networks", "329" ), 1);
+                SectionDtoWithInstructorId response = new SectionDtoWithInstructorId(sectionId, instructorId, 2025,
+                                "W2", "002", SectionType.LECTURE,
+                                new CourseDto(1L, "COSC", "Networks", "329"), 1);
 
                 when(sectionService.getSectionWithInstructorIdById(sectionId)).thenReturn(response);
 
@@ -295,36 +307,39 @@ public class SectionControllerTest {
                 String semester = "W1";
 
                 SectionDto dto = new SectionDto(
-                        10L, year, semester, sectionName, null,
-                        new CourseDto(courseId, "COSC", "CAPSTONE","499"),1
-                );
+                                10L, year, semester, sectionName, null,
+                                new CourseDto(courseId, "COSC", "CAPSTONE", "499"), 1);
 
                 when(sectionService.getByCourseIdSectionYearSemester(courseId, sectionName, year, semester))
-                        .thenReturn(dto);
+                                .thenReturn(dto);
 
                 mockMvc.perform(get("/sections/getByCourseIdSectionYearSemester/{courseId}/{section}/{year}/{semester}",
                                 courseId, sectionName, year, semester))
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.id").value(10))
-                        .andExpect(jsonPath("$.section").value("001"))
-                        .andExpect(jsonPath("$.year").value(2023))
-                        .andExpect(jsonPath("$.semester").value("W1"));
-        }   
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(10))
+                                .andExpect(jsonPath("$.section").value("001"))
+                                .andExpect(jsonPath("$.year").value(2023))
+                                .andExpect(jsonPath("$.semester").value("W1"));
+        }
 
         @Test
         void testIncrementNumberOfTAs() throws Exception {
-                mockMvc.perform(put("/sections/1/incrementTA"))
-                        .andExpect(status().isNoContent());
+                Long userIdFromHeader = 1L;
+                mockMvc.perform(put("/sections/1/incrementTA")
+                                .header("X-User-Id",userIdFromHeader))
+                                .andExpect(status().isNoContent());
 
-                verify(sectionService, times(1)).incrementNumberOfTAsAllocated(1L);
+                verify(sectionService, times(1)).incrementNumberOfTAsAllocated(1L,userIdFromHeader);
         }
 
         @Test
         void testDecrementNumberOfTAs() throws Exception {
-                mockMvc.perform(put("/sections/1/decrementTA"))
-                        .andExpect(status().isNoContent());
+                Long userIdFromHeader = 1L;
+                mockMvc.perform(put("/sections/1/decrementTA")
+                                .header("X-User-Id",userIdFromHeader))
+                                .andExpect(status().isNoContent());
 
-                verify(sectionService, times(1)).decrementNumberOfTAsAllocated(1L);
+                verify(sectionService, times(1)).decrementNumberOfTAsAllocated(1L,userIdFromHeader);
         }
 
 }

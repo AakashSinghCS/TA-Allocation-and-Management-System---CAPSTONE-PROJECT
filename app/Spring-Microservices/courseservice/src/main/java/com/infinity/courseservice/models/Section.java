@@ -3,6 +3,7 @@ package com.infinity.courseservice.models;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.infinity.courseservice.enums.SectionType;
 
 import jakarta.persistence.CascadeType;
@@ -19,7 +20,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -28,6 +31,8 @@ import lombok.NoArgsConstructor;
         @UniqueConstraint(name = "uk_section_unique_row", 
                 columnNames = { "course_id", "semester_id", "section","type" })
 })
+@EqualsAndHashCode(exclude = "sectionSchedules")
+@ToString(exclude = "sectionSchedules")
 public class Section {
     @Id
     @GeneratedValue()
@@ -62,6 +67,7 @@ public class Section {
     }
 
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<SectionSchedule> sectionSchedules;
 
     public Section(Semester semester, String section, SectionType type, Long instructorId, Course course) {

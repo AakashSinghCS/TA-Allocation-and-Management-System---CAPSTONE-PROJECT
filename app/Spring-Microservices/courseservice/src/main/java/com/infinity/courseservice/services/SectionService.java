@@ -342,41 +342,84 @@ public class SectionService {
                 .toList();
     }
 
-    public SectionScheduleDto updateSectionSchedule(Long sectionScheduleId, CourseRequest request) {
+    public SectionScheduleDto updateSectionSchedule(Long sectionScheduleId, CourseRequest request, Long userIdFromHeader) {
         SectionSchedule schedule = sectionScheduleRepository.findById(sectionScheduleId)
                 .orElseThrow(() -> new NotFoundException("No schedule with id " + sectionScheduleId));
+        SectionSchedule before = new SectionSchedule(schedule);
         schedule.setDay(request.day());
         schedule.setStartTime(LocalTime.parse(request.startTime()));
         schedule.setEndTime(LocalTime.parse(request.endTime()));
-        sectionScheduleRepository.save(schedule);
+        SectionSchedule saved = sectionScheduleRepository.save(schedule);
+
+        auditService.record(
+                userIdFromHeader,
+                ActionOptions.UPDATE,
+                "SectionSchedule",   
+                before,               
+                saved,           
+                saved.getId()   
+            );
+
         return new SectionScheduleDto(schedule.getDay(),
                 schedule.getStartTime(),
                 schedule.getEndTime(), schedule.getSection().getId(),
                 schedule.getId());
     }
 
-    public String deleteSectionSchedule(Long sectionScheduleId) {
-        if (!sectionScheduleRepository.existsById(sectionScheduleId)) {
-            throw new NotFoundException("No schedule with id " + sectionScheduleId);
-        }
-        sectionScheduleRepository.deleteById(sectionScheduleId);
+    public String deleteSectionSchedule(Long sectionScheduleId, Long userIdFromHeader) {
+        SectionSchedule toDelete = sectionScheduleRepository
+            .findById(sectionScheduleId)
+            .orElseThrow(() -> new NotFoundException(
+               "No schedule with id " + sectionScheduleId));
+        sectionScheduleRepository.delete(toDelete);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "SectionSchedule",   
+            toDelete,               
+            null,           
+            toDelete.getId()   
+        );
         return "Section schedule deleted";
     }
 
-    public String assignInstructor(AssignInstructorRequest request) {
+    public String assignInstructor(AssignInstructorRequest request, Long userIdFromHeader) {
         UserDto instructorDto = userInterface.getInstructorById(request.instructorId());
         Section section = sectionRepository.findById(request.sectionId())
                 .orElseThrow(() -> new NotFoundException("No section with id " + request.sectionId()));
+        Section before = new Section(section);
         section.setInstructorId(instructorDto.id());
-        sectionRepository.save(section);
+        Section saved = sectionRepository.save(section);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "Section",   
+            before,               
+            saved,           
+            section.getId()   
+        );
+
         return "Instructor assigned to section " + section.getId();
     }
 
-    public String unassignInstructor(Long sectionId, Long instructorId) {
+    public String unassignInstructor(Long sectionId, Long instructorId,Long userIdFromHeader) {
         Section section = sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
+        Section before = new Section(section);
         section.setInstructorId(null);
-        sectionRepository.save(section);
+        Section saved = sectionRepository.save(section);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "Section",   
+            before,               
+            saved,           
+            section.getId()   
+        );
+
         return "Instructor unassigned from " + section.getId();
     }
 
@@ -395,7 +438,7 @@ public class SectionService {
     }
 
     @Transactional
-    public Boolean add(SectionAddDtoRequest request) {
+    public Boolean add(SectionAddDtoRequest request, Long userIdFromHeader) {
         String deptCode = Optional.ofNullable(request.deptCode()).orElse("").trim();
         String courseNum = Optional.ofNullable(request.courseNum()).orElse("").trim();
 
@@ -412,7 +455,16 @@ public class SectionService {
                             deptCode,
                             Optional.ofNullable(request.name()).orElse(""),
                             courseNum);
-                    return courseRepository.save(newCourse);
+                    Course saved= courseRepository.save(newCourse);
+                    auditService.record(
+                        userIdFromHeader,
+                        ActionOptions.CREATE,
+                        "Course",   
+                        null,               
+                        saved,           
+                        saved.getId()   
+                    );
+                    return saved;
                 });
 
         Section section = new Section(
@@ -423,6 +475,14 @@ public class SectionService {
                 course);
         try {
             section = sectionRepository.save(section);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.CREATE,
+                "Section",   
+                null,               
+                section,           
+                section.getId()   
+            );
         } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException("Section already exists");
         }
@@ -435,7 +495,15 @@ public class SectionService {
                     sched.setStartTime(schedDto.startTime());
                     sched.setEndTime(schedDto.endTime());
                     sched.setSection(section);
-                    sectionScheduleRepository.save(sched);
+                    SectionSchedule saved = sectionScheduleRepository.save(sched);
+                    auditService.record(
+                        userIdFromHeader,
+                        ActionOptions.CREATE,
+                        "SectionSchedule",   
+                        null,               
+                        saved,           
+                        saved.getId()   
+                    );
                 }
             } catch (DataIntegrityViolationException ex) {
                 throw new BadRequestException("Section schedule saving went wrong");
@@ -523,22 +591,38 @@ public class SectionService {
         return sectionMapper.sectionToDto(entity);
     }
 
-    public void incrementNumberOfTAsAllocated(Long sectionId) {
+    public void incrementNumberOfTAsAllocated(Long sectionId, Long userIdFromHeader) {
         Section section = sectionRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundException("Section not found"));
-
+        Section before = new Section(section);
         section.setNumberOfTAsAllocated(section.getNumberOfTAsAllocated() + 1);
-        sectionRepository.save(section);
+        Section saved = sectionRepository.save(section);
+        auditService.record(
+                userIdFromHeader,
+                ActionOptions.UPDATE,
+                "Section",   
+                before,               
+                saved,           
+                before.getId()   
+            );
     }
 
-    public void decrementNumberOfTAsAllocated(Long sectionId) {
+    public void decrementNumberOfTAsAllocated(Long sectionId, Long userIdFromHeader) {
         Section section = sectionRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundException("Section not found"));
-
+        Section before = new Section(section);
         int current = section.getNumberOfTAsAllocated();
         if (current > 0) {
             section.setNumberOfTAsAllocated(current - 1);
-            sectionRepository.save(section);
+            Section saved = sectionRepository.save(section);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.UPDATE,
+                "Section",   
+                before,               
+                saved,           
+                before.getId()   
+            );
         }
     }
 
