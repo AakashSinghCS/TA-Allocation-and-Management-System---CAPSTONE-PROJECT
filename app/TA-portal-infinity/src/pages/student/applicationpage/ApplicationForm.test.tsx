@@ -29,7 +29,7 @@ describe('ApplicationForm', () => {
     termFormsData: { '2025-Summer': { firstPreference: '', secondPreference: '', thirdPreference: '', wantWorkingHours: '', wantRemote: '', confirmProfileUpdated: false, applicationType: '' } },
     errors: {},
     activeFormTab: '2025-Summer',
-    availability: [],
+    unavailability: [],
     calendarRef: mockCalendarRef,
     handleTermSelection: vi.fn(),
     handleChange: vi.fn(),

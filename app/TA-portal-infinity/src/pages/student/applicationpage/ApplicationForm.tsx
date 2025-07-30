@@ -114,6 +114,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
               </p>
               <div className="bg-white rounded shadow p-2">
                 <FullCalendar
+                  key={`calendar-${activeFormTab}`}
                   ref={calendarRef as any}
                   plugins={[timeGridPlugin, interactionPlugin]}
                   initialView="timeGridWeek"

@@ -26,7 +26,7 @@ interface Unavailability {
 const ApplicationPage: React.FC = () => {
   const [selectedTerms, setSelectedTerms] = useState<string[]>([]);
   const [termFormsData, setTermFormsData] = useState<{[termKey: string]: any}>({});
-  const [unavailability, setUnavailability] = useState<Unavailability[]>([]);
+  const [termUnavailability, setTermUnavailability] = useState<{[termKey: string]: Unavailability[]}>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [submitted, setSubmitted] = useState(false);
   const [savedApp, setSavedApp] = useState<ApplicationDto | null>(null);
@@ -88,7 +88,7 @@ useEffect(() => {
             startTime: uv.startTime,
             endTime: uv.endTime
           }));
-          setUnavailability(existingUnavailability);
+          updateTermUnavailability(`${mostRecent.year}-${mostRecent.semester}`, existingUnavailability);
         }
       } catch (error) {
         console.error('Failed to load existing applications:', error);
@@ -144,11 +144,24 @@ const deadlinePassed =
     }));
   };
 
+  // function to get unavailability for a specific term
+  const getTermUnavailability = (termKey: string): Unavailability[] => {
+    return termUnavailability[termKey] || [];
+  };
+
+  // function to update unavailability for a specific term
+  const updateTermUnavailability = (termKey: string, unavailabilities: Unavailability[]) => {
+    setTermUnavailability(prev => ({
+      ...prev,
+      [termKey]: unavailabilities
+    }));
+  };
+
   //  function to clear all forms
   const clearForm = () => {
     setSelectedTerms([]);
     setTermFormsData({});
-    setUnavailability([]);
+    setTermUnavailability({});
     setActiveFormTab('');
   };
 
@@ -175,7 +188,7 @@ const deadlinePassed =
       startTime: uv.startTime,
       endTime: uv.endTime
     }));
-    setUnavailability(existingUnavailability);
+    updateTermUnavailability(termKey, existingUnavailability);
   };
 
   const handleTermSelection = (termKey: string, isSelected: boolean) => {
@@ -204,14 +217,14 @@ const deadlinePassed =
             startTime: uv.startTime,
             endTime: uv.endTime
           }));
-          setUnavailability(existingUnavailability);
+          updateTermUnavailability(termKey, existingUnavailability);
         } else {
           // Initialize with default values
           setTermFormsData(prev => ({
             ...prev,
             [termKey]: initializeTermForm(termKey)
           }));
-          setUnavailability([]);
+          updateTermUnavailability(termKey, []);
         }
       }
       // Set as active tab if it's the first selection or no active tab
@@ -250,6 +263,8 @@ const deadlinePassed =
   };
 
   const handleDateSelect = (info: DateSelectArg) => {
+    if (!activeFormTab) return;
+    
     const day = dayMap[info.start.getDay()];
     const startTime = info.start.toLocaleTimeString('en-GB', {
       hour12: false, hour: '2-digit', minute: '2-digit'
@@ -258,14 +273,20 @@ const deadlinePassed =
       hour12: false, hour: '2-digit', minute: '2-digit'
     });
     const id = `${day}-${startTime}-${endTime}`;
-    setUnavailability(prev => [...prev, { id, day, startTime, endTime }]);
+    
+    const currentUnavailability = getTermUnavailability(activeFormTab);
+    updateTermUnavailability(activeFormTab, [...currentUnavailability, { id, day, startTime, endTime }]);
     info.view.calendar.unselect();
   };
 
   const handleEventClick = (info: EventClickArg) => {
+    if (!activeFormTab) return;
+    
     const id = info.event.id;
     info.event.remove();
-    setUnavailability(prev => prev.filter(av => av.id !== id));
+    
+    const currentUnavailability = getTermUnavailability(activeFormTab);
+    updateTermUnavailability(activeFormTab, currentUnavailability.filter(av => av.id !== id));
   };
 
  const handleSubmit = async (e: React.FormEvent) => {
@@ -281,7 +302,8 @@ const deadlinePassed =
 
   for (const termKey of selectedTerms) {
     const termData = getTermFormData(termKey);
-    const termErrors = validateTermForm(termData, unavailability);
+    const termUnavailabilityData = getTermUnavailability(termKey);
+    const termErrors = validateTermForm(termData, termUnavailabilityData);
     
     if (Object.keys(termErrors).length > 0) {
       // Prefix errors with term key for identification
@@ -311,7 +333,8 @@ const deadlinePassed =
     for (const termKey of validTerms) {
       const [year, semester] = termKey.split('-');
       const termData = getTermFormData(termKey);
-      const payload = buildTermPayload(termData, parseInt(year), semester, unavailability);
+      const termUnavailabilityData = getTermUnavailability(termKey);
+      const payload = buildTermPayload(termData, parseInt(year), semester, termUnavailabilityData);
 
       try {
         let resp = await fetch(addUrl, {
@@ -442,7 +465,7 @@ const deadlinePassed =
               termFormsData={termFormsData}
               errors={errors}
               activeFormTab={activeFormTab}
-              unavailability={unavailability}
+              unavailability={getTermUnavailability(activeFormTab)}
               calendarRef={calendarRef}
               handleTermSelection={handleTermSelection}
               handleChange={handleChange}

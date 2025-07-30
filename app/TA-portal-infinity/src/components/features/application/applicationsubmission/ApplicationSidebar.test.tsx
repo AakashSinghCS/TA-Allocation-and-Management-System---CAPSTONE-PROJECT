@@ -23,13 +23,9 @@ describe('ApplicationSidebar', () => {
 
   it('renders all steps', () => {
     render(<ApplicationSidebar {...baseProps} />);
-    expect(screen.getByText(/Select Preferences/i)).toBeInTheDocument();
-    expect(screen.getByText(/Add Working Hours/i)).toBeInTheDocument();
-    expect(screen.getByText(/Upload Transcript/i)).toBeInTheDocument();
-    expect(screen.getByText(/Application Type/i)).toBeInTheDocument();
-    expect(screen.getByText(/Remote Preference/i)).toBeInTheDocument();
-    expect(screen.getByText(/Select Unavailability/i)).toBeInTheDocument();
-    expect(screen.getByText(/Confirm Profile Update/i)).toBeInTheDocument();
-    expect(screen.getByText(/Submit Application/i)).toBeInTheDocument();
+    expect(screen.getByText(/Application Progress/i)).toBeInTheDocument();
+    expect(screen.getByText(/Terms Selected:/i)).toBeInTheDocument();
+    expect(screen.getByText(/All selected term applications are complete!/i)).toBeInTheDocument();
+    expect(screen.getByText(/view your submitted TA applications/i)).toBeInTheDocument();
   });
 });
