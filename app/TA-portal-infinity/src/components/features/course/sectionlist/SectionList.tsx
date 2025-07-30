@@ -87,7 +87,6 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
       <tbody>
         {sortedCourseIds.map((courseId) => {
           const group = groups[courseId];
-
           // Sort this group's sections by type order
           const sortedSections = [...group].sort((a, b) => {
             const indexA = a?.type
@@ -98,17 +97,12 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
               : Infinity;
             return indexA - indexB;
           });
-
           // Course header info
           const { deptCode, courseNum, name } = group[0].course || {};
-          // const courseProfilePath = generatePath(`/user/courseprofile/:courseId`, { courseId: String(courseId) });
           return (
             <React.Fragment key={courseId}>
               <tr className="bg-gray-100">
-                <td
-                  colSpan={7}
-                  className="border border-gray-300 px-3 py-2 font-semibold "
-                >
+                <td colSpan={7} className="border border-gray-300 px-3 py-2 font-semibold ">
                   {/* Left: course link */}
                   {courseId ? (
                   <Link to={`/user/courseprofile/${courseId}`}
@@ -153,9 +147,6 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                   ) : <></>}
                 </td>
               </tr>
-
-
-
               {mode !== 'instructorPrereqCourse' && sortedSections.map((sec) => {
                 if (!sec?.id) return;
                 // Format time to HH:mm (remove seconds if present)
@@ -169,7 +160,6 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                   .filter((t) => t)
                   .join(', ');
                 const sid = sec?.id;
-                // Highlight if selected
                 const isSelected = selectedSections.some(s => s.id === sid);
                 return (
                   <tr key={`${sid}-${times}`} className={isSelected ? "bg-blue-100" : undefined}>
