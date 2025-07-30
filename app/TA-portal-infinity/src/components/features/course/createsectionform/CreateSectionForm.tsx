@@ -303,8 +303,15 @@ export default function CreateSectionForm({ onCreateSection, mode }: Props) {
             className={`w-full border rounded px-2 py-1${sectionErrors.courseNum ? ' border-red-500' : ''}`}
             disabled={!form.deptCode}
           >
-            <option value="">-- Select Course Num --</option>
-            {courseNumOptions.map(num => (
+            {!form.deptCode ? (
+              <option value="" disabled>
+                Please select Dept Code first
+                {/* Select Dept Code first */}
+              </option>
+            ) : (
+              <option value="">-- Select Course Num --</option>
+            )}
+            {form.deptCode && courseNumOptions.map(num => (
               <option key={num} value={num}>{num}</option>
             ))}
           </select>
