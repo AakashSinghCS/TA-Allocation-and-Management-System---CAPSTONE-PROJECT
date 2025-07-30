@@ -314,7 +314,7 @@ useEffect(() => {
                             ?.filter(as => as.sectionId === section.id) ?? [];
 
                           return (
-                            <div key={section.id} className="border p-3 rounded-lg">
+                            <div key={section.id} className="p-3">
                               <div className="font-medium">
                                 {section.course?.deptCode} {section.course?.courseNum} — {section.section} (
                                 {section.type}, {section.semester} {section.year})

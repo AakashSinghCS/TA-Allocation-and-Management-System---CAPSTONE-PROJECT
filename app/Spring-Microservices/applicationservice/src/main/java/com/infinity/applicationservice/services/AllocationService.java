@@ -227,7 +227,7 @@ public class AllocationService {
                     .findFirst()
                     .orElseThrow(() -> new NotFoundException("No allocated section with non-null sectionId"))
                     .getSectionId());
-            NeedDto need = courseInterface.getNeed(allocation.getApplication().getId(), section.year(),
+            NeedDto need = courseInterface.getNeed(section.course().id(), section.year(),
                     section.semester());
             courseInterface.updateNeedAllocatedHours(need.id(), need.numHoursCurrentlyAllocated() + allocation.getGradingHours());
             for (AllocatedSection allocatedSection : allocation.getAllocatedSections()) {
