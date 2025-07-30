@@ -15,7 +15,7 @@ export default function AddSectionPage() {
   const [sectionCreated, setSectionCreated] = useState(false);
   const sectionCreatedTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const handleCreateSection = async (data: CreateSectionData): Promise<boolean | void> => {
+  const handleCreateSection = async (data: CreateSectionData, setSectionErrors?: (e: any) => void): Promise<boolean | void> => {
     const courseProfile = extractCourseProfile(data);
     // For section creation, skip course name validation
     const { ok, sanitized, errors } = validateCourseProfile(courseProfile, { skipName: !data.isCourse });
@@ -60,16 +60,23 @@ export default function AddSectionPage() {
         return true;
       } else {
         let msg = "Failed to create section.";
+        let errorMap: any = {};
         if (result?.error) {
           // Debug: log the actual error response
           console.log("Section creation error response:", result.error);
           if (result.error.toLowerCase().includes("semester doesn't exist")) {
             msg = "Failed to create section. The combination of Year and Semester does not exist.";
+            errorMap.year = "Invalid year/semester combination.";
+            errorMap.semester = "Invalid year/semester combination.";
           } else if (result.error.toLowerCase().includes("already exists") || result.error.toLowerCase().includes("duplicate")) {
-            msg = "Failed to create section. The section is a duplicate.";
+            msg = "Failed to create section. Section already exists for this course and term.";
+            errorMap.section = "Section already exists for this course and term.";
           } else {
             msg = `Failed to create section. ${result.error}`;
           }
+        }
+        if (setSectionErrors && Object.keys(errorMap).length > 0) {
+          setSectionErrors(errorMap);
         }
         alert(msg);
         return false;

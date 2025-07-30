@@ -26,7 +26,7 @@ export interface CreateSectionData {
   isCourse: boolean
 }
 interface Props {
-  onCreateSection: (data: CreateSectionData) => void;
+  onCreateSection: (data: CreateSectionData, setSectionErrors?: (e: any) => void) => Promise<boolean | void>;
   mode?: 'course' | 'section';
   refreshOptions?: number;
 }
@@ -187,9 +187,10 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
     };
     // onCreateSection returns a Promise<boolean> for section mode
     if (mode === 'section') {
-      const result = await onCreateSection(cleanedForm);
+      const result = await onCreateSection(cleanedForm, setSectionErrors);
       if (result === true) {
         setForm(initialForm); // reset only on success
+        setSectionErrors({});
       }
     } else {
       onCreateSection(cleanedForm);
@@ -359,7 +360,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
               placeholder="e.g. L01 or 001"
             />
             {sectionErrors.section && (
-              <div className="text-red-600 text-xs mt-1">Section code is required.</div>
+              <div className="text-red-600 text-xs mt-1">{sectionErrors.section}</div>
             )}
           </div>
           <div>
