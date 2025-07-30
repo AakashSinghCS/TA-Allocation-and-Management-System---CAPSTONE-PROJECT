@@ -1,16 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { fetchAllApplicationYears } from '../../../api/application/fetchAllApplicationYears';
-import { fetchAllApplicationSemesters } from '../../../api/application/fetchAllApplicationSemesters';
-import { fetchAllocationByStatus } from '../../../api/allocation/fetchAllocationByStatus';
 import { fetchAllocationsByStudent } from '../../../api/allocation/fetchAllocationByStudent';
+import { fetchAllApplicationSemesters } from '../../../api/application/fetchAllApplicationSemesters';
+import { fetchAllApplicationYears } from '../../../api/application/fetchAllApplicationYears';
 import { fetchApplications } from '../../../api/application/FetchApplications';
+import { fetchSectionIncludeInstructorId } from '../../../api/section/fetchSectionIncludeInstructorId';
 import ApplicationCard from '../../../components/features/application/viewtaapplication/ApplicationCard';
-import ApplicationDetailsPanel from '../../../components/features/application/viewtaapplication/ApplicationDetailsPanel';
 import ApplicationStats from '../../../components/features/application/viewtaapplication/ApplicationStats';
 import { useAuth } from '../../../context/AuthContext';
-import type { AllocatedSection, Allocation } from '../../../interfaces/allocation/Allocation';
+import type { AllocatedSection } from '../../../interfaces/allocation/Allocation';
 import type { ApplicationDto } from '../../../interfaces/application/Application';
-import { fetchSectionIncludeInstructorId } from '../../../api/section/fetchSectionIncludeInstructorId';
 import type Section from '../../../interfaces/section/Section';
   export type EnrichedAllocatedSection = AllocatedSection & {
   status?: string;
@@ -80,20 +78,22 @@ useEffect(() => {
   async function loadAllocations() {
     try {
       // 1) fetch every student’s full Allocation
+      const uniqueStudentIds = Array.from(new Set(allApps.map(app => app.student.id)));
+
       const rawAllocs = await Promise.all(
-        allApps.map(app =>
-          fetchAllocationsByStudent(app.student.id!, token || '', true)
+        uniqueStudentIds.map(studentId =>
+          fetchAllocationsByStudent(studentId!, token || '', true)
         )
       );
 
-      // 2) flatten stubs, carrying along status + applicationId
       const stubs: EnrichedAllocatedSection[] = rawAllocs.flatMap(alloc =>
         (alloc.allocatedSections ?? []).map(stub => ({
           ...stub,
           status: alloc.status,
-          applicationId: alloc.application?.applicationId
+          applicationId: alloc.application?.applicationId // inject here
         }))
       );
+
 
       // 3) fetch each unique Section exactly once
       const sectionIds = Array.from(new Set(stubs.map(s => s.sectionId)));

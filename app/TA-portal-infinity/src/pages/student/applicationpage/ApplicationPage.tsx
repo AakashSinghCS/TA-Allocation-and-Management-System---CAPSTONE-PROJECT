@@ -1,20 +1,20 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import type { DateSelectArg, EventClickArg } from '@fullcalendar/core';
+import React, { useEffect, useRef, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useAuth } from '../../../context/AuthContext';
-import type { ApplicationDto, Day } from '../../../interfaces/application/Application';
-import { fetchApplicationsByStudent } from '../../../api/application/FetchActiveApplicationsByStudent';
-import ApplicationSidebar from '../../../components/features/application/applicationsubmission/ApplicationSidebar';
-import { validateTermForm, buildTermPayload } from '../../../components/features/application/applicationsubmission/formValidation';
-import { getApplicationUrls, getCommonHeaders } from '../../../components/features/application/applicationsubmission/apiHelpers';
-import { updateApplication } from '../../../api/application/UpdateApplication';
-import type { DeadlineDto } from '../../../interfaces/admin/Deadline';
 import { fetchDeadlines } from '../../../api/admin/FetchDeadline';
+import { fetchApplicationsByStudent } from '../../../api/application/FetchActiveApplicationsByStudent';
+import { updateApplication } from '../../../api/application/UpdateApplication';
+import { getApplicationUrls, getCommonHeaders } from '../../../components/features/application/applicationsubmission/apiHelpers';
+import ApplicationSidebar from '../../../components/features/application/applicationsubmission/ApplicationSidebar';
+import { dayMap } from '../../../components/features/application/applicationsubmission/availabilityUtils';
+import { buildTermPayload, validateTermForm } from '../../../components/features/application/applicationsubmission/formValidation';
+import { useAuth } from '../../../context/AuthContext';
+import type { DeadlineDto } from '../../../interfaces/admin/Deadline';
+import type { ApplicationDto, Day } from '../../../interfaces/application/Application';
 import ApplicationForm from './ApplicationForm';
 import ApplicationList from './ApplicationList';
-import type { DateSelectArg, EventClickArg } from '@fullcalendar/core';
-import { dayMap } from '../../../components/features/application/applicationsubmission/availabilityUtils';
 
 interface Unavailability {
   id: string;

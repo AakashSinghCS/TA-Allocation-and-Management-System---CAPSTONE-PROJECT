@@ -8,7 +8,7 @@ describe('ApplicationDetails', () => {
     preferences: ['Math', 'CS'],
     wantRemote: true,
     wantWorkingHours: 10,
-    availabilities: [
+    unavailabilities: [
       { day: 'MONDAY', startTime: '09:00', endTime: '10:00' },
       { day: 'TUESDAY', startTime: '11:00', endTime: '12:00' },
     ],
@@ -20,7 +20,7 @@ describe('ApplicationDetails', () => {
     expect(screen.getByText(/Preferences:/i)).toBeInTheDocument();
     expect(screen.getByText(/Remote:/i)).toBeInTheDocument();
     expect(screen.getByText(/Requested Hours:/i)).toBeInTheDocument();
-    expect(screen.getByText(/Availability:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Unavailability:/i)).toBeInTheDocument();
     expect(screen.getByText('12345')).toBeInTheDocument();
     expect(screen.getByText('Math, CS')).toBeInTheDocument();
     expect(screen.getByText('Yes')).toBeInTheDocument();

@@ -110,7 +110,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
             <section className="mt-6">
               <h2 className="text-lg font-semibold mb-2">Unavailability*</h2>
               <p className="text-sm text-gray-600 mb-4">
-                Select your available time slots by dragging on the calendar. This applies to all selected terms.
+                Select your unavailable time slots by dragging on the calendar. This applies to all selected terms.
               </p>
               <div className="bg-white rounded shadow p-2">
                 <FullCalendar

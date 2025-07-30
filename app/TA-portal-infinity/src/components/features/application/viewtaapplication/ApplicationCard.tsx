@@ -23,7 +23,6 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ app, isAllocated, all
       sectionHours: number;
       status?: ApplicationStatus;
     }> = {};
-
     allocations.forEach(stub => {
       const id = stub.sectionId;
       if (!groups[id]) {
@@ -140,7 +139,7 @@ const totalGrading = allocations.reduce(
                 className="text-blue-900 hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
-              >
+                >
                 {app.student.firstName} {app.student.lastName}
               </a></div>
               <div><strong>Student #:</strong> {app.student.studentNum}</div>
@@ -150,9 +149,9 @@ const totalGrading = allocations.reduce(
             </div>
           </div>
           <hr className="my-1" />
-          {/* Allocation Info */}
+            {/* Allocation Info */}
           <div>
-            <h4 className="font-semibold text-[#040941] mb-0.5 text-sm">Allocation Info</h4>
+              <h4 className="font-semibold text-[#040941] mb-0.5 text-sm">Allocation Info</h4>
             {sectionGroups.length>0 ? (
               <ul className="list-none space-y-1">
                 {sectionGroups?.map((entry,idx) => {
