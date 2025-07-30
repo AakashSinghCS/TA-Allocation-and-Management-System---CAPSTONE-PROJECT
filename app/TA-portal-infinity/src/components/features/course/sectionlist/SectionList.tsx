@@ -204,6 +204,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                             </button>
                           ) : (mode === 'coordinator') ? (
                             <div>
+                              {/*
                               <ExportAllocationsCSV
                                 courseId={groups[courseId][0].course?.id ?? -1}
                                 year={groups[courseId][0]?.year ?? -1}
@@ -212,6 +213,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                                 buttonLabel="Export to CSV"
                               />
                               {" "}
+                              */}
                               <button
                                 type="button"
                                 onClick={() => handleDeleteSection(sid)}
