@@ -381,7 +381,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
               placeholder="e.g. 2025"
             />
             {sectionErrors.year && (
-              <div className="text-red-600 text-xs mt-1">Year is required.</div>
+              <div className="text-red-600 text-xs mt-1">{sectionErrors.year}</div>
             )}
           </div>
           <div>
@@ -401,7 +401,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
               <option value="S2">S2</option>
             </select>
             {sectionErrors.semester && (
-              <div className="text-red-600 text-xs mt-1">Semester is required.</div>
+              <div className="text-red-600 text-xs mt-1">{sectionErrors.semester}</div>
             )}
           </div>
           <div>
