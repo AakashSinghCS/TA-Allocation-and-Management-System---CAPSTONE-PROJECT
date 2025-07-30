@@ -1,15 +1,19 @@
 package com.infinity.userservice.controllers;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.userservice.dtos.AuditEventDto;
 import com.infinity.userservice.enums.ActionOptions;
-import com.infinity.userservice.models.AuditEvent;
 import com.infinity.userservice.services.AuditService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/users/audit")

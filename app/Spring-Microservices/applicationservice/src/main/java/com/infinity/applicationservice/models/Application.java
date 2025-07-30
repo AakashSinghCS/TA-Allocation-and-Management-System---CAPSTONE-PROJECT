@@ -78,7 +78,7 @@ public class Application {
     private List<Allocation> allocations = new ArrayList<>();
 
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Availability> availabilities = new HashSet<>();
+    private Set<Unavailability> unavailabilities = new HashSet<>();
 
     public Application(Long studentId, List<Subject> preferences, ApplicationType applicationType, boolean wantRemote, Integer wantWorkingHours) {
         this.studentId = studentId;

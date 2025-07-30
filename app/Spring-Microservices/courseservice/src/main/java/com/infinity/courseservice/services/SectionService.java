@@ -175,7 +175,7 @@ public class SectionService {
             summary.append("\n\nError details (per row):\n");
             String[] errors = errorMessages.toString().split("\n");
             for (String err : errors) {
-                if (err.contains("duplicate key") || err.toLowerCase().contains("sql") || err.toLowerCase().contains("constraint") || err.toLowerCase().contains("exception during save")) {
+                if (err.contains("duplicate key") || err.toLowerCase().contains("sql") || err.toLowerCase().contains("constraint")) {
                     summary.append(err.replaceAll("Exception during save:.*", "Database error: Duplicate or constraint violation.")).append("\n");
                 } else {
                     summary.append(err).append("\n");
