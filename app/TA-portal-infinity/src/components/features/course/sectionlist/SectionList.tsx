@@ -70,6 +70,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
     <table className="min-w-full table-auto border-collapse">
       <thead>
         <tr>
+          <th className="border border-gray-300 px-3 py-2 text-left">Course</th>
           <th className="border border-gray-300 px-3 py-2 text-left">Section</th>
           <th className="border border-gray-300 px-3 py-2 text-left">Year</th>
           <th className="border border-gray-300 px-3 py-2 text-left">Semester</th>
@@ -100,50 +101,52 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
             <React.Fragment key={courseId}>
               <tr className="bg-gray-100">
                 <td
-                  colSpan={5}
+                  colSpan={7}
                   className="border border-gray-300 px-3 py-2 font-semibold "
                 >
                   {/* Left: course link */}
                   {courseId ? (
-                       
                   <Link to={`/user/courseprofile/${courseId}`}
                   onClick={(e) => handleAskForConfirmation(e, `/user/courseprofile/${courseId}`)}
                     className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden">
-                      {deptCode} {courseNum} — {name}
+                      {deptCode} {courseNum} - {name}
                   </Link>
-
                   ) : (
                     <span className="border-gray-300 truncate inline whitespace-nowrap overflow-hidden ">
-                      {deptCode} {courseNum} — {name}
+                      {deptCode} {courseNum} - {name}
                     </span>
                   )}
+                  {mode == 'coordinator' ? (
+                    <span className="float-right">
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteCourse(courseId)}
+                        className=" cursor-pointer text-red-600 hover:text-red-300 text-sm whitespace-nowrap"
+                      >
+                        Delete Course
+                      </button>
+                    </span>
+                  ) : (mode == 'instructorPrereqCourse' || mode === 'studentAddEnrollment') ? (
+                    <span className="float-right">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!onSelectCourse) return;
+                          if(groups[courseId].length<1) return;
+                          return onSelectCourse(
+                            courseId,
+                            groups[courseId][0].course?.deptCode ?? "",
+                            groups[courseId][0].course?.courseNum ?? "",
+                            groups[courseId][0].course?.name ?? "",
+                          )
+                        }}
+                        className="cursor-pointer text-[#0089b2] hover:text-[#00b5bc] text-sm whitespace-nowrap"
+                      >
+                        Select
+                      </button>
+                    </span>
+                  ) : <></>}
                 </td>
-                <td colSpan={1} className="border border-gray-300 px-3 py-2 text-right">
-                  {mode == 'coordinator' ? (<button
-                    type="button"
-                    onClick={() => handleDeleteCourse(courseId)}
-                    className=" cursor-pointer text-red-600 hover:text-red-300 text-sm whitespace-nowrap"
-                  >
-                    Delete Course
-                  </button>) : (mode == 'instructorPrereqCourse' || mode === 'studentAddEnrollment') ? <button
-                    type="button"
-                    onClick={() => {
-                      if (!onSelectCourse) return;
-                      if(groups[courseId].length<1) return;
-                      return onSelectCourse(
-                        courseId,
-                        groups[courseId][0].course?.deptCode ?? "",
-                        groups[courseId][0].course?.courseNum ?? "",
-                        groups[courseId][0].course?.name ?? "",
-                      )
-                    }}
-                    className="cursor-pointer text-[#0089b2] hover:text-[#00b5bc] text-sm whitespace-nowrap"
-                  >
-                    Select
-                  </button> : <></>
-                  }
-                </td>
-
               </tr>
 
 
@@ -161,20 +164,20 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                   .filter((t) => t)
                   .join(', ');
                 const sid = sec?.id;
-                  // const sectionProfilePath = generatePath(`/user/sectionprofile/:sid`, { sid: String(sid) });
                 return (
                   <tr key={`${sid}-${times}`}>
+                    <td className="border border-gray-300 px-3 py-2 truncate">
+                      {sec.course?.deptCode} {sec.course?.courseNum} - {sec.course?.name}
+                    </td>
                     <td className="border border-gray-300 px-3 py-2 truncate">
                       {sid ? (
                         <Link to={`/user/sectionprofile/${sid}`} onClick={(e) => handleAskForConfirmation(e, `/user/sectionprofile/${sid}`)}
                         className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden">
-                          {sec.course?.deptCode} {sec.course?.courseNum}{' '}
-                          {sec?.section} – {sec.course?.name}
+                          {sec?.section}
                         </Link>
                       ) : (
                         <span className="truncate inline whitespace-nowrap overflow-hidden">
-                          {sec.course?.deptCode} {sec.course?.courseNum}{' '}
-                          {sec?.section} – {sec.course?.name}
+                          {sec?.section}
                         </span>
                       )}
                     </td>
