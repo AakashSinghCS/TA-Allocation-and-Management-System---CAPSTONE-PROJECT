@@ -14,7 +14,12 @@ interface Props {
 }
 
 
-export default function SectionList({ sections, onDeleted, onSelect, onSelectCourse, mode = 'coordinator',askForConfirmation=false }: Props) {
+// Add prop for selectedSections (for highlighting/UX)
+interface SectionListProps extends Props {
+  selectedSections?: Section[];
+}
+
+export default function SectionList({ sections, onDeleted, onSelect, onSelectCourse, mode = 'coordinator', askForConfirmation = false, selectedSections = [] }: SectionListProps) {
   if (!sections || sections.length === 0) {
     return <p className="p-4 text-center text-gray-500">No section found.</p>;
   }
@@ -70,6 +75,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
     <table className="min-w-full table-auto border-collapse">
       <thead>
         <tr>
+          <th className="border border-gray-300 px-3 py-2 text-left">Course</th>
           <th className="border border-gray-300 px-3 py-2 text-left">Section</th>
           <th className="border border-gray-300 px-3 py-2 text-left">Year</th>
           <th className="border border-gray-300 px-3 py-2 text-left">Semester</th>
@@ -81,9 +87,11 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
       <tbody>
         {sortedCourseIds.map((courseId) => {
           const group = groups[courseId];
-
-          // Sort this group's sections by type order
+          // Sort this group's sections by section (string, ascending), then by type order
           const sortedSections = [...group].sort((a, b) => {
+            const secA = a.section ?? "";
+            const secB = b.section ?? "";
+            if (secA !== secB) return secA.localeCompare(secB);
             const indexA = a?.type
               ? sectionTypeOptions.indexOf(a.type)
               : Infinity;
@@ -92,62 +100,56 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
               : Infinity;
             return indexA - indexB;
           });
-
           // Course header info
           const { deptCode, courseNum, name } = group[0].course || {};
-          // const courseProfilePath = generatePath(`/user/courseprofile/:courseId`, { courseId: String(courseId) });
           return (
             <React.Fragment key={courseId}>
               <tr className="bg-gray-100">
-                <td
-                  colSpan={5}
-                  className="border border-gray-300 px-3 py-2 font-semibold "
-                >
+                <td colSpan={7} className="border border-gray-300 px-3 py-2 font-semibold ">
                   {/* Left: course link */}
                   {courseId ? (
-                       
                   <Link to={`/user/courseprofile/${courseId}`}
                   onClick={(e) => handleAskForConfirmation(e, `/user/courseprofile/${courseId}`)}
                     className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden">
-                      {deptCode} {courseNum} — {name}
+                      {deptCode} {courseNum} - {name}
                   </Link>
-
                   ) : (
                     <span className="border-gray-300 truncate inline whitespace-nowrap overflow-hidden ">
-                      {deptCode} {courseNum} — {name}
+                      {deptCode} {courseNum} - {name}
                     </span>
                   )}
+                  {mode == 'coordinator' ? (
+                    <span className="float-right">
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteCourse(courseId)}
+                        className=" cursor-pointer text-red-600 hover:text-red-300 text-sm whitespace-nowrap"
+                      >
+                        Delete Course
+                      </button>
+                    </span>
+                  ) : (mode == 'instructorPrereqCourse' || mode === 'studentAddEnrollment') ? (
+                    <span className="float-right">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!onSelectCourse) return;
+                          if(groups[courseId].length<1) return;
+                          return onSelectCourse(
+                            courseId,
+                            groups[courseId][0].course?.deptCode ?? "",
+                            groups[courseId][0].course?.courseNum ?? "",
+                            groups[courseId][0].course?.name ?? "",
+                          )
+                        }}
+                        className="cursor-pointer text-[#0089b2] hover:text-[#00b5bc] text-sm whitespace-nowrap"
+                      >
+                        Select
+                      </button>
+                    </span>
+                  ) : <></>}
                 </td>
-                <td colSpan={1} className="border border-gray-300 px-3 py-2 text-right">
-                  {mode == 'coordinator' ? (<button
-                    type="button"
-                    onClick={() => handleDeleteCourse(courseId)}
-                    className=" cursor-pointer text-red-600 hover:text-red-300 text-sm whitespace-nowrap"
-                  >
-                    Delete Course
-                  </button>) : (mode == 'instructorPrereqCourse' || mode === 'studentAddEnrollment') ? <button
-                    type="button"
-                    onClick={() => {
-                      if (!onSelectCourse) return;
-                      if(groups[courseId].length<1) return;
-                      return onSelectCourse(
-                        courseId,
-                        groups[courseId][0].course?.deptCode ?? "",
-                        groups[courseId][0].course?.courseNum ?? "",
-                        groups[courseId][0].course?.name ?? "",
-                      )
-                    }}
-                    className="cursor-pointer text-[#0089b2] hover:text-[#00b5bc] text-sm whitespace-nowrap"
-                  >
-                    Select
-                  </button> : <></>
-                  }
-                </td>
-
               </tr>
-
-
-
               {mode !== 'instructorPrereqCourse' && sortedSections.map((sec) => {
                 if (!sec?.id) return;
                 // Format time to HH:mm (remove seconds if present)
@@ -161,20 +163,21 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                   .filter((t) => t)
                   .join(', ');
                 const sid = sec?.id;
-                  // const sectionProfilePath = generatePath(`/user/sectionprofile/:sid`, { sid: String(sid) });
+                const isSelected = selectedSections.some(s => s.id === sid);
                 return (
-                  <tr key={`${sid}-${times}`}>
+                  <tr key={`${sid}-${times}`} className={isSelected ? "bg-blue-100" : undefined}>
+                    <td className="border border-gray-300 px-3 py-2 truncate">
+                      {sec.course?.deptCode} {sec.course?.courseNum} - {sec.course?.name}
+                    </td>
                     <td className="border border-gray-300 px-3 py-2 truncate">
                       {sid ? (
                         <Link to={`/user/sectionprofile/${sid}`} onClick={(e) => handleAskForConfirmation(e, `/user/sectionprofile/${sid}`)}
                         className="text-[#0089b2] hover:text-[#00b5bc] truncate inline whitespace-nowrap overflow-hidden">
-                          {sec.course?.deptCode} {sec.course?.courseNum}{' '}
-                          {sec?.section} – {sec.course?.name}
+                          {sec?.section}
                         </Link>
                       ) : (
                         <span className="truncate inline whitespace-nowrap overflow-hidden">
-                          {sec.course?.deptCode} {sec.course?.courseNum}{' '}
-                          {sec?.section} – {sec.course?.name}
+                          {sec?.section}
                         </span>
                       )}
                     </td>
@@ -197,10 +200,11 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                               onClick={() => onSelect?.(sec)}
                               className="cursor-pointer text-[#0089b2] hover:text-[#00b5bc]"
                             >
-                              Select
+                              {isSelected ? 'Selected' : 'Select'}
                             </button>
                           ) : (mode === 'coordinator') ? (
                             <div>
+                              {/*
                               <ExportAllocationsCSV
                                 courseId={groups[courseId][0].course?.id ?? -1}
                                 year={groups[courseId][0]?.year ?? -1}
@@ -209,6 +213,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                                 buttonLabel="Export to CSV"
                               />
                               {" "}
+                              */}
                               <button
                                 type="button"
                                 onClick={() => handleDeleteSection(sid)}

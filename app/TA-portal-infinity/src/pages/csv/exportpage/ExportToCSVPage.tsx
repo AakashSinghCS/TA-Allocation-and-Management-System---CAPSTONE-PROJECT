@@ -150,28 +150,32 @@ export default function ExportToCSVPage() {
             <button
               onClick={selectAll}
               disabled={sections.length === 0}
-              className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:bg-gray-400"
+              style={{ backgroundColor: '#040941', color: '#FFFFFF' }}
+              className="px-3 py-1 rounded text-sm hover:opacity-90 disabled:bg-gray-400"
             >
               Select All
             </button>
             <button
               onClick={clearAll}
               disabled={selected.length === 0}
-              className="px-3 py-1 bg-gray-600 text-white rounded text-sm hover:bg-gray-700 disabled:bg-gray-400"
+              style={{ backgroundColor: '#97D4E9', color: '#040941' }}
+              className="px-3 py-1 rounded text-sm hover:opacity-90 disabled:bg-gray-400"
             >
               Clear Selection
             </button>
             <button
               onClick={handleExportToCSV}
               disabled={selected.length === 0 || isExporting}
-              className="px-4 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 disabled:bg-gray-400"
+              style={{ backgroundColor: '#00A7E1', color: '#FFFFFF' }}
+              className="px-4 py-1 rounded text-sm hover:opacity-90 disabled:bg-gray-400"
             >
               {isExporting ? 'Exporting...' : 'Export Selected'}
             </button>
             <button
               onClick={handleExportAllSections}
               disabled={isExporting}
-              className="px-4 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:bg-gray-400"
+              style={{ backgroundColor: '#040941', color: '#FFFFFF' }}
+              className="px-4 py-1 rounded text-sm hover:opacity-90 disabled:bg-gray-400"
             >
               {isExporting ? 'Exporting...' : 'Export All Sections'}
             </button>
@@ -214,6 +218,7 @@ export default function ExportToCSVPage() {
               mode="instructorAddSection"
               onSelect={toggleSelect}
               askForConfirmation={true}
+              selectedSections={selected}
             />
           )}
         </div>

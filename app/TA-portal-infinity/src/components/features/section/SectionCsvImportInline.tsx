@@ -1,19 +1,8 @@
 import React, { useRef, useState } from "react";
-
-// For debug logging in tests
-declare global {
-  interface Window {
-    __DEBUG_PARSED_DATA__?: any;
-  }
-}
 import Papa from "papaparse";
 
-interface SectionCsvImportProps {
-  onClose?: () => void;
-}
-
-export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
-  // const [file, setFile] = useState<File | null>(null); // temporary commented out the unused state
+// SectionCsvImportInline for always-visible inline use
+export default function SectionCsvImportInline() {
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
@@ -25,22 +14,10 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Sample CSV headers
   const sampleHeaders = [
-    "Dept Code",
-    "Course Number",
-    "Course Name",
-    "Year",
-    "Semester",
-    "Section",
-    "Type",
-    "Day",
-    "Start Time",
-    "End Time"
+    "Dept Code", "Course Number", "Course Name", "Year", "Semester", "Section", "Type", "Day", "Start Time", "End Time"
   ];
 
-  // Download sample CSV template
-  // Download sample CSV file directly from public directory
   const handleDownloadSampleCsv = () => {
     const link = document.createElement("a");
     link.href = "/section-sample-template.csv";
@@ -51,15 +28,12 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Debug: log file change event
-    console.log('File change event:', e.target.files);
-    // Reset all UI state for new upload
     setError("");
     setResult("");
     setCsvPreview(null);
     setCsvHeaders([]);
     setParsedData(null);
-    setImported(false); // Reset imported flag
+    setImported(false);
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
       setSelectedFileName(selectedFile.name);
@@ -68,17 +42,12 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         skipEmptyLines: true,
         complete: (results) => {
           const data = results.data as Record<string, string>[];
-          // Debug: log parsed data
-          console.log('Parsed CSV data:', data);
-          window.__DEBUG_PARSED_DATA__ = data; // For test debug
-          // Only error if no rows at all
           if (!data || data.length === 0) {
             setError("CSV file is empty or invalid. Please check the file contents.");
             setParsedData(null);
             return;
           }
-          // Do not set error for partial/invalid rows, let backend handle it
-          setCsvPreview(data.slice(0, 10)); // Show only the first 10 rows
+          setCsvPreview(data.slice(0, 10));
           setCsvHeaders(results.meta.fields || []);
           setParsedData(data);
         },
@@ -94,17 +63,14 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(""); // Clear error before backend call
+    setError("");
     setResult("");
     if (!parsedData || parsedData.length === 0) {
       setError("Please select a valid CSV file");
       setLoading(false);
       return;
     }
-    // Debug: log parsedData before backend call
-    console.log('Submitting parsedData to backend:', parsedData);
     try {
-      // Map CSV headers to SectionCsvData fields
       const mapCsvRowToSection = (row: Record<string, string>) => ({
         deptCode: row["Dept Code"] || "",
         courseNum: row["Course Number"] || "",
@@ -118,7 +84,6 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         endTime: row["End Time"] || ""
       });
       const mappedData = parsedData.map(mapCsvRowToSection);
-      
       const token = localStorage.getItem('token');
       const res = await fetch("http://localhost:8080/sections/import-csv", {
         method: "POST",
@@ -128,96 +93,65 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         },
         body: JSON.stringify(mappedData),
       });
-      
-      let errorDetail = "";
       let text = "";
       const contentType = res.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const json = await res.json();
         text = json.message || JSON.stringify(json);
-        // Show more details if available
-        if (json.error || json.errors) {
-          errorDetail = `Import failed: ${text}\nDetails: ${JSON.stringify(json.error || json.errors)}`;
-        }
       } else {
         text = await res.text();
       }
       if (!res.ok) {
-        // Always show backend error message if present
-        if (text) {
-          console.log('Setting backend error:', `Import failed: ${text}`);
-          setError(`Import failed: ${text}`);
-        } else if (errorDetail) {
-          console.log('Setting backend error:', errorDetail);
-          setError(errorDetail);
-        } else {
-          console.log('Setting backend error:', `Import failed (status ${res.status})`);
-          setError(`Import failed (status ${res.status})`);
-        }
-        return; // Ensure only backend error is shown after backend call
+        setError(`Import failed: ${text}`);
+        return;
       } else {
         setResult(text);
-        setImported(true); // Mark as imported
+        setImported(true);
       }
     } catch (err: any) {
-      setError(err?.message ? `Import failed: ${err.message}` : `Import failed.\n${JSON.stringify(err)}`);
+      setError(
+        err?.message
+          ? `Import failed: ${err.message}`
+          : `Import failed.\n${JSON.stringify(err)}`
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="relative max-w-4xl min-w-[800px] mx-auto p-4 bg-white rounded shadow">
-      {/* Close (X) button inside top-right */}
-      {onClose && (
-        <button
-          type="button"
-          aria-label="Close"
-          onClick={onClose}
-          className="absolute top-3 right-3 z-10 text-gray-400 hover:text-gray-700 focus:outline-none"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      )}
-      <h2 className="text-3xl font-bold mb-2">Import Sections from CSV</h2>
-      <div className="text-gray-600 mb-1 text-base">
+    <div className="w-full max-w-4xl min-w-[800px] bg-white rounded shadow p-6 mx-auto">
+      <div className="text-lg font-bold text-gray-800 mb-1">Import Sections from CSV</div>
+      <div className="text-gray-600 mb-1 text-sm">
         You can import multiple sections at once by uploading a CSV file (only .csv files are supported).
       </div>
-      <div className="text-gray-500 mb-6 text-base">
+      <div className="text-gray-500 mb-4 text-sm">
         To avoid formatting issues, please download and use the provided sample template.
       </div>
-      <div className="mb-4 mt-2">
-        <div className="flex items-center gap-2 mb-2 text-base font-bold text-gray-700">
-          {/* Download icon */}
+      <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex items-center gap-2 text-base font-bold text-gray-700">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#334155">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 10l5 5 5-5" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v12" />
           </svg>
-          Download the sample CSV
+          <button
+            type="button"
+            onClick={handleDownloadSampleCsv}
+            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 font-semibold ml-2"
+          >
+            Download Sample CSV
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={handleDownloadSampleCsv}
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-semibold"
-        >
-          Download Sample CSV
-        </button>
-        <div className="flex items-center gap-2 mb-2 mt-6 text-base font-semibold text-gray-700">
-          {/* Upload icon: arrow up into a tray */}
+        <div className="flex items-center gap-2 text-base font-semibold text-gray-700">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#334155">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 10l-4-4-4 4" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v12" />
           </svg>
-          Upload your CSV file
+          <span>Upload your CSV file</span>
         </div>
       </div>
-
-
-      {/* Drag-and-drop upload area */}
       <div
         className={`mb-4 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-white'}`}
         style={{ minHeight: 120 }}
@@ -263,16 +197,11 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           onChange={handleFileChange}
         />
       </div>
-      <form>
-        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-        </div>
-      </form>
       {error && (
         <div role="alert" className="mt-2 text-red-600">
           {error}
         </div>
       )}
-      {/* CSV preview display */}
       {csvPreview && csvPreview.length > 0 && (
         <div className="mt-4">
           <div className="font-semibold mb-2">CSV Preview (first 10 rows):</div>
@@ -300,16 +229,6 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           </div>
         </div>
       )}
-      {/* <div className="flex justify-end mt-6">
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={loading || imported}
-          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-[#040941] text-white hover:bg-[#232a5c]'} `}
-        >
-          {loading ? "Importing..." : "Import"}
-        </button>
-      </div> */}
       {result && (
         <div
           role="alert"
@@ -321,54 +240,16 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         </div>
       )}
       <div className="flex justify-end mt-6">
-         {/* Import button */}
         <button
           type="button"
           onClick={handleSubmit}
           disabled={loading || imported}
-          // className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
           className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-[#040941] text-white hover:bg-[#232a5c]'} `}
+          // style={{ minWidth: 100 }}  // edit to change button width
         >
           {loading ? "Importing..." : "Import"}
         </button>
       </div>
-      {result && result.includes('Failed: 0') && (
-        <>
-        {/* Can change "Close" button position to "left", "center", or "right" by uncommenting the corresponding */}
-        {/* left-aligned button */}
-          {/* <div className="flex justify-start">
-            <button
-              className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
-              onClick={onClose}
-            >
-              Close 
-            </button>
-          </div> */}
-
-          {/* center-aligned button */}
-          <div className="flex justify-center">
-            <button
-              className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
-              // onClick={onClose} // Use this if we want to just close the modal without reload
-              onClick={() => window.location.reload()} // Reloads the page after import
-            >
-              Close
-            </button>
-          </div>
-
-        {/* right-aligned button */}
-          {/* <div className="flex justify-end">
-            <button
-              className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
-              onClick={onClose}
-            >
-              Close
-            </button>
-          </div> */}
-          
-          
-        </>
-      )}
     </div>
   );
 }

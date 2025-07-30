@@ -512,8 +512,6 @@ public class SectionServiceTest {
                 SectionType.LECTURE)).thenReturn(Optional.empty());
         when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.empty());
         String result = sectionService.importSectionsFromJson(List.of(data));
-        System.out.println(result);
-
         assert(result.contains("That semester doesn't exist"));
         assertTrue(result.contains("Section import failed"));
     }
