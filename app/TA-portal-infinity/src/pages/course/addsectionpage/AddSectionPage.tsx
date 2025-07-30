@@ -13,7 +13,7 @@ export default function AddSectionPage() {
   const navigate = useNavigate();
   const [refreshSectionOptions, setRefreshSectionOptions] = useState<number>(0);
   const [sectionCreated, setSectionCreated] = useState(false);
-  const sectionCreatedTimeout = useRef<NodeJS.Timeout | null>(null);
+  // const sectionCreatedTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleCreateSection = async (data: CreateSectionData, setSectionErrors?: (e: any) => void): Promise<boolean | void> => {
     const courseProfile = extractCourseProfile(data);
@@ -55,8 +55,11 @@ export default function AddSectionPage() {
       const result = await fetchCreateSection(sectionAddDtoRequest);
       if (result && result.success) {
         setSectionCreated(true);
-        if (sectionCreatedTimeout.current) clearTimeout(sectionCreatedTimeout.current);
-        sectionCreatedTimeout.current = setTimeout(() => setSectionCreated(false), 3000);
+        // --- Auto-dismiss logic (commented out for now, can be restored if needed) ---
+        // if (sectionCreatedTimeout.current) clearTimeout(sectionCreatedTimeout.current);
+        // sectionCreatedTimeout.current = setTimeout(() => setSectionCreated(false), 3000);
+        // ---------------------------------------------------------------------------
+        // Success message will persist until user creates another section or navigates away
         return true;
       } else {
         let msg = "Failed to create section.";
