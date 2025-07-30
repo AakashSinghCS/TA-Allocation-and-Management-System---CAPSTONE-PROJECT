@@ -245,7 +245,7 @@ export default function SectionCsvImportInline() {
           onClick={handleSubmit}
           disabled={loading || imported}
           className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-[#040941] text-white hover:bg-[#232a5c]'} `}
-          style={{ minWidth: 100 }}
+          // style={{ minWidth: 100 }}  // edit to change button width
         >
           {loading ? "Importing..." : "Import"}
         </button>
