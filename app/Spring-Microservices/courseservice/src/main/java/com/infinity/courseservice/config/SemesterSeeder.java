@@ -28,7 +28,7 @@ public class SemesterSeeder {
                         LocalDate.parse("2025-12-08"), true),
                 new Semester(2026, "W2",
                         LocalDate.parse("2026-01-03"),
-                        LocalDate.parse("2026-04-08")),
+                        LocalDate.parse("2026-04-08"), true),
                 new Semester(2025, "S1",
                         LocalDate.parse("2025-05-14"),
                         LocalDate.parse("2025-06-17"), false),

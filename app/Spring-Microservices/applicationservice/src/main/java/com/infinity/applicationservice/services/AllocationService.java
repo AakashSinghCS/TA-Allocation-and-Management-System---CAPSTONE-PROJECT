@@ -333,8 +333,7 @@ public class AllocationService {
                 }
             }
             
-            Application application = new Application(studentDto.id(), List.of(), null, false, null);
-            application.setYear(year);
+            Application application = new Application(studentDto.id(), List.of(), null, false, null, year, semester);
             Allocation allocation = new Allocation();
             allocation.setStudentId(studentDto.id());
             allocation.setApplication(application);

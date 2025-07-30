@@ -87,7 +87,7 @@ public class AllocationControllerTest {
                 new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null,
                                                 null, null,true),
-                applicationDto,
+                application,
                 ApplicationStatus.SENT,
                 1, 10, 4,
                 List.of() // <-- Use an empty list or a test list for allocatedSections

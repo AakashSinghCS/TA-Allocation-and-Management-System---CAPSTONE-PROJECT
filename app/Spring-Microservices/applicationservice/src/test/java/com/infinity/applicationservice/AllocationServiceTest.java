@@ -1,39 +1,40 @@
 package com.infinity.applicationservice;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import com.infinity.applicationservice.dtos.DeadlineDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocatedSectionDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Courses.CourseDto;
 import com.infinity.applicationservice.dtos.Courses.SectionDto;
-import com.infinity.applicationservice.dtos.DeadlineDto;
 import com.infinity.applicationservice.dtos.Needs.NeedDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
@@ -262,6 +263,8 @@ class AllocationServiceTest {
                 allocation.setStatus(ApplicationStatus.CONFIRMED);
                 allocation.setGradingHours(5);
                 allocation.setApplication(application);
+                allocation.setAllocatedSections(List.of(allocatedSection));
+                allocatedSection.setAllocation(allocation);
                 NeedDto needDto = new NeedDto(1L, 1L, "description", 12, 0, 2025, "W1", null);
 
                 when(courseInterface.getSectionById(any())).thenReturn(sectionDto);
@@ -284,11 +287,12 @@ class AllocationServiceTest {
                 allocation.setStatus(ApplicationStatus.SENT);
                 allocation.setApplication(new Application());
                 allocation.getApplication().setId(1L);
+                allocation.setAllocatedSections(List.of(allocatedSection));
                 NeedDto needDto = new NeedDto(1L, 1L, "description", 12, 0, 2025, "W1", null);
 
                 when(allocationRepository.findById(allocationId)).thenReturn(Optional.of(allocation));
                 when(courseInterface.getSectionById(any())).thenReturn(sectionDto);
-                when(courseInterface.getNeed(1L, sectionDto.year(),sectionDto.semester())).thenReturn(needDto);
+                when(courseInterface.getNeed(1L, sectionDto.year(), sectionDto.semester())).thenReturn(needDto);
 
                 allocationService.updateConfirmationStatus(allocationId, ApplicationStatus.CONFIRMED);
 
@@ -420,41 +424,31 @@ class AllocationServiceTest {
 
         @Test
         void getAllocationsBySectionId_returnsFilteredResults() {
-                Long targetSectionId = 1001L;
+                Long sectionId = 1L;
+                Long allocationId = 100L;
+                Long studentId = 200L;
 
-                Allocation a1 = new Allocation();
-                a1.setId(1L);
-                a1.setSectionId(targetSectionId);
-                Allocation a2 = new Allocation();
-                a2.setId(2L);
-                a2.setSectionId(200L); // irrelevant section
-                a1.setStudentId(1L);
-                a2.setStudentId(1L);
-                a1.setStatus(ApplicationStatus.CONFIRMED);
-                a2.setStatus(ApplicationStatus.REJECTED);
+                AllocatedSection allocatedSection = new AllocatedSection();
+                allocatedSection.setId(10L);
+                allocatedSection.setSectionId(sectionId);
+                allocatedSection.setTask(TaskType.GRADING);
 
-                Application application = new Application();
-                application.setId(1L);
-                application.setStudentId(1L);
-                application.setSubmittedAt(LocalDateTime.now());
-                a1.setApplication(application);
-                a2.setApplication(application);
+                Allocation allocation = new Allocation();
+                allocation.setId(allocationId);
+                allocation.setStudentId(studentId);
 
-                AllocationHistoryDto expectedDto = new AllocationHistoryDto(
-                                1L,
-                                studentDto,
-                                applicationDto,
-                                ApplicationStatus.REJECTED,
-                                10,
-                                sectionDto);
+                // Link the mock relationship
+                allocatedSection.setAllocation(allocation);
 
-                when(allocationRepository.findAll()).thenReturn(List.of(a1, a2));
-                when(userInterface.getStudentById(1L)).thenReturn(ResponseEntity.ok(studentDto));
-                when(courseInterface.getSectionById(targetSectionId)).thenReturn(sectionDto);
-                when(applicationMapper.toDto(application)).thenReturn(applicationDto);
-                when(allocationMapper.toDto(a1, studentDto, applicationDto, sectionDto)).thenReturn(expectedDto);
+                // Mock repo & client behavior
+                when(allocatedSectionRepository.findAllBySectionId(sectionId))
+                                .thenReturn(List.of(allocatedSection));
 
-                List<AllocationHistoryDto> result = allocationService.getAllocationsBySectionId(targetSectionId);
+                when(allocationRepository.findById(allocationId))
+                                .thenReturn(Optional.of(allocation));
+
+                // Act
+                List<AllocatedSectionDto> result = allocationService.getAllocationsBySectionId(sectionId);
 
                 // Assert
                 assertEquals(1, result.size());
@@ -535,7 +529,6 @@ class AllocationServiceTest {
                 a2.setId(2L);
                 a2.setApplication(app2);
                 a2.setStudentId(1L);
-                a2.setSectionId(1L);
 
                 AllocationHistoryDto historyDto = new AllocationHistoryDto(1L, studentDto, applicationDto,
                                 ApplicationStatus.CONFIRMED, 0, 10, 0, List.of());
@@ -552,27 +545,25 @@ class AllocationServiceTest {
         }
 
         @Test
-        void testGetAllocationsBySectionIdWithCourse() {
-                Long sectionId = 100L;
+        void getAllocationsBySectionIdWithCourse_shouldReturnDtoList() {
+                // Arrange
+                Long sectionId = 1L;
+                Long allocationId = 100L;
 
-                Allocation mockAllocation = new Allocation();
-                mockAllocation.setId(1L);
-                mockAllocation.setStudentId(10L);
-                mockAllocation.setSectionId(sectionId);
+                Allocation allocation = new Allocation();
+                allocation.setId(allocationId);
 
-                Application mockApplication = new Application();
-
-                mockApplication.setId(1L);
-                mockAllocation.setApplication(mockApplication);
-
-                AllocationHistoryDto historyDto = new AllocationHistoryDto(1L, studentDto, applicationDto,
-                                ApplicationStatus.CONFIRMED, 10, sectionDto);
+                AllocatedSection allocatedSection = new AllocatedSection();
+                allocatedSection.setId(10L);
+                allocatedSection.setSectionId(sectionId);
+                allocatedSection.setTask(TaskType.GRADING);
+                allocatedSection.setAllocation(allocation);
 
                 when(allocatedSectionRepository.findAllBySectionId(sectionId))
-                .thenReturn(List.of(allocatedSection));
+                                .thenReturn(List.of(allocatedSection));
 
                 when(allocationRepository.findById(allocationId))
-                .thenReturn(Optional.of(allocation));
+                                .thenReturn(Optional.of(allocation));
 
                 // Act
                 List<AllocatedSectionDto> result = allocationService.getAllocationsBySectionIdWithCourse(sectionId);
@@ -593,25 +584,18 @@ class AllocationServiceTest {
                 Long allocationId = 10L;
                 Long sectionId = 100L;
 
-                UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                        12345678, "COSC", 2025, 3, null, null, null, true);
                 Application application = new Application();
                 application.setId(200L);
-                ApplicationDto applicationDto = new ApplicationDto(200L, 1L, List.of(), ApplicationType.UNDERGRADUATE,
-                                        false, 6, LocalDateTime.now(), Set.of());
                 AllocatedSection allocatedSection = new AllocatedSection();
                 allocatedSection.setSectionId(sectionId);
 
                 Allocation allocation = new Allocation();
                 allocation.setId(allocationId);
                 allocation.setStudentId(studentId);
-                allocation.setStatus(ApplicationStatus.CONFIRMED);
-                allocation.setNumberOfHours(10);
-                allocation.setSectionId(1001L);
                 allocation.setApplication(application);
-
+                allocation.setAllocatedSections(List.of(allocatedSection));
                 AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, applicationDto,
-                                        ApplicationStatus.CONFIRMED, 0, 10, 0, List.of());
+                                ApplicationStatus.CONFIRMED, 0, 10, 0, List.of());
 
                 when(allocationRepository.findByStudentId(studentId)).thenReturn(allocation);
                 when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
@@ -638,9 +622,9 @@ class AllocationServiceTest {
                 allocation.setId(101L);
                 allocation.setStudentId(studentId);
                 allocation.setStatus(ApplicationStatus.CONFIRMED);
-                allocation.setNumberOfHours(10);
-                allocation.setSectionId(1001L);
-                allocation.setApplication(null);
+                allocation.setGradingHours(10);
+                allocation.setApplication(application);
+                allocation.setAllocatedSections(List.of(allocatedSection));
 
                 AllocationHistoryDto expectedDto = new AllocationHistoryDto(101L, studentDto, null,
                                 ApplicationStatus.CONFIRMED, 0, 10, 0, List.of());
@@ -667,20 +651,20 @@ class AllocationServiceTest {
                                 "section", "001",
                                 "year", "2025",
                                 "semester", "W1");
-
+                CourseDto course = new CourseDto(2L, "COSC", "Capstone", "499");
                 Allocation allocation = new Allocation();
                 allocation.setId(4L);
                 allocation.setStudentId(1L);
                 allocation.setStatus(ApplicationStatus.CONFIRMED);
 
                 AllocationHistoryDto dto = new AllocationHistoryDto(
-                                allocation.getId(), studentDto, null, ApplicationStatus.CONFIRMED, 0, sectionDto);
+                                allocation.getId(), studentDto, null, ApplicationStatus.CONFIRMED, 0, 10, 0, List.of());
 
                 when(userInterface.getStudentByNum(63260442)).thenReturn(ResponseEntity.ok(studentDto));
-                when(courseInterface.addCourse(any())).thenReturn(sectionDto.course()); 
+                when(courseInterface.addCourse(any())).thenReturn(course);
                 when(courseInterface.getByCourseIdSectionYearSemester(2L, "001", 2025, "W1"))
-                        .thenThrow(new NotFoundException("Not found"));
-                when(courseInterface.addSection(eq(1L), any())).thenReturn(sectionDto);
+                                .thenThrow(new RuntimeException("Not found"));
+                when(courseInterface.addSection(eq(2L), any())).thenReturn(sectionDto);
                 when(allocationRepository.save(any())).thenReturn(allocation);
                 when(allocationMapper.toDto(any(), any(), any())).thenReturn(dto);
 
@@ -690,7 +674,7 @@ class AllocationServiceTest {
                 assertEquals(1, result.size());
                 assertEquals("Alice", result.get(0).student().firstName());
                 verify(courseInterface).addCourse(any());
-                verify(courseInterface).addSection(eq(1L), any());
+                verify(courseInterface).addSection(eq(2L), any());
         }
 
         @Test

@@ -129,7 +129,7 @@ public class ApplicationServiceTest {
                 false,
                 6,
                 2025, "W1",
-                availabilities);
+                unavailabilities);
 
         // Mock repository: no previous submission
         when(applicationRepository.existsByStudentIdAndYearAndSemester(anyLong(), anyInt(), any()))
