@@ -299,8 +299,6 @@ public class ApplicationControllerTest {
 
         @Test
         void testGetAllActiveApplications() throws Exception {
-                UserDto studentDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
-                                12345678, "COSC", 2025, 3, null, null, null, true);
                 ApplicationDto dto = new ApplicationDto(
                                 1L,
                                 1L,
@@ -311,11 +309,18 @@ public class ApplicationControllerTest {
                                 2025, "W1",
                                 LocalDateTime.of(2024, 1, 1, 12, 0),
                                 Set.of());
-
-                when(applicationService.getAllActiveApplications(1L, 1L, List.of("ROLE_STUDENT")))
+                when(applicationService.getAllActiveApplicationsByStudentId(1L, 1L, List.of("ROLE_STUDENT")))
                                 .thenReturn(List.of(dto));
-                when(applicationService.getAllActiveApplicationsByStudentId(1L, 1L, List.of("ROLE_STUDENT"))).thenReturn(List.of(dto));
-
+                
+                mockMvc.perform(get("/applications/getAllActive/1")
+                                .header("X-User-Id", "1")
+                                .header("X-User-Roles","ROLE_STUDENT"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.length()").value(1))
+                                .andExpect(jsonPath("$[0].studentId").value("1"))
+                                .andExpect(jsonPath("$[0].applicationType").value("UNDERGRADUATE"))
+                                .andExpect(jsonPath("$[0].year").value("2025"))
+                                .andExpect(jsonPath("$[0].semester").value("W1"));
 
         }
 }

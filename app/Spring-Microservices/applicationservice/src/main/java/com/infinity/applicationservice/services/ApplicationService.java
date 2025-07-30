@@ -224,15 +224,16 @@ public class ApplicationService {
         if (semesterDtos == null) {
             throw new NotFoundException("No active semesters");
         }
-        List<Application> applications = new ArrayList<>();
-        for (SemesterDto semester : semesterDtos) {
-            try{
-            applications.add(applicationRepository.findByStudentIdAndYearAndSemester(studentId, semester.year(), semester.semester())
-                    .orElseThrow(() -> new NotFoundException("No applications exist for this user")));
-        } catch (NotFoundException e) {}
-        }
+        List<Application> applications = applicationRepository.findAllByStudentId(studentId)
+            .orElseThrow(() ->new NotFoundException("No applications for this student"));
+        Set<String> activeKeys = semesterDtos.stream()
+            .map(s -> s.year() + "-" + s.semester())
+            .collect(Collectors.toSet());
+
         return applications.stream()
-                .map(applicationMapper::toDto)
-                .toList();
-    }
+            .filter(app -> activeKeys.contains(app.getYear() + "-" + app.getSemester()))
+            .map(applicationMapper::toDto)
+            .toList();
+
+        }
 }
