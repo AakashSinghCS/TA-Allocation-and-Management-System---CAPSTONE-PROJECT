@@ -17,5 +17,5 @@ public record ApplicationWithStudentDto(Long applicationId,
                 Integer year,
                 String semester,
                 LocalDateTime timeSubmitted,
-                Set<AvailabilityDto> availabilities) {
+                Set<UnavailabilityDto> unavailabilities) {
 }

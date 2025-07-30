@@ -1,23 +1,19 @@
 package com.infinity.applicationservice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
-import com.infinity.applicationservice.dtos.Courses.CourseDto;
-import com.infinity.applicationservice.dtos.Courses.SectionDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationStatus;
 import com.infinity.applicationservice.enums.ApplicationType;
-import com.infinity.applicationservice.enums.SectionType;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.enums.UserRole;
 import com.infinity.applicationservice.models.Allocation;
@@ -33,7 +29,7 @@ public class AllocationMapperTest {
         Allocation allocation = new Allocation();
         allocation.setId(1L);
         allocation.setStatus(ApplicationStatus.CONFIRMED);
-        allocation.setNumberOfHours(8);
+        allocation.setGradingHours(2);
 
         UserDto student = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
                                                 "COSC", 2025, 3, null,
@@ -50,15 +46,13 @@ public class AllocationMapperTest {
                 LocalDateTime.now(),
                 Set.of());
 
-        SectionDto section = new SectionDto(4L, 2025, "W1", "001", SectionType.LABORATORY, new CourseDto(1L, "COSC", "Intro", "499"),1);
 
-        AllocationHistoryDto dto = mapper.toDto(allocation, student, applicationDto, section);
+        AllocationHistoryDto dto = mapper.toDto(allocation, student, applicationDto);
 
         assertEquals(1L, dto.id());
         assertEquals(student, dto.student());
         assertEquals(applicationDto, dto.applicationDto());
         assertEquals(dto.status(), ApplicationStatus.CONFIRMED);
-        assertEquals(8, dto.numberOfHours());
-        assertEquals(section, dto.section());
+        assertEquals(2, dto.gradingHours());
     }
 }

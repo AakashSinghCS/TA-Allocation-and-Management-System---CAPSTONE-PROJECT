@@ -27,5 +27,5 @@ public record ApplicationRequest(
         Integer year,
         @NotNull(message = "Semester not specified")
         String semester,
-        Set<AvailabilityDto> availabilities) {
+        Set<UnavailabilityDto> unavailabilities) {
 }

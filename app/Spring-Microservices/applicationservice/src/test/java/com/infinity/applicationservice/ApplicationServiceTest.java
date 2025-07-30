@@ -1,18 +1,5 @@
 package com.infinity.applicationservice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -20,25 +7,37 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
-import com.infinity.applicationservice.dtos.DeadlineDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
-import com.infinity.applicationservice.dtos.Applications.AvailabilityDto;
+import com.infinity.applicationservice.dtos.Applications.UnavailabilityDto;
+import com.infinity.applicationservice.dtos.DeadlineDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.Day;
@@ -89,12 +88,12 @@ public class ApplicationServiceTest {
     @InjectMocks
     ApplicationService applicationService;
 
-    static Set<AvailabilityDto> availabilities;
+    static Set<UnavailabilityDto> unavailabilities;
 
     @BeforeAll
     static void setUp() {
-        availabilities = new HashSet<>();
-        availabilities.add(new AvailabilityDto(Day.MONDAY, "09:00", "10:00"));
+        unavailabilities = new HashSet<>();
+        unavailabilities.add(new UnavailabilityDto(Day.MONDAY, "09:00", "10:00"));
     }
 
     @BeforeEach
@@ -111,7 +110,7 @@ public class ApplicationServiceTest {
     @Test
     void testSubmitApplication_AlreadySubmitted_BadRequest() {
         ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC),
-                ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1", availabilities);
+                ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1", unavailabilities);
 
         when(applicationRepository.existsByStudentIdAndYearAndSemester(1L, 2025, "W1")).thenReturn(true);
 
@@ -155,12 +154,12 @@ public class ApplicationServiceTest {
     }
 
     @Test
-    void testSubmitApplication_MissingAvailabilityFields_BadRequest() {
-        Set<AvailabilityDto> badAvailabilities = new HashSet<>();
-        badAvailabilities.add(new AvailabilityDto(null, "10:00", "9:00"));
+    void testSubmitApplication_MissingUnavailabilityFields_BadRequest() {
+        Set<UnavailabilityDto> badUnavailabilities = new HashSet<>();
+        badUnavailabilities.add(new UnavailabilityDto(null, "10:00", "9:00"));
         ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC),
                 ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1",
-                badAvailabilities);
+                badUnavailabilities);
 
         GlobalDeadline testEntity2 = configRepository.findByName("student_application_deadline");
         System.out.println("REPO RETURN TEST in TEST: " + testEntity2);
@@ -170,29 +169,29 @@ public class ApplicationServiceTest {
         BadRequestException e = assertThrows(BadRequestException.class, () -> {
             applicationService.submitApplication(applicationRequest, 1L, List.of("ROLE_STUDENT"));
         });
-        assertEquals("Availability entries must include day, startTime, and endTime.", e.getMessage());
+        assertEquals("Unavailability entries must include day, startTime, and endTime.", e.getMessage());
     }
 
     @Test
-    void testSubmitApplication_BadAvailability_BadRequest() {
-        Set<AvailabilityDto> badAvailabilities = new HashSet<>();
-        badAvailabilities.add(new AvailabilityDto(Day.MONDAY, "10:00", "09:00"));
+    void testSubmitApplication_BadUnavailability_BadRequest() {
+        Set<UnavailabilityDto> badUnavailabilities = new HashSet<>();
+        badUnavailabilities.add(new UnavailabilityDto(Day.MONDAY, "10:00", "09:00"));
         ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC),
                 ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1",
-                badAvailabilities);
+                badUnavailabilities);
 
         when(applicationRepository.existsByStudentIdAndYearAndSemester(1L, 2025, "W1")).thenReturn(false);
 
         BadRequestException e = assertThrows(BadRequestException.class, () -> {
             applicationService.submitApplication(applicationRequest, 1L, List.of("ROLE_STUDENT"));
         });
-        assertEquals("Start time must be before end time for availability on MONDAY", e.getMessage());
+        assertEquals("Start time must be before end time for unavailability on MONDAY", e.getMessage());
     }
 
     @Test
     void testSubmitApplication_Success() {
         ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC),
-                ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1", availabilities);
+                ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1", unavailabilities);
 
         when(applicationRepository.existsByStudentIdAndYearAndSemester(1L, 2025, "W1")).thenReturn(false);
         when(applicationRepository.save(Mockito.any(Application.class)))
@@ -307,7 +306,7 @@ public class ApplicationServiceTest {
     @Test
     void testUpdateApplication_Forbidden() {
         ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC),
-                ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1", availabilities);
+                ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1", unavailabilities);
         AuthorizationException e = assertThrows(AuthorizationException.class, () -> {
             applicationService.updateApplication(applicationRequest, 2L, 2025, "W1", 1L,
                     List.of("ROLE_STUDENT"));
@@ -318,7 +317,7 @@ public class ApplicationServiceTest {
     @Test
     void testUpdateApplication_NotFound() {
         ApplicationRequest applicationRequest = new ApplicationRequest(List.of(Subject.COSC),
-                ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1", availabilities);
+                ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1", unavailabilities);
         when(applicationRepository.findByStudentIdAndYearAndSemester(1L, 2025, "W1")).thenReturn(Optional.empty());
         NotFoundException e = assertThrows(NotFoundException.class, () -> {
             applicationService.updateApplication(applicationRequest, 1L, 2025, "W1", 1L,
@@ -335,7 +334,7 @@ public class ApplicationServiceTest {
                 ApplicationType.UNDERGRADUATE,
                 false,
                 6, 2025, "W1",
-                Set.of(new AvailabilityDto(Day.MONDAY, "09:00", "10:00")));
+                Set.of(new UnavailabilityDto(Day.MONDAY, "09:00", "10:00")));
 
         // Mock configService returning expired deadline
         DeadlineDto expiredDeadline = new DeadlineDto(
@@ -362,7 +361,7 @@ public class ApplicationServiceTest {
     @Test
     void testUpdateApplication_Success() {
         ApplicationRequest applicationRequest = new ApplicationRequest(
-                List.of(Subject.COSC), ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1", availabilities);
+                List.of(Subject.COSC), ApplicationType.UNDERGRADUATE, false, 6, 2025, "W1", unavailabilities);
 
         Application application = new Application(1L, List.of(Subject.DATA, Subject.MATH, Subject.PHYS),
                 ApplicationType.UNDERGRADUATE, true, 12, 2025, "W1");

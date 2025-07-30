@@ -2889,7 +2889,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"isConfirmed\": false,\r\n    \"numberOfHours\": 5,\r\n    \"sectionId\": 1\r\n}"
+									"raw": "{\r\n    \"studentId\": 1,\r\n    \"applicationId\": 1,\r\n    \"task\": \"GRADING\",\r\n    \"hours\": 5,\r\n    \"sectionId\": 1\r\n}"
 								},
 								"url": {
 									"raw": "localhost:8080/allocations/allocate",
