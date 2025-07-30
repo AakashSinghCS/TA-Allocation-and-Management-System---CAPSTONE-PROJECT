@@ -31,8 +31,8 @@ import lombok.ToString;
         @UniqueConstraint(name = "uk_section_unique_row", 
                 columnNames = { "course_id", "semester_id", "section","type" })
 })
-@EqualsAndHashCode(exclude = "sectionSchedules")
-@ToString(exclude = "sectionSchedules")
+@EqualsAndHashCode(exclude = "sectionSchedules") 
+@ToString(exclude = "sectionSchedules")  //StackOverFlow error in testing without this (Audit)
 public class Section {
     @Id
     @GeneratedValue()

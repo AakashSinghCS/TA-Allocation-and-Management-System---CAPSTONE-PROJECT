@@ -54,11 +54,13 @@ class SemesterControllerTest {
 
     @Test
     void addSemester_validRequest_returnsSemester() throws Exception {
-        when(semesterService.addSemester(any(SemesterDto.class))).thenReturn(validDto);
+        Long userIdFromHeader = 1L;
+        when(semesterService.addSemester(any(SemesterDto.class), eq(userIdFromHeader))).thenReturn(validDto);
 
         mockMvc.perform(post("/semesters/add")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(validDto)))
+                .content(mapper.writeValueAsString(validDto))
+                .header("X-User-Id",userIdFromHeader))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.year").value(2025))
@@ -67,15 +69,17 @@ class SemesterControllerTest {
 
     @Test
     void addSemester_invalidDates_returnsBadRequest() throws Exception {
+        Long userIdFromHeader = 1L;
         SemesterDto badDto = new SemesterDto(1L, 2025, "W1",
                 LocalDate.of(2025, 12, 1), LocalDate.of(2025, 9, 1));
 
         doThrow(new BadRequestException("Start date must be before end date"))
-                .when(semesterService).addSemester(any(SemesterDto.class));
+                .when(semesterService).addSemester(any(SemesterDto.class), eq(userIdFromHeader));
 
         mockMvc.perform(post("/semesters/add")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(badDto)))
+                .content(mapper.writeValueAsString(badDto))
+                .header("X-User-Id",userIdFromHeader))
                 .andExpect(status().isBadRequest());
     }
 
@@ -100,23 +104,27 @@ class SemesterControllerTest {
 
     @Test
     void updateSemester_validRequest_returnsUpdatedDto() throws Exception {
+        Long userIdFromHeader = 1L;
         SemesterDto updateDto = new SemesterDto(1L, 2025, "W2",
             LocalDate.of(2025, 9, 5), LocalDate.of(2025, 12, 5));
 
-        when(semesterService.updateSemester(eq(1L), any())).thenReturn(updateDto);
+        when(semesterService.updateSemester(eq(1L), any(), eq(userIdFromHeader))).thenReturn(updateDto);
 
         mockMvc.perform(put("/semesters/update/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(updateDto)))
+                .content(mapper.writeValueAsString(updateDto))
+                .header("X-User-Id",userIdFromHeader))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.semester").value("W2"));
     }
 
     @Test
     void deleteSemester_existingId_returnsConfirmation() throws Exception {
-        when(semesterService.deleteSemester(1L)).thenReturn("Semester deleted");
+        Long userIdFromHeader = 1L;
+        when(semesterService.deleteSemester(1L, userIdFromHeader)).thenReturn("Semester deleted");
 
-        mockMvc.perform(delete("/semesters/delete/1"))
+        mockMvc.perform(delete("/semesters/delete/1")
+            .header("X-User-Id",userIdFromHeader))
             .andExpect(status().isOk())
             .andExpect(content().string("Semester deleted"));
     }

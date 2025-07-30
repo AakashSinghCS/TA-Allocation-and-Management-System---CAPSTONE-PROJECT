@@ -27,8 +27,8 @@ import lombok.ToString;
                name = "uk_sectionSchedule_unique_row",
                columnNames = {"section_id", "schedule_day", "startTime", "endTime"})
        })
-@EqualsAndHashCode(exclude = "section")
-@ToString(exclude = "section")
+@EqualsAndHashCode(exclude = "section") 
+@ToString(exclude = "section") //StackOverFlow error in testing without this (Audit)
 public class SectionSchedule {
 
     @Id

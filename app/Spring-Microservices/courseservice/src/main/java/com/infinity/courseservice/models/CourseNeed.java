@@ -3,6 +3,9 @@ package com.infinity.courseservice.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,16 +16,22 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
+@Data
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "need_id", "semester_id" }))
+@EqualsAndHashCode(exclude = {"need", "prerequisites"}) 
+@ToString(exclude = {"need", "prerequisites"}) //StackOverFlow error in testing without this (Audit)
 public class CourseNeed {
 
     @Id
@@ -35,6 +44,7 @@ public class CourseNeed {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "need_id")
+    @JsonBackReference
     private Need need;
 
     @ManyToOne(optional = false)
@@ -42,6 +52,7 @@ public class CourseNeed {
     private Semester semester;
 
     @OneToMany(mappedBy = "courseNeed", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Prereq> prerequisites = new ArrayList<>();
 
 
@@ -49,5 +60,13 @@ public class CourseNeed {
         this.course = course;
         this.need = need;
         this.semester = semester;
+    }
+
+    public CourseNeed(CourseNeed other){
+        this.id = other.id;
+        this.course = other.course;
+        this.need = other.need;
+        this.semester = other.semester;
+        this.prerequisites = other.prerequisites;
     }
 }

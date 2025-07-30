@@ -1,8 +1,12 @@
 package com.infinity.courseservice.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.*;
 
+@Data
 @Entity
 @Getter
 @Setter
@@ -19,6 +23,7 @@ public class Prereq {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "course_need_id")
+    @JsonBackReference
     private CourseNeed courseNeed;
 
     @ManyToOne(optional = false)

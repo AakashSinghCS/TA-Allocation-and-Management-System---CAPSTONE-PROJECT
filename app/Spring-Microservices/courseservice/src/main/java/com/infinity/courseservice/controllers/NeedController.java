@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,8 +31,9 @@ public class NeedController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PostMapping("/add/{courseId}")
     public ResponseEntity<NeedDto> addNeed(@RequestBody NeedRequest request,
-            @PathVariable Long courseId) {
-        return ResponseEntity.ok(needService.addNeed(request, courseId));
+            @PathVariable Long courseId,
+            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(needService.addNeed(request, courseId, userIdFromHeader));
     }
 
     @GetMapping("/get/{courseId}/{year}/{semester}")
@@ -44,20 +46,23 @@ public class NeedController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("/update/{courseId}/{year}/{semester}")
     public ResponseEntity<NeedDto> updateNeed(@RequestBody NeedRequest request,
-            @PathVariable Long courseId, @PathVariable Integer year, @PathVariable String semester) {
-        return ResponseEntity.ok(needService.updateNeed(request, courseId, year, semester));
+            @PathVariable Long courseId, @PathVariable Integer year, @PathVariable String semester,
+            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(needService.updateNeed(request, courseId, year, semester,userIdFromHeader));
     }
 
     @PutMapping("/updateAllocatedHours/{needId}")
     public ResponseEntity<String> updateNeedAllocatedHours(@PathVariable Long needId,
-            @RequestParam int numAllocatedHours) {
-        return ResponseEntity.ok(needService.updateAllocatedHours(needId, numAllocatedHours));
+            @RequestParam int numAllocatedHours,
+            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(needService.updateAllocatedHours(needId, numAllocatedHours,userIdFromHeader));
     }
     
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("/delete/{courseId}/{year}/{semester}")
     public ResponseEntity<String> deleteNeed(@PathVariable Long courseId,
-            @PathVariable Integer year, @PathVariable String semester) {
-        return ResponseEntity.ok(needService.deleteNeed(courseId, year, semester));
+            @PathVariable Integer year, @PathVariable String semester,
+            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(needService.deleteNeed(courseId, year, semester,userIdFromHeader));
     }
 }

@@ -8,10 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Data
 @Entity
 @Getter
 @Setter
@@ -37,5 +39,13 @@ public class Semester {
         this.semester = semester;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public Semester(Semester other){
+        this.id = other.id;
+        this.year = other.year;
+        this.semester = other.semester;
+        this.startDate= other.startDate;
+        this.endDate= other.endDate;
     }
 }

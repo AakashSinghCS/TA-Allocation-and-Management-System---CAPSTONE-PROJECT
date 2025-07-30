@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,18 +38,21 @@ public class SemesterController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<SemesterDto> addSemester(@RequestBody @Valid SemesterDto request) {
-        return ResponseEntity.ok(semesterService.addSemester(request));
+    public ResponseEntity<SemesterDto> addSemester(@RequestBody @Valid SemesterDto request
+    ,@RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(semesterService.addSemester(request, userIdFromHeader));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<SemesterDto> updateSemester(@PathVariable Long id,
-            @RequestBody @Valid SemesterDto request) {
-        return ResponseEntity.ok(semesterService.updateSemester(id, request));
+            @RequestBody @Valid SemesterDto request,
+            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(semesterService.updateSemester(id, request,userIdFromHeader));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteSemester(@PathVariable Long id) {
-        return ResponseEntity.ok(semesterService.deleteSemester(id));
+    public ResponseEntity<String> deleteSemester(@PathVariable Long id,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(semesterService.deleteSemester(id,userIdFromHeader));
     }
 }

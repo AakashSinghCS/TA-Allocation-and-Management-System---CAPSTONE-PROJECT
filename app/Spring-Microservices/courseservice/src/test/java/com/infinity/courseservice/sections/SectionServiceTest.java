@@ -307,7 +307,7 @@ public class SectionServiceTest {
         SectionSchedule before = new SectionSchedule(schedule);
         CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Wed", "10:00", "11:00", null);
         when(sectionScheduleRepository.findById(1L)).thenReturn(Optional.of(schedule));
-        when(sectionScheduleRepository.save(any())).thenReturn(schedule);
+        // when(sectionScheduleRepository.save(any())).thenReturn(schedule);
         when(sectionScheduleRepository.save(any(SectionSchedule.class)))
           .thenAnswer(invocation -> invocation.getArgument(0));
 
