@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CreateSectionForm, { type CreateSectionData } from '../../../components/features/course/createsectionform/CreateSectionForm';
 import { fetchCreateSection, type SectionAddDtoRequest } from '../../../api/section/fetchCreateSection';
@@ -9,10 +9,11 @@ import { validateCourseProfile } from '../../../utility/validation/course/valida
 import { validateSectionProfile } from '../../../utility/validation/section/validateSectionProfile';
 import type { SectionProfile } from '../../../interfaces/section/Section';
 
-
 export default function AddSectionPage() {
   const navigate = useNavigate();
   const [refreshSectionOptions, setRefreshSectionOptions] = useState<number>(0);
+  const [sectionCreated, setSectionCreated] = useState(false);
+  const sectionCreatedTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleCreateSection = async (data: CreateSectionData) => {
     const courseProfile = extractCourseProfile(data);
@@ -53,15 +54,14 @@ export default function AddSectionPage() {
 
       const success = await fetchCreateSection(sectionAddDtoRequest);
       if (success) {
-        alert("Section is created!");
-        navigate('/user/coordinator/sections', { replace: true });
+        setSectionCreated(true);
+        if (sectionCreatedTimeout.current) clearTimeout(sectionCreatedTimeout.current);
+        sectionCreatedTimeout.current = setTimeout(() => setSectionCreated(false), 3000);
       } else {
         alert("Failed to create section. Are you sure it's not a duplicate?")
       }
     }
   };
-
-
 
   return (
     <div className="container ml-0 mr-auto p-2 w-full max-w-5xl z-10">
@@ -86,6 +86,11 @@ export default function AddSectionPage() {
         <div className="flex-1 bg-white shadow-lg p-6 rounded-2xl border border-green-200">
           <h2 className="text-xl font-semibold mb-2 text-green-700">Section Creation</h2>
           <p className="mb-4 text-gray-600 text-sm">Add a section to an existing course. Make sure the course already exists before adding a section.</p>
+          {sectionCreated && (
+            <div className="mb-4 text-green-700 bg-green-100 border border-green-300 rounded px-4 py-2 text-center transition-opacity duration-500">
+              Section created!
+            </div>
+          )}
           <CreateSectionForm onCreateSection={handleCreateSection} mode="section" refreshOptions={refreshSectionOptions} />
         </div>
       </div>
