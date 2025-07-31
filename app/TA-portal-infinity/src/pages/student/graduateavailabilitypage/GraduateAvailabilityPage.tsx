@@ -36,7 +36,7 @@ const GraduateAvailabilityPage = () => {
     const checkGraduateStatusAndLoadAvailability = async () => {
 
       try {
-        const applications = await fetchApplicationsByStudent(userId, token!);
+        const applications = await fetchApplicationsByStudent(userId);
         const thisYearApp = applications.find(app => new Date(app.timeSubmitted).getFullYear() === currentYear);
 
 

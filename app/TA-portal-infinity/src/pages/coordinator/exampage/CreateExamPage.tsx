@@ -395,8 +395,14 @@ const CreateExamPage = () => {
   };
 
   return (
-    <div className="max-w-8xl mx-auto px-4">
-        <div className="flex flex-col lg:flex-row gap-8 justify-center items-start mt-10">
+    <div className="min-h-screen w-full max-w-7xl mx-auto flex flex-col py-2 sm:py-4 px-2 sm:px-4 md:px-6 lg:px-0">
+      <div className="flex flex-col md:flex-row items-center mb-2 sm:mb-3 gap-3 sm:gap-4 md:gap-6">
+        <div className="w-full md:flex-1 min-w-0 flex flex-col items-start">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#040941] mb-2 tracking-tight">Create Exam & Assign Students</h1>
+      <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-500 mb-1 sm:mb-2 md:mb-3">Create new exams and assign graduate students to exam-related tasks.</p>
+        </div>
+      </div>
+      <div className="flex flex-col lg:flex-row gap-8 justify-center items-start mt-4">
             <div className="w-full lg:w-[45%] p-6 bg-white rounded shadow min-h-[813px] flex flex-col justify-between">
                 <h2 className="text-2xl font-bold mb-4">Create Exam</h2>
 

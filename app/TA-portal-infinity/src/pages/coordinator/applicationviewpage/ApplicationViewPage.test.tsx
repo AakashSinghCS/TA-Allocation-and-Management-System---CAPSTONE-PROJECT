@@ -21,7 +21,9 @@ const mockApp: ApplicationDto = {
   wantWorkingHours: 5,
   timeSubmitted: '2025-07-01T00:00:00Z',
   applicationType: 'UNDERGRADUATE',
-  unavailabilities: []
+  unavailabilities: [],
+  year: 2025,
+  semester: 'W1'
 }
 const mockAlloc: Allocation = {
   id: 10,
