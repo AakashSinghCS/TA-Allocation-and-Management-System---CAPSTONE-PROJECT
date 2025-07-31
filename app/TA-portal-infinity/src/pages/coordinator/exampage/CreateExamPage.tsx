@@ -10,6 +10,17 @@ import type { ExamAvailabilityDto } from '../../../interfaces/exam/ExamAvailabil
 import { toast } from "react-toastify";
 import { ToastContainer } from 'react-toastify';
 import ExamsDashboard from "./ExamsDashboard"; 
+import { fetchCourseByDeptAndNum, fetchSectionsForCourse } from "../../../api/exam/fetchCourseAndSections";
+import { getSectionByCourseIdAndName } from "../../../api/exam/fetchCourseAndSections";
+import { fetchGraduateApplicants } from "../../../api/exam/fetchGraduateApplicants";
+import { fetchAllExams } from "../../../api/exam/exam";
+import { fetchCourseById } from "../../../api/exam/fetchCourseAndSections";
+import { fetchSectionById } from "../../../api/exam/fetchCourseAndSections";
+import { createExam } from "../../../api/exam/exam";
+import { getGraduateApplication } from "../../../api/exam/fetchGraduateApplicants";
+import { assignStudentToExam } from "../../../api/exam/exam";
+import { fetchExamAvailability } from "../../../api/exam/ExamAvailability";
+
 
 
 
@@ -81,62 +92,26 @@ const CreateExamPage = () => {
 
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-  
+    const token = localStorage.getItem("token");
     if (selectedDeptCode && selectedCourseNum && token) {
-        const courseUrl = `http://localhost:8080/courses/getByDeptCodeAndCourseNum/${selectedDeptCode}/${selectedCourseNum}`;
-        const sectionUrl = `http://localhost:8080/courses/allSections?deptCode=${selectedDeptCode}&courseNum=${selectedCourseNum}`;
-    
-        fetch(courseUrl, {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            }
-        })
-        .then(res => {
-            if (!res.ok) throw new Error(`Course fetch failed with status ${res.status}`);
-            return res.json();
-        })
-        .then(courseDto => {
-            setCourseId(courseDto.id);
-
-            return fetch(sectionUrl, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                }
-            });
-        })
-        .then(secRes => {
-            if (!secRes.ok) throw new Error(`Section fetch failed with status ${secRes.status}`);
-            return secRes.json();
-        })
-        .then(sectionData => {
-            setSections(sectionData);
-        })
-        .catch(err => console.error('Failed to fetch courseDto or sections:', err));
+        fetchCourseByDeptAndNum(selectedDeptCode, selectedCourseNum, token)
+            .then((courseDto) => {
+                setCourseId(courseDto.id);
+                return fetchSectionsForCourse(selectedDeptCode, selectedCourseNum, token);
+            })
+            .then((sectionData) => {
+                setSections(sectionData);
+            })
+            .catch((err) => console.error("Failed to fetch courseDto or sections:", err));
     }
   }, [selectedCourseNum]);
 
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (courseId && selectedSection && token) {
-        const url = `http://localhost:8080/courses/sections/getByCourseAndName?courseId=${courseId}&section=${selectedSection}`;
-
-        fetch(url, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        })
-            .then((res) => {
-                if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
-                return res.json();
-            })
+        getSectionByCourseIdAndName(courseId, selectedSection, token)
             .then((data) => {
-                console.log(data.id);
                 setSectionId(data.id);
             })
             .catch((err) => console.error("Failed to fetch sectionId:", err));
@@ -145,31 +120,21 @@ const CreateExamPage = () => {
 
   const fetchExamsAndUpdateDropdown = async () => {
     const token = localStorage.getItem("token");
-    
+    if (!token) return;
     try {
-        const res = await fetch("http://localhost:8080/exams", {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        const examList = await res.json();
+        const examList = await fetchAllExams(token);
 
         const formattedExams = await Promise.all(
             examList.map(async (exam: any) => {
-                const [courseRes, sectionRes] = await Promise.all([
-                    fetch(`http://localhost:8080/courses/${exam.courseId}`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }),
-                    fetch(`http://localhost:8080/sections/get/${exam.sectionId}`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }),
+                const [course, section] = await Promise.all([
+                    fetchCourseById(exam.courseId, token),
+                    fetchSectionById(exam.sectionId, token),
                 ]);
-
-                const course = await courseRes.json();
-                const section = await sectionRes.json();
 
                 return {
                     id: exam.id,
                     label: `${course.deptCode} ${course.courseNum} Section ${section.section} (${section.semester})`,
-                    semester: section.semester
+                    semester: section.semester,
                 };
             })
         );
@@ -189,19 +154,9 @@ const CreateExamPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
-    fetch("http://localhost:8080/applications/graduateApplicants", {
-        headers: { Authorization: `Bearer ${token}` },
-    })
-        .then((res) => {
-            if (!res.ok) throw new Error("Failed to fetch graduate applicants");
-            return res.json();
-        })
-        .then((data) => {
-            setMatchingStudents(data);
-        })
-        .catch((err) => {
-            console.error("Error fetching graduate applicants:", err);
-        });
+    fetchGraduateApplicants(token)
+        .then((data) => setMatchingStudents(data))
+        .catch((err) => console.error("Error fetching graduate applicants:", err));
   }, []);
 
 
@@ -242,41 +197,32 @@ const CreateExamPage = () => {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch('http://localhost:8080/exams', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token && { Authorization: `Bearer ${token}` }),
-            },
-            body: JSON.stringify({
+        await createExam(
+            {
                 courseId,
                 sectionId,
-                date: date.toISOString().split('T')[0],
+                date: date.toISOString().split("T")[0],
                 startTime,
                 endTime,
-            }),
-        });
+            },
+            token!
+        );
 
-        if (!response.ok) {
-            const errTxt = await response.text();
-            throw new Error(`Failed to create exam: ${response.status} ${errTxt}`);
-        }
-
-        toast.success('Exam created successfully!');
+        toast.success("Exam created successfully!");
         await fetchExamsAndUpdateDropdown();
         dashboardRef.current?.();
-        setSelectedDeptCode('');
-        setSelectedCourseNum('');
+
+        setSelectedDeptCode("");
+        setSelectedCourseNum("");
         setCourseId(null);
-        setSelectedSection('');
+        setSelectedSection("");
         setSectionId(null);
         setDate(null);
-        setStartTime('');
-        setEndTime('');
-
+        setStartTime("");
+        setEndTime("");
     } catch (err) {
-        console.error('Error creating exam:', err);
-        toast.error('Failed to create exam.');
+        console.error("Error creating exam:", err);
+        toast.error("Failed to create exam.");
     }
   };
 
@@ -335,45 +281,48 @@ const CreateExamPage = () => {
     }
 
     try {
-
-        const appRes = await fetch(`http://localhost:8080/applications/get/${selectedStudentId}/${currentYear}/${semester}`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-
-        if (!appRes.ok) {
-            toast.error('Student does not have a graduate application submitted.');
-            return;
-        }
-
-        const appData = await appRes.json();
+        const appData = await getGraduateApplication(
+            selectedStudentId,
+            currentYear,
+            semester!,
+            token!
+        );
 
         if (appData.applicationType !== "GRADUATE") {
             toast.warn("Only graduate students can be assigned to exams.");
             return;
         }
 
-        const res = await fetch(`http://localhost:8080/exams/${selectedExamId}/assignments`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                examId: selectedExamId,
-                studentId: selectedStudentId,
-                task,
-                date: selectedExam.date, // uses the same date as the exam
-                startTime: assignStartTime,
-                endTime: assignEndTime,
-            })
+        const toMinutes = (timeStr: string) => {
+            const [hour, minute] = timeStr.slice(0, 5).split(":").map(Number);
+            return hour * 60 + minute;
+        };
+
+
+        const availabilitiesOnExamDate = availabilities.filter((a) => a.date === selectedExam.date);
+
+        const isTimeWithinAvailability = availabilitiesOnExamDate.some((a) => {
+            const availStartMin = toMinutes(a.startTime);
+            const availEndMin = toMinutes(a.endTime);
+            const assignStartMin = toMinutes(assignStartTime);
+            const assignEndMin = toMinutes(assignEndTime);
+
+            return assignStartMin >= availStartMin && assignEndMin <= availEndMin;
         });
 
-        if (!res.ok) {
-            const txt = await res.text();
-            throw new Error(`Error assigning: ${res.status} - ${txt}`);
+        if (!isTimeWithinAvailability) {
+            toast.error(`Assigned time must be within the student's availability on ${selectedExam.date}.`);
+            return;
         }
+
+        await assignStudentToExam(selectedExamId, {
+            examId: selectedExamId,
+            studentId: selectedStudentId,
+            task,
+            date: selectedExam.date,
+            startTime: assignStartTime,
+            endTime: assignEndTime,
+        }, token!);
 
         toast.success("Student assigned to exam successfully!");
 
@@ -388,10 +337,11 @@ const CreateExamPage = () => {
         setSelectedExamId(null);
         setAvailabilities([]);
 
-    } catch (err) {
+    } catch (err: any) {
         console.error("Assignment error:", err);
-        toast.error("Failed to assign student.");
+        toast.error(err.message || "Failed to assign student.");
     }
+
   };
 
   return (
@@ -494,11 +444,7 @@ const CreateExamPage = () => {
 
                         const token = localStorage.getItem("token");
                         try {
-                            const res = await fetch(`http://localhost:8080/exams/${studentId}/availability`, {
-                                headers: { Authorization: `Bearer ${token}` }
-                            });
-                            if (!res.ok) throw new Error("Failed to fetch availability");
-                            const data = await res.json();
+                            const data = await fetchExamAvailability(studentId, token!);
                             setAvailabilities(data);
                         } catch (err) {
                             console.error("Error fetching availabilities:", err);

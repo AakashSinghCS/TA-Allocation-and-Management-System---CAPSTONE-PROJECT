@@ -5,6 +5,8 @@ import { useAuth } from "../../../context/AuthContext";
 import {BookCheck} from "lucide-react";
 import {Clock} from "lucide-react";
 import UpdateAssignmentModal from "./UpdateAssignmentModal";
+import { fetchAssignmentsByExamId, fetchStudentById, deleteExamAssignment, updateExamAssignment} from "../../../api/exam/exam";
+import type { StudentOrInstructorOrCoordinator } from "../../../interfaces/user/User";
 
 
 interface AssignedStudentsListProps {
@@ -40,49 +42,37 @@ const AssignedStudentsList: React.FC<AssignedStudentsListProps> = ({ examId, onR
 
   const fetchAssignments = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/exams/assignments/byexam/${examId}`, {
-        headers:{
-          Authorization: `Bearer ${token}`,
-        }
-      });
-      const data = await res.json();
+      const data = await fetchAssignmentsByExamId(examId, token!);
       setAssignments(data);
 
-      // Fetch unique student info
-      const studentIds = [...new Set(data.map((a: ExamAssignmentDto) => a.studentId))] as number[];
+      const studentIds = [...new Set(data.map((a) => a.studentId))];
       const studentInfo: Record<number, StudentDto> = {};
 
       await Promise.all(
-        studentIds.map(async (id: number) => {
-          const res = await fetch(`http://localhost:8080/users/${id}`, {
-            headers:{
-              Authorization: `Bearer ${token}`,
-            }
-          });
-          if (res.ok) {
-            const student = await res.json();
+        studentIds.map(async (id) => {
+          try {
+            const student = await fetchStudentById(id, token!);
             studentInfo[id] = student;
+          } catch (e) {
+            console.error(`Failed to fetch student ${id}:`, e);
           }
         })
       );
 
       setStudentMap(studentInfo);
     } catch (err) {
+      console.error("Assignment fetch error:", err);
       toast.error("Failed to load assignments");
     }
   };
 
   const handleUnassign = async (assignmentId: number) => {
     try {
-      await fetch(`http://localhost:8080/exams/assignments/${assignmentId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
+      await deleteExamAssignment(assignmentId, token!);
       toast.success("Student unassigned successfully");
       fetchAssignments();
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to unassign");
     }
   };
@@ -99,27 +89,13 @@ const AssignedStudentsList: React.FC<AssignedStudentsListProps> = ({ examId, onR
 
   const handleAssignmentUpdate = async (updated: ExamAssignmentDto) => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/exams/assignments/${updated.examId}/student/${updated.studentId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(updated),
-        }
-      );
-
-      if (response.ok) {
-        toast.success("Assignment updated successfully");
-        fetchAssignments();
-        handleModalClose();
-      } else {
-        toast.error("Failed to update assignment");
-      }
-    } catch {
-      toast.error("Error updating assignment");
+      await updateExamAssignment(updated, token!);
+      toast.success("Assignment updated successfully");
+      fetchAssignments();
+      handleModalClose();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update assignment");
     }
   };
 
