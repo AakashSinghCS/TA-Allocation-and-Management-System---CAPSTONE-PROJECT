@@ -3019,3 +3019,41 @@ Next:
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
 - [UBCO-COSC499-S2025/team-10-capstone-infinity#471](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)
 
+## Wednesday 7/30 (7/29~8/1)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/July30.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#471](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Today:
+1. completed integrated sections, qualifications, needs, exams (basically all the rest of the course-service) into the auditing cycle.
+
+Next:
+1. integrate the newly changed allocation-service into the auditing cycle and the profile service. Moreover, check the user-service for any possible changes concerning the .save() stubbings, which should be using invocations for better testing.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+-[#523](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/523)
+- [#524](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/524)
+
