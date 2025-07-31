@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bc582917-96ea-446b-b143-b16a13090432",
+		"_postman_id": "14b6187b-8852-4c0d-911e-b24f947b59cc",
 		"name": "499 TA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "45690522"
@@ -625,6 +625,43 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Get user batch",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfQ09PUkRJTkFUT1IiXSwiaWF0IjoxNzUzOTIxOTM2LCJleHAiOjE3NTM5MjU1MzZ9.rZGdTtWcr_mA_BN8am_6hXOzL6LxJAuheKpEjfaNRnXBSxL_BNjO09h8-Nr7TcQ1",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users/students/batch?ids=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"students",
+								"batch"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -2856,6 +2893,36 @@
 										"applications",
 										"delete",
 										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get graduate application students",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfQ09PUkRJTkFUT1IiXSwiaWF0IjoxNzUzOTIzNTMxLCJleHAiOjE3NTM5MjcxMzF9.GtJFWlr55G75lcyn3bHSDG4M-M2enUrhCNwCUn0mKbvsB-FsO6hZeLlYTCYdo1MK",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/applications/graduateApplicants",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"applications",
+										"graduateApplicants"
 									]
 								}
 							},

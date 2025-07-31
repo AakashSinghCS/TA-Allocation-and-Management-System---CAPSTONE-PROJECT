@@ -41,7 +41,7 @@ const CreateExamPage = () => {
   const [selectedStudentId, setSelectedStudentId] = useState<number | null>(null);
 
   const [exams, setExams] = useState<any[]>([]);
-  const [examDisplayOptions, setExamDisplayOptions] = useState<{ id: number, label: string }[]>([]);
+  const [examDisplayOptions, setExamDisplayOptions] = useState<{ id: number, label: string, semester: string}[]>([]);
   const [selectedExamId, setSelectedExamId] = useState<number | null>(null);
 
   const [task, setTask] = useState('');
@@ -169,6 +169,7 @@ const CreateExamPage = () => {
                 return {
                     id: exam.id,
                     label: `${course.deptCode} ${course.courseNum} Section ${section.section} (${section.semester})`,
+                    semester: section.semester
                 };
             })
         );
@@ -187,20 +188,22 @@ const CreateExamPage = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!studentName && !studentNum) return;
-
-    const url = new URL("http://localhost:8080/users/search");
-    url.searchParams.append("role", "STUDENT");
-    url.searchParams.append("name", studentName);
-    if (studentNum) url.searchParams.append("universityNumber", studentNum);
-
-    fetch(url.toString(), {
-        headers: { Authorization: `Bearer ${token}` }
+    if (!token) return;
+    fetch("http://localhost:8080/applications/graduateApplicants", {
+        headers: { Authorization: `Bearer ${token}` },
     })
-        .then(res => res.json())
-        .then(data => setMatchingStudents(data))
-        .catch(err => console.error("Failed to search students:", err));
-  }, [studentName, studentNum]);
+        .then((res) => {
+            if (!res.ok) throw new Error("Failed to fetch graduate applicants");
+            return res.json();
+        })
+        .then((data) => {
+            setMatchingStudents(data);
+        })
+        .catch((err) => {
+            console.error("Error fetching graduate applicants:", err);
+        });
+  }, []);
+
 
 
 
@@ -309,6 +312,8 @@ const CreateExamPage = () => {
     }
 
     const selectedExam = exams.find(e => e.id === selectedExamId);
+    const selectedExamDisplay = examDisplayOptions.find(e => e.id === selectedExamId);
+    const semester = selectedExamDisplay?.semester;
     if (!selectedExam) {
         toast.error("Selected exam not found.");
         return;
@@ -331,7 +336,7 @@ const CreateExamPage = () => {
 
     try {
 
-        const appRes = await fetch(`http://localhost:8080/applications/get/${selectedStudentId}/${currentYear}`, {
+        const appRes = await fetch(`http://localhost:8080/applications/get/${selectedStudentId}/${currentYear}/${semester}`, {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
@@ -474,63 +479,61 @@ const CreateExamPage = () => {
             <div className="w-full lg:w-[45%] p-6 bg-white rounded shadow min-h-[813px] flex flex-col justify-between">
                 <h2 className="text-2xl font-bold mb-4">Assign Student to Exam</h2>
 
-                <label className="block mb-2">Student Name</label>
-                <input
-                    type="text"
-                    value={studentName}
-                    onChange={e => setStudentName(e.target.value)}
-                    className="w-full mb-4 p-2 border rounded"
-                    placeholder="e.g. John"
-                />
-
-                <label className="block mb-2">Student Number</label>
-                <input
-                    type="text"
-                    value={studentNum}
-                    onChange={e => setStudentNum(e.target.value)}
-                    className="w-full mb-4 p-2 border rounded"
-                    placeholder="e.g. 12345678"
-                />
-
-                <label className="block mb-2">Select Matching Student</label>
+                <label className="block mb-2">Select Student</label>
                 <select
                     value={selectedStudentId || ''}
                     onChange={async (e) => {
                         const studentId = Number(e.target.value);
                         setSelectedStudentId(studentId);
 
-                        if (studentId) {
-                            const token = localStorage.getItem("token");
-                            try {
-                                const res = await fetch(`http://localhost:8080/exams/${studentId}/availability`, {
-                                    headers: { Authorization: `Bearer ${token}` }
-                                });
-                                if (!res.ok) throw new Error("Failed to fetch availability");
-                                const data = await res.json();
-                                setAvailabilities(data);
-                            } catch (err) {
-                                console.error("Error fetching availabilities:", err);
-                                setAvailabilities([]);
-                            }
-
-                            const selected = matchingStudents.find((s) => s.id === studentId);
-                            if (selected) {
-                                setStudentName(`${selected.firstName} ${selected.lastName}`);
-                                setStudentNum(String(selected.studentNum));
-                            }
-                        } else {
+                        const token = localStorage.getItem("token");
+                        try {
+                            const res = await fetch(`http://localhost:8080/exams/${studentId}/availability`, {
+                                headers: { Authorization: `Bearer ${token}` }
+                            });
+                            if (!res.ok) throw new Error("Failed to fetch availability");
+                            const data = await res.json();
+                            setAvailabilities(data);
+                        } catch (err) {
+                            console.error("Error fetching availabilities:", err);
                             setAvailabilities([]);
+                        }
+
+                        const selected = matchingStudents.find((s) => s.id === studentId);
+                        if (selected) {
+                            setStudentName(`${selected.firstName} ${selected.lastName}`);
+                            setStudentNum(String(selected.studentNum));
                         }
                     }}
                     className="w-full mb-4 p-2 border rounded"
                 >
-                    <option value="">Select a student</option>
+                    <option value="">Select student</option>
                     {matchingStudents.map((s) => (
                         <option key={s.id} value={s.id}>
                             {s.firstName} {s.lastName} ({s.studentNum})
                         </option>
                     ))}
                 </select>
+
+                <label className="block mb-2">Student Name</label>
+                <input
+                    type="text"
+                    value={studentName}
+                    readOnly
+                    disabled
+                    onChange={e => setStudentName(e.target.value)}
+                    className="w-full mb-4 p-2 border rounded cursor-not-allowed"
+                />
+
+                <label className="block mb-2">Student Number</label>
+                <input
+                    type="text"
+                    value={studentNum}
+                    readOnly
+                    disabled
+                    onChange={e => setStudentNum(e.target.value)}
+                    className="w-full mb-4 p-2 border rounded cursor-not-allowed"
+                />
 
                 {availabilities.length > 0 && (
                     <div className="mb-4">

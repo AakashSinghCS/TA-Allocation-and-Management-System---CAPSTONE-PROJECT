@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.models.Application;
 
@@ -89,5 +90,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
      @Query("SELECT DISTINCT a.semester FROM Application a ORDER BY a.semester")
      List<String> findDistinctSemesters();
+
+     List<Application> findByapplicationType(ApplicationType type);
+
 
 }
