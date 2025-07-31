@@ -14,14 +14,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
-import com.infinity.applicationservice.dtos.Applications.AvailabilityDto;
+import com.infinity.applicationservice.dtos.Applications.UnavailabilityDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.Day;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.enums.UserRole;
 import com.infinity.applicationservice.models.Application;
-import com.infinity.applicationservice.models.Availability;
+import com.infinity.applicationservice.models.Unavailability;
 import com.infinity.applicationservice.utility.ApplicationMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,11 +42,11 @@ public class ApplicationMapperTest {
         app.setWantWorkingHours(10);
         app.setSubmittedAt(LocalDateTime.now());
 
-        Availability availability = new Availability();
-        availability.setDay(Day.MONDAY);
-        availability.setStartTime(LocalTime.of(9, 0));
-        availability.setEndTime(LocalTime.of(11, 0));
-        app.setAvailabilities(Set.of(availability));
+        Unavailability unavailability = new Unavailability();
+        unavailability.setDay(Day.MONDAY);
+        unavailability.setStartTime(LocalTime.of(9, 0));
+        unavailability.setEndTime(LocalTime.of(11, 0));
+        app.setUnavailabilities(Set.of(unavailability));
 
         ApplicationDto dto = mapper.toDto(app);
 
@@ -58,10 +58,10 @@ public class ApplicationMapperTest {
         assertEquals(app.getWantWorkingHours(), dto.wantWorkingHours());
         assertEquals(app.getSubmittedAt(), dto.timeSubmitted());
 
-        AvailabilityDto availabilityDto = dto.availabilities().iterator().next();
-        assertEquals(Day.MONDAY, availabilityDto.day());
-        assertEquals("09:00", availabilityDto.startTime());
-        assertEquals("11:00", availabilityDto.endTime());
+        UnavailabilityDto unavailabilityDto = dto.unavailabilities().iterator().next();
+        assertEquals(Day.MONDAY, unavailabilityDto.day());
+        assertEquals("09:00", unavailabilityDto.startTime());
+        assertEquals("11:00", unavailabilityDto.endTime());
     }
 
     @Test
@@ -80,11 +80,11 @@ public class ApplicationMapperTest {
         app.setWantWorkingHours(8);
         app.setSubmittedAt(LocalDateTime.now());
 
-        Availability availability = new Availability();
-        availability.setDay(Day.TUESDAY);
-        availability.setStartTime(LocalTime.of(13, 0));
-        availability.setEndTime(LocalTime.of(15, 0));
-        app.setAvailabilities(Set.of(availability));
+        Unavailability unavailability = new Unavailability();
+        unavailability.setDay(Day.TUESDAY);
+        unavailability.setStartTime(LocalTime.of(13, 0));
+        unavailability.setEndTime(LocalTime.of(15, 0));
+        app.setUnavailabilities(Set.of(unavailability));
 
         ApplicationWithStudentDto dto = mapper.toDtoWithStudent(app, student);
 
@@ -96,9 +96,9 @@ public class ApplicationMapperTest {
         assertEquals(8, dto.wantWorkingHours());
         assertEquals(app.getSubmittedAt(), dto.timeSubmitted());
 
-        AvailabilityDto dtoAvailability = dto.availabilities().iterator().next();
-        assertEquals(Day.TUESDAY, dtoAvailability.day());
-        assertEquals("13:00", dtoAvailability.startTime());
-        assertEquals("15:00", dtoAvailability.endTime());
+        UnavailabilityDto dtoUnavailability = dto.unavailabilities().iterator().next();
+        assertEquals(Day.TUESDAY, dtoUnavailability.day());
+        assertEquals("13:00", dtoUnavailability.startTime());
+        assertEquals("15:00", dtoUnavailability.endTime());
     }
 }

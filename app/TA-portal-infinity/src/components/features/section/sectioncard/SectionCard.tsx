@@ -19,11 +19,11 @@ export default function SectionCard({
   big = false,
   authenticated = false
 }: SectionCardProps) {
-  const alloc = section.need?.numHoursCurrentlyAllocated;
+  // const alloc = section.need?.numHoursCurrentlyAllocated;
   const req = section.need?.requiredGradingHours;
-  const allocTxt = typeof alloc === "number" ? alloc : "-";
+  // const allocTxt = typeof alloc === "number" ? alloc : "-";
   const reqTxt = typeof req === "number" ? req : "-";
-  const hoursBadge = `(${allocTxt}/${reqTxt})`;
+  const hoursBadge = `${reqTxt}`;
 
   return (
     <div
@@ -84,9 +84,9 @@ export default function SectionCard({
               {section.semester}
             </span>
           )}
-          {(alloc || req) && (
+          {(req) && (
             <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-gray-50 text-gray-700 font-medium ml-auto">
-              {hoursBadge} hrs
+              {hoursBadge} req. grading hrs
             </span>
           )}
         </div>

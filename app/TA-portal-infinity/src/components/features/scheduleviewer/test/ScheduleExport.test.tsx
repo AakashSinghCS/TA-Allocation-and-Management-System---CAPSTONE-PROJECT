@@ -1,4 +1,5 @@
 import { render, fireEvent } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import ScheduleExport from '../ScheduleExport';
 import { createEvents } from 'ics';
 
@@ -12,7 +13,7 @@ describe('ScheduleExport', () => {
     URL.revokeObjectURL = vi.fn();
   });
 
-  it('exports CSV on button click', () => {
+  it('exports CSV on button click', async () => {
     const rows = [
       {
         id: 1,
@@ -29,11 +30,13 @@ describe('ScheduleExport', () => {
       },
     ];
     const { getByText } = render(<ScheduleExport scheduleRows={rows} />);
-    fireEvent.click(getByText(/Export CSV/i));
-    expect(URL.createObjectURL).toHaveBeenCalled();
+    await fireEvent.click(getByText(/Export CSV/i));
+    await waitFor(() => {
+      expect(URL.createObjectURL).toHaveBeenCalled();
+    });
   });
 
-  it('exports ICS on button click', () => {
+  it('exports ICS on button click', async () => {
     const rows = [
       {
         id: 1,
@@ -50,8 +53,10 @@ describe('ScheduleExport', () => {
       },
     ];
     const { getByText } = render(<ScheduleExport scheduleRows={rows} />);
-    fireEvent.click(getByText(/Export to Calendar/i));
-    expect(createEvents).toHaveBeenCalled();
-    expect(URL.createObjectURL).toHaveBeenCalled();
+    await fireEvent.click(getByText(/Export to Calendar/i));
+    await waitFor(() => {
+      expect(createEvents).toHaveBeenCalled();
+      expect(URL.createObjectURL).toHaveBeenCalled();
+    });
   });
 });

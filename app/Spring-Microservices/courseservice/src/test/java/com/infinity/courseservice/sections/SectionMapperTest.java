@@ -42,7 +42,7 @@ class SectionMapperTest {
     }
 
     private Semester setupSemester() {
-        return new Semester(2025, "W1", null, null);
+        return new Semester(2025, "W1", null, null, true);
     }
 
     private Section setupSection() {

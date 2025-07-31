@@ -1,6 +1,5 @@
 package com.infinity.applicationservice.controllers;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
@@ -25,7 +25,6 @@ import com.infinity.applicationservice.services.ApplicationService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,27 +42,33 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.submitApplication(req, requesterId, roles));
     }
 
-    @GetMapping("/get/{studentId}/{year}")
+    @GetMapping("/get/{studentId}/{year}/{semester}")
     public ResponseEntity<ApplicationDto> getApplication(@PathVariable Long studentId,
             @PathVariable Integer year,
+            @PathVariable String semester,
             @RequestHeader("X-User-Id") Long requesterId,
             @RequestHeader("X-User-Roles") List<String> roles) {
-        return ResponseEntity.ok(applicationService.getApplication(studentId, year, requesterId, roles));
+        return ResponseEntity.ok(applicationService.getApplication(studentId, year, semester, requesterId, roles));
     }
 
-    @PutMapping("update/{studentId}")
+    @PutMapping("update/{studentId}/{year}/{semester}")
     public ResponseEntity<ApplicationDto> updateApplication(@RequestBody @Valid ApplicationRequest req,
             @PathVariable Long studentId,
+            @PathVariable Integer year,
+            @PathVariable String semester,
             @RequestHeader("X-User-Id") Long requesterId,
             @RequestHeader("X-User-Roles") List<String> roles) {
-        return ResponseEntity.ok(applicationService.updateApplication(req, studentId, requesterId, roles));
+        return ResponseEntity
+                .ok(applicationService.updateApplication(req, studentId, year, semester, requesterId, roles));
     }
 
-    @DeleteMapping("/delete/{studentId}")
+    @DeleteMapping("/delete/{studentId}/{year}/{semester}")
     public ResponseEntity<String> deleteApplication(@PathVariable Long studentId,
+            @PathVariable Integer year,
+            @PathVariable String semester,
             @RequestHeader("X-User-Id") Long requesterId,
             @RequestHeader("X-User-Roles") List<String> roles) {
-        return ResponseEntity.ok(applicationService.deleteApplication(studentId, requesterId, roles));
+        return ResponseEntity.ok(applicationService.deleteApplication(studentId, year, semester, requesterId, roles));
     }
 
     @GetMapping("/getAll/{studentId}")
@@ -73,22 +78,32 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.getAllApplicationsByStudentId(studentId, requesterId, roles));
     }
 
+    @GetMapping("/getAllActive/{studentId}")
+    public ResponseEntity<List<ApplicationDto>> getAllActiveApplicationsByStudentId(@PathVariable Long studentId,
+            @RequestHeader("X-User-Id") Long requesterId,
+            @RequestHeader("X-User-Roles") List<String> roles) {
+        return ResponseEntity.ok(applicationService.getAllActiveApplicationsByStudentId(studentId, requesterId, roles));
+    }
+
     @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/getAll")
     public ResponseEntity<List<ApplicationWithStudentDto>> getAllApplications(
             @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) String semester,
             @RequestParam(required = false) Boolean wantRemote,
             @RequestParam(required = false) Integer hours,
             @RequestParam(required = false) Subject preference1,
             @RequestParam(required = false) Subject preference2,
             @RequestParam(required = false) Subject preference3) {
         return ResponseEntity.ok(
-                applicationService.getAllApplications(year, wantRemote, hours, preference1, preference2, preference3));
+                applicationService.getAllApplications(year, semester, wantRemote, hours, preference1, preference2,
+                        preference3));
     }
 
     @GetMapping("/getAll/page")
     public ResponseEntity<Page<ApplicationWithStudentDto>> getAllApplications(
             @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) String semester,
             @RequestParam(required = false) Boolean wantRemote,
             @RequestParam(required = false) Integer hours,
             @RequestParam(required = false) Subject preference1,
@@ -97,8 +112,20 @@ public class ApplicationController {
             Pageable pageable) // Spring will map ?page=0&size=5&sort=… here
     {
         Page<ApplicationWithStudentDto> result = applicationService.getAllApplications(
-                year, wantRemote, hours, preference1, preference2, preference3, pageable);
+                year, semester, wantRemote, hours, preference1, preference2, preference3, pageable);
         return ResponseEntity.ok(result);
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/allYears")
+    public ResponseEntity<List<Integer>> getAllApplicationYears() {
+        return ResponseEntity.ok(applicationService.getAllApplicationYears());
+    }
+
+    @PreAuthorize("hasRole('COORDINATOR')")
+    @GetMapping("/allSemesters")
+    public ResponseEntity<List<String>> getAllApplicationSemesters() {
+        return ResponseEntity.ok(applicationService.getAllApplicationSemesters());
     }
 
 }

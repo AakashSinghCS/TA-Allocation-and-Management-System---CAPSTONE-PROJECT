@@ -401,7 +401,7 @@ class QualificationServiceTest {
                 course.setId(1L);
                 course.setDeptCode("COSC");
 
-                Semester semester = new Semester(2024, "W1", null, null);
+                Semester semester = new Semester(2024, "W1", null, null, true);
 
                 Section s1 = new Section();
                 s1.setId(10L);

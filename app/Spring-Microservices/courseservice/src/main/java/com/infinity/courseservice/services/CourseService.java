@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import com.infinity.courseservice.dtos.AllocationDtos.AllocatedSectionDto;
 import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
 import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
@@ -168,7 +169,7 @@ public class CourseService {
         Section section = sectionRepository.findByCourseIdAndSemester_YearAndSemester_Semester(courseId, year, semester)
                 .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
         NeedDto need = needService.getNeed(courseId, year, semester);
-        List<AllocationHistoryDtoWithCourse> allocations = applicationInterface
+        List<AllocatedSectionDto> allocations = applicationInterface
                 .getAllocationsBySectionId(section.getId()).getBody();
         SectionDto sectionDto = sectionMapper.sectionToDto(section);
         return new CourseNeedAndAllocations(sectionDto, need, allocations);
@@ -190,7 +191,7 @@ public class CourseService {
                 uniqueKeys.add(key);
 
                 NeedDto need = null;
-                List<AllocationHistoryDtoWithCourse> allocations = new ArrayList<>();
+                List<AllocatedSectionDto> allocations = new ArrayList<>();
 
                 try {
 
@@ -198,7 +199,7 @@ public class CourseService {
                 } catch (NotFoundException e) {
                 }
                 try {
-                    List<AllocationHistoryDtoWithCourse> fetched = applicationInterface
+                    List<AllocatedSectionDto> fetched = applicationInterface
                             .getAllocationsBySectionId(sectionId).getBody();
                     if (fetched != null) {
                         allocations = fetched;
@@ -244,7 +245,7 @@ public class CourseService {
             } catch (Exception ignored) {}
 
             // get allocations (empty list if null)
-            List<AllocationHistoryDtoWithCourse> allocations =
+            List<AllocatedSectionDto> allocations =
                 Optional.ofNullable(
                     applicationInterface.getAllocationsBySectionId(section.getId())
                                         .getBody()

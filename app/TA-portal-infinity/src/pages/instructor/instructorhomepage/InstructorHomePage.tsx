@@ -14,13 +14,15 @@ import { CoursesMissingQualificationsCard } from "../../../components/features/i
 import { fetchInstructorDetails } from "../../../api/instructor/fetchInstructorDetails";
 import { fetchAllInstructorQualifications } from "../../../api/instructor/fetchAllInstructorQualifications";
 import type { QualificationResponse } from "../../../api/instructor/fetchAllInstructorQualifications";
-import { FaUserGraduate , FaUsers } from "react-icons/fa";
+import { FaUserGraduate, FaUsers } from "react-icons/fa";
 import { GrDocumentMissing } from "react-icons/gr";
+import { fetchAllocationById } from "../../../api/allocation/fetchAllocationById";
+import type { ApplicationStatus } from "../../../interfaces/enum/ApplicationStatus";
 
 export default function InstructorHomePage() {
   const { userId, token } = useAuth();
   const [qualifications, setQualifications] = useState<QualificationResponse[]>([]);
-  const [expandedAlloc, setExpandedAlloc] = useState<{sectionId: number, allocIdx: number} | null>(null);
+  const [expandedAlloc, setExpandedAlloc] = useState<{ sectionId: number, allocIdx: number } | null>(null);
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -55,23 +57,39 @@ export default function InstructorHomePage() {
         const years = await fetchAllExistingYears();
         const mostRecent = years ? Math.max(...years.map(Number)) : -1;
         const defaultSemester = "W1"; // or you can determine current semester dynamically
-        
+
         // Fetch sections with their needs and allocations for current term
         const sectionsWithNeeds = await fetchSectionNeedAndAllocations(
-          userId, 
+          userId,
           null, // all courses
-          mostRecent, 
+          mostRecent,
           defaultSemester
         ) ?? [];
-        
+
         // Filter allocations to show only CONFIRMED status
-        const sectionsWithConfirmedAllocations = sectionsWithNeeds.map(section => ({
-          ...section,
-          allocations: section.allocations?.filter(allocation => allocation.status === "CONFIRMED") ?? []
-        }));
-        
-        console.log(`[InstructorHomePage] Fetched ${sectionsWithConfirmedAllocations.length} sections with confirmed allocations for ${mostRecent} ${defaultSemester}`);
-        
+        const sectionsWithConfirmedAllocations = await Promise.all(
+          sectionsWithNeeds.map(async section => {
+            // 1️⃣ grab just the unique allocationIds for this section
+            const uniqueAllocIds = Array.from(
+              new Set((section.allocatedSections ?? []).map(as => as.allocationId))
+            );
+
+            // 2️⃣ fetch each allocation exactly once
+            const allocObjs = await Promise.all(
+              uniqueAllocIds.map(id => fetchAllocationById(id))
+            );
+
+            // 3️⃣ filter for CONFIRMED
+            const confirmed = allocObjs.filter(a => a.status === "CONFIRMED");
+
+            return {
+              ...section,
+              // overwrite the old field
+              allocations: confirmed
+            };
+          })
+        );
+
         setSections(sectionsWithConfirmedAllocations);
       } catch (err) {
         console.error("Failed to load data:", err);
@@ -138,8 +156,10 @@ export default function InstructorHomePage() {
 
   // Metrics
   const totalSections = sections.length;
-  // No need to filter by status since fetchConfirmedAllocationsForSections already returns only confirmed allocations
-  const totalAllocations = sections.reduce((sum, s) => sum + (s.allocations?.length || 0), 0);
+  const totalAllocations = sections.reduce(
+    (sum, s) => sum + (s.allocations?.length || 0),
+    0
+  );
   const missingNeeds = sections.filter(s => !s.need || !s.need.description);
 
   // Only render dashboard after all data is loaded
@@ -159,7 +179,7 @@ export default function InstructorHomePage() {
               <p className="text-lg text-gray-700 font-medium mb-1">
                 Welcome
                 {instructorName && userId ? (
-                    <>
+                  <>
                     {" "}
                     <a
                       href={`http://localhost:5173/user/profile/${userId}`}
@@ -169,7 +189,7 @@ export default function InstructorHomePage() {
                     >
                       {instructorName}
                     </a>
-                    </>
+                  </>
                 ) : ", Instructor"}
               </p>
             </div>

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infinity.courseservice.dtos.Semesters.SemesterDto;
-import com.infinity.courseservice.dtos.Semesters.SemesterRequestDto;
 import com.infinity.courseservice.services.SemesterService;
 
 import jakarta.validation.Valid;
@@ -32,9 +31,30 @@ public class SemesterController {
         return ResponseEntity.ok(semesterService.getSemesterById(id));
     }
 
+    @GetMapping("/{year}/{semester}")
+    public ResponseEntity<SemesterDto> getSemesterByYearAndSemester(@PathVariable Integer year,
+            @PathVariable String semester) {
+        return ResponseEntity.ok(semesterService.getSemesterByYearAndSemester(year, semester));
+    }
+
     @GetMapping("/getAll")
     public ResponseEntity<List<SemesterDto>> getAllSemesters() {
         return ResponseEntity.ok(semesterService.getAllSemesters());
+    }
+
+    @GetMapping("/getAllFuture")
+    public ResponseEntity<List<SemesterDto>> getAllFutureSemesters() {
+        return ResponseEntity.ok(semesterService.getAllFutureSemesters());
+    }
+
+    @GetMapping("/getActive")
+    public ResponseEntity<List<SemesterDto>> getActiveSemesters() {
+        return ResponseEntity.ok(semesterService.getSemestersByState(true));
+    }
+
+    @GetMapping("/getInactive")
+    public ResponseEntity<List<SemesterDto>> getInactiveSemesters() {
+        return ResponseEntity.ok(semesterService.getSemestersByState(false));
     }
 
     @PostMapping("/add")

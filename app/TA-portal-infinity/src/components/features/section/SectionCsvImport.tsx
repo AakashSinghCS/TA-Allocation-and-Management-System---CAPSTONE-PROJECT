@@ -167,8 +167,27 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
   };
 
   return (
-    <div className="max-w-2xl min-w-[600px] mx-auto p-4 bg-white rounded shadow">
-      <h2 className="text-3xl font-bold mb-8">Import Sections from CSV</h2>
+    <div className="relative max-w-4xl min-w-[800px] mx-auto p-4 bg-white rounded shadow">
+      {/* Close (X) button inside top-right */}
+      {onClose && (
+        <button
+          type="button"
+          aria-label="Close"
+          onClick={onClose}
+          className="absolute top-3 right-3 z-10 text-gray-400 hover:text-gray-700 focus:outline-none"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      )}
+      <h2 className="text-3xl font-bold mb-2">Import Sections from CSV</h2>
+      <div className="text-gray-600 mb-1 text-base">
+        You can import multiple sections at once by uploading a CSV file (only .csv files are supported).
+      </div>
+      <div className="text-gray-500 mb-6 text-base">
+        To avoid formatting issues, please download and use the provided sample template.
+      </div>
       <div className="mb-4 mt-2">
         <div className="flex items-center gap-2 mb-2 text-base font-bold text-gray-700">
           {/* Download icon */}
@@ -257,10 +276,11 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
       {csvPreview && csvPreview.length > 0 && (
         <div className="mt-4">
           <div className="font-semibold mb-2">CSV Preview (first 10 rows):</div>
-          <div className="overflow-auto max-h-64 border rounded">
+          <div className="overflow-auto max-h-96 border rounded">
             <table className="min-w-[600px] w-full text-xs">
               <thead>
                 <tr>
+                  <th className="px-2 py-1 border-b border-r bg-gray-100 text-left">#</th>
                   {csvHeaders.map((header) => (
                     <th key={header} className="px-2 py-1 border-b bg-gray-100 text-left">{header}</th>
                   ))}
@@ -269,6 +289,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
               <tbody>
                 {csvPreview.map((row, idx) => (
                   <tr key={idx}>
+                    <td className="px-2 py-1 border-b border-r text-gray-400 font-mono">{idx + 1}</td>
                     {csvHeaders.map((header) => (
                       <td key={header} className="px-2 py-1 border-b">{row[header]}</td>
                     ))}
@@ -284,7 +305,7 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           type="button"
           onClick={handleSubmit}
           disabled={loading || imported}
-          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-[#040941] text-white hover:bg-[#232a5c]'} `}
         >
           {loading ? "Importing..." : "Import"}
         </button>
@@ -300,11 +321,13 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
         </div>
       )}
       <div className="flex justify-end mt-6">
+         {/* Import button */}
         <button
           type="button"
           onClick={handleSubmit}
           disabled={loading || imported}
-          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          // className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          className={`px-4 py-2 rounded font-semibold transition-colors ${loading || imported ? 'bg-gray-300 text-gray-400 cursor-not-allowed' : 'bg-[#040941] text-white hover:bg-[#232a5c]'} `}
         >
           {loading ? "Importing..." : "Import"}
         </button>
@@ -326,13 +349,14 @@ export default function SectionCsvImport({ onClose }: SectionCsvImportProps) {
           <div className="flex justify-center">
             <button
               className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
-              onClick={onClose}
+              // onClick={onClose} // Use this if we want to just close the modal without reload
+              onClick={() => window.location.reload()} // Reloads the page after import
             >
-              Close 
+              Close
             </button>
           </div>
 
-          {/* right-aligned button */}
+        {/* right-aligned button */}
           {/* <div className="flex justify-end">
             <button
               className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"

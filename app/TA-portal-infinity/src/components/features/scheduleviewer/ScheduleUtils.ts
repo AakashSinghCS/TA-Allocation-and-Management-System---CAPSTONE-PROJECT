@@ -1,4 +1,5 @@
 import type { ScheduleRow } from "./ScheduleViewer.types";
+import { getSemesterDates } from "../../../api/semester/getSemesterDates";
 
 export const dayMap: Record<string, number> = {
   "Sunday": 0,
@@ -10,13 +11,33 @@ export const dayMap: Record<string, number> = {
   "Saturday": 6,
 };
 
-export function getSemesterRanges(year: number): Record<string, { start: string; end: string }> {
-  return {
-    W1: { start: `${year}-01-05`, end: `${year}-04-09` },
-    S1: { start: `${year}-05-11`, end: `${year}-06-18` },
-    S2: { start: `${year}-07-06`, end: `${year}-08-13` },
-    W2: { start: `${year}-09-02`, end: `${year}-12-05` },
-  };
+// Cache for semester ranges to avoid multiple API calls
+let semesterRangesCache: Record<string, { start: string; end: string }> | null = null;
+
+export async function getSemesterRanges(token: string): Promise<Record<string, { start: string; end: string }>> {
+  if (semesterRangesCache) {
+    return semesterRangesCache;
+  }
+  
+  try {
+    semesterRangesCache = await getSemesterDates(token);
+    return semesterRangesCache;
+  } catch (error) {
+    console.error('Failed to fetch semester dates, using fallback:', error);
+    // Fallback to hardcoded values for current year
+    const currentYear = new Date().getFullYear();
+    return {
+      [`${currentYear}-W1`]: { start: `${currentYear}-01-05`, end: `${currentYear}-04-09` },
+      [`${currentYear}-S1`]: { start: `${currentYear}-05-11`, end: `${currentYear}-06-18` },
+      [`${currentYear}-S2`]: { start: `${currentYear}-07-06`, end: `${currentYear}-08-13` },
+      [`${currentYear}-W2`]: { start: `${currentYear}-09-02`, end: `${currentYear}-12-05` },
+    };
+  }
+}
+
+// Clear cache function (useful for testing or when data changes)
+export function clearSemesterCache() {
+  semesterRangesCache = null;
 }
 
 export function getFirstWeekdayInRange(weekday: string, rangeStart: string) {

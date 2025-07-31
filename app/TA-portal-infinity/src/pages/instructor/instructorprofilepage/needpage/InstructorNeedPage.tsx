@@ -113,19 +113,12 @@ export default function InstructorNeedPage() {
             const years = await fetchAllExistingYears();
             const mostRecent = years ? Math.max(...years.map(Number)) : -1;
             const defaultSemester = "W1";
-
-            const token = localStorage.getItem("token");
             const sectionsWithNeeds = await fetchSectionNeedAndAllocations(iId, null, mostRecent, defaultSemester) ?? [];
             
-            // Filter allocations to show only CONFIRMED status
-            const sectionsWithConfirmedAllocations = sectionsWithNeeds.map(section => ({
-              ...section,
-              allocations: section.allocations?.filter(allocation => allocation.status === "CONFIRMED") ?? []
-            }));
-            
             const allAssignedCourses = await fetchAllInstructorCourses(iId);
+
             const response: NeedViewerResponse = {
-              sections: sectionsWithConfirmedAllocations,
+              sections: sectionsWithNeeds,
               existingYears: years ?? [""],
               allAssignedCourses
             }

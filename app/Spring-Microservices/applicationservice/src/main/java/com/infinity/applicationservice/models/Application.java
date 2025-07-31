@@ -1,6 +1,5 @@
 package com.infinity.applicationservice.models;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +20,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -34,11 +34,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "studentId", "year" }) })
+        @UniqueConstraint(columnNames = { "studentId", "year", "semester" }) })
 public class Application {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -71,19 +71,23 @@ public class Application {
     @Column(nullable = false)
     private Integer year;
 
+    @Column(nullable = false)
+    private String semester;
+
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Transcript transcript;
 
-    @OneToMany(mappedBy = "application")
-    @JsonManagedReference("app-alloc")
-    private List<Allocation> allocations = new ArrayList<>();
+     @OneToOne(mappedBy = "application", 
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Allocation allocations;
 
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference("app-avail")
-    private Set<Availability> availabilities = new HashSet<>();
+    private Set<Unavailability> unavailabilities = new HashSet<>();
 
-    public Application(Long studentId, List<Subject> preferences, ApplicationType applicationType, boolean wantRemote, Integer wantWorkingHours) {
+    public Application(Long studentId, List<Subject> preferences, ApplicationType applicationType, boolean wantRemote, Integer wantWorkingHours,
+            Integer year, String semester) {
         this.studentId = studentId;
         this.subjectPreference1 = preferences.size() > 0 ? preferences.get(0) : null;
         this.subjectPreference2 = preferences.size() > 1 ? preferences.get(1) : null;
@@ -92,7 +96,8 @@ public class Application {
         this.wantRemote = wantRemote;
         this.wantWorkingHours = wantWorkingHours;
         this.isAccepted = false;
-        this.year = LocalDate.now().getYear();
+        this.year = year;
+        this.semester = semester;
     }
     
     public void setSubjectPreferences(ApplicationRequest req) {
@@ -109,7 +114,7 @@ public class Application {
 
     public Application(Long applicationId, Long studentId, List<Subject> preferences, 
         ApplicationType applicationType, boolean wantRemote, 
-        Integer wantWorkingHours, LocalDateTime year,Set<Availability> availabilities) {
+        Integer wantWorkingHours, LocalDateTime year,Set<Unavailability> unavailabilities) {
         this.studentId = studentId;
         this.subjectPreference1 = preferences.size() > 0 ? preferences.get(0) : null;
         this.subjectPreference2 = preferences.size() > 1 ? preferences.get(1) : null;
@@ -119,7 +124,7 @@ public class Application {
         this.wantWorkingHours = wantWorkingHours;
         this.isAccepted = false;
         this.year = year.getYear();
-        this.availabilities = availabilities;
+        this.unavailabilities = unavailabilities;
     }
 
     public Application(Application other){
@@ -133,6 +138,6 @@ public class Application {
         this.wantWorkingHours = other.wantWorkingHours;
         this.isAccepted = other.isAccepted;
         this.year = other.year;
-        this.availabilities = other.availabilities;
+        this.unavailabilities = other.unavailabilities;
     }
 }

@@ -5,7 +5,8 @@ export async function updateApplication(
   token: string,
   userRoles: string[]
 ) {
-  const url = `http://localhost:8080/applications/update/${userId}`;
+  // The backend endpoint requires: update/{studentId}/{year}/{semester}
+  const url = `http://localhost:8080/applications/update/${userId}/${payload.year}/${payload.semester}`;
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`,
@@ -19,7 +20,7 @@ export async function updateApplication(
   });
   if (!resp.ok) {
     const errTxt = await resp.text();
-    throw new Error(`Update failed: ${resp.status} ${errTxt}`);
+    throw new Error(`Update failed: ${resp.status} ${resp.statusText}: ${errTxt}`);
   }
   return resp.json();
 }

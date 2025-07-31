@@ -26,7 +26,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(exclude = "application")
 @EqualsAndHashCode(exclude = "application")
-public class Availability {
+public class Unavailability {
 
     @Id
     @GeneratedValue

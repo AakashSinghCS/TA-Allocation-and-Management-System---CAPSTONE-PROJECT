@@ -4,7 +4,7 @@ import type { SectionProfile } from '../../../../interfaces/section/Section';
 import type Section from '../../../../interfaces/section/Section';
 import type SectionSchedule from '../../../../interfaces/section/SectionSchedule';
 import EditSectionSchedule from '../editsectionschedule/EditSectionSchedule';
-
+import { X, Pencil } from 'lucide-react';
 export interface ProfileSectionProps {
   section: Section | null;
   profileFields: (keyof SectionProfile)[];
@@ -13,6 +13,7 @@ export interface ProfileSectionProps {
   isCourse?: boolean;
   isCoordinator: boolean;
   onSaveSchedule: (sched: SectionSchedule, isUpdate: boolean) => Promise<boolean>;
+  onDeleteSchedule: (id: number) => Promise<boolean>;
 }
 
 type ProfileDetail = { label: string; value: ReactNode };
@@ -25,6 +26,7 @@ export default function SectionProfileSection({
   isCourse = false,
   isCoordinator,
   onSaveSchedule,
+  onDeleteSchedule
 }: ProfileSectionProps) {
   if (!section) return null;
 
@@ -35,6 +37,14 @@ export default function SectionProfileSection({
 
   const layoutClass = 'flex flex-col space-y-2';
 
+  const sortedSchedule = [...(section.sectionSchedule ?? [])]
+  .sort((a, b) => {
+    const dayOrder = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    if(!a.day || !b.day || !a.startTime || !b.startTime) return 1;
+
+    const d = dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
+    return d !== 0 ? d : a.startTime.localeCompare(b.startTime);
+  });
   return (
     <>
       <section className={`bg-white border border-slate-200 rounded-2xl shadow-sm p-4 ${className}`}>
@@ -74,19 +84,31 @@ export default function SectionProfileSection({
         <div className="mt-6">
           <h2 className="text-lg font-semibold mb-2">Schedule</h2>
           <ul className="space-y-1">
-            {section.sectionSchedule?.map((s, idx) => (
+            {sortedSchedule.map((s, idx) => (
               <li
                 key={idx}
                 className="flex justify-between items-center bg-slate-50 px-3 py-2 rounded"
               >
                 <span>{s.day} {s.startTime}–{s.endTime}</span>
                 {isCoordinator && (
-                  <button
-                    onClick={() => { setEditingSchedule(null); setEditingSchedule(s); setAddingSchedule(false); }}
-                    className="text-sm text-blue-600 hover:underline"
-                  >
-                    Update Schedule
-                  </button>
+                  <div className="flex items-center gap-3">
+                    
+                    <button
+                      aria-label="Update Schedule"
+                      onClick={() => { setEditingSchedule(null); setEditingSchedule(s); setAddingSchedule(false); }}
+                      className="p-1 rounded hover:bg-[#c7fcec]"
+                      title="Update"
+                    >
+                      <Pencil className="w-4 h-4 text-[#00c89c]" />
+                    </button>
+                    <button
+                      aria-label="Delete Schedule"
+                      onClick={() => onDeleteSchedule(s.id!)}
+                      className="p-1 rounded hover:bg-red-50"
+                    >
+                        <X className="w-4 h-4 text-red-600" />
+                    </button>
+                  </div>
                 )}
               </li>
             )) || (
@@ -132,3 +154,4 @@ export function createProfileDetails(
     return acc;
   }, []);
 }
+

@@ -14,6 +14,9 @@ import { validateSectionProfile } from "../../../../utility/validation/section/v
 import SectionProfileSection from "../sectionprofilesection/SectionProfileSection";
 import { confirmDeletion } from "../../../../utility/confirmation/confirmDeletion";
 import { UserRole } from "../../../../interfaces/enum/UserRole";
+import { fetchDeleteSectionSchedule } from "../../../../api/section/sectionschedule/fetchDeleteSectionSchedule";
+import { toast, ToastContainer } from 'react-toastify';
+
 interface Props {
   section: Section | null;
   fields: (keyof SectionProfile)[];
@@ -74,6 +77,28 @@ export default function SectionProfileDetailsSection({
     setIsEditingProfile(false);
   }
 
+  const handleDeleteSchedule = async (id:number)=>{
+    const ok = confirmDeletion('schedule slot', 'This cannot be undone');
+    if (!ok) return false;
+
+    // try {
+      const success = await fetchDeleteSectionSchedule(id);
+
+      if (success) {
+        toast.success('Schedule deleted');
+        const updated = await fetchSectionIncludeInstructorId(section!.id!);
+         setSection(updated ?? {});
+    
+      } else {
+        toast.error('Failed to delete schedule');
+  
+      }
+    // } catch{
+      
+    // }
+      return success;
+  }
+
   return (
     <div className="relative">
       {section && isEditingProfile ? (
@@ -94,6 +119,7 @@ export default function SectionProfileDetailsSection({
             isCourse={false}
             isCoordinator={isCoordinatorOrAdmin}
             onSaveSchedule={handleSaveSchedule}
+            onDeleteSchedule={handleDeleteSchedule}
           />
           {isCoordinatorOrAdmin && (
             <div className="absolute top-2 right-2 flex gap-3 text-white px-2 py-1 rounded">
@@ -113,6 +139,7 @@ export default function SectionProfileDetailsSection({
           )}
         </>
       )}
+      <ToastContainer />
     </div>
   );
 }

@@ -15,9 +15,8 @@ export interface SectionAddDtoRequest{
     instructorId? : number | null;
 }
 
-export async function fetchCreateSection(req:SectionAddDtoRequest ): Promise<boolean | null> {
+export async function fetchCreateSection(req: SectionAddDtoRequest): Promise<{ success: boolean, error?: string } | null> {
   const token = localStorage.getItem("token");
-  
   try {
     const res = await fetch(BASE, {
       method: "POST",
@@ -26,15 +25,20 @@ export async function fetchCreateSection(req:SectionAddDtoRequest ): Promise<boo
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify(req),
-
     });
     if (!res.ok) {
-      console.error("Request failed with status:", res.status);
-      return null;
+      let errorMsg = "";
+      try {
+        const data = await res.json();
+        errorMsg = data?.message || data?.error || JSON.stringify(data);
+      } catch {
+        errorMsg = await res.text();
+      }
+      return { success: false, error: errorMsg };
     }
-    return res.ok;
-  } catch {
-    console.log("something went wrong");
-    return null;
+    return { success: true };
+  } catch (e) {
+    console.log("something went wrong", e);
+    return { success: false, error: "Network or server error" };
   }
 }

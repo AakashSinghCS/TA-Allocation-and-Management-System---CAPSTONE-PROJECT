@@ -2,8 +2,8 @@ import type { ApplicationDto } from '../../interfaces/application/Application';
 
 export async function fetchApplicationsByStudent(
   userId: number,
-  token: string
 ): Promise<ApplicationDto[]> {
+      const token = localStorage.getItem("token");
   const res = await fetch(`http://localhost:8080/applications/getAll/${userId}`, {
     headers: { Authorization: `Bearer ${token}` }
   });

@@ -30,4 +30,5 @@ export const studentFieldLabels: Record<keyof Student, string> = {
   schoolYear:      "School Year",
   roles :          "Roles",
   createdAt:       "Registered",
+  active: "Accounted Enabled"
 };

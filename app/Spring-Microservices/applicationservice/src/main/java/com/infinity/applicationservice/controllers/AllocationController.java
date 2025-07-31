@@ -1,5 +1,22 @@
 package com.infinity.applicationservice.controllers;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.infinity.applicationservice.dtos.Allocations.AllocatedSectionDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationHistoryDto;
 import com.infinity.applicationservice.dtos.Allocations.AllocationRequest;
 import com.infinity.applicationservice.dtos.Allocations.ImportRequest;
@@ -8,12 +25,6 @@ import com.infinity.applicationservice.services.AllocationService;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @Data
 @RestController
@@ -23,10 +34,16 @@ public class AllocationController {
 
     private final AllocationService allocationService;
 
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
+    @GetMapping("/{id}")
+    public ResponseEntity<AllocationHistoryDto> getAllocationWithStudentById(@PathVariable Long id) {
+        return ResponseEntity.ok(allocationService.getAllocationWithStudentById(id));
+    }
+
     @PreAuthorize("hasAnyRole('COORDINATOR', 'STUDENT')")
     @GetMapping("/student/{studentId}/history")
-    public ResponseEntity<List<AllocationHistoryDto>> getStudentAllocationHistory(@PathVariable Long studentId) {
-        return ResponseEntity.ok(allocationService.getAllocationsByStudentId(studentId));
+    public ResponseEntity<AllocationHistoryDto> getStudentAllocationHistory(@PathVariable Long studentId, @RequestParam(name = "noContentAllowed", required = false) Boolean noContentAllowed) {
+        return ResponseEntity.ok(allocationService.getAllocationByStudentId(studentId, noContentAllowed));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
@@ -65,15 +82,16 @@ public class AllocationController {
 
     // @PreAuthorize("hasRole('COORDINATOR')")
     @GetMapping("/filter/section/{sectionId}")
-    public ResponseEntity<List<AllocationHistoryDto>> getAllocationsBySectionId(@PathVariable Long sectionId) {
+    public ResponseEntity<List<AllocatedSectionDto>> getAllocationsBySectionId(@PathVariable Long sectionId) {
         return ResponseEntity.ok(allocationService.getAllocationsBySectionId(sectionId));
     }
     
     @GetMapping("/filter/application/{applicationId}")
-    public ResponseEntity<List<AllocationHistoryDto>> getAllocationsByApplicationId(@PathVariable Long applicationId,
+    public ResponseEntity<AllocationHistoryDto> getAllocationsByApplicationId(@PathVariable Long applicationId,
             @RequestHeader("X-User-Id") Long requesterId,
-            @RequestHeader("X-User-Roles") List<String> roles) {
-        return ResponseEntity.ok(allocationService.getAllocationsByApplicationId(applicationId, requesterId, roles));
+            @RequestHeader("X-User-Roles") List<String> roles,
+            @RequestParam(name = "noContentAllowed", required = false) Boolean noContentAllowed) {
+        return ResponseEntity.ok(allocationService.getAllocationByApplicationId(applicationId, requesterId, roles,noContentAllowed));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
@@ -82,9 +100,9 @@ public class AllocationController {
         return ResponseEntity.ok(allocationService.getAllocationsByApplicationYear(year));
     }
 
-    @PutMapping("/{sectionId}/setSectionIdNull")
-    public ResponseEntity<Integer> setSectionIdNull(@PathVariable Long sectionId) {
-        Integer affected =allocationService.setSectionIdNull(sectionId);
+    @PutMapping("/{sectionId}/deleteSection")
+    public ResponseEntity<Integer> deleteSection(@PathVariable Long sectionId) {
+        Integer affected =allocationService.deleteSection(sectionId);
         return ResponseEntity.ok(affected);
     }
     @PostMapping("/import")
