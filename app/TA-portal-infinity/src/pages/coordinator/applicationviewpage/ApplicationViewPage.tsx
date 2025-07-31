@@ -225,7 +225,7 @@ useEffect(() => {
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 w-full">
           {/* Application Filters */}
           <div className="w-full lg:w-[18%] min-w-0">
-            <div className="relative bg-white rounded-2xl shadow-lg p-3 sm:p-4 border border-blue-100 flex flex-col gap-4">
+            <div className="relative bg-white rounded-2xl p-3 sm:p-4 border border-blue-100 flex flex-col gap-4">
               <h3 className="font-semibold text-[#040941] text-lg mb-2">Application Filters</h3>
               <div className="flex flex-col gap-4">
                 <div>
@@ -269,7 +269,7 @@ useEffect(() => {
           {/* Stats and Results */}
           <div className="w-full lg:w-[64%] min-w-0 flex flex-col gap-4 sm:gap-8">
             {/* TA Application Stats (collapsible) */}
-            <div className="bg-white rounded-2xl shadow-lg border border-blue-100 p-3 sm:p-6">
+            <div className="rounded-2xl p-3 sm:p-6 border border-blue-100">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-[#040941] text-lg flex items-center gap-2">
                   <svg className="w-6 h-6 text-blue-500 p-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3" stroke="currentColor" strokeWidth="2"/><circle cx="12" cy="12" r="10" fill="none"/></svg>
@@ -352,7 +352,7 @@ useEffect(() => {
           </div>
           {/* Allocation Filters */}
           <div className="w-full lg:w-[18%] min-w-0">
-            <div className="lg:sticky lg:top-8 bg-white rounded-2xl shadow-lg p-3 sm:p-4 border border-blue-100 flex flex-col gap-4">
+            <div className="lg:sticky lg:top-8 bg-white rounded-2xl p-3 sm:p-4 border border-blue-100 flex flex-col gap-4">
               <h3 className="font-semibold text-[#040941] text-lg mb-2">Allocation & Offer Related Filters</h3>
               {/* Show only 5 filters by default, with View More button */}
               {(() => {

@@ -44,7 +44,7 @@ export default function StudentHomePage() {
       // Fetch student, applications, courses, questions
       const [stu, apps, , crs, qs] = await Promise.all([
         fetchStudentDetails<Student>(userId),
-        fetchApplicationsByStudent(userId, token),
+        fetchApplicationsByStudent(userId),
         fetchAllStudentQualifications(userId),
         fetchAllStudentEnrollmentOverview(userId),
         fetchAllStudentQuestions(userId),
@@ -60,8 +60,8 @@ export default function StudentHomePage() {
           apps.map(async (app) => {
             let allocation = null;
             try {
-              const allocations = await fetchAllocationByApplicationId(app.id ?? app.applicationId ?? 0, token);
-              allocation = allocations && allocations.length > 0 ? allocations[0] : null;
+              const allocationResult = await fetchAllocationByApplicationId(app.id ?? app.applicationId ?? 0);
+              allocation = allocationResult || null;
             } catch (err) {
               console.error('fetchAllocationByApplicationId error:', err);
             }
@@ -176,26 +176,26 @@ export default function StudentHomePage() {
         <h1 className="text-2xl md:text-3xl font-bold text-[#040941] mb-8 tracking-tight">My Dashboard</h1>
         {/* Dashboard Summary Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white rounded-xl shadow-md p-4 flex items-center justify-between hover:shadow-lg transition-shadow">
+          <div className="bg-white rounded-2xl border-t-4 border-[#040941] px-3 py-2 flex items-center gap-3 min-h-[60px]">
+            <FileText className="w-7 h-7 text-[#040941] mr-2" />
             <div>
-              <p className="text-sm font-medium text-gray-500">Applications</p>
-              <p className="text-2xl font-bold text-gray-900">{applications.length}</p>
+              <div className="text-sm md:text-base text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Total Applications</div>
+              <div className="text-xl md:text-2xl font-bold text-[#040941]">{applications.length}</div>
             </div>
-            <FileText className="w-8 h-8 text-blue-500" />
           </div>
-          <div className="bg-white rounded-xl shadow-md p-4 flex items-center justify-between hover:shadow-lg transition-shadow">
+          <div className="bg-white rounded-2xl border-t-4 border-[#040941] px-3 py-2 flex items-center gap-3 min-h-[60px]">
+            <CheckCircle className="w-7 h-7 text-[#040941] mr-2" />
             <div>
-              <p className="text-sm font-medium text-gray-500">Accepted</p>
-              <p className="text-2xl font-bold text-green-500">{applications.filter(a => a.allocation?.status==='CONFIRMED').length}</p>
+              <div className="text-sm md:text-base text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Offers Confirmed</div>
+              <div className="text-xl md:text-2xl font-bold text-[#040941]">{applications.filter(a => a.allocation?.status==='CONFIRMED').length}</div>
             </div>
-            <CheckCircle className="w-8 h-8 text-green-400" />
           </div>
-          <div className="bg-white rounded-xl shadow-md p-4 flex items-center justify-between hover:shadow-lg transition-shadow">
+          <div className="bg-white rounded-2xl border-t-4 border-[#040941] px-3 py-2 flex items-center gap-3 min-h-[60px]">
+            <XCircle className="w-7 h-7 text-[#040941] mr-2" />
             <div>
-              <p className="text-sm font-medium text-gray-500">Rejected</p>
-              <p className="text-2xl font-bold text-red-500">{applications.filter(a => a.allocation?.status==='REJECTED').length}</p>
+              <div className="text-sm md:text-base text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Offers Rejected</div>
+              <div className="text-xl md:text-2xl font-bold text-[#040941]">{applications.filter(a => a.allocation?.status==='REJECTED').length}</div>
             </div>
-            <XCircle className="w-8 h-8 text-red-400" />
           </div>
         </div>
         <div className="flex flex-col md:flex-row gap-8">
