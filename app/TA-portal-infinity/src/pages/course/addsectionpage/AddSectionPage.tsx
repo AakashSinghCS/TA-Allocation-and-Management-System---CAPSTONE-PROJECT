@@ -34,7 +34,7 @@ export default function AddSectionPage() {
       if (success) {
         alert("Course is created!");
         setRefreshSectionOptions((v) => v + 1); // trigger refresh for Section Creation form
-        // navigate('/user/coordinator/sections', { replace: true });
+        navigate('/user/coordinator/sections', { replace: true });
       } else {
         alert("Failed to create course. Are you sure it's not a duplicate?")
       }

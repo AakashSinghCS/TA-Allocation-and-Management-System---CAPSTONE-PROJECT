@@ -6,7 +6,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
+import org.springframework.context.ApplicationListener;
+import org.springframework.core.annotation.Order;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import com.infinity.courseservice.models.Semester;
@@ -16,12 +18,13 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class SemesterSeeder {
+@Order(1)
+public class SemesterSeeder implements ApplicationListener<ApplicationReadyEvent> {
 
     private final SemesterRepository semesterRepository;
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void seedSemestersIfMissing() {
+    @Override
+    public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
         List<Semester> predefined = List.of(
                 new Semester(2025, "W1",
                         LocalDate.parse("2025-09-03"),

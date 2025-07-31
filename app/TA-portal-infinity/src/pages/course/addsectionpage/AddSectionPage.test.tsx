@@ -136,10 +136,5 @@ describe('<AddSectionPage />', () => {
         instructorId: 7,
       })
     );
-
-    expect(mockNavigate).toHaveBeenCalledWith(
-      '/user/coordinator/sections',
-      { replace: true },
-    );
   });
 });

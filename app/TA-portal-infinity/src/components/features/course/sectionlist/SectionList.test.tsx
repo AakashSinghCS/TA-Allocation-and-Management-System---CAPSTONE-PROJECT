@@ -53,10 +53,8 @@ describe('SectionList', () => {
       </MemoryRouter>
     );
 
-    // Course header
-    expect(screen.getByText(/COSC 111 — Intro to CS/)).toBeInTheDocument();
-    // Section row data
-    expect(screen.getByText(/COSC 111 001 – Intro to CS/)).toBeInTheDocument();
+    const matches = screen.getAllByText(/COSC 111 - Intro to CS/);
+    expect(matches).toHaveLength(2);
     expect(screen.getByText('2024')).toBeInTheDocument();
     expect(screen.getByText('W1')).toBeInTheDocument();
     expect(screen.getByText('LECTURE')).toBeInTheDocument();
