@@ -3,6 +3,7 @@ import { fetchAllStudentQualifications } from "../../../../../../api/student/qua
 import { fetchSubmitStudentQualifications } from "../../../../../../api/student/qualification/fetchSubmitStudentQualifications";
 import { useAuth } from "../../../../../../context/AuthContext";
 import type { DeptCodeQualificationResponse } from "../../../../../../api/qualification/fetchAllDeptCodeQualifications";
+import { toast } from "react-toastify";
 
 interface StudentQualificationTableProps {
     qualificationList: DeptCodeQualificationResponse[];
@@ -39,11 +40,10 @@ export default function StudentQualificationTable({
         if(!isStudent) return;
         // we know studentChecked is number[] here
         const ok = await fetchSubmitStudentQualifications(studentId, studentChecked);
-        if(!ok) alert("Failed to submit!")
-        if(ok) alert("Submitted!");
+        if(!ok) toast.error("Failed to submit!");
+        if(ok) toast.success("Qualification(s) Submitted!");
     };
 
-    // sort + filter out any items without a defined id
     const sorted = [...qualificationList]
         .filter((q) => q.qualification.id !== undefined)
         .sort((a, b) => {

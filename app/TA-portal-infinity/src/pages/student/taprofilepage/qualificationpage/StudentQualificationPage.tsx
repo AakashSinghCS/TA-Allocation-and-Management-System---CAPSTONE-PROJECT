@@ -4,6 +4,9 @@ import TabNav from "../../../../components/layout/tabnav/TabNav";
 import { fetchUserDetails } from "../../../../api/user/fetchUserDetails";
 import type { StudentOrInstructorOrCoordinator } from "../../../../interfaces/user/User";
 import { GenericAPIContainer } from "../../../../utility/genericapicontainer/GenericAPIContainer";
+import { Info } from 'lucide-react';
+
+
 
 
 export default function StudentQualificationPage (){
@@ -20,19 +23,16 @@ export default function StudentQualificationPage (){
                         />
                     )}
                 />
-                {/* Two-column layout: sidebar + main content */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-8">
+                {/* Sidebar + main content */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-12">
                     {/* Main Content */}
                     <main className="md:col-span-3">
                         <div className="mb-8">
-                            <h1 className="text-2xl md:text-3xl font-bold text-[#040941] tracking-tight mb-3">
+                            <h1 className="text-2xl md:text-3xl font-bold text-[#040941] tracking-tight mb-8 -mt-8">
                                 Lab Skills & Qualifications
                             </h1>
                             <div className="rounded-lg border border-orange-200 bg-orange-50 p-5 flex items-start gap-3 mb-2">
-                                <svg className="w-6 h-6 text-orange-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <circle cx="12" cy="12" r="10" strokeWidth="2" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01" />
-                                </svg>
+                                <Info className="w-6 h-6 text-orange-400 mt-1 flex-shrink-0" />
                                 <div>
                                     <div className="font-semibold text-orange-800 mb-1">Important Notice</div>
                                     <div className="text-orange-800 text-sm">
@@ -43,8 +43,8 @@ export default function StudentQualificationPage (){
                         </div>
                         <StudentQualificationViewer studentId={sId} />
                     </main>
-                    {/* Sidebar on the right */}
-                    <aside className="md:col-span-1 bg-blue-50 border border-blue-100 rounded-lg p-6 flex flex-col items-start">
+                    {/* Sidebar */}
+                    <aside className="md:col-span-1 bg-blue-50 border border-blue-100 rounded-lg p-6 flex flex-col items-start mt-10">
                         <h2 className="text-lg font-semibold text-[#040941] mb-2">How to Use</h2>
                         <ul className="text-sm text-blue-900 space-y-2 list-disc pl-4">
                             <li>Select the departments and courses where you have strong technical knowledge.</li>
