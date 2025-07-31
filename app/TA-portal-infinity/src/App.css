@@ -40,3 +40,13 @@
 .read-the-docs {
   color: #888;
 } */
+/* Style FullCalendar nav and custom buttons with #040941 */
+.fc .fc-button, .fc .fc-button-primary {
+  background-color: #040941 !important;
+  border-color: #040941 !important;
+  color: #fff !important;
+}
+.fc .fc-button:hover, .fc .fc-button-primary:hover {
+  background-color: #22306e !important;
+  border-color: #22306e !important;
+}
