@@ -58,56 +58,58 @@ export default function StudentQualificationTable({
         });
 
     return (
-  <form onSubmit={onSubmit} className="space-y-4">
-    <table className="min-w-full table-auto border-collapse border border-gray-300 overflow-hidden">
-      <thead className="bg-slate-100 text-left text-sm">
-        <tr>
-          <th className="w-12 border border-gray-300 px-2 py-2 text-center 2xl:text-medium">✓</th>
-          <th className="border border-gray-300 px-4 py-2 2xl:text-medium">Qualification</th>
-          <th className="w-28 border border-gray-300 px-3 py-2 text-right 2xl:text-medium">Course</th>
-        </tr>
-      </thead>
-
-      <tbody className="text-sm 2xl:text-base">
-        {sorted.map(({ qualification, course }, idx) => {
-          const id = qualification.id!;
-          return (
-            <tr
-              key={id}
-              className={`
-                border-t
-                ${idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
-              `}
-            >
-              <td className="border border-gray-300 px-2 py-2 text-center">
-                <input
-                  type="checkbox"
-                  checked={studentChecked.includes(id)}
-                  onChange={() => handleCheckboxChange(id)}
-                  className="h-4 w-4 accent-blue-600"
-                />
-              </td>
-
-              <td className="border border-gray-300 px-4 py-2">
-                {qualification.description}
-              </td>
-
-              <td className="border border-gray-300 px-3 py-2 text-right font-medium">
-                {course.deptCode} {course.courseNum}
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-
-    {isStudent && <button
-      type="submit"
-      className="w-full bg-[#00c89c] text-white py-2 rounded hover:bg-[#c7fcec] transition-colors"
-    >
-      Save
-    </button>
-}
+  <form onSubmit={onSubmit} className="space-y-6">
+    <div className="mb-4">
+      <h3 className="text-lg font-semibold text-[#040941] mb-2">Available Qualifications</h3>
+      <p className="text-sm text-gray-600">Check the boxes for courses where you have teaching qualifications.</p>
+    </div>
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="w-12 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Select</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qualification</th>
+            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {sorted.map(({ qualification, course }) => {
+            const id = qualification.id!;
+            const isChecked = studentChecked.includes(id);
+            return (
+              <tr key={id} className={`hover:bg-gray-50 transition-colors ${isChecked ? "bg-blue-50" : ""}`}>
+                <td className="px-6 py-4 whitespace-nowrap text-center">
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={() => handleCheckboxChange(id)}
+                    className="h-4 w-4 text-[#040941] focus:ring-[#040941] border-gray-300 rounded"
+                  />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900">{qualification.description}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#040941] text-white">
+                    {course.deptCode} {course.courseNum}
+                  </span>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+    {isStudent && (
+      <div className="flex justify-end pt-4">
+        <button
+          type="submit"
+          className="px-6 py-2 bg-[#040941] text-white font-medium rounded-md hover:bg-[#1a1a5c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#040941] transition-colors"
+        >
+          Save Qualifications
+        </button>
+      </div>
+    )}
   </form>
 );
 }
