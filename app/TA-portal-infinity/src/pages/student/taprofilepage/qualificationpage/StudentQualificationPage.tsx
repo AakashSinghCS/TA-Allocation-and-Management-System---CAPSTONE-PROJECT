@@ -34,7 +34,7 @@ export default function StudentQualificationPage (){
                         <div className="mb-8">
                             {!isCoordinatorOrAdmin && (
                               <h1 className="text-2xl md:text-3xl font-bold text-[#040941] tracking-tight mb-8 -mt-8">
-                                Lab Skills & Qualifications
+                                Skills & Qualifications
                               </h1>
                             )}
                             <div className="rounded-lg border border-orange-200 bg-orange-50 p-5 flex items-start gap-3 mb-2">
