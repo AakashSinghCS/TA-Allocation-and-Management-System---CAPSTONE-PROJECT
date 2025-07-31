@@ -21,7 +21,9 @@ const mockApp: ApplicationDto = {
   wantWorkingHours: 5,
   timeSubmitted: '2025-07-01T00:00:00Z',
   applicationType: 'UNDERGRADUATE',
-  unavailabilities: []
+  unavailabilities: [],
+  year: 2025,
+  semester: 'W1'
 }
 const mockAlloc: Allocation = {
   id: 10,
@@ -111,9 +113,9 @@ describe('ApplicationViewPage', () => {
     // 2) Find the "Allocation Confirmed" select and the Filter button
     const filterPanel = screen.getByText(/Allocation & Offer Related Filters/i)
       .closest('div')!;
-    const { getByLabelText, getByRole } = within(filterPanel);
+    const { getByLabelText, getByText } = within(filterPanel);
     const statusSelect = getByLabelText(/Allocation Confirmed/i);
-    const filterBtn = getByRole('button', { name: /Filter/i });
+    const filterBtn = getByText('Filter');
 
     // 3) Select CONFIRMED and click — mockAlloc.status is CONFIRMED, so 1 card remains
     fireEvent.change(statusSelect, { target: { value: 'CONFIRMED' } });
