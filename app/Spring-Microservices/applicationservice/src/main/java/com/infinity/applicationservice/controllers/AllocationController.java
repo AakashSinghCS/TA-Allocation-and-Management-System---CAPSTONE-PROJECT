@@ -101,8 +101,9 @@ public class AllocationController {
     }
 
     @PutMapping("/{sectionId}/deleteSection")
-    public ResponseEntity<Integer> deleteSection(@PathVariable Long sectionId) {
-        Integer affected =allocationService.deleteSection(sectionId);
+    public ResponseEntity<Integer> deleteSection(@PathVariable Long sectionId
+    , @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        Integer affected =allocationService.deleteSection(sectionId,userIdFromHeader);
         return ResponseEntity.ok(affected);
     }
     @PostMapping("/import")

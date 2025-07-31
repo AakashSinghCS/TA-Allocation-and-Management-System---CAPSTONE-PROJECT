@@ -124,8 +124,18 @@ public class AllocationService {
             allocation.setApplication(application);
             allocation.setStudentId(request.studentId());
             allocation.setStatus(ApplicationStatus.SENT);
+            Allocation saved = allocationRepository.save(allocation);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.CREATE,
+                "Allocation",
+                null,
+                saved,
+                saved.getId()
+            );
         } else {
             allocation = allocationRepository.findByApplicationId(request.applicationId());
+            Allocation before = new Allocation(allocation);
             if (allocation == null) {
                 throw new NotFoundException("No allocation found for student ID: " + request.studentId());
             }
@@ -134,12 +144,29 @@ public class AllocationService {
             }
             if (allocation.getStatus() == ApplicationStatus.CONFIRMED) {
                 allocationRepository.delete(allocation);
+                auditService.record(
+                    userIdFromHeader,
+                    ActionOptions.DELETE,
+                    "Allocation",
+                    allocation,
+                    null,
+                    allocation.getId()
+                );
                 allocation = new Allocation();
                 allocation.setApplication(application);
                 allocation.setStudentId(request.studentId());
                 allocation.setStatus(ApplicationStatus.SENT);
                 courseInterface.decrementNumberOfTAs(request.sectionId());
             }
+            Allocation saved = allocationRepository.save(allocation);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.UPDATE,
+                "Allocation",
+                before,
+                saved,
+                saved.getId()
+            );
         }
         if (allocatedSectionRepository.existsBySectionIdAndAllocationIdAndTask(
             request.sectionId(), allocation.getId(), request.task())) {
@@ -150,10 +177,17 @@ public class AllocationService {
         savedAllocatedSection.setSectionId(request.sectionId());
         savedAllocatedSection.setAllocation(allocation);
         savedAllocatedSection.setHours(request.hours());
-        allocationRepository.save(allocation);
 
         boolean notFirstForThisSection = allocatedSectionRepository.existsByAllocation_IdAndSectionId(allocation.getId(),request.sectionId() );
-        allocatedSectionRepository.save(savedAllocatedSection);
+        AllocatedSection savedAS = allocatedSectionRepository.save(savedAllocatedSection);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "AllocatedSection",
+            null,
+            savedAS,
+            savedAS.getId()
+        );
 
         if (!notFirstForThisSection) {
             courseInterface.incrementNumberOfTAs(request.sectionId());
@@ -167,20 +201,11 @@ public class AllocationService {
             applicationDto = applicationMapper.toDto(allocation.getApplication());
             notificationClient.sendEmail(emailMapper.allocationEmailRequest(student));
         }
-// auditService.record(
-//             userIdFromHeader,
-//             ActionOptions.CREATE,
-//             "Allocation",
-//             null,
-//             saved,
-//             saved.getId()
-//         );
-        // return allocationMapper.toDto(saved, student, applicationDto, section);
          return allocationMapper.toDto(allocation, student, applicationDto);
     }
     
 
-    public String deallocateStudent(Long allocatedSectionId) {
+    public String deallocateStudent(Long allocatedSectionId, Long userIdFromHeader) {
         AllocatedSection allocatedSection = allocatedSectionRepository.findById(allocatedSectionId)
                     .orElseThrow(() -> new NotFoundException("Allocated section not found"));
         Allocation allocation = allocationRepository.findById(allocatedSection.getAllocation().getId())
@@ -204,10 +229,26 @@ public class AllocationService {
         Long sectionId = allocatedSection.getSectionId();
         
         allocatedSectionRepository.delete(allocatedSection);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "AllocatedSection",
+            allocatedSection,
+            null,
+            allocatedSection.getId()
+        );
         allocation = allocationRepository.findById(allocatedSection.getAllocation().getId())
             .orElseThrow(() -> new NotFoundException("Allocation not found"));
         if (allocation.getAllocatedSections().isEmpty()) {
             allocationRepository.delete(allocation);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.DELETE,
+                "Allocation",
+                allocation,
+                null,
+                allocation.getId()
+            );
         }
        
         boolean anyLeft = allocatedSectionRepository.existsByAllocation_IdAndSectionId(allocation.getId(),allocatedSection.getSectionId());
@@ -215,15 +256,6 @@ public class AllocationService {
         if (!anyLeft) {
             courseInterface.decrementNumberOfTAs(sectionId);
         }
-
-        // auditService.record(
-        //     userIdFromHeader,
-        //     ActionOptions.DELETE,
-        //     "Allocation",
-        //     allocation,
-        //     null,
-        //     allocationId
-        // );
         return "Student deallocated";
     }
 
@@ -357,8 +389,23 @@ public class AllocationService {
     }
 
     @Transactional
-    public Integer deleteSection(Long sectionId) {
-        return allocatedSectionRepository.deleteAllBySectionId(sectionId);
+    public Integer deleteSection(Long sectionId, Long userIdFromHeader) {
+         List<AllocatedSection> toDelete = allocatedSectionRepository
+            .findAllBySectionId(sectionId);
+
+        toDelete.forEach((as)->{
+            allocatedSectionRepository.delete(as);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.DELETE,
+                "AllocatedSection",
+                as,
+                null,
+                as.getId()
+            );
+        });
+
+        return toDelete.size();
     }
 
     public List<AllocationHistoryDto> importPreviousAllocations(List<Map<String, String>> allocationDataList, boolean autoCreate, Long userIdFromHeader) {
@@ -372,8 +419,6 @@ public class AllocationService {
             String section = data.get("section").trim();
             int year = Integer.parseInt(data.get("year").trim());
             String semester = data.get("semester").trim();
-
-            
 
             UserDto studentDto = studentInterface.getStudentByNum(studentNum).getBody();
             if (studentDto == null) {
@@ -427,7 +472,14 @@ public class AllocationService {
             allocation.setStudentId(key.studentId());
             allocation.setStatus(ApplicationStatus.CONFIRMED);
             Allocation savedAllocation = allocationRepository.save(allocation);
-            
+            auditService.record(
+                    userIdFromHeader,
+                    ActionOptions.CREATE,
+                    "Allocation",
+                    null,
+                    savedAllocation,
+                    savedAllocation.getId()
+                );
             List<AllocatedSection> allocatedSections = new ArrayList<>();
             for (AllocatedSectionDto allocatedSectionDto : allocatedSectionDtos) {
                 AllocatedSection allocatedSection = new AllocatedSection();
@@ -436,18 +488,18 @@ public class AllocationService {
                 allocatedSection.setTask(null);
                 allocatedSection.setAllocation(savedAllocation);
                 allocatedSections.add(allocatedSection);
-                allocatedSectionRepository.save(allocatedSection);
+                AllocatedSection saved = allocatedSectionRepository.save(allocatedSection);
+                auditService.record(
+                    userIdFromHeader,
+                    ActionOptions.CREATE,
+                    "AllocatedSection",
+                    null,
+                    saved,
+                    saved.getId()
+                );
             }
             importedAllocations.add(allocationMapper.toDto(savedAllocation, studentInterface.getStudentByNum(key.studentNum()).getBody(), null));
         }
-        // auditService.record(
-        //         userIdFromHeader,
-        //         ActionOptions.CREATE,
-        //         "Allocation",
-        //         null,
-        //         saved,
-        //         saved.getId()
-        //     );
         return importedAllocations;
     }
 

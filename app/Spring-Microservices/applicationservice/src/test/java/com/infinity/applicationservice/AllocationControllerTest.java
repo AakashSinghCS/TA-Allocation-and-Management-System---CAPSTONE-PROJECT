@@ -324,11 +324,13 @@ public class AllocationControllerTest {
         @Test
         void testDeleteSectionEndpointReturnsCount() throws Exception {
                 long sectionId = 17L;
-                when(allocationService.deleteSection(sectionId))
+                Long userIdFromHeader = 1L;
+                when(allocationService.deleteSection(sectionId, userIdFromHeader))
                                 .thenReturn(4);
 
                 mvc.perform(put("/allocations/{sectionId}/deleteSection", sectionId)
-                                .accept(MediaType.APPLICATION_JSON))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .header("X-User-Id",userIdFromHeader))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$").value(4));
         }

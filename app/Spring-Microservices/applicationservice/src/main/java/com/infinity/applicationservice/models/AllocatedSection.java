@@ -39,4 +39,12 @@ public class AllocatedSection {
     private TaskType task;
 
     private double hours;
+
+    public AllocatedSection(AllocatedSection other){
+        this.id = other.id;
+        this.allocation = other.allocation;
+        this.sectionId= other.sectionId;
+        this.task = other.task;
+        this.hours= other.hours;
+    }
 }

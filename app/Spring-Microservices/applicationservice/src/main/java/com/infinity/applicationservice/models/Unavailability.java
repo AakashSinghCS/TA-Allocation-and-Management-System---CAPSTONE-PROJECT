@@ -48,4 +48,11 @@ public class Unavailability {
     @JoinColumn(name = "application_id", nullable = false)
     @JsonBackReference("app-avail")
     private Application application;
+
+    public Unavailability(Day day, LocalTime startTime, LocalTime endTime, Application application){
+        this.day = day;
+        this.startTime =startTime;
+        this.endTime= endTime;
+        this.application = application;
+    }
 }

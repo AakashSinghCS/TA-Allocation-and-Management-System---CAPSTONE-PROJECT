@@ -108,10 +108,8 @@ public class ApplicationService {
         Application toDelete = applicationRepository
             .findByStudentIdAndYearAndSemester(studentId, currentYear, semester)
             .orElseThrow(() -> new NotFoundException(
-                "Application with studentId " + studentId +
+                "Application with student id " + studentId +
                 " and year " + currentYear + " doesn't exist"));
-
-       
 
         applicationRepository.delete(toDelete);
          auditService.record(

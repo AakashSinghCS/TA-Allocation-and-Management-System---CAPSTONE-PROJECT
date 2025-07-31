@@ -1,4 +1,4 @@
-package com.infinity.applicationservice.services;
+package com.infinity.profileservice.services;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,14 +13,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.infinity.applicationservice.dtos.Audit.AuditEventDto;
-import com.infinity.applicationservice.dtos.Users.UserDto;
-import com.infinity.applicationservice.enums.ActionOptions;
-import com.infinity.applicationservice.exceptions.NotFoundException;
-import com.infinity.applicationservice.feign.UserInterface;
-import com.infinity.applicationservice.models.AuditEvent;
-import com.infinity.applicationservice.repositories.AuditRepository;
-import com.infinity.applicationservice.utility.AuditMapper;
+import com.infinity.profileservice.dtos.AuditEventDto;
+import com.infinity.profileservice.dtos.UserDto;
+import com.infinity.profileservice.enums.ActionOptions;
+import com.infinity.profileservice.exceptions.NotFoundException;
+import com.infinity.profileservice.feign.UserInterface;
+import com.infinity.profileservice.models.AuditEvent;
+import com.infinity.profileservice.repositories.AuditRepository;
+import com.infinity.profileservice.utility.AuditMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +35,7 @@ public class AuditService {
     private final UserInterface userInterface;
     // private final ApplicationRe
 
-    private static final String SERVICE_NAME = "application-service";
+    private static final String SERVICE_NAME = "profile-service";
 
     public void record(
             Long actorId,

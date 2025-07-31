@@ -234,17 +234,12 @@ class AllocationServiceTest {
                 allocation.setId(1L);
                 allocation.setStudentId(1L);
                 allocation.setApplication(application);
-                AllocatedSection allocatedSection = new AllocatedSection();
-                allocatedSection.setId(1L);
-                allocatedSection.setSectionId(sectionId);
-                allocatedSection.setAllocation(allocation);
-                allocatedSection.setTask(TaskType.GRADING);
-                allocation.setAllocatedSections(List.of(allocatedSection));
+
                 when(applicationRepository.findById(applicationId)).thenReturn(Optional.of(application));
                 when(allocationRepository.existsByApplicationId(applicationId)).thenReturn(true);
                 when(allocationRepository.findByApplicationId(applicationId)).thenReturn(allocation);
-                when(applicationRepository.findById(applicationId)).thenReturn(Optional.of(application));
-                // when(allocatedSectionRepository.findById(allocatedSection.getId())).thenReturn(Optional.of(allocatedSection));
+                when(allocationRepository.save(any(Allocation.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
                 when(allocatedSectionRepository.existsBySectionIdAndAllocationIdAndTask(sectionId, allocation.getId(), TaskType.GRADING))
                                 .thenThrow(new BadRequestException("You have already allocated this student to that section"));
 
@@ -276,7 +271,6 @@ class AllocationServiceTest {
                 savedAllocation.setId(500L);
                 savedAllocation.setStudentId(studentId);
                 savedAllocation.setStatus(ApplicationStatus.SENT);
-                savedAllocation.setGradingHours(5);
                 savedAllocation.setApplication(application);
 
                 AllocatedSection allocatedSection = new AllocatedSection();
@@ -290,8 +284,18 @@ class AllocationServiceTest {
                                 List.of());
 
                 when(applicationRepository.findById(applicationId)).thenReturn(Optional.of(application));
-                when(allocationRepository.save(any(Allocation.class))).thenReturn(savedAllocation);
-                when(allocatedSectionRepository.save(any(AllocatedSection.class))).thenReturn(allocatedSection);
+                when(allocationRepository.save(any(Allocation.class)))
+                        .thenAnswer(invocation -> {
+                                Allocation toSave = invocation.getArgument(0);
+                                toSave.setId(savedAllocation.getId());
+                                return toSave;
+                        });
+                when(allocatedSectionRepository.save(any(AllocatedSection.class)))
+                        .thenAnswer(invocation -> {
+                                AllocatedSection toSave = invocation.getArgument(0);
+                                toSave.setId(allocatedSection.getId());
+                                return toSave;
+                        });
                 when(userInterface.getStudentById(studentId)).thenReturn(ResponseEntity.ok(studentDto));
                 when(applicationMapper.toDto(application)).thenReturn(applicationDto);
                 when(allocationMapper.toDto(any(), any(), any()))
@@ -311,7 +315,6 @@ class AllocationServiceTest {
                 verify(allocationRepository).save(any(Allocation.class));
                 verify(userInterface).getStudentById(studentId);
                 verify(applicationMapper).toDto(application);
-                // verify(allocationMapper).toDto(savedAllocation, studentDto, applicationDto, sectionDto);
                 verify(auditService).record(
                         eq(userIdFromHeader),
                         eq(ActionOptions.CREATE),
@@ -320,12 +323,23 @@ class AllocationServiceTest {
                         eq(savedAllocation),
                         eq(savedAllocation.getId())
                 );
+                AllocatedSection expectedAfterAS = new AllocatedSection(allocatedSection);
+                expectedAfterAS.setHours(expectedDto.gradingHours());
+                verify(auditService).record(
+                        eq(userIdFromHeader),
+                        eq(ActionOptions.CREATE),
+                        eq("AllocatedSection"),
+                        eq(null),
+                        eq(expectedAfterAS),
+                        eq(expectedAfterAS.getId())
+                );
         }
 
         @Test
         void deallocateStudent_NotFound() {
                 Long userIdFromHeader = 1L;
-                when(allocationRepository.findById(any())).thenReturn(Optional.empty());
+                when(allocatedSectionRepository.findById(any())).thenReturn(Optional.empty());
+                // when(allocationRepository.findById(any())).thenReturn(Optional.empty());
                 assertThrows(NotFoundException.class, () -> allocationService.deallocateStudent(1L, userIdFromHeader));
         }
 
@@ -367,10 +381,10 @@ class AllocationServiceTest {
                 verify(auditService).record(
                         eq(userIdFromHeader),
                         eq(ActionOptions.DELETE),
-                        eq("Allocation"),
-                        eq(allocation),
+                        eq("AllocatedSection"),
+                        eq(allocatedSection),
                         eq(null),
-                        eq(allocationId)
+                        eq(allocatedSection.getId())
                 );
         }
 
@@ -395,6 +409,7 @@ class AllocationServiceTest {
                 when(allocationRepository.findById(allocationId)).thenReturn(Optional.of(allocation));
                 when(courseInterface.getSectionById(any())).thenReturn(sectionDto);
                 when(courseInterface.getNeed(1L, sectionDto.year(), sectionDto.semester())).thenReturn(needDto);
+                when(allocationRepository.save(any(Allocation.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
                 allocationService.updateConfirmationStatus(allocationId, ApplicationStatus.CONFIRMED,userIdFromHeader);
 
@@ -781,7 +796,7 @@ class AllocationServiceTest {
                 CourseDto course = new CourseDto(2L, "COSC", "Capstone", "499");
                 Allocation allocation = new Allocation();
                 allocation.setId(4L);
-                allocation.setStudentId(1L);
+                allocation.setStudentId(studentDto.id());
                 allocation.setStatus(ApplicationStatus.CONFIRMED);
 
                 AllocationHistoryDto dto = new AllocationHistoryDto(
@@ -792,7 +807,21 @@ class AllocationServiceTest {
                 when(courseInterface.getByCourseIdSectionYearSemester(2L, "001", 2025, "W1"))
                                 .thenThrow(new RuntimeException("Not found"));
                 when(courseInterface.addSection(eq(2L), any())).thenReturn(sectionDto);
-                when(allocationRepository.save(any())).thenReturn(allocation);
+                // when(allocationRepository.save(any())).thenReturn(allocation);
+                when(allocationRepository.save(any(Allocation.class)))
+                        .thenAnswer(invocation -> {
+                                Allocation toSave = invocation.getArgument(0);
+                                toSave.setId(allocation.getId());
+                                return toSave;
+                        });
+                Long savedAllocSecId = 1L;
+                when(allocatedSectionRepository.save(any(AllocatedSection.class)))
+                        .thenAnswer(invocation -> {
+                                
+                                AllocatedSection toSave = invocation.getArgument(0);
+                                toSave.setId(savedAllocSecId);
+                                return toSave;
+                        });
                 when(allocationMapper.toDto(any(), any(), any())).thenReturn(dto);
 
                 List<AllocationHistoryDto> result = allocationService.importPreviousAllocations(
@@ -809,6 +838,20 @@ class AllocationServiceTest {
                         isNull(),
                         eq(allocation),
                         eq(allocation.getId())
+                );
+                AllocatedSection expectedAfterAS = new AllocatedSection();
+                expectedAfterAS.setId(savedAllocSecId);
+                expectedAfterAS.setAllocation(allocation);
+                expectedAfterAS.setSectionId(sectionDto.id());
+                expectedAfterAS.setTask(null);
+                expectedAfterAS.setHours(0);
+                verify(auditService).record(
+                        eq(userIdFromHeader),
+                        eq(ActionOptions.CREATE),
+                        eq("AllocatedSection"),
+                        isNull(),
+                        eq(expectedAfterAS),
+                        eq(expectedAfterAS.getId())
                 );
         }
 
@@ -867,19 +910,39 @@ class AllocationServiceTest {
         @Test
         void testdeleteSectionReturnsAffectedCount() {
                 long sectionId = 42L;
-                when(allocatedSectionRepository.deleteAllBySectionId(sectionId)).thenReturn(7);
-                Integer result = allocationService.deleteSection(sectionId);
+                Long userIdFromHeader = 1L;
+                AllocatedSection as = new AllocatedSection();
+                as.setId(1L);
+                List<AllocatedSection> list = List.of(as);
+                when(allocatedSectionRepository.findAllBySectionId(sectionId)).thenReturn(list);
+                Integer result = allocationService.deleteSection(sectionId, userIdFromHeader);
 
-                assertEquals(7, result);
+                assertEquals(1, result);
+                verify(auditService).record(
+                        eq(userIdFromHeader),
+                        eq(ActionOptions.DELETE),
+                        eq("AllocatedSection"),
+                        eq(as),
+                        isNull(),
+                        eq(as.getId())
+                );
         }
 
         @Test
-        void testdeleteSectionReturnsZeroWhenNothingToDelete() {
+        void testDeleteSectionReturnsZeroWhenNothingToDelete() {
                 long sectionId = 99L;
-                when(allocatedSectionRepository.deleteAllBySectionId(sectionId)).thenReturn(0);
+                Long userIdFromHeader = 1L;
 
-                Integer result = allocationService.deleteSection(sectionId);
+                when(allocatedSectionRepository.findAllBySectionId(sectionId))
+                        .thenReturn(List.of());
+
+                Integer result = allocationService.deleteSection(sectionId, userIdFromHeader);
 
                 assertEquals(0, result);
+
+                verify(allocatedSectionRepository, never()).delete(any());
+                verify(auditService, never()).record(
+                        anyLong(), any(), anyString(), any(), any(), anyLong()
+                );
         }
 }

@@ -179,8 +179,8 @@ CourseInterface courseInterface;
 
 
         GlobalDeadline testEntity2 = configRepository.findByName("student_application_deadline");
-        System.out.println("REPO RETURN TEST in TEST: " + testEntity2);
-        System.out.println("CONFIG SERVICE CLASS: " + configService.getClass());
+        // System.out.println("REPO RETURN TEST in TEST: " + testEntity2);
+        // System.out.println("CONFIG SERVICE CLASS: " + configService.getClass());
 
         when(applicationRepository.existsByStudentIdAndYearAndSemester(1L, 2025, "W1")).thenReturn(false);
         BadRequestException e = assertThrows(BadRequestException.class, () -> {
@@ -244,6 +244,7 @@ CourseInterface courseInterface;
                                 now,
                                 unavailabilityEntities);
                 mockApp.setSubmittedAt(now);
+                mockApp.setSemester("W1");
 
                 ApplicationDto mockedDto = new ApplicationDto(
                                 1L,
@@ -344,7 +345,7 @@ CourseInterface courseInterface;
             applicationService.deleteApplication(1L, 2025, "W1",1L,
                     List.of("ROLE_STUDENT"));
         });
-        assertEquals("Application with that student id and year doesn't exist", e.getMessage());
+        assertEquals("Application with student id 1 and year 2025 doesn't exist", e.getMessage());
     }
 
     @Test
@@ -447,15 +448,14 @@ CourseInterface courseInterface;
         when(applicationRepository.findByStudentIdAndYearAndSemester(1L, currentYear, "W1"))
                                 .thenReturn(Optional.of(before));
 
-        Application after = new Application(
-                                1L,
-                                1L,
-                                List.of(Subject.COSC),
-                                ApplicationType.UNDERGRADUATE,
-                                false,
-                                6,
-                                now,
-                                Set.of());
+        Application after = new Application(1L, List.of(Subject.COSC), ApplicationType.UNDERGRADUATE, false, 6,
+                                2025,
+                                "W1");
+        after.setSubmittedAt(now);
+        after.setId(1L);
+        Set<Unavailability> unava = new HashSet<>();
+        unava.add(new Unavailability(Day.MONDAY, LocalTime.parse("09:00"), LocalTime.parse("10:00"),after));
+        after.setUnavailabilities(unava);
 
         ApplicationDto mockedDto = new ApplicationDto(
                 1L,
@@ -469,19 +469,24 @@ CourseInterface courseInterface;
                 Set.of());
 
         when(applicationMapper.toDto(before)).thenReturn(mockedDto);
-                when(applicationRepository.save(before)).thenReturn(after);
+        when(applicationRepository.save(Mockito.any(Application.class)))
+                .thenAnswer(invocation -> {
+                    Application saved = invocation.getArgument(0);
+                    saved.setId(after.getId());
+                    return saved;
+                });
 
         ApplicationDto applicationDto = applicationService.updateApplication(
                 applicationRequest, 1L, 2025, "W1",1L, List.of("ROLE_STUDENT"));
 
         verify(applicationRepository).save(before);
         verify(auditService).record(
-                                eq(1L),
-                                eq(ActionOptions.UPDATE),
-                                eq("Application"),
-                                eq(b),
-                                eq(after),
-                                eq(before.getId()));
+                eq(1L),
+                eq(ActionOptions.UPDATE),
+                eq("Application"),
+                eq(b),
+                eq(after),
+                eq(before.getId()));
 
         assertFalse(applicationDto.wantRemote());
         assertEquals(Subject.COSC, applicationDto.preferences().get(0));
