@@ -22,8 +22,10 @@ export default function ViewProfileQuestionsPage (){
                     />
                 )}
             />
-            <h2 className="text-xl font-semibold mb-4">Students's Profile Questions</h2>
-            <p className="text-xs text-slate-600">Answers to personal questions about the student</p>
+            <h2 className="text-xl font-semibold mb-4 mt-8">Answers for Profile Questions</h2>
+            <p className="text-gray-600 mb-6">
+                Below are the answers provided by the student for the profile questions. These answers help in understanding the student's background and preferences.
+            </p>
             <GenericAPIContainer<ProfileQuestion[] | null>
                 fetchFunction={() => fetchAllStudentQuestions(sId)}
                 render={qs => <ProfileQuestionsSection profileQuestions={qs} />}
