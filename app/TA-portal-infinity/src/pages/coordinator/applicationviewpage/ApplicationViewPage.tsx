@@ -224,17 +224,17 @@ useEffect(() => {
         <h1 className="text-3xl sm:text-4xl font-bold text-[#040941] mb-6 sm:mb-8 tracking-tight text-center sm:text-left">Applications Overview</h1>
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 w-full">
           {/* Application Filters */}
-          <div className="w-full lg:w-1/4 min-w-0">
+          <div className="w-full lg:w-[18%] min-w-0">
             <div className="relative bg-white rounded-2xl shadow-lg p-3 sm:p-4 border border-blue-100 flex flex-col gap-4">
               <h3 className="font-semibold text-[#040941] text-lg mb-2">Application Filters</h3>
               <div className="flex flex-col gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Student Name</label>
-                  <input type="text" value={studentName} onChange={e => setStudentName(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. John" />
+                  <input type="text" value={studentName} onChange={e => setStudentName(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. John" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Year</label>
-                  <select value={yearSubmitted} onChange={e => setYearSubmitted(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                  <select value={yearSubmitted} onChange={e => setYearSubmitted(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none">
                     <option value="">Any</option>
                     {availableYears.map(year => (
                       <option key={year} value={year}>{year}</option>
@@ -243,7 +243,7 @@ useEffect(() => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Semester</label>
-                  <select value={semesterSubmitted} onChange={e => setSemesterSubmitted(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                  <select value={semesterSubmitted} onChange={e => setSemesterSubmitted(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none">
                     <option value="">Any</option>
                     {availableSemesters.map(sem => (
                       <option key={sem} value={sem}>{sem}</option>
@@ -252,11 +252,11 @@ useEffect(() => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Preference Contains</label>
-                  <input type="text" value={prefContains} onChange={e => setPrefContains(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. COSC" />
+                  <input type="text" value={prefContains} onChange={e => setPrefContains(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. COSC" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Remote Preference</label>
-                  <select value={remotePref} onChange={e => setRemotePref(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                  <select value={remotePref} onChange={e => setRemotePref(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none">
                     <option value="">Any</option>
                     <option value="true">Yes</option>
                     <option value="false">No</option>
@@ -267,7 +267,7 @@ useEffect(() => {
             </div>
           </div>
           {/* Stats and Results */}
-          <div className="w-full lg:w-2/4 min-w-0 flex flex-col gap-4 sm:gap-8">
+          <div className="w-full lg:w-[64%] min-w-0 flex flex-col gap-4 sm:gap-8">
             {/* TA Application Stats (collapsible) */}
             <div className="bg-white rounded-2xl shadow-lg border border-blue-100 p-3 sm:p-6">
               <div className="flex items-center justify-between mb-4">
@@ -351,63 +351,97 @@ useEffect(() => {
             </div>
           </div>
           {/* Allocation Filters */}
-          <div className="w-full lg:w-1/4 min-w-0">
+          <div className="w-full lg:w-[18%] min-w-0">
             <div className="lg:sticky lg:top-8 bg-white rounded-2xl shadow-lg p-3 sm:p-4 border border-blue-100 flex flex-col gap-4">
               <h3 className="font-semibold text-[#040941] text-lg mb-2">Allocation & Offer Related Filters</h3>
-              <div className="flex flex-col gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Offer Sent</label>
-                  <select value={offerSentFilter} onChange={e => setOfferSentFilter(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
-                    <option value="">Any</option>
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="allocationStatus" className="block text-sm font-medium mb-1">Allocation Confirmed</label>
-                  <select id="allocationStatus" value={allocationStatus} onChange={e => setAllocationStatus(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
-                    <option value="">Any</option>
-                    <option value="CONFIRMED">Confirmed</option>
-                    <option value="REJECTED">Rejected</option>
-                    <option value="SENT">Sent</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Allocated Hours</label>
-                  <input type="number" value={allocatedHoursFilter} onChange={e => setAllocatedHoursFilter(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="Enter allocated hours" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Dept Code</label>
-                  <input type="text" value={allocationDept} onChange={e => setAllocationDept(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. COSC" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Course Number</label>
-                  <input type="text" value={allocationCourseNum} onChange={e => setAllocationCourseNum(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. 123" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Section Year</label>
-                  <input type="text" value={allocationSectionYear} onChange={e => setAllocationSectionYear(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. 2025" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Semester</label>
-                  <input type="text" value={allocationSemester} onChange={e => setAllocationSemester(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. W" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Section Type</label>
-                  <select value={allocationType} onChange={e => setAllocationType(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
-                    <option value="">Any</option>
-                    <option value="LECTURE">Lecture</option>
-                    <option value="TUTORIAL">Tutorial</option>
-                    <option value="LABORATORY">Laboratory</option>
-                    <option value="DISCUSSION">Discussion</option>
-                    <option value="SEMINAR">Seminar</option>
-                    <option value="WORKSHOP">Workshop</option>
-                    <option value="EXPERENTIAL">Experiential</option>
-                    <option value="INDEPENDENT_STUDY">Independent Study</option>
-                  </select>
-                </div>
-                <button onClick={handleFilterClick} className="mt-2 mb-2 px-3 py-1.5 h-9 bg-[#040941] text-white rounded-lg font-semibold transition text-sm hover:opacity-80">Filter</button>
-              </div>
+              {/* Show only 5 filters by default, with View More button */}
+              {(() => {
+                const [showAllFilters, setShowAllFilters] = React.useState(false);
+                const filterFields = [
+                  (
+                    <div key="offerSent">
+                      <label className="block text-sm font-medium mb-1">Offer Sent</label>
+                      <select value={offerSentFilter} onChange={e => setOfferSentFilter(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                        <option value="">Any</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </select>
+                    </div>
+                  ),
+                  (
+                    <div key="allocationStatus">
+                      <label htmlFor="allocationStatus" className="block text-sm font-medium mb-1">Allocation Confirmed</label>
+                      <select id="allocationStatus" value={allocationStatus} onChange={e => setAllocationStatus(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                        <option value="">Any</option>
+                        <option value="CONFIRMED">Confirmed</option>
+                        <option value="REJECTED">Rejected</option>
+                        <option value="SENT">Sent</option>
+                      </select>
+                    </div>
+                  ),
+                  (
+                    <div key="allocatedHours">
+                      <label className="block text-sm font-medium mb-1">Allocated Hours</label>
+                      <input type="number" value={allocatedHoursFilter} onChange={e => setAllocatedHoursFilter(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="Enter allocated hours" />
+                    </div>
+                  ),
+                  (
+                    <div key="deptCode">
+                      <label className="block text-sm font-medium mb-1">Dept Code</label>
+                      <input type="text" value={allocationDept} onChange={e => setAllocationDept(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. COSC" />
+                    </div>
+                  ),
+                  (
+                    <div key="courseNum">
+                      <label className="block text-sm font-medium mb-1">Course Number</label>
+                      <input type="text" value={allocationCourseNum} onChange={e => setAllocationCourseNum(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. 123" />
+                    </div>
+                  ),
+                  (
+                    <div key="sectionYear">
+                      <label className="block text-sm font-medium mb-1">Section Year</label>
+                      <input type="text" value={allocationSectionYear} onChange={e => setAllocationSectionYear(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. 2025" />
+                    </div>
+                  ),
+                  (
+                    <div key="semester">
+                      <label className="block text-sm font-medium mb-1">Semester</label>
+                      <input type="text" value={allocationSemester} onChange={e => setAllocationSemester(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. W" />
+                    </div>
+                  ),
+                  (
+                    <div key="sectionType">
+                      <label className="block text-sm font-medium mb-1">Section Type</label>
+                      <select value={allocationType} onChange={e => setAllocationType(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                        <option value="">Any</option>
+                        <option value="LECTURE">Lecture</option>
+                        <option value="TUTORIAL">Tutorial</option>
+                        <option value="LABORATORY">Laboratory</option>
+                        <option value="DISCUSSION">Discussion</option>
+                        <option value="SEMINAR">Seminar</option>
+                        <option value="WORKSHOP">Workshop</option>
+                        <option value="EXPERENTIAL">Experiential</option>
+                        <option value="INDEPENDENT_STUDY">Independent Study</option>
+                      </select>
+                    </div>
+                  ),
+                ];
+                return (
+                  <div className="flex flex-col gap-4">
+                    {(showAllFilters ? filterFields : filterFields.slice(0, 5))}
+                    {filterFields.length > 5 && (
+                      <button
+                        className="px-3 py-1.5 h-9 bg-gray-100 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 transition"
+                        type="button"
+                        onClick={() => setShowAllFilters(v => !v)}
+                      >
+                        {showAllFilters ? 'View Less Filters' : `View More Filters (${filterFields.length - 5})`}
+                      </button>
+                    )}
+                    <button onClick={handleFilterClick} className="mt-2 mb-2 px-3 py-1.5 h-9 bg-[#040941] text-white rounded-lg font-semibold transition text-sm hover:opacity-80">Filter</button>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
