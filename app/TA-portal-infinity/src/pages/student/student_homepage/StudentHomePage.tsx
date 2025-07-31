@@ -173,7 +173,7 @@ export default function StudentHomePage() {
   return (
     <section className="px-4 py-6 md:px-8 md:py-8 min-h-screen">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-8 -mt-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-[#040941] mb-8 tracking-tight">My Dashboard</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-[#040941] mb-8 tracking-tight -mt-6">My Dashboard</h1>
         {/* Dashboard Summary Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-2xl border-t-4 border-[#040941] px-3 py-2 flex items-center gap-3 min-h-[60px]">
