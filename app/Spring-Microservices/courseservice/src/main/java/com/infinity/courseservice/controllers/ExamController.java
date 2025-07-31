@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,8 +33,9 @@ public class ExamController {
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping
-    public ExamDto createExam(@RequestBody ExamDto dto) {
-        return examService.createExam(dto);
+    public ExamDto createExam(@RequestBody ExamDto dto,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return examService.createExam(dto, userIdFromHeader);
     }
 
     @GetMapping
@@ -48,14 +50,16 @@ public class ExamController {
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PutMapping("/{id}")
-    public ExamDto updateExam(@PathVariable Long id, @RequestBody ExamDto dto) {
-        return examService.updateExam(id, dto);
+    public ExamDto updateExam(@PathVariable Long id, @RequestBody ExamDto dto,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return examService.updateExam(id, dto,userIdFromHeader);
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("/{id}")
-    public void deleteExam(@PathVariable Long id) {
-        examService.deleteExam(id);
+    public void deleteExam(@PathVariable Long id,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        examService.deleteExam(id,userIdFromHeader);
     }
 
     // ===============================
@@ -65,8 +69,9 @@ public class ExamController {
     @PostMapping("/{studentId}/availability")
     public void updateAvailability(
             @PathVariable Long studentId,
-            @RequestBody List<ExamAvailabilityDto> availabilityDtos) {
-        examService.updateStudentAvailability(studentId, availabilityDtos);
+            @RequestBody List<ExamAvailabilityDto> availabilityDtos,
+            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        examService.updateStudentAvailability(studentId, availabilityDtos,userIdFromHeader);
     }
 
     @GetMapping("/{studentId}/availability")
@@ -83,8 +88,9 @@ public class ExamController {
     @PostMapping("/{examId}/assignments")
     public ExamAssignmentDto assignStudentToExam(
             @PathVariable Long examId,
-            @RequestBody ExamAssignmentDto assignmentDto) {
-        return examService.assignStudentToExam(examId, assignmentDto);
+            @RequestBody ExamAssignmentDto assignmentDto,
+            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return examService.assignStudentToExam(examId, assignmentDto, userIdFromHeader);
     }
 
     @GetMapping("/assignments/{studentId}")
@@ -94,8 +100,9 @@ public class ExamController {
     }
 
     @DeleteMapping("/{studentId}/availability")
-    public void deleteAvailability(@PathVariable Long studentId) {
-        examService.deleteAvailabilityByStudentId(studentId);
+    public void deleteAvailability(@PathVariable Long studentId,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        examService.deleteAvailabilityByStudentId(studentId,userIdFromHeader);
     }
 
     @GetMapping("/assignments/byexam/{examId}")
@@ -104,16 +111,18 @@ public class ExamController {
     }
 
     @DeleteMapping("/assignments/{assignmentId}")
-    public void unassignStudentFromExam(@PathVariable Long assignmentId) {
-        examService.unassignStudentFromExam(assignmentId);
+    public void unassignStudentFromExam(@PathVariable Long assignmentId,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        examService.unassignStudentFromExam(assignmentId, userIdFromHeader);
     }
 
     @PutMapping("/assignments/{examId}/student/{studentId}")
     public ResponseEntity<ExamAssignmentDto> updateAssignment(
         @PathVariable Long examId,
         @PathVariable Long studentId,
-        @RequestBody ExamAssignmentDto updatedDto) {
-        ExamAssignmentDto updated = examService.updateAssignmentByStudentId(examId, studentId, updatedDto);
+        @RequestBody ExamAssignmentDto updatedDto,
+        @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        ExamAssignmentDto updated = examService.updateAssignmentByStudentId(examId, studentId, updatedDto, userIdFromHeader);
         return ResponseEntity.ok(updated);
     }
 

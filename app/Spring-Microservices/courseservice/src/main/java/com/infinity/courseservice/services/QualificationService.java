@@ -13,6 +13,7 @@ import com.infinity.courseservice.dtos.QualificationDtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationDtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.QualificationDtos.StudentQualiRequest;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.ActionOptions;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.UserInterface;
@@ -42,6 +43,7 @@ public class QualificationService {
     private final CourseService courseService;
     private final CourseMapper courseMapper;
     private final QualificationMapper qualificationMapper;
+    private final AuditService auditService;
 
     public QualificationDto findQualification(Long id) {
         Qualification qualification = qualificationRepository.findById(id)
@@ -65,7 +67,7 @@ public class QualificationService {
         }).toList();
     }
 
-    public QualificationDto instructorAddQualification(QualificationRequest request) {
+    public QualificationDto instructorAddQualification(QualificationRequest request, Long userIdFromHeader) {
         // 1) Load & verify course
         Course course = courseRepository.findById(request.courseId())
                 .orElseThrow(() -> new NotFoundException("Course not found"));
@@ -82,6 +84,14 @@ public class QualificationService {
 
         try {
             Qualification saved = qualificationRepository.saveAndFlush(qualification);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.CREATE,
+                "Qualification",   
+                null,               
+                saved,           
+                saved.getId()   
+            );
 
             // 4) Return your DTO (no student in this flow, so null)
             return qualificationMapper.toDto(qualification, courseMapper.courseToDto(course));
@@ -93,21 +103,56 @@ public class QualificationService {
         }
     }
 
-    public List<Long> instructorDeleteQualification(Long id) {
+    //TODO: Why is this findingAllByIds?? Isn't an ID of a qualification unique??? it Doesn't have to be a list.
+    //Auditing cycle should be added after this is fixed.
+    public List<Long> instructorDeleteQualification(Long id, Long userIdFromHeader) {
         List<Qualification> toDelete = qualificationRepository.findAllByIds(List.of(id));
         if (toDelete.isEmpty()) {
             throw new NotFoundException("No qualifications found with id: " + id);
         }
         qualificationRepository.deleteAll(toDelete);
+        for (Qualification q : toDelete) {
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.DELETE,
+                "Qualification",
+                q,       
+                null,     
+                q.getId()
+            );
+        }
         List<Long> deleteIds = toDelete.stream().map(Qualification::getId).collect(Collectors.toList());
         List<StudentQualification> toDeleteSq = studentQualificationRepository.findAllByQualificationIn(toDelete);
         studentQualificationRepository.deleteAll(toDeleteSq);
+        for (StudentQualification sq : toDeleteSq) {
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.DELETE,
+                "StudentQualification",
+                sq,       
+                null,    
+                sq.getId()
+            );
+        }
         return deleteIds;
     }
 
     @Transactional
-    public List<QualificationDto> studentUpdateQualifications(StudentQualiRequest request, Long stuId) {
-        studentQualificationRepository.deleteAllByStudentId(stuId);
+    public List<QualificationDto> studentUpdateQualifications(StudentQualiRequest request, Long stuId, Long userIdFromHeader) {
+        List<StudentQualification> toDelete = studentQualificationRepository.findAllByStudentId(stuId);
+        for (StudentQualification oldSq : toDelete) {
+            studentQualificationRepository.delete(oldSq);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.DELETE,
+                "StudentQualification",
+                oldSq,     
+                null,        
+                oldSq.getId()
+            );
+        }
+
+        // studentQualificationRepository.deleteAllByStudentId(stuId);
         List<Qualification> qualifications = qualificationRepository.findAllByIds(request.qualificationIds());
         List<QualificationDto> qualificationDtos = new ArrayList<QualificationDto>();
         UserDto studentDto = studentClient.getStudentById(stuId);
@@ -115,7 +160,15 @@ public class QualificationService {
             CourseDto courseDto = courseService.findCourse(qualification.getCourse().getId());
             StudentQualification studentQualification = new StudentQualification(qualification, stuId);
             try {
-                studentQualificationRepository.save(studentQualification);
+                StudentQualification savedSQ = studentQualificationRepository.save(studentQualification);
+                auditService.record(
+                    userIdFromHeader,
+                    ActionOptions.CREATE,
+                    "StudentQualification",   
+                    null,               
+                    savedSQ,           
+                    savedSQ.getId()   
+                );
             } catch (DataIntegrityViolationException ex) {
                 throw new BadRequestException("Qualification already exists" + ex);
             }

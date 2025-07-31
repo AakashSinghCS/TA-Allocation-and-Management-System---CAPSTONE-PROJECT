@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -28,6 +30,7 @@ import com.infinity.courseservice.dtos.QualificationDtos.QualificationRequest;
 import com.infinity.courseservice.dtos.QualificationDtos.QualificationWithSectionDto;
 import com.infinity.courseservice.dtos.QualificationDtos.StudentQualiRequest;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.ActionOptions;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.UserRole;
 import com.infinity.courseservice.exceptions.BadRequestException;
@@ -42,6 +45,7 @@ import com.infinity.courseservice.repositories.CourseRepository;
 import com.infinity.courseservice.repositories.QualificationRepository;
 import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.StudentQualificationRepository;
+import com.infinity.courseservice.services.AuditService;
 import com.infinity.courseservice.services.CourseService;
 import com.infinity.courseservice.services.QualificationService;
 import com.infinity.courseservice.utility.CourseMapper;
@@ -72,6 +76,9 @@ class QualificationServiceTest {
 
         @Mock
         private CourseMapper courseMapper;
+
+        @Mock
+        private AuditService auditService;
 
         @InjectMocks
         private QualificationService qualificationService;
@@ -107,7 +114,7 @@ class QualificationServiceTest {
 
         @Test
         void instructorAddQualification_returnsDtoWithId_onSuccess() {
-                // Arrange
+                Long userIdFromHeader = 1L;
                 long courseId = 42L;
                 Qualification qualification = new Qualification(new Course(), "Description", "CS");
                 qualification.setId(1L);
@@ -132,14 +139,18 @@ class QualificationServiceTest {
                                 .thenReturn(false);
                 when(courseMapper.courseToDto(course)).thenReturn(courseDto);
 
-                // simulate save
                 Qualification saved = new Qualification(course, req.description(), req.deptCode());
                 saved.setId(99L);
-                when(qualificationRepository.saveAndFlush(any(Qualification.class))).thenReturn(saved);
+                when(qualificationRepository.saveAndFlush(any(Qualification.class)))
+                                .thenAnswer(invocation -> {
+                                        Qualification toSave = invocation.getArgument(0);
+                                        toSave.setId(saved.getId());
+                                        return toSave;
+                                });
 
                 when(qualificationMapper.toDto(any(), any())).thenReturn(qualificationDto);
                 // Act
-                QualificationDto dto = qualificationService.instructorAddQualification(req);
+                QualificationDto dto = qualificationService.instructorAddQualification(req, userIdFromHeader);
 
                 // Assert
                 assertEquals(99L, dto.id());
@@ -148,11 +159,18 @@ class QualificationServiceTest {
                                 "courseDto from service should match what CourseService returned");
 
                 verify(qualificationRepository).saveAndFlush(any(Qualification.class));
+                verify(auditService).record(
+                                eq(userIdFromHeader),
+                                eq(ActionOptions.CREATE),
+                                eq("Qualification"),
+                                eq(null),
+                                eq(saved),
+                                eq(saved.getId()));
         }
 
         @Test
         void instructorAddQualification_throwsBadRequest_whenDuplicateDetected() {
-                // Arrange
+                Long userIdFromHeader = 1L;
                 long courseId = 84L;
                 QualificationRequest req = new QualificationRequest(1L, courseId, 2L, "Ethics", "PHIL");
 
@@ -172,7 +190,7 @@ class QualificationServiceTest {
                 // Act & Assert
                 BadRequestException ex = assertThrows(
                                 BadRequestException.class,
-                                () -> qualificationService.instructorAddQualification(req));
+                                () -> qualificationService.instructorAddQualification(req, userIdFromHeader));
                 assertTrue(ex.getMessage().contains("already exists"));
 
                 // ensure we never call saveAndFlush when a duplicate is pre-detected
@@ -181,13 +199,14 @@ class QualificationServiceTest {
 
         @Test
         void instructorDeleteQualification_shouldDeleteAndReturnIds() {
-                // Arrange
+                Long userIdFromHeader = 1L;
                 Long qualificationId = 1L;
                 Qualification qualification = new Qualification();
                 qualification.setId(qualificationId);
 
                 StudentQualification studentQualification = new StudentQualification();
                 studentQualification.setQualification(qualification);
+                studentQualification.setId(100L);
 
                 List<Qualification> qualifications = List.of(qualification);
                 List<StudentQualification> studentQualifications = List.of(studentQualification);
@@ -198,18 +217,36 @@ class QualificationServiceTest {
                                 .thenReturn(studentQualifications);
 
                 // Act
-                List<Long> result = qualificationService.instructorDeleteQualification(qualificationId);
+                List<Long> result = qualificationService.instructorDeleteQualification(qualificationId,
+                                userIdFromHeader);
 
                 // Assert
                 assertEquals(List.of(qualificationId), result);
 
                 verify(qualificationRepository).deleteAll(qualifications);
                 verify(studentQualificationRepository).deleteAll(studentQualifications);
+                verify(auditService).record(
+                        eq(userIdFromHeader),
+                        eq(ActionOptions.DELETE),
+                        eq("Qualification"),
+                        eq(qualification),
+                        isNull(),
+                        eq(qualificationId)
+                );
+
+                verify(auditService).record(
+                        eq(userIdFromHeader),
+                        eq(ActionOptions.DELETE),
+                        eq("StudentQualification"),
+                        eq(studentQualification),
+                        isNull(),
+                        eq(100L)
+                );
         }
 
         @Test
         void instructorDeleteQualification_shouldThrowNotFound_whenNoQualifications() {
-                // Arrange
+                Long userIdFromHeader = 1L;
                 Long qualificationId = 1L;
 
                 when(qualificationRepository.findAllByIds(List.of(qualificationId)))
@@ -218,7 +255,8 @@ class QualificationServiceTest {
                 // Act & Assert
                 NotFoundException ex = assertThrows(
                                 NotFoundException.class,
-                                () -> qualificationService.instructorDeleteQualification(qualificationId));
+                                () -> qualificationService.instructorDeleteQualification(qualificationId,
+                                                userIdFromHeader));
 
                 assertEquals("No qualifications found with id: " + qualificationId, ex.getMessage());
 
@@ -228,32 +266,42 @@ class QualificationServiceTest {
 
         @Test
         void studentUpdateQualifications_shouldUpdateAndReturnDtos() {
+                Long userIdFromHeader = 1L;
                 Long studentId = 5L;
                 List<Long> qualificationIds = List.of(100L, 200L);
+
+                StudentQualification oldSQ1 = new StudentQualification();
+                oldSQ1.setId(50L);
+                oldSQ1.setQualification(new Qualification());
+                oldSQ1.getQualification().setId(100L);
+                oldSQ1.setStudentId(studentId);
+
+                StudentQualification oldSQ2 = new StudentQualification();
+                oldSQ2.setId(51L);
+                oldSQ2.setQualification(new Qualification());
+                oldSQ2.getQualification().setId(200L);
+                oldSQ2.setStudentId(studentId);
+
+                when(studentQualificationRepository.findAllByStudentId(studentId))
+                                .thenReturn(List.of(oldSQ1, oldSQ2));
 
                 StudentQualiRequest request = mock(StudentQualiRequest.class);
                 when(request.qualificationIds()).thenReturn(qualificationIds);
 
-                Qualification qualification1 = new Qualification();
-                qualification1.setId(100L);
-                qualification1.setDescription("Qualification 1");
-
-                Course course1 = new Course();
-                course1.setId(10L);
-                qualification1.setCourse(course1);
-
-                Qualification qualification2 = new Qualification();
-                qualification2.setId(200L);
-                qualification2.setDescription("Qualification 2");
-
-                Course course2 = new Course();
-                course2.setId(20L);
-                qualification2.setCourse(course2);
+                Qualification q1 = new Qualification();
+                q1.setId(100L);
+                q1.setDescription("Qualification 1");
+                q1.setCourse(new Course());
+                q1.getCourse().setId(10L);
+                Qualification q2 = new Qualification();
+                q2.setId(200L);
+                q2.setDescription("Qualification 2");
+                q2.setCourse(new Course());
+                q2.getCourse().setId(20L);
 
                 when(qualificationRepository.findAllByIds(qualificationIds))
-                                .thenReturn(List.of(qualification1, qualification2));
+                                .thenReturn(List.of(q1, q2));
 
-                // Mock CourseDtos
                 CourseDto courseDto1 = new CourseDto(10L, "COSC", "Intro", "101");
                 CourseDto courseDto2 = new CourseDto(20L, "MATH", "Algebra", "201");
 
@@ -266,19 +314,41 @@ class QualificationServiceTest {
                 QualificationDto qualificationDto1 = new QualificationDto(100L, courseDto1, "Qualification 1", null);
                 QualificationDto qualificationDto2 = new QualificationDto(200L, courseDto2, "Qualification 2", null);
                 when(studentClient.getStudentById(studentId)).thenReturn(studentDto);
-                when(qualificationMapper.toDto(qualification1, courseDto1)).thenReturn(qualificationDto1);
-                when(qualificationMapper.toDto(qualification2, courseDto2)).thenReturn(qualificationDto2);
+                when(qualificationMapper.toDto(q1, courseDto1)).thenReturn(qualificationDto1);
+                when(qualificationMapper.toDto(q2, courseDto2)).thenReturn(qualificationDto2);
 
-                // Act
-                List<QualificationDto> result = qualificationService.studentUpdateQualifications(request, studentId);
+                when(studentQualificationRepository.save(any(StudentQualification.class)))
+                                .thenAnswer(invocation -> {
+                                        StudentQualification sq = invocation.getArgument(0);
+                                        sq.setId(sq.getQualification().getId());
+                                        return sq;
+                                });
 
-                // Assert
+                List<QualificationDto> result = qualificationService.studentUpdateQualifications(request, studentId,
+                                userIdFromHeader);
+
                 assertEquals(2, result.size());
                 assertEquals("Qualification 1", result.get(0).description());
                 assertEquals("Qualification 2", result.get(1).description());
 
                 // Verify deletes
-                verify(studentQualificationRepository).deleteAllByStudentId(studentId);
+                verify(studentQualificationRepository).delete(oldSQ1);
+                verify(studentQualificationRepository).delete(oldSQ2);
+
+                verify(auditService).record(
+                                eq(userIdFromHeader),
+                                eq(ActionOptions.DELETE),
+                                eq("StudentQualification"),
+                                eq(oldSQ1),
+                                isNull(),
+                                eq(oldSQ1.getId()));
+                verify(auditService).record(
+                                eq(userIdFromHeader),
+                                eq(ActionOptions.DELETE),
+                                eq("StudentQualification"),
+                                eq(oldSQ2),
+                                isNull(),
+                                eq(oldSQ2.getId()));
 
                 // Verify saves
                 ArgumentCaptor<StudentQualification> captor = ArgumentCaptor.forClass(StudentQualification.class);
@@ -286,6 +356,20 @@ class QualificationServiceTest {
                 List<StudentQualification> saved = captor.getAllValues();
                 assertEquals(100L, saved.get(0).getQualification().getId());
                 assertEquals(200L, saved.get(1).getQualification().getId());
+                verify(auditService).record(
+                                eq(userIdFromHeader),
+                                eq(ActionOptions.CREATE),
+                                eq("StudentQualification"),
+                                isNull(),
+                                eq(saved.get(0)),
+                                eq(saved.get(0).getId()));
+                verify(auditService).record(
+                                eq(userIdFromHeader),
+                                eq(ActionOptions.CREATE),
+                                eq("StudentQualification"),
+                                isNull(),
+                                eq(saved.get(1)),
+                                eq(saved.get(1).getId()));
         }
 
         @Test
