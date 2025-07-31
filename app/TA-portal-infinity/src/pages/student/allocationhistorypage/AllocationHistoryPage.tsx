@@ -14,7 +14,7 @@ export default function AllocationHistoryPage() {
     const sId = Number(userId);
     const { userRoles, userId: loggedInUserId } = useAuth();
     const isLoggedInUser = sId === loggedInUserId;
-    const isCoordinator = userRoles.includes("COORDINATOR");
+    const isCoordinatorOrAdmin = userRoles.includes("COORDINATOR") || userRoles.includes("ADMIN");
 
     return (
         <section className="px-4 py-6 md:px-8 md:py-8 min-h-screen">
@@ -31,7 +31,14 @@ export default function AllocationHistoryPage() {
                         const safeSecs = Array.isArray(secs) ? secs : [];
                         return (
                             <>
-                                {!isCoordinator && (
+                                {isCoordinatorOrAdmin ? (
+                                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-8 flex items-center gap-4 mt-8">
+                                        <Info className="w-6 h-6 text-blue-400 flex-shrink-0" />
+                                        <div className="text-blue-800 text-base">
+                                            The following courses have been completed by the student in the role of Teaching Assistant. You may review their experience below.
+                                        </div>
+                                    </div>
+                                ) : (
                                     <>
                                         <div className="flex items-center justify-between mb-6">
                                             <div className="flex-1">
@@ -54,7 +61,7 @@ export default function AllocationHistoryPage() {
                                         </div>
                                     </>
                                 )}
-                                <div className={`space-y-6${isCoordinator ? ' mt-8' : ''}`}> 
+                                <div className={`space-y-6${isCoordinatorOrAdmin ? ' mt-8' : ''}`}> 
                                     {safeSecs.length === 0 ? (
                                         <div className="bg-white rounded-xl p-16 text-center">
                                             <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">

@@ -27,40 +27,53 @@ export default function StudentQualificationPage (){
                         />
                     )}
                 />
+                {/* Coordinator/Admin info banner */}
+                {isCoordinatorOrAdmin && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-4 flex items-center gap-4 mt-8">
+                        <Info className="w-6 h-6 text-blue-400 flex-shrink-0" />
+                        <div className="text-blue-800 text-base">
+                            Select a department from the list to view the skills and qualifications set by the student for a course(s).
+                        </div>
+                    </div>
+                )}
                 {/* Sidebar + main content */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-12">
+                <div className={`grid grid-cols-1 md:grid-cols-4 gap-8 ${isCoordinatorOrAdmin ? '-mt-4' : 'mt-12'}`}> 
                     {/* Main Content */}
                     <main className="md:col-span-3">
                         <div className="mb-8">
                             {!isCoordinatorOrAdmin && (
-                              <h1 className="text-2xl md:text-3xl font-bold text-[#040941] tracking-tight mb-8 -mt-8">
-                                Skills & Qualifications
-                              </h1>
-                            )}
-                            <div className="rounded-lg border border-orange-200 bg-orange-50 p-5 flex items-start gap-3 mb-2">
-                                <Info className="w-6 h-6 text-orange-400 mt-1 flex-shrink-0" />
-                                <div>
-                                    <div className="font-semibold text-orange-800 mb-1">Important Notice</div>
-                                    <div className="text-orange-800 text-sm">
-                                        Select the departments and courses where you have the technical knowledge and skills to effectively assist students as a Teaching Assistant.
+                                <>
+                                    <h1 className="text-2xl md:text-3xl font-bold text-[#040941] tracking-tight mb-8 -mt-8">
+                                        Skills & Qualifications
+                                    </h1>
+                                    <div className="rounded-lg border border-orange-200 bg-orange-50 p-5 flex items-start gap-3 mb-2">
+                                        <Info className="w-6 h-6 text-orange-400 mt-1 flex-shrink-0" />
+                                        <div>
+                                            <div className="font-semibold text-orange-800 mb-1">Important Notice</div>
+                                            <div className="text-orange-800 text-sm">
+                                                Select the departments and courses where you have the technical knowledge and skills to effectively assist students as a Teaching Assistant.
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                </>
+                            )}
                         </div>
                         <StudentQualificationViewer studentId={sId} />
                     </main>
                     {/* Sidebar */}
-                    <aside className="md:col-span-1 bg-blue-50 border border-blue-100 rounded-lg p-6 flex flex-col items-start mt-10">
-                        <h2 className="text-lg font-semibold text-[#040941] mb-2">How to Use</h2>
-                        <ul className="text-sm text-blue-900 space-y-2 list-disc pl-4">
-                            <li>Select the departments and courses where you have strong technical knowledge.</li>
-                            <li>Use the checkboxes to indicate your qualifications.</li>
-                            <li>Click 'Save Qualifications' when finished.</li>
-                        </ul>
-                        <div className="mt-6 p-3 bg-blue-100 rounded text-xs text-blue-700">
-                            <strong>Tip:</strong> You can update your qualifications at any time.
-                        </div>
-                    </aside>
+                    {!isCoordinatorOrAdmin && (
+                        <aside className="md:col-span-1 bg-blue-50 border border-blue-100 rounded-lg p-6 flex flex-col items-start mt-10">
+                            <h2 className="text-lg font-semibold text-[#040941] mb-2">How to Use</h2>
+                            <ul className="text-sm text-blue-900 space-y-2 list-disc pl-4">
+                                <li>Select the departments and courses where you have strong technical knowledge.</li>
+                                <li>Use the checkboxes to indicate your qualifications.</li>
+                                <li>Click 'Save Qualifications' when finished.</li>
+                            </ul>
+                            <div className="mt-6 p-3 bg-blue-100 rounded text-xs text-blue-700">
+                                <strong>Tip:</strong> You can update your qualifications at any time.
+                            </div>
+                        </aside>
+                    )}
                 </div>
             </div>
         </section>
