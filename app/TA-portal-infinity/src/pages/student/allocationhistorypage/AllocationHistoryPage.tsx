@@ -12,8 +12,10 @@ import { Info , Trash2 , SquarePen , NotebookPen, University} from 'lucide-react
 export default function AllocationHistoryPage() {
     const { userId } = useParams();
     const sId = Number(userId);
-    const isLoggedInUser = sId === useAuth().userId;
-    
+    const { userRoles, userId: loggedInUserId } = useAuth();
+    const isLoggedInUser = sId === loggedInUserId;
+    const isCoordinator = userRoles.includes("COORDINATOR");
+
     return (
         <section className="px-4 py-6 md:px-8 md:py-8 min-h-screen">
             <div className="max-w-7xl mx-auto px-2 sm:px-4 py-8 -mt-12">
@@ -29,26 +31,30 @@ export default function AllocationHistoryPage() {
                         const safeSecs = Array.isArray(secs) ? secs : [];
                         return (
                             <>
-                                <div className="flex items-center justify-between mb-6">
-                                    <div className="flex-1">
-                                        <h1 className="text-2xl md:text-3xl font-bold text-[#040941] mb-1">Teaching Experience</h1>
-                                        <p className="text-slate-600 text-base">Manage and view your TA allocation history</p>
-                                    </div>
-                                    {isLoggedInUser && (
-                                        <Link to="/user/student/addallocation">
-                                            <button className="bg-[#040941] hover:bg-blue-800 text-white font-semibold px-6 py-3 rounded-xl text-base shadow transition">
-                                                + Add Experience
-                                            </button>
-                                        </Link>
-                                    )}
-                                </div>
-                                <div className="bg-amber-100 border border-amber-200 rounded-xl p-5 mb-8 flex items-center gap-4">
-                                    <Info className="w-6 h-6 text-amber-500 flex-shrink-0" />
-                                    <div className="text-amber-900 text-base">
-                                        <b>Important:</b> Please keep your TA experience up to date. All information you add here is visible to course coordinators and will be used to determine your eligibility for new TA allocations. Providing truthful and complete information ensures fair and efficient assignment of TA positions.
-                                    </div>
-                                </div>
-                                <div className="space-y-6">
+                                {!isCoordinator && (
+                                    <>
+                                        <div className="flex items-center justify-between mb-6">
+                                            <div className="flex-1">
+                                                <h1 className="text-2xl md:text-3xl font-bold text-[#040941] mb-1">Teaching Experience</h1>
+                                                <p className="text-slate-600 text-base">Manage and view your TA allocation history</p>
+                                            </div>
+                                            {isLoggedInUser && (
+                                                <Link to="/user/student/addallocation">
+                                                    <button className="bg-[#040941] hover:bg-blue-800 text-white font-semibold px-6 py-3 rounded-xl text-base shadow transition">
+                                                        + Add Experience
+                                                    </button>
+                                                </Link>
+                                            )}
+                                        </div>
+                                        <div className="bg-amber-100 border border-amber-200 rounded-xl p-5 mb-8 flex items-center gap-4">
+                                            <Info className="w-6 h-6 text-amber-500 flex-shrink-0" />
+                                            <div className="text-amber-900 text-base">
+                                                <b>Important:</b> Please keep your TA experience up to date. All information you add here is visible to course coordinators and will be used to determine your eligibility for new TA allocations. Providing truthful and complete information ensures fair and efficient assignment of TA positions.
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                                <div className={`space-y-6${isCoordinator ? ' mt-8' : ''}`}> 
                                     {safeSecs.length === 0 ? (
                                         <div className="bg-white rounded-xl p-16 text-center">
                                             <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
