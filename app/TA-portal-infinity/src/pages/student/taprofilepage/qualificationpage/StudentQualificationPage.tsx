@@ -1,4 +1,6 @@
 import { useParams } from "react-router-dom";
+import { useAuth } from '../../../../context/AuthContext';
+import { UserRole } from '../../../../interfaces/enum/UserRole';
 import StudentQualificationViewer from "./qualificationviewer/StudentQualificationViewer";
 import TabNav from "../../../../components/layout/tabnav/TabNav";
 import { fetchUserDetails } from "../../../../api/user/fetchUserDetails";
@@ -12,6 +14,8 @@ import { Info } from 'lucide-react';
 export default function StudentQualificationPage (){
     const { userId } = useParams();
     const sId = Number(userId);
+    const { userRoles } = useAuth();
+    const isCoordinatorOrAdmin = userRoles.includes(UserRole.COORDINATOR) || userRoles.includes(UserRole.ADMIN);
     return(
         <section className="px-4 py-6 md:px-8 md:py-8 min-h-screen">
             <div className="max-w-7xl mx-auto px-2 sm:px-4 py-8 -mt-12">
@@ -28,9 +32,11 @@ export default function StudentQualificationPage (){
                     {/* Main Content */}
                     <main className="md:col-span-3">
                         <div className="mb-8">
-                            <h1 className="text-2xl md:text-3xl font-bold text-[#040941] tracking-tight mb-8 -mt-8">
+                            {!isCoordinatorOrAdmin && (
+                              <h1 className="text-2xl md:text-3xl font-bold text-[#040941] tracking-tight mb-8 -mt-8">
                                 Lab Skills & Qualifications
-                            </h1>
+                              </h1>
+                            )}
                             <div className="rounded-lg border border-orange-200 bg-orange-50 p-5 flex items-start gap-3 mb-2">
                                 <Info className="w-6 h-6 text-orange-400 mt-1 flex-shrink-0" />
                                 <div>
