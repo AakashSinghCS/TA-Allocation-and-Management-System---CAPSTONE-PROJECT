@@ -498,21 +498,27 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
 
           {/* Information Section */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-medium text-blue-900 mb-2">Important Information:</h3>
+            <h3 className="font-medium text-blue-900 mb-2">Upload Requirements:</h3>
             <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Only PDF files are accepted</li>
-              <li>• Maximum file size is 5MB</li>
-              <li>• File name should not contain special characters like {'<'} {'>'} : " | ? *</li>
-              <li>• Maximum file name length is 100 characters</li>
+              <li>• <strong>File Format:</strong> Only PDF files are accepted</li>
+              <li>• <strong>File Size:</strong> Maximum 5MB</li>
+              <li>• <strong>File Name:</strong> Avoid special characters like {'<'} {'>'} : " | ? * and keep under 100 characters</li>
+              <li>• <strong>Content:</strong> Must be an official academic transcript from your institution</li>
               {existingTranscript && (
-                <li>• <strong>Uploading a new file will replace your existing transcript</strong></li>
+                <li>• <strong>Replacement:</strong> Uploading a new file will replace your existing transcript</li>
               )}
               {!existingTranscript && (
-                <li>• You can replace your transcript later by uploading a new file</li>
+                <li>• <strong>Updates:</strong> You can replace your transcript anytime by uploading a new file</li>
               )}
-              <li>• Your transcript will be reviewed by the TA coordinator</li>
-              <li>• Ensure your transcript is clear and readable</li>
             </ul>
+            <div className="mt-3 pt-3 border-t border-blue-200">
+              <h4 className="font-medium text-blue-900 mb-1">After Upload:</h4>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li>• Your transcript will be reviewed by the TA coordinator</li>
+                <li>• Ensure your transcript is clear, complete, and readable</li>
+                <li>• Include all relevant courses and grades for TA position requirements</li>
+              </ul>
+            </div>
           </div>
         </form>
       </div>
