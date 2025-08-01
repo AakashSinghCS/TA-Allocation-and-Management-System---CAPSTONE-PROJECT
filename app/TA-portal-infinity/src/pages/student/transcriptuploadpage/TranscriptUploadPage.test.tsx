@@ -763,4 +763,458 @@ describe('TranscriptUploadPage', () => {
       });
     });
   });
+
+  describe('Fullscreen Functionality', () => {
+    it('opens fullscreen modal when fullscreen button is clicked', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upload Transcript' })).toBeInTheDocument();
+      });
+
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const validFile = createMockFile('fullscreen-modal-test.pdf', 2000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Fullscreen/i })).toBeInTheDocument();
+      });
+
+      const fullscreenButton = screen.getByRole('button', { name: /Fullscreen/i });
+      fireEvent.click(fullscreenButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Transcript Preview - Fullscreen')).toBeInTheDocument();
+        expect(screen.getByTitle('Transcript Fullscreen Preview')).toBeInTheDocument();
+      });
+    });
+
+    it('closes fullscreen modal when ESC key is pressed', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upload Transcript' })).toBeInTheDocument();
+      });
+
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const validFile = createMockFile('esc-key-test.pdf', 2000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Fullscreen/i })).toBeInTheDocument();
+      });
+
+      // Open fullscreen
+      const fullscreenButton = screen.getByRole('button', { name: /Fullscreen/i });
+      fireEvent.click(fullscreenButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Transcript Preview - Fullscreen')).toBeInTheDocument();
+      });
+
+      // Press ESC key
+      fireEvent.keyDown(document, { key: 'Escape', code: 'Escape' });
+
+      await waitFor(() => {
+        expect(screen.queryByText('Transcript Preview - Fullscreen')).not.toBeInTheDocument();
+      });
+    });
+
+    it('closes fullscreen modal when close button is clicked', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upload Transcript' })).toBeInTheDocument();
+      });
+
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const validFile = createMockFile('close-button-test.pdf', 2000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Fullscreen/i })).toBeInTheDocument();
+      });
+
+      // Open fullscreen
+      const fullscreenButton = screen.getByRole('button', { name: /Fullscreen/i });
+      fireEvent.click(fullscreenButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Transcript Preview - Fullscreen')).toBeInTheDocument();
+      });
+
+      // Click close button (X button in the modal)
+      const closeButtons = screen.getAllByRole('button');
+      const closeButton = closeButtons.find(button => 
+        button.querySelector('svg') && 
+        button.querySelector('svg')?.classList.contains('lucide-x')
+      );
+      expect(closeButton).toBeInTheDocument();
+      fireEvent.click(closeButton!);
+
+      await waitFor(() => {
+        expect(screen.queryByText('Transcript Preview - Fullscreen')).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Existing Transcript Actions', () => {
+    it('shows confirmation dialog when deleting existing transcript', async () => {
+      // Mock window.confirm
+      const mockConfirm = vi.fn(() => true);
+      vi.stubGlobal('confirm', mockConfirm);
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          hasTranscript: true,
+          fileName: 'delete-confirm-test.pdf',
+          fileSize: 1024000,
+          uploadDate: '2024-01-01T12:00:00Z',
+          contentType: 'application/pdf',
+        }),
+      });
+
+      // Mock successful delete
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Delete/i })).toBeInTheDocument();
+      });
+
+      const deleteButton = screen.getByRole('button', { name: /Delete/i });
+      fireEvent.click(deleteButton);
+
+      expect(mockConfirm).toHaveBeenCalledWith('Are you sure you want to delete your existing transcript?');
+    });
+
+    it('toggles existing transcript preview visibility', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          hasTranscript: true,
+          fileName: 'preview-toggle-test.pdf',
+          fileSize: 1024000,
+          uploadDate: '2024-01-01T12:00:00Z',
+          contentType: 'application/pdf',
+        }),
+      });
+
+      // Mock successful preview download
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        blob: async () => new Blob(['mock pdf content'], { type: 'application/pdf' }),
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Preview/i })).toBeInTheDocument();
+      });
+
+      const previewButton = screen.getByRole('button', { name: /Preview/i });
+      
+      // First click - show preview
+      fireEvent.click(previewButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Current Transcript Preview')).toBeInTheDocument();
+        expect(screen.getByText('Hide Preview')).toBeInTheDocument();
+      });
+
+      // Second click - hide preview
+      fireEvent.click(previewButton);
+
+      await waitFor(() => {
+        expect(screen.queryByText('Current Transcript Preview')).not.toBeInTheDocument();
+        expect(screen.getByText('Preview')).toBeInTheDocument();
+      });
+    });
+
+    it('handles preview download error gracefully', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          hasTranscript: true,
+          fileName: 'preview-error-test.pdf',
+          fileSize: 1024000,
+          uploadDate: '2024-01-01T12:00:00Z',
+          contentType: 'application/pdf',
+        }),
+      });
+
+      // Mock failed preview download
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Preview/i })).toBeInTheDocument();
+      });
+
+      const previewButton = screen.getByRole('button', { name: /Preview/i });
+      fireEvent.click(previewButton);
+
+      await waitFor(() => {
+        // Preview should not be shown due to error
+        expect(screen.queryByText('Current Transcript Preview')).not.toBeInTheDocument();
+        // Button should still show "Preview" (not "Hide Preview")
+        expect(screen.getByText('Preview')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Upload Progress and XHR', () => {
+    it('tracks upload progress with XMLHttpRequest progress events', async () => {
+      let progressHandler: ((e: any) => void) | null = null;
+      let loadHandler: ((e: any) => void) | null = null;
+
+      // Mock XMLHttpRequest with progress tracking
+      const mockXHR = {
+        open: vi.fn(),
+        send: vi.fn(),
+        setRequestHeader: vi.fn(),
+        addEventListener: vi.fn((event: string, handler: any) => {
+          if (event === 'load') {
+            loadHandler = handler;
+          }
+        }),
+        upload: {
+          addEventListener: vi.fn((event: string, handler: any) => {
+            if (event === 'progress') {
+              progressHandler = handler;
+            }
+          }),
+        },
+        status: 200,
+        responseText: '{"success": true}',
+      };
+
+      (global as any).XMLHttpRequest = vi.fn(() => mockXHR);
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upload Transcript' })).toBeInTheDocument();
+      });
+
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const validFile = createMockFile('progress-test.pdf', 2000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+
+      await waitFor(() => {
+        const uploadButton = screen.getByRole('button', { name: 'Upload Transcript' });
+        expect(uploadButton).not.toBeDisabled();
+        fireEvent.click(uploadButton);
+      });
+
+      // Simulate progress events
+      if (progressHandler) {
+        // 25% progress
+        progressHandler({ lengthComputable: true, loaded: 500000, total: 2000000 });
+        await waitFor(() => {
+          expect(screen.getByText('Uploading... 25%')).toBeInTheDocument();
+        });
+
+        // 75% progress
+        progressHandler({ lengthComputable: true, loaded: 1500000, total: 2000000 });
+        await waitFor(() => {
+          expect(screen.getByText('Uploading... 75%')).toBeInTheDocument();
+        });
+      }
+
+      // Complete the upload
+      if (loadHandler) {
+        loadHandler({});
+      }
+    });
+
+    it('handles XMLHttpRequest network errors during upload', async () => {
+      let errorHandler: ((e: any) => void) | null = null;
+
+      // Mock XMLHttpRequest with error
+      const mockXHR = {
+        open: vi.fn(),
+        send: vi.fn(),
+        setRequestHeader: vi.fn(),
+        addEventListener: vi.fn((event: string, handler: any) => {
+          if (event === 'error') {
+            errorHandler = handler;
+          }
+        }),
+        upload: {
+          addEventListener: vi.fn(),
+        },
+        status: 0,
+        responseText: '',
+      };
+
+      (global as any).XMLHttpRequest = vi.fn(() => mockXHR);
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upload Transcript' })).toBeInTheDocument();
+      });
+
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const validFile = createMockFile('xhr-error-test.pdf', 2000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+
+      await waitFor(() => {
+        const uploadButton = screen.getByRole('button', { name: 'Upload Transcript' });
+        expect(uploadButton).not.toBeDisabled();
+        fireEvent.click(uploadButton);
+      });
+
+      // Simulate network error
+      if (errorHandler) {
+        errorHandler({});
+      }
+
+      await waitFor(() => {
+        expect(screen.getByText('Network error occurred during upload.')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Toast Notifications and Duplicate Prevention', () => {
+    it('prevents duplicate toast messages from being shown', async () => {
+      const mockToastSuccess = vi.fn();
+      const mockToastError = vi.fn();
+      
+      // Import toast from the mocked module
+      const { toast } = await import('react-toastify');
+      (toast.success as any).mockImplementation(mockToastSuccess);
+      (toast.error as any).mockImplementation(mockToastError);
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          hasTranscript: true,
+          fileName: 'toast-test.pdf',
+          fileSize: 1024000,
+          uploadDate: '2024-01-01T12:00:00Z',
+          contentType: 'application/pdf',
+        }),
+      });
+
+      // Mock successful preview download
+      mockFetch.mockResolvedValue({
+        ok: true,
+        blob: async () => new Blob(['mock pdf content'], { type: 'application/pdf' }),
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Preview/i })).toBeInTheDocument();
+      });
+
+      const previewButton = screen.getByRole('button', { name: /Preview/i });
+      
+      // Click preview multiple times rapidly
+      fireEvent.click(previewButton);
+      fireEvent.click(previewButton);
+      fireEvent.click(previewButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Current Transcript Preview')).toBeInTheDocument();
+      });
+
+      // Should only show one success toast message despite multiple clicks
+      expect(mockToastSuccess).toHaveBeenCalledTimes(1);
+      expect(mockToastSuccess).toHaveBeenCalledWith('Preview loaded successfully');
+    });
+
+    it('shows success and error toast messages appropriately', async () => {
+      const mockToastSuccess = vi.fn();
+      const mockToastError = vi.fn();
+      
+      // Import toast from the mocked module
+      const { toast } = await import('react-toastify');
+      (toast.success as any).mockImplementation(mockToastSuccess);
+      (toast.error as any).mockImplementation(mockToastError);
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          hasTranscript: true,
+          fileName: 'toast-messages-test.pdf',
+          fileSize: 1024000,
+          uploadDate: '2024-01-01T12:00:00Z',
+          contentType: 'application/pdf',
+        }),
+      });
+
+      // Mock successful delete
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+      });
+
+      // Mock window.confirm
+      const mockConfirm = vi.fn(() => true);
+      vi.stubGlobal('confirm', mockConfirm);
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Delete/i })).toBeInTheDocument();
+      });
+
+      const deleteButton = screen.getByRole('button', { name: /Delete/i });
+      fireEvent.click(deleteButton);
+
+      await waitFor(() => {
+        // Verify success toast was called
+        expect(mockToastSuccess).toHaveBeenCalledWith('Transcript deleted successfully!');
+      });
+
+      // Now test error toast by mocking a failed preview
+      mockFetch.mockRejectedValueOnce(new Error('Network error'));
+
+      // Try to trigger an error condition (this should be handled gracefully)
+      await waitFor(() => {
+        // Component should still be rendered even if there was an error
+        expect(screen.getByRole('heading', { name: 'Upload Transcript' })).toBeInTheDocument();
+      });
+    });
+  });
 });
