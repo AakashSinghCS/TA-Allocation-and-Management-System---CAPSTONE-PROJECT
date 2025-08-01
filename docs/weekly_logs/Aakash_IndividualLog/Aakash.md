@@ -2190,3 +2190,40 @@ Retrospective: Process is going well. Team members are working hard to get their
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin looking for bugs in the system to fix. 
+
+## Thursday 7/31 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.31.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Refactoring + Availability Matching: Move all api calls to api folder instead of directly calling them in the page. Verify assigned time for exam task is within the students availability.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Initially i had made all requests to the backend directly in the page itself for ease of accessibility. Upon the review of my PR, alex suggested to move all requests to the api folder. This required a lot of refactoring which i got done. I also added validation to the assign button to verify that the assigned start time and end time for the exam task matches the students actual availability. If not, error is displayed and assignment is not completed. All tests pass. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin looking for bugs in the system to fix and work on final report/presentation. 
+
