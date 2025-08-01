@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchFilteredSections, type FilterSectionsProps } from "../../../../../api/course/sectionfilter/fetchFilteredSections";
+import { type FilterSectionsProps } from "../../../../../api/course/sectionfilter/fetchFilteredSections";
 import { fetchGetNeed } from "../../../../../api/need/fetchGetNeed";
 import { fetchUpdateNeed } from "../../../../../api/need/fetchUpdateNeed";
 import { fetchAssignInstructor } from "../../../../../api/section/instructor/fetchAssignInstructor";

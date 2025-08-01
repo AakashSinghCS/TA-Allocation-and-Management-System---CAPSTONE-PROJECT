@@ -1,7 +1,7 @@
 import { AlertTriangle, CheckCircle } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import bgImage from '../../../assets/ubc_image.png?url';
+import bgImage from '../../../assets/image.png?url';
 import Navbar from '../../../components/layout/login_navbar/Navbar';
 
 const ForgotPasswordPage: React.FC = () => {
