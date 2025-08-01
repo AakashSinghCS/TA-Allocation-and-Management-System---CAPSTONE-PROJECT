@@ -2119,3 +2119,110 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin next assigned task.
 
+## Tuesday 7/29 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.29.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Filter: modify student filter in assign student to exam form to display all students with a graduate application submitted in the dropdown instead of manually entering student name and student number.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 50% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Created new endpoints in userservice and applicationservice. The end point in userservice returns a list of UserDtos based on the provided studentIds. The end point in applicationservice sends a list of studentIds that have a graduate application to the above mapping and returns the list of UserDtos. Endpoints are working as expected and all tests pass. Have to modify frontend next to utilize these new mappings and modify existing code as well. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete student filter update and begin looking for bugs in the system to fix. 
+
+## Wednesday 7/30 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.30.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Filter: modify student filter in assign student to exam form to display all students with a graduate application submitted in the dropdown instead of manually entering student name and student number.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Modified frontend to utilize the new mappings. Changed the form layout so that the dropdown of students with a graduate application is displayed first. Autopopulated student name and student number based on the selected student. Prevented input to student name/number boxes as well. Integrated backend and frontend completely. All tests pass. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin looking for bugs in the system to fix. 
+
+## Thursday 7/31 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.31.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Refactoring + Availability Matching: Move all api calls to api folder instead of directly calling them in the page. Verify assigned time for exam task is within the students availability.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Initially i had made all requests to the backend directly in the page itself for ease of accessibility. Upon the review of my PR, alex suggested to move all requests to the api folder. This required a lot of refactoring which i got done. I also added validation to the assign button to verify that the assigned start time and end time for the exam task matches the students actual availability. If not, error is displayed and assignment is not completed. All tests pass. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin looking for bugs in the system to fix and work on final report/presentation. 
