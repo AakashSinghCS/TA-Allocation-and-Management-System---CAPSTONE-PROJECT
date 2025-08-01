@@ -38,7 +38,8 @@ public class ProfileQuestion {
         this.id = other.id;
         this.description = other.description;
         this.type = other.type;
-        this.answers = other.answers.stream()
+        this.answers =(other.answers == null ? List.<ProfileAnswer>of() : other.answers)
+            .stream()
             .map(ProfileAnswer::new)   
             .collect(Collectors.toList());
     }
