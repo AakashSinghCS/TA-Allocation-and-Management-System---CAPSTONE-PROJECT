@@ -1217,4 +1217,220 @@ describe('TranscriptUploadPage', () => {
       });
     });
   });
+
+  describe('HTTP Special Status Code Handling', () => {
+    it('handles 401 Unauthorized session expiry during upload', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upload Transcript' })).toBeInTheDocument();
+      });
+
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const validFile = createMockFile('session-expired.pdf', 2000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+
+      await waitFor(() => {
+        const uploadButton = screen.getByRole('button', { name: 'Upload Transcript' });
+        expect(uploadButton).not.toBeDisabled();
+      });
+
+      // Mock 401 Unauthorized response for upload
+      let loadHandler: ((e: any) => void) | null = null;
+      const mockXHR = {
+        open: vi.fn(),
+        send: vi.fn(),
+        setRequestHeader: vi.fn(),
+        addEventListener: vi.fn((event: string, handler: any) => {
+          if (event === 'load') {
+            loadHandler = handler;
+          }
+        }),
+        upload: {
+          addEventListener: vi.fn(),
+        },
+        status: 401,
+        responseText: '{"error": "Session expired"}',
+      };
+
+      (global as any).XMLHttpRequest = vi.fn(() => mockXHR);
+
+      const uploadButton = screen.getByRole('button', { name: 'Upload Transcript' });
+      fireEvent.click(uploadButton);
+
+      // Simulate 401 response
+      if (loadHandler) {
+        (loadHandler as any)({});
+      }
+
+      await waitFor(() => {
+        // Check for a generic error message that might be displayed
+        const errorElements = screen.getAllByText(/Session expired|Unauthorized|Authentication/i);
+        expect(errorElements.length).toBeGreaterThan(0);
+      });
+    });
+
+    it('handles 413 Payload Too Large server-side file size rejection', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upload Transcript' })).toBeInTheDocument();
+      });
+
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const validFile = createMockFile('server-size-reject.pdf', 4000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+
+      await waitFor(() => {
+        const uploadButton = screen.getByRole('button', { name: 'Upload Transcript' });
+        expect(uploadButton).not.toBeDisabled();
+      });
+
+      // Mock 413 Payload Too Large response
+      let loadHandler: ((e: any) => void) | null = null;
+      const mockXHR = {
+        open: vi.fn(),
+        send: vi.fn(),
+        setRequestHeader: vi.fn(),
+        addEventListener: vi.fn((event: string, handler: any) => {
+          if (event === 'load') {
+            loadHandler = handler;
+          }
+        }),
+        upload: {
+          addEventListener: vi.fn(),
+        },
+        status: 413,
+        responseText: '{"error": "File too large"}',
+      };
+
+      (global as any).XMLHttpRequest = vi.fn(() => mockXHR);
+
+      const uploadButton = screen.getByRole('button', { name: 'Upload Transcript' });
+      fireEvent.click(uploadButton);
+
+      // Simulate 413 response
+      if (loadHandler) {
+        (loadHandler as any)({});
+      }
+
+      await waitFor(() => {
+        expect(screen.getByText('File too large')).toBeInTheDocument();
+      });
+    });
+
+    it('handles 429 Too Many Requests rate limiting', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upload Transcript' })).toBeInTheDocument();
+      });
+
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const validFile = createMockFile('rate-limited.pdf', 2000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+
+      await waitFor(() => {
+        const uploadButton = screen.getByRole('button', { name: 'Upload Transcript' });
+        expect(uploadButton).not.toBeDisabled();
+      });
+
+      // Mock 429 Too Many Requests response
+      let loadHandler: ((e: any) => void) | null = null;
+      const mockXHR = {
+        open: vi.fn(),
+        send: vi.fn(),
+        setRequestHeader: vi.fn(),
+        addEventListener: vi.fn((event: string, handler: any) => {
+          if (event === 'load') {
+            loadHandler = handler;
+          }
+        }),
+        upload: {
+          addEventListener: vi.fn(),
+        },
+        status: 429,
+        responseText: '{"error": "Too many requests"}',
+      };
+
+      (global as any).XMLHttpRequest = vi.fn(() => mockXHR);
+
+      const uploadButton = screen.getByRole('button', { name: 'Upload Transcript' });
+      fireEvent.click(uploadButton);
+
+      // Simulate 429 response
+      if (loadHandler) {
+        (loadHandler as any)({});
+      }
+
+      await waitFor(() => {
+        expect(screen.getByText('Too many requests')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Special Filename Handling', () => {
+    beforeEach(async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+      renderWithRouter(<TranscriptUploadPage />);
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upload Transcript' })).toBeInTheDocument();
+      });
+    });
+
+    it('handles files with special characters in filename', async () => {
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const specialCharFile = createMockFile("test'file\"with%special&chars.pdf", 2000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [specialCharFile] } });
+
+      await waitFor(() => {
+        // The component validates filename and shows error for special characters
+        expect(screen.getByText('File name contains invalid characters. Please rename your file and try again.')).toBeInTheDocument();
+      });
+
+      // Verify upload button is disabled due to invalid filename
+      const uploadButton = screen.getByRole('button', { name: 'Upload Transcript' });
+      expect(uploadButton).toBeDisabled();
+    });
+
+    it('handles extremely long filename (255 characters)', async () => {
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      // Create a 255-character filename (251 chars + ".pdf")
+      const longName = 'a'.repeat(251) + '.pdf';
+      const longNameFile = createMockFile(longName, 2000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [longNameFile] } });
+
+      await waitFor(() => {
+        // The component validates filename length and shows error for long names
+        expect(screen.getByText('File name is too long. Please use a shorter name (max 100 characters).')).toBeInTheDocument();
+      });
+
+      // Verify upload button is disabled due to long filename
+      const uploadButton = screen.getByRole('button', { name: 'Upload Transcript' });
+      expect(uploadButton).toBeDisabled();
+    });
+  });
 });
