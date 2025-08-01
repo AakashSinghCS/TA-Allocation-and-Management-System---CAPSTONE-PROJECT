@@ -332,7 +332,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Upload Transcript
           </h1>
-          <p className="text-gray-600 text-lg">
+                    <p className="text-gray-600 text-lg">
             Upload your official transcript (PDF only, max 5MB).
           </p>
         </div>
@@ -425,7 +425,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                     {isDragActive ? 'Drop your PDF here' : 'Choose a PDF file or drag it here'}
                   </p>
                   <p className="text-sm text-gray-500 mt-1">
-                    PDF files only, up to 5MB. Spaces in file names are allowed.
+                    Upload your official academic transcript (PDF only, max 5MB)
                   </p>
                 </div>
               </div>

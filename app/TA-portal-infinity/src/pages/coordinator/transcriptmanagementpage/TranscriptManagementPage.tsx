@@ -172,7 +172,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
             Student Transcripts
           </h1>
           <p className="text-gray-600 text-lg">
-            View and download student transcript files
+            Review and download official academic transcripts submitted by TA applicants
           </p>
         </div>
 
@@ -216,7 +216,10 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
               <Eye className="mx-auto w-12 h-12 text-gray-400 mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No transcripts found</h3>
               <p className="text-gray-500">
-                {searchTerm ? 'Try adjusting your search criteria.' : 'No students have uploaded transcripts yet.'}
+                {searchTerm 
+                  ? 'Try adjusting your search criteria or clearing the search to see all transcripts.' 
+                  : 'No students have uploaded transcripts yet. Students can upload their transcripts through their application portal.'
+                }
               </p>
             </div>
           ) : (
@@ -354,6 +357,18 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
             </div>
           </div>
         )}
+
+        {/* Information Section */}
+        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h3 className="font-medium text-blue-900 mb-2">Transcript Review Guidelines:</h3>
+          <ul className="text-sm text-blue-800 space-y-1">
+            <li>• <strong>Academic Standing:</strong> Verify the student meets minimum GPA requirements for TA positions</li>
+            <li>• <strong>Course History:</strong> Check for relevant coursework in the subject area they're applying to assist with</li>
+            <li>• <strong>Prerequisites:</strong> Ensure completion of required prerequisite courses for advanced TA roles</li>
+            <li>• <strong>File Quality:</strong> All transcripts are in PDF format and should be clear and readable</li>
+            <li>• <strong>Privacy:</strong> Handle all student academic records with confidentiality and in accordance with FERPA guidelines</li>
+          </ul>
+        </div>
       </div>
     </div>
   );
