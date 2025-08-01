@@ -575,12 +575,23 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Upload Transcript
-          </h1>
-          <p className="text-gray-600">
-            Upload your official transcript (PDF only, max 5MB).
-          </p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Upload Transcript
+              </h1>
+              <p className="text-gray-600">
+                Upload your official transcript (PDF only, max 5MB).
+              </p>
+            </div>
+            <button
+              onClick={() => navigate('/user/student/home')}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+              type="button"
+            >
+              Back to Dashboard
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
@@ -777,16 +788,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex justify-between mt-4">
-                  <button
-                    type="button"
-                    onClick={() => navigate(-1)}
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
-                    disabled={uploadState.uploading}
-                  >
-                    Back
-                  </button>
-                  
+                <div className="flex justify-end mt-4">
                   <button
                     type="submit"
                     disabled={!uploadState.file || uploadState.uploading || uploadState.success}
@@ -823,6 +825,9 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                     <span>Fullscreen</span>
                   </button>
                 </div>
+                <div className="mb-3 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800">
+                  <strong>Verify:</strong> Check that information is clearly visible and complete before uploading.
+                </div>
                 <div className="border border-gray-300 rounded overflow-hidden">
                   <iframe
                     src={`${uploadState.previewUrl}#toolbar=0&navpanes=0&scrollbar=1`}
@@ -832,9 +837,6 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                 </div>
                 <div className="mt-2 text-xs text-gray-600 text-center">
                   {uploadState.file.name} ({(uploadState.file.size / 1024 / 1024).toFixed(2)} MB)
-                </div>
-                <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800">
-                  <strong>Verify:</strong> Check that information is clearly visible and complete before uploading.
                 </div>
               </div>
             )}
