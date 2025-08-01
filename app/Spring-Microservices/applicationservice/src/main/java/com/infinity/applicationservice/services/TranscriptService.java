@@ -86,8 +86,29 @@ public class TranscriptService {
         }
         
         String filename = file.getOriginalFilename();
-        if (filename == null || !filename.toLowerCase().endsWith(".pdf")) {
+        if (filename == null) {
+            throw new RuntimeException("File name is required");
+        }
+        
+        // Check for dangerous characters in filename
+        if (filename.matches(".*[<>:\"|?*\\x00-\\x1f\\x7f-\\x9f].*")) {
+            throw new RuntimeException("File name contains invalid characters");
+        }
+        
+        // Check file extension
+        if (!filename.toLowerCase().endsWith(".pdf")) {
             throw new RuntimeException("File must have .pdf extension");
+        }
+        
+        // Check filename length
+        if (filename.length() > 100) {
+            throw new RuntimeException("File name is too long (maximum 100 characters)");
+        }
+        
+        // Check for empty filename (just extension)
+        String nameWithoutExtension = filename.substring(0, filename.length() - 4);
+        if (nameWithoutExtension.trim().isEmpty()) {
+            throw new RuntimeException("File name cannot be empty");
         }
     }
 }

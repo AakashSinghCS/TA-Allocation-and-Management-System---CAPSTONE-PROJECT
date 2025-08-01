@@ -44,9 +44,29 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
       return 'File size must be less than 5MB.';
     }
     
-    // Check file name pattern (basic)
-    if (!/^[a-zA-Z0-9._-]+\.pdf$/i.test(file.name)) {
-      return 'Invalid file name format. Use only letters, numbers, dots, hyphens, and underscores.';
+    // Check file name pattern - allow more characters including spaces
+    // Prevent dangerous characters that could cause security issues
+    const fileName = file.name;
+    
+    // Check for dangerous characters
+    if (/[<>:"|?*\x00-\x1f\x7f-\x9f]/.test(fileName)) {
+      return 'File name contains invalid characters. Please rename your file and try again.';
+    }
+    
+    // Check if it ends with .pdf (case insensitive)
+    if (!fileName.toLowerCase().endsWith('.pdf')) {
+      return 'File must have a .pdf extension.';
+    }
+    
+    // Check for reasonable length (Windows max path is 260, but let's be more conservative)
+    if (fileName.length > 100) {
+      return 'File name is too long. Please use a shorter name (max 100 characters).';
+    }
+    
+    // Check for empty file name or just extension
+    const nameWithoutExtension = fileName.slice(0, -4);
+    if (nameWithoutExtension.trim().length === 0) {
+      return 'File name cannot be empty.';
     }
     
     return null;
@@ -131,8 +151,19 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
         } else {
           let errorMessage = 'Upload failed. Please try again.';
           try {
-            const response = JSON.parse(xhr.responseText);
-            errorMessage = response.message || errorMessage;
+            // Try to parse the response as text first, then as JSON if possible
+            const responseText = xhr.responseText;
+            if (responseText) {
+              try {
+                const response = JSON.parse(responseText);
+                errorMessage = response.message || response.error || errorMessage;
+              } catch {
+                // If it's not JSON, use the text response directly if it's reasonable
+                if (responseText.length < 200) {
+                  errorMessage = responseText;
+                }
+              }
+            }
           } catch {
             // Use default error message
           }
@@ -203,7 +234,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
             Upload Transcript
           </h1>
           <p className="text-gray-600 text-lg">
-            Upload your official transcript (PDF only, max 5MB)
+            Upload your official transcript (PDF only, max 5MB). File names with spaces are supported.
           </p>
         </div>
 
@@ -264,7 +295,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                     {isDragActive ? 'Drop your PDF here' : 'Choose a PDF file or drag it here'}
                   </p>
                   <p className="text-sm text-gray-500 mt-1">
-                    PDF files only, up to 5MB
+                    PDF files only, up to 5MB. Spaces in file names are allowed.
                   </p>
                 </div>
               </div>
@@ -334,6 +365,8 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
             <ul className="text-sm text-blue-800 space-y-1">
               <li>• Only PDF files are accepted</li>
               <li>• Maximum file size is 5MB</li>
+              <li>• File name should not contain special characters like {'<'} {'>'} : " | ? *</li>
+              <li>• Maximum file name length is 100 characters</li>
               <li>• Uploading a new transcript will replace the existing one</li>
               <li>• Your transcript will be reviewed by the TA coordinator</li>
               <li>• Ensure your transcript is clear and readable</li>
