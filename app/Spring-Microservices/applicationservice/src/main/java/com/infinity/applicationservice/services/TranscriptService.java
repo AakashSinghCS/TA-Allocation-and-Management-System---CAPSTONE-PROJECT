@@ -31,18 +31,19 @@ public class TranscriptService {
         // Validation
         validateFile(file);
         
-        // Find user's application
-        Application application = applicationRepository.findByUserId(userId)
-            .orElseThrow(() -> new RuntimeException("No application found for user"));
-        
-        // Check if transcript already exists
-        if (transcriptRepository.existsByApplicationId(application.getId())) {
-            throw new RuntimeException("Transcript already exists for this application");
+        // Check if transcript already exists for this user
+        if (transcriptRepository.findByUserId(userId).isPresent()) {
+            throw new RuntimeException("Transcript already exists for this user");
         }
+        
+        // Find user's application (optional - may not exist yet)
+        Optional<Application> applicationOpt = applicationRepository.findByUserId(userId);
         
         // Create new transcript
         Transcript transcript = new Transcript();
-        transcript.setApplication(application);
+        // Set application if it exists, otherwise it will be null
+        applicationOpt.ifPresent(transcript::setApplication);
+        transcript.setUserId(userId); // Store userId directly for cases where application doesn't exist yet
         transcript.setFileName(file.getOriginalFilename());
         transcript.setContentType(file.getContentType());
         transcript.setFileSize(file.getSize());

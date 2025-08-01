@@ -24,8 +24,11 @@ public class Transcript {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "application_id", nullable = false)
+    @JoinColumn(name = "application_id", nullable = true)
     private Application application;
+
+    @Column(nullable = false)
+    private Long userId; // Store userId directly for cases where application doesn't exist yet
 
     @Column(nullable = false)
     private String fileName;
@@ -40,7 +43,7 @@ public class Transcript {
     private LocalDateTime uploadDate;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGBLOB")
     private byte[] data;
 
     @PrePersist

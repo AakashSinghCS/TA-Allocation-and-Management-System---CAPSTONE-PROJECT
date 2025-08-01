@@ -16,7 +16,7 @@ interface UploadState {
 
 const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
   const navigate = useNavigate();
-  const { token, userId } = useAuth();
+  const { token } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [uploadState, setUploadState] = useState<UploadState>({
@@ -106,7 +106,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
     try {
       const formData = new FormData();
       formData.append('file', uploadState.file);
-      formData.append('studentId', userId.toString());
+      // studentId is not needed - the backend gets userId from JWT token
 
       const xhr = new XMLHttpRequest();
 
@@ -158,7 +158,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
         toast.error('Network error occurred during upload.');
       });
 
-      xhr.open('POST', 'http://localhost:8080/transcript/upload');
+      xhr.open('POST', 'http://localhost:8080/transcripts/upload');
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.send(formData);
 

@@ -20,16 +20,16 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Long> {
     
     @Query("SELECT new com.infinity.applicationservice.dto.TranscriptInfoDTO(" +
            "t.id, " +
-           "a.studentId, " +
+           "COALESCE(a.studentId, t.userId), " +
            "t.fileName, " +
            "t.uploadDate, " +
            "t.fileSize, " +
            "t.contentType) " +
            "FROM Transcript t " +
-           "JOIN t.application a " +
+           "LEFT JOIN t.application a " +
            "ORDER BY t.uploadDate DESC")
     List<TranscriptInfoDTO> findAllTranscriptInfo();
     
-    @Query("SELECT t FROM Transcript t WHERE t.application.studentId = :userId")
+    @Query("SELECT t FROM Transcript t WHERE t.userId = :userId")
     Optional<Transcript> findByUserId(@Param("userId") Long userId);
 }

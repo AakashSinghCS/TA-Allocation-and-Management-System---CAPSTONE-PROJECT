@@ -35,7 +35,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   const fetchTranscripts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8080/transcript/list', {
+      const response = await fetch('http://localhost:8080/transcripts/list', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -62,7 +62,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
     try {
       setDownloadingIds(prev => new Set(prev).add(transcriptId));
       
-      const response = await fetch(`http://localhost:8080/transcript/download/${transcriptId}`, {
+      const response = await fetch(`http://localhost:8080/transcripts/download/${transcriptId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
