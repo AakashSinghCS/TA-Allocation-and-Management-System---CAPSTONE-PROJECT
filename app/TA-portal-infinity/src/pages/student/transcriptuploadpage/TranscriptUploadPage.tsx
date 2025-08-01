@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, File, CheckCircle, AlertTriangle, Trash2 } from 'lucide-react';
+import { Upload, File, CheckCircle, AlertTriangle, Trash2, Eye } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
 
@@ -39,6 +39,8 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
   const [isDragActive, setIsDragActive] = useState(false);
   const [existingTranscript, setExistingTranscript] = useState<ExistingTranscript | null>(null);
   const [loadingExisting, setLoadingExisting] = useState(true);
+  const [showExistingPreview, setShowExistingPreview] = useState(false);
+  const [existingPreviewUrl, setExistingPreviewUrl] = useState<string | null>(null);
 
   // File validation constants
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -55,8 +57,11 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
       if (uploadState.previewUrl) {
         URL.revokeObjectURL(uploadState.previewUrl);
       }
+      if (existingPreviewUrl) {
+        URL.revokeObjectURL(existingPreviewUrl);
+      }
     };
-  }, [uploadState.previewUrl]);
+  }, [uploadState.previewUrl, existingPreviewUrl]);
 
   const fetchExistingTranscript = async () => {
     if (!token) return;
@@ -316,6 +321,11 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
 
       if (response.ok) {
         setExistingTranscript(null);
+        setShowExistingPreview(false);
+        if (existingPreviewUrl) {
+          URL.revokeObjectURL(existingPreviewUrl);
+          setExistingPreviewUrl(null);
+        }
         toast.success('Transcript deleted successfully!');
       } else {
         toast.error('Failed to delete transcript. Please try again.');
@@ -323,6 +333,49 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
     } catch (error) {
       console.error('Error deleting transcript:', error);
       toast.error('An error occurred while deleting the transcript.');
+    }
+  };
+
+  const handlePreviewExisting = async () => {
+    if (!token || !existingTranscript) return;
+    
+    // If preview is already shown, close it
+    if (showExistingPreview) {
+      setShowExistingPreview(false);
+      if (existingPreviewUrl) {
+        URL.revokeObjectURL(existingPreviewUrl);
+        setExistingPreviewUrl(null);
+      }
+      return;
+    }
+    
+    try {
+      // Download the student's own transcript using the new endpoint
+      const downloadResponse = await fetch('http://localhost:8080/transcripts/download', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!downloadResponse.ok) {
+        throw new Error('Failed to download transcript for preview');
+      }
+
+      const blob = await downloadResponse.blob();
+      const previewUrl = URL.createObjectURL(blob);
+      
+      // Clean up previous preview URL
+      if (existingPreviewUrl) {
+        URL.revokeObjectURL(existingPreviewUrl);
+      }
+      
+      setExistingPreviewUrl(previewUrl);
+      setShowExistingPreview(true);
+      toast.success('Preview loaded successfully');
+    } catch (error) {
+      console.error('Error loading preview:', error);
+      toast.error('Failed to load preview. Please try again.');
     }
   };
 
@@ -378,19 +431,65 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                   </p>
                 </div>
               </div>
-              <button
-                onClick={deleteExistingTranscript}
-                className="flex items-center space-x-1 px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
-                type="button"
-              >
-                <Trash2 className="w-4 h-4" />
-                <span>Delete</span>
-              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={handlePreviewExisting}
+                  className="flex items-center space-x-1 px-3 py-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                  type="button"
+                >
+                  <Eye className="w-4 h-4" />
+                  <span>{showExistingPreview ? 'Hide Preview' : 'Preview'}</span>
+                </button>
+                <button
+                  onClick={deleteExistingTranscript}
+                  className="flex items-center space-x-1 px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+                  type="button"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete</span>
+                </button>
+              </div>
             </div>
             <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
               <p className="text-sm text-yellow-800">
                 <strong>Note:</strong> Uploading a new transcript will replace this existing file.
               </p>
+            </div>
+          </div>
+        )}
+
+        {/* Existing Transcript Preview Section */}
+        {existingTranscript && showExistingPreview && existingPreviewUrl && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Current Transcript Preview</h3>
+                <p className="text-sm text-gray-500">Uploaded {formatDate(existingTranscript.uploadDate)}</p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowExistingPreview(false);
+                  if (existingPreviewUrl) {
+                    URL.revokeObjectURL(existingPreviewUrl);
+                    setExistingPreviewUrl(null);
+                  }
+                }}
+                className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded border border-gray-300 transition-colors"
+                type="button"
+              >
+                Close
+              </button>
+            </div>
+            <div className="border border-gray-300 rounded-lg overflow-hidden">
+              <iframe
+                src={`${existingPreviewUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                className="w-full h-[32rem]"
+                title="Current Transcript Preview"
+              />
+            </div>
+            <div className="mt-3 flex items-center justify-between text-sm text-gray-600">
+              <span>Current file: {existingTranscript.fileName}</span>
+              <span>{formatFileSize(existingTranscript.fileSize)}</span>
             </div>
           </div>
         )}

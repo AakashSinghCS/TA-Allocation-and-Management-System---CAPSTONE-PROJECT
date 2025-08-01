@@ -103,6 +103,30 @@ public class TranscriptController {
         return ResponseEntity.ok(transcripts);
     }
     
+    @GetMapping("/download")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> downloadMyTranscript() {
+        try {
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            Long userId = Long.parseLong(username);
+            
+            return transcriptService.getTranscriptByUserId(userId)
+                .map(transcript -> {
+                    return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, 
+                            "attachment; filename=\"" + transcript.getFileName() + "\"")
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .contentLength(transcript.getData().length)
+                        .body(transcript.getData());
+                })
+                .orElse(ResponseEntity.notFound().build());
+                
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error downloading transcript: " + e.getMessage());
+        }
+    }
+    
     @GetMapping("/download/{transcriptId}")
     @PreAuthorize("hasAnyRole('COORDINATOR', 'ADMIN')")
     public ResponseEntity<?> downloadTranscript(@PathVariable Long transcriptId) {
