@@ -10,5 +10,6 @@ import com.infinity.courseservice.models.StudentTaughtCourse;
 @Repository
 public interface StudentTaughtCourseRepository extends JpaRepository<StudentTaughtCourse, Long> {
     List<StudentTaughtCourse> findByStudentId(Long studentId);
-    void deleteByStudentIdAndCourseId(Long studentId, Long courseId);
+    // StudentTaughtCourse deleteByStudentIdAndCourseId(Long studentId, Long courseId);
+    StudentTaughtCourse findByStudentIdAndCourseId(Long studentId, Long courseId);
 }

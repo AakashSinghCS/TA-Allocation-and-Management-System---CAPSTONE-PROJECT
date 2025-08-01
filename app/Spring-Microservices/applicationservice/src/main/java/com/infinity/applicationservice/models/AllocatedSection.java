@@ -1,6 +1,7 @@
 package com.infinity.applicationservice.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.infinity.applicationservice.enums.TaskType;
 
 import jakarta.persistence.Entity;
@@ -23,6 +24,7 @@ import lombok.NoArgsConstructor;
     name = "allocated_section",
     uniqueConstraints = @UniqueConstraint(columnNames = {"allocation_id", "sectionId", "task"})
 )
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class AllocatedSection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +41,12 @@ public class AllocatedSection {
     private TaskType task;
 
     private double hours;
+
+    public AllocatedSection(AllocatedSection other){
+        this.id = other.id;
+        this.allocation = other.allocation;
+        this.sectionId= other.sectionId;
+        this.task = other.task;
+        this.hours= other.hours;
+    }
 }

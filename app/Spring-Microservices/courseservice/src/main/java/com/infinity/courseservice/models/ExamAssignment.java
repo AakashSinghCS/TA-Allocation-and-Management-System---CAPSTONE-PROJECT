@@ -3,6 +3,8 @@ package com.infinity.courseservice.models;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.infinity.courseservice.enums.ExamTask;
 
 import jakarta.persistence.Entity;
@@ -19,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class ExamAssignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +29,7 @@ public class ExamAssignment {
 
     @ManyToOne
     @JoinColumn(name = "exam_id")
+    @JsonBackReference
     private Exam exam;
 
     private Long studentId;
@@ -38,4 +42,14 @@ public class ExamAssignment {
     private LocalTime startTime;
 
     private LocalTime endTime; 
+
+    public ExamAssignment(ExamAssignment other){
+        this.id = other.id;
+        this.exam = other.exam;
+        this.studentId=other.studentId;
+        this.task = other.task;
+        this.date = other.date;
+        this.startTime = other.startTime;
+        this.endTime= other.endTime;
+    }
 }

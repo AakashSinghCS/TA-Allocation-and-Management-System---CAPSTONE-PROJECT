@@ -105,8 +105,8 @@ class AuditServiceTest {
                 .build();
 
         AuditEventDto auditDto = new AuditEventDto(
-                1L,
-                1L,
+                42L,
+                5L,
                 "Actor Name",
                 LocalDateTime.now(),
                 "user-service",

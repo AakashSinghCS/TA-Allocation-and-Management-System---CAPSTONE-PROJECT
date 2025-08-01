@@ -16,6 +16,7 @@ public class StudentTaughtCourseMapper {
 
     public StudentTaughtCourseDto toDto(UserDto student, StudentTaughtCourse record){
     return new StudentTaughtCourseDto(
+                        record.getId(),
                         student,
                         courseMapper.courseToDto(record.getCourse()),
                         record.getSemester().getYear(),

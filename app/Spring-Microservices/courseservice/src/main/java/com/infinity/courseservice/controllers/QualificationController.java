@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,21 +45,24 @@ public class QualificationController {
 
     @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
     @PostMapping("/instructor/addQualification")
-    public ResponseEntity<QualificationDto> instructorAddQualification(@RequestBody QualificationRequest request) {
-        QualificationDto dto = qualificationService.instructorAddQualification(request);
+    public ResponseEntity<QualificationDto> instructorAddQualification(@RequestBody QualificationRequest request
+        ,@RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        QualificationDto dto = qualificationService.instructorAddQualification(request,userIdFromHeader);
         return ResponseEntity.ok(dto);
     }
 
     @PreAuthorize("hasAnyRole('COORDINATOR', 'INSTRUCTOR')")
     @DeleteMapping("/instructor/deleteQualification/{id}")
-    public ResponseEntity<List<Long>> instructorDeleteQualification(@PathVariable Long id) {
-        List<Long> result = qualificationService.instructorDeleteQualification(id);
+    public ResponseEntity<List<Long>> instructorDeleteQualification(@PathVariable Long id,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        List<Long> result = qualificationService.instructorDeleteQualification(id,userIdFromHeader);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/{studentId}/studentUpdateQualification")
-    public ResponseEntity<List<QualificationDto>> studentUpdateQualification(@RequestBody StudentQualiRequest request, @PathVariable Long studentId) {
-        List<QualificationDto> qualifications = qualificationService.studentUpdateQualifications(request, studentId);
+    public ResponseEntity<List<QualificationDto>> studentUpdateQualification(@RequestBody StudentQualiRequest request, @PathVariable Long studentId,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        List<QualificationDto> qualifications = qualificationService.studentUpdateQualifications(request, studentId,userIdFromHeader);
         return ResponseEntity.ok(qualifications);
     }
 

@@ -1,5 +1,6 @@
 package com.infinity.courseservice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.infinity.courseservice.enums.EnrollmentStatus;
 
 import jakarta.persistence.Entity;
@@ -21,6 +22,7 @@ import lombok.NoArgsConstructor;
        uniqueConstraints = {
            @UniqueConstraint(columnNames = {"studentId", "course_id"})
        })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class StudentCourse {
 
     @Id

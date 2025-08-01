@@ -1,12 +1,14 @@
 package com.infinity.courseservice.services;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.NeedDtos.NeedRequest;
+import com.infinity.courseservice.enums.ActionOptions;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.feign.ApplicationInterface;
@@ -33,8 +35,9 @@ public class NeedService {
     private final SemesterRepository semesterRepository;
     private final NeedMapper needMapper;
     private final ApplicationInterface applicationInterface;
+    private final AuditService auditService;
 
-    public NeedDto addNeed(NeedRequest request, Long courseId) {
+    public NeedDto addNeed(NeedRequest request, Long courseId, Long userIdFromHeader) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
         Semester semester = semesterRepository.findByYearAndSemester(request.year(), request.semester())
@@ -57,8 +60,18 @@ public class NeedService {
                 request.numHoursCurrentlyAllocated());
         need = needRepository.save(need);
 
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "Need",   
+            null,               
+            need,           
+            need.getId()   
+        );
+
         CourseNeed courseNeed = new CourseNeed(course, need, semester);
         courseNeed = courseNeedRepository.save(courseNeed);
+
         if (request.prerequisiteCourseIds() != null) {
             List<Course> prereqCourses = courseRepository.findAllById(request.prerequisiteCourseIds());
             for (Course prereq : prereqCourses) {
@@ -70,6 +83,15 @@ public class NeedService {
         }
 
         courseNeed = courseNeedRepository.save(courseNeed);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "CourseNeed",   
+            null,               
+            courseNeed,           
+            courseNeed.getId()   
+        );
+
         return needMapper.courseNeedToDto(courseNeed);
     }
 
@@ -80,10 +102,11 @@ public class NeedService {
         return needMapper.courseNeedToDto(courseNeed);
     }
 
-    public NeedDto updateNeed(NeedRequest request, Long courseId, Integer year, String semester) {
+    public NeedDto updateNeed(NeedRequest request, Long courseId, Integer year, String semester, Long userIdFromHeader) {
         CourseNeed courseNeed = courseNeedRepository
                 .findByCourseIdAndSemester_YearAndSemester_Semester(courseId, year, semester)
                 .orElseThrow(() -> new NotFoundException("Course has no need for that year and semester"));
+        CourseNeed before = new CourseNeed(courseNeed);
         if (LocalDateTime.now().isAfter(
                 applicationInterface.getDeadlineByName("instructor_need_update_deadline").getBody().endTime())) {
             throw new BadRequestException("The application deadline has passed.");
@@ -94,7 +117,7 @@ public class NeedService {
         }
         Semester semesterObj = semesterRepository.findByYearAndSemester(year, semester)
                 .orElseThrow(() -> new NotFoundException("That semester doesn't exist"));
-
+        Need beforeNeed = new Need(courseNeed.getNeed());
         courseNeed.getNeed().setDescription(request.description());
         courseNeed.getNeed().setRequiredGradingHours(request.requiredGradingHours());
         courseNeed.getNeed().setNumHoursCurrentlyAllocated(request.numHoursCurrentlyAllocated());
@@ -102,6 +125,14 @@ public class NeedService {
 
         courseNeed.getPrerequisites().clear();
         courseNeedRepository.save(courseNeed);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "CourseNeed",   
+            before,               
+            courseNeed,           
+            courseNeed.getId()   
+        );
         if (request.prerequisiteCourseIds() != null) {
             List<Course> prereqCourses = courseRepository.findAllById(request.prerequisiteCourseIds());
             for (Course prereq : prereqCourses) {
@@ -111,20 +142,61 @@ public class NeedService {
                 courseNeed.getPrerequisites().add(p);
             }
         }
-        needRepository.save(courseNeed.getNeed());
+        
+        Need savedNeed = needRepository.save(courseNeed.getNeed());
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "Need",   
+            beforeNeed,               
+            savedNeed,           
+            savedNeed.getId()   
+        );
         courseNeed = courseNeedRepository.save(courseNeed);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "CourseNeed",   
+            before,               
+            courseNeed,           
+            courseNeed.getId()   
+        );
         return needMapper.courseNeedToDto(courseNeed);
     }
 
-    public String deleteNeed(Long courseId, Integer year, String semester) {
+    public String deleteNeed(Long courseId, Integer year, String semester,Long userIdFromHeader) {
         CourseNeed courseNeed = courseNeedRepository
                 .findByCourseIdAndSemester_YearAndSemester_Semester(courseId, year, semester)
                 .orElseThrow(() -> new NotFoundException("Course has no need for that year and semester"));
-        needRepository.delete(courseNeed.getNeed());
+        Need need = courseNeed.getNeed();
+
+        Need snapshotNeed = new Need(need);  
+        List<CourseNeed> snapshotCourseNeeds = new ArrayList<>(need.getCourseNeeds());
+
+        needRepository.delete(need);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "Need",            
+            snapshotNeed, 
+            null,          
+            snapshotNeed.getId()   
+        );
+        snapshotCourseNeeds.forEach(cn -> 
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.DELETE,
+                "CourseNeed",
+                cn,
+                null,
+                cn.getId()
+            )
+        );
         return "Need deleted";
     }
 
-    public String updateAllocatedHours(Long needId, Integer numHoursAllocated) {
+    public String updateAllocatedHours(Long needId, Integer numHoursAllocated,Long userIdFromHeader) {
         if (!needRepository.existsById(needId)) {
             throw new NotFoundException("No need with id " + needId);
         }

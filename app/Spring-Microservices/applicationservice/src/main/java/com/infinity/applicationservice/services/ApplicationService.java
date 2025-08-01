@@ -1,5 +1,6 @@
 package com.infinity.applicationservice.services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentD
 import com.infinity.applicationservice.dtos.Applications.UnavailabilityDto;
 import com.infinity.applicationservice.dtos.Semesters.SemesterDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
+import com.infinity.applicationservice.enums.ActionOptions;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
@@ -44,6 +46,7 @@ public class ApplicationService {
     private final NotificationClient notificationClient;
     private final EmailMapper emailMapper;
     private final CourseInterface courseInterface;
+    private final AuditService auditService;
 
     public ApplicationDto submitApplication(ApplicationRequest req, Long userIdFromHeader, List<String> headerRoles) {
 
@@ -65,11 +68,20 @@ public class ApplicationService {
 
         mapUnavailability(req, application);
 
-        applicationRepository.save(application);
-
+        Application saved = applicationRepository.save(application);
+        
         UserDto student = userInterface.getStudentById(userIdFromHeader).getBody();
-        notificationClient.sendEmail(emailMapper.applicationReceivedEmailRequest(student));
+         auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "Application",
+            null,
+            saved,
+            saved.getId()
+        );
 
+        notificationClient.sendEmail(emailMapper.applicationReceivedEmailRequest(student));
+        
         return applicationMapper.toDto(application);
     }
 
@@ -91,14 +103,27 @@ public class ApplicationService {
         if (!studentId.equals(userIdFromHeader) && !headerRoles.contains("ROLE_COORDINATOR")) {
             throw new AuthorizationException("Not allowed");
         }
-        if (!applicationRepository.existsByStudentIdAndYearAndSemester(studentId, year, semester)) {
-            throw new NotFoundException("Application with that student id and year doesn't exist");
-        }
-        applicationRepository.deleteByStudentIdAndYearAndSemester(studentId, year, semester);
+        int currentYear = LocalDate.now().getYear();
+
+        Application toDelete = applicationRepository
+            .findByStudentIdAndYearAndSemester(studentId, currentYear, semester)
+            .orElseThrow(() -> new NotFoundException(
+                "Application with student id " + studentId +
+                " and year " + currentYear + " doesn't exist"));
+
+        applicationRepository.delete(toDelete);
+         auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "Application",
+            toDelete,
+            null,
+            toDelete.getId()
+        );
         return "Application deleted";
     }
 
-    @Transactional
+    // @Transactional
     public ApplicationDto updateApplication(ApplicationRequest req, Long studentId, Integer year, String semester,
             Long userIdFromHeader,
             List<String> headerRoles) {
@@ -116,8 +141,8 @@ public class ApplicationService {
 
         Application application = applicationRepository
                 .findByStudentIdAndYearAndSemester(studentId, year, semester)
-                .orElseThrow(() -> new NotFoundException(
-                        "Application with that student id, year, and semester doesn't exist"));
+                .orElseThrow(() -> new NotFoundException("Application with that student id, year, and semester doesn't exist"));
+        Application before = new Application(application);
 
         application.setSubjectPreferences(req);
         application.setApplicationType(req.applicationType());
@@ -129,7 +154,17 @@ public class ApplicationService {
         application.getUnavailabilities().clear();
         mapUnavailability(req, application);
 
-        applicationRepository.save(application);
+        Application saved = applicationRepository.save(application);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "Application",
+            before,
+            saved,
+            application.getId()
+        );
+
         return applicationMapper.toDto(application);
     }
 

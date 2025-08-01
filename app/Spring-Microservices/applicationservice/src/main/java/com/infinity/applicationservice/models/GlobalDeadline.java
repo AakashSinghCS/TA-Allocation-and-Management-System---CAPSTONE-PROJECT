@@ -2,6 +2,8 @@ package com.infinity.applicationservice.models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Table(name = "global_deadlines")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class GlobalDeadline {
 
     @Id
@@ -33,5 +36,12 @@ public class GlobalDeadline {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public GlobalDeadline(GlobalDeadline other){
+        this.id = other.id;
+        this.name = other.name;
+        this.startTime = other.startTime;
+        this.endTime= other.endTime;
     }
 }

@@ -77,6 +77,7 @@ class QualificationControllerTest {
 
     @Test
     void instructorAddQualification_shouldReturnDto() throws Exception {
+        Long userIdFromHeader = 1L;
         QualificationRequest request = new QualificationRequest(1L, null ,null, "desc", "COSC");
         QualificationDto dto = new QualificationDto(
                 1L,
@@ -85,29 +86,32 @@ class QualificationControllerTest {
                 null
         );
 
-        when(qualificationService.instructorAddQualification(any())).thenReturn(dto);
+        when(qualificationService.instructorAddQualification(any(), eq(userIdFromHeader))).thenReturn(dto);
 
         mockMvc.perform(post("/qualifications/instructor/addQualification")
                .contentType(MediaType.APPLICATION_JSON)
-               .content(objectMapper.writeValueAsString(request)))
+               .content(objectMapper.writeValueAsString(request))
+               .header("X-User-Id",userIdFromHeader))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.description").value("desc"));
     }
 
     @Test
     void instructorDeleteQualification_shouldReturnDeletedIds() throws Exception {
-        // Arrange
-        when(qualificationService.instructorDeleteQualification(42L))
+        Long userIdFromHeader = 1L;
+        when(qualificationService.instructorDeleteQualification(42L, userIdFromHeader))
                 .thenReturn(List.of(10L, 20L));
 
         // Act + Assert
-        mockMvc.perform(delete("/qualifications/instructor/deleteQualification/42"))
+        mockMvc.perform(delete("/qualifications/instructor/deleteQualification/42")
+                .header("X-User-Id",userIdFromHeader))
             .andExpect(status().isOk())
             .andExpect(content().json("[10,20]"));
     }
 
     @Test
     void studentUpdateQualification_shouldReturnQualificationDtos() throws Exception {
+        Long userIdFromHeader = 1L;
         StudentQualiRequest request = new StudentQualiRequest(List.of(1L));
         QualificationDto dto = new QualificationDto(1L, 
                 new CourseDto(1L, "COSC", "Intro", "101"),
@@ -115,12 +119,13 @@ class QualificationControllerTest {
                 null
         );
 
-        when(qualificationService.studentUpdateQualifications(any(), eq(2L)))
+        when(qualificationService.studentUpdateQualifications(any(), eq(2L),eq(userIdFromHeader)))
                 .thenReturn(List.of(dto));
 
         mockMvc.perform(post("/qualifications/2/studentUpdateQualification")
                .contentType(MediaType.APPLICATION_JSON)
-               .content(objectMapper.writeValueAsString(request)))
+               .content(objectMapper.writeValueAsString(request))
+               .header("X-User-Id",userIdFromHeader))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$[0].description").value("desc"));
     }

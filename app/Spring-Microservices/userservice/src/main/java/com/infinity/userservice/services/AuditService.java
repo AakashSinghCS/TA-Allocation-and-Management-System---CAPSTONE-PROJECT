@@ -139,15 +139,15 @@ public class AuditService {
     }
 
     private String filterPassword(Object obj) throws JsonProcessingException {
-    if (obj == null) return null;
+        if (obj == null) return null;
 
-    // Convert the object into a mutable JSON tree
-    JsonNode tree = objectMapper.valueToTree(obj);
-    if (tree.isObject()) {
-        ((ObjectNode) tree).remove("password");
+        // Convert the object into a mutable JSON tree
+        JsonNode tree = objectMapper.valueToTree(obj);
+        if (tree.isObject()) {
+            ((ObjectNode) tree).remove("password");
+        }
+
+        // Write back to string
+        return objectMapper.writeValueAsString(tree);
     }
-
-    // Write back to string
-    return objectMapper.writeValueAsString(tree);
-}
 }

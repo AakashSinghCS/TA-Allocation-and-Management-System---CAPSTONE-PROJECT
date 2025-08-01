@@ -23,21 +23,24 @@ public class QuestionAdminController {
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping
-    public ResponseEntity<ProfileQuestion> create(@RequestBody QuestionRequest req) {
-        return ResponseEntity.ok(qs.createQuestion(req));
+    public ResponseEntity<ProfileQuestion> create(@RequestBody QuestionRequest req,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(qs.createQuestion(req, userIdFromHeader));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PutMapping("/{id}")
     public ResponseEntity<ProfileQuestion> update(@PathVariable Long id,
-                                                  @RequestBody QuestionRequest req) {
-        return ResponseEntity.ok(qs.updateQuestion(id, req));
+                                                  @RequestBody QuestionRequest req,
+                                                  @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(qs.updateQuestion(id, req, userIdFromHeader));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        qs.deleteQuestion(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        qs.deleteQuestion(id, userIdFromHeader);
         return ResponseEntity.noContent().build();
     }
 

@@ -7,9 +7,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.infinity.courseservice.dtos.Semesters.SemesterDto;
+import com.infinity.courseservice.enums.ActionOptions;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.DuplicateEntryException;
 import com.infinity.courseservice.exceptions.NotFoundException;
+import com.infinity.courseservice.models.Section;
 import com.infinity.courseservice.models.Semester;
 import com.infinity.courseservice.repositories.SemesterRepository;
 import com.infinity.courseservice.utility.SemesterMapper;
@@ -22,6 +24,7 @@ public class SemesterService {
 
     private final SemesterRepository semesterRepository;
     private final SemesterMapper semesterMapper;
+    private final AuditService auditService;
 
     public SemesterDto getSemesterById(Long id) {
         Semester semester = semesterRepository.findById(id)
@@ -37,21 +40,31 @@ public class SemesterService {
             .toList();
     }
 
-    public SemesterDto addSemester(SemesterDto request) {
+    public SemesterDto addSemester(SemesterDto request, Long userIdFromHeader) {
         validateSemester(request);
         Semester semester = semesterMapper.toSemester(request);
         try{
             semester = semesterRepository.save(semester);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.CREATE,
+                "Semester",   
+                null,               
+                semester,           
+                semester.getId()   
+            );
         } catch(DataIntegrityViolationException e){
                 throw new DuplicateEntryException("Duplicate semester");
             }
-            return semesterMapper.toDto(semester);
+        return semesterMapper.toDto(semester);
     }
 
-    public SemesterDto updateSemester(Long id, SemesterDto request) {
+    public SemesterDto updateSemester(Long id, SemesterDto request, Long userIdFromHeader) {
         validateSemester(request);
         Semester semester = semesterRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No semester with id " + id));
+                
+        Semester before = new Semester(semester);
         semester.setYear(request.year());
         semester.setSemester(request.semester());
         semester.setStartDate(request.startDate());
@@ -59,17 +72,36 @@ public class SemesterService {
         semester.setActive(request.isActive());
         try {
             semester = semesterRepository.save(semester);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.UPDATE,
+                "Semester",   
+                before,               
+                semester,           
+                semester.getId()   
+            );
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateEntryException("Duplicate semester");
         }
         return semesterMapper.toDto(semester);
     }
 
-    public String deleteSemester(Long id) {
-        if (!semesterRepository.existsById(id)) {
-            throw new NotFoundException("No semester with id " + id);
-        }
-        semesterRepository.deleteById(id);
+    public String deleteSemester(Long id, Long userIdFromHeader) {
+        Semester toDelete = semesterRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(
+               "No semester with id " + id));
+        semesterRepository.delete(toDelete);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "Semester",   
+            toDelete,               
+            null,           
+            toDelete.getId()   
+        );
+
         return "Semester deleted";
     }
 

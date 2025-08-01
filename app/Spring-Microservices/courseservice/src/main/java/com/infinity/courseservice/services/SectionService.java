@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
 import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
 import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
 import com.infinity.courseservice.dtos.SectionDtos.ExportedSectionData;
@@ -17,6 +18,7 @@ import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
 import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.ActionOptions;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
@@ -49,12 +51,13 @@ public class SectionService {
     private final EnrollmentService enrollmentService;
     private final SemesterRepository semesterRepository;
     private final SectionMapper sectionMapper;
+    private final AuditService auditService;
     /**
      * Import sections from JSON payload.
      * Accepts a list of SectionCsvData objects.
      * Returns import result summary.
      */
-    public String importSectionsFromJson(List<SectionCsvData> sections) {
+    public String importSectionsFromJson(List<SectionCsvData> sections, Long userIdFromHeader) {
         int successCount = 0;
         int errorCount = 0;
         StringBuilder errorMessages = new StringBuilder();
@@ -86,14 +89,32 @@ public class SectionService {
                 Course course;
                 if (courseOpt.isPresent()) {
                     course = courseOpt.get();
+                    Course after = new Course(course);
                     // Update course name if needed
                     if (!course.getName().equals(sectionCsvData.name())) {
                         course.setName(sectionCsvData.name());
+                        after.setName(sectionCsvData.name());
                         courseRepository.save(course);
+                        auditService.record(
+                            userIdFromHeader,
+                            ActionOptions.UPDATE,
+                            "Course",   
+                            courseOpt,               
+                            after,           
+                            course.getId()   
+                        );
                     }
                 } else {
                     course = new Course(sectionCsvData.deptCode(), sectionCsvData.name(), sectionCsvData.courseNum());
                     course = courseRepository.save(course);
+                    auditService.record(
+                        userIdFromHeader,
+                        ActionOptions.CREATE,
+                        "Course",   
+                        null,               
+                        course,           
+                        course.getId()   
+                    );
                 }
 
                 // Convert type string to SectionType enum
@@ -126,6 +147,15 @@ public class SectionService {
                         null // instructorId (not in JSON)
                     );
                     section = sectionRepository.save(section);
+
+                    auditService.record(
+                            userIdFromHeader,
+                            ActionOptions.CREATE,
+                            "Section",   
+                            null,               
+                            section,           
+                            section.getId()   
+                        );
                 }
 
                 // Parse schedule times
@@ -150,7 +180,15 @@ public class SectionService {
                     SectionSchedule schedule = new SectionSchedule(
                         sectionCsvData.day(), startTime, endTime, section
                     );
-                    sectionScheduleRepository.save(schedule);
+                    SectionSchedule saved = sectionScheduleRepository.save(schedule);
+                    auditService.record(
+                            userIdFromHeader,
+                            ActionOptions.CREATE,
+                            "SectionSchedule",   
+                            null,               
+                            saved,           
+                            saved.getId()   
+                        );
                 }
 
                 successCount++;
@@ -196,55 +234,96 @@ public class SectionService {
     }
 
     @Transactional
-    public SectionDto addSection(Long courseId, SectionAddDtoRequest request) {
+    public SectionDto addSection(Long courseId, SectionAddDtoRequest request, Long userIdFromHeader) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("Course not found"));
         Semester semester = semesterRepository.findByYearAndSemester(request.year(), request.semester())
             .orElseThrow(() -> new NotFoundException("Semester doesn't exist"));
 
-        Section section = new Section(semester, request.section(), request.type(), course, request.instructorId());
+        Section section = new Section(semester, request.section(), request.type(), course,
+                request.instructorId());
+        Section saved;
         try {
-            sectionRepository.save(section);
+            saved = sectionRepository.save(section);
         } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException("Section already exists " + ex);
         }
 
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "Section",   
+            null,               
+            saved,           
+            saved.getId()   
+        );
+
         return sectionMapper.sectionToDto(section);
     }
 
-    public SectionDto updateSection(Long sectionId, CourseRequest request) {
+    public SectionDto updateSection(Long sectionId, CourseRequest request, Long userIdFromHeader) {
         Section section = sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
+        Section before = new Section(section);
         Semester semester = semesterRepository.findByYearAndSemester(request.year(), request.semester())
                 .orElseThrow(() -> new NotFoundException("Semester doesn't exist"));
         section.setSection(request.section());
         section.setType(request.type());
         section.setSemester(semester);
         section.setInstructorId(request.instructorId());
-        sectionRepository.save(section);
+        Section saved = sectionRepository.save(section);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "Section",   
+            before,               
+            saved,           
+            section.getId()   
+        );
+
         return sectionMapper.sectionToDto(section);
     }
 
-    public String deleteSection(Long sectionId) {
-        if (!sectionRepository.existsById(sectionId)) {
-            throw new NotFoundException("No section with id " + sectionId);
-        }
-        sectionRepository.deleteById(sectionId);
+    public String deleteSection(Long sectionId, Long userIdFromHeader) {
+        Section toDelete = sectionRepository
+            .findById(sectionId)
+            .orElseThrow(() -> new NotFoundException(
+               "No section with id " + sectionId));
+        sectionRepository.delete(toDelete);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "Section",   
+            toDelete,               
+            null,           
+            toDelete.getId()   
+        );
 
         Integer allocationsAffected = applicationInterface.setSectionIdNull(sectionId).getBody();
         Integer enrollmentsAffected = enrollmentService.clearSectionFromStudentCourses(sectionId);
-        return "Section deleted. "+allocationsAffected+" allocations cleared. "+enrollmentsAffected+" enrollments affected.";
+        return "Section deleted. " + allocationsAffected + " allocations cleared. " + enrollmentsAffected
+                + " enrollments affected.";
     }
 
     @Transactional
-    public SectionScheduleDto addSectionSchedule(Long sectionId, CourseRequest request) {
+    public SectionScheduleDto addSectionSchedule(Long sectionId, CourseRequest request, Long userIdFromHeader) {
         Section section = sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new NotFoundException("section not found"));
         LocalTime startTime = request.startTime() != null ? LocalTime.parse(request.startTime()) : null;
         LocalTime endTime = request.endTime() != null ? LocalTime.parse(request.endTime()) : null;
         SectionSchedule sectionSchedule = new SectionSchedule(request.day(), startTime, endTime, section);
         try {
-            sectionScheduleRepository.save(sectionSchedule);
+            SectionSchedule saved = sectionScheduleRepository.save(sectionSchedule);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.CREATE,
+                "SectionSchedule",   
+                null,               
+                saved,           
+                saved.getId()   
+            );
         } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException("Schedule already exists " + ex);
         }
@@ -258,46 +337,89 @@ public class SectionService {
         return section.getSectionSchedules().stream()
                 .map(sec -> new SectionScheduleDto(sec.getDay(),
                         sec.getStartTime(),
-                        sec.getEndTime(),sec.getSection().getId(),
+                        sec.getEndTime(), sec.getSection().getId(),
                         sec.getId()))
                 .toList();
     }
-    
-    public SectionScheduleDto updateSectionSchedule(Long sectionScheduleId, CourseRequest request) {
+
+    public SectionScheduleDto updateSectionSchedule(Long sectionScheduleId, CourseRequest request, Long userIdFromHeader) {
         SectionSchedule schedule = sectionScheduleRepository.findById(sectionScheduleId)
                 .orElseThrow(() -> new NotFoundException("No schedule with id " + sectionScheduleId));
+        SectionSchedule before = new SectionSchedule(schedule);
         schedule.setDay(request.day());
         schedule.setStartTime(LocalTime.parse(request.startTime()));
         schedule.setEndTime(LocalTime.parse(request.endTime()));
-        sectionScheduleRepository.save(schedule);
+        SectionSchedule saved = sectionScheduleRepository.save(schedule);
+
+        auditService.record(
+                userIdFromHeader,
+                ActionOptions.UPDATE,
+                "SectionSchedule",   
+                before,               
+                saved,           
+                saved.getId()   
+            );
+
         return new SectionScheduleDto(schedule.getDay(),
-                    schedule.getStartTime(),
-                    schedule.getEndTime(),schedule.getSection().getId(),
-                    schedule.getId());
+                schedule.getStartTime(),
+                schedule.getEndTime(), schedule.getSection().getId(),
+                schedule.getId());
     }
 
-    public String deleteSectionSchedule(Long sectionScheduleId) {
-        if (!sectionScheduleRepository.existsById(sectionScheduleId)) {
-            throw new NotFoundException("No schedule with id " + sectionScheduleId);
-        }
-        sectionScheduleRepository.deleteById(sectionScheduleId);
+    public String deleteSectionSchedule(Long sectionScheduleId, Long userIdFromHeader) {
+        SectionSchedule toDelete = sectionScheduleRepository
+            .findById(sectionScheduleId)
+            .orElseThrow(() -> new NotFoundException(
+               "No schedule with id " + sectionScheduleId));
+        sectionScheduleRepository.delete(toDelete);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "SectionSchedule",   
+            toDelete,               
+            null,           
+            toDelete.getId()   
+        );
         return "Section schedule deleted";
     }
 
-    public String assignInstructor(AssignInstructorRequest request) {
+    public String assignInstructor(AssignInstructorRequest request, Long userIdFromHeader) {
         UserDto instructorDto = userInterface.getInstructorById(request.instructorId());
         Section section = sectionRepository.findById(request.sectionId())
                 .orElseThrow(() -> new NotFoundException("No section with id " + request.sectionId()));
+        Section before = new Section(section);
         section.setInstructorId(instructorDto.id());
-        sectionRepository.save(section);
+        Section saved = sectionRepository.save(section);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "Section",   
+            before,               
+            saved,           
+            section.getId()   
+        );
+
         return "Instructor assigned to section " + section.getId();
     }
 
-    public String unassignInstructor(Long sectionId, Long instructorId) {
+    public String unassignInstructor(Long sectionId, Long instructorId,Long userIdFromHeader) {
         Section section = sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new NotFoundException("No section with id " + sectionId));
+        Section before = new Section(section);
         section.setInstructorId(null);
-        sectionRepository.save(section);
+        Section saved = sectionRepository.save(section);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "Section",   
+            before,               
+            saved,           
+            section.getId()   
+        );
+
         return "Instructor unassigned from " + section.getId();
     }
 
@@ -316,7 +438,7 @@ public class SectionService {
     }
 
     @Transactional
-    public Boolean add(SectionAddDtoRequest request) {
+    public Boolean add(SectionAddDtoRequest request, Long userIdFromHeader) {
         String deptCode = Optional.ofNullable(request.deptCode()).orElse("").trim();
         String courseNum = Optional.ofNullable(request.courseNum()).orElse("").trim();
 
@@ -333,7 +455,16 @@ public class SectionService {
                             deptCode,
                             Optional.ofNullable(request.name()).orElse(""),
                             courseNum);
-                    return courseRepository.save(newCourse);
+                    Course saved= courseRepository.save(newCourse);
+                    auditService.record(
+                        userIdFromHeader,
+                        ActionOptions.CREATE,
+                        "Course",   
+                        null,               
+                        saved,           
+                        saved.getId()   
+                    );
+                    return saved;
                 });
 
         Section section = new Section(
@@ -344,6 +475,14 @@ public class SectionService {
                 course);
         try {
             section = sectionRepository.save(section);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.CREATE,
+                "Section",   
+                null,               
+                section,           
+                section.getId()   
+            );
         } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException("Section already exists");
         }
@@ -356,7 +495,15 @@ public class SectionService {
                     sched.setStartTime(schedDto.startTime());
                     sched.setEndTime(schedDto.endTime());
                     sched.setSection(section);
-                    sectionScheduleRepository.save(sched);
+                    SectionSchedule saved = sectionScheduleRepository.save(sched);
+                    auditService.record(
+                        userIdFromHeader,
+                        ActionOptions.CREATE,
+                        "SectionSchedule",   
+                        null,               
+                        saved,           
+                        saved.getId()   
+                    );
                 }
             } catch (DataIntegrityViolationException ex) {
                 throw new BadRequestException("Section schedule saving went wrong");
@@ -371,7 +518,7 @@ public class SectionService {
             .findByCourseIdAndSectionAndSemester_YearAndSemester_Semester(courseId, section, year, semester);
 
         Section entity = optionalSection
-            .orElseThrow(() -> new EntityNotFoundException("Section not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Section not found"));
 
         return sectionMapper.sectionToDto(entity);
     }
@@ -379,19 +526,20 @@ public class SectionService {
     // CSV Export functionality
     public List<ExportedSectionData> exportSections(List<Long> sectionIds) {
         List<Section> sections = sectionRepository.findAllById(sectionIds);
-        
+
         return sections.stream()
                 .map(section -> sectionMapper.exportedSectionData(section))
                 .collect(Collectors.toList());
     }
 
     /**
-     * Export sections as CSV data format that matches ImportSectionRequest structure.
+     * Export sections as CSV data format that matches ImportSectionRequest
+     * structure.
      * This enables seamless export -> edit -> import workflow.
      */
     public List<SectionCsvData> exportSectionsAsCsv(List<Long> sectionIds) {
         List<Section> sections = sectionRepository.findAllById(sectionIds);
-        
+
         return sections.stream()
                 .map(this::convertToSectionCsvData)
                 .collect(Collectors.toList());
@@ -402,7 +550,7 @@ public class SectionService {
      */
     public List<SectionCsvData> exportAllSectionsAsCsv() {
         List<Section> sections = sectionRepository.findAll();
-        
+
         return sections.stream()
                 .map(this::convertToSectionCsvData)
                 .collect(Collectors.toList());
@@ -419,10 +567,11 @@ public class SectionService {
         return sectionMapper.sectionCsvData(section, schedule);
     }
 
-  
     /**
      * Import sections from a CSV file.
-     * This method parses the CSV, validates data, and saves sections to the database.
+     * This method parses the CSV, validates data, and saves sections to the
+     * database.
+     * 
      * @param file CSV file containing section data
      * @return Import result summary (success/failure count, errors)
      */
@@ -438,26 +587,42 @@ public class SectionService {
 
     public SectionDto getByCourseIdAndSectionName(Long courseId, String section) {
         Section entity = sectionRepository.findByCourseIdAndSection(courseId, section)
-            .orElseThrow(() -> new NotFoundException("Section not found"));
+                .orElseThrow(() -> new NotFoundException("Section not found"));
         return sectionMapper.sectionToDto(entity);
     }
 
-    public void incrementNumberOfTAsAllocated(Long sectionId) {
+    public void incrementNumberOfTAsAllocated(Long sectionId, Long userIdFromHeader) {
         Section section = sectionRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundException("Section not found"));
-
+        Section before = new Section(section);
         section.setNumberOfTAsAllocated(section.getNumberOfTAsAllocated() + 1);
-        sectionRepository.save(section);
+        Section saved = sectionRepository.save(section);
+        auditService.record(
+                userIdFromHeader,
+                ActionOptions.UPDATE,
+                "Section",   
+                before,               
+                saved,           
+                before.getId()   
+            );
     }
 
-    public void decrementNumberOfTAsAllocated(Long sectionId) {
+    public void decrementNumberOfTAsAllocated(Long sectionId, Long userIdFromHeader) {
         Section section = sectionRepository.findById(sectionId)
             .orElseThrow(() -> new NotFoundException("Section not found"));
-
+        Section before = new Section(section);
         int current = section.getNumberOfTAsAllocated();
         if (current > 0) {
             section.setNumberOfTAsAllocated(current - 1);
-            sectionRepository.save(section);
+            Section saved = sectionRepository.save(section);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.UPDATE,
+                "Section",   
+                before,               
+                saved,           
+                before.getId()   
+            );
         }
     }
 

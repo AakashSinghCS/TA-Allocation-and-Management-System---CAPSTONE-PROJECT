@@ -74,13 +74,15 @@ class QuestionAdminControllerTest {
     @Test
     @DisplayName("POST /admin/questions – create question")
     void createQuestion() throws Exception {
-        when(qs.createQuestion(any())).thenReturn(q);
+        Long userIdFromHeader = 1L;
+        when(qs.createQuestion(any(), eq(userIdFromHeader))).thenReturn(q);
 
         QuestionRequest req = new QuestionRequest("Fav Lang?", QuestionType.SINGLE, List.of());
 
         mvc.perform(post("/admin/questions")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(req)))
+                .content(mapper.writeValueAsString(req))
+                .header("X-User-Id",userIdFromHeader))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(10));
     }
@@ -98,12 +100,15 @@ class QuestionAdminControllerTest {
     @Test
     @DisplayName("PUT /admin/questions/{id} – update question")
     void updateQuestion() throws Exception {
-        when(qs.updateQuestion(eq(10L), any())).thenReturn(q);
+        Long userIdFromHeader = 1L;
+
+        when(qs.updateQuestion(eq(10L), any(), eq(userIdFromHeader))).thenReturn(q);
 
         mvc.perform(put("/admin/questions/10")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(
-                        new QuestionRequest("Updated", QuestionType.SINGLE, List.of()))))
+                        new QuestionRequest("Updated", QuestionType.SINGLE, List.of())))
+                .header("X-User-Id",userIdFromHeader))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(10));
     }
@@ -111,10 +116,12 @@ class QuestionAdminControllerTest {
     @Test
     @DisplayName("DELETE /admin/questions/{id} – delete question")
     void deleteQuestion() throws Exception {
-        mvc.perform(delete("/admin/questions/10"))
+        Long userIdFromHeader = 1L;
+        mvc.perform(delete("/admin/questions/10")
+                .header("X-User-Id",userIdFromHeader))
                 .andExpect(status().isNoContent());
 
-        verify(qs).deleteQuestion(10L);
+        verify(qs).deleteQuestion(10L, userIdFromHeader);
     }
 
     @Test

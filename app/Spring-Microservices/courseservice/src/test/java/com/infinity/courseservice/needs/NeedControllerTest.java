@@ -40,14 +40,16 @@ public class NeedControllerTest {
     @Test
     void testAddNeed() throws Exception {
         Long courseId = 1L;
+        Long userIdFromHeader = 1L;
         NeedRequest request = new NeedRequest("Marking Labs", 30, 10, 2025, "W1", null);
         NeedDto response = new NeedDto(5L, 1L,"Marking Labs", 30, 10, 2025, "W1", null);
 
-        when(needService.addNeed(eq(request), eq(courseId))).thenReturn(response);
+        when(needService.addNeed(eq(request), eq(courseId),eq(userIdFromHeader))).thenReturn(response);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/needs/add/{courseId}", courseId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(objectMapper.writeValueAsString(request))
+                .header("X-User-Id",userIdFromHeader))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(5L))
                 .andExpect(jsonPath("$.description").value("Marking Labs"))
@@ -75,16 +77,18 @@ public class NeedControllerTest {
         Long courseId = 1L;
         Integer year = 2025;
         String semester = "W1";
+        Long userIdFromHeader = 1L;
         NeedRequest request = new NeedRequest("Updated", 30, 10, 2025, "W1", List.of(1L));
         NeedDto updated = new NeedDto(5L, 1L, "Updated", 30, 10, 2025, "W1",
                 List.of(new CourseDto(1L, "COSC", "Security", "430")));
 
-        when(needService.updateNeed(eq(request), eq(courseId), eq(2025), eq("W1"))).thenReturn(updated);
+        when(needService.updateNeed(eq(request), eq(courseId), eq(2025), eq("W1"),eq(userIdFromHeader))).thenReturn(updated);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/needs/update/{courseId}/{year}/{semester}", courseId, year, semester)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(request))
+                        .header("X-User-Id",userIdFromHeader))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.description").value("Updated"))
                 .andExpect(jsonPath("$.requiredGradingHours").value(30))
@@ -96,11 +100,13 @@ public class NeedControllerTest {
     void testUpdateNeedAllocatedHours() throws Exception {
         Long needId = 1L;
         int numHoursAllocated = 6;
-        when(needService.updateAllocatedHours(needId, numHoursAllocated)).thenReturn("Need updated");
+        Long userIdFromHeader = 1L;
+        when(needService.updateAllocatedHours(needId, numHoursAllocated,userIdFromHeader)).thenReturn("Need updated");
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/needs/updateAllocatedHours/{needId}", needId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("numAllocatedHours", Integer.toString(numHoursAllocated)))
+                        .param("numAllocatedHours", Integer.toString(numHoursAllocated))
+                        .header("X-User-Id",userIdFromHeader))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Need updated"));
     }
@@ -110,10 +116,12 @@ public class NeedControllerTest {
         Long courseId = 1L;
         Integer year = 2025;
         String semester = "W1";
+        Long userIdFromHeader = 1L;
 
-        when(needService.deleteNeed(courseId, 2025, "W1")).thenReturn("Need deleted");
+        when(needService.deleteNeed(courseId, 2025, "W1",userIdFromHeader)).thenReturn("Need deleted");
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/needs/delete/{courseId}/{year}/{semester}", courseId, year, semester))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/needs/delete/{courseId}/{year}/{semester}", courseId, year, semester)
+                .header("X-User-Id",userIdFromHeader))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Need deleted"));
     }

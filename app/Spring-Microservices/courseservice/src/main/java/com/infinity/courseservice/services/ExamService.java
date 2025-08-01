@@ -8,12 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.infinity.courseservice.dtos.ExamDtos.ExamAssignmentDto;
 import com.infinity.courseservice.dtos.ExamDtos.ExamAvailabilityDto;
 import com.infinity.courseservice.dtos.ExamDtos.ExamDto;
+import com.infinity.courseservice.enums.ActionOptions;
 import com.infinity.courseservice.exceptions.BadRequestException;
 import com.infinity.courseservice.exceptions.NotFoundException;
 import com.infinity.courseservice.models.Exam;
 import com.infinity.courseservice.models.ExamAssignment;
 import com.infinity.courseservice.models.ExamAvailability;
 import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.Semester;
 import com.infinity.courseservice.repositories.ExamAssignmentRepository;
 import com.infinity.courseservice.repositories.ExamAvailabilityRepository;
 import com.infinity.courseservice.repositories.ExamRepository;
@@ -31,11 +33,11 @@ public class ExamService {
     private final ExamAssignmentRepository assignmentRepository;
     private final SectionRepository sectionRepository;
     private final ExamMapper examMapper;
-
+    private final AuditService auditService;
 
     // --- Exam CRUD ---
 
-    public ExamDto createExam(ExamDto dto) {
+    public ExamDto createExam(ExamDto dto, Long userIdFromHeader) {
         Exam exam = new Exam();
         Section section = sectionRepository.findById(dto.sectionId())
                 .orElseThrow(() -> new NotFoundException("Section not found"));
@@ -60,20 +62,50 @@ public class ExamService {
         exam.setEndTime(dto.endTime());
         Exam saved = examRepository.save(exam);
 
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "Exam",   
+            null,               
+            saved,           
+            saved.getId()   
+        );
         return examMapper.mapExam(saved);
     }
 
-    public ExamDto updateExam(Long id, ExamDto dto) {
+    public ExamDto updateExam(Long id, ExamDto dto, Long userIdFromHeader) {
         Exam exam = examRepository.findById(id).orElseThrow(() -> new NotFoundException("Exam not found"));
+        Exam before = new Exam(exam);
         exam.setDate(dto.date());
         exam.setStartTime(dto.startTime());
         exam.setEndTime(dto.endTime());
         Exam saved = examRepository.save(exam);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "Exam",   
+            before,               
+            saved,           
+            saved.getId()   
+        );
         return examMapper.mapExam(saved);
     }
 
-    public void deleteExam(Long id) {
-        examRepository.deleteById(id);
+    public void deleteExam(Long id, Long userIdFromHeader) {
+        Exam toDelete = examRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(
+               "No exam with id " + id));
+        examRepository.delete(toDelete);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "Exam",   
+            toDelete,               
+            null,           
+            toDelete.getId()   
+        );
     }
 
     public List<ExamDto> getAllExams() {
@@ -91,8 +123,19 @@ public class ExamService {
 
     // --- Availability ---
 
-    public List<ExamAvailabilityDto> updateStudentAvailability(Long studentId, List<ExamAvailabilityDto> availabilities) {
+    public List<ExamAvailabilityDto> updateStudentAvailability(Long studentId, List<ExamAvailabilityDto> availabilities, Long userIdFromHeader) {
+        List<ExamAvailability> toDelete = availabilityRepository.findByStudentId(studentId);
         availabilityRepository.deleteByStudentId(studentId);
+         toDelete.forEach(old -> 
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.DELETE,
+                "ExamAvailability",
+                old,       
+                null,      
+                old.getId()
+            )
+        );
         List<ExamAvailability> entities = availabilities.stream()
                 .map(dto -> {
                     ExamAvailability a = new ExamAvailability();
@@ -103,7 +146,19 @@ public class ExamService {
                     return a;
                 })
                 .toList();
-        availabilityRepository.saveAll(entities);
+        List<ExamAvailability> saved = availabilityRepository.saveAll(entities);
+
+        saved.forEach(created ->
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.CREATE,
+                "ExamAvailability",
+                null,        
+                created,    
+                created.getId()
+            )
+        );
+
         return entities.stream()
                 .map(a -> new ExamAvailabilityDto(
                         a.getId(),
@@ -128,14 +183,27 @@ public class ExamService {
     }
 
     @Transactional
-    public void deleteAvailabilityByStudentId(Long studentId) {
+    public void deleteAvailabilityByStudentId(Long studentId, Long userIdFromHeader) {
+        List<ExamAvailability> toDelete = availabilityRepository.findByStudentId(studentId);
+
         availabilityRepository.deleteByStudentId(studentId);
+
+        for (ExamAvailability ea : toDelete) {
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.DELETE,
+                "ExamAvailability",
+                ea,      
+                null,    
+                ea.getId()
+            );
+        }
     }
 
 
     // --- Assignments ---
 
-    public ExamAssignmentDto assignStudentToExam(Long examId, ExamAssignmentDto dto) {
+    public ExamAssignmentDto assignStudentToExam(Long examId, ExamAssignmentDto dto, Long userIdFromHeader) {
         Exam exam = examRepository.findById(examId)
             .orElseThrow(() -> new NotFoundException("Exam not found"));
 
@@ -148,6 +216,16 @@ public class ExamService {
         assignment.setEndTime(dto.endTime());
 
         ExamAssignment saved = assignmentRepository.save(assignment);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "ExamAssignment",
+            null,        
+            saved,    
+            saved.getId()
+        );
+
         return examMapper.mapAssignment(saved);
     }
 
@@ -164,23 +242,41 @@ public class ExamService {
                 .toList();
     }
 
-    public void unassignStudentFromExam(Long assignmentId) {
-        if (!assignmentRepository.existsById(assignmentId)) {
-            throw new NotFoundException("Exam assignment not found");
-        }
-        assignmentRepository.deleteById(assignmentId);
+    public void unassignStudentFromExam(Long assignmentId, Long userIdFromHeader) {
+        ExamAssignment toDelete = assignmentRepository
+            .findById(assignmentId)
+            .orElseThrow(() -> new NotFoundException(
+               "Exam assignment not found"));
+        assignmentRepository.delete(toDelete);
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "ExamAssignment",   
+            toDelete,               
+            null,           
+            toDelete.getId()   
+        );
     }
 
-    public ExamAssignmentDto updateAssignmentByStudentId(Long examId, Long studentId, ExamAssignmentDto updatedDto) {
+    public ExamAssignmentDto updateAssignmentByStudentId(Long examId, Long studentId, ExamAssignmentDto updatedDto, Long userIdFromHeader) {
         ExamAssignment assignment = assignmentRepository
             .findByExamIdAndStudentId(examId, studentId)
             .orElseThrow(() -> new NotFoundException("Assignment not found for student and exam"));
-
+        ExamAssignment before = new ExamAssignment(assignment);
         assignment.setStartTime(updatedDto.startTime());
         assignment.setEndTime(updatedDto.endTime());
         assignment.setTask(updatedDto.task());
 
         ExamAssignment saved = assignmentRepository.save(assignment);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "ExamAssignment",   
+            before,               
+            saved,           
+            before.getId()   
+        );
         return examMapper.mapAssignment(saved);
     }
     

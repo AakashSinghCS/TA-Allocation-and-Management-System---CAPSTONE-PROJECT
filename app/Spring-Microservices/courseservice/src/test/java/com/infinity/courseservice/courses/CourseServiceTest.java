@@ -7,10 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,6 +44,7 @@ import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
 import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
 import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
 import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.ActionOptions;
 import com.infinity.courseservice.enums.ApplicationStatus;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.enums.TaskType;
@@ -52,6 +55,7 @@ import com.infinity.courseservice.feign.ApplicationInterface;
 import com.infinity.courseservice.feign.UserInterface;
 import com.infinity.courseservice.models.Course;
 import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.SectionSchedule;
 import com.infinity.courseservice.models.Semester;
 import com.infinity.courseservice.models.StudentTaughtCourse;
 import com.infinity.courseservice.repositories.CourseRepository;
@@ -59,6 +63,7 @@ import com.infinity.courseservice.repositories.SectionRepository;
 import com.infinity.courseservice.repositories.SectionScheduleRepository;
 import com.infinity.courseservice.repositories.SemesterRepository;
 import com.infinity.courseservice.repositories.StudentTaughtCourseRepository;
+import com.infinity.courseservice.services.AuditService;
 import com.infinity.courseservice.services.CourseService;
 import com.infinity.courseservice.services.NeedService;
 import com.infinity.courseservice.services.SectionService;
@@ -101,6 +106,9 @@ public class CourseServiceTest {
         private SectionMapper sectionMapper;
 
         @Mock
+        private AuditService auditService;
+
+        @Mock
         private SemesterMapper semesterMapper;
 
         @Mock
@@ -114,6 +122,7 @@ public class CourseServiceTest {
 
         @Test
         void testAddCourse_Duplicate() {
+                Long userIdFromHeader = 1L;
                 CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null,
                                 null,
                                 null,
@@ -123,7 +132,7 @@ public class CourseServiceTest {
                                 .thenThrow(new DataIntegrityViolationException("Duplicate entry"));
 
                 BadRequestException ex = assertThrows(BadRequestException.class,
-                                () -> courseService.addCourse(request));
+                                () -> courseService.addCourse(request, userIdFromHeader));
 
                 assertEquals("Course already exists org.springframework.dao.DataIntegrityViolationException: Duplicate entry",
                                 ex.getMessage());
@@ -131,20 +140,33 @@ public class CourseServiceTest {
 
         @Test
         void testAddCourse() {
+                Long userIdFromHeader = 1L;
                 CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null,
                                 null,
                                 null, null, null);
                 Course savedCourse = new Course("COSC", "Distributed Systems", "455");
                 CourseDto courseDto = new CourseDto(1L, "COSC", "Distributed Systems", "455");
-
-                when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);
+                savedCourse.setId(courseDto.id());
+                when(courseRepository.save(any(Course.class)))
+                        .thenAnswer(invocation -> {
+                                Course toSave = invocation.getArgument(0);
+                                toSave.setId(courseDto.id());
+                                return toSave;
+                        });
                 when(courseMapper.courseToDto(savedCourse)).thenReturn(courseDto);
 
-                CourseDto dto = courseService.addCourse(request);
+                CourseDto dto = courseService.addCourse(request, userIdFromHeader);
 
                 assertEquals("COSC", dto.deptCode());
                 assertEquals("Distributed Systems", dto.name());
                 assertEquals("455", dto.courseNum());
+                verify(auditService).record(
+                                eq(userIdFromHeader),
+                                eq(ActionOptions.CREATE),
+                                eq("Course"),
+                                eq(null),
+                                eq(savedCourse),
+                                eq(savedCourse.getId()));
         }
 
         @Test
@@ -164,48 +186,81 @@ public class CourseServiceTest {
 
         @Test
         void testUpdateCourseNotFound() {
+                Long userIdFromHeader = 1L;
                 CourseRequest request = new CourseRequest("COSC", "Capstone", "499", null, null, null, null,
                                 null,
                                 null, null, null);
                 when(courseRepository.findById(1L)).thenReturn(Optional.empty());
 
                 NotFoundException ex = assertThrows(NotFoundException.class,
-                                () -> courseService.updateCourse(request, 1L));
+                                () -> courseService.updateCourse(request, 1L, userIdFromHeader));
 
                 assertEquals("No course with id 1", ex.getMessage());
         }
 
         @Test
         void testUpdateCourseSuccess() {
+                Long userIdFromHeader = 1L;
                 Course course = new Course("COSC", "Distributed Systems", "455");
+                course.setId(1L);
+                Course before = new Course(course);
+                Course after = new Course("DATA", "Capstone", "499");
+                after.setId(course.getId());
                 when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
                 CourseRequest request = new CourseRequest("DATA", "Capstone", "499", null, null, null, null,
                                 null,
                                 null, null, null);
                 CourseDto courseDto = new CourseDto(1L, "DATA", "Capstone", "499");
                 when(courseMapper.courseToDto(course)).thenReturn(courseDto);
-                CourseDto dto = courseService.updateCourse(request, 1L);
+                when(courseRepository.save(any(Course.class)))
+                        .thenAnswer(invocation -> {
+                                Course toSave = invocation.getArgument(0);
+                                toSave.setId(after.getId());
+                                return toSave;
+                        });
+
+                CourseDto dto = courseService.updateCourse(request, 1L, userIdFromHeader);
 
                 assertEquals("DATA", dto.deptCode());
                 assertEquals("Capstone", dto.name());
                 assertEquals("499", dto.courseNum());
+                verify(auditService).record(
+                                eq(userIdFromHeader),
+                                eq(ActionOptions.UPDATE),
+                                eq("Course"),
+                                eq(before),
+                                eq(after),
+                                eq(before.getId()));
         }
 
         @Test
         void testDeleteCourseNotFound() {
-                when(courseRepository.existsById(1L)).thenReturn(false);
-
-                NotFoundException ex = assertThrows(NotFoundException.class, () -> courseService.deleteCourse(1L));
+                Long userIdFromHeader = 1L;
+                // when(courseRepository.existsById(1L)).thenReturn(false);
+                when(courseRepository.findById(1L))
+                                .thenReturn(Optional.empty());
+                NotFoundException ex = assertThrows(NotFoundException.class,
+                                () -> courseService.deleteCourse(1L, userIdFromHeader));
 
                 assertEquals("No course with id 1", ex.getMessage());
         }
 
         @Test
         void testDeleteCourseSuccess() {
-                when(courseRepository.existsById(1L)).thenReturn(true);
-                String response = courseService.deleteCourse(1L);
+                Long userIdFromHeader = 1L;
+                Course toDelete = new Course("COSC", "Capstone", "499");
+
+                when(courseRepository.findById(1L)).thenReturn(Optional.of(toDelete));
+                String response = courseService.deleteCourse(1L, userIdFromHeader);
 
                 assertEquals("Course deleted", response);
+                verify(auditService).record(
+                                eq(userIdFromHeader),
+                                eq(ActionOptions.DELETE),
+                                eq("Course"),
+                                eq(toDelete),
+                                eq(null),
+                                eq(toDelete.getId()));
         }
 
         @Test
@@ -564,28 +619,103 @@ public class CourseServiceTest {
         void testAddStudentTaughtCourse_Success() {
                 Long courseId = 1L;
                 Long studentId = 1001L;
+                Long userIdFromHeader = 1L;
+
                 Course course = new Course("COSC", "Software Engineering", "310");
                 course.setId(courseId);
 
-                StudentTaughtCourseRequest request = new StudentTaughtCourseRequest(studentId, 2024, "W1");
-                Semester semester = new Semester(2025, "W1", null, null, true);
+                // StudentTaughtCourseRequest request = new StudentTaughtCourseRequest(studentId, 2024, "W1");
+                Semester semester = new Semester(2025, "W1", null, null,true);
 
                 when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
                 when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(semester));
 
-                courseService.addStudentTaughtCourse(courseId, request);
+                StudentTaughtCourse savedEntity = StudentTaughtCourse.builder()
+                                .course(course)
+                                .studentId(studentId)
+                                .semester(semester)
+                                .build();
+                savedEntity.setId(555L);
+                when(studentTaughtCourseRepository.save(any(StudentTaughtCourse.class)))
+                        .thenAnswer(invocation -> {
+                                StudentTaughtCourse toSave = invocation.getArgument(0);
+                                toSave.setId(savedEntity.getId());
+                                return toSave;
+                        });
+                
+                UserDto fakeStudentDto = new UserDto(
+                                studentId,
+                                "First",
+                                "Last",
+                                "email@example.com",
+                                List.of(),
+                                null, null, null, null, null, null,
+                                LocalDateTime.now(),
+                                true);
 
-                verify(studentTaughtCourseRepository).save(any(StudentTaughtCourse.class));
+                CourseDto fakeCourseDto = new CourseDto(
+                                courseId,
+                                "COSC",
+                                "Software Engineering",
+                                "310");
+
+                                
+                StudentTaughtCourseDto expectedDto = new StudentTaughtCourseDto(
+                                savedEntity.getId(),
+                                fakeStudentDto,
+                                fakeCourseDto,
+                                savedEntity.getSemester().getYear(),
+                                savedEntity.getSemester().getSemester()
+                                );
+                when(userInterface.getStudentById(studentId))
+                                .thenReturn(fakeStudentDto);
+                when(stcMapper.toDto(fakeStudentDto,savedEntity))
+                                .thenReturn(expectedDto);
+
+                StudentTaughtCourseRequest request = new StudentTaughtCourseRequest(
+                                studentId,
+                                2024,
+                                semester.getSemester());
+
+                StudentTaughtCourseDto resultDto = courseService.addStudentTaughtCourse(courseId, request,
+                                userIdFromHeader);
+
+                verify(studentTaughtCourseRepository)
+                                .save(any(StudentTaughtCourse.class));
+
+                verify(auditService).record(
+                                eq(userIdFromHeader),
+                                eq(ActionOptions.CREATE),
+                                eq("StudentTaughtCourse"),
+                                isNull(),
+                                eq(savedEntity),
+                                eq(savedEntity.getId()));
+
+                assertEquals(resultDto.student(), fakeStudentDto);
+                assertEquals(resultDto.course(), fakeCourseDto);
         }
 
         @Test
         void testDeleteStudentTaughtCourse_Success() {
                 Long studentId = 1001L;
                 Long courseId = 1L;
+                Long userIdFromHeader = 1L;
+                StudentTaughtCourse stc = new StudentTaughtCourse();
 
-                courseService.deleteStudentTaughtCourse(studentId, courseId);
+                when(studentTaughtCourseRepository.findByStudentIdAndCourseId(studentId, courseId))
+                                .thenReturn(stc);
 
-                verify(studentTaughtCourseRepository).deleteByStudentIdAndCourseId(studentId, courseId);
+                courseService.deleteStudentTaughtCourse(studentId, courseId, userIdFromHeader);
+
+                verify(studentTaughtCourseRepository).delete(stc);
+
+                verify(auditService).record(
+                                eq(userIdFromHeader),
+                                eq(ActionOptions.DELETE),
+                                eq("StudentTaughtCourse"),
+                                eq(stc),
+                                isNull(),
+                                eq(stc.getId()));
         }
 
         @Test
@@ -608,7 +738,7 @@ public class CourseServiceTest {
                                 .build();
                 
 
-                StudentTaughtCourseDto stcDto = new StudentTaughtCourseDto(student, courseDto, 2023, "S2");
+                StudentTaughtCourseDto stcDto = new StudentTaughtCourseDto(10L,student, courseDto, 2023, "S2");
 
                 when(studentTaughtCourseRepository.findByStudentId(studentId)).thenReturn(List.of(record));
                 when(userInterface.getStudentById(studentId))
