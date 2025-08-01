@@ -1,8 +1,10 @@
 package com.infinity.courseservice.models;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.infinity.courseservice.enums.SectionType;
 
@@ -33,6 +35,7 @@ import lombok.ToString;
 })
 @EqualsAndHashCode(exclude = "sectionSchedules") 
 @ToString(exclude = "sectionSchedules")  //StackOverFlow error in testing without this (Audit)
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class Section {
     @Id
     @GeneratedValue()
@@ -85,5 +88,9 @@ public class Section {
         this.instructorId= other.instructorId;
         this.type = other.type;
         this.course = other.course;
+        this.sectionSchedules = (other.sectionSchedules == null ? List.<SectionSchedule>of() : other.sectionSchedules)
+            .stream()
+            .map(SectionSchedule::new)   
+            .collect(Collectors.toList());
     }
 }

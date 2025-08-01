@@ -123,7 +123,7 @@ public class ApplicationService {
         return "Application deleted";
     }
 
-    @Transactional
+    // @Transactional
     public ApplicationDto updateApplication(ApplicationRequest req, Long studentId, Integer year, String semester,
             Long userIdFromHeader,
             List<String> headerRoles) {

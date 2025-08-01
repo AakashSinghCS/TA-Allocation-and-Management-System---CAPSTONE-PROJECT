@@ -1,5 +1,7 @@
 package com.infinity.courseservice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class StudentTaughtCourse {
 
     @Id
@@ -28,5 +31,12 @@ public class StudentTaughtCourse {
         this.studentId = studentId;
         this.course = course;
         this.semester = semester;
+    }
+
+    public StudentTaughtCourse(StudentTaughtCourse other){
+        this.id= other.id;
+        this.course=other.course;
+        this.semester=other.semester;
+        this.studentId = other.studentId;
     }
 }

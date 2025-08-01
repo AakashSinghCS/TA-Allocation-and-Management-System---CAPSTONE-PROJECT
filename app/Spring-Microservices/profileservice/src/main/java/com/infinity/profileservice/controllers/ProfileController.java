@@ -27,8 +27,9 @@ public class ProfileController {
     @PreAuthorize("hasAnyRole('STUDENT','COORDINATOR')")
     @PostMapping("/{studentId}/answers")
     public ResponseEntity<Void> saveAnswers(@PathVariable Long studentId,
-                                            @RequestBody ProfileAnswerRequest answers) {
-        profileService.saveAnswers(studentId, answers);
+                                            @RequestBody ProfileAnswerRequest answers,
+                                            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        profileService.saveAnswers(studentId, answers, userIdFromHeader);
         return ResponseEntity.ok().build();
     }
 

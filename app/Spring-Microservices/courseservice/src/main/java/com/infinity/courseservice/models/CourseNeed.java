@@ -2,8 +2,10 @@ package com.infinity.courseservice.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -32,6 +34,7 @@ import lombok.ToString;
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "need_id", "semester_id" }))
 @EqualsAndHashCode(exclude = {"need", "prerequisites"}) 
 @ToString(exclude = {"need", "prerequisites"}) //StackOverFlow error in testing without this (Audit)
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class CourseNeed {
 
     @Id
@@ -67,6 +70,9 @@ public class CourseNeed {
         this.course = other.course;
         this.need = other.need;
         this.semester = other.semester;
-        this.prerequisites = other.prerequisites;
+        this.prerequisites = (other.prerequisites == null ? List.<Prereq>of() : other.prerequisites)
+            .stream()
+            .map(Prereq::new)   
+            .collect(Collectors.toList());
     }
 }

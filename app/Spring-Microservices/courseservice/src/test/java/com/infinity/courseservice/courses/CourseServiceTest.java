@@ -202,6 +202,7 @@ public class CourseServiceTest {
         void testUpdateCourseSuccess() {
                 Long userIdFromHeader = 1L;
                 Course course = new Course("COSC", "Distributed Systems", "455");
+                course.setId(1L);
                 Course before = new Course(course);
                 Course after = new Course("DATA", "Capstone", "499");
                 after.setId(course.getId());
@@ -211,6 +212,13 @@ public class CourseServiceTest {
                                 null, null, null);
                 CourseDto courseDto = new CourseDto(1L, "DATA", "Capstone", "499");
                 when(courseMapper.courseToDto(course)).thenReturn(courseDto);
+                when(courseRepository.save(any(Course.class)))
+                        .thenAnswer(invocation -> {
+                                Course toSave = invocation.getArgument(0);
+                                toSave.setId(after.getId());
+                                return toSave;
+                        });
+
                 CourseDto dto = courseService.updateCourse(request, 1L, userIdFromHeader);
 
                 assertEquals("DATA", dto.deptCode());

@@ -49,9 +49,9 @@ class AuditControllerTest {
                 99L,
                 "Alice Smith",
                 LocalDateTime.of(2025, 7, 16, 12, 0),
-                "application-service",
+                "profile-service",
                 ActionOptions.CREATE,
-                "Application",
+                "Profile",
                 123L,
                 null,
                 "{\"foo\":\"bar\"}",
@@ -69,18 +69,18 @@ class AuditControllerTest {
 
         when(auditService.search(
                 any(Pageable.class),
-                eq("application-service"),
-                eq("Application"),
+                eq("profile-service"),
+                eq("Profile"),
                 eq(123L),
                 eq(ActionOptions.CREATE),
                 eq(99L),
                 eq("2025-07-16"))).thenReturn(page);
 
-        mockMvc.perform(get("/applications/audit")
+        mockMvc.perform(get("/profiles/audit")
                 .param("page", "0")
                 .param("size", "2")
-                .param("service", "application-service")
-                .param("entityType", "Application")
+                .param("service", "profile-service")
+                .param("entityType", "Profile")
                 .param("entityId", "123")
                 .param("action", "CREATE")
                 .param("actorId", "99")
@@ -90,7 +90,7 @@ class AuditControllerTest {
                 .andExpect(jsonPath("$.content[0].id").value(1))
                 .andExpect(jsonPath("$.content[0].actorName").value("Alice Smith"))
                 .andExpect(jsonPath("$.content[0].entityName").value(nullValue()))
-                .andExpect(jsonPath("$.content[0].service").value("application-service"))
+                .andExpect(jsonPath("$.content[0].service").value("profile-service"))
                 .andExpect(jsonPath("$.totalElements").value(2))
                 .andExpect(jsonPath("$.size").value(2))
                 .andExpect(jsonPath("$.number").value(0));
@@ -101,19 +101,19 @@ class AuditControllerTest {
     void getById_returnsSingleAuditEventDto() throws Exception {
         when(auditService.getById(1L)).thenReturn(sampleEventDto);
 
-        mockMvc.perform(get("/applications/audit/{id}", 1L))
+        mockMvc.perform(get("/profiles/audit/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.actorId").value(99))
                 .andExpect(jsonPath("$.actorName").value("Alice Smith"))
                 .andExpect(jsonPath("$.entityId").value(123))
                 .andExpect(jsonPath("$.entityName").value(nullValue()))
-                .andExpect(jsonPath("$.service").value("application-service"));
+                .andExpect(jsonPath("$.service").value("profile-service"));
     }
 
     @Test
     void unauthorizedAccess_isForbidden() throws Exception {
-        mockMvc.perform(get("/applications/audit"))
+        mockMvc.perform(get("/profiles/audit"))
                 .andExpect(status().isUnauthorized());
     }
 }

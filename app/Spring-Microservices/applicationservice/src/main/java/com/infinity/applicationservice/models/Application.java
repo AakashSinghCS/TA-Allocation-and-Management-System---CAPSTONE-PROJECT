@@ -6,9 +6,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.enums.ApplicationType;
@@ -35,6 +37,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = { "studentId", "year", "semester" }) })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class Application {
 
     @Id
@@ -138,6 +141,11 @@ public class Application {
         this.wantWorkingHours = other.wantWorkingHours;
         this.isAccepted = other.isAccepted;
         this.year = other.year;
-        this.unavailabilities = other.unavailabilities;
+        this.semester = other.semester;
+        this.submittedAt= other.submittedAt;
+        this.unavailabilities = (other.unavailabilities == null ? List.<Unavailability>of() : other.unavailabilities)
+            .stream()
+            .map(Unavailability::new)   
+            .collect(Collectors.toSet());
     }
 }

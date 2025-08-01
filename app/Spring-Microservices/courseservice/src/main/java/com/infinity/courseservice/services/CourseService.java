@@ -109,15 +109,15 @@ public class CourseService {
         course.setDeptCode(request.deptCode());
         course.setName(request.name());
         course.setCourseNum(request.courseNum());
-        courseRepository.save(course);
-
+        Course saved = courseRepository.save(course);
+        System.out.println(saved);
         auditService.record(
             userIdFromHeader,
             ActionOptions.UPDATE,
             "Course",   
             before,               
-            course,           
-            course.getId()   
+            saved,           
+            saved.getId()   
         );
 
         return courseMapper.courseToDto(course);

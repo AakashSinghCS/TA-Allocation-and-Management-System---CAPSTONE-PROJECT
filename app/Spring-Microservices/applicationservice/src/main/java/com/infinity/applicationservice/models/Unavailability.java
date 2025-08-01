@@ -4,6 +4,7 @@ import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.infinity.applicationservice.enums.Day;
 
 import jakarta.persistence.Column;
@@ -26,6 +27,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(exclude = "application")
 @EqualsAndHashCode(exclude = "application")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class Unavailability {
 
     @Id
@@ -54,5 +56,13 @@ public class Unavailability {
         this.startTime =startTime;
         this.endTime= endTime;
         this.application = application;
+    }
+
+    public Unavailability(Unavailability other) {
+        this.id        = other.id;
+        this.day       = other.day;
+        this.startTime = other.startTime;
+        this.endTime   = other.endTime;
+        this.application = other.application;
     }
 }

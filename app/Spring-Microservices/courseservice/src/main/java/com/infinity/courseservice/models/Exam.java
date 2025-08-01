@@ -3,7 +3,9 @@ package com.infinity.courseservice.models;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -18,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class Exam {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +44,10 @@ public class Exam {
         this.date= other.date;
         this.startTime=other.startTime;
         this.endTime=other.endTime;
+        this.assignments = (other.assignments == null ? List.<ExamAssignment>of() : other.assignments)
+            .stream()
+            .map(ExamAssignment::new)   
+            .collect(Collectors.toList());
     }
 }
 

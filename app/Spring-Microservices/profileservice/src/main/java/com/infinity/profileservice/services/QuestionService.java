@@ -11,10 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.infinity.profileservice.dtos.admin.AnswerRequest;
 import com.infinity.profileservice.dtos.admin.QuestionRequest;
+import com.infinity.profileservice.enums.ActionOptions;
 import com.infinity.profileservice.enums.QuestionType;
 import com.infinity.profileservice.exceptions.NotFoundException;
 import com.infinity.profileservice.models.ProfileAnswer;
 import com.infinity.profileservice.models.ProfileQuestion;
+import com.infinity.profileservice.models.StudentHasProfileAnswer;
 import com.infinity.profileservice.repositories.AnswerRepo;
 import com.infinity.profileservice.repositories.QuestionRepo;
 import com.infinity.profileservice.repositories.StudentAnswerRepo;
@@ -29,23 +31,40 @@ public class QuestionService {
     private final QuestionRepo questionRepo;
     private final AnswerRepo answerRepo;
     private final StudentAnswerRepo studentAnsRepo;
+    private final AuditService auditService;
 
-    public ProfileQuestion createQuestion(QuestionRequest req) {
+    public ProfileQuestion createQuestion(QuestionRequest req, Long userIdFromHeader) {
         ProfileQuestion q = new ProfileQuestion();
         q.setDescription(req.description());
         q.setType(req.type());
         q.setAnswers(new ArrayList<>());
-        questionRepo.save(q);
+        ProfileQuestion savedQ= questionRepo.save(q);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "ProfileQuestion",   
+            null,               
+            savedQ,           
+            savedQ.getId()
+        );
 
         if (req.type() == QuestionType.FREE_TEXT) {
-            savePlaceholderAnswer(q);
+            savePlaceholderAnswer(q, userIdFromHeader);
         } else {
             if (req.answers() != null) {
                 req.answers().forEach(ar -> {
                     ProfileAnswer a = new ProfileAnswer();
                     a.setQuestion(q);
                     a.setDescription(ar.description());
-                    answerRepo.save(a);
+                    ProfileAnswer saved =answerRepo.save(a);
+                    auditService.record(
+                        userIdFromHeader,
+                        ActionOptions.CREATE,
+                        "ProfileAnswer",   
+                        null,               
+                        saved,           
+                        saved.getId()
+                    );
                     q.getAnswers().add(a); 
                 });
             }
@@ -54,36 +73,56 @@ public class QuestionService {
         return q;
     }
 
-    public ProfileQuestion updateQuestion(Long id, QuestionRequest req) {
+    public ProfileQuestion updateQuestion(Long id, QuestionRequest req, Long userIdFromHeader) {
         ProfileQuestion q = questionRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Question " + id + " not found"));
 
-        deleteAllLinksForQuestion(q);
+        deleteAllLinksForQuestion(q, userIdFromHeader);
 
         QuestionType oldType = q.getType();
         q.setDescription(req.description());
         q.setType(req.type());
         if (oldType == QuestionType.FREE_TEXT && req.type() != QuestionType.FREE_TEXT) {
-            wipeAnswersAndLinks(q);
+            wipeAnswersAndLinks(q, userIdFromHeader);
             q.getAnswers().clear();
         }
-        return updateAnswers(q, req);
+        return updateAnswers(q, req, userIdFromHeader);
     }
 
-    private ProfileQuestion updateAnswers(ProfileQuestion q, QuestionRequest req) {
+    private ProfileQuestion updateAnswers(ProfileQuestion q, QuestionRequest req,  Long userIdFromHeader) {
+        ProfileQuestion before = new ProfileQuestion(q);
         if (q.getType() == QuestionType.FREE_TEXT) {
-            wipeAnswersAndLinks(q);
-            savePlaceholderAnswer(q);
-            return questionRepo.save(q);
+            wipeAnswersAndLinks(q, userIdFromHeader);
+            savePlaceholderAnswer(q, userIdFromHeader);
+            ProfileQuestion saved = questionRepo.save(q);
+                auditService.record(
+                userIdFromHeader,
+                ActionOptions.UPDATE,
+                "ProfileQuestion",   
+                before,               
+                saved,           
+                saved.getId()
+            );
+            return saved;
         }
-        List<ProfileAnswer> next = getAnswersForMultiOrSingleChoice(q, req);
+        List<ProfileAnswer> next = getAnswersForMultiOrSingleChoice(q, req, userIdFromHeader);
         q.getAnswers().clear();
         q.getAnswers().addAll(next);
-        return questionRepo.save(q);
+        ProfileQuestion saved = questionRepo.save(q);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "ProfileQuestion",   
+            before,               
+            saved,           
+            saved.getId()
+        );
+        return saved;
     }
 
-    List<ProfileAnswer> getAnswersForMultiOrSingleChoice(ProfileQuestion q, QuestionRequest req) {
-        List<ProfileAnswer> prev = q.getAnswers();
+    List<ProfileAnswer> getAnswersForMultiOrSingleChoice(ProfileQuestion q, QuestionRequest req, Long userIdFromHeader) {
+        // List<ProfileAnswer> prev = q.getAnswers();
+        List<ProfileAnswer> prev = answerRepo.findByQuestionId(q.getId());
         Map<Long, ProfileAnswer> byId = prev.stream()
                 .filter(a -> a.getId() != null)
                 .collect(Collectors.toMap(ProfileAnswer::getId, Function.identity()));
@@ -101,6 +140,14 @@ public class QuestionService {
                 a.setQuestion(q);
                 a.setDescription(ar.description());
                 a = answerRepo.save(a);
+                auditService.record(
+                    userIdFromHeader,
+                    ActionOptions.CREATE,
+                    "ProfileAnswer",   
+                    null,               
+                    a,           
+                    a.getId()
+                );
             }
             keepIds.add(a.getId());
             next.add(a);
@@ -112,41 +159,64 @@ public class QuestionService {
                 .toList();
 
         if (!toRemove.isEmpty()) {
-            studentAnsRepo.deleteAllByAnswerIdIn(toRemove);
+            deleteAllByAnswerIdIn(toRemove, userIdFromHeader);
         }
         return next;
     }
 
-    private void savePlaceholderAnswer(ProfileQuestion q) {
+    private void savePlaceholderAnswer(ProfileQuestion q, Long userIdFromHeader) {
         ProfileAnswer placeholder = new ProfileAnswer();
         placeholder.setQuestion(q);
         placeholder.setDescription("");
         placeholder = answerRepo.save(placeholder);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "ProfileAnswer",   
+            null,               
+            placeholder,           
+            placeholder.getId()
+        );
         q.getAnswers().clear();
         q.getAnswers().add(placeholder);
     }
 
-    private void wipeAnswersAndLinks(ProfileQuestion q) {
+    private void wipeAnswersAndLinks(ProfileQuestion q, Long userIdFromHeader) {
         List<Long> ids = answerRepo.findByQuestionId(q.getId()).stream()
                 .map(ProfileAnswer::getId)
                 .toList();
         if (!ids.isEmpty()) {
-            studentAnsRepo.deleteAllByAnswerIdIn(ids);
+            deleteAllByAnswerIdIn(ids, userIdFromHeader);
         }
 
         q.getAnswers().clear();
     }
 
-    private void deleteAllLinksForQuestion(ProfileQuestion q) {
+    private void deleteAllByAnswerIdIn(List<Long> ids, Long userIdFromHeader){
+        List<StudentHasProfileAnswer> toDeleteSHPA = studentAnsRepo.findByAnswerIdIn(ids);
+        studentAnsRepo.deleteAllByAnswerIdIn(ids);
+        toDeleteSHPA.forEach((shpa)->{
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.DELETE,
+                "StudentHasProfileAnswer",   
+                shpa,               
+                null,           
+                shpa.getId()
+            );
+        });
+    }
+
+    private void deleteAllLinksForQuestion(ProfileQuestion q, Long userIdFromHeader) {
         List<Long> ansIds = q.getAnswers().stream()
                 .map(ProfileAnswer::getId)
                 .toList();
         if (!ansIds.isEmpty()) {
-            studentAnsRepo.deleteAllByAnswerIdIn(ansIds);
+            deleteAllByAnswerIdIn(ansIds, userIdFromHeader);
         }
     }
 
-    public void deleteQuestion(Long id) {
+    public void deleteQuestion(Long id, Long userIdFromHeader) {
         ProfileQuestion q = questionRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Question " + id + " not found"));
 
@@ -154,8 +224,16 @@ public class QuestionService {
                 .map(ProfileAnswer::getId)
                 .collect(Collectors.toList());
 
-        studentAnsRepo.deleteAllByAnswerIdIn(answerIds);
+        deleteAllByAnswerIdIn(answerIds, userIdFromHeader);
         questionRepo.deleteById(id);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "ProfileQuestion",   
+            q,               
+            null,           
+            q.getId()
+        );    
     }
 
     public List<ProfileQuestion> listAll() {

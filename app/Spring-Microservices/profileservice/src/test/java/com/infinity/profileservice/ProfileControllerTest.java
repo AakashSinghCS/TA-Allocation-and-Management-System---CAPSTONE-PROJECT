@@ -74,6 +74,7 @@ class ProfileControllerTest {
     @Test
     void saveAnswers_returnsOkAndDelegates() throws Exception {
         Long sid = 101L;
+        Long userIdFromHeader = 1L;
 
         ProfileAnswerRequest body = new ProfileAnswerRequest(
                 List.of(3L, 4L, 5L),                                   
@@ -82,13 +83,14 @@ class ProfileControllerTest {
 
         mvc.perform(post("/profiles/{studentId}/answers", sid)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsString(body)))
+                    .content(mapper.writeValueAsString(body))
+                    .header("X-User-Id",userIdFromHeader))
            .andExpect(status().isOk());
 
         ArgumentCaptor<ProfileAnswerRequest> captor =
                 ArgumentCaptor.forClass(ProfileAnswerRequest.class);
 
-        verify(service).saveAnswers(eq(sid), captor.capture());
+        verify(service).saveAnswers(eq(sid), captor.capture(), eq(userIdFromHeader));
         assert body.equals(captor.getValue());
     }
 }

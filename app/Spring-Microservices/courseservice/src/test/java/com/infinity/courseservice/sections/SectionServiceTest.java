@@ -720,6 +720,7 @@ public class SectionServiceTest {
         Course course = new Course("COSC", "Intro to CS", "111");
         when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
         String result = sectionService.importSectionsFromJson(List.of(data), userIdFromHeader);
+        // assertTrue(result.contains("Section import failed."));
         assertTrue(result.contains("Failed: 1"));
         assertTrue(result.contains("Invalid section type"));
     }

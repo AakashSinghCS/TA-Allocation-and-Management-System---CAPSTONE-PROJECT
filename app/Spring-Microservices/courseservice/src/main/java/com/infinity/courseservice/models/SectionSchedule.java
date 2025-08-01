@@ -3,6 +3,7 @@ package com.infinity.courseservice.models;
 import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,6 +30,7 @@ import lombok.ToString;
        })
 @EqualsAndHashCode(exclude = "section") 
 @ToString(exclude = "section") //StackOverFlow error in testing without this (Audit)
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class SectionSchedule {
 
     @Id

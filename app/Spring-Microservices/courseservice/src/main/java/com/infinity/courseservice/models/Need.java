@@ -1,7 +1,9 @@
 package com.infinity.courseservice.models;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -25,6 +27,7 @@ import lombok.ToString;
 @AllArgsConstructor
 // @EqualsAndHashCode(exclude = "courseNeeds") 
 // @ToString(exclude = "courseNeeds") //StackOverFlow error in testing without this (Audit)
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class Need {
 
     @Id
@@ -52,7 +55,10 @@ public class Need {
         this.description = other.description;
         this.requiredGradingHours = other.requiredGradingHours;
         this.numHoursCurrentlyAllocated = other.numHoursCurrentlyAllocated;
-        this.courseNeeds = other.courseNeeds;
+        this.courseNeeds = (other.courseNeeds == null ? List.<CourseNeed>of() : other.courseNeeds)
+            .stream()
+            .map(CourseNeed::new)   
+            .collect(Collectors.toList());
     }
 
 }
