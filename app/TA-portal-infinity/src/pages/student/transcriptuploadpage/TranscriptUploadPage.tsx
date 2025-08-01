@@ -62,12 +62,17 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setExistingTranscript({
-          fileName: data.fileName,
-          fileSize: data.fileSize,
-          uploadDate: data.uploadDate,
-          contentType: data.contentType
-        });
+        // Only set existing transcript if hasTranscript is true
+        if (data.hasTranscript) {
+          setExistingTranscript({
+            fileName: data.fileName,
+            fileSize: data.fileSize,
+            uploadDate: data.uploadDate,
+            contentType: data.contentType
+          });
+        } else {
+          setExistingTranscript(null);
+        }
       } else if (response.status !== 404) {
         // 404 means no transcript exists, which is fine
         console.error('Failed to fetch existing transcript');
@@ -187,13 +192,14 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
       // Complete handler
       xhr.addEventListener('load', () => {
         if (xhr.status === 200 || xhr.status === 201) {
+          const wasReplacement = existingTranscript !== null;
           setUploadState(prev => ({
             ...prev,
             uploading: false,
             success: true,
             progress: 100
           }));
-          toast.success(existingTranscript ? 'Transcript replaced successfully!' : 'Transcript uploaded successfully!');
+          toast.success(wasReplacement ? 'Transcript replaced successfully!' : 'Transcript uploaded successfully!');
           // Refresh existing transcript info
           fetchExistingTranscript();
         } else {
@@ -454,10 +460,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
             <div className="flex items-center space-x-2 p-4 bg-green-50 border border-green-200 rounded-lg">
               <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
               <p className="text-green-700">
-                {existingTranscript 
-                  ? 'Transcript replaced successfully! The coordinator can now access your updated file.'
-                  : 'Transcript uploaded successfully! The coordinator can now access your file.'
-                }
+                Transcript uploaded successfully! The coordinator can now access your file.
               </p>
             </div>
           )}
