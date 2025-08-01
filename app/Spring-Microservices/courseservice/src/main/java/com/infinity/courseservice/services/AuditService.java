@@ -2,6 +2,7 @@ package com.infinity.courseservice.services;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,7 +71,8 @@ public class AuditService {
             Long entityId,
             ActionOptions action,
             Long actorId,
-            String dateOnly) {
+            String dateOnly, 
+            List<String> headerRoles) {
 
         Specification<AuditEvent> spec = (root, query, cb) -> cb.conjunction();
 
@@ -106,7 +108,7 @@ public class AuditService {
         Page<AuditEvent> page = auditRepo.findAll(spec, pageable);
 
         return page.map(event -> {
-            ResponseEntity<UserDto> resp = userInterface.getUserDetailsById(event.getActorId());
+            ResponseEntity<UserDto> resp = userInterface.getUserDetailsById(event.getActorId(), headerRoles, null);
             UserDto user = resp.getBody();
             String actorName = (user != null)
                 ? user.firstName() + " " + user.lastName()
@@ -117,10 +119,10 @@ public class AuditService {
 
     }
 
-    public AuditEventDto getById(Long id) {
+    public AuditEventDto getById(Long id, List<String> headerRoles) {
         AuditEvent event = auditRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("AuditEvent not found with id " + id));
-        ResponseEntity<UserDto> resp = userInterface.getUserDetailsById(event.getActorId());
+        ResponseEntity<UserDto> resp = userInterface.getUserDetailsById(event.getActorId(), headerRoles,null);
             UserDto user = resp.getBody();
             String actorName = (user != null)
                 ? user.firstName() + " " + user.lastName()

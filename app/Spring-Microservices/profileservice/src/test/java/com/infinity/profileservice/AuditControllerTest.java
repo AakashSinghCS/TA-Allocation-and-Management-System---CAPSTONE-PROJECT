@@ -61,6 +61,7 @@ class AuditControllerTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     void search_returnsPagedAuditEvents() throws Exception {
+        List<String> headerRoles = List.of("ROLE_ADMIN");
         List<AuditEventDto> list = List.of(sampleEventDto, sampleEventDto);
         Page<AuditEventDto> page = new PageImpl<>(
                 list,
@@ -74,7 +75,8 @@ class AuditControllerTest {
                 eq(123L),
                 eq(ActionOptions.CREATE),
                 eq(99L),
-                eq("2025-07-16"))).thenReturn(page);
+                eq("2025-07-16"),
+                eq(headerRoles))).thenReturn(page);
 
         mockMvc.perform(get("/profiles/audit")
                 .param("page", "0")
@@ -84,7 +86,8 @@ class AuditControllerTest {
                 .param("entityId", "123")
                 .param("action", "CREATE")
                 .param("actorId", "99")
-                .param("dateOnly", "2025-07-16"))
+                .param("dateOnly", "2025-07-16")
+                .header("X-User-Roles",headerRoles))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(2))
                 .andExpect(jsonPath("$.content[0].id").value(1))
@@ -99,9 +102,11 @@ class AuditControllerTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     void getById_returnsSingleAuditEventDto() throws Exception {
-        when(auditService.getById(1L)).thenReturn(sampleEventDto);
+        List<String> headerRoles = List.of("ROLE_ADMIN");
+        when(auditService.getById(1L, headerRoles)).thenReturn(sampleEventDto);
 
-        mockMvc.perform(get("/profiles/audit/{id}", 1L))
+        mockMvc.perform(get("/profiles/audit/{id}", 1L)
+                .header("X-User-Roles",headerRoles))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.actorId").value(99))

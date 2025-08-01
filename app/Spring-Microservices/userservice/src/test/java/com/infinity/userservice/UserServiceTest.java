@@ -1,6 +1,7 @@
 package com.infinity.userservice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -602,6 +603,8 @@ public class UserServiceTest {
 
     @Test
     void testGetUserDetailsById_Success() {
+        Long userIdFromHeader = 1L;
+       List<String> userRoles =List.of("ROLE_ADMIN");
         User user = new User("emma@example.com", "Emma", "Stone", "P@ssword1");
         user.setId(1L);
         user.setRoles(Set.of(new Role(1L, UserRole.INSTRUCTOR)));
@@ -612,19 +615,64 @@ public class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userMapper.toDto(user)).thenReturn(dto);
 
-        UserDto result = userService.getUserDetailsById(1L);
+        UserDto result = userService.getUserDetailsById(1L, userRoles, userIdFromHeader);
         assertEquals("Emma", result.firstName());
     }
 
     @Test
     void testGetUserDetailsById_NotFound() {
+        Long userIdFromHeader = 1L;
+        List<String> userRoles =List.of("ROLE_ADMIN");
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         NotFoundException ex = assertThrows(NotFoundException.class, () -> {
-            userService.getUserDetailsById(1L);
+            userService.getUserDetailsById(1L, userRoles, userIdFromHeader);
         });
 
         assertEquals("User not found with id 1", ex.getMessage());
+    }
+
+    @Test
+    void testGetUserDetailsById_StudentCannotViewOthersProfile() {
+        Long targetId = 2L;
+        Long userIdFromHeader = 1L;
+        List<String> headerRoles = List.of("ROLE_STUDENT");
+
+        AuthorizationException ex = assertThrows(
+            AuthorizationException.class,
+            () -> userService.getUserDetailsById(targetId, headerRoles, userIdFromHeader)
+        );
+
+        assertEquals("Not allowed", ex.getMessage());
+    }
+
+    @Test
+    void testInstructorCanViewOthersProfileWithoutId() {
+        Long targetId = 20L;
+        Long userIdFromHeader = 10L;
+        List<String> headerRoles = List.of("ROLE_INSTRUCTOR");
+
+        User user = new User("stu@example.com", "Stu", "Dent", "pw");
+        user.setId(targetId);
+        when(userRepository.findById(targetId)).thenReturn(Optional.of(user));
+
+        when(userMapper.toDto(any(User.class))).thenAnswer(invocation -> {
+            User u = invocation.getArgument(0);
+            return new UserDto(
+                u.getId(),
+                u.getFirstName(),
+                u.getLastName(),
+                u.getEmail(),
+                List.of(UserRole.STUDENT),
+                null, null, null, null, null, null, null,
+                true
+            );
+        });
+
+        UserDto dto = userService.getUserDetailsById(targetId, headerRoles, userIdFromHeader);
+
+        assertEquals("Stu", dto.firstName());
+        assertNull(dto.id(), "Instructors viewing someone else’s profile must get ID nulled out");
     }
 
     @Test

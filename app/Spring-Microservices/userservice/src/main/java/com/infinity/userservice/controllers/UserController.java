@@ -117,8 +117,10 @@ public class UserController {
     }
 
     @GetMapping("/profile/{id}")
-    public ResponseEntity<UserDto> getUserDetailsById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserDetailsById(id));
+    public ResponseEntity<UserDto> getUserDetailsById(@PathVariable Long id,
+        @RequestHeader(name="X-User-Roles", required=true) List<String> roles,
+        @RequestHeader(name="X-User-Id", required=false) Long userIdFromHeader) {
+        return ResponseEntity.ok(userService.getUserDetailsById(id, roles, userIdFromHeader));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
