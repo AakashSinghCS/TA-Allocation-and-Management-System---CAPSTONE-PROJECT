@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { UserRole } from '../../../interfaces/enum/UserRole';
-import ubcLogo from '../../../assets/ubc-logo.png';
+import ubcLogo from '../../../assets/logo.png';
 
 interface navItem {
     label: string;
@@ -89,13 +89,14 @@ export default function SideNav({expanded, setExpanded}:SideNavProps) {
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
     >
-    <Link to="/" className="flex items-center">
+    {/* <Link to="/" className="flex items-center">
         <img
         src={ubcLogo}
         alt="UBC logo"
         className="h-20 sm:h-20 w-auto transition hover:drop-shadow-[0_0_1em_#FFFFFF] mb-3"
         />
-    </Link>
+    </Link> */}
+    <div className="h-20 sm:h-20 mb-3"></div>
       <div className="flex-1 flex flex-col px-2 space-y-2">
         {filteredNavItems.map(({ label, to, icon }) => {
           const isActive = pathname === to;

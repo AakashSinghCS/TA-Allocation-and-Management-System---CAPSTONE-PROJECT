@@ -1,4 +1,4 @@
-import ubcLogo from "../../../assets/icons/ubc_footer_logo.png";
+import ubcLogo from "../../../assets/icons/footer_logo.png";
 import instagramIcon from "../../../assets/icons/instagram_logo.png";
 import youtubeIcon from "../../../assets/icons/youtube_logo.png";
 import linkedinIcon from "../../../assets/icons/linkedin_logo.png";
