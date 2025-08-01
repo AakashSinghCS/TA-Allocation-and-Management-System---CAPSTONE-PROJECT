@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, File, CheckCircle, AlertTriangle, Trash2, Eye } from 'lucide-react';
+import { Upload, File, CheckCircle, AlertTriangle, Trash2, Eye, Loader2, Maximize2, X } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
 
@@ -41,6 +41,11 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
   const [loadingExisting, setLoadingExisting] = useState(true);
   const [showExistingPreview, setShowExistingPreview] = useState(false);
   const [existingPreviewUrl, setExistingPreviewUrl] = useState<string | null>(null);
+  const [loadingPreview, setLoadingPreview] = useState(false);
+  const [deletingTranscript, setDeletingTranscript] = useState(false);
+  const [showFullscreen, setShowFullscreen] = useState(false);
+  const [fullscreenUrl, setFullscreenUrl] = useState<string | null>(null);
+  const [lastToastMessage, setLastToastMessage] = useState<string | null>(null);
 
   // File validation constants
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -60,8 +65,45 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
       if (existingPreviewUrl) {
         URL.revokeObjectURL(existingPreviewUrl);
       }
+      if (fullscreenUrl) {
+        URL.revokeObjectURL(fullscreenUrl);
+      }
     };
-  }, [uploadState.previewUrl, existingPreviewUrl]);
+  }, [uploadState.previewUrl, existingPreviewUrl, fullscreenUrl]);
+
+  // Handle ESC key for fullscreen
+  useEffect(() => {
+    const handleEscKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showFullscreen) {
+        closeFullscreen();
+      }
+    };
+
+    if (showFullscreen) {
+      document.addEventListener('keydown', handleEscKey);
+      // Prevent body scroll when fullscreen is open
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+      document.body.style.overflow = 'unset';
+    };
+  }, [showFullscreen]);
+
+  // Helper function to show toast messages without duplicates
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    if (lastToastMessage !== message) {
+      setLastToastMessage(message);
+      if (type === 'success') {
+        toast.success(message);
+      } else {
+        toast.error(message);
+      }
+      // Clear the last message after a delay to allow showing the same message again later
+      setTimeout(() => setLastToastMessage(null), 3000);
+    }
+  };
 
   const fetchExistingTranscript = async () => {
     if (!token) return;
@@ -305,13 +347,14 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
   };
 
   const deleteExistingTranscript = async () => {
-    if (!token || !existingTranscript) return;
+    if (!token || !existingTranscript || deletingTranscript) return;
     
     if (!confirm('Are you sure you want to delete your existing transcript?')) {
       return;
     }
     
     try {
+      setDeletingTranscript(true);
       const response = await fetch('http://localhost:8080/transcripts/delete', {
         method: 'DELETE',
         headers: {
@@ -326,18 +369,25 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
           URL.revokeObjectURL(existingPreviewUrl);
           setExistingPreviewUrl(null);
         }
-        toast.success('Transcript deleted successfully!');
+        if (fullscreenUrl) {
+          URL.revokeObjectURL(fullscreenUrl);
+          setFullscreenUrl(null);
+        }
+        setShowFullscreen(false);
+        showToast('Transcript deleted successfully!');
       } else {
-        toast.error('Failed to delete transcript. Please try again.');
+        showToast('Failed to delete transcript. Please try again.', 'error');
       }
     } catch (error) {
       console.error('Error deleting transcript:', error);
-      toast.error('An error occurred while deleting the transcript.');
+      showToast('An error occurred while deleting the transcript.', 'error');
+    } finally {
+      setDeletingTranscript(false);
     }
   };
 
   const handlePreviewExisting = async () => {
-    if (!token || !existingTranscript) return;
+    if (!token || !existingTranscript || loadingPreview) return;
     
     // If preview is already shown, close it
     if (showExistingPreview) {
@@ -350,6 +400,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
     }
     
     try {
+      setLoadingPreview(true);
       // Download the student's own transcript using the new endpoint
       const downloadResponse = await fetch('http://localhost:8080/transcripts/download', {
         method: 'GET',
@@ -372,10 +423,64 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
       
       setExistingPreviewUrl(previewUrl);
       setShowExistingPreview(true);
-      toast.success('Preview loaded successfully');
+      showToast('Preview loaded successfully');
     } catch (error) {
       console.error('Error loading preview:', error);
-      toast.error('Failed to load preview. Please try again.');
+      showToast('Failed to load preview. Please try again.', 'error');
+    } finally {
+      setLoadingPreview(false);
+    }
+  };
+
+  const openFullscreen = (url: string) => {
+    // Create a new blob URL for fullscreen to avoid "moved, edited, or deleted" errors
+    // when the original preview URL gets revoked
+    if (existingPreviewUrl && url === existingPreviewUrl) {
+      // For existing transcript preview, we need to create a new blob URL
+      fetch('http://localhost:8080/transcripts/download', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to download transcript for fullscreen');
+        }
+        return response.blob();
+      })
+      .then(blob => {
+        const newUrl = URL.createObjectURL(blob);
+        // Clean up previous fullscreen URL
+        if (fullscreenUrl) {
+          URL.revokeObjectURL(fullscreenUrl);
+        }
+        setFullscreenUrl(newUrl);
+        setShowFullscreen(true);
+      })
+      .catch(error => {
+        console.error('Error loading fullscreen:', error);
+        showToast('Failed to load fullscreen preview. Please try again.', 'error');
+      });
+    } else if (uploadState.previewUrl && url === uploadState.previewUrl) {
+      // For new file preview, create a new blob URL from the file
+      if (uploadState.file) {
+        const newUrl = URL.createObjectURL(uploadState.file);
+        // Clean up previous fullscreen URL
+        if (fullscreenUrl) {
+          URL.revokeObjectURL(fullscreenUrl);
+        }
+        setFullscreenUrl(newUrl);
+        setShowFullscreen(true);
+      }
+    }
+  };
+
+  const closeFullscreen = () => {
+    setShowFullscreen(false);
+    if (fullscreenUrl) {
+      URL.revokeObjectURL(fullscreenUrl);
+      setFullscreenUrl(null);
     }
   };
 
@@ -434,19 +539,36 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={handlePreviewExisting}
-                  className="flex items-center space-x-1 px-3 py-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                  disabled={loadingPreview}
+                  className="flex items-center space-x-1 px-3 py-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   type="button"
                 >
-                  <Eye className="w-4 h-4" />
-                  <span>{showExistingPreview ? 'Hide Preview' : 'Preview'}</span>
+                  {loadingPreview ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                  <span>
+                    {loadingPreview 
+                      ? 'Loading...' 
+                      : showExistingPreview 
+                        ? 'Hide Preview' 
+                        : 'Preview'
+                    }
+                  </span>
                 </button>
                 <button
                   onClick={deleteExistingTranscript}
-                  className="flex items-center space-x-1 px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+                  disabled={deletingTranscript || loadingPreview}
+                  className="flex items-center space-x-1 px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   type="button"
                 >
-                  <Trash2 className="w-4 h-4" />
-                  <span>Delete</span>
+                  {deletingTranscript ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
+                  <span>{deletingTranscript ? 'Deleting...' : 'Delete'}</span>
                 </button>
               </div>
             </div>
@@ -466,19 +588,29 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                 <h3 className="text-lg font-semibold text-gray-900">Current Transcript Preview</h3>
                 <p className="text-sm text-gray-500">Uploaded {formatDate(existingTranscript.uploadDate)}</p>
               </div>
-              <button
-                onClick={() => {
-                  setShowExistingPreview(false);
-                  if (existingPreviewUrl) {
-                    URL.revokeObjectURL(existingPreviewUrl);
-                    setExistingPreviewUrl(null);
-                  }
-                }}
-                className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded border border-gray-300 transition-colors"
-                type="button"
-              >
-                Close
-              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => openFullscreen(existingPreviewUrl)}
+                  className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded border border-blue-300 transition-colors flex items-center space-x-1"
+                  type="button"
+                >
+                  <Maximize2 className="w-3 h-3" />
+                  <span>Fullscreen</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setShowExistingPreview(false);
+                    if (existingPreviewUrl) {
+                      URL.revokeObjectURL(existingPreviewUrl);
+                      setExistingPreviewUrl(null);
+                    }
+                  }}
+                  className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded border border-gray-300 transition-colors"
+                  type="button"
+                >
+                  Close
+                </button>
+              </div>
             </div>
             <div className="border border-gray-300 rounded-lg overflow-hidden">
               <iframe
@@ -581,7 +713,17 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
           {/* PDF Preview Section */}
           {uploadState.file && uploadState.previewUrl && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">File Preview</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">File Preview</h3>
+                <button
+                  onClick={() => openFullscreen(uploadState.previewUrl!)}
+                  className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded border border-blue-300 transition-colors flex items-center space-x-1"
+                  type="button"
+                >
+                  <Maximize2 className="w-3 h-3" />
+                  <span>Fullscreen</span>
+                </button>
+              </div>
               <div className="border border-gray-300 rounded-lg overflow-hidden">
                 <iframe
                   src={`${uploadState.previewUrl}#toolbar=1&navpanes=0&scrollbar=1`}
@@ -677,6 +819,35 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
             </div>
           </div>
         </form>
+
+        {/* Fullscreen Modal */}
+        {showFullscreen && fullscreenUrl && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+            <div className="relative w-full h-full max-w-7xl max-h-screen p-4">
+              <div className="bg-white rounded-lg shadow-2xl h-full flex flex-col">
+                <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Transcript Preview - Fullscreen</h3>
+                  <button
+                    onClick={closeFullscreen}
+                    className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                    type="button"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="flex-1 p-4">
+                  <div className="border border-gray-300 rounded-lg overflow-hidden h-full">
+                    <iframe
+                      src={`${fullscreenUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                      className="w-full h-full"
+                      title="Transcript Fullscreen Preview"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
