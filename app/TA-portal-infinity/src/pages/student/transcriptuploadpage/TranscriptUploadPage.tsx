@@ -105,7 +105,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
     }
   };
 
-  const fetchExistingTranscript = async () => {
+  const fetchExistingTranscript = async (): Promise<void> => {
     if (!token) return;
     
     try {
@@ -261,15 +261,76 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
       xhr.addEventListener('load', () => {
         if (xhr.status === 200 || xhr.status === 201) {
           const wasReplacement = existingTranscript !== null;
-          setUploadState(prev => ({
-            ...prev,
+          const shouldRefreshExistingPreview = wasReplacement && showExistingPreview;
+          
+          // Clean up upload state and preview URLs
+          if (uploadState.previewUrl) {
+            URL.revokeObjectURL(uploadState.previewUrl);
+          }
+          
+          // If replacing existing transcript, close its preview and clean up
+          if (wasReplacement && showExistingPreview) {
+            setShowExistingPreview(false);
+            if (existingPreviewUrl) {
+              URL.revokeObjectURL(existingPreviewUrl);
+              setExistingPreviewUrl(null);
+            }
+          }
+          
+          // Clear upload state completely
+          setUploadState({
+            file: null,
             uploading: false,
+            progress: 0,
+            error: null,
             success: true,
-            progress: 100
-          }));
+            previewUrl: null
+          });
+          
+          // Clear file input
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+          
           toast.success(wasReplacement ? 'Transcript replaced successfully!' : 'Transcript uploaded successfully!');
-          // Refresh existing transcript info
-          fetchExistingTranscript();
+          
+          // Refresh existing transcript info and auto-preview if needed
+          fetchExistingTranscript().then(() => {
+            // If we were showing existing preview before replacement, show the new file's preview
+            if (shouldRefreshExistingPreview) {
+              setTimeout(async () => {
+                // Force show the new file preview in the existing transcript area
+                try {
+                  setLoadingPreview(true);
+                  const downloadResponse = await fetch('http://localhost:8080/transcripts/download', {
+                    method: 'GET',
+                    headers: {
+                      'Authorization': `Bearer ${token}`,
+                    },
+                  });
+
+                  if (downloadResponse.ok) {
+                    const blob = await downloadResponse.blob();
+                    const previewUrl = URL.createObjectURL(blob);
+                    
+                    // Clean up previous preview URL
+                    if (existingPreviewUrl) {
+                      URL.revokeObjectURL(existingPreviewUrl);
+                    }
+                    
+                    setExistingPreviewUrl(previewUrl);
+                    setShowExistingPreview(true);
+                  }
+                } catch (error) {
+                  console.error('Error auto-loading new file preview:', error);
+                } finally {
+                  setLoadingPreview(false);
+                }
+              }, 800); // Increased delay to ensure transcript info is fully updated
+            }
+          });
+          
+          // Success message will remain visible - no auto-reset
         } else {
           let errorMessage = 'Upload failed. Please try again.';
           try {
@@ -510,315 +571,292 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Upload Transcript
           </h1>
-                    <p className="text-gray-600 text-lg">
+          <p className="text-gray-600">
             Upload your official transcript (PDF only, max 5MB).
           </p>
         </div>
 
-        {/* Existing Transcript Section */}
-        {!loadingExisting && existingTranscript && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Current Transcript</h2>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <File className="w-8 h-8 text-blue-600" />
-                <div>
-                  <p className="text-lg font-medium text-gray-900">{existingTranscript.fileName}</p>
-                  <p className="text-sm text-gray-500">
-                    {formatFileSize(existingTranscript.fileSize)} • Uploaded {formatDate(existingTranscript.uploadDate)}
-                  </p>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {/* Left Column - Current Transcript */}
+          {!loadingExisting && existingTranscript && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-lg font-semibold text-gray-900">Current Transcript</h2>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={handlePreviewExisting}
+                      disabled={loadingPreview}
+                      className="flex items-center space-x-1 px-2 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors disabled:opacity-50"
+                      type="button"
+                    >
+                      {loadingPreview ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Eye className="w-3 h-3" />
+                      )}
+                      <span>
+                        {loadingPreview 
+                          ? 'Loading...' 
+                          : showExistingPreview 
+                            ? 'Hide Preview' 
+                            : 'Preview'
+                        }
+                      </span>
+                    </button>
+                    <button
+                      onClick={deleteExistingTranscript}
+                      disabled={deletingTranscript || loadingPreview}
+                      className="flex items-center space-x-1 px-2 py-1 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                      type="button"
+                    >
+                      {deletingTranscript ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-3 h-3" />
+                      )}
+                      <span>{deletingTranscript ? 'Deleting...' : 'Delete'}</span>
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <File className="w-6 h-6 text-blue-600" />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-gray-900 truncate">{existingTranscript.fileName}</p>
+                    <p className="text-xs text-gray-500">
+                      {formatFileSize(existingTranscript.fileSize)} • {formatDate(existingTranscript.uploadDate)}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
+                  <strong>Note:</strong> This file will be replaced when you upload a new transcript.
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={handlePreviewExisting}
-                  disabled={loadingPreview}
-                  className="flex items-center space-x-1 px-3 py-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  type="button"
+
+              {/* Current Transcript Preview */}
+              {showExistingPreview && existingPreviewUrl && (
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-gray-900">Current Transcript Preview</h3>
+                    <button
+                      onClick={() => openFullscreen(existingPreviewUrl)}
+                      className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded border border-blue-300 transition-colors flex items-center space-x-1"
+                      type="button"
+                    >
+                      <Maximize2 className="w-3 h-3" />
+                      <span>Fullscreen</span>
+                    </button>
+                  </div>
+                  <div className="border border-gray-300 rounded overflow-hidden">
+                    <iframe
+                      src={`${existingPreviewUrl}#toolbar=0&navpanes=0&scrollbar=1`}
+                      className="w-full h-80"
+                      title="Current Transcript Preview"
+                    />
+                  </div>
+                  <div className="mt-2 text-xs text-gray-600 text-center">
+                    {existingTranscript.fileName} ({formatFileSize(existingTranscript.fileSize)})
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Right Column - New Upload */}
+          <div className={`space-y-4 ${!existingTranscript ? 'xl:col-span-2' : ''}`}>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* File Upload Zone */}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <h2 className="text-lg font-semibold text-gray-900 mb-3">
+                  {existingTranscript ? 'Replace Transcript' : 'Upload New Transcript'}
+                </h2>
+                <div
+                  className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
+                    isDragActive
+                      ? 'border-blue-400 bg-blue-50'
+                      : uploadState.error
+                      ? 'border-red-300 bg-red-50'
+                      : uploadState.file
+                      ? 'border-green-300 bg-green-50'
+                      : 'border-gray-300 bg-white hover:border-gray-400'
+                  }`}
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onClick={() => !uploadState.uploading && fileInputRef.current?.click()}
                 >
-                  {loadingPreview ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".pdf"
+                    onChange={handleFileInputChange}
+                    className="hidden"
+                    disabled={uploadState.uploading}
+                  />
+
+                  {uploadState.file ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-center space-x-3">
+                        <File className="w-6 h-6 text-green-600" />
+                        <span className="font-medium text-gray-900 truncate max-w-xs">
+                          {uploadState.file.name}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeFile();
+                          }}
+                          className="text-red-500 hover:text-red-700"
+                          disabled={uploadState.uploading}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <p className="text-sm text-gray-500">
+                        {(uploadState.file.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                      {uploadState.previewUrl && (
+                        <p className="text-sm text-green-600 font-medium">
+                          ✓ File ready - preview below
+                        </p>
+                      )}
+                    </div>
                   ) : (
-                    <Eye className="w-4 h-4" />
+                    <div className="space-y-3">
+                      <Upload className="mx-auto w-10 h-10 text-gray-400" />
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {isDragActive ? 'Drop your PDF here' : 'Choose a PDF file or drag it here'}
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Official academic transcript (PDF only, max 5MB)
+                        </p>
+                      </div>
+                    </div>
                   )}
-                  <span>
-                    {loadingPreview 
-                      ? 'Loading...' 
-                      : showExistingPreview 
-                        ? 'Hide Preview' 
-                        : 'Preview'
-                    }
-                  </span>
-                </button>
-                <button
-                  onClick={deleteExistingTranscript}
-                  disabled={deletingTranscript || loadingPreview}
-                  className="flex items-center space-x-1 px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  type="button"
-                >
-                  {deletingTranscript ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="w-4 h-4" />
+
+                  {/* Progress Bar */}
+                  {uploadState.uploading && (
+                    <div className="mt-4">
+                      <div className="bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${uploadState.progress}%` }}
+                        />
+                      </div>
+                      <p className="text-sm text-gray-600 mt-2">
+                        Uploading... {uploadState.progress}%
+                      </p>
+                    </div>
                   )}
-                  <span>{deletingTranscript ? 'Deleting...' : 'Delete'}</span>
-                </button>
-              </div>
-            </div>
-            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-sm text-yellow-800">
-                <strong>Note:</strong> Uploading a new transcript will replace this existing file.
-              </p>
-            </div>
-          </div>
-        )}
+                </div>
 
-        {/* Existing Transcript Preview Section */}
-        {existingTranscript && showExistingPreview && existingPreviewUrl && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Current Transcript Preview</h3>
-                <p className="text-sm text-gray-500">Uploaded {formatDate(existingTranscript.uploadDate)}</p>
-              </div>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => openFullscreen(existingPreviewUrl)}
-                  className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded border border-blue-300 transition-colors flex items-center space-x-1"
-                  type="button"
-                >
-                  <Maximize2 className="w-3 h-3" />
-                  <span>Fullscreen</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setShowExistingPreview(false);
-                    if (existingPreviewUrl) {
-                      URL.revokeObjectURL(existingPreviewUrl);
-                      setExistingPreviewUrl(null);
-                    }
-                  }}
-                  className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded border border-gray-300 transition-colors"
-                  type="button"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-            <div className="border border-gray-300 rounded-lg overflow-hidden">
-              <iframe
-                src={`${existingPreviewUrl}#toolbar=1&navpanes=0&scrollbar=1`}
-                className="w-full h-[32rem]"
-                title="Current Transcript Preview"
-              />
-            </div>
-            <div className="mt-3 flex items-center justify-between text-sm text-gray-600">
-              <span>Current file: {existingTranscript.fileName}</span>
-              <span>{formatFileSize(existingTranscript.fileSize)}</span>
-            </div>
-          </div>
-        )}
+                {/* Error/Success Messages */}
+                {uploadState.error && (
+                  <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg mt-4">
+                    <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <p className="text-sm text-red-700">{uploadState.error}</p>
+                  </div>
+                )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* File Upload Zone */}
-          <div
-            className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
-              isDragActive
-                ? 'border-blue-400 bg-blue-50'
-                : uploadState.error
-                ? 'border-red-300 bg-red-50'
-                : uploadState.file
-                ? 'border-green-300 bg-green-50'
-                : 'border-gray-300 bg-white hover:border-gray-400'
-            }`}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onClick={() => !uploadState.uploading && fileInputRef.current?.click()}
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf"
-              onChange={handleFileInputChange}
-              className="hidden"
-              disabled={uploadState.uploading}
-            />
+                {uploadState.success && (
+                  <div className="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mt-4">
+                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <p className="text-sm text-green-700">
+                      Transcript uploaded successfully! The coordinator can now access your file.
+                    </p>
+                  </div>
+                )}
 
-            {uploadState.file ? (
-              <div className="space-y-4">
-                <div className="flex items-center justify-center space-x-3">
-                  <File className="w-8 h-8 text-green-600" />
-                  <span className="text-lg font-medium text-gray-900">
-                    {uploadState.file.name}
-                  </span>
+                {/* Action Buttons */}
+                <div className="flex justify-between mt-4">
                   <button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeFile();
-                    }}
-                    className="text-red-500 hover:text-red-700"
+                    onClick={() => navigate(-1)}
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
                     disabled={uploadState.uploading}
                   >
-                    <Trash2 className="w-5 h-5" />
+                    Back
+                  </button>
+                  
+                  <button
+                    type="submit"
+                    disabled={!uploadState.file || uploadState.uploading || uploadState.success}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                      !uploadState.file || uploadState.uploading || uploadState.success
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-[#040941] text-white hover:bg-[#040941]/90'
+                    }`}
+                  >
+                    {uploadState.uploading 
+                      ? 'Uploading...' 
+                      : uploadState.success 
+                        ? 'Uploaded' 
+                        : existingTranscript 
+                          ? 'Replace Transcript' 
+                          : 'Upload Transcript'
+                    }
                   </button>
                 </div>
-                <p className="text-sm text-gray-500">
-                  {(uploadState.file.size / 1024 / 1024).toFixed(2)} MB
-                </p>
-                {uploadState.previewUrl && (
-                  <p className="text-sm text-green-600 font-medium">
-                    ✓ Preview loaded - check the file preview below before uploading
-                  </p>
-                )}
               </div>
-            ) : (
-              <div className="space-y-4">
-                <Upload className="mx-auto w-12 h-12 text-gray-400" />
-                <div>
-                  <p className="text-lg font-medium text-gray-900">
-                    {isDragActive ? 'Drop your PDF here' : 'Choose a PDF file or drag it here'}
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Upload your official academic transcript (PDF only, max 5MB)
-                  </p>
-                </div>
-              </div>
-            )}
+            </form>
 
-            {/* Progress Bar */}
-            {uploadState.uploading && (
-              <div className="mt-4">
-                <div className="bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${uploadState.progress}%` }}
+            {/* New File Preview */}
+            {uploadState.file && uploadState.previewUrl && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-gray-900">New File Preview</h3>
+                  <button
+                    onClick={() => openFullscreen(uploadState.previewUrl!)}
+                    className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded border border-blue-300 transition-colors flex items-center space-x-1"
+                    type="button"
+                  >
+                    <Maximize2 className="w-3 h-3" />
+                    <span>Fullscreen</span>
+                  </button>
+                </div>
+                <div className="border border-gray-300 rounded overflow-hidden">
+                  <iframe
+                    src={`${uploadState.previewUrl}#toolbar=0&navpanes=0&scrollbar=1`}
+                    className="w-full h-80"
+                    title="New File Preview"
                   />
                 </div>
-                <p className="text-sm text-gray-600 mt-2">
-                  Uploading... {uploadState.progress}%
-                </p>
+                <div className="mt-2 text-xs text-gray-600 text-center">
+                  {uploadState.file.name} ({(uploadState.file.size / 1024 / 1024).toFixed(2)} MB)
+                </div>
+                <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800">
+                  <strong>Verify:</strong> Check that information is clearly visible and complete before uploading.
+                </div>
               </div>
             )}
-          </div>
 
-          {/* PDF Preview Section */}
-          {uploadState.file && uploadState.previewUrl && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">File Preview</h3>
-                <button
-                  onClick={() => openFullscreen(uploadState.previewUrl!)}
-                  className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded border border-blue-300 transition-colors flex items-center space-x-1"
-                  type="button"
-                >
-                  <Maximize2 className="w-3 h-3" />
-                  <span>Fullscreen</span>
-                </button>
-              </div>
-              <div className="border border-gray-300 rounded-lg overflow-hidden">
-                <iframe
-                  src={`${uploadState.previewUrl}#toolbar=1&navpanes=0&scrollbar=1`}
-                  className="w-full h-[32rem]"
-                  title="PDF Preview"
-                />
-              </div>
-              <div className="mt-3 flex items-center justify-between text-sm text-gray-600">
-                <span>Preview: {uploadState.file.name}</span>
-                <span>{(uploadState.file.size / 1024 / 1024).toFixed(2)} MB</span>
-              </div>
-              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  <strong>Please verify:</strong> This is the correct transcript file you want to upload. 
-                  Check that all information is clearly visible and the document is complete.
+            {/* Compact Information Section */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h3 className="font-medium text-blue-900 mb-2 text-sm">Requirements</h3>
+              <ul className="text-xs text-blue-800 space-y-1">
+                <li>• PDF files only (max 5MB)</li>
+                <li>• Official academic transcript</li>
+                <li>• Clear and readable content</li>
+                <li>• Avoid special characters in filename</li>
+              </ul>
+              <div className="mt-3 pt-2 border-t border-blue-200">
+                <h4 className="font-medium text-blue-900 mb-1 text-xs">After Upload</h4>
+                <p className="text-xs text-blue-800">
+                  Your transcript will be reviewed by the TA coordinator for TA position requirements.
                 </p>
               </div>
             </div>
-          )}
-
-          {/* Error Message */}
-          {uploadState.error && (
-            <div className="flex items-center space-x-2 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0" />
-              <p className="text-red-700">{uploadState.error}</p>
-            </div>
-          )}
-
-          {/* Success Message */}
-          {uploadState.success && (
-            <div className="flex items-center space-x-2 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-              <p className="text-green-700">
-                Transcript uploaded successfully! The coordinator can now access your file.
-              </p>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="flex justify-between">
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
-              disabled={uploadState.uploading}
-            >
-              Back
-            </button>
-            
-            <button
-              type="submit"
-              disabled={!uploadState.file || uploadState.uploading || uploadState.success}
-              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                !uploadState.file || uploadState.uploading || uploadState.success
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-[#040941] text-white hover:bg-[#040941]/90'
-              }`}
-            >
-              {uploadState.uploading 
-                ? 'Uploading...' 
-                : uploadState.success 
-                  ? 'Uploaded' 
-                  : existingTranscript 
-                    ? 'Replace Transcript' 
-                    : 'Upload Transcript'
-              }
-            </button>
           </div>
-
-          {/* Information Section */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-medium text-blue-900 mb-2">Upload Requirements:</h3>
-            <ul className="text-sm text-blue-800 space-y-1">
-              <li>• <strong>File Format:</strong> Only PDF files are accepted</li>
-              <li>• <strong>File Size:</strong> Maximum 5MB</li>
-              <li>• <strong>File Name:</strong> Avoid special characters like {'<'} {'>'} : " | ? * and keep under 100 characters</li>
-              <li>• <strong>Content:</strong> Must be an official academic transcript from your institution</li>
-              <li>• <strong>Preview:</strong> Review your file using the preview feature before uploading</li>
-              {existingTranscript && (
-                <li>• <strong>Replacement:</strong> Uploading a new file will replace your existing transcript</li>
-              )}
-              {!existingTranscript && (
-                <li>• <strong>Updates:</strong> You can replace your transcript anytime by uploading a new file</li>
-              )}
-            </ul>
-            <div className="mt-3 pt-3 border-t border-blue-200">
-              <h4 className="font-medium text-blue-900 mb-1">After Upload:</h4>
-              <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Your transcript will be reviewed by the TA coordinator</li>
-                <li>• Ensure your transcript is clear, complete, and readable</li>
-                <li>• Include all relevant courses and grades for TA position requirements</li>
-              </ul>
-            </div>
-          </div>
-        </form>
+        </div>
 
         {/* Fullscreen Modal */}
         {showFullscreen && fullscreenUrl && (
