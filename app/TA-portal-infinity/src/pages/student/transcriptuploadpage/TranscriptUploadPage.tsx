@@ -19,6 +19,7 @@ interface UploadState {
   progress: number;
   error: string | null;
   success: boolean;
+  previewUrl: string | null;
 }
 
 const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
@@ -31,7 +32,8 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
     uploading: false,
     progress: 0,
     error: null,
-    success: false
+    success: false,
+    previewUrl: null
   });
   
   const [isDragActive, setIsDragActive] = useState(false);
@@ -46,6 +48,15 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
   useEffect(() => {
     fetchExistingTranscript();
   }, [token]);
+
+  // Cleanup preview URL on component unmount
+  useEffect(() => {
+    return () => {
+      if (uploadState.previewUrl) {
+        URL.revokeObjectURL(uploadState.previewUrl);
+      }
+    };
+  }, [uploadState.previewUrl]);
 
   const fetchExistingTranscript = async () => {
     if (!token) return;
@@ -131,16 +142,26 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
         ...prev,
         error: validationError,
         file: null,
-        success: false
+        success: false,
+        previewUrl: null
       }));
       return;
     }
+
+    // Clean up previous preview URL
+    if (uploadState.previewUrl) {
+      URL.revokeObjectURL(uploadState.previewUrl);
+    }
+
+    // Create preview URL for PDF
+    const previewUrl = URL.createObjectURL(file);
 
     setUploadState(prev => ({
       ...prev,
       file,
       error: null,
-      success: false
+      success: false,
+      previewUrl
     }));
   };
 
@@ -259,12 +280,18 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
   };
 
   const removeFile = () => {
+    // Clean up preview URL if it exists
+    if (uploadState.previewUrl) {
+      URL.revokeObjectURL(uploadState.previewUrl);
+    }
+    
     setUploadState({
       file: null,
       uploading: false,
       progress: 0,
       error: null,
-      success: false
+      success: false,
+      previewUrl: null
     });
     
     if (fileInputRef.current) {
@@ -416,6 +443,11 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                 <p className="text-sm text-gray-500">
                   {(uploadState.file.size / 1024 / 1024).toFixed(2)} MB
                 </p>
+                {uploadState.previewUrl && (
+                  <p className="text-sm text-green-600 font-medium">
+                    ✓ Preview loaded - check the file preview below before uploading
+                  </p>
+                )}
               </div>
             ) : (
               <div className="space-y-4">
@@ -446,6 +478,30 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
               </div>
             )}
           </div>
+
+          {/* PDF Preview Section */}
+          {uploadState.file && uploadState.previewUrl && (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">File Preview</h3>
+              <div className="border border-gray-300 rounded-lg overflow-hidden">
+                <iframe
+                  src={`${uploadState.previewUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                  className="w-full h-[32rem]"
+                  title="PDF Preview"
+                />
+              </div>
+              <div className="mt-3 flex items-center justify-between text-sm text-gray-600">
+                <span>Preview: {uploadState.file.name}</span>
+                <span>{(uploadState.file.size / 1024 / 1024).toFixed(2)} MB</span>
+              </div>
+              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <strong>Please verify:</strong> This is the correct transcript file you want to upload. 
+                  Check that all information is clearly visible and the document is complete.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Error Message */}
           {uploadState.error && (
@@ -504,6 +560,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
               <li>• <strong>File Size:</strong> Maximum 5MB</li>
               <li>• <strong>File Name:</strong> Avoid special characters like {'<'} {'>'} : " | ? * and keep under 100 characters</li>
               <li>• <strong>Content:</strong> Must be an official academic transcript from your institution</li>
+              <li>• <strong>Preview:</strong> Review your file using the preview feature before uploading</li>
               {existingTranscript && (
                 <li>• <strong>Replacement:</strong> Uploading a new file will replace your existing transcript</li>
               )}
