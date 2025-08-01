@@ -574,4 +574,91 @@ finish exam service intgration, add more exception and validations on backend se
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * finish exam service(frontend and integration)
+
+
   * work on exception handling
+
+
+## July 18 - 21
+
+### Timesheet
+Clockify report
+![alt text](./clockify/7.21.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: replacing alert with toastify
+  * #2: add more exception handling
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>replacing alert with toastify
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>add exception handling
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+added more exception and validations on backend services, replaced all alert to toast.error pop-ups
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Mark all the backend functions that are not used as "Not Being used".
+
+
+
+## July 22 - 24
+
+### Timesheet
+Clockify report
+![alt text](./clockify/7.24.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: modify allocation and availability table
+  * #2: add tests for added exception handling
+### Progress Update
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>modify allocation and availability table
+        </td>
+        <!-- Status -->
+        <td>in progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>add tests for added exception handling
+        </td>
+        <!-- Status -->
+        <td>complete
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+modify allocation and availability table to meet Chad's feedback, added a new table AllocatedSection
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * finish modify allocation service, integrate with frontend
