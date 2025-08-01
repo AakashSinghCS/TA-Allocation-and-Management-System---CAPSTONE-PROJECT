@@ -46,7 +46,7 @@ export default function SideNav({expanded, setExpanded}:SideNavProps) {
     { label: 'Dashboard', to: '/user/coordinator/home', icon: <Home size={22} />, roles: [UserRole.COORDINATOR] },
     { label: 'TA Applications', to: '/user/coordinator/applications', icon: <GraduationCap size={22} />, roles: [UserRole.COORDINATOR] },
     { label: 'TA Allocations', to: '/user/coordinator/allocation', icon: <Presentation size={22} />, roles: [UserRole.COORDINATOR] },
-    { label: 'Transcripts', to: '/user/coordinator/transcripts', icon: <FileText size={22} />, roles: [UserRole.COORDINATOR] },
+    { label: 'Student Transcripts', to: '/user/coordinator/transcripts', icon: <FileText size={22} />, roles: [UserRole.COORDINATOR] },
     { label: 'Exams', to: '/user/coordinator/create-exam', icon: <BookOpen size={22} />, roles: [UserRole.COORDINATOR] },
     // { label: 'Profile', to: '/user/coordinator/profile', icon: <UserRoundPen size={22} />, roles: [UserRole.COORDINATOR] },
     { label: 'Profile Questions', to: '/user/coordinator/questions', icon: <FileQuestionMark size={22} />, roles: [UserRole.COORDINATOR] },
