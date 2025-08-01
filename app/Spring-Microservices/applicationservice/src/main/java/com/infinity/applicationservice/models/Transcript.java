@@ -1,12 +1,16 @@
 package com.infinity.applicationservice.models;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,18 +20,31 @@ import lombok.NoArgsConstructor;
 public class Transcript {
     
     @Id
-    @Column(name = "application_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "application_id")
+    @ManyToOne
+    @JoinColumn(name = "application_id", nullable = false)
     private Application application;
 
+    @Column(nullable = false)
     private String fileName;
 
+    @Column(nullable = false)
     private String contentType;
 
+    @Column(nullable = false)
+    private Long fileSize;
+
+    @Column(nullable = false)
+    private LocalDateTime uploadDate;
+
     @Lob
+    @Column(nullable = false)
     private byte[] data;
+
+    @PrePersist
+    protected void onCreate() {
+        uploadDate = LocalDateTime.now();
+    }
 }
