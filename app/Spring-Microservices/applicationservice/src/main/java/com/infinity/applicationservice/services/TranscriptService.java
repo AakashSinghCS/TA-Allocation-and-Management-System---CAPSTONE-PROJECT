@@ -31,23 +31,32 @@ public class TranscriptService {
         // Validation
         validateFile(file);
         
-        // Check if transcript already exists for this user
-        if (transcriptRepository.findByUserId(userId).isPresent()) {
-            throw new RuntimeException("Transcript already exists for this user");
+        // Check if transcript already exists for this user - if so, replace it
+        Optional<Transcript> existingTranscript = transcriptRepository.findByUserId(userId);
+        
+        Transcript transcript;
+        if (existingTranscript.isPresent()) {
+            // Replace existing transcript
+            transcript = existingTranscript.get();
+            transcript.setFileName(file.getOriginalFilename());
+            transcript.setContentType(file.getContentType());
+            transcript.setFileSize(file.getSize());
+            transcript.setData(file.getBytes());
+            // Update timestamp will be handled by @PrePersist in the entity
+        } else {
+            // Find user's application (optional - may not exist yet)
+            Optional<Application> applicationOpt = applicationRepository.findByUserId(userId);
+            
+            // Create new transcript
+            transcript = new Transcript();
+            // Set application if it exists, otherwise it will be null
+            applicationOpt.ifPresent(transcript::setApplication);
+            transcript.setUserId(userId); // Store userId directly for cases where application doesn't exist yet
+            transcript.setFileName(file.getOriginalFilename());
+            transcript.setContentType(file.getContentType());
+            transcript.setFileSize(file.getSize());
+            transcript.setData(file.getBytes());
         }
-        
-        // Find user's application (optional - may not exist yet)
-        Optional<Application> applicationOpt = applicationRepository.findByUserId(userId);
-        
-        // Create new transcript
-        Transcript transcript = new Transcript();
-        // Set application if it exists, otherwise it will be null
-        applicationOpt.ifPresent(transcript::setApplication);
-        transcript.setUserId(userId); // Store userId directly for cases where application doesn't exist yet
-        transcript.setFileName(file.getOriginalFilename());
-        transcript.setContentType(file.getContentType());
-        transcript.setFileSize(file.getSize());
-        transcript.setData(file.getBytes());
         
         return transcriptRepository.save(transcript);
     }

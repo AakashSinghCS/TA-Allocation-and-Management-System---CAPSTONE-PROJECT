@@ -66,10 +66,11 @@ public class TranscriptController {
                         true, 
                         transcript.getFileName(), 
                         transcript.getUploadDate().toString(),
-                        transcript.getFileSize()
+                        transcript.getFileSize(),
+                        transcript.getContentType()
                     )))
                 .orElse(ResponseEntity.ok()
-                    .body(new TranscriptStatus(false, null, null, null)));
+                    .body(new TranscriptStatus(false, null, null, null, null)));
                     
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -129,12 +130,14 @@ public class TranscriptController {
         public String fileName;
         public String uploadDate;
         public Long fileSize;
+        public String contentType;
         
-        public TranscriptStatus(boolean hasTranscript, String fileName, String uploadDate, Long fileSize) {
+        public TranscriptStatus(boolean hasTranscript, String fileName, String uploadDate, Long fileSize, String contentType) {
             this.hasTranscript = hasTranscript;
             this.fileName = fileName;
             this.uploadDate = uploadDate;
             this.fileSize = fileSize;
+            this.contentType = contentType;
         }
     }
 }

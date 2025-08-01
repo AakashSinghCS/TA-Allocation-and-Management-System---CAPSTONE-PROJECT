@@ -1,10 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, File, CheckCircle, AlertTriangle, Trash2 } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
 
 interface TranscriptUploadPageProps {}
+
+interface ExistingTranscript {
+  fileName: string;
+  fileSize: number;
+  uploadDate: string;
+  contentType: string;
+}
 
 interface UploadState {
   file: File | null;
@@ -28,10 +35,49 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
   });
   
   const [isDragActive, setIsDragActive] = useState(false);
+  const [existingTranscript, setExistingTranscript] = useState<ExistingTranscript | null>(null);
+  const [loadingExisting, setLoadingExisting] = useState(true);
 
   // File validation constants
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
   const ALLOWED_TYPES = ['application/pdf'];
+
+  // Fetch existing transcript on component mount
+  useEffect(() => {
+    fetchExistingTranscript();
+  }, [token]);
+
+  const fetchExistingTranscript = async () => {
+    if (!token) return;
+    
+    try {
+      setLoadingExisting(true);
+      const response = await fetch('http://localhost:8080/transcripts/status', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setExistingTranscript({
+          fileName: data.fileName,
+          fileSize: data.fileSize,
+          uploadDate: data.uploadDate,
+          contentType: data.contentType
+        });
+      } else if (response.status !== 404) {
+        // 404 means no transcript exists, which is fine
+        console.error('Failed to fetch existing transcript');
+      }
+    } catch (error) {
+      console.error('Error fetching existing transcript:', error);
+    } finally {
+      setLoadingExisting(false);
+    }
+  };
 
   const validateFile = (file: File): string | null => {
     // Check file type
@@ -147,7 +193,9 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
             success: true,
             progress: 100
           }));
-          toast.success('Transcript uploaded successfully!');
+          toast.success(existingTranscript ? 'Transcript replaced successfully!' : 'Transcript uploaded successfully!');
+          // Refresh existing transcript info
+          fetchExistingTranscript();
         } else {
           let errorMessage = 'Upload failed. Please try again.';
           try {
@@ -218,6 +266,51 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
     }
   };
 
+  const deleteExistingTranscript = async () => {
+    if (!token || !existingTranscript) return;
+    
+    if (!confirm('Are you sure you want to delete your existing transcript?')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch('http://localhost:8080/transcripts/delete', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        setExistingTranscript(null);
+        toast.success('Transcript deleted successfully!');
+      } else {
+        toast.error('Failed to delete transcript. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error deleting transcript:', error);
+      toast.error('An error occurred while deleting the transcript.');
+    }
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const formatDate = (dateString: string): string => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (uploadState.file && !uploadState.uploading) {
@@ -237,6 +330,37 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
             Upload your official transcript (PDF only, max 5MB). File names with spaces are supported.
           </p>
         </div>
+
+        {/* Existing Transcript Section */}
+        {!loadingExisting && existingTranscript && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Current Transcript</h2>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <File className="w-8 h-8 text-blue-600" />
+                <div>
+                  <p className="text-lg font-medium text-gray-900">{existingTranscript.fileName}</p>
+                  <p className="text-sm text-gray-500">
+                    {formatFileSize(existingTranscript.fileSize)} • Uploaded {formatDate(existingTranscript.uploadDate)}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={deleteExistingTranscript}
+                className="flex items-center space-x-1 px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+                type="button"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Delete</span>
+              </button>
+            </div>
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-sm text-yellow-800">
+                <strong>Note:</strong> Uploading a new transcript will replace this existing file.
+              </p>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* File Upload Zone */}
@@ -330,7 +454,10 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
             <div className="flex items-center space-x-2 p-4 bg-green-50 border border-green-200 rounded-lg">
               <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
               <p className="text-green-700">
-                Transcript uploaded successfully! The coordinator can now access your file.
+                {existingTranscript 
+                  ? 'Transcript replaced successfully! The coordinator can now access your updated file.'
+                  : 'Transcript uploaded successfully! The coordinator can now access your file.'
+                }
               </p>
             </div>
           )}
@@ -355,7 +482,14 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                   : 'bg-[#040941] text-white hover:bg-[#040941]/90'
               }`}
             >
-              {uploadState.uploading ? 'Uploading...' : uploadState.success ? 'Uploaded' : 'Upload Transcript'}
+              {uploadState.uploading 
+                ? 'Uploading...' 
+                : uploadState.success 
+                  ? 'Uploaded' 
+                  : existingTranscript 
+                    ? 'Replace Transcript' 
+                    : 'Upload Transcript'
+              }
             </button>
           </div>
 
@@ -367,7 +501,12 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
               <li>• Maximum file size is 5MB</li>
               <li>• File name should not contain special characters like {'<'} {'>'} : " | ? *</li>
               <li>• Maximum file name length is 100 characters</li>
-              <li>• Uploading a new transcript will replace the existing one</li>
+              {existingTranscript && (
+                <li>• <strong>Uploading a new file will replace your existing transcript</strong></li>
+              )}
+              {!existingTranscript && (
+                <li>• You can replace your transcript later by uploading a new file</li>
+              )}
               <li>• Your transcript will be reviewed by the TA coordinator</li>
               <li>• Ensure your transcript is clear and readable</li>
             </ul>

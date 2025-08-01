@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -47,7 +48,8 @@ public class Transcript {
     private byte[] data;
 
     @PrePersist
-    protected void onCreate() {
+    @PreUpdate
+    protected void onCreateOrUpdate() {
         uploadDate = LocalDateTime.now();
     }
 }
