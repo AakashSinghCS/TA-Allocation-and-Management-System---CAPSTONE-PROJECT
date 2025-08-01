@@ -333,7 +333,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
             Upload Transcript
           </h1>
           <p className="text-gray-600 text-lg">
-            Upload your official transcript (PDF only, max 5MB). File names with spaces are supported.
+            Upload your official transcript (PDF only, max 5MB).
           </p>
         </div>
 
