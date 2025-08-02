@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.infinity.applicationservice.dto.TranscriptInfoDTO;
+import com.infinity.applicationservice.dto.TranscriptReviewDTO;
 import com.infinity.applicationservice.dto.TranscriptStatusDTO;
 import com.infinity.applicationservice.models.Transcript;
 import com.infinity.applicationservice.services.TranscriptService;
@@ -102,5 +105,28 @@ public class TranscriptController {
                     .body(transcript.getData());
             })
             .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @PutMapping("/review/{transcriptId}")
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'ADMIN')")
+    public ResponseEntity<String> updateTranscriptReview(
+            @PathVariable Long transcriptId,
+            @RequestBody TranscriptReviewDTO reviewDTO) {
+        
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long reviewerId = Long.parseLong(username);
+        
+        boolean updated = transcriptService.updateTranscriptReview(
+            transcriptId, 
+            reviewDTO.getReviewStatus(), 
+            reviewDTO.getReviewComments(), 
+            reviewerId
+        );
+        
+        if (updated) {
+            return ResponseEntity.ok("Transcript review updated successfully");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

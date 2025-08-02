@@ -37,6 +37,8 @@ const UserBrowsingPage = lazy(() => import("../pages/coordinator/userbrowsingpag
 const ManualCreateUserPage = lazy(() => import("../pages/coordinator/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage"));
 const GlobalConfigPage = lazy(() => import("../pages/admin/globalconfig/GlobalConfigPage"));
 const TranscriptManagementPage = lazy(() => import("../pages/coordinator/transcriptmanagementpage/TranscriptManagementPage"));
+// Reference implementation with floating/draggable preview panels - for comparison and future reference
+const TranscriptManagementPageFloatingReference = lazy(() => import("../pages/coordinator/transcriptmanagementpage/TranscriptManagementPage.floating-reference"));
 
 const CourseProfilePage = lazy(() => import("../pages/course/courseprofilepage/CourseProfilePage"));
 const SectionListPage = lazy(() => import("../pages/course/sectionlistpage/SectionListPage"));
@@ -133,7 +135,8 @@ export const router = createBrowserRouter([
           { path: "sections/export", element: <Suspense fallback={<div>Loading...</div>}><ExportToCSVPage /></Suspense> },
           { path: "applications", element: <Suspense fallback={<div>Loading...</div>}><ApplicationViewPage /></Suspense> },
           { path: "allocation", element: <Suspense fallback={<div>Loading...</div>}><AllocationPage /></Suspense> },
-          { path: "transcripts", element: <Suspense fallback={<div>Loading...</div>}><TranscriptManagementPage /></Suspense> },
+          { path: "transcripts", element: <Suspense fallback={<div>Loading...</div>}><TranscriptManagementPage /></Suspense> }, // Main implementation (tab-based)
+          { path: "transcripts-floating", element: <Suspense fallback={<div>Loading...</div>}><TranscriptManagementPageFloatingReference /></Suspense> }, // Reference implementation (floating panels)
           { path: "globalconfig", element: <Suspense fallback={<div>Loading...</div>}><GlobalConfigPage /></Suspense> },
           { path: "audit", element: <Suspense fallback={<div>Loading...</div>}><AuditLogsPage /></Suspense> },
           { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },

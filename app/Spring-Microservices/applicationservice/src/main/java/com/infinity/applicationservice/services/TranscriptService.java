@@ -1,6 +1,7 @@
 package com.infinity.applicationservice.services;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -113,6 +114,25 @@ public class TranscriptService {
     public TranscriptStatusDTO getTranscriptStatus(Long userId) {
         Optional<Transcript> transcript = transcriptRepository.findByUserId(userId);
         return transcriptMapper.toTranscriptStatus(transcript.orElse(null));
+    }
+    
+    @Transactional
+    public boolean updateTranscriptReview(Long transcriptId, Transcript.ReviewStatus reviewStatus, 
+                                         String reviewComments, Long reviewerId) {
+        Optional<Transcript> transcriptOpt = transcriptRepository.findById(transcriptId);
+        
+        if (transcriptOpt.isPresent()) {
+            Transcript transcript = transcriptOpt.get();
+            transcript.setReviewStatus(reviewStatus);
+            transcript.setReviewComments(reviewComments);
+            transcript.setReviewedBy(reviewerId);
+            transcript.setReviewDate(LocalDateTime.now());
+            
+            transcriptRepository.save(transcript);
+            return true;
+        }
+        
+        return false;
     }
     
     private void validateFile(MultipartFile file) {

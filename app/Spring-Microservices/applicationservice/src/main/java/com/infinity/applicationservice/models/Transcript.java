@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,6 +21,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Transcript {
+    
+    public enum ReviewStatus {
+        PENDING,        // 未確認 - Newly uploaded, awaiting review
+        UNDER_REVIEW,   // 確認中 - Currently being reviewed by coordinator
+        APPROVED,       // 承認済み - Approved for TA position consideration
+        REJECTED,       // 却下 - Rejected due to insufficient requirements
+        NEEDS_CLARIFICATION // 要説明 - Requires additional information or resubmission
+    }
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,6 +61,20 @@ public class Transcript {
     @Lob
     @Column(nullable = false, columnDefinition = "LONGBLOB")
     private byte[] data;
+
+    // Review workflow fields
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ReviewStatus reviewStatus = ReviewStatus.PENDING;
+
+    @Column(length = 1000)
+    private String reviewComments;
+
+    @Column
+    private Long reviewedBy; // User ID of the coordinator who reviewed
+
+    @Column
+    private LocalDateTime reviewDate;
 
     @PrePersist
     @PreUpdate
