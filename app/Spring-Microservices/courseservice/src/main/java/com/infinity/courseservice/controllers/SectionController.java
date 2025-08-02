@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,27 +48,31 @@ public class SectionController {
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addSection/{courseId}")
     public ResponseEntity<SectionDto> addSection(@PathVariable Long courseId,
-            @RequestBody SectionAddDtoRequest request) {
-        return ResponseEntity.ok(sectionService.addSection(courseId, request));
+            @RequestBody SectionAddDtoRequest request,
+            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.addSection(courseId, request,userIdFromHeader));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PutMapping("/updateSection/{sectionId}")
-    public ResponseEntity<SectionDto> updateSection(@PathVariable Long sectionId, @RequestBody CourseRequest request) {
-        return ResponseEntity.ok(sectionService.updateSection(sectionId, request));
+    public ResponseEntity<SectionDto> updateSection(@PathVariable Long sectionId, @RequestBody CourseRequest request
+    ,@RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.updateSection(sectionId, request,userIdFromHeader));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("/deleteSection/{sectionId}")
-    public ResponseEntity<String> deleteSection(@PathVariable Long sectionId) {
-        return ResponseEntity.ok(sectionService.deleteSection(sectionId));
+    public ResponseEntity<String> deleteSection(@PathVariable Long sectionId,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.deleteSection(sectionId,userIdFromHeader));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/addSectionSchedule/{sectionId}")
     public ResponseEntity<SectionScheduleDto> addSectionSchedule(@PathVariable Long sectionId,
-            @RequestBody CourseRequest request) {
-        return ResponseEntity.ok(sectionService.addSectionSchedule(sectionId, request));
+            @RequestBody CourseRequest request
+            ,@RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.addSectionSchedule(sectionId, request,userIdFromHeader));
     }
 
     @GetMapping("getSectionSchedules/{sectionId}")
@@ -78,27 +83,31 @@ public class SectionController {
     @PreAuthorize("hasRole('COORDINATOR')")
     @PutMapping("/updateSectionSchedule/{sectionScheduleId}")
     public ResponseEntity<SectionScheduleDto> updateSectionSchedule(@PathVariable Long sectionScheduleId,
-            @RequestBody CourseRequest request) {
-        return ResponseEntity.ok(sectionService.updateSectionSchedule(sectionScheduleId, request));
+            @RequestBody CourseRequest request,
+            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.updateSectionSchedule(sectionScheduleId, request,userIdFromHeader));
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("deleteSectionSchedule/{sectionScheduleId}")
-    public ResponseEntity<String> deleteSectionSchedule(@PathVariable Long sectionScheduleId) {
-        return ResponseEntity.ok(sectionService.deleteSectionSchedule(sectionScheduleId));
+    public ResponseEntity<String> deleteSectionSchedule(@PathVariable Long sectionScheduleId
+    ,@RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.deleteSectionSchedule(sectionScheduleId,userIdFromHeader));
     }
 
     @PreAuthorize("hasAnyRole('COORDINATOR','INSTRUCTOR')")
     @PostMapping("/assignInstructor")
-    public ResponseEntity<String> assignInstructor(@RequestBody AssignInstructorRequest request) {
-        return ResponseEntity.ok(sectionService.assignInstructor(request));
+    public ResponseEntity<String> assignInstructor(@RequestBody AssignInstructorRequest request
+    ,@RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.assignInstructor(request,userIdFromHeader));
     }
 
     @PreAuthorize("hasAnyRole('COORDINATOR','INSTRUCTOR')")
     @DeleteMapping("/unassignInstructor/{sectionId}/{instructorId}")
     public ResponseEntity<String> unassignInstructor(@PathVariable Long sectionId,
-            @PathVariable Long instructorId) {
-        return ResponseEntity.ok(sectionService.unassignInstructor(sectionId, instructorId));
+            @PathVariable Long instructorId
+            ,@RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.unassignInstructor(sectionId, instructorId,userIdFromHeader));
     }
 
     @PreAuthorize("hasAnyRole('COORDINATOR','INSTRUCTOR')")
@@ -109,8 +118,9 @@ public class SectionController {
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/add")
-    public ResponseEntity<Boolean> add(@RequestBody SectionAddDtoRequest request) {
-        return ResponseEntity.ok(sectionService.add(request));
+    public ResponseEntity<Boolean> add(@RequestBody SectionAddDtoRequest request,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return ResponseEntity.ok(sectionService.add(request,userIdFromHeader));
     }
 
     @GetMapping("/getByCourseIdSectionYearSemester/{courseId}/{section}/{year}/{semester}")
@@ -153,14 +163,16 @@ public class SectionController {
     // }
 
     @PutMapping("/{id}/incrementTA")
-    public ResponseEntity<Void> incrementNumberOfTAs(@PathVariable Long id) {
-        sectionService.incrementNumberOfTAsAllocated(id);
+    public ResponseEntity<Void> incrementNumberOfTAs(@PathVariable Long id,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        sectionService.incrementNumberOfTAsAllocated(id,userIdFromHeader);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/decrementTA")
-    public ResponseEntity<Void> decrementNumberOfTAs(@PathVariable Long id) {
-        sectionService.decrementNumberOfTAsAllocated(id);
+    public ResponseEntity<Void> decrementNumberOfTAs(@PathVariable Long id,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        sectionService.decrementNumberOfTAsAllocated(id,userIdFromHeader);
         return ResponseEntity.noContent().build();
     }
 

@@ -8,6 +8,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 
 public class StudentAnswerKey implements Serializable {
-    private Long studentId;
-    private Long answerId;
+    // private Long studentId;
+    // private Long answerId;
 }

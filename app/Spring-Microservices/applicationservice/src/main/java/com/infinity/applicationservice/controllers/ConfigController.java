@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,8 +40,8 @@ public class ConfigController {
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/add")
-    public List<DeadlineDto> addDeadlines(@RequestBody List<DeadlineDto> dto) {
-        return configService.addDeadlines(dto);
+    public List<DeadlineDto> addDeadlines(@RequestBody List<DeadlineDto> dto,@RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        return configService.addDeadlines(dto,userIdFromHeader);
     }
 
     // Update a deadline by name
@@ -48,15 +49,16 @@ public class ConfigController {
     @PutMapping("/update/{name}")
     public DeadlineDto updateDeadline(
             @PathVariable String name,
-            @RequestBody DeadlineDto deadline
+            @RequestBody DeadlineDto deadline,
+            @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader
     ) {
-        return configService.updateDeadline(name, deadline);
+        return configService.updateDeadline(name, deadline,userIdFromHeader);
     }
 
     @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("/delete/{name}")
-    public ResponseEntity<DeadlineDto> deleteDeadline(@PathVariable String name) {
-        DeadlineDto deleted = configService.deleteDeadline(name);
+    public ResponseEntity<DeadlineDto> deleteDeadline(@PathVariable String name,@RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
+        DeadlineDto deleted = configService.deleteDeadline(name,userIdFromHeader);
         return ResponseEntity.ok(deleted);
     }
 }

@@ -1,6 +1,7 @@
 package com.infinity.courseservice.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -16,5 +17,9 @@ public interface UserInterface {
 
     @GetMapping("/users/instructors/{instructorId}")
     UserDto getInstructorById(@PathVariable Long instructorId);
+
+    
+    @GetMapping("/users/profile/{id}")
+    public ResponseEntity<UserDto> getUserDetailsById(@PathVariable Long id);
 
 }

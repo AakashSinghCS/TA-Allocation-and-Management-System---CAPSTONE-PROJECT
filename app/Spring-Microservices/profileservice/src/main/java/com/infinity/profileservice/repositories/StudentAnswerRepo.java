@@ -1,5 +1,6 @@
 package com.infinity.profileservice.repositories;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +12,7 @@ import com.infinity.profileservice.models.StudentAnswerKey;
 import com.infinity.profileservice.models.StudentHasProfileAnswer;
 
 public interface StudentAnswerRepo
-        extends JpaRepository<StudentHasProfileAnswer, StudentAnswerKey> {
+        extends JpaRepository<StudentHasProfileAnswer, Long> {
 
     List<StudentHasProfileAnswer> findByStudentId(Long studentId);
 
@@ -27,4 +28,6 @@ public interface StudentAnswerRepo
     @Transactional
     @Query("delete from StudentHasProfileAnswer l where l.answer.id in :answerIds")
     void deleteAllByAnswerIdIn(List<Long> answerIds);
+
+    List<StudentHasProfileAnswer> findByAnswerIdIn(Collection<Long> answerIds);
 }

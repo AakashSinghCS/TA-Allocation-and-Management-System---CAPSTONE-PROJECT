@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 import java.util.List;
 import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
 
@@ -25,9 +27,10 @@ public class SectionCSVImportController {
      */
     @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping("/import-csv")
-    public ResponseEntity<String> importSectionsFromJson(@RequestBody List<SectionCsvData> sections) {
+    public ResponseEntity<String> importSectionsFromJson(@RequestBody List<SectionCsvData> sections,
+    @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
         // Call service to handle JSON import
-        String result = sectionService.importSectionsFromJson(sections);
+        String result = sectionService.importSectionsFromJson(sections,userIdFromHeader);
         return ResponseEntity.ok(result);
     }
 }

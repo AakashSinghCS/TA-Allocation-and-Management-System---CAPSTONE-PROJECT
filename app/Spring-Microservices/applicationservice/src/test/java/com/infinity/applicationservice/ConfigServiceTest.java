@@ -2,6 +2,8 @@ package com.infinity.applicationservice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,8 +18,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.infinity.applicationservice.dtos.DeadlineDto;
+import com.infinity.applicationservice.enums.ActionOptions;
 import com.infinity.applicationservice.models.GlobalDeadline;
 import com.infinity.applicationservice.repositories.ConfigRepository;
+import com.infinity.applicationservice.services.AuditService;
 import com.infinity.applicationservice.services.ConfigService;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,6 +29,9 @@ public class ConfigServiceTest {
 
     @Mock
     ConfigRepository configRepository;
+
+    @Mock
+    AuditService auditService;
 
     @InjectMocks
     ConfigService configService;
@@ -45,8 +52,7 @@ public class ConfigServiceTest {
         dto = new DeadlineDto(
                 "student_application_deadline",
                 LocalDateTime.parse("2025-08-01T00:00:00"),
-                LocalDateTime.parse("2025-08-31T23:59:59")
-        );
+                LocalDateTime.parse("2025-08-31T23:59:59"));
     }
 
     @Test
@@ -70,49 +76,72 @@ public class ConfigServiceTest {
 
     @Test
     void testAddDeadlines_ShouldSaveAll() {
-        DeadlineDto requestDto = new DeadlineDto(
-                "student_application_deadline",
-                LocalDateTime.parse("2025-08-01T00:00:00"),
-                LocalDateTime.parse("2025-08-31T23:59:59")
-        );
+        Long userIdFromHeader = 1L;
 
         when(configRepository.saveAll(anyList())).thenReturn(List.of(entity));
 
-        List<DeadlineDto> result = configService.addDeadlines(List.of(requestDto));
+        List<DeadlineDto> result = configService.addDeadlines(List.of(dto), userIdFromHeader);
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).name()).isEqualTo("student_application_deadline");
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.CREATE),
+                eq("GlobalDeadline"),
+                isNull(),
+                eq(entity),
+                eq(entity.getId()));
+        verify(configRepository).saveAll(anyList());
     }
 
     @Test
     void testUpdateDeadline_ShouldUpdateAndSave() {
+        Long userIdFromHeader = 1L;
+
         when(configRepository.findByName("student_application_deadline")).thenReturn(entity);
+        GlobalDeadline before = new GlobalDeadline(entity);
+        GlobalDeadline after = new GlobalDeadline("student_application_deadline",
+                LocalDateTime.parse("2025-09-01T00:00:00"), LocalDateTime.parse("2025-09-30T23:59:59"));
+        after.setId(entity.getId());
 
         DeadlineDto updateDto = new DeadlineDto(
                 "student_application_deadline",
                 LocalDateTime.parse("2025-09-01T00:00:00"),
-                LocalDateTime.parse("2025-09-30T23:59:59")
-        );
+                LocalDateTime.parse("2025-09-30T23:59:59"));
 
-        DeadlineDto result = configService.updateDeadline("student_application_deadline", updateDto);
+        DeadlineDto result = configService.updateDeadline("student_application_deadline", updateDto, userIdFromHeader);
 
         assertThat(result.startTime()).isEqualTo(updateDto.startTime());
         assertThat(result.endTime()).isEqualTo(updateDto.endTime());
 
         verify(configRepository).save(entity);
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.UPDATE),
+                eq("GlobalDeadline"),
+                eq(before),
+                eq(after),
+                eq(entity.getId()));
     }
 
     @Test
-void testDeleteDeadline_ShouldDeleteAndReturnDto() {
+    void testDeleteDeadline_ShouldDeleteAndReturnDto() {
+        Long userIdFromHeader = 1L;
+        when(configRepository.findByName("student_application_deadline")).thenReturn(entity);
 
-    when(configRepository.findByName("student_application_deadline")).thenReturn(entity);
+        DeadlineDto result = configService.deleteDeadline("student_application_deadline", userIdFromHeader);
 
-    DeadlineDto result = configService.deleteDeadline("student_application_deadline");
+        assertThat(result.name()).isEqualTo("student_application_deadline");
+        assertThat(result.startTime()).isEqualTo(entity.getStartTime());
+        assertThat(result.endTime()).isEqualTo(entity.getEndTime());
 
-    assertThat(result.name()).isEqualTo("student_application_deadline");
-    assertThat(result.startTime()).isEqualTo(entity.getStartTime());
-    assertThat(result.endTime()).isEqualTo(entity.getEndTime());
-
-    verify(configRepository).delete(entity);
-}
+        verify(configRepository).delete(entity);
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.DELETE),
+                eq("GlobalDeadline"),
+                eq(entity),
+                eq(null),
+                eq(entity.getId()));
+    }
 }

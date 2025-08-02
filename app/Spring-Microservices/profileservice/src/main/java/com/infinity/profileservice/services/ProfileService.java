@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.infinity.profileservice.dtos.*;
 import com.infinity.profileservice.dtos.profile.FreeTextRequest;
 import com.infinity.profileservice.dtos.profile.ProfileAnswerRequest;
+import com.infinity.profileservice.enums.ActionOptions;
 import com.infinity.profileservice.enums.QuestionType;
 import com.infinity.profileservice.exceptions.BadRequestException;
 import com.infinity.profileservice.exceptions.NotFoundException;
@@ -25,6 +26,7 @@ public class ProfileService {
     private final StudentAnswerRepo studentAnsRepo;
     private final QuestionRepo questionRepo;
     private final AnswerRepo answerRepo;
+    private final AuditService auditService;
 
     @Transactional(readOnly = true)
     public ProfileResponseDto buildProfile(Long studentId) {
@@ -40,21 +42,42 @@ public class ProfileService {
 
         return new ProfileResponseDto(qaList);
     }
-private <T> List<T> safeList(List<T> l)   { return l != null ? l : List.of(); }
-@Transactional
-    public void saveAnswers(Long studentId, ProfileAnswerRequest request) {
+    private <T> List<T> safeList(List<T> l)   { return l != null ? l : List.of(); }
+
+    public void saveAnswers(Long studentId, ProfileAnswerRequest request, Long userIdFromHeader) {
+        List<StudentHasProfileAnswer> toDelete = studentAnsRepo.findByStudentId(studentId);
+        System.out.println(toDelete);
         studentAnsRepo.deleteAllByStudentId(studentId);
+        System.out.println(toDelete);
+        toDelete.forEach((shpa)->{
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.DELETE,
+                "StudentHasProfileAnswer",                 
+                shpa,
+                null,        
+                shpa.getId()
+            );
+        });
 
         for (Long aid : safeList(request.answerIds()).stream().distinct().toList()) {
 
             if (!answerRepo.existsById(aid)) {
                 throw new NotFoundException("Answer not found: " + aid);
             }
-            studentAnsRepo.save(link(studentId, aid));
+            StudentHasProfileAnswer saved = studentAnsRepo.save(link(studentId, aid));
+
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.CREATE,
+                "StudentHasProfileAnswer",   
+                null,               
+                saved,           
+                saved.getId()
+            );
         }
 
         for (FreeTextRequest ftr : safeList(request.freeTextRequests())) {
-
             var text = (ftr.answerText() == null) ? "" : ftr.answerText().trim();
             if (text.isEmpty()) continue;
 
@@ -71,7 +94,16 @@ private <T> List<T> safeList(List<T> l)   { return l != null ? l : List.of(); }
 
             StudentHasProfileAnswer link = link(studentId, pa.getId());
             link.setAnswerText(text);
-            studentAnsRepo.save(link);
+
+            StudentHasProfileAnswer saved = studentAnsRepo.save(link);
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.CREATE,
+                "StudentHasProfileAnswer",   
+                null,               
+                saved,           
+                saved.getId()
+            );
         }
     }
 

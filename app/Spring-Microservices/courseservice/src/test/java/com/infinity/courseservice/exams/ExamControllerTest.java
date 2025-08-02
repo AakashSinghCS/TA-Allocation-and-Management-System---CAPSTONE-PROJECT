@@ -56,14 +56,16 @@ public class ExamControllerTest {
 
     @Test
     void testCreateExam() throws Exception {
+        Long userIdFromHeader = 1L;
         ExamDto request = new ExamDto(null, 1L, 1L, "W1 2025", LocalDate.of(2025, 8, 1), LocalTime.of(9, 0), LocalTime.of(12, 0));
         ExamDto response = new ExamDto(10L, 1L, 1L, "W1 2025", request.date(), request.startTime(), request.endTime());
 
-        when(examService.createExam(any(ExamDto.class))).thenReturn(response);
+        when(examService.createExam(any(ExamDto.class), eq(userIdFromHeader))).thenReturn(response);
 
         mockMvc.perform(post("/exams")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(objectMapper.writeValueAsString(request))
+                .header("X-User-Id",userIdFromHeader))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(10))
             .andExpect(jsonPath("$.courseId").value(1))
@@ -96,14 +98,16 @@ public class ExamControllerTest {
 
     @Test
     void testUpdateExam() throws Exception {
+        Long userIdFromHeader = 1L;
         ExamDto request = new ExamDto(null, 1L, 2L, "W2 2025", LocalDate.of(2025, 9, 1), LocalTime.of(14, 0), LocalTime.of(16, 0));
         ExamDto response = new ExamDto(10L, 1L, 2L, "W2 2025", request.date(), request.startTime(), request.endTime());
 
-        when(examService.updateExam(eq(10L), any(ExamDto.class))).thenReturn(response);
+        when(examService.updateExam(eq(10L), any(ExamDto.class), eq(userIdFromHeader))).thenReturn(response);
 
         mockMvc.perform(put("/exams/10")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(objectMapper.writeValueAsString(request))
+                .header("X-User-Id",userIdFromHeader))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(10))
             .andExpect(jsonPath("$.courseId").value(1))
@@ -112,7 +116,9 @@ public class ExamControllerTest {
 
     @Test
     void testDeleteExam() throws Exception {
-        mockMvc.perform(delete("/exams/10"))
+        Long userIdFromHeader = 1L;
+        mockMvc.perform(delete("/exams/10")
+            .header("X-User-Id",userIdFromHeader))
             .andExpect(status().isOk());
     }
 
@@ -122,6 +128,7 @@ public class ExamControllerTest {
 
     @Test
     void testUpdateAvailability() throws Exception {
+        Long userIdFromHeader = 1L;
         List<ExamAvailabilityDto> dtos = List.of(
             new ExamAvailabilityDto(null, 1L, LocalDate.of(2025, 8, 10), LocalTime.of(9, 0), LocalTime.of(12, 0)),
             new ExamAvailabilityDto(null, 1L, LocalDate.of(2025, 8, 12), LocalTime.of(10, 0), LocalTime.of(13, 0))
@@ -129,7 +136,8 @@ public class ExamControllerTest {
 
         mockMvc.perform(post("/exams/1/availability")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dtos)))
+                .content(objectMapper.writeValueAsString(dtos))
+                .header("X-User-Id",userIdFromHeader))
             .andExpect(status().isOk());
     }
 
@@ -147,11 +155,12 @@ public class ExamControllerTest {
     @Test
     void testDeleteAvailabilityByStudentId() throws Exception {
         Long studentId = 1L;
-
-        mockMvc.perform(delete("/exams/{studentId}/availability", studentId))
+        Long userIdFromHeader = 1L;
+        mockMvc.perform(delete("/exams/{studentId}/availability", studentId)
+                .header("X-User-Id",userIdFromHeader))
                .andExpect(status().isOk());
 
-        Mockito.verify(examService, times(1)).deleteAvailabilityByStudentId(studentId);
+        Mockito.verify(examService, times(1)).deleteAvailabilityByStudentId(studentId,userIdFromHeader);
     }
 
     // -------------------
@@ -160,11 +169,12 @@ public class ExamControllerTest {
 
     @Test
     void testAssignStudentToExam() throws Exception {
+        Long userIdFromHeader = 1L;
         LocalDate date = LocalDate.of(2025, 12, 15);
         LocalTime startTime = LocalTime.of(9, 0);
         LocalTime endTime = LocalTime.of(12, 0);
         ExamAssignmentDto dto = new ExamAssignmentDto(1L, 10L, 1L, ExamTask.MARKING, date, startTime, endTime);
-        when(examService.assignStudentToExam(eq(10L), any(ExamAssignmentDto.class))).thenReturn(dto);
+        when(examService.assignStudentToExam(eq(10L), any(ExamAssignmentDto.class), eq(userIdFromHeader))).thenReturn(dto);
 
         ExamAssignmentDto request = new ExamAssignmentDto(
             null,
@@ -178,7 +188,8 @@ public class ExamControllerTest {
 
         mockMvc.perform(post("/exams/10/assignments")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(objectMapper.writeValueAsString(request))
+                .header("X-User-Id",userIdFromHeader))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(1))
             .andExpect(jsonPath("$.examId").value(10))
@@ -230,30 +241,32 @@ public class ExamControllerTest {
     @Test
     void testUnassignStudentFromExam() throws Exception {
         Long assignmentId = 10L;
-
-        mockMvc.perform(delete("/exams/assignments/{assignmentId}", assignmentId))
+        Long userIdFromHeader = 1L;
+        mockMvc.perform(delete("/exams/assignments/{assignmentId}", assignmentId)
+            .header("X-User-Id",userIdFromHeader))
             .andExpect(status().isOk());
 
-        verify(examService).unassignStudentFromExam(assignmentId);
+        verify(examService).unassignStudentFromExam(assignmentId,userIdFromHeader);
     }
 
     @Test
     void testUpdateAssignmentByStudentId() throws Exception {
         Long examId = 1L;
         Long studentId = 2L;
-
+        Long userIdFromHeader = 1L;
         ExamAssignmentDto inputDto = new ExamAssignmentDto(
             5L, examId, studentId, ExamTask.MARKING, LocalDate.of(2025, 8, 10),
             LocalTime.of(13, 0),
             LocalTime.of(15, 0)
         );
 
-        when(examService.updateAssignmentByStudentId(eq(examId), eq(studentId), any(ExamAssignmentDto.class)))
+        when(examService.updateAssignmentByStudentId(eq(examId), eq(studentId), any(ExamAssignmentDto.class), eq(userIdFromHeader)))
             .thenReturn(inputDto);
 
         mockMvc.perform(put("/exams/assignments/{examId}/student/{studentId}", examId, studentId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(inputDto)))
+                .content(asJsonString(inputDto))
+                .header("X-User-Id",userIdFromHeader))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.examId").value(1))
             .andExpect(jsonPath("$.studentId").value(2))
