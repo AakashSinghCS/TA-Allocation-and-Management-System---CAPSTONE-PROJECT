@@ -405,14 +405,6 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
     setSelectAll(false);
   }, [searchTerm, statusFilter]);
 
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
-
   const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -453,26 +445,36 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
           {/* Operation Guide */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h3 className="text-sm font-medium text-blue-900 mb-2">How to use this page:</h3>
-            <div className="text-sm text-blue-800 space-y-1">
-              <div className="flex items-center space-x-2">
-                <span>•</span>
-                <span><strong>Search & Filter:</strong> Use the search bar to find specific students or filter by review status</span>
+            <div className="text-sm text-blue-800 space-y-2">
+              <div className="flex items-start space-x-2">
+                <span className="text-blue-600 font-bold">1.</span>
+                <div>
+                  <span><strong>Search & Filter:</strong> Use the search bar to find students by name, email, student number, or filename. Filter by review status to focus on specific groups.</span>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <span>•</span>
-                <span><strong>Individual Review:</strong> Click "Review" button to edit status and add comments</span>
+              <div className="flex items-start space-x-2">
+                <span className="text-blue-600 font-bold">2.</span>
+                <div>
+                  <span><strong>Individual Review:</strong> Click "Review" button to open inline editing. Select status from dropdown, add detailed comments, then click "Save" to confirm changes.</span>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <span>•</span>
-                <span><strong>Bulk Operations:</strong> Select multiple transcripts using checkboxes for batch status updates</span>
+              <div className="flex items-start space-x-2">
+                <span className="text-blue-600 font-bold">3.</span>
+                <div>
+                  <span><strong>Bulk Operations:</strong> Check multiple transcript boxes, then use bulk action buttons (Under Review, Approve, Reject, Needs Clarification) for efficient processing.</span>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <span>•</span>
-                <span><strong>Preview:</strong> Click "Preview" to view transcript content in a separate tab</span>
+              <div className="flex items-start space-x-2">
+                <span className="text-blue-600 font-bold">4.</span>
+                <div>
+                  <span><strong>Preview & Fullscreen:</strong> Click "Preview" to view transcript content in the Preview tab. Use "Fullscreen" button for detailed document examination.</span>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <span>•</span>
-                <span><strong>Download:</strong> Use the download button to save transcript files locally</span>
+              <div className="flex items-start space-x-2">
+                <span className="text-blue-600 font-bold">5.</span>
+                <div>
+                  <span><strong>Download & Export:</strong> Download individual transcript files for offline review or record-keeping purposes.</span>
+                </div>
               </div>
             </div>
           </div>
@@ -856,16 +858,27 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                             <td colSpan={7} className="px-6 py-4">
                               <div className="space-y-3">
                                 <div>
-                                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Review Comments
-                                  </label>
+                                  <div className="flex justify-between items-center mb-1">
+                                    <label className="block text-sm font-medium text-gray-700">
+                                      Review Comments
+                                    </label>
+                                    <span className={`text-xs ${reviewComments.length > 500 ? 'text-red-500' : 'text-gray-400'}`}>
+                                      {reviewComments.length}/500
+                                    </span>
+                                  </div>
                                   <textarea
                                     value={reviewComments}
                                     onChange={(e) => setReviewComments(e.target.value)}
                                     placeholder="Add your review comments here..."
                                     rows={3}
+                                    maxLength={500}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                                   />
+                                  {reviewComments.length > 450 && (
+                                    <div className="text-xs text-amber-600 mt-1">
+                                      ⚠️ Comment is approaching the 500 character limit
+                                    </div>
+                                  )}
                                 </div>
                                 <div className="text-xs text-gray-500">
                                   Last updated: {transcript.reviewDate ? formatDate(transcript.reviewDate) : 'Never'} 
@@ -920,7 +933,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                     {selectedTranscript.reviewComments && (
                       <div>
                         <span className="text-sm font-medium text-gray-900 block mb-2">Comments:</span>
-                        <div className="text-sm text-gray-800 bg-white p-3 rounded border border-blue-200 max-h-32 overflow-y-auto">
+                        <div className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-200 shadow-sm max-h-32 overflow-y-auto">
                           {selectedTranscript.reviewComments}
                         </div>
                       </div>
@@ -976,39 +989,58 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
         )}
       </div>
 
-        {/* Summary Stats */}
+        {/* Review Status Overview */}
         {filteredAndSortedTranscripts.length > 0 && (
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <div className="text-2xl font-bold text-gray-900">
-                {filteredAndSortedTranscripts.length}
+              <div className="text-2xl font-bold text-green-600">
+                {filteredAndSortedTranscripts.filter(t => t.reviewStatus === 'APPROVED').length}
               </div>
-              <div className="text-sm text-gray-500">Total Transcripts</div>
+              <div className="text-sm text-gray-500">Approved</div>
+              <div className="text-xs text-gray-400 mt-1">
+                {filteredAndSortedTranscripts.length > 0 ? 
+                  Math.round((filteredAndSortedTranscripts.filter(t => t.reviewStatus === 'APPROVED').length / filteredAndSortedTranscripts.length) * 100) 
+                  : 0}% of total
+              </div>
             </div>
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <div className="text-2xl font-bold text-gray-900">
-                {formatFileSize(
-                  filteredAndSortedTranscripts.reduce((sum, t) => sum + t.fileSize, 0)
-                )}
+              <div className="text-2xl font-bold text-blue-600">
+                {filteredAndSortedTranscripts.filter(t => t.reviewStatus === 'UNDER_REVIEW').length}
               </div>
-              <div className="text-sm text-gray-500">Total Size</div>
+              <div className="text-sm text-gray-500">Under Review</div>
+              <div className="text-xs text-gray-400 mt-1">
+                {filteredAndSortedTranscripts.length > 0 ? 
+                  Math.round((filteredAndSortedTranscripts.filter(t => t.reviewStatus === 'UNDER_REVIEW').length / filteredAndSortedTranscripts.length) * 100) 
+                  : 0}% of total
+              </div>
             </div>
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <div className="text-2xl font-bold text-gray-900">
-                {formatFileSize(
-                  filteredAndSortedTranscripts.reduce((sum, t) => sum + t.fileSize, 0) / 
-                  filteredAndSortedTranscripts.length
-                )}
+              <div className="text-2xl font-bold text-gray-600">
+                {filteredAndSortedTranscripts.filter(t => !t.reviewStatus || t.reviewStatus === 'PENDING').length}
               </div>
-              <div className="text-sm text-gray-500">Average Size</div>
+              <div className="text-sm text-gray-500">Pending Review</div>
+              <div className="text-xs text-gray-400 mt-1">
+                {filteredAndSortedTranscripts.length > 0 ? 
+                  Math.round((filteredAndSortedTranscripts.filter(t => !t.reviewStatus || t.reviewStatus === 'PENDING').length / filteredAndSortedTranscripts.length) * 100) 
+                  : 0}% of total
+              </div>
+            </div>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <div className="text-2xl font-bold text-red-600">
+                {filteredAndSortedTranscripts.filter(t => t.reviewStatus === 'REJECTED' || t.reviewStatus === 'NEEDS_CLARIFICATION').length}
+              </div>
+              <div className="text-sm text-gray-500">Needs Attention</div>
+              <div className="text-xs text-gray-400 mt-1">
+                Rejected + Clarification needed
+              </div>
             </div>
           </div>
         )}
 
         {/* Information Section */}
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="font-medium text-blue-900 mb-2">Transcript Review Guidelines:</h3>
-          <ul className="text-sm text-blue-800 space-y-1">
+        <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
+          <h3 className="font-medium text-green-900 mb-2">Transcript Review Guidelines:</h3>
+          <ul className="text-sm text-green-800 space-y-1">
             <li>• <strong>Academic Standing:</strong> Verify the student meets minimum GPA requirements for TA positions</li>
             <li>• <strong>Course History:</strong> Check for relevant coursework in the subject area they're applying to assist with</li>
             <li>• <strong>Prerequisites:</strong> Ensure completion of required prerequisite courses for advanced TA roles</li>
@@ -1043,7 +1075,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                       {selectedTranscript?.reviewComments && (
                         <div className="flex items-start space-x-2">
                           <span className="text-sm font-medium text-gray-900">Comments:</span>
-                          <div className="text-sm text-gray-800 bg-blue-50 px-3 py-1 rounded border border-blue-200 max-w-md">
+                          <div className="text-sm text-gray-700 bg-gray-50 px-3 py-1 rounded-lg border border-gray-200 shadow-sm max-w-md">
                             <div className="max-h-16 overflow-y-auto" title={selectedTranscript.reviewComments}>
                               {selectedTranscript.reviewComments}
                             </div>
