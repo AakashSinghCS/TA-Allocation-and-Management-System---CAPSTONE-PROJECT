@@ -29,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -433,4 +434,32 @@ public class UserControllerTest {
                                 .andExpect(jsonPath("$[0].employeeNum").value(87654321));
 
         }
+
+        @Test
+        public void testGetStudentsByIds_returnsValidResponse() throws Exception {
+                List<Long> ids = List.of(1L, 2L);
+                UserDto dto = new UserDto(
+                        1L,
+                        "Alice",
+                        "Smith",
+                        "alice@example.com",
+                        List.of(UserRole.STUDENT),
+                        12345678,
+                        "COSC",
+                        2022,
+                        4,
+                        null,
+                        "COSC",
+                        LocalDateTime.now(),
+                        true
+                );
+                when(userService.getStudentsByIds(ids)).thenReturn(List.of(dto));
+
+                mockMvc.perform(get("/users/students/batch")
+                        .param("ids", "1", "2")
+                        .accept(MediaType.APPLICATION_JSON))
+                   .andExpect(status().isOk())
+                   .andExpect(jsonPath("$.length()").value(1))
+                   .andExpect(jsonPath("$[0].firstName").value("Alice"));
+    }
 }

@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -782,4 +783,38 @@ public class UserServiceTest {
                     /*userId*/ null);
         });
     }
+
+    @Test
+    public void testGetStudentsByIds_returnsOnlyStudents() {
+
+        User studentUser = new User();
+        studentUser.setId(1L);
+
+
+        when(userRepository.findAllById(List.of(1L)))
+            .thenReturn(List.of(studentUser));
+
+        UserDto dto = new UserDto(
+                        1L,
+                        "Alice",
+                        "Smith",
+                        "alice@example.com",
+                        List.of(UserRole.STUDENT),
+                        12345678,
+                        "COSC",
+                        2022,
+                        4,
+                        null,
+                        "COSC",
+                        LocalDateTime.now(),
+                        true
+        );
+        when(userMapper.toDto(studentUser)).thenReturn(dto);
+
+        List<UserDto> result = userService.getStudentsByIds(List.of(1L));
+
+        assertEquals(1, result.size());
+        assertEquals("Alice", result.get(0).firstName());
+    }   
+
 }

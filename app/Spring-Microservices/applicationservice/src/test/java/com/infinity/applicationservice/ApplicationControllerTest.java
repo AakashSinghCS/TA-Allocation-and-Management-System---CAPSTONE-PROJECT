@@ -27,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -323,4 +324,47 @@ public class ApplicationControllerTest {
                                 .andExpect(jsonPath("$[0].semester").value("W1"));
 
         }
+
+        @Test
+        public void testGetGraduateApplicants_returnsValidResponse() throws Exception {
+        UserDto s1 = new UserDto(
+                        1L,
+                        "Alice",
+                        "Smith",
+                        "alice@example.com",
+                        List.of(UserRole.STUDENT),
+                        12345678,
+                        "COSC",
+                        2022,
+                        4,
+                        null,
+                        "COSC",
+                        LocalDateTime.now(),
+                        true
+        );
+
+        UserDto s2 = new UserDto(
+                        2L,
+                        "John",
+                        "Lee",
+                        "john@example.com",
+                        List.of(UserRole.STUDENT),
+                        12456543,
+                        "COSC",
+                        2022,
+                        4,
+                        null,
+                        "COSC",
+                        LocalDateTime.now(),
+                        true
+        );
+        when(applicationService.getAllGraduateApplicants()).thenReturn(List.of(s1, s2));
+
+        mockMvc.perform(get("/applications/graduateApplicants")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$[0].firstName").value("Alice"))
+            .andExpect(jsonPath("$[1].lastName").value("Lee"));
+    }
 }

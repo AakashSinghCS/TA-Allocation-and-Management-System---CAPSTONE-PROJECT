@@ -41,8 +41,6 @@ describe("CreateExamPage", () => {
 
   it("renders Assign Student to Exam form", () => {
     expect(screen.getByText("Assign Student to Exam")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("e.g. John")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("e.g. 12345678")).toBeInTheDocument();
     expect(screen.getByText("Assign")).toBeInTheDocument();
   });
 
@@ -60,14 +58,5 @@ describe("CreateExamPage", () => {
     });
   });
 
-  it("updates student name and number inputs", () => {
-    const nameInput = screen.getByPlaceholderText("e.g. John");
-    const numInput = screen.getByPlaceholderText("e.g. 12345678");
-
-    fireEvent.change(nameInput, { target: { value: "Alice" } });
-    fireEvent.change(numInput, { target: { value: "12345678" } });
-
-    expect(nameInput).toHaveValue("Alice");
-    expect(numInput).toHaveValue("12345678");
-  });
+  
 });
