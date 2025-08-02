@@ -577,9 +577,10 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
           </div>
         </div>
 
-        {/* Row 1: Search and Filter Controls */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
-          <div className="flex flex-col sm:flex-row gap-4 items-center">
+        {/* Unified 4-Row Control Panel */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          {/* Row 1: Search and Filter Controls */}
+          <div className="flex flex-col sm:flex-row gap-4 items-center mb-6">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -617,11 +618,9 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
               )}
             </div>
           </div>
-        </div>
 
-        {/* Row 2: Date Filter Controls */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4">
-          <div className="flex flex-col sm:flex-row gap-4 items-center">
+          {/* Row 2: Date Filter Controls */}
+          <div className="flex flex-col sm:flex-row gap-4 items-center mb-6 pb-6 border-b border-gray-100">
             <div className="flex items-center space-x-2">
               <Calendar className="w-4 h-4 text-gray-500" />
               <span className="text-sm font-medium text-gray-700">Upload Date Range:</span>
@@ -648,11 +647,9 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
               Clear Dates
             </button>
           </div>
-        </div>
 
-        {/* Row 3: Action Buttons */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4">
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+          {/* Row 3: Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-6 pb-6 border-b border-gray-100">
             <div className="flex items-center space-x-4">
               <button
                 onClick={handleExportToCSV}
@@ -682,11 +679,9 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
               Quick actions for selected transcripts and data export
             </div>
           </div>
-        </div>
 
-        {/* Row 4: Bulk Update Actions */}
-        {selectedTranscripts.size > 0 && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+          {/* Row 4: Bulk Update Actions */}
+          {selectedTranscripts.size > 0 && (
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium text-gray-700">
@@ -724,8 +719,8 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 </button>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Error State */}
         {error && (
