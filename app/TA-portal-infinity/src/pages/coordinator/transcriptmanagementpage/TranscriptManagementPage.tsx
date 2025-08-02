@@ -38,6 +38,10 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   
   // Filter states
   const [statusFilter, setStatusFilter] = useState<TranscriptInfo['reviewStatus'] | 'ALL'>('ALL');
+  
+  // Bulk selection states
+  const [selectedTranscripts, setSelectedTranscripts] = useState<Set<number>>(new Set());
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     fetchTranscripts();
@@ -93,6 +97,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       toast.error('Failed to load transcripts');
+      console.error('Fetch transcripts error:', err);
     } finally {
       setLoading(false);
     }
@@ -205,7 +210,10 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
 
       await updateTranscriptReview(reviewData, token);
       
-      // Refresh transcripts list
+      // Small delay to ensure database transaction is committed
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Refresh transcripts list from server
       await fetchTranscripts();
       
       // Clear editing state
@@ -273,6 +281,66 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
     }
   };
 
+  // Bulk selection handlers
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedTranscripts(new Set());
+      setSelectAll(false);
+    } else {
+      const allVisibleIds = new Set(filteredAndSortedTranscripts.map(t => t.id));
+      setSelectedTranscripts(allVisibleIds);
+      setSelectAll(true);
+    }
+  };
+
+  const handleSelectTranscript = (transcriptId: number) => {
+    const newSelected = new Set(selectedTranscripts);
+    if (newSelected.has(transcriptId)) {
+      newSelected.delete(transcriptId);
+    } else {
+      newSelected.add(transcriptId);
+    }
+    setSelectedTranscripts(newSelected);
+    setSelectAll(newSelected.size === filteredAndSortedTranscripts.length);
+  };
+
+  const handleBulkStatusUpdate = async (newStatus: TranscriptInfo['reviewStatus']) => {
+    if (!token || selectedTranscripts.size === 0) return;
+
+    try {
+      setUpdatingReview(true);
+      
+      // Update all selected transcripts
+      const updatePromises = Array.from(selectedTranscripts).map(transcriptId => {
+        const reviewData: TranscriptReview = {
+          transcriptId,
+          reviewStatus: newStatus,
+          reviewComments: `Bulk updated to ${getStatusLabel(newStatus)}`
+        };
+        return updateTranscriptReview(reviewData, token);
+      });
+
+      await Promise.all(updatePromises);
+      
+      // Small delay to ensure database transaction is committed
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Refresh transcripts list from server
+      await fetchTranscripts();
+      
+      // Clear selection
+      setSelectedTranscripts(new Set());
+      setSelectAll(false);
+      
+      toast.success(`Updated ${selectedTranscripts.size} transcript(s) to ${getStatusLabel(newStatus)}`);
+    } catch (err) {
+      toast.error('Failed to update selected transcripts');
+      console.error('Bulk update error:', err);
+    } finally {
+      setUpdatingReview(false);
+    }
+  };
+
   const handleSort = (field: keyof TranscriptInfo) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -311,6 +379,12 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
       
       return 0;
     });
+
+  // Reset selection when filters change
+  useEffect(() => {
+    setSelectedTranscripts(new Set());
+    setSelectAll(false);
+  }, [searchTerm, statusFilter]);
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
@@ -389,8 +463,46 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
               </select>
             </div>
             
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
+            <div className="flex items-center space-x-4 text-sm text-gray-600">
               <span>Total: {filteredAndSortedTranscripts.length} transcripts</span>
+              {selectedTranscripts.size > 0 && (
+                <div className="flex items-center space-x-2">
+                  <span className="text-blue-600 font-medium">
+                    {selectedTranscripts.size} selected
+                  </span>
+                  <div className="flex items-center space-x-1">
+                    <span className="text-gray-500">Bulk update:</span>
+                    <button
+                      onClick={() => handleBulkStatusUpdate('UNDER_REVIEW')}
+                      disabled={updatingReview}
+                      className="px-2 py-1 text-xs bg-blue-100 text-blue-700 border border-blue-300 rounded hover:bg-blue-200 disabled:opacity-50"
+                    >
+                      Under Review
+                    </button>
+                    <button
+                      onClick={() => handleBulkStatusUpdate('APPROVED')}
+                      disabled={updatingReview}
+                      className="px-2 py-1 text-xs bg-green-100 text-green-700 border border-green-300 rounded hover:bg-green-200 disabled:opacity-50"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => handleBulkStatusUpdate('REJECTED')}
+                      disabled={updatingReview}
+                      className="px-2 py-1 text-xs bg-red-100 text-red-700 border border-red-300 rounded hover:bg-red-200 disabled:opacity-50"
+                    >
+                      Reject
+                    </button>
+                    <button
+                      onClick={() => handleBulkStatusUpdate('NEEDS_CLARIFICATION')}
+                      disabled={updatingReview}
+                      className="px-2 py-1 text-xs bg-yellow-100 text-yellow-700 border border-yellow-300 rounded hover:bg-yellow-200 disabled:opacity-50"
+                    >
+                      Needs Clarification
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -460,6 +572,14 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
+                      <th className="px-3 py-3 text-left">
+                        <input
+                          type="checkbox"
+                          checked={selectAll}
+                          onChange={handleSelectAll}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                      </th>
                       <th
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('studentName')}
@@ -523,11 +643,21 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                     {filteredAndSortedTranscripts.map((transcript) => (
                       <React.Fragment key={transcript.id}>
                         <tr 
-                          className={`hover:bg-gray-50 cursor-pointer transition-colors ${
+                          className={`hover:bg-gray-50 transition-colors ${
                             selectedTranscript?.id === transcript.id ? 'bg-blue-50 border-l-4 border-blue-500' : ''
                           }`}
-                          onClick={() => handlePreview(transcript)}
                         >
+                          <td className="px-3 py-4 whitespace-nowrap">
+                            <input
+                              type="checkbox"
+                              checked={selectedTranscripts.has(transcript.id)}
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                handleSelectTranscript(transcript.id);
+                              }}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
                               <div className="text-sm font-medium text-gray-900">
@@ -641,11 +771,9 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                                   <Eye className="w-3 h-3" />
                                 )}
                                 <span>
-                                  {selectedTranscript?.id === transcript.id && previewUrl 
-                                    ? 'Hide' 
-                                    : loadingPreview && selectedTranscript?.id === transcript.id 
-                                      ? 'Loading...' 
-                                      : 'Preview'
+                                  {loadingPreview && selectedTranscript?.id === transcript.id 
+                                    ? 'Loading...' 
+                                    : 'Preview'
                                   }
                                 </span>
                               </button>

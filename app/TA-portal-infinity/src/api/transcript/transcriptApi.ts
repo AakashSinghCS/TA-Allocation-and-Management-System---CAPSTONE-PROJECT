@@ -99,6 +99,7 @@ export async function updateTranscriptReview(
   });
 
   if (!response.ok) {
-    throw new Error('Failed to update transcript review');
+    const errorText = await response.text();
+    throw new Error(`Failed to update transcript review: ${response.status} ${errorText}`);
   }
 }

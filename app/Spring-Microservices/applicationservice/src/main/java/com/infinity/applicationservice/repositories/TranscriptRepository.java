@@ -24,7 +24,11 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Long> {
            "t.fileName, " +
            "t.uploadDate, " +
            "t.fileSize, " +
-           "t.contentType) " +
+           "t.contentType, " +
+           "t.reviewStatus, " +
+           "t.reviewComments, " +
+           "t.reviewedBy, " +
+           "t.reviewDate) " +
            "FROM Transcript t " +
            "LEFT JOIN t.application a " +
            "ORDER BY t.uploadDate DESC")

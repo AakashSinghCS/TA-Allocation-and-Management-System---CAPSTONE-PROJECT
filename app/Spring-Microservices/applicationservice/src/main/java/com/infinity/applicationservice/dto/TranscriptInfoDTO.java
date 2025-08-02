@@ -43,4 +43,23 @@ public class TranscriptInfoDTO {
         this.studentNumber = "";
         this.reviewStatus = Transcript.ReviewStatus.PENDING;
     }
+    
+    // Constructor with review fields (for repository query)
+    public TranscriptInfoDTO(Long id, Long studentId, String fileName, LocalDateTime uploadDate, Long fileSize, String contentType,
+                           Transcript.ReviewStatus reviewStatus, String reviewComments, Long reviewedBy, LocalDateTime reviewDate) {
+        this.id = id;
+        this.studentId = studentId;
+        this.fileName = fileName;
+        this.uploadDate = uploadDate;
+        this.fileSize = fileSize;
+        this.contentType = contentType;
+        this.reviewStatus = reviewStatus != null ? reviewStatus : Transcript.ReviewStatus.PENDING;
+        this.reviewComments = reviewComments;
+        this.reviewedBy = reviewedBy;
+        this.reviewDate = reviewDate;
+        // Set default values for user details (will be enriched later)
+        this.studentName = "Student " + studentId;
+        this.studentEmail = "";
+        this.studentNumber = "";
+    }
 }
