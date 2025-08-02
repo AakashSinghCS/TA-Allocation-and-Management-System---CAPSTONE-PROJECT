@@ -577,10 +577,10 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
           </div>
         </div>
 
-        {/* 3-Row Unified Control Panel */}
+        {/* 3-Row Control Panel - Option B */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          {/* Row 1: Search, Filters, and Statistics */}
-          <div className="flex flex-col lg:flex-row gap-4 items-center mb-6 pb-6 border-b border-gray-100">
+          {/* Row 1: Search, Status Filter, and Statistics */}
+          <div className="flex flex-col sm:flex-row gap-4 items-center mb-6 pb-6 border-b border-gray-100">
             {/* Search Bar */}
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -609,10 +609,24 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 <option value="NEEDS_CLARIFICATION">Needs Clarification</option>
               </select>
             </div>
+            
+            {/* Statistics */}
+            <div className="flex items-center text-sm text-gray-600 whitespace-nowrap">
+              <span>Total: {filteredAndSortedTranscripts.length}</span>
+              {selectedTranscripts.size > 0 && (
+                <span className="ml-3 text-blue-600 font-medium">
+                  {selectedTranscripts.size} selected
+                </span>
+              )}
+            </div>
+          </div>
 
+          {/* Row 2: Date Filter + Action Buttons */}
+          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between mb-6 pb-6 border-b border-gray-100">
             {/* Date Range Filter */}
             <div className="flex items-center space-x-2">
               <Calendar className="w-4 h-4 text-gray-500" />
+              <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Date Range:</span>
               <input
                 type="date"
                 value={dateRange.start}
@@ -630,26 +644,14 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
               />
               <button
                 onClick={() => setDateRange({ start: '', end: '' })}
-                className="px-3 py-2 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                className="px-3 py-2 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors whitespace-nowrap"
                 title="Clear dates"
               >
                 Clear
               </button>
             </div>
-            
-            {/* Statistics */}
-            <div className="flex items-center text-sm text-gray-600 whitespace-nowrap">
-              <span>Total: {filteredAndSortedTranscripts.length}</span>
-              {selectedTranscripts.size > 0 && (
-                <span className="ml-3 text-blue-600 font-medium">
-                  {selectedTranscripts.size} selected
-                </span>
-              )}
-            </div>
-          </div>
 
-          {/* Row 2: Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-start mb-6 pb-6 border-b border-gray-100">
+            {/* Action Buttons */}
             <div className="flex items-center space-x-4">
               <button
                 onClick={handleExportToCSV}
