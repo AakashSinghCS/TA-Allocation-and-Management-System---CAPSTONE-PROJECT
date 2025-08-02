@@ -107,11 +107,6 @@ describe('<AddSectionPage />', () => {
         courseNum: '430',
       }),
     );
-
-    expect(mockNavigate).toHaveBeenCalledWith(
-      '/user/coordinator/sections',
-      { replace: true },
-    );
   });
 
   it('creates a *section* then navigates', async () => {

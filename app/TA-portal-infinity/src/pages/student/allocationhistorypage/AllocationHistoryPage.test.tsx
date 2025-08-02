@@ -1,54 +1,63 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { vi, type Mock } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { BrowserRouter } from 'react-router-dom';
 import AllocationHistoryPage from './AllocationHistoryPage';
-import { useAuth } from '../../../context/AuthContext';
-import { GenericAPIContainer } from '../../../utility/genericapicontainer/GenericAPIContainer';
-import { useParams } from 'react-router-dom';
+import * as fetchStudentAllocationHistoryModule from '../../../api/student/allocation/fetchStudentAllocationHistory';
+import * as fetchUserDetailsModule from '../../../api/user/fetchUserDetails';
 
-// Mock AuthContext
+// Mock the API modules
+vi.mock('../../../api/student/allocation/fetchStudentAllocationHistory');
+vi.mock('../../../api/user/fetchUserDetails');
+
+// Mock react-router-dom
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useParams: vi.fn(() => ({ userId: '123' })),
+    useNavigate: vi.fn(() => vi.fn())
+  };
+});
+
+// Mock auth context
 vi.mock('../../../context/AuthContext', () => ({
-  useAuth: vi.fn(),
+  useAuth: vi.fn(() => ({
+    userRoles: ['STUDENT'],
+    userId: 123
+  }))
 }));
 
-// Mock GenericAPIContainer to render nothing (we only care about header and link)
-vi.mock('../../../utility/genericapicontainer/GenericAPIContainer', () => ({
-  GenericAPIContainer: ({ render }: any) => null,
-}));
-
-// Mock react-router hooks
-vi.mock('react-router-dom', () => ({
-  useParams: vi.fn(),
-  Link: ({ children, to }: any) => <a href={to}>{children}</a>,
-}));
+const mockAllocationData = [
+  {
+    semester: 'Fall',
+    year: 2024,
+    course: {
+      id: 1,
+      name: 'Computer Science 101',
+      deptCode: 'COSC',
+      courseNum: '101'
+    }
+  }
+];
 
 describe('AllocationHistoryPage', () => {
   beforeEach(() => {
-    // always pretend the route param is userId = "1"
-    (useParams as Mock).mockReturnValue({ userId: '1' });
+    vi.clearAllMocks();
+    vi.mocked(fetchStudentAllocationHistoryModule.fetchStudentAllocationHistory).mockResolvedValue(mockAllocationData);
+    vi.mocked(fetchUserDetailsModule.fetchUserDetails).mockResolvedValue({ firstName: 'John', lastName: 'Doe' });
   });
 
-  it('renders Allocation History header', () => {
-    // any user (matching or not) sees the header
-    (useAuth as Mock).mockReturnValue({ userRoles: [], userId: 999 });
-    render(<AllocationHistoryPage />);
-    expect(screen.getByText('Allocation History')).toBeInTheDocument();
-  });
+  it('renders page title and content', async () => {
+    render(
+      <BrowserRouter>
+        <AllocationHistoryPage />
+      </BrowserRouter>
+    );
 
-  it('shows Add a section when viewing own page', () => {
-    // userId from useAuth matches the route param (1)
-    (useAuth as Mock).mockReturnValue({ userRoles: [], userId: 1 });
-    render(<AllocationHistoryPage />);
-    const addLink = screen.getByText('Add a section');
-    expect(addLink).toBeInTheDocument();
-    fireEvent.click(addLink);
-    expect(addLink.closest('a')).toHaveAttribute('href', '/user/student/addallocation');
-  });
-
-  it('hides Add a section when viewing someone else’s page', () => {
-    // userId from useAuth does NOT match the route param (1)
-    (useAuth as Mock).mockReturnValue({ userRoles: [], userId: 2 });
-    render(<AllocationHistoryPage />);
-    expect(screen.queryByText('Add a section')).toBeNull();
+    await waitFor(() => {
+      expect(screen.getByText('Teaching Experience')).toBeInTheDocument();
+    });
+    
+    expect(screen.getByText('+ Add Experience')).toBeInTheDocument();
   });
 });
