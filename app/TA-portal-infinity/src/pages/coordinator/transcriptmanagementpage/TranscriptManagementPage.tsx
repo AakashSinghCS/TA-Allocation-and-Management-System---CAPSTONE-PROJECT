@@ -74,6 +74,16 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
     };
   }, [showFullscreen]);
 
+  // Cleanup URLs on component unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      // Don't cleanup fullscreenUrl here as it's managed by closeFullscreen
+    };
+  }, []);
+
   const fetchTranscripts = async () => {
     try {
       setLoading(true);
@@ -110,14 +120,14 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   const handlePreview = async (transcript: TranscriptInfo) => {
     if (!token) return;
     
-    // If the same transcript is already selected and previewed, toggle it off
+    // Prevent multiple preview requests for the same transcript
+    if (loadingPreview) {
+      return;
+    }
+    
+    // If the same transcript is already selected and previewed, just switch to preview tab
     if (selectedTranscript?.id === transcript.id && previewUrl) {
-      setSelectedTranscript(null);
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-        setPreviewUrl(null);
-      }
-      setActiveView('table');
+      setActiveView('preview');
       return;
     }
 
@@ -125,7 +135,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
       setLoadingPreview(true);
       setSelectedTranscript(transcript);
       
-      // Clean up previous preview URL
+      // Clean up previous preview URL only if it's different
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
       }
@@ -140,25 +150,31 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
       console.error('Preview error:', err);
       setSelectedTranscript(null);
       setPreviewUrl(null);
+      setActiveView('table');
     } finally {
       setLoadingPreview(false);
     }
   };
 
-  const openFullscreen = (url: string) => {
-    setFullscreenUrl(url);
-    setShowFullscreen(true);
+  const openFullscreen = async (_url: string) => {
+    if (!selectedTranscript || !token) return;
+    
+    try {
+      // Create a new URL for fullscreen to avoid conflicts
+      const fullscreenBlobUrl = await fetchTranscriptForPreview(selectedTranscript.id, token);
+      setFullscreenUrl(fullscreenBlobUrl);
+      setShowFullscreen(true);
+    } catch (err) {
+      toast.error('Failed to open fullscreen preview');
+      console.error('Fullscreen preview error:', err);
+    }
   };
 
   const closeFullscreen = () => {
     setShowFullscreen(false);
+    // Clean up fullscreen URL when closing
     if (fullscreenUrl) {
-      // Don't revoke the URL immediately as it might be used by the preview
-      setTimeout(() => {
-        if (fullscreenUrl && fullscreenUrl !== previewUrl) {
-          URL.revokeObjectURL(fullscreenUrl);
-        }
-      }, 100);
+      URL.revokeObjectURL(fullscreenUrl);
       setFullscreenUrl(null);
     }
   };
@@ -610,17 +626,26 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
             </div>
 
             {/* Preview Content */}
-            <div className="flex-1 p-4">
-              <div className="border border-gray-300 rounded overflow-hidden h-full">
+            <div className="flex-1 p-4 flex flex-col">
+              {/* File Info Header */}
+              <div className="mb-3 text-center">
+                <div className="text-sm font-medium text-gray-900">
+                  {selectedTranscript.fileName}
+                </div>
+                <div className="text-xs text-gray-600">
+                  File Size: {formatFileSize(selectedTranscript.fileSize)} • 
+                  Uploaded: {formatDate(selectedTranscript.uploadDate)}
+                </div>
+              </div>
+              
+              {/* PDF Preview */}
+              <div className="flex-1 border border-gray-300 rounded overflow-hidden bg-white">
                 <iframe
                   src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=1`}
-                  className="w-full h-full"
+                  className="w-full h-full border-0 bg-white"
                   title={`Transcript Preview - ${selectedTranscript.studentName}`}
+                  style={{ minHeight: '500px' }}
                 />
-              </div>
-              <div className="mt-2 text-xs text-gray-600 text-center">
-                {selectedTranscript.fileName} ({formatFileSize(selectedTranscript.fileSize)}) • 
-                Uploaded: {formatDate(selectedTranscript.uploadDate)}
               </div>
             </div>
           </div>
@@ -692,12 +717,25 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 </div>
                 
                 {/* Fullscreen Content */}
-                <div className="flex-1 p-4">
-                  <div className="border border-gray-300 rounded overflow-hidden h-full">
+                <div className="flex-1 p-4 flex flex-col">
+                  {/* File Info Header */}
+                  <div className="mb-3 text-center">
+                    <div className="text-sm font-medium text-gray-900">
+                      {selectedTranscript?.fileName}
+                    </div>
+                    <div className="text-xs text-gray-600">
+                      File Size: {selectedTranscript ? formatFileSize(selectedTranscript.fileSize) : ''} • 
+                      Uploaded: {selectedTranscript ? formatDate(selectedTranscript.uploadDate) : ''}
+                    </div>
+                  </div>
+                  
+                  {/* PDF Preview */}
+                  <div className="flex-1 border border-gray-300 rounded overflow-hidden bg-white">
                     <iframe
                       src={`${fullscreenUrl}#toolbar=0&navpanes=0&scrollbar=1`}
-                      className="w-full h-full"
+                      className="w-full h-full border-0 bg-white"
                       title={`Fullscreen Transcript - ${selectedTranscript?.studentName}`}
+                      style={{ minHeight: '600px' }}
                     />
                   </div>
                 </div>

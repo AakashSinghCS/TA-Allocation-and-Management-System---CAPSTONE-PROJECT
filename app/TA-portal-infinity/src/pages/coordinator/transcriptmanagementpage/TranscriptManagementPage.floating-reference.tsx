@@ -1,6 +1,13 @@
 /**
- * TranscriptManagementPage - Floating Preview Reference Implementation
- * 
+ * TranscriptManagementPage - Floating Preview Reference Implem  // Cleanup URLs on component unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      // Don't cleanup fullscreenUrl here as it's managed by closeFullscreen
+    };
+  }, []); 
  * This is a reference implementation of the floating/draggable preview approach
  * that was considered during development. The main implementation uses a 
  * tab-based approach instead.
@@ -206,19 +213,25 @@ const TranscriptManagementPageFloatingReference: React.FC<TranscriptManagementPa
     }
   };
 
-  const openFullscreen = (url: string) => {
-    setFullscreenUrl(url);
-    setShowFullscreen(true);
+  const openFullscreen = async (_url: string) => {
+    if (!selectedTranscript || !token) return;
+    
+    try {
+      // Create a new URL for fullscreen to avoid conflicts
+      const fullscreenBlobUrl = await fetchTranscriptForPreview(selectedTranscript.id, token);
+      setFullscreenUrl(fullscreenBlobUrl);
+      setShowFullscreen(true);
+    } catch (err) {
+      toast.error('Failed to open fullscreen preview');
+      console.error('Fullscreen preview error:', err);
+    }
   };
 
   const closeFullscreen = () => {
     setShowFullscreen(false);
+    // Clean up fullscreen URL when closing
     if (fullscreenUrl) {
-      setTimeout(() => {
-        if (fullscreenUrl && fullscreenUrl !== previewUrl) {
-          URL.revokeObjectURL(fullscreenUrl);
-        }
-      }, 100);
+      URL.revokeObjectURL(fullscreenUrl);
       setFullscreenUrl(null);
     }
   };
@@ -578,21 +591,24 @@ const TranscriptManagementPageFloatingReference: React.FC<TranscriptManagementPa
           </div>
 
           {/* Panel Content */}
-          <div className="p-2 h-full">
-            <div className="border border-gray-200 rounded h-full overflow-hidden">
+          <div className="p-2 h-full flex flex-col">
+            {/* File Info */}
+            <div className="mb-2 text-center">
+              <div className="text-xs font-medium text-gray-900">
+                {selectedTranscript.fileName}
+              </div>
+              <div className="text-xs text-gray-600">
+                {formatFileSize(selectedTranscript.fileSize)} • {formatDate(selectedTranscript.uploadDate)}
+              </div>
+            </div>
+            
+            {/* PDF Preview */}
+            <div className="flex-1 border border-gray-200 rounded overflow-hidden bg-white">
               <iframe
                 src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=1`}
-                className="w-full h-full"
+                className="w-full h-full border-0 bg-white"
                 title={`Floating Transcript Preview - ${selectedTranscript.studentName}`}
               />
-            </div>
-          </div>
-
-          {/* Panel Footer */}
-          <div className="px-3 py-2 border-t border-gray-200 bg-gray-50 rounded-b-lg">
-            <div className="text-xs text-gray-600 text-center">
-              {selectedTranscript.fileName} ({formatFileSize(selectedTranscript.fileSize)}) • 
-              {formatDate(selectedTranscript.uploadDate)}
             </div>
           </div>
         </div>
@@ -622,12 +638,25 @@ const TranscriptManagementPageFloatingReference: React.FC<TranscriptManagementPa
               </div>
               
               {/* Fullscreen Content */}
-              <div className="flex-1 p-4">
-                <div className="border border-gray-300 rounded overflow-hidden h-full">
+              <div className="flex-1 p-4 flex flex-col">
+                {/* File Info Header */}
+                <div className="mb-3 text-center">
+                  <div className="text-sm font-medium text-gray-900">
+                    {selectedTranscript?.fileName}
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    File Size: {selectedTranscript && formatFileSize(selectedTranscript.fileSize)} • 
+                    Uploaded: {selectedTranscript && formatDate(selectedTranscript.uploadDate)}
+                  </div>
+                </div>
+                
+                {/* PDF Preview */}
+                <div className="flex-1 border border-gray-300 rounded overflow-hidden bg-white">
                   <iframe
                     src={`${fullscreenUrl}#toolbar=0&navpanes=0&scrollbar=1`}
-                    className="w-full h-full"
+                    className="w-full h-full border-0 bg-white"
                     title={`Fullscreen Transcript - ${selectedTranscript?.studentName}`}
+                    style={{ minHeight: '600px' }}
                   />
                 </div>
               </div>
