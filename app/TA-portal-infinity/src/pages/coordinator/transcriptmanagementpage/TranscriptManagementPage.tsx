@@ -44,9 +44,51 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   
   // Date range filter states
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [dateRangeError, setDateRangeError] = useState('');
   
   // Download states
   const [downloading, setDownloading] = useState(false);
+
+  // Date validation helper
+  const validateDateRange = (start: string, end: string): string => {
+    if (!start && !end) return '';
+    
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    
+    if (start) {
+      const startDate = new Date(start);
+      if (startDate > today) {
+        return 'Start date cannot be in the future';
+      }
+    }
+    
+    if (end) {
+      const endDate = new Date(end);
+      if (endDate > today) {
+        return 'End date cannot be in the future';
+      }
+    }
+    
+    if (start && end) {
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+      if (startDate > endDate) {
+        return 'Start date must be before or equal to end date';
+      }
+    }
+    
+    return '';
+  };
+
+  // Handle date range changes with validation
+  const handleDateRangeChange = (field: 'start' | 'end', value: string) => {
+    const newRange = { ...dateRange, [field]: value };
+    const error = validateDateRange(newRange.start, newRange.end);
+    
+    setDateRange(newRange);
+    setDateRangeError(error);
+  };
 
   // Tooltip component
   const Tooltip: React.FC<{ children: React.ReactNode; content: string; className?: string }> = ({ 
@@ -477,15 +519,17 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
       
       // Date range filter
       let matchesDate = true;
-      if (dateRange.start || dateRange.end) {
+      if ((dateRange.start || dateRange.end) && !dateRangeError) {
         const transcriptDate = new Date(transcript.uploadDate);
+        
         if (dateRange.start) {
-          const startDate = new Date(dateRange.start);
+          // Create date in UTC to avoid timezone issues
+          const startDate = new Date(dateRange.start + 'T00:00:00.000Z');
           matchesDate = matchesDate && transcriptDate >= startDate;
         }
         if (dateRange.end) {
-          const endDate = new Date(dateRange.end);
-          endDate.setHours(23, 59, 59, 999); // Include the entire end date
+          // Create date in UTC to avoid timezone issues
+          const endDate = new Date(dateRange.end + 'T23:59:59.999Z');
           matchesDate = matchesDate && transcriptDate <= endDate;
         }
       }
@@ -637,31 +681,49 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
           {/* Row 2: Date Filter + Action Buttons */}
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between mb-6 pb-6 border-b border-gray-100">
             {/* Date Range Filter */}
-            <div className="flex items-center space-x-2">
-              <Calendar className="w-4 h-4 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Date Range:</span>
-              <input
-                type="date"
-                value={dateRange.start}
-                onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                placeholder="From"
-              />
-              <span className="text-gray-400 text-sm">to</span>
-              <input
-                type="date"
-                value={dateRange.end}
-                onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                placeholder="To"
-              />
-              <button
-                onClick={() => setDateRange({ start: '', end: '' })}
-                className="px-3 py-2 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors whitespace-nowrap"
-                title="Clear dates"
-              >
-                Clear
-              </button>
+            <div className="flex flex-col space-y-2">
+              <div className="flex items-center space-x-2">
+                <Calendar className="w-4 h-4 text-gray-500" />
+                <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Date Range:</span>
+                <input
+                  type="date"
+                  value={dateRange.start}
+                  onChange={(e) => handleDateRangeChange('start', e.target.value)}
+                  className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm ${
+                    dateRangeError ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                  placeholder="From"
+                  max={new Date().toISOString().split('T')[0]}
+                />
+                <span className="text-gray-400 text-sm">to</span>
+                <input
+                  type="date"
+                  value={dateRange.end}
+                  onChange={(e) => handleDateRangeChange('end', e.target.value)}
+                  className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm ${
+                    dateRangeError ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                  placeholder="To"
+                  max={new Date().toISOString().split('T')[0]}
+                />
+                <Tooltip content="Clear date range filter">
+                  <button
+                    onClick={() => {
+                      setDateRange({ start: '', end: '' });
+                      setDateRangeError('');
+                    }}
+                    className="px-3 py-2 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors whitespace-nowrap"
+                  >
+                    Clear
+                  </button>
+                </Tooltip>
+              </div>
+              {dateRangeError && (
+                <div className="flex items-center space-x-1 text-red-600 text-xs ml-6">
+                  <AlertTriangle className="w-3 h-3" />
+                  <span>{dateRangeError}</span>
+                </div>
+              )}
             </div>
 
             {/* Action Buttons */}
