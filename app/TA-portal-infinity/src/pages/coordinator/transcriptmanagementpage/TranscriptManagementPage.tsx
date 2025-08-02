@@ -577,10 +577,11 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
           </div>
         </div>
 
-        {/* Unified 4-Row Control Panel */}
+        {/* 3-Row Unified Control Panel */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          {/* Row 1: Search and Filter Controls */}
-          <div className="flex flex-col sm:flex-row gap-4 items-center mb-6">
+          {/* Row 1: Search, Filters, and Statistics */}
+          <div className="flex flex-col lg:flex-row gap-4 items-center mb-6 pb-6 border-b border-gray-100">
+            {/* Search Bar */}
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -598,7 +599,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as TranscriptInfo['reviewStatus'] | 'ALL')}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white"
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white min-w-[140px]"
               >
                 <option value="ALL">All Status</option>
                 <option value="PENDING">Pending</option>
@@ -608,48 +609,47 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 <option value="NEEDS_CLARIFICATION">Needs Clarification</option>
               </select>
             </div>
+
+            {/* Date Range Filter */}
+            <div className="flex items-center space-x-2">
+              <Calendar className="w-4 h-4 text-gray-500" />
+              <input
+                type="date"
+                value={dateRange.start}
+                onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                placeholder="From"
+              />
+              <span className="text-gray-400 text-sm">to</span>
+              <input
+                type="date"
+                value={dateRange.end}
+                onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                placeholder="To"
+              />
+              <button
+                onClick={() => setDateRange({ start: '', end: '' })}
+                className="px-3 py-2 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                title="Clear dates"
+              >
+                Clear
+              </button>
+            </div>
             
-            <div className="flex items-center text-sm text-gray-600">
-              <span>Total: {filteredAndSortedTranscripts.length} transcripts</span>
+            {/* Statistics */}
+            <div className="flex items-center text-sm text-gray-600 whitespace-nowrap">
+              <span>Total: {filteredAndSortedTranscripts.length}</span>
               {selectedTranscripts.size > 0 && (
-                <span className="ml-4 text-blue-600 font-medium">
+                <span className="ml-3 text-blue-600 font-medium">
                   {selectedTranscripts.size} selected
                 </span>
               )}
             </div>
           </div>
 
-          {/* Row 2: Date Filter Controls */}
-          <div className="flex flex-col sm:flex-row gap-4 items-center mb-6 pb-6 border-b border-gray-100">
-            <div className="flex items-center space-x-2">
-              <Calendar className="w-4 h-4 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700">Upload Date Range:</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="date"
-                value={dateRange.start}
-                onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-              />
-              <span className="text-gray-500">to</span>
-              <input
-                type="date"
-                value={dateRange.end}
-                onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-              />
-            </div>
-            <button
-              onClick={() => setDateRange({ start: '', end: '' })}
-              className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              Clear Dates
-            </button>
-          </div>
-
-          {/* Row 3: Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-6 pb-6 border-b border-gray-100">
+          {/* Row 2: Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-start mb-6 pb-6 border-b border-gray-100">
             <div className="flex items-center space-x-4">
               <button
                 onClick={handleExportToCSV}
@@ -674,13 +674,9 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 )}
               </button>
             </div>
-            
-            <div className="text-sm text-gray-600">
-              Quick actions for selected transcripts and data export
-            </div>
           </div>
 
-          {/* Row 4: Bulk Update Actions */}
+          {/* Row 3: Bulk Update Actions */}
           {selectedTranscripts.size > 0 && (
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
               <div className="flex items-center space-x-2">
@@ -688,32 +684,32 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                   Bulk Status Update for {selectedTranscripts.size} selected:
                 </span>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <button
                   onClick={() => handleBulkStatusUpdate('UNDER_REVIEW')}
                   disabled={updatingReview}
-                  className="px-4 py-2 bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 disabled:opacity-50 transition-colors"
+                  className="px-4 py-2 bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 disabled:opacity-50 transition-colors text-sm font-medium"
                 >
                   Under Review
                 </button>
                 <button
                   onClick={() => handleBulkStatusUpdate('APPROVED')}
                   disabled={updatingReview}
-                  className="px-4 py-2 bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 disabled:opacity-50 transition-colors"
+                  className="px-4 py-2 bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 disabled:opacity-50 transition-colors text-sm font-medium"
                 >
                   Approve
                 </button>
                 <button
                   onClick={() => handleBulkStatusUpdate('REJECTED')}
                   disabled={updatingReview}
-                  className="px-4 py-2 bg-red-100 text-red-700 border border-red-300 rounded-lg hover:bg-red-200 disabled:opacity-50 transition-colors"
+                  className="px-4 py-2 bg-red-100 text-red-700 border border-red-300 rounded-lg hover:bg-red-200 disabled:opacity-50 transition-colors text-sm font-medium"
                 >
                   Reject
                 </button>
                 <button
                   onClick={() => handleBulkStatusUpdate('NEEDS_CLARIFICATION')}
                   disabled={updatingReview}
-                  className="px-4 py-2 bg-yellow-100 text-yellow-700 border border-yellow-300 rounded-lg hover:bg-yellow-200 disabled:opacity-50 transition-colors"
+                  className="px-4 py-2 bg-yellow-100 text-yellow-700 border border-yellow-300 rounded-lg hover:bg-yellow-200 disabled:opacity-50 transition-colors text-sm font-medium"
                 >
                   Needs Clarification
                 </button>
