@@ -25,7 +25,6 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   const [loadingPreview, setLoadingPreview] = useState(false);
   const [showFullscreen, setShowFullscreen] = useState(false);
   const [fullscreenUrl, setFullscreenUrl] = useState<string | null>(null);
-  const [previewPinned, setPreviewPinned] = useState(false);
   
   // Tab view state
   const [activeView, setActiveView] = useState<'table' | 'preview'>('table');
@@ -57,7 +56,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
         URL.revokeObjectURL(fullscreenUrl);
       }
     };
-  }, [previewUrl, fullscreenUrl]);
+  }, []); // Remove dependencies to only run on unmount
 
   // Handle ESC key for fullscreen
   useEffect(() => {
@@ -87,6 +86,26 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
       // Don't cleanup fullscreenUrl here as it's managed by closeFullscreen
     };
   }, []);
+
+  // Restore preview when returning to preview view
+  useEffect(() => {
+    if (activeView === 'preview' && selectedTranscript && !previewUrl && !loadingPreview && token) {
+      const restorePreview = async () => {
+        try {
+          setLoadingPreview(true);
+          const url = await fetchTranscriptForPreview(selectedTranscript.id, token);
+          setPreviewUrl(url);
+        } catch (err) {
+          console.error('Failed to restore preview:', err);
+          toast.error('Failed to restore preview');
+          setActiveView('table');
+        } finally {
+          setLoadingPreview(false);
+        }
+      };
+      restorePreview();
+    }
+  }, [activeView, selectedTranscript, previewUrl, loadingPreview, token]);
 
   const fetchTranscripts = async () => {
     try {
@@ -140,8 +159,8 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
       setLoadingPreview(true);
       setSelectedTranscript(transcript);
       
-      // Clean up previous preview URL only if it's different
-      if (previewUrl) {
+      // Clean up previous preview URL only if it's for a different transcript
+      if (previewUrl && selectedTranscript?.id !== transcript.id) {
         URL.revokeObjectURL(previewUrl);
       }
       
@@ -412,7 +431,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
           <StatusIndicator loading={true} />
         </div>
       </div>
@@ -421,15 +440,42 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Student Transcripts
           </h1>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-lg mb-4">
             Review and download official academic transcripts submitted by TA applicants
           </p>
+          
+          {/* Operation Guide */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 className="text-sm font-medium text-blue-900 mb-2">How to use this page:</h3>
+            <div className="text-sm text-blue-800 space-y-1">
+              <div className="flex items-center space-x-2">
+                <span>•</span>
+                <span><strong>Search & Filter:</strong> Use the search bar to find specific students or filter by review status</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span>•</span>
+                <span><strong>Individual Review:</strong> Click "Review" button to edit status and add comments</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span>•</span>
+                <span><strong>Bulk Operations:</strong> Select multiple transcripts using checkboxes for batch status updates</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span>•</span>
+                <span><strong>Preview:</strong> Click "Preview" to view transcript content in a separate tab</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span>•</span>
+                <span><strong>Download:</strong> Use the download button to save transcript files locally</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Search and Filter Controls */}
@@ -609,15 +655,6 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                       </th>
                       <th
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                        onClick={() => handleSort('fileSize')}
-                      >
-                        <div className="flex items-center space-x-1">
-                          <span>Size</span>
-                          <SortIcon field="fileSize" />
-                        </div>
-                      </th>
-                      <th
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('uploadDate')}
                       >
                         <div className="flex items-center space-x-1">
@@ -678,9 +715,6 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                             <div className="text-xs text-gray-500">PDF</div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {formatFileSize(transcript.fileSize)}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {formatDate(transcript.uploadDate)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -699,11 +733,27 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                                 <option value="NEEDS_CLARIFICATION">Needs Clarification</option>
                               </select>
                             ) : (
-                              /* Display mode - Status badge */
-                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeClass(transcript.reviewStatus || 'PENDING')}`}>
-                                {getStatusIcon(transcript.reviewStatus || 'PENDING')}
-                                <span className="ml-1">{getStatusLabel(transcript.reviewStatus || 'PENDING')}</span>
-                              </span>
+                              /* Display mode - Status badge with comments */
+                              <div className="space-y-1">
+                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeClass(transcript.reviewStatus || 'PENDING')}`}>
+                                  {getStatusIcon(transcript.reviewStatus || 'PENDING')}
+                                  <span className="ml-1">{getStatusLabel(transcript.reviewStatus || 'PENDING')}</span>
+                                </span>
+                                {transcript.reviewComments && (
+                                  <div className="text-xs text-gray-600 max-w-xs">
+                                    <div className="bg-blue-50 rounded px-2 py-1 border border-blue-200">
+                                      <div className="font-medium text-gray-900 mb-1">Comment:</div>
+                                      <div 
+                                        className="truncate cursor-help text-gray-800" 
+                                        title={transcript.reviewComments}
+                                        style={{ maxWidth: '240px' }}
+                                      >
+                                        {transcript.reviewComments}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             )}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -839,8 +889,8 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
           <div className="h-screen flex flex-col">
             {/* Preview Header */}
             <div className="p-4 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900">Transcript Preview</h3>
                   <div className="flex items-center space-x-4 mt-1 text-sm text-gray-600">
                     <div className="flex items-center space-x-1">
@@ -856,21 +906,45 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                       <span>{selectedTranscript.studentEmail}</span>
                     </div>
                   </div>
+                  {/* Review Status and Comments in Preview */}
+                  <div className="mt-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex items-start gap-4 mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-900">Review Status:</span>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeClass(selectedTranscript.reviewStatus || 'PENDING')}`}>
+                          {getStatusIcon(selectedTranscript.reviewStatus || 'PENDING')}
+                          <span className="ml-1">{getStatusLabel(selectedTranscript.reviewStatus || 'PENDING')}</span>
+                        </span>
+                      </div>
+                    </div>
+                    {selectedTranscript.reviewComments && (
+                      <div>
+                        <span className="text-sm font-medium text-gray-900 block mb-2">Comments:</span>
+                        <div className="text-sm text-gray-800 bg-white p-3 rounded border border-blue-200 max-h-32 overflow-y-auto">
+                          {selectedTranscript.reviewComments}
+                        </div>
+                      </div>
+                    )}
+                    <div className="mt-2 text-xs text-gray-500">
+                      Last updated: {selectedTranscript.reviewDate ? formatDate(selectedTranscript.reviewDate) : 'Never'}
+                      {selectedTranscript.reviewerName && ` by ${selectedTranscript.reviewerName}`}
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => openFullscreen(previewUrl)}
-                    className="px-3 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded border border-blue-300 transition-colors flex items-center space-x-1"
-                  >
-                    <Maximize2 className="w-4 h-4" />
-                    <span>Fullscreen</span>
-                  </button>
+                <div className="flex flex-col space-y-2 ml-4">
                   <button
                     onClick={() => setActiveView('table')}
                     className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded border border-gray-300 transition-colors flex items-center space-x-1"
                   >
                     <X className="w-4 h-4" />
                     <span>Back to List</span>
+                  </button>
+                  <button
+                    onClick={() => openFullscreen(previewUrl)}
+                    className="px-3 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded border border-blue-300 transition-colors flex items-center space-x-1"
+                  >
+                    <Maximize2 className="w-4 h-4" />
+                    <span>Fullscreen</span>
                   </button>
                 </div>
               </div>
@@ -884,7 +958,6 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                   {selectedTranscript.fileName}
                 </div>
                 <div className="text-xs text-gray-600">
-                  File Size: {formatFileSize(selectedTranscript.fileSize)} • 
                   Uploaded: {formatDate(selectedTranscript.uploadDate)}
                 </div>
               </div>
@@ -947,17 +1020,37 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
         {/* Fullscreen Modal */}
         {showFullscreen && fullscreenUrl && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div className="relative w-full h-full max-w-7xl max-h-screen p-4">
+            <div className="relative w-full h-full max-w-screen-2xl max-h-screen p-4">
               <div className="bg-white rounded-lg shadow-2xl h-full flex flex-col">
                 {/* Fullscreen Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                  <div>
+                  <div className="flex-1">
                     <h2 className="text-xl font-semibold text-gray-900">
                       Transcript Preview - {selectedTranscript?.studentName}
                     </h2>
-                    <p className="text-sm text-gray-600">
-                      {selectedTranscript?.fileName} • {selectedTranscript ? formatFileSize(selectedTranscript.fileSize) : ''}
+                    <p className="text-sm text-gray-600 mb-2">
+                      {selectedTranscript?.fileName}
                     </p>
+                    {/* Review Status in Fullscreen */}
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-gray-700">Review Status:</span>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeClass(selectedTranscript?.reviewStatus || 'PENDING')}`}>
+                          {getStatusIcon(selectedTranscript?.reviewStatus || 'PENDING')}
+                          <span className="ml-1">{getStatusLabel(selectedTranscript?.reviewStatus || 'PENDING')}</span>
+                        </span>
+                      </div>
+                      {selectedTranscript?.reviewComments && (
+                        <div className="flex items-start space-x-2">
+                          <span className="text-sm font-medium text-gray-900">Comments:</span>
+                          <div className="text-sm text-gray-800 bg-blue-50 px-3 py-1 rounded border border-blue-200 max-w-md">
+                            <div className="max-h-16 overflow-y-auto" title={selectedTranscript.reviewComments}>
+                              {selectedTranscript.reviewComments}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <button
                     onClick={closeFullscreen}
@@ -975,7 +1068,6 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                       {selectedTranscript?.fileName}
                     </div>
                     <div className="text-xs text-gray-600">
-                      File Size: {selectedTranscript ? formatFileSize(selectedTranscript.fileSize) : ''} • 
                       Uploaded: {selectedTranscript ? formatDate(selectedTranscript.uploadDate) : ''}
                     </div>
                   </div>
