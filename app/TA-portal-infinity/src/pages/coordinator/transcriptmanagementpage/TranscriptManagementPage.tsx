@@ -427,20 +427,6 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
     setSelectedTranscripts(newSelected);
   }, [selectedTranscripts]);
 
-  const handleSelectAll = useCallback(() => {
-    if (selectAll) {
-      setSelectedTranscripts(new Set());
-      setSelectAll(false);
-    } else {
-      // Use a timeout to ensure filteredAndSortedTranscripts is available
-      setTimeout(() => {
-        const allVisibleIds = new Set(filteredAndSortedTranscripts.map(t => t.id));
-        setSelectedTranscripts(allVisibleIds);
-        setSelectAll(true);
-      }, 0);
-    }
-  }, [selectAll]);
-
   // Helper function to show confirmation dialog
   const showConfirmDialog = (
     title: string,
@@ -670,6 +656,18 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
         return 0;
       });
   }, [transcripts, searchTerm, statusFilter, dateRange, dateRangeError, sortField, sortDirection]);
+
+  // Handle select all functionality - defined after filteredAndSortedTranscripts
+  const handleSelectAll = useCallback(() => {
+    if (selectAll) {
+      setSelectedTranscripts(new Set());
+      setSelectAll(false);
+    } else {
+      const allVisibleIds = new Set(filteredAndSortedTranscripts.map(t => t.id));
+      setSelectedTranscripts(allVisibleIds);
+      setSelectAll(true);
+    }
+  }, [selectAll, filteredAndSortedTranscripts]);
 
   // Update selectAll state when filtered data changes
   useEffect(() => {
