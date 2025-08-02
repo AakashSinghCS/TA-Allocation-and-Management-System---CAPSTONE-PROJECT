@@ -12,6 +12,7 @@ import type Section from "../../../../../interfaces/section/Section";
 import { convertFilterSectionsToSections } from "../../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections";
 import { useDebounce } from "../../../../../utility/pagination/useDebounce";
 import { useSectionSearchPage } from "../../../../../api/course/sectionfilter/useSectionFilter";
+import Pagination from "../../../../../utility/pagination/pagination/Pagination";
 
 type Mode = "update" | "add";
 
@@ -195,6 +196,7 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
       {loadingSections ? (
         <p>Loading sections…</p>
       ) : (
+        <>
         <SectionList
           sections={filteredSections}
           mode={mode === 'add' ? 'instructorAddSection' : 'instructorPrereqCourse'}
@@ -202,6 +204,15 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
           onSelectCourse={mode === 'update' ? onSelectCourseForPrereq : undefined}
           askForConfirmation={true}
         />
+        <div className="mt-4">
+          <Pagination
+            page={page}
+            pageCount={pageData?.totalPages ?? 0}
+            onPrev={() => setPage(p => Math.max(0,p-1))}
+            onNext={() => setPage(p => Math.min((pageData?.totalPages ?? 1)-1, p+1))}
+          />
+        </div>
+        </>
       )}
 
       {mode === 'update' && (
