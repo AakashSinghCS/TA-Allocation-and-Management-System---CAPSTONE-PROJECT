@@ -9,10 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.infinity.applicationservice.dto.TranscriptInfoDTO;
+import com.infinity.applicationservice.dto.TranscriptStatusDTO;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.models.Transcript;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.repositories.TranscriptRepository;
+import com.infinity.applicationservice.utility.TranscriptMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +24,7 @@ public class TranscriptService {
     
     private final TranscriptRepository transcriptRepository;
     private final ApplicationRepository applicationRepository;
+    private final TranscriptMapper transcriptMapper;
     
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     private static final String ALLOWED_CONTENT_TYPE = "application/pdf";
@@ -79,6 +82,11 @@ public class TranscriptService {
         if (transcript.isPresent()) {
             transcriptRepository.delete(transcript.get());
         }
+    }
+    
+    public TranscriptStatusDTO getTranscriptStatus(Long userId) {
+        Optional<Transcript> transcript = transcriptRepository.findByUserId(userId);
+        return transcriptMapper.toTranscriptStatus(transcript.orElse(null));
     }
     
     private void validateFile(MultipartFile file) {

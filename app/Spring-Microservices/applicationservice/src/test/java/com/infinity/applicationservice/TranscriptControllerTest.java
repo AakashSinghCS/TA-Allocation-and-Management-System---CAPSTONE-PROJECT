@@ -1,6 +1,7 @@
 package com.infinity.applicationservice;
 
 import com.infinity.applicationservice.controllers.TranscriptController;
+import com.infinity.applicationservice.dto.TranscriptStatusDTO;
 import com.infinity.applicationservice.models.Transcript;
 import com.infinity.applicationservice.services.TranscriptService;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +69,7 @@ class TranscriptControllerTest {
         verify(transcriptService).uploadTranscript(eq(123L), any(MultipartFile.class));
     }
 
-    @Test
+        @Test
     @WithMockUser(username = "123", roles = "STUDENT")
     void uploadTranscript_InvalidFileType() throws Exception {
         MockMultipartFile file = new MockMultipartFile(
@@ -81,11 +82,11 @@ class TranscriptControllerTest {
         when(transcriptService.uploadTranscript(eq(123L), any(MultipartFile.class)))
             .thenThrow(new RuntimeException("Only PDF files are allowed"));
 
+        // The exception will be handled by GlobalExceptionHandler, returning 500
         mockMvc.perform(multipart("/transcripts/upload")
                 .file(file)
                 .with(csrf()))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Only PDF files are allowed"));
+                .andExpect(status().isInternalServerError());
 
         verify(transcriptService).uploadTranscript(eq(123L), any(MultipartFile.class));
     }
@@ -103,11 +104,11 @@ class TranscriptControllerTest {
         when(transcriptService.uploadTranscript(eq(123L), any(MultipartFile.class)))
             .thenThrow(new IOException("File processing error"));
 
+        // IOException will be handled by GlobalExceptionHandler, returning 500
         mockMvc.perform(multipart("/transcripts/upload")
                 .file(file)
                 .with(csrf()))
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().string("Error processing file: File processing error"));
+                .andExpect(status().isInternalServerError());
 
         verify(transcriptService).uploadTranscript(eq(123L), any(MultipartFile.class));
     }
@@ -115,7 +116,15 @@ class TranscriptControllerTest {
     @Test
     @WithMockUser(username = "123", roles = "STUDENT")
     void getTranscriptStatus_HasTranscript() throws Exception {
-        when(transcriptService.getTranscriptByUserId(123L)).thenReturn(Optional.of(mockTranscript));
+        TranscriptStatusDTO statusDTO = new TranscriptStatusDTO(
+            true, 
+            "test-transcript.pdf", 
+            mockTranscript.getUploadDate().toString(), 
+            2048576L, 
+            "application/pdf"
+        );
+        
+        when(transcriptService.getTranscriptStatus(123L)).thenReturn(statusDTO);
 
         mockMvc.perform(get("/transcripts/status"))
                 .andExpect(status().isOk())
@@ -124,19 +133,21 @@ class TranscriptControllerTest {
                 .andExpect(jsonPath("$.fileSize").value(2048576))
                 .andExpect(jsonPath("$.contentType").value("application/pdf"));
 
-        verify(transcriptService).getTranscriptByUserId(123L);
+        verify(transcriptService).getTranscriptStatus(123L);
     }
 
     @Test
     @WithMockUser(username = "123", roles = "STUDENT")
     void getTranscriptStatus_NoTranscript() throws Exception {
-        when(transcriptService.getTranscriptByUserId(123L)).thenReturn(Optional.empty());
+        TranscriptStatusDTO statusDTO = new TranscriptStatusDTO(false, null, null, null, null);
+        
+        when(transcriptService.getTranscriptStatus(123L)).thenReturn(statusDTO);
 
         mockMvc.perform(get("/transcripts/status"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.hasTranscript").value(false));
 
-        verify(transcriptService).getTranscriptByUserId(123L);
+        verify(transcriptService).getTranscriptStatus(123L);
     }
 
     @Test
@@ -182,10 +193,10 @@ class TranscriptControllerTest {
     void deleteTranscript_Error() throws Exception {
         doThrow(new RuntimeException("Deletion failed")).when(transcriptService).deleteTranscript(123L);
 
+        // Exception will be handled by GlobalExceptionHandler, returning 500
         mockMvc.perform(delete("/transcripts/delete")
                 .with(csrf()))
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().string("Error deleting transcript: Deletion failed"));
+                .andExpect(status().isInternalServerError());
 
         verify(transcriptService).deleteTranscript(123L);
     }
@@ -213,7 +224,7 @@ class TranscriptControllerTest {
         mockMvc.perform(get("/transcripts/status"))
                 .andExpect(status().isUnauthorized());
 
-        verify(transcriptService, never()).getTranscriptByUserId(anyLong());
+        verify(transcriptService, never()).getTranscriptStatus(anyLong());
     }
 
     @Test

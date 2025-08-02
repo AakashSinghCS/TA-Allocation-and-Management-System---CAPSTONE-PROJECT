@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.infinity.applicationservice.dto.TranscriptInfoDTO;
+import com.infinity.applicationservice.dto.TranscriptStatusDTO;
 import com.infinity.applicationservice.models.Transcript;
 import com.infinity.applicationservice.services.TranscriptService;
 
@@ -33,67 +33,35 @@ public class TranscriptController {
     
     @PostMapping("/upload")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<?> uploadTranscript(@RequestParam("file") MultipartFile file) {
-        try {
-            // Get user ID from JWT token (this is the authoritative source)
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            Long userId = Long.parseLong(username);
-            
-            Transcript transcript = transcriptService.uploadTranscript(userId, file);
-            
-            return ResponseEntity.ok()
-                .body("Transcript uploaded successfully with ID: " + transcript.getId());
-                
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error processing file: " + e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
-        }
+    public ResponseEntity<String> uploadTranscript(@RequestParam("file") MultipartFile file) throws IOException {
+        // Get user ID from JWT token (this is the authoritative source)
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = Long.parseLong(username);
+        
+        Transcript transcript = transcriptService.uploadTranscript(userId, file);
+        
+        return ResponseEntity.ok("Transcript uploaded successfully with ID: " + transcript.getId());
     }
     
     @GetMapping("/status")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<?> getTranscriptStatus() {
-        try {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            Long userId = Long.parseLong(username);
-            
-            return transcriptService.getTranscriptByUserId(userId)
-                .map(transcript -> ResponseEntity.ok()
-                    .body(new TranscriptStatus(
-                        true, 
-                        transcript.getFileName(), 
-                        transcript.getUploadDate().toString(),
-                        transcript.getFileSize(),
-                        transcript.getContentType()
-                    )))
-                .orElse(ResponseEntity.ok()
-                    .body(new TranscriptStatus(false, null, null, null, null)));
-                    
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error retrieving transcript status: " + e.getMessage());
-        }
+    public ResponseEntity<TranscriptStatusDTO> getTranscriptStatus() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = Long.parseLong(username);
+        
+        TranscriptStatusDTO status = transcriptService.getTranscriptStatus(userId);
+        return ResponseEntity.ok(status);
     }
     
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<?> deleteTranscript() {
-        try {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            Long userId = Long.parseLong(username);
-            
-            transcriptService.deleteTranscript(userId);
-            
-            return ResponseEntity.ok()
-                .body("Transcript deleted successfully");
-                
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error deleting transcript: " + e.getMessage());
-        }
+    public ResponseEntity<String> deleteTranscript() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = Long.parseLong(username);
+        
+        transcriptService.deleteTranscript(userId);
+        
+        return ResponseEntity.ok("Transcript deleted successfully");
     }
     
     @GetMapping("/list")
@@ -105,63 +73,34 @@ public class TranscriptController {
     
     @GetMapping("/download")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<?> downloadMyTranscript() {
-        try {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            Long userId = Long.parseLong(username);
-            
-            return transcriptService.getTranscriptByUserId(userId)
-                .map(transcript -> {
-                    return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_DISPOSITION, 
-                            "attachment; filename=\"" + transcript.getFileName() + "\"")
-                        .contentType(MediaType.APPLICATION_PDF)
-                        .contentLength(transcript.getData().length)
-                        .body(transcript.getData());
-                })
-                .orElse(ResponseEntity.notFound().build());
-                
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error downloading transcript: " + e.getMessage());
-        }
+    public ResponseEntity<byte[]> downloadMyTranscript() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = Long.parseLong(username);
+        
+        return transcriptService.getTranscriptByUserId(userId)
+            .map(transcript -> {
+                return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, 
+                        "attachment; filename=\"" + transcript.getFileName() + "\"")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .contentLength(transcript.getData().length)
+                    .body(transcript.getData());
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
     
     @GetMapping("/download/{transcriptId}")
     @PreAuthorize("hasAnyRole('COORDINATOR', 'ADMIN')")
-    public ResponseEntity<?> downloadTranscript(@PathVariable Long transcriptId) {
-        try {
-            return transcriptService.getTranscriptById(transcriptId)
-                .map(transcript -> {
-                    return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_DISPOSITION, 
-                            "attachment; filename=\"" + transcript.getFileName() + "\"")
-                        .contentType(MediaType.APPLICATION_PDF)
-                        .contentLength(transcript.getData().length)
-                        .body(transcript.getData());
-                })
-                .orElse(ResponseEntity.notFound().build());
-                
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error downloading transcript: " + e.getMessage());
-        }
-    }
-    
-    // Inner class for transcript status response
-    public static class TranscriptStatus {
-        public boolean hasTranscript;
-        public String fileName;
-        public String uploadDate;
-        public Long fileSize;
-        public String contentType;
-        
-        public TranscriptStatus(boolean hasTranscript, String fileName, String uploadDate, Long fileSize, String contentType) {
-            this.hasTranscript = hasTranscript;
-            this.fileName = fileName;
-            this.uploadDate = uploadDate;
-            this.fileSize = fileSize;
-            this.contentType = contentType;
-        }
+    public ResponseEntity<byte[]> downloadTranscript(@PathVariable Long transcriptId) {
+        return transcriptService.getTranscriptById(transcriptId)
+            .map(transcript -> {
+                return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, 
+                        "attachment; filename=\"" + transcript.getFileName() + "\"")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .contentLength(transcript.getData().length)
+                    .body(transcript.getData());
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 }

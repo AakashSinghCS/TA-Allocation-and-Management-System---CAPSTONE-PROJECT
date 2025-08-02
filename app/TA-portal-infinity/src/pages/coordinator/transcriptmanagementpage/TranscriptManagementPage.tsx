@@ -3,18 +3,9 @@ import { Download, Eye, Search, Filter, ChevronDown, ChevronUp } from 'lucide-re
 import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { StatusIndicator } from '../../../components/ui/statusindicator/StatusIndicator';
+import { fetchAllTranscripts, downloadTranscript, type TranscriptInfo as ApiTranscriptInfo } from '../../../api/transcript/transcriptApi';
 
-interface TranscriptInfo {
-  id: number;
-  studentId: number;
-  studentName: string;
-  studentEmail: string;
-  studentNumber: string;
-  fileName: string;
-  uploadDate: string;
-  fileSize: number;
-  contentType: string;
-}
+interface TranscriptInfo extends ApiTranscriptInfo {}
 
 interface TranscriptManagementPageProps {}
 
@@ -35,19 +26,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   const fetchTranscripts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8080/transcripts/list', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch transcripts');
-      }
-
-      const data: TranscriptInfo[] = await response.json();
+      const data = await fetchAllTranscripts(token!);
       setTranscripts(data);
       setError(null);
     } catch (err) {
@@ -62,27 +41,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
     try {
       setDownloadingIds(prev => new Set(prev).add(transcriptId));
       
-      const response = await fetch(`http://localhost:8080/transcripts/download/${transcriptId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to download transcript');
-      }
-
-      // Create blob and download
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      await downloadTranscript(transcriptId, fileName, token!);
 
       toast.success('Transcript downloaded successfully');
     } catch (err) {

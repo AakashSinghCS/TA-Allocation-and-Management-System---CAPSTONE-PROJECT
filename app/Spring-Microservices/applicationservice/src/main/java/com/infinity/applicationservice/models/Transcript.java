@@ -24,12 +24,17 @@ public class Transcript {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Optional relationship with Application - allows for flexible workflow where students
+    // can upload transcripts before creating an application, and transcripts can be
+    // associated with applications later when they are created
     @ManyToOne
     @JoinColumn(name = "application_id", nullable = true)
     private Application application;
 
+    // Store userId directly to enable transcript management independent of application status
+    // This supports scenarios where students upload transcripts early in the process
     @Column(nullable = false)
-    private Long userId; // Store userId directly for cases where application doesn't exist yet
+    private Long userId;
 
     @Column(nullable = false)
     private String fileName;
