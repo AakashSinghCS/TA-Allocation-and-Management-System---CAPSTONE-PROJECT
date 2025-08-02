@@ -259,17 +259,17 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   const getStatusLabel = (status: TranscriptInfo['reviewStatus']) => {
     switch (status) {
       case 'PENDING':
-        return '未確認';
+        return 'Pending';
       case 'UNDER_REVIEW':
-        return '確認中';
+        return 'Under Review';
       case 'APPROVED':
-        return '承認済み';
+        return 'Approved';
       case 'REJECTED':
-        return '却下';
+        return 'Rejected';
       case 'NEEDS_CLARIFICATION':
-        return '要説明';
+        return 'Needs Clarification';
       default:
-        return '未確認';
+        return 'Pending';
     }
   };
 
@@ -371,8 +371,25 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
+            
+            {/* Status Filter */}
+            <div className="flex items-center space-x-2">
+              <Filter className="w-4 h-4 text-gray-500" />
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as TranscriptInfo['reviewStatus'] | 'ALL')}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white"
+              >
+                <option value="ALL">All Status</option>
+                <option value="PENDING">Pending</option>
+                <option value="UNDER_REVIEW">Under Review</option>
+                <option value="APPROVED">Approved</option>
+                <option value="REJECTED">Rejected</option>
+                <option value="NEEDS_CLARIFICATION">Needs Clarification</option>
+              </select>
+            </div>
+            
             <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Filter className="w-4 h-4" />
               <span>Total: {filteredAndSortedTranscripts.length} transcripts</span>
             </div>
           </div>
@@ -488,6 +505,15 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                           <SortIcon field="uploadDate" />
                         </div>
                       </th>
+                      <th
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleSort('reviewStatus')}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <span>Status</span>
+                          <SortIcon field="reviewStatus" />
+                        </div>
+                      </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Actions
                       </th>
@@ -495,86 +521,183 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredAndSortedTranscripts.map((transcript) => (
-                      <tr 
-                        key={transcript.id} 
-                        className={`hover:bg-gray-50 cursor-pointer transition-colors ${
-                          selectedTranscript?.id === transcript.id ? 'bg-blue-50 border-l-4 border-blue-500' : ''
-                        }`}
-                        onClick={() => handlePreview(transcript)}
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">
-                              {transcript.studentName}
+                      <React.Fragment key={transcript.id}>
+                        <tr 
+                          className={`hover:bg-gray-50 cursor-pointer transition-colors ${
+                            selectedTranscript?.id === transcript.id ? 'bg-blue-50 border-l-4 border-blue-500' : ''
+                          }`}
+                          onClick={() => handlePreview(transcript)}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">
+                                {transcript.studentName}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {transcript.studentEmail}
+                              </div>
                             </div>
-                            <div className="text-sm text-gray-500">
-                              {transcript.studentEmail}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {transcript.studentNumber}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900 truncate max-w-xs" title={transcript.fileName}>
+                              {transcript.fileName}
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {transcript.studentNumber}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900 truncate max-w-xs" title={transcript.fileName}>
-                            {transcript.fileName}
-                          </div>
-                          <div className="text-xs text-gray-500">PDF</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {formatFileSize(transcript.fileSize)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {formatDate(transcript.uploadDate)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex items-center space-x-2">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handlePreview(transcript);
-                              }}
-                              disabled={loadingPreview && selectedTranscript?.id === transcript.id}
-                              className={`inline-flex items-center space-x-1 px-2 py-1 rounded text-xs transition-colors ${
-                                selectedTranscript?.id === transcript.id
-                                  ? 'bg-blue-100 text-blue-700 border border-blue-300'
-                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                              }`}
-                            >
-                              {loadingPreview && selectedTranscript?.id === transcript.id ? (
-                                <Loader2 className="w-3 h-3 animate-spin" />
+                            <div className="text-xs text-gray-500">PDF</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {formatFileSize(transcript.fileSize)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {formatDate(transcript.uploadDate)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {editingReview === transcript.id ? (
+                              /* Editing mode - Status dropdown */
+                              <select
+                                value={reviewStatus}
+                                onChange={(e) => setReviewStatus(e.target.value as TranscriptInfo['reviewStatus'])}
+                                className="px-2 py-1 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <option value="PENDING">Pending</option>
+                                <option value="UNDER_REVIEW">Under Review</option>
+                                <option value="APPROVED">Approved</option>
+                                <option value="REJECTED">Rejected</option>
+                                <option value="NEEDS_CLARIFICATION">Needs Clarification</option>
+                              </select>
+                            ) : (
+                              /* Display mode - Status badge */
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeClass(transcript.reviewStatus || 'PENDING')}`}>
+                                {getStatusIcon(transcript.reviewStatus || 'PENDING')}
+                                <span className="ml-1">{getStatusLabel(transcript.reviewStatus || 'PENDING')}</span>
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex items-center space-x-2">
+                              {/* Review Action - Only show for non-editing rows */}
+                              {editingReview !== transcript.id ? (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    startEditingReview(transcript);
+                                  }}
+                                  className="inline-flex items-center space-x-1 px-2 py-1 rounded text-xs transition-colors bg-green-100 text-green-700 hover:bg-green-200 border border-green-300"
+                                >
+                                  <Edit3 className="w-3 h-3" />
+                                  <span>Review</span>
+                                </button>
                               ) : (
-                                <Eye className="w-3 h-3" />
+                                /* Editing controls */
+                                <div className="flex items-center space-x-1">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleUpdateReview(transcript.id);
+                                    }}
+                                    disabled={updatingReview}
+                                    className="inline-flex items-center px-2 py-1 rounded text-xs transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-300 disabled:opacity-50"
+                                  >
+                                    {updatingReview ? (
+                                      <Loader2 className="w-3 h-3 animate-spin" />
+                                    ) : (
+                                      <Check className="w-3 h-3" />
+                                    )}
+                                    <span className="ml-1">Save</span>
+                                  </button>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      cancelEditingReview();
+                                    }}
+                                    disabled={updatingReview}
+                                    className="inline-flex items-center px-2 py-1 rounded text-xs transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300 disabled:opacity-50"
+                                  >
+                                    <X className="w-3 h-3" />
+                                    <span className="ml-1">Cancel</span>
+                                  </button>
+                                </div>
                               )}
-                              <span>
-                                {selectedTranscript?.id === transcript.id && previewUrl 
-                                  ? 'Hide' 
-                                  : loadingPreview && selectedTranscript?.id === transcript.id 
-                                    ? 'Loading...' 
-                                    : 'Preview'
-                                }
-                              </span>
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDownload(transcript.id, transcript.fileName);
-                              }}
-                              disabled={downloadingIds.has(transcript.id)}
-                              className={`inline-flex items-center space-x-1 px-2 py-1 rounded text-xs transition-colors ${
-                                downloadingIds.has(transcript.id)
-                                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                  : 'bg-[#040941] text-white hover:bg-[#040941]/90'
-                              }`}
-                            >
-                              <Download className="w-3 h-3" />
-                              <span>
-                                {downloadingIds.has(transcript.id) ? 'Downloading...' : 'Download'}
-                              </span>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
+                              
+                              {/* Preview Button */}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handlePreview(transcript);
+                                }}
+                                disabled={loadingPreview && selectedTranscript?.id === transcript.id}
+                                className={`inline-flex items-center space-x-1 px-2 py-1 rounded text-xs transition-colors ${
+                                  selectedTranscript?.id === transcript.id
+                                    ? 'bg-blue-100 text-blue-700 border border-blue-300'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                }`}
+                              >
+                                {loadingPreview && selectedTranscript?.id === transcript.id ? (
+                                  <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : (
+                                  <Eye className="w-3 h-3" />
+                                )}
+                                <span>
+                                  {selectedTranscript?.id === transcript.id && previewUrl 
+                                    ? 'Hide' 
+                                    : loadingPreview && selectedTranscript?.id === transcript.id 
+                                      ? 'Loading...' 
+                                      : 'Preview'
+                                  }
+                                </span>
+                              </button>
+                              
+                              {/* Download Button */}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDownload(transcript.id, transcript.fileName);
+                                }}
+                                disabled={downloadingIds.has(transcript.id)}
+                                className={`inline-flex items-center space-x-1 px-2 py-1 rounded text-xs transition-colors ${
+                                  downloadingIds.has(transcript.id)
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    : 'bg-[#040941] text-white hover:bg-[#040941]/90'
+                                }`}
+                              >
+                                <Download className="w-3 h-3" />
+                                <span>
+                                  {downloadingIds.has(transcript.id) ? 'Downloading...' : 'Download'}
+                                </span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                        
+                        {/* Expandable comment row when editing */}
+                        {editingReview === transcript.id && (
+                          <tr className="bg-gray-50">
+                            <td colSpan={7} className="px-6 py-4">
+                              <div className="space-y-3">
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Review Comments
+                                  </label>
+                                  <textarea
+                                    value={reviewComments}
+                                    onChange={(e) => setReviewComments(e.target.value)}
+                                    placeholder="Add your review comments here..."
+                                    rows={3}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                  />
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  Last updated: {transcript.reviewDate ? formatDate(transcript.reviewDate) : 'Never'} 
+                                  {transcript.reviewerName && ` by ${transcript.reviewerName}`}
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
                     ))}
                   </tbody>
                 </table>
