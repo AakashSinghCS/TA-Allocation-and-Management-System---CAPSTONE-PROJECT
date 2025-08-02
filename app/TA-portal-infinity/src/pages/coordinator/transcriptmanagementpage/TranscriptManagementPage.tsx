@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Download, Eye, Search, Filter, ChevronDown, ChevronUp, Maximize2, X, Loader2, User, Mail, Hash, Edit3, Check, AlertTriangle, Clock, XCircle, Calendar } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -42,12 +42,40 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   const [selectedTranscripts, setSelectedTranscripts] = useState<Set<number>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
   
+  // Bulk operation progress states
+  const [bulkOperationProgress, setBulkOperationProgress] = useState({
+    isRunning: false,
+    completed: 0,
+    total: 0,
+    operation: '',
+    errors: [] as string[]
+  });
+  
   // Date range filter states
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [dateRangeError, setDateRangeError] = useState('');
   
   // Download states
   const [downloading, setDownloading] = useState(false);
+
+  // Confirmation dialog state
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    confirmText: string;
+    cancelText: string;
+    onConfirm: () => void;
+    isDangerous?: boolean;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    confirmText: '',
+    cancelText: '',
+    onConfirm: () => {},
+    isDangerous: false
+  });
 
   // Date validation helper
   const validateDateRange = (start: string, end: string): string => {
@@ -103,11 +131,13 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
         <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
       </div>
     </div>
-  );  useEffect(() => {
+  );
+
+  useEffect(() => {
     fetchTranscripts();
   }, [token]);
 
-  // Cleanup preview URLs on component unmount
+  // Cleanup preview URLs on component unmount and state changes
   useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -118,6 +148,30 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
       }
     };
   }, []); // Remove dependencies to only run on unmount
+
+  // Clean up preview URL when changing to different transcript
+  useEffect(() => {
+    return () => {
+      if (previewUrl && selectedTranscript) {
+        // Only cleanup if we're switching to a different transcript
+        const currentId = selectedTranscript.id;
+        setTimeout(() => {
+          // Check if we're still on the same transcript after a brief delay
+          if (!selectedTranscript || selectedTranscript.id !== currentId) {
+            URL.revokeObjectURL(previewUrl);
+          }
+        }, 100);
+      }
+    };
+  }, [selectedTranscript?.id]);
+
+  // Clean up fullscreen URL when closing
+  useEffect(() => {
+    if (!showFullscreen && fullscreenUrl) {
+      URL.revokeObjectURL(fullscreenUrl);
+      setFullscreenUrl(null);
+    }
+  }, [showFullscreen]);
 
   // Handle ESC key for fullscreen
   useEffect(() => {
@@ -362,18 +416,8 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   };
 
   // Bulk selection handlers
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedTranscripts(new Set());
-      setSelectAll(false);
-    } else {
-      const allVisibleIds = new Set(filteredAndSortedTranscripts.map(t => t.id));
-      setSelectedTranscripts(allVisibleIds);
-      setSelectAll(true);
-    }
-  };
-
-  const handleSelectTranscript = (transcriptId: number) => {
+  // Memoized callbacks to prevent unnecessary re-renders
+  const handleSelectTranscript = useCallback((transcriptId: number) => {
     const newSelected = new Set(selectedTranscripts);
     if (newSelected.has(transcriptId)) {
       newSelected.delete(transcriptId);
@@ -381,26 +425,91 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
       newSelected.add(transcriptId);
     }
     setSelectedTranscripts(newSelected);
-    setSelectAll(newSelected.size === filteredAndSortedTranscripts.length);
+  }, [selectedTranscripts]);
+
+  const handleSelectAll = useCallback(() => {
+    if (selectAll) {
+      setSelectedTranscripts(new Set());
+      setSelectAll(false);
+    } else {
+      // Use a timeout to ensure filteredAndSortedTranscripts is available
+      setTimeout(() => {
+        const allVisibleIds = new Set(filteredAndSortedTranscripts.map(t => t.id));
+        setSelectedTranscripts(allVisibleIds);
+        setSelectAll(true);
+      }, 0);
+    }
+  }, [selectAll]);
+
+  // Helper function to show confirmation dialog
+  const showConfirmDialog = (
+    title: string,
+    message: string,
+    onConfirm: () => void,
+    confirmText: string = 'Confirm',
+    isDangerous: boolean = false
+  ) => {
+    setConfirmDialog({
+      isOpen: true,
+      title,
+      message,
+      confirmText,
+      cancelText: 'Cancel',
+      onConfirm,
+      isDangerous
+    });
+  };
+
+  const handleBulkStatusUpdateWithConfirm = (newStatus: TranscriptInfo['reviewStatus']) => {
+    const count = selectedTranscripts.size;
+    const statusLabel = getStatusLabel(newStatus);
+    
+    showConfirmDialog(
+      'Confirm Bulk Status Update',
+      `Are you sure you want to update ${count} transcript(s) to "${statusLabel}"? This action cannot be undone.`,
+      () => handleBulkStatusUpdate(newStatus),
+      'Update All',
+      false
+    );
   };
 
   const handleBulkStatusUpdate = async (newStatus: TranscriptInfo['reviewStatus']) => {
     if (!token || selectedTranscripts.size === 0) return;
 
+    const totalItems = selectedTranscripts.size;
+    setBulkOperationProgress({
+      isRunning: true,
+      completed: 0,
+      total: totalItems,
+      operation: `Updating to ${getStatusLabel(newStatus)}`,
+      errors: []
+    });
+
     try {
       setUpdatingReview(true);
       
-      // Update all selected transcripts
-      const updatePromises = Array.from(selectedTranscripts).map(transcriptId => {
-        const reviewData: TranscriptReview = {
-          transcriptId,
-          reviewStatus: newStatus,
-          reviewComments: `Bulk updated to ${getStatusLabel(newStatus)}`
-        };
-        return updateTranscriptReview(reviewData, token);
-      });
+      // Update with progress tracking
+      const transcriptIds = Array.from(selectedTranscripts);
+      let completed = 0;
+      const errors: string[] = [];
 
-      await Promise.all(updatePromises);
+      for (const transcriptId of transcriptIds) {
+        try {
+          const reviewData: TranscriptReview = {
+            transcriptId,
+            reviewStatus: newStatus,
+            reviewComments: `Bulk updated to ${getStatusLabel(newStatus)}`
+          };
+          await updateTranscriptReview(reviewData, token);
+          completed++;
+          
+          setBulkOperationProgress(prev => ({ ...prev, completed }));
+        } catch (err) {
+          const errorMsg = `Failed to update transcript ID ${transcriptId}`;
+          errors.push(errorMsg);
+          console.error(errorMsg, err);
+        }
+      }
       
       // Small delay to ensure database transaction is committed
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -412,12 +521,17 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
       setSelectedTranscripts(new Set());
       setSelectAll(false);
       
-      toast.success(`Updated ${selectedTranscripts.size} transcript(s) to ${getStatusLabel(newStatus)}`);
+      if (errors.length === 0) {
+        toast.success(`Successfully updated ${completed} transcript(s) to ${getStatusLabel(newStatus)}`);
+      } else {
+        toast.warning(`Updated ${completed} of ${totalItems} transcripts. ${errors.length} failed.`);
+      }
     } catch (err) {
       toast.error('Failed to update selected transcripts');
       console.error('Bulk update error:', err);
     } finally {
       setUpdatingReview(false);
+      setBulkOperationProgress(prev => ({ ...prev, isRunning: false }));
     }
   };
 
@@ -497,61 +611,77 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
     return csvRows.join('\n');
   };
 
-  const handleSort = (field: keyof TranscriptInfo) => {
+  // Memoized callbacks to prevent unnecessary re-renders
+  const handleSort = useCallback((field: keyof TranscriptInfo) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
       setSortDirection('asc');
     }
-  };
+  }, [sortField, sortDirection]);
 
-  const filteredAndSortedTranscripts = transcripts
-    .filter(transcript => {
-      // Search filter
-      const matchesSearch = transcript.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transcript.studentEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transcript.studentNumber.includes(searchTerm) ||
-        transcript.fileName.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      // Status filter
-      const matchesStatus = statusFilter === 'ALL' || transcript.reviewStatus === statusFilter;
-      
-      // Date range filter
-      let matchesDate = true;
-      if ((dateRange.start || dateRange.end) && !dateRangeError) {
-        const transcriptDate = new Date(transcript.uploadDate);
+  // Memoized filtering and sorting for performance
+  const filteredAndSortedTranscripts = useMemo(() => {
+    return transcripts
+      .filter(transcript => {
+        // Search filter
+        const matchesSearch = transcript.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          transcript.studentEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          transcript.studentNumber.includes(searchTerm) ||
+          transcript.fileName.toLowerCase().includes(searchTerm.toLowerCase());
         
-        if (dateRange.start) {
-          // Create date in UTC to avoid timezone issues
-          const startDate = new Date(dateRange.start + 'T00:00:00.000Z');
-          matchesDate = matchesDate && transcriptDate >= startDate;
+        // Status filter
+        const matchesStatus = statusFilter === 'ALL' || transcript.reviewStatus === statusFilter;
+        
+        // Date range filter
+        let matchesDate = true;
+        if ((dateRange.start || dateRange.end) && !dateRangeError) {
+          const transcriptDate = new Date(transcript.uploadDate);
+          
+          if (dateRange.start) {
+            // Create date in UTC to avoid timezone issues
+            const startDate = new Date(dateRange.start + 'T00:00:00.000Z');
+            matchesDate = matchesDate && transcriptDate >= startDate;
+          }
+          if (dateRange.end) {
+            // Create date in UTC to avoid timezone issues
+            const endDate = new Date(dateRange.end + 'T23:59:59.999Z');
+            matchesDate = matchesDate && transcriptDate <= endDate;
+          }
         }
-        if (dateRange.end) {
-          // Create date in UTC to avoid timezone issues
-          const endDate = new Date(dateRange.end + 'T23:59:59.999Z');
-          matchesDate = matchesDate && transcriptDate <= endDate;
+        
+        return matchesSearch && matchesStatus && matchesDate;
+      })
+      .sort((a, b) => {
+        const aValue = a[sortField];
+        const bValue = b[sortField];
+        
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return sortDirection === 'asc' 
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
         }
+        
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+        }
+        
+        return 0;
+      });
+  }, [transcripts, searchTerm, statusFilter, dateRange, dateRangeError, sortField, sortDirection]);
+
+  // Update selectAll state when filtered data changes
+  useEffect(() => {
+    if (selectedTranscripts.size > 0 && filteredAndSortedTranscripts.length > 0) {
+      const allVisibleIds = new Set(filteredAndSortedTranscripts.map(t => t.id));
+      if (selectAll && !Array.from(allVisibleIds).every(id => selectedTranscripts.has(id))) {
+        setSelectAll(false);
+      } else if (!selectAll && selectedTranscripts.size === allVisibleIds.size && Array.from(allVisibleIds).every(id => selectedTranscripts.has(id))) {
+        setSelectAll(true);
       }
-      
-      return matchesSearch && matchesStatus && matchesDate;
-    })
-    .sort((a, b) => {
-      const aValue = a[sortField];
-      const bValue = b[sortField];
-      
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc' 
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      }
-      
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
-      }
-      
-      return 0;
-    });
+    }
+  }, [filteredAndSortedTranscripts, selectedTranscripts, selectAll]);
 
   // Reset selection when filters change
   useEffect(() => {
@@ -633,6 +763,33 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
             </div>
           </div>
         </div>
+
+        {/* Bulk Operation Progress */}
+        {bulkOperationProgress.isRunning && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-blue-800">
+                {bulkOperationProgress.operation}
+              </h3>
+              <span className="text-sm text-blue-600">
+                {bulkOperationProgress.completed} / {bulkOperationProgress.total}
+              </span>
+            </div>
+            <div className="w-full bg-blue-200 rounded-full h-2 mb-2">
+              <div
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                style={{
+                  width: `${(bulkOperationProgress.completed / bulkOperationProgress.total) * 100}%`
+                }}
+              />
+            </div>
+            {bulkOperationProgress.errors.length > 0 && (
+              <div className="text-sm text-red-600">
+                {bulkOperationProgress.errors.length} error(s) occurred
+              </div>
+            )}
+          </div>
+        )}
 
         {/* 3-Row Control Panel - Option B */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
@@ -764,7 +921,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
               <div className="flex items-center space-x-3">
                 <Tooltip content="Mark all selected transcripts as being actively reviewed">
                   <button
-                    onClick={() => handleBulkStatusUpdate('UNDER_REVIEW')}
+                    onClick={() => handleBulkStatusUpdateWithConfirm('UNDER_REVIEW')}
                     disabled={updatingReview}
                     className="px-4 py-2 bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 disabled:opacity-50 transition-colors text-sm font-medium"
                   >
@@ -773,7 +930,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 </Tooltip>
                 <Tooltip content="Approve all selected transcripts for TA eligibility">
                   <button
-                    onClick={() => handleBulkStatusUpdate('APPROVED')}
+                    onClick={() => handleBulkStatusUpdateWithConfirm('APPROVED')}
                     disabled={updatingReview}
                     className="px-4 py-2 bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 disabled:opacity-50 transition-colors text-sm font-medium"
                   >
@@ -782,7 +939,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 </Tooltip>
                 <Tooltip content="Reject all selected transcripts for TA eligibility">
                   <button
-                    onClick={() => handleBulkStatusUpdate('REJECTED')}
+                    onClick={() => handleBulkStatusUpdateWithConfirm('REJECTED')}
                     disabled={updatingReview}
                     className="px-4 py-2 bg-red-100 text-red-700 border border-red-300 rounded-lg hover:bg-red-200 disabled:opacity-50 transition-colors text-sm font-medium"
                   >
@@ -791,7 +948,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 </Tooltip>
                 <Tooltip content="Mark all selected transcripts as needing additional information">
                   <button
-                    onClick={() => handleBulkStatusUpdate('NEEDS_CLARIFICATION')}
+                    onClick={() => handleBulkStatusUpdateWithConfirm('NEEDS_CLARIFICATION')}
                     disabled={updatingReview}
                     className="px-4 py-2 bg-yellow-100 text-yellow-700 border border-yellow-300 rounded-lg hover:bg-yellow-200 disabled:opacity-50 transition-colors text-sm font-medium"
                   >
@@ -1436,6 +1593,44 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                       style={{ minHeight: '600px' }}
                     />
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Confirmation Dialog */}
+        {confirmDialog.isOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+              <div className="p-6">
+                <div className="flex items-center mb-4">
+                  {confirmDialog.isDangerous && (
+                    <AlertTriangle className="w-6 h-6 text-red-500 mr-3" />
+                  )}
+                  <h3 className="text-lg font-medium text-gray-900">{confirmDialog.title}</h3>
+                </div>
+                <p className="text-sm text-gray-600 mb-6">{confirmDialog.message}</p>
+                <div className="flex space-x-3 justify-end">
+                  <button
+                    onClick={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                  >
+                    {confirmDialog.cancelText}
+                  </button>
+                  <button
+                    onClick={() => {
+                      confirmDialog.onConfirm();
+                      setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+                    }}
+                    className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors ${
+                      confirmDialog.isDangerous 
+                        ? 'bg-red-600 hover:bg-red-700' 
+                        : 'bg-blue-600 hover:bg-blue-700'
+                    }`}
+                  >
+                    {confirmDialog.confirmText}
+                  </button>
                 </div>
               </div>
             </div>
