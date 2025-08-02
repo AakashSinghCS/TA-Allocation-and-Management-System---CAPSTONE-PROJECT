@@ -78,9 +78,7 @@ public class TranscriptService {
     }
     
     public List<TranscriptInfoDTO> getAllTranscriptInfo() {
-        System.out.println("TranscriptService.getAllTranscriptInfo() called");
         List<TranscriptInfoDTO> transcriptInfos = transcriptRepository.findAllTranscriptInfo();
-        System.out.println("Retrieved " + transcriptInfos.size() + " transcripts from repository");
         
         // Enrich with user information
         return transcriptInfos.stream()
@@ -89,16 +87,12 @@ public class TranscriptService {
     }
     
     private TranscriptInfoDTO enrichWithUserInfo(TranscriptInfoDTO transcriptInfo) {
-        System.out.println("Enriching transcript info for student ID: " + transcriptInfo.getStudentId());
         try {
             UserDto userDto = userInterface.getStudentById(transcriptInfo.getStudentId()).getBody();
             if (userDto != null) {
-                System.out.println("Retrieved user info: " + userDto.firstName() + " " + userDto.lastName());
                 transcriptInfo.setStudentName(userDto.firstName() + " " + userDto.lastName());
                 transcriptInfo.setStudentEmail(userDto.email());
                 transcriptInfo.setStudentNumber(userDto.studentNum() != null ? userDto.studentNum().toString() : "");
-            } else {
-                System.out.println("User DTO was null for student ID: " + transcriptInfo.getStudentId());
             }
         } catch (FeignException e) {
             // Log the error but don't fail the entire operation
