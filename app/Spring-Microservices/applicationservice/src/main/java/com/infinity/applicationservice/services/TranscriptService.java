@@ -3,6 +3,7 @@ package com.infinity.applicationservice.services;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,12 +11,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.infinity.applicationservice.dto.TranscriptInfoDTO;
 import com.infinity.applicationservice.dto.TranscriptStatusDTO;
+import com.infinity.applicationservice.dtos.Users.UserDto;
+import com.infinity.applicationservice.feign.UserInterface;
 import com.infinity.applicationservice.models.Application;
 import com.infinity.applicationservice.models.Transcript;
 import com.infinity.applicationservice.repositories.ApplicationRepository;
 import com.infinity.applicationservice.repositories.TranscriptRepository;
 import com.infinity.applicationservice.utility.TranscriptMapper;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,6 +29,7 @@ public class TranscriptService {
     private final TranscriptRepository transcriptRepository;
     private final ApplicationRepository applicationRepository;
     private final TranscriptMapper transcriptMapper;
+    private final UserInterface userInterface;
     
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     private static final String ALLOWED_CONTENT_TYPE = "application/pdf";
@@ -73,7 +78,34 @@ public class TranscriptService {
     }
     
     public List<TranscriptInfoDTO> getAllTranscriptInfo() {
-        return transcriptRepository.findAllTranscriptInfo();
+        System.out.println("TranscriptService.getAllTranscriptInfo() called");
+        List<TranscriptInfoDTO> transcriptInfos = transcriptRepository.findAllTranscriptInfo();
+        System.out.println("Retrieved " + transcriptInfos.size() + " transcripts from repository");
+        
+        // Enrich with user information
+        return transcriptInfos.stream()
+                .map(this::enrichWithUserInfo)
+                .collect(Collectors.toList());
+    }
+    
+    private TranscriptInfoDTO enrichWithUserInfo(TranscriptInfoDTO transcriptInfo) {
+        System.out.println("Enriching transcript info for student ID: " + transcriptInfo.getStudentId());
+        try {
+            UserDto userDto = userInterface.getStudentById(transcriptInfo.getStudentId()).getBody();
+            if (userDto != null) {
+                System.out.println("Retrieved user info: " + userDto.firstName() + " " + userDto.lastName());
+                transcriptInfo.setStudentName(userDto.firstName() + " " + userDto.lastName());
+                transcriptInfo.setStudentEmail(userDto.email());
+                transcriptInfo.setStudentNumber(userDto.studentNum() != null ? userDto.studentNum().toString() : "");
+            } else {
+                System.out.println("User DTO was null for student ID: " + transcriptInfo.getStudentId());
+            }
+        } catch (FeignException e) {
+            // Log the error but don't fail the entire operation
+            System.err.println("Failed to fetch user info for student ID " + transcriptInfo.getStudentId() + ": " + e.getMessage());
+            // Keep the default values set by the DTO constructor
+        }
+        return transcriptInfo;
     }
     
     @Transactional
