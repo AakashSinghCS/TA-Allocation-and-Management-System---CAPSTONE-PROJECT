@@ -37,6 +37,7 @@ const UserBrowsingPage = lazy(() => import("../pages/coordinator/userbrowsingpag
 const ManualCreateUserPage = lazy(() => import("../pages/coordinator/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage"));
 const GlobalConfigPage = lazy(() => import("../pages/admin/globalconfig/GlobalConfigPage"));
 const TranscriptManagementPage = lazy(() => import("../pages/coordinator/transcriptmanagementpage/TranscriptManagementPage"));
+const SimpleTranscriptTest = lazy(() => import("../pages/coordinator/transcriptmanagementpage/SimpleTranscriptTest"));
 // Reference implementation with floating/draggable preview panels - for comparison and future reference
 const TranscriptManagementPageFloatingReference = lazy(() => import("../pages/coordinator/transcriptmanagementpage/TranscriptManagementPage.floating-reference"));
 
@@ -55,6 +56,7 @@ const ExportToCSVPage = lazy(() => import("../pages/csv/exportpage/ExportToCSVPa
 const GraduateAvailabilityPage = lazy(() => import("../pages/student/graduateavailabilitypage/GraduateAvailabilityPage"));
 
 const CreateExamPage = lazy(() => import("../pages/coordinator/exampage/CreateExamPage"));
+const TestPage = lazy(() => import("../pages/test/TestPage"));
 
 export const router = createBrowserRouter([
   {
@@ -135,8 +137,10 @@ export const router = createBrowserRouter([
           { path: "sections/export", element: <Suspense fallback={<div>Loading...</div>}><ExportToCSVPage /></Suspense> },
           { path: "applications", element: <Suspense fallback={<div>Loading...</div>}><ApplicationViewPage /></Suspense> },
           { path: "allocation", element: <Suspense fallback={<div>Loading...</div>}><AllocationPage /></Suspense> },
-          { path: "transcripts", element: <Suspense fallback={<div>Loading...</div>}><TranscriptManagementPage /></Suspense> }, // Main implementation (tab-based)
+          { path: "transcripts", element: <Suspense fallback={<div>Loading...</div>}><TranscriptManagementPage /></Suspense> }, // Full implementation with all Phase 2 & 3 features
+          { path: "transcripts-test", element: <Suspense fallback={<div>Loading...</div>}><SimpleTranscriptTest /></Suspense> }, // Test component
           { path: "transcripts-floating", element: <Suspense fallback={<div>Loading...</div>}><TranscriptManagementPageFloatingReference /></Suspense> }, // Reference implementation (floating panels)
+          { path: "test", element: <Suspense fallback={<div>Loading...</div>}><TestPage /></Suspense> }, // Test page for routing
           { path: "globalconfig", element: <Suspense fallback={<div>Loading...</div>}><GlobalConfigPage /></Suspense> },
           { path: "audit", element: <Suspense fallback={<div>Loading...</div>}><AuditLogsPage /></Suspense> },
           { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
@@ -155,9 +159,11 @@ export const router = createBrowserRouter([
       { path: "", element: <LoginPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignUpPage /> },
-      { path: "forgot-password", element: <ForgotPasswordPage /> },
+            { path: "forgot-password", element: <ForgotPasswordPage /> },
       { path: "reset-password", element: <ResetPasswordPage /> },
-      { path: "*", element: <ErrorPage /> },
+      { path: "transcript-test", element: <Suspense fallback={<div>Loading...</div>}><SimpleTranscriptTest /></Suspense> }, // Temporary public route for testing
     ],
   },
+  
+  { path: "*", element: <ErrorPage /> },
 ]);

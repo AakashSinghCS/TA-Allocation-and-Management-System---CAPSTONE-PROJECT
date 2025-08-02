@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Eye, Search, Filter, ChevronDown, ChevronUp, Maximize2, X, Loader2, User, Mail, Hash, Edit3, Check, AlertTriangle, Clock, XCircle } from 'lucide-react';
+import { Download, Eye, Search, Filter, ChevronDown, ChevronUp, Maximize2, X, Loader2, User, Mail, Hash, Edit3, Check, AlertTriangle, Clock, XCircle, Calendar } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { StatusIndicator } from '../../../components/ui/statusindicator/StatusIndicator';
@@ -41,6 +41,12 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   // Bulk selection states
   const [selectedTranscripts, setSelectedTranscripts] = useState<Set<number>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
+  
+  // Date range filter states
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  
+  // Download states
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     fetchTranscripts();
@@ -360,6 +366,82 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
     }
   };
 
+  const handleExportToCSV = () => {
+    try {
+      const dataToExport = filteredAndSortedTranscripts.map(transcript => ({
+        'Student Name': transcript.studentName,
+        'Student Email': transcript.studentEmail,
+        'Student Number': transcript.studentNumber,
+        'File Name': transcript.fileName,
+        'Upload Date': formatDate(transcript.uploadDate),
+        'Review Status': getStatusLabel(transcript.reviewStatus),
+        'Review Comments': transcript.reviewComments || '',
+        'Reviewer': transcript.reviewerName || 'N/A'
+      }));
+
+      const csvContent = convertToCSV(dataToExport);
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `transcripts_export_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast.success(`Exported ${dataToExport.length} transcripts to CSV`);
+    } catch (error) {
+      toast.error('Failed to export transcripts');
+      console.error('Export error:', error);
+    }
+  };
+
+  const handleBulkDownload = async () => {
+    if (selectedTranscripts.size === 0) return;
+
+    try {
+      setDownloading(true);
+      const downloadPromises = Array.from(selectedTranscripts).map(async (transcriptId) => {
+        const transcript = transcripts.find(t => t.id === transcriptId);
+        if (transcript) {
+          await handleDownload(transcriptId, transcript.fileName);
+        }
+      });
+
+      await Promise.all(downloadPromises);
+      toast.success(`Downloaded ${selectedTranscripts.size} transcript(s)`);
+    } catch (error) {
+      toast.error('Failed to download selected transcripts');
+      console.error('Bulk download error:', error);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  // Helper function to convert data to CSV
+  const convertToCSV = (data: Record<string, string>[]) => {
+    if (data.length === 0) return '';
+    
+    const headers = Object.keys(data[0]);
+    const csvRows = [
+      headers.join(','),
+      ...data.map(row => 
+        headers.map(header => {
+          const value = row[header] || '';
+          // Escape quotes and wrap in quotes if contains comma, quote, or newline
+          if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+            return `"${value.replace(/"/g, '""')}"`;
+          }
+          return value;
+        }).join(',')
+      )
+    ];
+    
+    return csvRows.join('\n');
+  };
+
   const handleSort = (field: keyof TranscriptInfo) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -380,7 +462,22 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
       // Status filter
       const matchesStatus = statusFilter === 'ALL' || transcript.reviewStatus === statusFilter;
       
-      return matchesSearch && matchesStatus;
+      // Date range filter
+      let matchesDate = true;
+      if (dateRange.start || dateRange.end) {
+        const transcriptDate = new Date(transcript.uploadDate);
+        if (dateRange.start) {
+          const startDate = new Date(dateRange.start);
+          matchesDate = matchesDate && transcriptDate >= startDate;
+        }
+        if (dateRange.end) {
+          const endDate = new Date(dateRange.end);
+          endDate.setHours(23, 59, 59, 999); // Include the entire end date
+          matchesDate = matchesDate && transcriptDate <= endDate;
+        }
+      }
+      
+      return matchesSearch && matchesStatus && matchesDate;
     })
     .sort((a, b) => {
       const aValue = a[sortField];
@@ -403,7 +500,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   useEffect(() => {
     setSelectedTranscripts(new Set());
     setSelectAll(false);
-  }, [searchTerm, statusFilter]);
+  }, [searchTerm, statusFilter, dateRange]);
 
   const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -480,8 +577,8 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
           </div>
         </div>
 
-        {/* Search and Filter Controls */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        {/* Row 1: Search and Filter Controls */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
           <div className="flex flex-col sm:flex-row gap-4 items-center">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -511,49 +608,124 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
               </select>
             </div>
             
-            <div className="flex items-center space-x-4 text-sm text-gray-600">
+            <div className="flex items-center text-sm text-gray-600">
               <span>Total: {filteredAndSortedTranscripts.length} transcripts</span>
               {selectedTranscripts.size > 0 && (
-                <div className="flex items-center space-x-2">
-                  <span className="text-blue-600 font-medium">
-                    {selectedTranscripts.size} selected
-                  </span>
-                  <div className="flex items-center space-x-1">
-                    <span className="text-gray-500">Bulk update:</span>
-                    <button
-                      onClick={() => handleBulkStatusUpdate('UNDER_REVIEW')}
-                      disabled={updatingReview}
-                      className="px-2 py-1 text-xs bg-blue-100 text-blue-700 border border-blue-300 rounded hover:bg-blue-200 disabled:opacity-50"
-                    >
-                      Under Review
-                    </button>
-                    <button
-                      onClick={() => handleBulkStatusUpdate('APPROVED')}
-                      disabled={updatingReview}
-                      className="px-2 py-1 text-xs bg-green-100 text-green-700 border border-green-300 rounded hover:bg-green-200 disabled:opacity-50"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => handleBulkStatusUpdate('REJECTED')}
-                      disabled={updatingReview}
-                      className="px-2 py-1 text-xs bg-red-100 text-red-700 border border-red-300 rounded hover:bg-red-200 disabled:opacity-50"
-                    >
-                      Reject
-                    </button>
-                    <button
-                      onClick={() => handleBulkStatusUpdate('NEEDS_CLARIFICATION')}
-                      disabled={updatingReview}
-                      className="px-2 py-1 text-xs bg-yellow-100 text-yellow-700 border border-yellow-300 rounded hover:bg-yellow-200 disabled:opacity-50"
-                    >
-                      Needs Clarification
-                    </button>
-                  </div>
-                </div>
+                <span className="ml-4 text-blue-600 font-medium">
+                  {selectedTranscripts.size} selected
+                </span>
               )}
             </div>
           </div>
         </div>
+
+        {/* Row 2: Date Filter Controls */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4">
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <div className="flex items-center space-x-2">
+              <Calendar className="w-4 h-4 text-gray-500" />
+              <span className="text-sm font-medium text-gray-700">Upload Date Range:</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="date"
+                value={dateRange.start}
+                onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              />
+              <span className="text-gray-500">to</span>
+              <input
+                type="date"
+                value={dateRange.end}
+                onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              />
+            </div>
+            <button
+              onClick={() => setDateRange({ start: '', end: '' })}
+              className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              Clear Dates
+            </button>
+          </div>
+        </div>
+
+        {/* Row 3: Action Buttons */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4">
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={handleExportToCSV}
+                disabled={filteredAndSortedTranscripts.length === 0}
+                className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                <span>Export to CSV</span>
+              </button>
+              
+              <button
+                onClick={handleBulkDownload}
+                disabled={selectedTranscripts.size === 0 || downloading}
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                <span>{downloading ? 'Downloading...' : 'Bulk Download'}</span>
+                {selectedTranscripts.size > 0 && (
+                  <span className="ml-1 px-2 py-1 bg-blue-500 text-xs rounded-full">
+                    {selectedTranscripts.size}
+                  </span>
+                )}
+              </button>
+            </div>
+            
+            <div className="text-sm text-gray-600">
+              Quick actions for selected transcripts and data export
+            </div>
+          </div>
+        </div>
+
+        {/* Row 4: Bulk Update Actions */}
+        {selectedTranscripts.size > 0 && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+              <div className="flex items-center space-x-2">
+                <span className="text-sm font-medium text-gray-700">
+                  Bulk Status Update for {selectedTranscripts.size} selected:
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => handleBulkStatusUpdate('UNDER_REVIEW')}
+                  disabled={updatingReview}
+                  className="px-4 py-2 bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 disabled:opacity-50 transition-colors"
+                >
+                  Under Review
+                </button>
+                <button
+                  onClick={() => handleBulkStatusUpdate('APPROVED')}
+                  disabled={updatingReview}
+                  className="px-4 py-2 bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 disabled:opacity-50 transition-colors"
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => handleBulkStatusUpdate('REJECTED')}
+                  disabled={updatingReview}
+                  className="px-4 py-2 bg-red-100 text-red-700 border border-red-300 rounded-lg hover:bg-red-200 disabled:opacity-50 transition-colors"
+                >
+                  Reject
+                </button>
+                <button
+                  onClick={() => handleBulkStatusUpdate('NEEDS_CLARIFICATION')}
+                  disabled={updatingReview}
+                  className="px-4 py-2 bg-yellow-100 text-yellow-700 border border-yellow-300 rounded-lg hover:bg-yellow-200 disabled:opacity-50 transition-colors"
+                >
+                  Needs Clarification
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Error State */}
         {error && (
