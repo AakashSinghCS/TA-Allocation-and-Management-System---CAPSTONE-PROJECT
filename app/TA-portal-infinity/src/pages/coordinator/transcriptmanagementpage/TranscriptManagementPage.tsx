@@ -611,11 +611,11 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   const filteredAndSortedTranscripts = useMemo(() => {
     return transcripts
       .filter(transcript => {
-        // Search filter
-        const matchesSearch = transcript.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          transcript.studentEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          transcript.studentNumber.includes(searchTerm) ||
-          transcript.fileName.toLowerCase().includes(searchTerm.toLowerCase());
+        // Search filter - defensive programming for null/undefined values
+        const matchesSearch = (transcript.studentName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+          (transcript.studentEmail?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+          (transcript.studentNumber || '').includes(searchTerm) ||
+          (transcript.fileName?.toLowerCase() || '').includes(searchTerm.toLowerCase());
         
         // Status filter
         const matchesStatus = statusFilter === 'ALL' || transcript.reviewStatus === statusFilter;
