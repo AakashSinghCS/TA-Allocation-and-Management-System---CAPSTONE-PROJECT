@@ -17,6 +17,7 @@ import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentD
 import com.infinity.applicationservice.dtos.Applications.UnavailabilityDto;
 import com.infinity.applicationservice.dtos.Semesters.SemesterDto;
 import com.infinity.applicationservice.dtos.Users.UserDto;
+import com.infinity.applicationservice.enums.ApplicationType;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.exceptions.AuthorizationException;
 import com.infinity.applicationservice.exceptions.BadRequestException;
@@ -235,5 +236,18 @@ public class ApplicationService {
             .map(applicationMapper::toDto)
             .toList();
 
-        }
+    }
+
+    public List<UserDto> getAllGraduateApplicants() {
+        List<Application> apps = applicationRepository.findByapplicationType(ApplicationType.GRADUATE);
+        
+        List<Long> studentIds = apps.stream()
+            .map(Application::getStudentId)
+            .distinct()
+            .collect(Collectors.toList());
+
+        return userInterface.getStudentsByIds(studentIds);
+    }
+
+
 }

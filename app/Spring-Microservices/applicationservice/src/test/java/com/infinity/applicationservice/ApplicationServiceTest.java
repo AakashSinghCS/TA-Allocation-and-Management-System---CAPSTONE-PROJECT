@@ -686,4 +686,56 @@ public class ApplicationServiceTest {
                 assertEquals("No applications for this student", ex.getMessage());
         }
 
+        @Test
+        public void testGetAllGraduateApplicants_returnsCorrectStudents() {
+
+        Application app1 = new Application();
+        app1.setStudentId(1L);
+        app1.setApplicationType(ApplicationType.GRADUATE);
+
+        Application app2 = new Application();
+        app2.setStudentId(2L);
+        app2.setApplicationType(ApplicationType.GRADUATE);
+
+        List<Application> apps = List.of(app1, app2);
+        when(applicationRepository.findByapplicationType(ApplicationType.GRADUATE)).thenReturn(apps);
+
+        UserDto s1 = new UserDto(
+                        1L,
+                        "Alice",
+                        "Smith",
+                        "alice@example.com",
+                        List.of(UserRole.STUDENT),
+                        12345678,
+                        "COSC",
+                        2022,
+                        4,
+                        null,
+                        "COSC",
+                        LocalDateTime.now(),
+                        true
+        );
+        UserDto s2 = new UserDto(
+                        2L,
+                        "John",
+                        "Smith",
+                        "john@example.com",
+                        List.of(UserRole.STUDENT),
+                        12456543,
+                        "COSC",
+                        2022,
+                        4,
+                        null,
+                        "COSC",
+                        LocalDateTime.now(),
+                        true
+        );
+        when(userInterface.getStudentsByIds(List.of(1L, 2L))).thenReturn(List.of(s1, s2));
+
+        List<UserDto> result = applicationService.getAllGraduateApplicants();
+
+        assertEquals(2, result.size());
+        assertEquals("Alice", result.get(0).firstName());
+    }
+
 }
