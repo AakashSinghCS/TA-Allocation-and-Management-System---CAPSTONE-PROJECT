@@ -23,9 +23,12 @@ export default function InstructorQualificationViewer({
         const qualsByCourse = new Map<number, typeof quals[0]["qualifications"]>();
         quals.forEach((qr) => {
           const cid = qr.section!.course!.id!;
-          if (!qualsByCourse.has(cid)) {
-            qualsByCourse.set(cid, qr.qualifications);
-          }
+          const existing = qualsByCourse.get(cid) || [];
+
+          const combined = [...existing, ...qr.qualifications];
+          const deduped = Array.from(new Map(combined.map(q => [q.id, q])).values());
+
+          qualsByCourse.set(cid, deduped);
         });
 
         const uniqueCourses = Array.from(

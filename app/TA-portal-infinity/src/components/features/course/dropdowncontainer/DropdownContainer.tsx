@@ -41,15 +41,7 @@ export default function DropdownContainer({ allExistingDeptCodesAndYears, mode, 
     const nums = ys.map(Number).filter(n => !Number.isNaN(n));
     return nums.length ? Math.max(...nums) : null;
   }, [allExistingDeptCodesAndYears?.years]);
-
-  useEffect(() => {
-    if (!initializedYear.current && maxYear !== null) {
-      setSelectedYear(String(maxYear));
-      onChange({ year: maxYear });
-      initializedYear.current = true;
-    }
-  }, [maxYear, onChange]);
-  
+ 
   useEffect(() => {
     setSelectedCourseNum(null);
     setCourseNumData(null);
@@ -103,7 +95,7 @@ export default function DropdownContainer({ allExistingDeptCodesAndYears, mode, 
   //     .then((data) => setSemesterData(data))
   //     .catch(() => setSemesterData([]));
   // }, [selectedDeptCode, selectedCourseNum, selectedSection, selectedYear]);
-useEffect(() => {
+  useEffect(() => {
   onChange({
     year: selectedYear !== null ? Number(selectedYear) : null
   });
