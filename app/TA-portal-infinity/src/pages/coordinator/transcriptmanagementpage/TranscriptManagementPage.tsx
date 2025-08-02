@@ -48,7 +48,20 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   // Download states
   const [downloading, setDownloading] = useState(false);
 
-  useEffect(() => {
+  // Tooltip component
+  const Tooltip: React.FC<{ children: React.ReactNode; content: string; className?: string }> = ({ 
+    children, 
+    content, 
+    className = "" 
+  }) => (
+    <div className={`group relative ${className}`}>
+      {children}
+      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+        {content}
+        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+      </div>
+    </div>
+  );  useEffect(() => {
     fetchTranscripts();
   }, [token]);
 
@@ -552,25 +565,25 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
               <div className="flex items-start space-x-2">
                 <span className="text-blue-600 font-bold">2.</span>
                 <div>
-                  <span><strong>Individual Review:</strong> Click "Review" button to open inline editing. Select status from dropdown, add detailed comments, then click "Save" to confirm changes.</span>
+                  <span><strong>Date Range & Actions:</strong> Apply date filters to narrow results by upload timeframe. Use "Export to CSV" for data analysis or "Bulk Download" for selected transcripts.</span>
                 </div>
               </div>
               <div className="flex items-start space-x-2">
                 <span className="text-blue-600 font-bold">3.</span>
                 <div>
-                  <span><strong>Bulk Operations:</strong> Check multiple transcript boxes, then use bulk action buttons (Under Review, Approve, Reject, Needs Clarification) for efficient processing.</span>
+                  <span><strong>Individual Review:</strong> Click "Review" button to open inline editing. Select status from dropdown, add detailed comments, then click "Save" to confirm changes.</span>
                 </div>
               </div>
               <div className="flex items-start space-x-2">
                 <span className="text-blue-600 font-bold">4.</span>
                 <div>
-                  <span><strong>Preview & Fullscreen:</strong> Click "Preview" to view transcript content in the Preview tab. Use "Fullscreen" button for detailed document examination.</span>
+                  <span><strong>Bulk Status Updates:</strong> Check multiple transcript boxes, then use the bulk status buttons (Under Review, Approve, Reject, Needs Clarification) that appear below.</span>
                 </div>
               </div>
               <div className="flex items-start space-x-2">
                 <span className="text-blue-600 font-bold">5.</span>
                 <div>
-                  <span><strong>Download & Export:</strong> Download individual transcript files for offline review or record-keeping purposes.</span>
+                  <span><strong>Preview & Download:</strong> Click "Preview" to view transcript content in the tab below. Use "Fullscreen" for detailed examination or "Download" for offline review.</span>
                 </div>
               </div>
             </div>
@@ -687,34 +700,42 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 </span>
               </div>
               <div className="flex items-center space-x-3">
-                <button
-                  onClick={() => handleBulkStatusUpdate('UNDER_REVIEW')}
-                  disabled={updatingReview}
-                  className="px-4 py-2 bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 disabled:opacity-50 transition-colors text-sm font-medium"
-                >
-                  Under Review
-                </button>
-                <button
-                  onClick={() => handleBulkStatusUpdate('APPROVED')}
-                  disabled={updatingReview}
-                  className="px-4 py-2 bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 disabled:opacity-50 transition-colors text-sm font-medium"
-                >
-                  Approve
-                </button>
-                <button
-                  onClick={() => handleBulkStatusUpdate('REJECTED')}
-                  disabled={updatingReview}
-                  className="px-4 py-2 bg-red-100 text-red-700 border border-red-300 rounded-lg hover:bg-red-200 disabled:opacity-50 transition-colors text-sm font-medium"
-                >
-                  Reject
-                </button>
-                <button
-                  onClick={() => handleBulkStatusUpdate('NEEDS_CLARIFICATION')}
-                  disabled={updatingReview}
-                  className="px-4 py-2 bg-yellow-100 text-yellow-700 border border-yellow-300 rounded-lg hover:bg-yellow-200 disabled:opacity-50 transition-colors text-sm font-medium"
-                >
-                  Needs Clarification
-                </button>
+                <Tooltip content="Mark all selected transcripts as being actively reviewed">
+                  <button
+                    onClick={() => handleBulkStatusUpdate('UNDER_REVIEW')}
+                    disabled={updatingReview}
+                    className="px-4 py-2 bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 disabled:opacity-50 transition-colors text-sm font-medium"
+                  >
+                    Under Review
+                  </button>
+                </Tooltip>
+                <Tooltip content="Approve all selected transcripts for TA eligibility">
+                  <button
+                    onClick={() => handleBulkStatusUpdate('APPROVED')}
+                    disabled={updatingReview}
+                    className="px-4 py-2 bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 disabled:opacity-50 transition-colors text-sm font-medium"
+                  >
+                    Approve
+                  </button>
+                </Tooltip>
+                <Tooltip content="Reject all selected transcripts for TA eligibility">
+                  <button
+                    onClick={() => handleBulkStatusUpdate('REJECTED')}
+                    disabled={updatingReview}
+                    className="px-4 py-2 bg-red-100 text-red-700 border border-red-300 rounded-lg hover:bg-red-200 disabled:opacity-50 transition-colors text-sm font-medium"
+                  >
+                    Reject
+                  </button>
+                </Tooltip>
+                <Tooltip content="Mark all selected transcripts as needing additional information">
+                  <button
+                    onClick={() => handleBulkStatusUpdate('NEEDS_CLARIFICATION')}
+                    disabled={updatingReview}
+                    className="px-4 py-2 bg-yellow-100 text-yellow-700 border border-yellow-300 rounded-lg hover:bg-yellow-200 disabled:opacity-50 transition-colors text-sm font-medium"
+                  >
+                    Needs Clarification
+                  </button>
+                </Tooltip>
               </div>
             </div>
           )}
@@ -902,10 +923,12 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                             ) : (
                               /* Display mode - Status badge with comments */
                               <div className="space-y-1">
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeClass(transcript.reviewStatus || 'PENDING')}`}>
-                                  {getStatusIcon(transcript.reviewStatus || 'PENDING')}
-                                  <span className="ml-1">{getStatusLabel(transcript.reviewStatus || 'PENDING')}</span>
-                                </span>
+                                <Tooltip content={`Current review status: ${getStatusLabel(transcript.reviewStatus || 'PENDING')}. Click 'Review' to modify.`}>
+                                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeClass(transcript.reviewStatus || 'PENDING')}`}>
+                                    {getStatusIcon(transcript.reviewStatus || 'PENDING')}
+                                    <span className="ml-1">{getStatusLabel(transcript.reviewStatus || 'PENDING')}</span>
+                                  </span>
+                                </Tooltip>
                                 {transcript.reviewComments && (
                                   <div className="text-xs text-gray-600 max-w-xs">
                                     <div className="bg-blue-50 rounded px-2 py-1 border border-blue-200">
@@ -927,54 +950,61 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                             <div className="flex items-center space-x-2">
                               {/* Review Action - Only show for non-editing rows */}
                               {editingReview !== transcript.id ? (
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    startEditingReview(transcript);
-                                  }}
-                                  className="inline-flex items-center space-x-1 px-2 py-1 rounded text-xs transition-colors bg-green-100 text-green-700 hover:bg-green-200 border border-green-300"
-                                >
-                                  <Edit3 className="w-3 h-3" />
-                                  <span>Review</span>
-                                </button>
+                                <Tooltip content="Start reviewing this transcript and add comments">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      startEditingReview(transcript);
+                                    }}
+                                    className="inline-flex items-center space-x-1 px-2 py-1 rounded text-xs transition-colors bg-green-100 text-green-700 hover:bg-green-200 border border-green-300"
+                                  >
+                                    <Edit3 className="w-3 h-3" />
+                                    <span>Review</span>
+                                  </button>
+                                </Tooltip>
                               ) : (
                                 /* Editing controls */
                                 <div className="flex items-center space-x-1">
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleUpdateReview(transcript.id);
-                                    }}
-                                    disabled={updatingReview}
-                                    className="inline-flex items-center px-2 py-1 rounded text-xs transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-300 disabled:opacity-50"
-                                  >
-                                    {updatingReview ? (
-                                      <Loader2 className="w-3 h-3 animate-spin" />
-                                    ) : (
-                                      <Check className="w-3 h-3" />
-                                    )}
-                                    <span className="ml-1">Save</span>
-                                  </button>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      cancelEditingReview();
-                                    }}
-                                    disabled={updatingReview}
-                                    className="inline-flex items-center px-2 py-1 rounded text-xs transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300 disabled:opacity-50"
-                                  >
-                                    <X className="w-3 h-3" />
-                                    <span className="ml-1">Cancel</span>
-                                  </button>
+                                  <Tooltip content="Save the review status and comments">
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleUpdateReview(transcript.id);
+                                      }}
+                                      disabled={updatingReview}
+                                      className="inline-flex items-center px-2 py-1 rounded text-xs transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-300 disabled:opacity-50"
+                                    >
+                                      {updatingReview ? (
+                                        <Loader2 className="w-3 h-3 animate-spin" />
+                                      ) : (
+                                        <Check className="w-3 h-3" />
+                                      )}
+                                      <span className="ml-1">Save</span>
+                                    </button>
+                                  </Tooltip>
+                                  <Tooltip content="Cancel review editing without saving changes">
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        cancelEditingReview();
+                                      }}
+                                      disabled={updatingReview}
+                                      className="inline-flex items-center px-2 py-1 rounded text-xs transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300 disabled:opacity-50"
+                                    >
+                                      <X className="w-3 h-3" />
+                                      <span className="ml-1">Cancel</span>
+                                    </button>
+                                  </Tooltip>
                                 </div>
                               )}
                               
                               {/* Preview Button */}
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handlePreview(transcript);
-                                }}
+                              <Tooltip content="Preview transcript content in the tab below">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePreview(transcript);
+                                  }}
                                 disabled={loadingPreview && selectedTranscript?.id === transcript.id}
                                 className={`inline-flex items-center space-x-1 px-2 py-1 rounded text-xs transition-colors ${
                                   selectedTranscript?.id === transcript.id
@@ -994,25 +1024,28 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                                   }
                                 </span>
                               </button>
+                              </Tooltip>
                               
                               {/* Download Button */}
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDownload(transcript.id, transcript.fileName);
-                                }}
-                                disabled={downloadingIds.has(transcript.id)}
-                                className={`inline-flex items-center space-x-1 px-2 py-1 rounded text-xs transition-colors ${
-                                  downloadingIds.has(transcript.id)
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                    : 'bg-[#040941] text-white hover:bg-[#040941]/90'
-                                }`}
-                              >
-                                <Download className="w-3 h-3" />
-                                <span>
-                                  {downloadingIds.has(transcript.id) ? 'Downloading...' : 'Download'}
-                                </span>
-                              </button>
+                              <Tooltip content="Download the original transcript file">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDownload(transcript.id, transcript.fileName);
+                                  }}
+                                  disabled={downloadingIds.has(transcript.id)}
+                                  className={`inline-flex items-center space-x-1 px-2 py-1 rounded text-xs transition-colors ${
+                                    downloadingIds.has(transcript.id)
+                                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                      : 'bg-[#040941] text-white hover:bg-[#040941]/90'
+                                  }`}
+                                >
+                                  <Download className="w-3 h-3" />
+                                  <span>
+                                    {downloadingIds.has(transcript.id) ? 'Downloading...' : 'Download'}
+                                  </span>
+                                </button>
+                              </Tooltip>
                             </div>
                           </td>
                         </tr>
@@ -1110,20 +1143,40 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                   </div>
                 </div>
                 <div className="flex flex-col space-y-2 ml-4">
-                  <button
-                    onClick={() => setActiveView('table')}
-                    className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded border border-gray-300 transition-colors flex items-center space-x-1"
-                  >
-                    <X className="w-4 h-4" />
-                    <span>Back to List</span>
-                  </button>
-                  <button
-                    onClick={() => openFullscreen(previewUrl)}
-                    className="px-3 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded border border-blue-300 transition-colors flex items-center space-x-1"
-                  >
-                    <Maximize2 className="w-4 h-4" />
-                    <span>Fullscreen</span>
-                  </button>
+                  <Tooltip content="Return to the transcripts list view">
+                    <button
+                      onClick={() => setActiveView('table')}
+                      className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded border border-gray-300 transition-colors flex items-center space-x-1"
+                    >
+                      <X className="w-4 h-4" />
+                      <span>Back to List</span>
+                    </button>
+                  </Tooltip>
+                  <Tooltip content="Open transcript in fullscreen mode for detailed examination">
+                    <button
+                      onClick={() => openFullscreen(previewUrl)}
+                      className="px-3 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded border border-blue-300 transition-colors flex items-center space-x-1"
+                    >
+                      <Maximize2 className="w-4 h-4" />
+                      <span>Fullscreen</span>
+                    </button>
+                  </Tooltip>
+                  <Tooltip content="Download this transcript file for offline review">
+                    <button
+                      onClick={() => handleDownload(selectedTranscript.id, selectedTranscript.fileName)}
+                      disabled={downloadingIds.has(selectedTranscript.id)}
+                      className="px-3 py-2 text-sm text-green-600 hover:text-green-800 hover:bg-green-100 rounded border border-green-300 transition-colors flex items-center space-x-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {downloadingIds.has(selectedTranscript.id) ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Download className="w-4 h-4" />
+                      )}
+                      <span>
+                        {downloadingIds.has(selectedTranscript.id) ? 'Downloading...' : 'Download'}
+                      </span>
+                    </button>
+                  </Tooltip>
                 </div>
               </div>
             </div>
@@ -1202,16 +1255,59 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
           </div>
         )}
 
-        {/* Information Section */}
-        <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
-          <h3 className="font-medium text-green-900 mb-2">Transcript Review Guidelines:</h3>
-          <ul className="text-sm text-green-800 space-y-1">
-            <li>• <strong>Academic Standing:</strong> Verify the student meets minimum GPA requirements for TA positions</li>
-            <li>• <strong>Course History:</strong> Check for relevant coursework in the subject area they're applying to assist with</li>
-            <li>• <strong>Prerequisites:</strong> Ensure completion of required prerequisite courses for advanced TA roles</li>
-            <li>• <strong>File Quality:</strong> All transcripts are in PDF format and should be clear and readable</li>
-            <li>• <strong>Privacy:</strong> Handle all student academic records with confidentiality and in accordance with FERPA guidelines</li>
-          </ul>
+        {/* Enhanced Review Guidelines */}
+        <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-5">
+          <h3 className="font-semibold text-green-900 mb-3 flex items-center">
+            <AlertTriangle className="w-4 h-4 mr-2" />
+            Transcript Review Guidelines & Criteria:
+          </h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-3">
+              <div className="flex items-start space-x-2">
+                <span className="text-green-600 font-bold text-sm">✓</span>
+                <div className="text-sm text-green-800">
+                  <strong>Academic Standing:</strong> Verify minimum GPA requirements (typically 3.0+ for undergraduate TAs, 3.5+ for graduate TAs)
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <span className="text-green-600 font-bold text-sm">✓</span>
+                <div className="text-sm text-green-800">
+                  <strong>Course Prerequisites:</strong> Ensure completion of required prerequisite courses and relevant subject matter knowledge
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <span className="text-green-600 font-bold text-sm">✓</span>
+                <div className="text-sm text-green-800">
+                  <strong>Grade Quality:</strong> Check for consistent performance in related coursework (B+ or higher in relevant subjects)
+                </div>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-start space-x-2">
+                <span className="text-green-600 font-bold text-sm">⚠</span>
+                <div className="text-sm text-green-800">
+                  <strong>Document Authenticity:</strong> Verify official transcript format, institutional seals, and proper formatting
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <span className="text-green-600 font-bold text-sm">⚠</span>
+                <div className="text-sm text-green-800">
+                  <strong>Completeness:</strong> Ensure all required courses and degree progress are clearly documented
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <span className="text-green-600 font-bold text-sm">🔒</span>
+                <div className="text-sm text-green-800">
+                  <strong>Privacy Compliance:</strong> Handle all academic records confidentially and institutional policies
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 pt-3 border-t border-green-200">
+            <p className="text-xs text-green-700 italic">
+              <strong>Review Process:</strong> Start with "Under Review" → Conduct thorough evaluation → Mark as "Approved", "Rejected", or "Needs Clarification" with detailed comments
+            </p>
+          </div>
         </div>
 
         {/* Fullscreen Modal */}
