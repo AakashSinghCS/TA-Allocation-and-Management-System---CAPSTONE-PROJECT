@@ -142,4 +142,10 @@ public class UserController {
     public ResponseEntity<String> deactivateUser(@PathVariable Long id) {
         return ResponseEntity.ok(userService.deactivateUser(id));
     }
+
+    @GetMapping("/students/batch")
+    public ResponseEntity<List<UserDto>> getStudentsByIds(@RequestParam List<Long> ids) {
+        return ResponseEntity.ok(userService.getStudentsByIds(ids));
+    }
+
 }

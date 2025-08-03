@@ -4,18 +4,7 @@ import type { FilterSectionsProps } from "../../../api/course/sectionfilter/fetc
 import { fetchFilteredSections } from "../../../api/course/sectionfilter/fetchFilteredSections";
 
 function hasAnyFilter(f: FilterSectionsProps) {
-  return Boolean(
-    f.deptCode ||
-    f.courseNum ||
-    f.name ||
-    f.section ||
-    f.year ||
-    f.semester ||
-    f.type ||
-    f.day ||
-    f.startTime ||
-    f.endTime
-  );
+  return Object.keys(f).length > 0;
 }
 
 export function useSectionSearchPage(

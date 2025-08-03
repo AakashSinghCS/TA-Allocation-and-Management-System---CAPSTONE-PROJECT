@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.infinity.applicationservice.dtos.Applications.ApplicationDto;
 import com.infinity.applicationservice.dtos.Applications.ApplicationRequest;
 import com.infinity.applicationservice.dtos.Applications.ApplicationWithStudentDto;
+import com.infinity.applicationservice.dtos.Users.UserDto;
 import com.infinity.applicationservice.enums.Subject;
 import com.infinity.applicationservice.services.ApplicationService;
 
@@ -126,6 +127,12 @@ public class ApplicationController {
     @GetMapping("/allSemesters")
     public ResponseEntity<List<String>> getAllApplicationSemesters() {
         return ResponseEntity.ok(applicationService.getAllApplicationSemesters());
+    }
+
+    @GetMapping("/graduateApplicants")
+    @PreAuthorize("hasRole('COORDINATOR')")
+    public ResponseEntity<List<UserDto>> getGraduateApplicants() {
+        return ResponseEntity.ok(applicationService.getAllGraduateApplicants());
     }
 
 }

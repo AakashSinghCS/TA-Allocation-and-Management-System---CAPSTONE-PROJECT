@@ -7,6 +7,8 @@ import type { Course } from "../../../interfaces/course/Course";
 import type Section from "../../../interfaces/section/Section";
 import UpdateExamModal from "../exampage/UpdateExamModal";
 import {Calendar, Clock } from "lucide-react";
+import { fetchAllExams, deleteExamById } from "../../../api/exam/exam";
+import { fetchSectionById, fetchCourseById } from "../../../api/exam/exam";
 
 const ExamsDashboard = ({ onRef, assignmentRefMap,}: {onRef?: (fn: () => void) => void; assignmentRefMap?: React.MutableRefObject<Record<number, () => void>>; }) => {
 
@@ -35,72 +37,50 @@ const ExamsDashboard = ({ onRef, assignmentRefMap,}: {onRef?: (fn: () => void) =
   
   const fetchExams = async () => {
     try {
-      const res = await fetch("http://localhost:8080/exams", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch exams");
-
-      const data = await res.json();
+      const data = await fetchAllExams(token!);
       setExams(data);
       return data;
     } catch (err) {
-      toast.error("Error loading exams");
       console.error(err);
+      toast.error("Error loading exams");
     }
   };
 
   const handleDelete = async (examId: number) => {
     try {
-      const res = await fetch(`http://localhost:8080/exams/${examId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) throw new Error("Delete failed");
-
+      await deleteExamById(examId, token!);
       toast.success("Exam deleted");
       setExams(prev => prev.filter(e => e.id !== examId));
     } catch (err) {
-      toast.error("Failed to delete exam");
       console.error(err);
+      toast.error("Failed to delete exam");
     }
   };
 
   const fetchExtraDetails = async (exams: ExamDto[]| undefined) => {
     if (!exams || exams.length === 0) return;
+
     const sections: Record<number, Section> = {};
     const courses: Record<number, Course> = {};
 
-    await Promise.all(exams.map(async (exam) => {
-      if (!sections[exam.sectionId]) {
-        const secRes = await fetch(`http://localhost:8080/sections/get/${exam.sectionId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        });
-        if (secRes.ok) {
-          const secData = await secRes.json();
-          sections[exam.sectionId] = secData;
+    await Promise.all(
+      exams.map(async (exam) => {
+        if (!sections[exam.sectionId]) {
+          try {
+            const section = await fetchSectionById(exam.sectionId, token!);
+            sections[exam.sectionId] = section;
 
-          if (!courses[secData.course.id]) {
-            const courseRes = await fetch(`http://localhost:8080/courses/${secData.course.id}`, {
-              headers:{
-                Authorization: `Bearer ${token}`,
-              }
-            });
-            if (courseRes.ok) {
-              const courseData = await courseRes.json();
-              courses[secData.course.id] = courseData;
+            const courseId = section.course!.id;
+            if (!courses[courseId!]) {
+              const course = await fetchCourseById(courseId!, token!);
+              courses[courseId!] = course;
             }
+          } catch (err) {
+            console.error(`Error fetching section/course for exam ${exam.id}:`, err);
           }
         }
-      }
-    }));
+      })
+    );
 
     setSectionMap(sections);
     setCourseMap(courses);

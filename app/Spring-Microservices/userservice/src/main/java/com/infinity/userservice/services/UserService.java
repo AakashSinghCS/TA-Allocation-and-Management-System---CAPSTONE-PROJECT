@@ -380,4 +380,14 @@ public class UserService {
 
     }
 
+    public List<UserDto> getStudentsByIds(List<Long> ids) {
+        List<User> users = userRepository.findAllById(ids);
+
+        return users.stream()
+            .map(userMapper::toDto)
+            .collect(Collectors.toList());
+            
+    }
+
+
 }
