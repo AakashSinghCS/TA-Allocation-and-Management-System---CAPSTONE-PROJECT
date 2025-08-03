@@ -18,6 +18,7 @@ import { FaUserGraduate, FaUsers } from "react-icons/fa";
 import { GrDocumentMissing } from "react-icons/gr";
 import { fetchAllocationById } from "../../../api/allocation/fetchAllocationById";
 import type { ApplicationStatus } from "../../../interfaces/enum/ApplicationStatus";
+import { getAllSemesters } from "../../../api/semester/getAllSemesters";
 
 export default function InstructorHomePage() {
   const { userId, token } = useAuth();
@@ -53,17 +54,38 @@ export default function InstructorHomePage() {
       setError("");
       setSectionsLoaded(false);
       try {
-        // Get the most recent year for current term data
-        const years = await fetchAllExistingYears();
-        const mostRecent = years ? Math.max(...years.map(Number)) : -1;
-        const defaultSemester = "W1"; // or you can determine current semester dynamically
+        const token = localStorage.getItem("token"); 
+        const semesters = await getAllSemesters(token ?? "");
+
+        const active = semesters.filter((s) => s.isActive);
+        const today = new Date();
+
+        // 1. See if today is within any active semester’s window
+        const currentSemester = active.find((s) => {
+          const start = new Date(s.startDate);
+          const end   = new Date(s.endDate);
+          return start <= today && today <= end;
+        });
+        // 2. Otherwise pick the one that ends the latest
+        const fallbackSemester =
+          active.length > 0
+            ? active.reduce((prev, curr) => {
+                return new Date(curr.endDate) > new Date(prev.endDate)
+                  ? curr
+                  : prev;
+              })
+            : undefined;
+
+        const chosen = currentSemester ?? fallbackSemester;
+        const semester = chosen?.semester ?? "W1";
+        const mostRecentYear = chosen?.year ?? new Date().getFullYear();
 
         // Fetch sections with their needs and allocations for current term
         const sectionsWithNeeds = await fetchSectionNeedAndAllocations(
           userId,
           null, // all courses
-          mostRecent,
-          defaultSemester
+          mostRecentYear,
+          semester
         ) ?? [];
 
         // Filter allocations to show only CONFIRMED status
