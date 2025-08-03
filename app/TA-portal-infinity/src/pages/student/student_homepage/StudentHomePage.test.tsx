@@ -60,8 +60,12 @@ describe('StudentHomePage', () => {
 
     //dashboard heading
     await waitFor(() => expect(screen.getByText(/My Dashboard/i)).toBeInTheDocument());
-    expect(screen.getByText('1', { selector: 'div.text-xl.font-bold' })).toBeInTheDocument(); 
-    const zeroElements = screen.getAllByText('0', { selector: 'div.text-xl.font-bold' });
+    // Check for the "1" in the "Total Applications" metric card
+    const totalAppsCard = screen.getByText("Total Applications").closest('.bg-white');
+    expect(totalAppsCard).not.toBeNull();
+    const valueElement = totalAppsCard!.querySelector('.text-lg.font-bold');
+    expect(valueElement).toHaveTextContent('1');
+    const zeroElements = screen.getAllByText('0');
     expect(zeroElements.length).toBeGreaterThan(0); 
     // student name
     expect(screen.getByText(/Jane Doe/)).toBeInTheDocument();

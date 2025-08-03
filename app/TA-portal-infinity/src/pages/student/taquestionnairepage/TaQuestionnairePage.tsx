@@ -182,7 +182,7 @@ function TaQuestionnaire({ questions }: { questions: ProfileQuestion[] | null })
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
         {/* Header Section */}
         <div className="mb-6 md:mb-8">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-4 gap-4">

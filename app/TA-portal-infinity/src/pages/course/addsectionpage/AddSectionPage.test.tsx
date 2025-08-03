@@ -97,8 +97,13 @@ describe('<AddSectionPage />', () => {
       </MemoryRouter>,
     );
 
-    const courseButtons = screen.getAllByTestId('btn-course');
-    fireEvent.click(courseButtons[0]);
+    // Click the "Create Course" tab to switch to course mode
+    const courseTab = screen.getByText('Create Course');
+    fireEvent.click(courseTab);
+
+    // Click the mocked submit button for course creation
+    const submitButton = screen.getByText('add-course');
+    fireEvent.click(submitButton);
 
     await waitFor(() =>
       expect(mockCreateCourse).toHaveBeenCalledWith({
@@ -116,8 +121,13 @@ describe('<AddSectionPage />', () => {
       </MemoryRouter>,
     );
 
-    const sectionButtons = screen.getAllByTestId('btn-section');
-    fireEvent.click(sectionButtons[0]);
+    // Click the "Create Section" tab to switch to section mode
+    const sectionTab = screen.getByText('Create Section');
+    fireEvent.click(sectionTab);
+
+    // Click the mocked submit button for section creation
+    const submitButton = screen.getByText('add-section');
+    fireEvent.click(submitButton);
 
     await waitFor(() =>
       expect(mockCreateSection).toHaveBeenCalledWith({

@@ -138,7 +138,7 @@ export default function SectionCsvImportInline() {
           <button
             type="button"
             onClick={handleDownloadSampleCsv}
-            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 font-semibold ml-2"
+            className="px-3 py-1 bg-green-800 text-white rounded hover:bg-green-700 font-semibold ml-2"
           >
             Download Sample CSV
           </button>

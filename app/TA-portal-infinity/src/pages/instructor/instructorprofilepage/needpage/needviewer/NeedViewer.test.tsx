@@ -65,7 +65,7 @@ describe('<NeedViewer />', () => {
 
   it('shows the Add section link for instructors', () => {
     renderer();
-    expect(screen.getByRole('link', { name: 'Add Section' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Add TA Requirement' })).toBeInTheDocument();
   });
 
   it('calls fetchSectionNeedAndAllocations with correct parameters on Search click', async () => {

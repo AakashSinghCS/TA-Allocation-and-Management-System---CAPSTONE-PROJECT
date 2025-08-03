@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import UserBrowsingViewer from "./UserBrowsingViewer";
@@ -31,8 +31,13 @@ vi.mock("../../../../components/ui/user/searchuserbar/SearchUserBar", () => ({
   default: () => <div data-testid="search-bar" />,
 }));
 vi.mock("../../../../api/admin/fetchActivation", () => ({
-  fetchActivate: vi.fn(async (id: number) => true),
-  fetchDeactivate: vi.fn(async (id: number) => true),
+  fetchActivate: vi.fn(async (_id: number) => true),
+  fetchDeactivate: vi.fn(async (_id: number) => true),
+}));
+
+vi.mock("../../../../utility/confirmation/toastConfirmation", () => ({
+  showToastConfirmation: vi.fn(async () => true),
+  showToastError: vi.fn(),
 }));
 
 // 2. Now import them—these will be the very spies you just created above
@@ -40,8 +45,6 @@ import { fetchActivate, fetchDeactivate } from "../../../../api/admin/fetchActiv
 describe("UserBrowsingViewer (updated)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // By default confirm returns true
-    vi.stubGlobal("confirm", () => true);
   });
 
   it("shows Deactivate/Activate buttons for ADMIN and calls the right API", async () => {
@@ -55,21 +58,27 @@ describe("UserBrowsingViewer (updated)", () => {
     );
 
     // We should see two buttons, one for each student
-    const buttons = screen.getAllByRole("button", { name: /activate|deactivate/i });
-    expect(buttons).toHaveLength(2);
+    const deactivateButton = screen.getByText("Deactivate");
+    const activateButton = screen.getByText("Activate");
 
-    // First student is active → "Deactivate"
-    expect(buttons[0]).toHaveTextContent("Deactivate");
-    // Second student is inactive → "Activate"
-    expect(buttons[1]).toHaveTextContent("Activate");
+    expect(deactivateButton).toBeInTheDocument();
+    expect(activateButton).toBeInTheDocument();
 
     // Click Deactivate
-    fireEvent.click(buttons[0]);
-    expect(fetchDeactivate).toHaveBeenCalledWith(mockStudentJohnDoe.id);
+    fireEvent.click(deactivateButton);
+    
+    // Wait for async operations to complete
+    await waitFor(() => {
+      expect(fetchDeactivate).toHaveBeenCalledWith(mockStudentJohnDoe.id);
+    });
 
     // Click Activate
-    fireEvent.click(buttons[1]);
-    expect(fetchActivate).toHaveBeenCalledWith(mockStudentEmmaDoe.id);
+    fireEvent.click(activateButton);
+    
+    // Wait for async operations to complete
+    await waitFor(() => {
+      expect(fetchActivate).toHaveBeenCalledWith(mockStudentEmmaDoe.id);
+    });
 
     // refetch should also get called twice
     // expect(refetchMock).toHaveBeenCalledTimes(2);

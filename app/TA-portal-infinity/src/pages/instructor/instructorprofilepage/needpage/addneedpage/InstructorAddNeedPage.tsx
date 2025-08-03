@@ -125,7 +125,7 @@ export default function InstructorAddNeedPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 w-full max-w-3xl">
+    <div className="container mx-auto p-4 w-full max-w-7xl">
       <h2 className="text-2xl font-bold mb-4">
         {section
           ? `${section.course?.deptCode} ${section.course?.courseNum} – ${section.course?.name}`
@@ -153,7 +153,7 @@ export default function InstructorAddNeedPage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="description" className="block text-sm font-medium">
+          <label htmlFor="description" className="block text-md font-medium">
             Additional Comments
           </label>
           <textarea
@@ -167,8 +167,8 @@ export default function InstructorAddNeedPage() {
 
         {/* Required grading hours */}
         <div>
-          <label htmlFor="requiredHours" className="block text-sm font-medium">
-            Required Grading Hours
+          <label htmlFor="requiredHours" className="block text-md font-medium">
+            Required Grading Hours*
           </label>
           <input
             id="requiredHours"
@@ -180,58 +180,70 @@ export default function InstructorAddNeedPage() {
           />
         </div>
 
-        {/* Selected prerequisites */}
-        {prereqCourses.length > 0 && (
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Selected Prerequisite Courses</h3>
-            <div className="space-y-2">
-              {prereqCourses.map((c) => (
-                <div
-                  key={c.id}
-                  className="flex items-center justify-between bg-slate-50 px-3 py-2 rounded"
-                >
-                  <span>
-                    {c.deptCode} {c.courseNum} – {c.name}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => onRemoveCourse(c.id!)}
-                    className="text-red-600 hover:underline text-sm"
-                  >
-                    Remove Course
-                  </button>
+            {/* Heading for prerequisites */}
+            <h3 className="text-md font-medium mb-2">Manage Prerequisite(s) for the course*</h3>
+
+        {/* Prerequisite Courses Card */}
+        <div className="bg-white border border-gray-300 rounded-md p-6 mb-6">
+          <h3 className="text-md font-medium mb-6">Add Prerequisite to Course</h3>
+          <div className="flex flex-col md:flex-row gap-8">
+            {/*  Selected Prerequisites */}
+            <div className="md:w-1/3">
+              <h4 className="text-md font-medium mb-2">Selected Courses</h4>
+              {prereqCourses.length > 0 ? (
+                <div className="space-y-2">
+                  {prereqCourses.map((c) => (
+                    <div
+                      key={c.id}
+                      className="flex items-center justify-between bg-gray-300 px-3 py-2 rounded"
+                    >
+                      <span>
+                        {c.deptCode} {c.courseNum} – {c.name}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => onRemoveCourse(c.id!)}
+                        className="text-red-600 hover:underline text-sm"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              ) : (
+                <p className="text-gray-500">No prerequisites selected yet.</p>
+              )}
+            </div>
+            {/* Divider */}
+            <div className="hidden md:block w-px bg-gray-300 mx-2" />
+            {/* Add/Filter Section */}
+            <div className="md:w-2/3">
+              <h4 className="text-md font-medium mb-2">Add a Course</h4>
+              <div className="border p-4 rounded-md shadow-sm mb-4">
+                <SectionFilter onFilterChange={setFilters} mode="large" />
+              </div>
+              {loading ? (
+                <p>Loading courses…</p>
+              ) : (
+                <>
+                  <SectionList
+                    sections={filteredSections}
+                    mode="instructorPrereqCourse"
+                    onSelectCourse={onSelectCourse}
+                    askForConfirmation
+                  />
+                  <div className="mt-4">
+                    <Pagination
+                      page={page}
+                      pageCount={pageData?.totalPages ?? 0}
+                      onPrev={() => setPage(p => Math.max(0,p-1))}
+                      onNext={() => setPage(p => Math.min((pageData?.totalPages ?? 1)-1, p+1))}
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </div>
-        )}
-
-        {/* Filter & list to add more */}
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Add a Course to Prerequisites</h3>
-          <div className="border p-4 rounded-md shadow-sm mb-4">
-            <SectionFilter onFilterChange={setFilters} mode="large" />
-          </div>
-          {loading ? (
-            <p>Loading courses…</p>
-          ) : (
-            <>
-              <SectionList
-                sections={filteredSections}
-                mode="instructorPrereqCourse"
-                onSelectCourse={onSelectCourse}
-                askForConfirmation
-              />
-              <div className="mt-4">
-                <Pagination
-                  page={page}
-                  pageCount={pageData?.totalPages ?? 0}
-                  onPrev={() => setPage(p => Math.max(0,p-1))}
-                  onNext={() => setPage(p => Math.min((pageData?.totalPages ?? 1)-1, p+1))}
-                />
-              </div>
-            </>
-          )}
         </div>
 
         {/* Submit */}
@@ -241,16 +253,16 @@ export default function InstructorAddNeedPage() {
             disabled={loading}
             onClick={(e) => {
               if (deadlinePassed) {
-                e.preventDefault(); // prevent form submission
+                e.preventDefault(); 
                 toast.error("The need update deadline has passed. You can no longer submit.");
               }
             }}
             className={`px-6 py-2 rounded ${deadlinePassed
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded"
+                : "bg-[#040941] hover:bg-blue-900 text-white font-medium py-2 px-6 rounded"
               }`}
           >
-            Save Need
+            Save TA Requirement(s)
           </button>
         </div>
       </form>

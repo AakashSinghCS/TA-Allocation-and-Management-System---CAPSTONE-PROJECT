@@ -17,6 +17,7 @@ import {
   CalendarDays,
   Award,
   ClipboardCheck,
+  FolderClock,
 } from 'lucide-react';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { UserRole } from '../../../interfaces/enum/UserRole';
@@ -65,11 +66,13 @@ export default function SideNav({expanded, setExpanded}:SideNavProps) {
     { label: 'Start Application', to: '/user/student/application', icon: <FileUser size={22} />, roles: [UserRole.STUDENT] },
     { label: 'View Applications', to: '/user/student/view-applications', icon: <GraduationCap size={22} />, roles: [UserRole.STUDENT] },
     { label: "Exam Availability", to: "/user/student/availability", icon: <BookOpen size={22} />, roles: [UserRole.STUDENT] },
-    // { label: 'Student Profile', to: `/user/taprofile/${userId}`, icon: <User size={22} />, roles: [UserRole.STUDENT] },
-    { label: 'Student Lab Skills', to: `/user/taprofile/${userId}/qualifications`, icon: <ShieldCheck size={22} />, roles: [UserRole.STUDENT] },
-    { label: 'Profile Questions', to: `/user/student/questions/${userId}`, icon: <FileQuestionMark size={22} />, roles: [UserRole.STUDENT] },
-    { label: 'Allocation History', to: `/user/taprofile/${userId}/allocationHistory`, icon: <FileQuestionMark size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Schedule', to: `/user/student/schedule`, icon: <CalendarDays size={22} />, roles: [UserRole.STUDENT] },
+    // { label: 'Student Profile', to: `/user/taprofile/${userId}`, icon: <User size={22} />, roles: [UserRole.STUDENT] },
+    { label: 'Allocation History', to: `/user/taprofile/${userId}/allocationHistory`, icon: <FolderClock size={22} />, roles: [UserRole.STUDENT] },
+    { label: 'Lab Skills', to: `/user/taprofile/${userId}/labSkills`, icon: <ClipboardCheck size={22} />, roles: [UserRole.STUDENT] },
+    { label: 'Profile Questions', to: `/user/student/questions/${userId}`, icon: <FileQuestionMark size={22} />, roles: [UserRole.STUDENT] },
+   
+    
     //Profile
     { label: 'Profile', to: `/user/profile/${userId}`, icon: <User size={22} />, roles: [UserRole.STUDENT,UserRole.INSTRUCTOR,UserRole.COORDINATOR] },
 

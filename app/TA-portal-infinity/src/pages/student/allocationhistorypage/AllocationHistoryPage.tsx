@@ -47,15 +47,15 @@ export default function AllocationHistoryPage() {
                                             </div>
                                             {isLoggedInUser && (
                                                 <Link to="/user/student/addallocation">
-                                                    <button className="bg-[#040941] hover:bg-blue-800 text-white font-semibold px-6 py-3 rounded-xl text-base shadow transition">
+                                                    <button className="bg-[#040941] hover:bg-blue-800 text-white font-semibold px-6 py-2 rounded-xl text-base shadow transition">
                                                         + Add Experience
                                                     </button>
                                                 </Link>
                                             )}
                                         </div>
-                                        <div className="bg-amber-100 border border-amber-200 rounded-xl p-5 mb-8 flex items-center gap-4">
-                                            <Info className="w-6 h-6 text-amber-500 flex-shrink-0" />
-                                            <div className="text-amber-900 text-base">
+                                        <div className="bg-amber-100 border border-amber-200 rounded-xl p-3 mb-6 flex items-center gap-2">
+                                            <Info className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                                            <div className="text-amber-900 text-sm">
                                                 <b>Important:</b> Please keep your TA experience up to date. All information you add here is visible to course coordinators and will be used to determine your eligibility for new TA allocations. Providing truthful and complete information ensures fair and efficient assignment of TA positions.
                                             </div>
                                         </div>
@@ -74,37 +74,37 @@ export default function AllocationHistoryPage() {
                                         </div>
                                     ) : (
                                         safeSecs.map((section: any, idx: number) => (
-                                            <div key={section.id || idx} className="bg-white border border-slate-200 rounded-xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:shadow transition">
-                                                <div className="flex items-center gap-4 flex-1">
-                                                    <div className="w-16 h-16 bg-[#040941] rounded-lg flex items-center justify-center">
-                                                        <span className="text-white text-2xl font-bold">{section.course?.deptCode?.charAt(0)}</span>
+                                            <div key={section.id || idx} className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3 hover:shadow transition">
+                                                <div className="flex items-center gap-3 flex-1">
+                                                    <div className="w-12 h-12 bg-[#040941] rounded-lg flex items-center justify-center">
+                                                        <span className="text-white text-lg font-bold">{section.course?.deptCode?.charAt(0)}</span>
                                                     </div>
                                                     <div>
                                                         <div className="flex items-center gap-2 mb-1">
-                                                            <span className="font-bold text-[#040941] text-lg md:text-xl">{section.course?.deptCode} {section.course?.courseNum}</span>
+                                                            <span className="font-bold text-[#040941] text-base md:text-lg">{section.course?.deptCode} {section.course?.courseNum}</span>
                                                         </div>
-                                                        <div className="text-slate-600 text-base mb-2">{section.course?.name}</div>
-                                                        <div className="flex items-center gap-2 text-slate-500 text-sm">
-                                                            <University className="w-4 h-4" />
+                                                        <div className="text-slate-600 text-sm mb-1">{section.course?.name}</div>
+                                                        <div className="flex items-center gap-2 text-slate-500 text-xs">
+                                                            <University className="w-3 h-3" />
                                                             Department: {section.course?.deptCode}
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center gap-2 flex-shrink-0">
-                                                    <span className="bg-slate-100 text-slate-700 rounded-full px-3 py-1 text-base">{section.year}</span>
-                                                    <span className="bg-blue-100 text-blue-900 rounded-full px-3 py-1 text-base font-semibold">{section.semester}</span>
+                                                <div className="flex items-center gap-1 flex-shrink-0">
+                                                    <span className="bg-slate-100 text-slate-700 rounded-full px-2 py-0.5 text-sm">{section.year}</span>
+                                                    <span className="bg-blue-100 text-blue-900 rounded-full px-2 py-0.5 text-sm font-semibold">{section.semester}</span>
                                                 </div>
                                                 {isLoggedInUser && (
-                                                    <div className="flex gap-2 ml-4">
+                                                    <div className="flex gap-1 ml-2">
                                                         <Link to="/user/student/addallocation">
-                                                            <button className="bg-[#040941] hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-lg transition flex items-center gap-2">
-                                                                <SquarePen className="w-4 h-4" />
+                                                            <button className="bg-[#040941] hover:bg-blue-500 text-white font-medium px-3 py-1.5 rounded-lg transition flex items-center gap-1 text-sm">
+                                                                <SquarePen className="w-3 h-3" />
                                                                 Edit
                                                             </button>
                                                         </Link>
                                                         <Link to="/user/student/addallocation">
-                                                            <button className="bg-red-900 hover:bg-red-600 text-white font-medium px-4 py-2 rounded-lg transition flex items-center gap-2">
-                                                                <Trash2 className="w-4 h-4" />
+                                                            <button className="bg-red-900 hover:bg-red-600 text-white font-medium px-3 py-1.5 rounded-lg transition flex items-center gap-1 text-sm">
+                                                                <Trash2 className="w-3 h-3" />
                                                                 Remove
                                                             </button>
                                                         </Link>

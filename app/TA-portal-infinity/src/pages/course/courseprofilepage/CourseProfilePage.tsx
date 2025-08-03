@@ -16,33 +16,32 @@ export default function CourseProfilePage() {
 
     if (!isCourse) {
         return (
-            <div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
-                    <div className="lg:col-span-1 max-h-[40vh]">
-                        <GenericAPIContainer<Section | null>
-                            fetchFunction={() => fetchSectionIncludeInstructorId(Number(sectionId))}
-                            render={section => <SectionProfileDetailsSection
-                                section={section}
-                                fields={sectionProfileFields}
-                                labels={sectionFieldLabels}
-                            />}
-                        />
-                    </div>
-                    <div className="lg:col-span-2 max-h-[40vh]"></div>
+            <div className="min-h-screen py-8">
+                <div className="max-w-7xl mx-auto px-4">
+                    <GenericAPIContainer<Section | null>
+                        fetchFunction={() => fetchSectionIncludeInstructorId(Number(sectionId))}
+                        render={section => <SectionProfileDetailsSection
+                            section={section}
+                            fields={sectionProfileFields}
+                            labels={sectionFieldLabels}
+                        />}
+                    />
                 </div>
             </div>
         );
     } else {
         return (
-            <div>
-                <GenericAPIContainer<Course | null>
-                    fetchFunction={() => fetchCourse(Number(courseId))}
-                    render={course => <CourseProfileDetails
-                        course={course}
-                        fields={courseProfileFields}
-                        labels={courseFieldLabels}
-                    />}
-                />
+            <div className="min-h-screen py-8">
+                <div className="max-w-7xl mx-auto px-4">
+                    <GenericAPIContainer<Course | null>
+                        fetchFunction={() => fetchCourse(Number(courseId))}
+                        render={course => <CourseProfileDetails
+                            course={course}
+                            fields={courseProfileFields}
+                            labels={courseFieldLabels}
+                        />}
+                    />
+                </div>
             </div>
         );
     }

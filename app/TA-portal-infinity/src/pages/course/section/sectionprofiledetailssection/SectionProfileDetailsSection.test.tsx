@@ -11,14 +11,44 @@ vi.mock("../../../../context/AuthContext", () => ({
   useAuth: () => ({ userRoles: ["COORDINATOR"] as const }),
 }));
 
-// 2. Create spies for all API functions
+// 2. Mock showToastConfirmation and toast functions
+vi.mock("../../../../utility/confirmation/toastConfirmation", () => ({
+  showToastConfirmation: vi.fn().mockResolvedValue(true),
+  showToastError: vi.fn(),
+  showToastSuccess: vi.fn(),
+}));
+
+vi.mock("react-toastify", () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+  ToastContainer: () => null,
+}));
+
+// Mock showToastSuccess and showToastError
+vi.mock("../../../../utility/toastutils/toastutils", () => ({
+  showToastSuccess: vi.fn(),
+  showToastError: vi.fn(),
+}));
+
+// Mock validation functions
+vi.mock("../../../../utility/validation/section/validateSectionProfile", () => ({
+  validateSectionProfile: vi.fn().mockReturnValue({
+    ok: true,
+    sanitized: {},
+    errors: []
+  }),
+}));
+
+// 3. Create spies for all API functions
 const mockFetchUpdateSched = vi.fn();
 const mockFetchAddSched    = vi.fn();
 const mockFetchSection     = vi.fn();
 const mockFetchUpdateDetails = vi.fn();
 const mockFetchDelete      = vi.fn();
 
-// 3. Mock each API module to forward args to our spies
+// 4. Mock each API module to forward args to our spies
 vi.mock("../../../../api/section/sectionschedule/fetchUpdateSectionSchedule", () => ({
   fetchUpdateSectionSchedule: (...args: any[]) =>
     mockFetchUpdateSched(...args),
@@ -38,7 +68,7 @@ vi.mock("../../../../api/section/fetchDeleteSection", () => ({
   fetchDeleteSection: (...args: any[]) => mockFetchDelete(...args),
 }));
 
-// 4. Mock useNavigate
+// 5. Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async (importOriginal) => {
   const actual = await importOriginal<typeof import("react-router-dom")>();
@@ -63,8 +93,6 @@ describe("SectionProfileDetailsSection", () => {
     mockFetchSection.mockResolvedValue(baseSection);
     // Delete resolves true
     mockFetchDelete.mockResolvedValue(true);
-    vi.spyOn(window, "confirm").mockReturnValue(true)
-    vi.spyOn(window, "prompt").mockReturnValue("DELETE")
   });
 
   it("toggles into edit mode when Edit Details is clicked", async () => {

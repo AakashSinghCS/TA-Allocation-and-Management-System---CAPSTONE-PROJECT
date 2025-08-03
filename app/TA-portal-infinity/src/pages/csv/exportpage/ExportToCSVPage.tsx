@@ -7,6 +7,7 @@ import { convertFilterSectionsToSections } from '../../../utility/convertfilters
 import { fetchExportSectionsAsCSV, fetchExportAllSectionsAsCSV, downloadCSVBlob } from '../../../api/csv/fetchExportSections';
 import type Section from '../../../interfaces/section/Section';
 import { useDebounce } from '../../../utility/pagination/useDebounce';
+import { toast } from 'react-toastify';
 import { useSectionSearchPage } from '../../../api/course/sectionfilter/useSectionFilter';
 
 export default function ExportToCSVPage() {
@@ -49,7 +50,7 @@ export default function ExportToCSVPage() {
 
   const handleExportToCSV = async () => {
     if (!selected.length) {
-      alert('Please select at least one section to export');
+      toast.warn('Please select at least one section to export');
       return;
     }
 
@@ -63,7 +64,7 @@ export default function ExportToCSVPage() {
       console.log('Exporting sections with IDs:', sectionIds);
 
       if (sectionIds.length === 0) {
-        alert('Selected sections do not have valid IDs');
+        toast.error('Selected sections do not have valid IDs');
         return;
       }
 
@@ -71,9 +72,9 @@ export default function ExportToCSVPage() {
 
       if (csvBlob) {
         downloadCSVBlob(csvBlob);
-        alert('CSV export completed successfully!');
+        toast.success('CSV export completed successfully!');
       } else {
-        alert('Export failed. Please try again.');
+        toast.error('Export failed. Please try again.');
       }
     } catch (err) {
       console.error('Export failed:', err);
@@ -91,9 +92,9 @@ export default function ExportToCSVPage() {
 
       if (csvBlob) {
         downloadCSVBlob(csvBlob);
-        alert('All sections exported successfully!');
+        toast.success('All sections exported successfully!');
       } else {
-        alert('Export failed. Please try again.');
+        toast.error('Export failed. Please try again.');
       }
     } catch (err) {
       console.error('Export all failed:', err);
@@ -117,34 +118,13 @@ export default function ExportToCSVPage() {
       </div>
 
       {/* Selection Summary */}
-      <div className="bg-blue-50 rounded-lg p-4 mb-6">
-        <div className="flex items-center justify-between">
+      <div className="bg-gray-100 rounded-lg p-4 mb-6">
+        <div className="flex items-center justify-between mb-2">
           <div>
-            <h3 className="font-semibold text-blue-900">Selected Sections</h3>
-            <p className="text-blue-700 text-sm">
+            <h3 className="font-semibold text-[#040941]">Selected Sections</h3>
+            <p className="text-blue-900 text-sm">
               {selected.length} of {sections.length} sections selected
             </p>
-            {selected.length > 0 && (
-              <div className="mt-2">
-                <p className="text-sm text-blue-600 mb-1">Selected:</p>
-                <div className="flex flex-wrap gap-2">
-                  {selected.map((section) => (
-                    <span
-                      key={section.id}
-                      className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
-                    >
-                      {section.course?.deptCode} {section.course?.courseNum} - {section.section}
-                      <button
-                        onClick={() => toggleSelect(section)}
-                        className="ml-1 text-blue-600 hover:text-blue-800"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
           <div className="flex space-x-2">
             <button
@@ -158,15 +138,57 @@ export default function ExportToCSVPage() {
             <button
               onClick={clearAll}
               disabled={selected.length === 0}
-              style={{ backgroundColor: '#97D4E9', color: '#040941' }}
+              style={{ backgroundColor: '#040941', color: 'white' }}
               className="px-3 py-1 rounded text-sm hover:opacity-90 disabled:bg-gray-400"
             >
               Clear Selection
             </button>
+          </div>
+        </div>
+        {selected.length > 0 && (
+          <div className="mt-2">
+            <p className="text-sm text-blue-800 mb-1">Selected:</p>
+            <div className="flex flex-wrap gap-2">
+              {selected.map((section) => (
+                <span
+                  key={section.id}
+                  className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                >
+                  {section.course?.deptCode} {section.course?.courseNum} - {section.section}
+                  <button
+                    onClick={() => toggleSelect(section)}
+                    className="ml-1 text-blue-800 hover:text-blue-600"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <p className="text-red-700">{error}</p>
+        </div>
+      )}
+
+      {/* Sections List */}
+      <div className="bg-white rounded-lg shadow-md">
+        <div className="p-4 border-b flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-semibold">Available Sections</h2>
+            <p className="text-sm text-gray-600 mt-1">
+              Click on sections to select them for export
+            </p>
+          </div>
+          <div className="flex space-x-2">
             <button
               onClick={handleExportToCSV}
               disabled={selected.length === 0 || isExporting}
-              style={{ backgroundColor: '#00A7E1', color: '#FFFFFF' }}
+              style={{ backgroundColor: '#040941', color: '#FFFFFF' }}
               className="px-4 py-1 rounded text-sm hover:opacity-90 disabled:bg-gray-400"
             >
               {isExporting ? 'Exporting...' : 'Export Selected'}
@@ -180,23 +202,6 @@ export default function ExportToCSVPage() {
               {isExporting ? 'Exporting...' : 'Export All Sections'}
             </button>
           </div>
-        </div>
-      </div>
-
-      {/* Error Message */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-          <p className="text-red-700">{error}</p>
-        </div>
-      )}
-
-      {/* Sections List */}
-      <div className="bg-white rounded-lg shadow-md">
-        <div className="p-4 border-b">
-          <h2 className="text-lg font-semibold">Available Sections</h2>
-          <p className="text-sm text-gray-600 mt-1">
-            Click on sections to select them for export
-          </p>
         </div>
         <div className="p-4">
           {loadingSections ? (

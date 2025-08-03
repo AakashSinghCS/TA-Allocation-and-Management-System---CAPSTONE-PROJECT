@@ -9,7 +9,14 @@ vi.mock("../../../../context/AuthContext", () => ({
   useAuth: () => ({ userRoles: ["COORDINATOR"] as const }),
 }));
 
-// 2. Mock API functions
+// 2. Mock toast functions
+vi.mock("../../../../utility/confirmation/toastConfirmation", () => ({
+  showToastConfirmation: vi.fn().mockResolvedValue(true),
+  showToastSuccess: vi.fn(),
+  showToastError: vi.fn(),
+}));
+
+// 3. Mock API functions
 const mockFetchCourse = vi.fn();
 const mockFetchUpdate = vi.fn();
 const mockFetchDelete = vi.fn();
@@ -24,7 +31,7 @@ vi.mock("../../../../api/course/fetchDeleteCourse", () => ({
     mockFetchDelete(...args),
 }));
 
-// 3. Mock useNavigate
+// 4. Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,

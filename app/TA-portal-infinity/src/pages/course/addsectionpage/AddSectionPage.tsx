@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CreateSectionForm, { type CreateSectionData } from '../../../components/features/course/createsectionform/CreateSectionForm';
 import { fetchCreateSection, type SectionAddDtoRequest } from '../../../api/section/fetchCreateSection';
@@ -8,11 +8,16 @@ import type { CourseProfile } from '../../../interfaces/course/Course';
 import { validateCourseProfile } from '../../../utility/validation/course/validateCourseProfile';
 import { validateSectionProfile } from '../../../utility/validation/section/validateSectionProfile';
 import type { SectionProfile } from '../../../interfaces/section/Section';
+import { Info } from 'lucide-react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Folder, BookOpen, BookOpenText } from 'lucide-react';
 
 export default function AddSectionPage() {
   const navigate = useNavigate();
   const [refreshSectionOptions, setRefreshSectionOptions] = useState<number>(0);
   const [sectionCreated, setSectionCreated] = useState(false);
+  const [activeTab, setActiveTab] = useState<'bulk' | 'course' | 'section'>('bulk');
   // const sectionCreatedTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleCreateSection = async (data: CreateSectionData, setSectionErrors?: (e: any) => void): Promise<boolean | void> => {
@@ -20,7 +25,7 @@ export default function AddSectionPage() {
     // For section creation, skip course name validation
     const { ok, sanitized, errors } = validateCourseProfile(courseProfile, { skipName: !data.isCourse });
     if (!ok) {
-      alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
+      toast.error(`Please fix the following:\n• ${errors.join("\n• ")}`);
       return;
     }
 
@@ -32,17 +37,16 @@ export default function AddSectionPage() {
       const success = await fetchCreateCourse(courseAddDtoRequest);
 
       if (success) {
-        alert("Course is created!");
+        toast.success("Course is created! You can proceed with section creation.");
         setRefreshSectionOptions((v) => v + 1); // trigger refresh for Section Creation form
-        navigate('/user/coordinator/sections', { replace: true });
       } else {
-        alert("Failed to create course. Are you sure it's not a duplicate?")
+        toast.error("Failed to create course. Are you sure it's not a duplicate?")
       }
     } else if (!data.isCourse) {
       const sectionProfile = extractSectionProfile(data);
       const { ok, sanitized: sanitizedSections, errors } = validateSectionProfile(sectionProfile);
       if (!ok) {
-        alert(`Please fix the following:\n• ${errors.join("\n• ")}`);
+        toast.error(`Please fix the following:\n• ${errors.join("\n• ")}`);
         return;
       }
       const sectionAddDtoRequest: SectionAddDtoRequest = {
@@ -55,6 +59,7 @@ export default function AddSectionPage() {
       const result = await fetchCreateSection(sectionAddDtoRequest);
       if (result && result.success) {
         setSectionCreated(true);
+        toast.success("Section created!");
         // --- Auto-dismiss logic (commented out for now, can be restored if needed) ---
         // if (sectionCreatedTimeout.current) clearTimeout(sectionCreatedTimeout.current);
         // sectionCreatedTimeout.current = setTimeout(() => setSectionCreated(false), 3000);
@@ -81,45 +86,98 @@ export default function AddSectionPage() {
         if (setSectionErrors && Object.keys(errorMap).length > 0) {
           setSectionErrors(errorMap);
         }
-        alert(msg);
+        toast.error(msg);
         return false;
       }
     }
   };
 
   return (
-    <div className="container ml-0 mr-auto p-2 w-full max-w-5xl z-10">
-      <h1 className="text-2xl font-bold mb-8">Course & Section Creation</h1>
-      
-      {/* If we want to force vertical stacking for all screen sizes, use: */}
-        {/* 
-          <div className="flex flex-col gap-8"> 
-        */}
-      {/* (This will stack Course Creation and Section Creation vertically on all devices.) */}
 
-
-      {/* flex-col md:flex-row: vertical on mobile, horizontal (side-by-side) on desktop */}
-      <div className="flex flex-col xl:grid xl:grid-cols-[420px_1fr] gap-8">
-        {/* Course Creation Area */}
-        <div className="bg-white shadow-lg p-6 rounded-2xl border border-blue-200">
-          <h2 className="text-xl font-semibold mb-2 text-blue-700">Course Creation</h2>
-          <p className="mb-4 text-gray-600 text-sm">Create a new course. This is for adding a new course to the system. If the course already exists, use the section creation form instead.</p>
-          <CreateSectionForm onCreateSection={handleCreateSection} mode="course" />
-        </div>
-        {/* Section Creation Area */}
-        <div className="bg-white shadow-lg p-6 rounded-2xl border border-green-200">
-          <h2 className="text-xl font-semibold mb-2 text-green-700">Section Creation</h2>
-          <p className="mb-4 text-gray-600 text-sm">Add a section to an existing course. Make sure the course already exists before adding a section.</p>
-          {sectionCreated && (
-            <div className="mb-4 text-green-700 bg-green-100 border border-green-300 rounded px-4 py-2 text-center transition-opacity duration-500">
-              Section created!
-            </div>
-          )}
-          <CreateSectionForm onCreateSection={handleCreateSection} mode="section" refreshOptions={refreshSectionOptions} />
+    <div className="max-w-7xl w-full mx-auto px-4 md:px-8 -mt-4 p-4 z-10">
+      <div className="flex justify-between items-stretch mb-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-[#040941]">Course & Section Management</h1>
+      </div>
+   
+      {/* Tab Navigation */}
+      <div className="mb-6">
+        <div className="border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8">
+            <button
+              onClick={() => setActiveTab('bulk')}
+              className={`py-2 px-4 border-b-2 font-medium text-sm ${
+                activeTab === 'bulk'
+                  ? 'border-[#040941] text-[#040941]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <Folder className="inline-block mr-1" size={16} />
+               Bulk Upload
+            </button>
+            <button
+              onClick={() => setActiveTab('course')}
+              className={`py-2 px-4 border-b-2 font-medium text-sm ${
+                activeTab === 'course'
+                  ? 'border-[#040941] text-[#040941]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <BookOpen className="inline-block mr-1" size={16} />
+               Create Course
+            </button>
+            <button
+              onClick={() => setActiveTab('section')}
+              className={`py-2 px-4 border-b-2 font-medium text-sm ${
+                activeTab === 'section'
+                  ? 'border-[#040941] text-[#040941]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <BookOpenText className="inline-block mr-1" size={16} />
+               Create Section
+            </button>
+          </nav>
         </div>
       </div>
-      <div className="mt-10 w-full max-w-none">
-        <SectionCsvImportInline />
+
+      {/* Tab Content */}
+      <div className="bg-white shadow-lg p-6 rounded-2xl border border-gray-200">
+        {activeTab === 'bulk' && (
+          <>
+            <h2 className="text-xl font-semibold mb-3 text-[#040941]">Bulk Upload Sections</h2>
+            <div className="mb-4 flex items-start gap-3 bg-amber-50 border border-amber-300 rounded px-3 py-3 text-amber-900">
+              <Info className="w-5 h-5 mt-0.5 flex-shrink-0" />
+              <span className="text-sm">Upload multiple sections at once using a CSV file. This is the fastest way to create multiple sections.</span>
+            </div>
+            <SectionCsvImportInline />
+          </>
+        )}
+
+
+        {activeTab === 'course' && (
+          <>
+            <h2 className="text-xl font-semibold mb-3 text-[#040941]">Course Creation</h2>
+            <div className="mb-4 flex items-start gap-3 bg-amber-50 border border-amber-300 rounded px-3 py-3 text-amber-900">
+              <Info className="w-5 h-5 mt-0.5 flex-shrink-0" />
+              <span className="text-sm">Create a new course for the system. If the course already exists, use the section creation tab instead.</span>
+            </div>
+            <CreateSectionForm onCreateSection={handleCreateSection} mode="course" />
+          </>
+        )}
+
+        {activeTab === 'section' && (
+          <>
+            <h2 className="text-xl font-semibold mb-3 text-[#040941]">Section Creation</h2>
+            <div className="mb-4 flex items-start gap-3 bg-amber-50 border border-amber-300 rounded px-3 py-3 text-amber-900">
+              <Info className="w-5 h-5 mt-0.5 flex-shrink-0" />
+              <span className="text-sm">Add a section to an existing course. Make sure the course already exists before adding a section.</span>
+            </div>
+            {sectionCreated && (
+              <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick pauseOnHover />
+            )}
+            <CreateSectionForm onCreateSection={handleCreateSection} mode="section" refreshOptions={refreshSectionOptions} />
+          </>
+        )}
       </div>
     </div>
   );

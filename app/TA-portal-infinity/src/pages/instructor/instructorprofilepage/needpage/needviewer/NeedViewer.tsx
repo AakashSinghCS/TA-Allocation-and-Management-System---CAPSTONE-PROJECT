@@ -17,6 +17,7 @@ import { PiGraduationCapFill } from "react-icons/pi";
 import { toast } from 'react-toastify';
 import type { Allocation } from "../../../../../interfaces/allocation/Allocation";
 import { fetchAllocationById } from "../../../../../api/allocation/fetchAllocationById";
+import { BookOpenText } from 'lucide-react';
 
 interface NeedViewerProps {
   instructorId: number;
@@ -122,7 +123,6 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
       ) ?? [];
 
       setSections(sectionsWithNeeds);
-      toast.success("Search completed successfully");
     } catch (error) {
       console.error("Failed to search sections:", error);
       toast.error("Failed to search sections");
@@ -174,21 +174,9 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
       {/* Filter Section */}
       <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Filter Sections</h3>
-          {isInstructor && (
-            <Link
-              to="/user/instructor/addsection"
-              className="inline-flex items-center px-4 py-2 bg-[#040941] text-white rounded-md 
-                hover:bg-[#030735] transition-colors font-medium text-sm"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
-              </svg>
-              Add Section
-            </Link>
-          )}
-        </div>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900">Filter Sections</h3>
+      </div>
         
         {/* Filter Controls */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -276,11 +264,9 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
       {/* Content Section */}
       <div className="space-y-4">
         {sections.length === 0 && (
-          <div className="text-center py-16 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="text-center py-16 rounded-lg">
             <div className="w-12 h-12 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg>
+              <BookOpenText className="w-8 h-8 text-gray-400" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No sections found</h3>
             <p className="text-gray-500">Try adjusting your filter criteria or add a new section.</p>

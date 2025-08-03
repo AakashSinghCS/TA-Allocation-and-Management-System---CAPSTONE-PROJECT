@@ -6,6 +6,7 @@ import AuditFilters from '../auditfilters/AuditFilters';
 import AuditDetailModal from '../auditdetailmodal/AuditDetailModal';
 import { ToastContainer, toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import { MousePointerClick } from 'lucide-react';
 
 export default function AuditLogsPage() {
   const [page, setPage] = useState(0);
@@ -34,8 +35,11 @@ export default function AuditLogsPage() {
     refetch();
   };
 
+  const hasAnyFilter = Boolean(
+    serviceFilter || entityFilter || entityIdFilter || actionFilter || actorIdFilter || whenFilter
+  );
   return (
-    <div className="p-6 space-y-6">
+    <div className="container mx-auto p-4 z-10 space-y-6 -mt-6 max-w-7xl">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -45,10 +49,9 @@ export default function AuditLogsPage() {
         pauseOnHover
       />
       <div className="flex items-end w-full">
-        <h1 className="text-2xl font-semibold">Audit Logs</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-[#040941]">Audit Logs</h1>
         <a href="http://localhost:3000" target="_blank" rel="noopener"  
-          className=" ml-auto inline-flex items-center justify-center px-3 py-1 
-             hover:text-[#0089b2] bg-[#00c89c] text-white rounded hover:bg-[#c7fcec] transition">
+          className="ml-auto inline-flex items-center justify-center px-3 py-1 bg-[#040941] text-white rounded hover:bg-[#c7fcec] hover:text-[#040941] transition">
           Open Grafana
         </a>
       </div>
@@ -68,21 +71,31 @@ export default function AuditLogsPage() {
         onApply={handleApply}
       />
 
-      <AuditTable
-        events={data?.content || []}
-        loading={isLoading}
-        onSelect={setSelectedId}
-      />
-
-      <Pagination
-        page={page}
-        pageCount={data?.totalPages || 0}
-        onPrev={() => setPage(p => Math.max(0, p - 1))}
-        onNext={() =>
-          setPage(p => Math.min((data?.totalPages || 1) - 1, p + 1))
-        }
-      />
-
+      {!hasAnyFilter ? (
+        <div className="flex flex-col items-center justify-center py-12">
+          {/* You can use any icon here, e.g. Lucide's FileText or ClipboardList */}
+          <MousePointerClick className="w-20 h-20 text-gray-200 mb-4" />
+          <p className="text-xl text-gray-300 text-center font-medium max-w-xl">
+            Please select a filter to view audit logs.
+          </p>
+        </div>
+      ) : (
+        <>
+          <AuditTable
+            events={data?.content || []}
+            loading={isLoading}
+            onSelect={setSelectedId}
+          />
+          <Pagination
+            page={page}
+            pageCount={data?.totalPages || 0}
+            onPrev={() => setPage(p => Math.max(0, p - 1))}
+            onNext={() =>
+              setPage(p => Math.min((data?.totalPages || 1) - 1, p + 1))
+            }
+          />
+        </>
+      )}
       <AuditDetailModal id={selectedId} onClose={() => setSelectedId(null)} serviceFilter={serviceFilter}/>
     </div>
   );

@@ -238,19 +238,19 @@ useEffect(() => {
               <div className="flex flex-col gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Year</label>
-                  <input type="text" value={year} onChange={e => setYear(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. 2025" />
+                  <input type="text" value={year} onChange={e => setYear(e.target.value)} className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. 2025" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Semester</label>
-                  <input type="text" value={semester} onChange={e => setSemester(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. Winter" />
+                  <input type="text" value={semester} onChange={e => setSemester(e.target.value)} className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. Winter" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Preference Contains</label>
-                  <input type="text" value={prefContains} onChange={e => setPrefContains(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. COSC" />
+                  <input type="text" value={prefContains} onChange={e => setPrefContains(e.target.value)} className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none" placeholder="e.g. COSC" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Remote Preference</label>
-                  <select value={remotePref} onChange={e => setRemotePref(e.target.value)} className="w-full border border-gray-300 rounded-lg px-2 py-0 text-xs focus:ring-2 focus:ring-[#040941] focus:outline-none">
+                  <select value={remotePref} onChange={e => setRemotePref(e.target.value)} className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-2 focus:ring-[#040941] focus:outline-none">
                     <option value="">Any</option>
                     <option value="true">Yes</option>
                     <option value="false">No</option>

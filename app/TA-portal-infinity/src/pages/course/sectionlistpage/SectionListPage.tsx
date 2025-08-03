@@ -106,27 +106,28 @@ const handleFilterChange = useCallback((f: FilterSectionsProps) => {
     <div className="container mx-auto p-4 z-10">
       <>
         <div className="flex justify-between items-stretch mb-4">
-        <h1 className="text-xl font-semibold">Search for a Section or Course</h1>
-        <div className="flex gap-2">
+        <h1 className="text-2xl md:text-3xl font-bold text-[#040941]">Search for a Section or Course</h1>
+         <div className="flex gap-2">
           <Link
             to="/user/coordinator/sections/add"
-            className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] hover:text-[#0089b2] hover:text-[#0089b2] transition-colors"
+            className="flex items-center justify-center bg-[#005f73] text-white px-3 py-2 rounded text-sm font-normal hover:bg-[#00a38d] transition-colors"
           >
-            Add New Section or Course
+            Add Section/Course
           </Link>
           <Link
             to="/user/coordinator/sections/export"
-            className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#363a7a] transition-colors"
+            className="flex items-center justify-center bg-[#040941] text-white px-3 py-2 rounded text-sm font-normal hover:bg-[#363a7a] transition-colors"
           >
-            Export to CSV
+            Export CSV
           </Link>
           <button
             onClick={() => setShowCsvImport(true)}
-            className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition-colors"
+            className="flex items-center justify-center bg-[#2e2e38] text-white px-3 py-2 rounded text-sm font-normal hover:bg-[#dce2ec] transition-colors"
           >
-            Import Sections from CSV
+            Import CSV
           </button>
         </div>
+
       </div>
         <div className="shadow-lg p-4 rounded-2xl  mb-4 ">
           <SectionFilter
@@ -180,7 +181,7 @@ const handleFilterChange = useCallback((f: FilterSectionsProps) => {
                 onChange={handleCsvUpload}
               />
               <p className="mt-2 text-sm text-red-600">
-                ⚠️ Please ensure Excel does not automatically remove leading zeroes (e.g. <code>001</code> may become <code>1</code>).
+                 Please ensure Excel does not automatically remove leading zeroes (e.g. <code>001</code> may become <code>1</code>).
                 This can cause the import to fail.
               </p>
 
@@ -238,18 +239,18 @@ function allocationsChangeErrorMsg(err: any): string {
   if (errorText.includes('User with student number')) {
     const match = errorText.match(/User with student number (\d+) not found/);
     const studentNum = match ? match[1] : 'unknown';
-    friendlyMessage = `❌ Failed to import allocations: Student with student number ${studentNum} not found. Please verify student details or add a new student.`;
+    friendlyMessage = ` Failed to import allocations: Student with student number ${studentNum} not found. Please verify student details or add a new student.`;
   } else if (errorText.includes('Course not found:')) {
     const match = errorText.match(/Course not found:([A-Z]+ \d+)/);
     const courseInfo = match ? match[1] : 'unknown';
-    friendlyMessage = `❌ Failed to import allocations: Course ${courseInfo} not found. Please create a new course.`;
+    friendlyMessage = ` Failed to import allocations: Course ${courseInfo} not found. Please create a new course.`;
   } else if (errorText.includes('Section') && errorText.includes('not found for Course')) {
     const match = errorText.match(/Section (\S+) (\d{4}) (\S+) not found for Course ([A-Z]+) (\d+)/);
     if (match) {
       const [, sectionName, year, semester, deptCode, courseNum] = match;
-      friendlyMessage = `❌ Failed to import allocations: Section ${sectionName} ${semester} ${year} not found for course ${deptCode} ${courseNum}. Please add a new section to the course.`;
+      friendlyMessage = ` Failed to import allocations: Section ${sectionName} ${semester} ${year} not found for course ${deptCode} ${courseNum}. Please add a new section to the course.`;
     } else {
-      friendlyMessage = `❌ Failed to import allocations: Section not found. Please add a new section to the course.`;
+      friendlyMessage = ` Failed to import allocations: Section not found. Please add a new section to the course.`;
     }
   }
   return friendlyMessage;

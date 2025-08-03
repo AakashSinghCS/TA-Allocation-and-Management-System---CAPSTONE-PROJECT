@@ -97,6 +97,9 @@ describe('AuditLogsPage', () => {
   it('renders table and pagination with initial state', () => {
     render(<AuditLogsPage />);
 
+    // Apply filters to show the table
+    fireEvent.click(screen.getByTestId('apply-filters'));
+
     // Table should show one row
     expect(screen.getByTestId('audit-table')).toHaveTextContent('rows:1');
 
@@ -106,6 +109,10 @@ describe('AuditLogsPage', () => {
 
   it('increments page on Next click', () => {
     render(<AuditLogsPage />);
+    
+    // Apply filters to show the table
+    fireEvent.click(screen.getByTestId('apply-filters'));
+    
     fireEvent.click(screen.getByTestId('next'));
 
     // Now page should be 1
@@ -115,15 +122,18 @@ describe('AuditLogsPage', () => {
   it('calls refetch and resets to page 0 on Apply filters', async () => {
     render(<AuditLogsPage />);
 
+    // Apply filters to show the table initially
+    fireEvent.click(screen.getByTestId('apply-filters'));
+
     // move to page 1 so we can see reset
     fireEvent.click(screen.getByTestId('next'));
     expect(screen.getByTestId('pagination')).toHaveTextContent('page:1');
 
-    // click the Apply button
+    // click the Apply button again
     fireEvent.click(screen.getByTestId('apply-filters'));
 
-    // refetch should be called once
-    expect(mockRefetch).toHaveBeenCalledTimes(1);
+    // refetch should be called once more (was called once already)
+    expect(mockRefetch).toHaveBeenCalledTimes(2);
 
     // page should reset back to 0
     await waitFor(() =>
@@ -133,6 +143,9 @@ describe('AuditLogsPage', () => {
 
   it('opens detail modal when a row is selected and closes it', () => {
     render(<AuditLogsPage />);
+
+    // Apply filters to show the table
+    fireEvent.click(screen.getByTestId('apply-filters'));
 
     // no modal initially
     expect(screen.queryByTestId('detail-modal')).toBeNull();
