@@ -7,6 +7,7 @@ import UserBrowsingViewer from '../../../../pages/coordinator/userbrowsingpage/u
 import type { Instructor } from '../../../../interfaces/user/Instructor';
 import { timeOptions } from '../../../ui/section/timeselector/TimeSelector';
 import { fetchAllExistingCourseNums } from '../../../../api/course/sectionfilter/fetchAllExistingCourseNums';
+import { Info } from 'lucide-react';
 export interface SectionScheduleInput {
   day: string
   startTime: string
@@ -201,7 +202,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
   const disabled = form.isCourse
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-3">
       {mode === undefined && (
         <label className="inline-flex items-center gap-2">
           <input
@@ -231,12 +232,10 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
 
       {/* Show required info for Section Creation (no Course Name field) */}
       {mode === 'section' && (
-        <div className="mb-2 text-sm text-gray-500">
-          Dept Code, Course Num, Section Code, Year, Semester, and Section Type are required fields for section creation.<br />
-          <span className="text-gray-400">
-            You can create the section without entering Instructor ID or Section Schedules. These fields are optional and can be edited later.<br />
-          </span>
-        </div>
+         <div className="mb-3 flex items-start gap-2 bg-yellow-50 border border-yellow-300 rounded px-2 py-2 text-yellow-900">
+            <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <span className="text-xs">Some fields are optional and can be edited later.</span>
+          </div>
       )}
 
       {/* Dept Code (first) */}
@@ -252,7 +251,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
               handleChange('deptCode', e.target.value);
               if (sectionErrors.deptCode) setSectionErrors(errors => ({ ...errors, deptCode: undefined }));
             }}
-            className={`w-full border rounded px-2 py-1${sectionErrors.deptCode ? ' border-red-500' : ''}`}
+            className={`w-full border rounded px-2 py-1 text-sm${sectionErrors.deptCode ? ' border-red-500' : ''}`}
           >
             <option value="">-- Select Dept Code --</option>
             {deptCodeOptions.map(code => (
@@ -267,7 +266,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
               handleChange('deptCode', e.target.value);
               if (courseErrors.deptCode) setCourseErrors(errors => ({ ...errors, deptCode: undefined }));
             }}
-            className={`w-full border rounded px-2 py-1${courseErrors.deptCode ? ' border-red-500' : ''}`}
+            className={`w-full border rounded px-2 py-1 text-sm${courseErrors.deptCode ? ' border-red-500' : ''}`}
             placeholder=" e.g. COSC"
           />
         )}
@@ -291,7 +290,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
               handleChange('courseNum', e.target.value);
               if (sectionErrors.courseNum) setSectionErrors(errors => ({ ...errors, courseNum: undefined }));
             }}
-            className={`w-full border rounded px-2 py-1${sectionErrors.courseNum ? ' border-red-500' : ''}`}
+            className={`w-full border rounded px-2 py-1 text-sm${sectionErrors.courseNum ? ' border-red-500' : ''}`}
             disabled={!form.deptCode}
           >
             {!form.deptCode ? (
@@ -313,7 +312,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
               handleChange('courseNum', e.target.value);
               if (courseErrors.courseNum) setCourseErrors(errors => ({ ...errors, courseNum: undefined }));
             }}
-            className={`w-full border rounded px-2 py-1${courseErrors.courseNum ? ' border-red-500' : ''}`}
+            className={`w-full border rounded px-2 py-1 text-sm${courseErrors.courseNum ? ' border-red-500' : ''}`}
             placeholder='e.g. 499'
           />
         )}
@@ -335,7 +334,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
               handleChange('name', e.target.value);
               if (courseErrors.name) setCourseErrors(errors => ({ ...errors, name: undefined }));
             }}
-            className={`w-full border rounded px-2 py-1${courseErrors.name ? ' border-red-500' : ''}`}
+            className={`w-full border rounded px-2 py-1 text-sm${courseErrors.name ? ' border-red-500' : ''}`}
             placeholder='e.g. Introduction to Computer Science'
           />
           {courseErrors.name && (
@@ -346,7 +345,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
 
       {/* Only show section-related fields in section mode or when mode is undefined (legacy) */}
       {(mode === 'section' || mode === undefined) && (
-        <fieldset disabled={disabled} className="space-y-4">
+        <fieldset disabled={disabled} className="space-y-3">
           <div>
             <label htmlFor='sectionCode' className="text-sm block mb-1">Section Code <span className="text-red-500">*</span></label>
             <input
@@ -355,7 +354,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
               onChange={e => 
                 handleChange('section', e.target.value)
               }
-              className={`w-full border rounded px-2 py-1${sectionErrors.section ? ' border-red-500' : ''} disabled:bg-gray-100 disabled:cursor-not-allowed`}
+              className={`w-full border rounded px-2 py-1 text-sm${sectionErrors.section ? ' border-red-500' : ''} disabled:bg-gray-100 disabled:cursor-not-allowed`}
               placeholder="e.g. L01 or 001"
             />
             {sectionErrors.section && (
@@ -376,7 +375,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
                     : null
                 )
               }
-              className={`w-full border rounded px-2 py-1${sectionErrors.year ? ' border-red-500' : ''} disabled:bg-gray-100 disabled:cursor-not-allowed`}
+              className={`w-full border rounded px-2 py-1 text-sm${sectionErrors.year ? ' border-red-500' : ''} disabled:bg-gray-100 disabled:cursor-not-allowed`}
               placeholder="e.g. 2025"
             />
             {sectionErrors.year && (
@@ -391,7 +390,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
               onChange={e =>  
                 handleChange('semester', e.target.value)
               }
-              className={`w-full border rounded px-2 py-1${sectionErrors.semester ? ' border-red-500' : ''} disabled:bg-gray-100 disabled:cursor-not-allowed`}
+              className={`w-full border rounded px-2 py-1 text-sm${sectionErrors.semester ? ' border-red-500' : ''} disabled:bg-gray-100 disabled:cursor-not-allowed`}
             >
               <option value="">Select…</option>
               <option value="W1">W1</option>
@@ -413,7 +412,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
                 handleChange("type", val === "" ? null : val as SectionType);
               }
               }
-              className={`w-full border rounded px-2 py-1${sectionErrors.type ? ' border-red-500' : ''} disabled:bg-gray-100 disabled:cursor-not-allowed`}
+              className={`w-full border rounded px-2 py-1 text-sm${sectionErrors.type ? ' border-red-500' : ''} disabled:bg-gray-100 disabled:cursor-not-allowed`}
             >
               <option value="">Select…</option>
               {sectionTypeOptions.map(t => (
@@ -443,34 +442,35 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
               </div>
             ) : (
               <div className="w-full max-w-full min-w-0">
-                <p className="text-sm text-gray-400">Search for an Instructor and click on SELECT in the far right column. Don't select any Instructor, if you wish not to change instructors.</p>
-                <UserBrowsingViewer
-                  mode="select"
-                  onSelect={u => setSelectedInstructor(u)}
-                  allowedRoles={["Instructor"]}
-                  askForConfirmation={true}
-                />
-                <div className="h-4" />
+                <p className="text-xs text-gray-400 mb-2">Search for an Instructor and click SELECT. Leave empty if not needed.</p>
+                <div className="max-h-64 overflow-y-auto">
+                  <UserBrowsingViewer
+                    mode="select"
+                    onSelect={u => setSelectedInstructor(u)}
+                    allowedRoles={["Instructor"]}
+                    askForConfirmation={true}
+                  />
+                </div>
               </div>
             )}
           </div>
 
           {/* schedules */}
           <div className="space-y-2">
-            <h3 className="font-medium">Section Schedules</h3>
+            <h3 className="font-medium text-sm">Section Schedules</h3>
             {form.sectionSchedules && form.sectionSchedules.map((sched, i) => (
               <div
                 key={i}
-                className="grid grid-cols-4 gap-2 items-end "
+                className="grid grid-cols-4 gap-1 items-end text-sm"
               >
                 <div>
-                  <label className="text-sm block mb-1">Day</label>
+                  <label className="text-xs block mb-1">Day</label>
                   <select
                     value={sched.day}
                     onChange={e =>  
                       updateSchedule(i, { day: e.target.value })
                     }
-                    className="w-full border rounded px-2 py-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full border rounded px-1 py-1 text-xs disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     <option value="">—</option>
                     {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(
@@ -483,7 +483,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm block mb-1">Start</label>
+                  <label className="text-xs block mb-1">Start</label>
                   <select
                     value={sched.startTime}
                     onChange={e =>  
@@ -491,7 +491,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
                         startTime: e.target.value
                       })
                     }
-                    className="w-full border rounded px-2 py-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full border rounded px-1 py-1 text-xs disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     <option value="">—</option>
                     {timeOptions.map(t => (
@@ -502,13 +502,13 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm block mb-1">End</label>
+                  <label className="text-xs block mb-1">End</label>
                   <select
                     value={sched.endTime}
                     onChange={e =>   
                       updateSchedule(i, { endTime: e.target.value })
                     }
-                    className="w-full border rounded px-2 py-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full border rounded px-1 py-1 text-xs disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     <option value="">—</option>
                     {timeOptions.map(t => (
@@ -521,7 +521,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
                 <button
                   type="button"
                   onClick={() => removeSchedule(i)}
-                  className="text-red-600 hover:text-red-100"
+                  className="text-red-600 hover:text-red-100 text-xs"
                 >
                   Remove
                 </button>
@@ -530,7 +530,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
             <button
               type="button"
               onClick={addSchedule}
-              className="text-[#040941] hover:text-[#040491]"
+              className="text-[#040941] hover:text-[#040491] text-sm"
             >
               + Add a Schedule
             </button>
@@ -538,17 +538,17 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
         </fieldset>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex gap-2 pt-2">
         <button
           type="submit"
-          className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-[#232a5c] transition-colors flex-1"
+          className="bg-[#040941] text-white px-3 py-1.5 rounded hover:bg-[#232a5c] transition-colors flex-1 text-sm"
         >
           {mode === 'course' ? 'Create Course' : mode === 'section' ? 'Create Section' : 'Create Section'}
         </button>
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="bg-transparent hover:bg-red-100 transition-colors px-4 py-1 rounded flex-1"
+          className="bg-gray-200 hover:bg-red-100 transition-colors px-3 py-1.5 rounded flex-1 text-sm"
         >
           Cancel
         </button>

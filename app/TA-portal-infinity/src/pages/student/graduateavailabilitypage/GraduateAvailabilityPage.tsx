@@ -151,7 +151,7 @@ const GraduateAvailabilityPage = () => {
                 toast.error("Please click the reset button if you want to update your availability.");
               }
             }}
-            className="px-6 py-3 bg-[#040941] hover:bg-blue-800 text-white font-semibold rounded-xl text-base shadow transition"
+            className="px-6 py-2 bg-[#040941] hover:bg-blue-800 text-white font-semibold rounded-xl text-base shadow transition"
           >
             Submit Availability
           </button>

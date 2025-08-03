@@ -1,5 +1,5 @@
 // src/components/section/edtionsectionprofilesection/EditSectionProfileSection.test.tsx
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { SectionProfile } from "../../../../interfaces/section/Section";
 import { sectionFieldLabels, sectionProfileFields } from "../../../../interfaces/section/Section";
@@ -82,19 +82,27 @@ describe("EditSectionProfileSection", () => {
 
     // select an instructor
     fireEvent.click(screen.getByText("SelectInstructor"));
-    // verify instructor shown
-    expect(screen.getByText("Jane Doe")).toBeInTheDocument();
+    // wait for instructor to be selected and displayed
+    await waitFor(() => {
+      expect(screen.getByText("Jane Doe")).toBeInTheDocument();
+    });
+
+    // Verify button text before clicking (handle both states)
+    const saveButton = screen.getByRole("button", { name: /Save Changes|Saving\.\.\./i });
+    expect(saveButton).toBeInTheDocument();
 
     // submit form
-    fireEvent.click(screen.getByRole("button", { name: /^Save$/i }));
+    fireEvent.click(saveButton);
 
     // onSave should be called with updated payload
-    expect(onSave).toHaveBeenCalledWith({
-      semester: "S2",
-      type: newType,
-      year:"2024",
-      instructorId: 9,
-      section: undefined
+    await waitFor(() => {
+      expect(onSave).toHaveBeenCalledWith({
+        semester: "S2",
+        type: newType,
+        year:"2024",
+        instructorId: 9,
+        section: undefined
+      });
     });
   });
 

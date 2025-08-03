@@ -305,7 +305,7 @@ const ExistingTermsTable: React.FC<ExistingTermsTableProps> = ({
                         </button>
                         <button
                           onClick={() => handleDeleteSemester(semester)}
-                          className="bg-red-600 text-white px-2 py-1 rounded hover:opacity-90 text-xs font-semibold"
+                          className="bg-red-800 text-white px-2 py-1 rounded hover:opacity-90 text-xs font-semibold"
                         >
                           Delete
                         </button>

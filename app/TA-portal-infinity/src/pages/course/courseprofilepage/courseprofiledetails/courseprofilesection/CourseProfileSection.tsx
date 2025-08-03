@@ -27,8 +27,8 @@ export default function CourseProfileSection({
 
   return (
     <>
-      <section className={`bg-white border border-slate-200 rounded-2xl shadow-sm p-4 ${className}`}>
-          <h1 className="text-xl font-bold mb-4 break-words">
+      <section className={`w-full ${className} px-4 pt-4 pb-8`}>
+          <h1 className="text-2xl font-bold mb-8 -mt-6 text-[#040941] break-words">
             {dto.deptCode} {dto.courseNum}{' '}
             — {dto.name}
           </h1>
@@ -37,10 +37,10 @@ export default function CourseProfileSection({
             <div
               key={label}
               data-testid={`profile-row-${label}`}
-              className={`test-md flex items-center rounded-lg bg-slate-50 px-3 py-1 text-slate-900`}
+              className="flex items-start py-3 px-4 bg-slate-50 rounded-lg mb-3"
             >
-              <span className="font-medium text-slate-700 break-words">{label}:</span>
-              <span className="ml-2 break-words">{value}</span>
+              <span className="font-semibold text-slate-700 break-words min-w-32 mr-4">{label}:</span>
+              <span className="break-words flex-1">{value}</span>
             </div>
           ))}
         </div>

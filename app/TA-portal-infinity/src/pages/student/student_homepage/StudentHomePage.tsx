@@ -177,24 +177,24 @@ export default function StudentHomePage() {
         {/* Dashboard Summary Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-2xl border-t-4 border-[#040941] px-3 py-2 flex items-center gap-3 min-h-[60px]">
-            <FileText className="w-7 h-7 text-[#040941] mr-2" />
+            <FileText className="w-6 h-6 text-[#040941] mr-2" />
             <div>
-              <div className="text-sm md:text-base text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Total Applications</div>
-              <div className="text-xl md:text-2xl font-bold text-[#040941]">{applications.length}</div>
+              <div className="text-xs md:text-sm text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Total Applications</div>
+              <div className="text-lg md:text-xl font-bold text-[#040941]">{applications.length}</div>
             </div>
           </div>
           <div className="bg-white rounded-2xl border-t-4 border-[#040941] px-3 py-2 flex items-center gap-3 min-h-[60px]">
-            <CheckCircle className="w-7 h-7 text-[#040941] mr-2" />
+            <CheckCircle className="w-6 h-6 text-[#040941] mr-2" />
             <div>
-              <div className="text-sm md:text-base text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Offers Confirmed</div>
-              <div className="text-xl md:text-2xl font-bold text-[#040941]">{applications.filter(a => a.allocation?.status==='CONFIRMED').length}</div>
+              <div className="text-xs md:text-sm text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Offers Confirmed</div>
+              <div className="text-lg md:text-xl font-bold text-[#040941]">{applications.filter(a => a.allocation?.status==='CONFIRMED').length}</div>
             </div>
           </div>
           <div className="bg-white rounded-2xl border-t-4 border-[#040941] px-3 py-2 flex items-center gap-3 min-h-[60px]">
-            <XCircle className="w-7 h-7 text-[#040941] mr-2" />
+            <XCircle className="w-6 h-6 text-[#040941] mr-2" />
             <div>
-              <div className="text-sm md:text-base text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Offers Rejected</div>
-              <div className="text-xl md:text-2xl font-bold text-[#040941]">{applications.filter(a => a.allocation?.status==='REJECTED').length}</div>
+              <div className="text-xs md:text-sm text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Offers Rejected</div>
+              <div className="text-lg md:text-xl font-bold text-[#040941]">{applications.filter(a => a.allocation?.status==='REJECTED').length}</div>
             </div>
           </div>
         </div>

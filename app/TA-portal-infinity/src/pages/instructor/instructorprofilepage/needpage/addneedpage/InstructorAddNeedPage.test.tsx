@@ -143,7 +143,7 @@ it('loads section, filters courses, selects prereq and submits', async () => {
     target: { value: '5' },
   });
 
-  fireEvent.click(screen.getByRole('button', { name: /Save Need/i }));
+  fireEvent.click(screen.getByRole('button', { name: /Save TA Requirement/i }));
 
   await waitFor(() => {
     expect(mockFetchAddNeed).toHaveBeenCalled();

@@ -123,7 +123,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                       <button
                         type="button"
                         onClick={() => handleDeleteCourse(courseId)}
-                        className=" cursor-pointer text-red-600 hover:text-red-300 text-sm whitespace-nowrap"
+                        className=" cursor-pointer text-red-800 hover:text-red-300 text-sm whitespace-nowrap"
                       >
                         Delete Course
                       </button>
@@ -165,7 +165,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                 const sid = sec?.id;
                 const isSelected = selectedSections.some(s => s.id === sid);
                 return (
-                  <tr key={`${sid}-${times}`} className={isSelected ? "bg-blue-100" : undefined}>
+                  <tr key={`${sid}-${times}`} className={isSelected ? "bg-slate-700 text-white" : undefined}>
                     <td className="border border-gray-300 px-3 py-2 truncate">
                       {sec.course?.deptCode} {sec.course?.courseNum} - {sec.course?.name}
                     </td>
@@ -217,7 +217,7 @@ export default function SectionList({ sections, onDeleted, onSelect, onSelectCou
                               <button
                                 type="button"
                                 onClick={() => handleDeleteSection(sid)}
-                                className="text-red-600 hover:text-red-300 text-sm "
+                                className="text-red-800 hover:text-red-300 text-sm "
                               >
                                 Delete Section
                               </button>

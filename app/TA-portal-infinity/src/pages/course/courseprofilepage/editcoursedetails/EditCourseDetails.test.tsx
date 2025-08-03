@@ -28,7 +28,7 @@ describe('EditCourseDetails', () => {
     const nameInput = screen.getByLabelText('Name');
     expect(nameInput).toHaveValue('Intro to CS');
     fireEvent.change(nameInput, { target: { value: 'CS Fundamentals' } });
-    fireEvent.click(screen.getByText('Save'));
+    fireEvent.click(screen.getByText('Save Changes'));
     expect(onSave).toHaveBeenCalledWith({ courseNum: '101', deptCode: "COSC", name:"CS Fundamentals" });
   });
 

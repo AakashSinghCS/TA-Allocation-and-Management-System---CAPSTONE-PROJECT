@@ -13,6 +13,8 @@ import { useDebounce } from "../../../../utility/pagination/useDebounce";
 import { useSectionSearchPage } from "../../../../api/course/sectionfilter/useSectionFilter";
 import Pagination from "../../../../utility/pagination/pagination/Pagination";
 import { StatusIndicator } from "../../../../components/ui/statusindicator/StatusIndicator";
+import { toast } from 'react-toastify';
+import { Info } from 'lucide-react';
 
 export default function AddAllocationHistory() {
   const { userId: studentId } = useAuth();
@@ -57,7 +59,11 @@ export default function AddAllocationHistory() {
       selectedSections,
       initialSections
     );
-    alert(ok ? "History updated!" : "Failed to update history.");
+    if (ok) {
+      toast.success("History updated!");
+    } else {
+      toast.error("Failed to update history.");
+    }
     navigate(`/user/taprofile/${studentId}/allocationHistory`);
   };
 
@@ -86,17 +92,18 @@ export default function AddAllocationHistory() {
   const sections = convertFilterSectionsToSections(data?.content ?? []);
 
   return (
-    <div className="container mx-auto p-4 w-full max-w-3xl">
+    <div className="container mx-auto p-4 w-full max-w-7xl">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-semibold">Search for a Section</h1>
-        <p className="text-sm text-gray-400">
-          Search for a section and click Select in the far right column
-        </p>
       </div>
 
       {/* Selected list */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Selected Sections</h3>
+        <div className="bg-blue-50 border-l-4 border-blue-400 text-blue-900 px-4 py-2 rounded shadow text-sm mb-3 flex items-center gap-2">
+          <Info className="w-5 h-5 text-blue-400" />
+           Search for a section and click Select in the far right column.
+        </div>
         <div className="space-y-2">
           {selectedSections.map((sec) => {
             const sid = sec?.id;
@@ -162,7 +169,7 @@ export default function AddAllocationHistory() {
       <div className="mt-4 flex justify-end">
         <button
           onClick={handleSaveHistory}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-6 py-2 bg-[#040941] text-white rounded hover:bg-blue-800 rounded-sm"
         >
           Save History
         </button>

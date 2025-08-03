@@ -13,6 +13,8 @@ import { fetchActivate, fetchDeactivate } from "../../../../api/admin/fetchActiv
 import React from "react";
 import { StatusIndicator } from "../../../../components/ui/statusindicator/StatusIndicator";
 import { UserRole } from "../../../../interfaces/enum/UserRole";
+import { MousePointer } from 'lucide-react';
+import { showToastConfirmation, showToastError } from "../../../../utility/confirmation/toastConfirmation";
 
 interface UserBrowsingViewerProps {
     mode?: 'view' | 'select';
@@ -51,7 +53,13 @@ export default function UserBrowsingViewer({
         || (rawCriteria.role)
     );
     const handleToggleActivation = async (id: number, active: boolean) => {
-        const ok = window.confirm(`Are you sure you want to ${active ? 'deactivate' : 'activate'} this user?`);
+        const ok = await showToastConfirmation({
+            title: active ? "Deactivate User" : "Activate User",
+            message: `Are you sure you want to ${active ? 'deactivate' : 'activate'} this user?`,
+            confirmText: active ? "Deactivate" : "Activate",
+            cancelText: "Cancel",
+            type: active ? "danger" : "info"
+        });
         if (!ok) return;
 
         const success = active ? await fetchDeactivate(id) : await fetchActivate(id);
@@ -59,7 +67,7 @@ export default function UserBrowsingViewer({
             // invalidate both queries so UI refreshes
             refetch();
         } else {
-            alert(`Failed to ${active ? 'deactivate' : 'activate'} user`);
+            showToastError(`Failed to ${active ? 'deactivate' : 'activate'} user`);
         }
     };
 
@@ -102,7 +110,7 @@ export default function UserBrowsingViewer({
         }
     };
     return (
-        <>
+        <div>
             <div className="flex justify-between items-stretch mb-4">
                 <div className="flex-1">
                     <SearchUserBar
@@ -115,12 +123,10 @@ export default function UserBrowsingViewer({
                 </div>
                 {userRoles.includes('COORDINATOR') && mode == 'view' && (
                     <button onClick={() => navigate('/user/coordinator/browseuser/newuser')}
-                        className="bg-[#00c89c] text-white px-4 py-1 rounded hover:bg-[#c7fcec] 
-                        cursor-pointer hover:text-[#0089b2] transition-colors">
+                        className="bg-[#040941] text-white px-4 py-1 rounded hover:bg-blue-800 transition-colors">
                         Add User
                     </button>
                 )}
-
             </div>
 
             {isError && (
@@ -130,78 +136,82 @@ export default function UserBrowsingViewer({
             )}
 
             <div className="overflow-x-auto w-full">
-
-                {!hasAnyFilter && <>
-                    <p className="text-gray-500">
-                        Please select a role (and/or enter a Student/Employee number or User ID) to begin.
-                    </p></>}
-                {isFetching && <StatusIndicator loading={isFetching}/>}
-                {hasAnyFilter && !isFetching &&<table className="min-w-full border-collapse">
-                    <thead><tr>
-                        {columns.map(col => <th key={String(col)} className="border border-gray-300 px-3 py-1 bg-gray-100">{labels[col]}</th>)}
-                        <th className="border border-gray-300 px-3 py-1 bg-gray-100">Actions</th>
-                    </tr></thead>
-                    <tbody>
-
-                        {rows.map(user => (
-                            <tr key={user.id} className="hover:bg-gray-50">
-                                {columns.map(col => {
-                                    let disp: any = (user as any)[col];
-                                    if (col === 'name') disp = `${user.firstName} ${user.lastName}`.trim();
-                                    if (col === 'createdAt' && disp) disp = formatDateForDisplay(new Date(disp));
-                                    if (col === 'name') {
-                                        return (
-                                            <td key={col} className="border border-gray-300 px-3 py-1">
-                                                <Link
-                                                    to={`/user/profile/${user.id}`}
-                                                    onClick={e => handleNavConfirm(e, user.id!)}
-                                                    className="text-[#0089b2] hover:text-[#00b5bc] truncate"
-                                                >
-                                                    {disp}
-                                                </Link>
-                                            </td>
-                                        );
-                                    }
-                                    return <td key={col} className="border border-gray-300 px-3 py-1">{disp}</td>;
-                                })}
-                                <td className="border border-gray-300 px-3 py-1">
-                                    {mode === 'select' ? (
-                                        <button
-                                            type="button"
-                                            onClick={() => onSelect?.(user)}
-                                            className="text-blue-600 hover:text-red-300"
-                                        >
-                                            Select
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={() => handleToggleActivation(user.id!, user.active!)}
-                                            disabled={!userRoles.includes("ADMIN")}
-                                            className={`px-3 py-1 rounded text-white text-sm font-medium transition-colors
-                                                    ${!userRoles.includes("ADMIN")
-                                                    ? "bg-gray-300 cursor-not-allowed"
-                                                    : user.active
-                                                        ? "bg-red-500 hover:bg-red-600"
-                                                        : "bg-green-500 hover:bg-green-600"
-                                                }`}
-                                        >
-                                            {user.active ? "Deactivate" : "Activate"}
-                                        </button>
-
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>}
+                {!hasAnyFilter && (
+                    <div className="flex flex-col items-center justify-center py-12">
+                        <MousePointer className="w-20 h-20 text-gray-200 mb-6" />
+                        <p className="text-xl text-gray-300 text-center font-semibold max-w-xl">
+                            Please select a role (and/or enter a Student/Employee number or User ID) to begin.
+                        </p>
+                    </div>
+                )}
+                {isFetching && <StatusIndicator loading={isFetching}/>} 
+                {hasAnyFilter && !isFetching && (
+                    <table className={`min-w-full border-collapse ${mode === 'select' ? 'text-sm' : ''}`}>
+                        <thead><tr>
+                            {columns.map(col => <th key={String(col)} className={`border border-gray-300 bg-gray-100 ${mode === 'select' ? 'px-2 py-1 text-xs' : 'px-3 py-1'}`}>{labels[col]}</th>)}
+                            <th className={`border border-gray-300 bg-gray-100 ${mode === 'select' ? 'px-2 py-1 text-xs' : 'px-3 py-1'}`}>Actions</th>
+                        </tr></thead>
+                        <tbody>
+                            {rows.map(user => (
+                                <tr key={user.id} className="hover:bg-gray-50">
+                                    {columns.map(col => {
+                                        let disp: any = (user as any)[col];
+                                        if (col === 'name') disp = `${user.firstName} ${user.lastName}`.trim();
+                                        if (col === 'createdAt' && disp) disp = formatDateForDisplay(new Date(disp));
+                                        if (col === 'name') {
+                                            return (
+                                                <td key={col} className={`border border-gray-300 ${mode === 'select' ? 'px-2 py-1' : 'px-3 py-1'}`}>
+                                                    <Link
+                                                        to={`/user/profile/${user.id}`}
+                                                        onClick={e => handleNavConfirm(e, user.id!)}
+                                                        className="text-[#0089b2] hover:text-[#00b5bc] truncate"
+                                                    >
+                                                        {disp}
+                                                    </Link>
+                                                </td>
+                                            );
+                                        }
+                                        return <td key={col} className={`border border-gray-300 ${mode === 'select' ? 'px-2 py-1' : 'px-3 py-1'}`}>{disp}</td>;
+                                    })}
+                                    <td className={`border border-gray-300 ${mode === 'select' ? 'px-2 py-1' : 'px-3 py-1'}`}>
+                                        {mode === 'select' ? (
+                                            <button
+                                                type="button"
+                                                onClick={() => onSelect?.(user)}
+                                                className={`text-blue-600 hover:text-red-300 ${mode === 'select' ? 'text-xs px-2 py-1' : ''}`}
+                                            >
+                                                Select
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={() => handleToggleActivation(user.id!, user.active!)}
+                                                disabled={!userRoles.includes("ADMIN")}
+                                                className={`px-3 py-1 rounded text-white text-sm font-medium transition-colors
+                                                        ${!userRoles.includes("ADMIN")
+                                                        ? "bg-gray-300 cursor-not-allowed"
+                                                        : user.active
+                                                            ? "bg-red-800 hover:bg-red-600"
+                                                            : "bg-green-800 hover:bg-green-600"
+                                                    }`}
+                                            >
+                                                {user.active ? "Deactivate" : "Activate"}
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
             </div>
-
+            {hasAnyFilter && (
                 <Pagination
                     page={page}
                     pageCount={data?.totalPages ?? 0}
                     onPrev={() => setPage(p => Math.max(0, p - 1))}
                     onNext={() => setPage(p => Math.min((data?.totalPages ?? 1) - 1, p + 1))}
                 />
-        </>
+            )}
+        </div>
     );
 }

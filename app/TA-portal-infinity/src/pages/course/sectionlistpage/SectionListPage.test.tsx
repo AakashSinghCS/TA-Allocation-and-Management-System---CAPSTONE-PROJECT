@@ -130,7 +130,7 @@ describe('<SectionListPage />', () => {
       'firstName,lastName,studentNum,deptCode,courseNum,section,year,semester\nScoobert,Doobert,63260442,COSC,499,001,2025,W1';
     const file = new File([csvContent], 'test.csv', { type: 'text/csv' });
     // Open the CSV import modal
-    fireEvent.click(screen.getAllByText('Import Sections from CSV')[0]);
+    fireEvent.click(screen.getAllByText('Import CSV')[0]);
     // Get the file input element
     const fileInput = await screen.findByTestId('csv-file-input');
     expect(fileInput).not.toBeNull();
@@ -154,7 +154,7 @@ describe('<SectionListPage />', () => {
     );
 
     // Open modal using the first matching button
-    fireEvent.click(screen.getAllByRole('button', { name: /import sections from csv/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /import csv/i })[0]);
 
     // Wait for modal heading
     await waitFor(() => {
