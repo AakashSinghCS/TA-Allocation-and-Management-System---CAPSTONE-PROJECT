@@ -66,15 +66,15 @@ export default function InstructorHomePage() {
           const end   = new Date(s.endDate);
           return start <= today && today <= end;
         });
-        // 2. Otherwise pick the one that ends the latest
+        // 2. Otherwise pick the semester whose startDate is nearest to today
         const fallbackSemester =
-          active.length > 0
-            ? active.reduce((prev, curr) => {
-                return new Date(curr.endDate) > new Date(prev.endDate)
-                  ? curr
-                  : prev;
-              })
-            : undefined;
+        active.length > 0
+          ? active.reduce((prev, curr) => {
+              const prevDiff = Math.abs(new Date(prev.startDate).getTime() - today.getTime());
+              const currDiff = Math.abs(new Date(curr.startDate).getTime() - today.getTime());
+              return currDiff < prevDiff ? curr : prev;
+            })
+          : undefined;
 
         const chosen = currentSemester ?? fallbackSemester;
         const semester = chosen?.semester ?? "W1";
