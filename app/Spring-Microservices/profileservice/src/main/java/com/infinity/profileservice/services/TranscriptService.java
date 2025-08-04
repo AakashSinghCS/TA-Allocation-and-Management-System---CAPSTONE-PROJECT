@@ -1,6 +1,8 @@
 package com.infinity.profileservice.services;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.infinity.profileservice.dto.TranscriptInfoDTO;
+import com.infinity.profileservice.dto.TranscriptReviewDTO;
 import com.infinity.profileservice.dto.TranscriptStatusDTO;
 import com.infinity.profileservice.dtos.UserDto;
 import com.infinity.profileservice.feign.UserInterface;
@@ -70,12 +73,37 @@ public class TranscriptService {
     }
     
     public List<TranscriptInfoDTO> getAllTranscriptInfo() {
-        List<TranscriptInfoDTO> transcriptInfos = transcriptRepository.findAllTranscriptInfo();
+        List<Transcript> transcripts = transcriptRepository.findAllTranscriptsForInfo();
         
-        // Enrich with user information
-        return transcriptInfos.stream()
+        // Convert to DTOs and enrich with user information
+        return transcripts.stream()
+                .map(this::convertToTranscriptInfoDTO)
                 .map(this::enrichWithUserInfo)
                 .collect(Collectors.toList());
+    }
+    
+    private TranscriptInfoDTO convertToTranscriptInfoDTO(Transcript transcript) {
+        TranscriptInfoDTO dto = new TranscriptInfoDTO();
+        dto.setTranscriptId(transcript.getId());
+        dto.setStudentId(transcript.getUserId());
+        dto.setFileName(transcript.getFileName());
+        // Use ISO format with time for proper frontend parsing
+        dto.setUploadDate(transcript.getUploadDate() != null ? transcript.getUploadDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : "Unknown");
+        dto.setFileSize(transcript.getFileSize());
+        dto.setContentType(transcript.getContentType());
+        dto.setReviewStatus(transcript.getReviewStatus());
+        dto.setReviewComments(transcript.getReviewComments());
+        dto.setReviewedBy(transcript.getReviewedBy());
+        // Use ISO format with time for proper frontend parsing
+        dto.setReviewDate(transcript.getReviewDate() != null ? transcript.getReviewDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : "");
+        
+        // Set default values for user info (will be enriched later)
+        dto.setStudentName("Unknown");
+        dto.setStudentEmail("Unknown");
+        dto.setStudentNumber("Unknown");
+        dto.setReviewerName("");
+        
+        return dto;
     }
     
     private TranscriptInfoDTO enrichWithUserInfo(TranscriptInfoDTO transcriptInfo) {
@@ -88,6 +116,20 @@ public class TranscriptService {
                 transcriptInfo.setStudentEmail(userDto.email());
                 transcriptInfo.setStudentNumber(userDto.studentNum() != null ? userDto.studentNum().toString() : "");
             }
+            
+            // Enrich reviewer information if available
+            if (transcriptInfo.getReviewedBy() != null) {
+                try {
+                    UserDto reviewerDto = userInterface.getUserDetailsById(transcriptInfo.getReviewedBy(), coordinatorRoles, null).getBody();
+                    if (reviewerDto != null) {
+                        transcriptInfo.setReviewerName(reviewerDto.firstName() + " " + reviewerDto.lastName());
+                    }
+                } catch (FeignException e) {
+                    // Log the error but don't fail - reviewer info is optional
+                    System.err.println("Failed to fetch reviewer info for ID " + transcriptInfo.getReviewedBy() + ": " + e.getMessage());
+                }
+            }
+            
         } catch (FeignException e) {
             // Log the error but don't fail the entire operation
             System.err.println("Failed to fetch user info for student ID " + transcriptInfo.getStudentId() + ": " + e.getMessage());
@@ -107,6 +149,23 @@ public class TranscriptService {
     public TranscriptStatusDTO getTranscriptStatus(Long userId) {
         Optional<Transcript> transcript = transcriptRepository.findByUserId(userId);
         return transcriptMapper.toTranscriptStatus(transcript.orElse(null));
+    }
+    
+    @Transactional
+    public void updateTranscriptReview(TranscriptReviewDTO reviewDTO, Long reviewerId) {
+        Optional<Transcript> optionalTranscript = transcriptRepository.findById(reviewDTO.getTranscriptId());
+        
+        if (optionalTranscript.isEmpty()) {
+            throw new RuntimeException("Transcript not found with ID: " + reviewDTO.getTranscriptId());
+        }
+        
+        Transcript transcript = optionalTranscript.get();
+        transcript.setReviewStatus(reviewDTO.getReviewStatus());
+        transcript.setReviewComments(reviewDTO.getReviewComments());
+        transcript.setReviewedBy(reviewerId);
+        transcript.setReviewDate(LocalDateTime.now());
+        
+        transcriptRepository.save(transcript);
     }
     
     private void validateFile(MultipartFile file) {

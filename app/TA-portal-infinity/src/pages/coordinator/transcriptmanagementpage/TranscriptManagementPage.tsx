@@ -342,6 +342,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
         reviewComments
       };
 
+      console.log('Updating review:', reviewData); // Debug log
       await updateTranscriptReview(reviewData, token);
       
       // Small delay to ensure database transaction is committed
@@ -357,8 +358,26 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
       
       toast.success('Review updated successfully');
     } catch (err) {
-      toast.error('Failed to update review');
       console.error('Review update error:', err);
+      
+      // More detailed error message
+      let errorMessage = 'Failed to update review';
+      if (err instanceof Error) {
+        errorMessage = err.message;
+        
+        // Check for specific error types
+        if (errorMessage.includes('401')) {
+          errorMessage = 'Authentication failed. Please log in again.';
+        } else if (errorMessage.includes('403')) {
+          errorMessage = 'You do not have permission to update transcript reviews.';
+        } else if (errorMessage.includes('404')) {
+          errorMessage = 'Transcript not found.';
+        } else if (errorMessage.includes('500')) {
+          errorMessage = 'Server error. Please try again later.';
+        }
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setUpdatingReview(false);
     }

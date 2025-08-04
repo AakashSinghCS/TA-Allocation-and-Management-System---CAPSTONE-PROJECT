@@ -155,8 +155,12 @@ class TranscriptControllerTest {
     @Test
     @WithMockUser(username = "123", roles = "COORDINATOR")
     void getAllTranscripts_Success() throws Exception {
-        TranscriptInfoDTO transcriptInfo1 = new TranscriptInfoDTO(1L, 123L, "John Doe", "john@test.com", "12345", "transcript1.pdf", "2024-01-15", 1024L);
-        TranscriptInfoDTO transcriptInfo2 = new TranscriptInfoDTO(2L, 124L, "Jane Smith", "jane@test.com", "12346", "transcript2.pdf", "2024-01-16", 2048L);
+        TranscriptInfoDTO transcriptInfo1 = new TranscriptInfoDTO(1L, 123L, "John Doe", "john@test.com", "12345", 
+                                                                  "transcript1.pdf", "2024-01-15", 1024L, "application/pdf",
+                                                                  "PENDING", null, null, null, null);
+        TranscriptInfoDTO transcriptInfo2 = new TranscriptInfoDTO(2L, 124L, "Jane Smith", "jane@test.com", "12346", 
+                                                                  "transcript2.pdf", "2024-01-16", 2048L, "application/pdf",
+                                                                  "APPROVED", "Looks good", 100L, "2024-01-17", "Reviewer Name");
         List<TranscriptInfoDTO> transcripts = Arrays.asList(transcriptInfo1, transcriptInfo2);
         
         when(transcriptService.getAllTranscriptInfo()).thenReturn(transcripts);

@@ -198,8 +198,16 @@ class TranscriptServiceTest {
     @Test
     void getAllTranscriptInfo_WithUserInfo_ShouldEnrichWithUserData() {
         // Given
-        TranscriptInfoDTO transcriptInfo = new TranscriptInfoDTO(1L, userId, "test.pdf", LocalDateTime.of(2024, 1, 15, 10, 0), 1024L);
-        when(transcriptRepository.findAllTranscriptInfo()).thenReturn(Arrays.asList(transcriptInfo));
+        Transcript mockTranscript = new Transcript();
+        mockTranscript.setId(1L);
+        mockTranscript.setUserId(userId);
+        mockTranscript.setFileName("test.pdf");
+        mockTranscript.setUploadDate(LocalDateTime.of(2024, 1, 15, 10, 0));
+        mockTranscript.setFileSize(1024L);
+        mockTranscript.setContentType("application/pdf");
+        mockTranscript.setReviewStatus("PENDING");
+        
+        when(transcriptRepository.findAllTranscriptsForInfo()).thenReturn(Arrays.asList(mockTranscript));
         
         UserDto userDto = new UserDto(userId, "John", "Doe", "student@test.com", 
                                     Arrays.asList(), 12345, "Computer Science", 2024, 4, 
@@ -216,15 +224,23 @@ class TranscriptServiceTest {
         assertEquals("student@test.com", result.get(0).getStudentEmail());
         assertEquals("12345", result.get(0).getStudentNumber());
         
-        verify(transcriptRepository).findAllTranscriptInfo();
+        verify(transcriptRepository).findAllTranscriptsForInfo();
         verify(userInterface).getUserDetailsById(userId, Arrays.asList("ROLE_COORDINATOR"), null);
     }
 
     @Test
     void getAllTranscriptInfo_FeignException_ShouldUseDefaultValues() {
         // Given
-        TranscriptInfoDTO transcriptInfo = new TranscriptInfoDTO(1L, userId, "test.pdf", LocalDateTime.of(2024, 1, 15, 10, 0), 1024L);
-        when(transcriptRepository.findAllTranscriptInfo()).thenReturn(Arrays.asList(transcriptInfo));
+        Transcript mockTranscript = new Transcript();
+        mockTranscript.setId(1L);
+        mockTranscript.setUserId(userId);
+        mockTranscript.setFileName("test.pdf");
+        mockTranscript.setUploadDate(LocalDateTime.of(2024, 1, 15, 10, 0));
+        mockTranscript.setFileSize(1024L);
+        mockTranscript.setContentType("application/pdf");
+        mockTranscript.setReviewStatus("PENDING");
+        
+        when(transcriptRepository.findAllTranscriptsForInfo()).thenReturn(Arrays.asList(mockTranscript));
         when(userInterface.getUserDetailsById(userId, Arrays.asList("ROLE_COORDINATOR"), null)).thenThrow(FeignException.class);
 
         // When
@@ -237,7 +253,7 @@ class TranscriptServiceTest {
         assertEquals("Unknown", result.get(0).getStudentEmail());
         assertEquals("Unknown", result.get(0).getStudentNumber());
         
-        verify(transcriptRepository).findAllTranscriptInfo();
+        verify(transcriptRepository).findAllTranscriptsForInfo();
         verify(userInterface).getUserDetailsById(userId, Arrays.asList("ROLE_COORDINATOR"), null);
     }
 

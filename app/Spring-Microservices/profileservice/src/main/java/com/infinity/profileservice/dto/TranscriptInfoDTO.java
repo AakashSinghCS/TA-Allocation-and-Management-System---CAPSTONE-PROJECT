@@ -19,6 +19,14 @@ public class TranscriptInfoDTO {
     private String fileName;
     private String uploadDate;
     private Long fileSize;
+    private String contentType;
+    
+    // Review workflow fields
+    private String reviewStatus;
+    private String reviewComments;
+    private Long reviewedBy;
+    private String reviewDate;
+    private String reviewerName;
     
     public TranscriptInfoDTO(Long transcriptId, Long studentId, String fileName, LocalDateTime uploadDate, Long fileSize) {
         this.transcriptId = transcriptId;
@@ -30,5 +38,6 @@ public class TranscriptInfoDTO {
         this.studentName = "Unknown";
         this.studentEmail = "Unknown";
         this.studentNumber = "Unknown";
+        this.reviewStatus = "PENDING";
     }
 }

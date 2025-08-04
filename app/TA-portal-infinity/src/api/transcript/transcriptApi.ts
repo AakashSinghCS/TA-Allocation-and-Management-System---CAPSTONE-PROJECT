@@ -1,5 +1,6 @@
 export interface TranscriptInfo {
-  id: number;
+  transcriptId: number;
+  id?: number; // For backward compatibility, map transcriptId to id
   studentId: number;
   studentName: string;
   studentEmail: string;
@@ -35,7 +36,13 @@ export async function fetchAllTranscripts(token: string): Promise<TranscriptInfo
     throw new Error('Failed to fetch transcripts');
   }
 
-  return response.json();
+  const data = await response.json();
+  
+  // Map transcriptId to id for backward compatibility
+  return data.map((transcript: any) => ({
+    ...transcript,
+    id: transcript.transcriptId
+  }));
 }
 
 export async function downloadTranscript(
@@ -89,17 +96,34 @@ export async function updateTranscriptReview(
   review: TranscriptReview,
   token: string
 ): Promise<void> {
-  const response = await fetch(`http://localhost:8080/transcripts/review/${review.transcriptId}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(review),
-  });
+  try {
+    console.log('Sending review update:', review); // Debug log
+    
+    const response = await fetch(`http://localhost:8080/transcripts/review/${review.transcriptId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        transcriptId: review.transcriptId,
+        reviewStatus: review.reviewStatus,
+        reviewComments: review.reviewComments
+      }),
+    });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Failed to update transcript review: ${response.status} ${errorText}`);
+    console.log('Response status:', response.status); // Debug log
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Error response:', errorText); // Debug log
+      throw new Error(`Failed to update transcript review: ${response.status} ${errorText}`);
+    }
+    
+    const responseText = await response.text();
+    console.log('Success response:', responseText); // Debug log
+  } catch (error) {
+    console.error('Network error:', error); // Debug log
+    throw error;
   }
 }
