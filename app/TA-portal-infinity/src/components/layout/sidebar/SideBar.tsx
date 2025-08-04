@@ -68,10 +68,11 @@ export default function SideNav({expanded, setExpanded}:SideNavProps) {
     // { label: 'My Courses', to: '/user/student/courses', icon: <BookOpen size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Start Application', to: '/user/student/application', icon: <FileUser size={22} />, roles: [UserRole.STUDENT] },
     { label: 'View Applications', to: '/user/student/view-applications', icon: <GraduationCap size={22} />, roles: [UserRole.STUDENT] },
-    { label: 'Upload Transcript', to: '/user/student/transcript-upload', icon: <Upload size={22} />, roles: [UserRole.STUDENT] },
+   
     { label: "Exam Availability", to: "/user/student/availability", icon: <BookOpen size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Schedule', to: `/user/student/schedule`, icon: <CalendarDays size={22} />, roles: [UserRole.STUDENT] },
     // { label: 'Student Profile', to: `/user/taprofile/${userId}`, icon: <User size={22} />, roles: [UserRole.STUDENT] },
+    { label: 'Upload Transcript', to: `/user/taprofile/${userId}/transcript-upload`, icon: <Upload size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Allocation History', to: `/user/taprofile/${userId}/allocationHistory`, icon: <FolderClock size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Lab Skills', to: `/user/taprofile/${userId}/labSkills`, icon: <ClipboardCheck size={22} />, roles: [UserRole.STUDENT] },
     { label: 'Profile Questions', to: `/user/student/questions/${userId}`, icon: <FileQuestionMark size={22} />, roles: [UserRole.STUDENT] },

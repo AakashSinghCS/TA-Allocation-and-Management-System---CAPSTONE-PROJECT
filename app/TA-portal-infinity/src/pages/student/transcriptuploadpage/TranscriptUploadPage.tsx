@@ -1,9 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Upload, File, CheckCircle, AlertTriangle, Trash2, Eye, Loader2, Maximize2, X } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { showToastConfirmation, showToastSuccess, showToastError, showToastInfo } from '../../../utility/confirmation/toastConfirmation';
+import TabNav from '../../../components/layout/tabnav/TabNav';
+import { GenericAPIContainer } from '../../../utility/genericapicontainer/GenericAPIContainer';
+import { fetchUserDetails } from '../../../api/user/fetchUserDetails';
+import type { StudentOrInstructorOrCoordinator } from '../../../interfaces/user/User';
 
 interface TranscriptUploadPageProps {}
 
@@ -24,8 +29,10 @@ interface UploadState {
 }
 
 const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
-  const navigate = useNavigate();
-  const { token } = useAuth();
+  const { userId } = useParams();
+  const sId = Number(userId);
+  // const navigate = useNavigate();
+  const { token, userRoles } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [uploadState, setUploadState] = useState<UploadState>({
@@ -574,31 +581,42 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
   };
 
   return (
-    <div className="min-h-screen py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Upload Transcript
-              </h1>
-              <p className="text-gray-600">
-                Upload your official transcript (PDF only, max 5MB).
-              </p>
+    <section className="px-4 py-6 md:px-8 md:py-8 min-h-screen">
+      <div className="max-w-7xl -mt-12">
+        <GenericAPIContainer<StudentOrInstructorOrCoordinator>
+          fetchFunction={() => fetchUserDetails(sId)}
+          render={(record) => (
+            <TabNav roles={record.roles ?? []} />
+          )}
+        />
+        
+        <div className="min-h-screen py-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header - only show for students */}
+        {!userRoles.includes("COORDINATOR") && (
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Upload Transcript
+                </h1>
+                <p className="text-gray-600">
+                  Upload your official transcript (PDF only, max 5MB).
+                </p>
+              </div>
+            </div>
+            {/* Requirements Warning Box */}
+            <div className="mb-4 p-4 rounded-lg border border-amber-300 bg-amber-50 text-amber-900">
+              <div className="font-semibold mb-2">Requirements</div>
+              <ul className="text-sm list-disc pl-5 space-y-1">
+                <li>PDF files only (max 5MB)</li>
+                <li>Official academic transcript</li>
+                <li>Clear and readable content</li>
+                <li>Avoid special characters in filename</li>
+              </ul>
             </div>
           </div>
-          {/* Requirements Warning Box */}
-          <div className="mb-4 p-4 rounded-lg border border-amber-300 bg-amber-50 text-amber-900">
-            <div className="font-semibold mb-2">Requirements</div>
-            <ul className="text-sm list-disc pl-5 space-y-1">
-              <li>PDF files only (max 5MB)</li>
-              <li>Official academic transcript</li>
-              <li>Clear and readable content</li>
-              <li>Avoid special characters in filename</li>
-            </ul>
-          </div>
-        </div>
+        )}
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Left Column - Current Transcript */}
@@ -879,8 +897,10 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
             </div>
           </div>
         )}
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
