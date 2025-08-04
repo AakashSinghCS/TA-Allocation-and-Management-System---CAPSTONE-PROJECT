@@ -24,6 +24,7 @@ import {
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { UserRole } from '../../../interfaces/enum/UserRole';
 import ubcLogo from '../../../assets/logo.png';
+import './SideBar.css';
 
 interface navItem {
     label: string;
@@ -90,11 +91,13 @@ export default function SideNav({expanded, setExpanded}:SideNavProps) {
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-20 h-screen bg-[#040941] text-white flex flex-col transition-all duration-300 shadow-lg ${
+      className={`fixed top-0 left-0 z-50 h-screen bg-[#040941] text-white flex flex-col transition-all duration-300 shadow-lg main-sidebar ${
         expanded ? 'w-56' : 'w-20'
       }`}
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
+      id="main-sidebar"
+      data-testid="main-sidebar"
     >
     {/* <Link to="/" className="flex items-center">
         <img
