@@ -889,7 +889,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <StatusIndicator loading={true} />
         </div>
       </div>
@@ -898,7 +898,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
 
   return (
     <div className="min-h-screen py-8">
-      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -997,44 +997,48 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
           </div>
 
           {/* Row 2: Date Filter + Action Buttons */}
-          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between mb-6 pb-6 border-b border-gray-100">
+          <div className="flex flex-col gap-4 mb-6 pb-6 border-b border-gray-100">
             {/* Date Range Filter */}
             <div className="flex flex-col space-y-2">
-              <div className="flex items-center space-x-2">
-                <Calendar className="w-4 h-4 text-gray-500" />
-                <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Date Range:</span>
-                <input
-                  type="date"
-                  value={dateRange.start}
-                  onChange={(e) => handleDateRangeChange('start', e.target.value)}
-                  className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm ${
-                    dateRangeError ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                  }`}
-                  placeholder="From"
-                  max={new Date().toISOString().split('T')[0]}
-                />
-                <span className="text-gray-400 text-sm">to</span>
-                <input
-                  type="date"
-                  value={dateRange.end}
-                  onChange={(e) => handleDateRangeChange('end', e.target.value)}
-                  className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm ${
-                    dateRangeError ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                  }`}
-                  placeholder="To"
-                  max={new Date().toISOString().split('T')[0]}
-                />
-                <Tooltip content="Clear date range filter">
-                  <button
-                    onClick={() => {
-                      setDateRange({ start: '', end: '' });
-                      setDateRangeError('');
-                    }}
-                    className="px-3 py-2 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors whitespace-nowrap"
-                  >
-                    Clear
-                  </button>
-                </Tooltip>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                <div className="flex items-center space-x-2">
+                  <Calendar className="w-4 h-4 text-gray-500" />
+                  <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Date Range:</span>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <input
+                    type="date"
+                    value={dateRange.start}
+                    onChange={(e) => handleDateRangeChange('start', e.target.value)}
+                    className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm ${
+                      dateRangeError ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                    }`}
+                    placeholder="From"
+                    max={new Date().toISOString().split('T')[0]}
+                  />
+                  <span className="text-gray-400 text-sm">to</span>
+                  <input
+                    type="date"
+                    value={dateRange.end}
+                    onChange={(e) => handleDateRangeChange('end', e.target.value)}
+                    className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm ${
+                      dateRangeError ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                    }`}
+                    placeholder="To"
+                    max={new Date().toISOString().split('T')[0]}
+                  />
+                  <Tooltip content="Clear date range filter">
+                    <button
+                      onClick={() => {
+                        setDateRange({ start: '', end: '' });
+                        setDateRangeError('');
+                      }}
+                      className="px-3 py-2 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors whitespace-nowrap"
+                    >
+                      Clear
+                    </button>
+                  </Tooltip>
+                </div>
               </div>
               {dateRangeError && (
                 <div className="flex items-center space-x-1 text-red-600 text-xs ml-6">
@@ -1045,11 +1049,11 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:space-x-4">
               <button
                 onClick={handleExportToCSV}
                 disabled={filteredAndSortedTranscripts.length === 0}
-                className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 bg-green-800 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Download className="w-4 h-4" />
                 <span>Export to CSV</span>
@@ -1058,7 +1062,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
               <button
                 onClick={handleBulkDownload}
                 disabled={selectedTranscripts.size === 0 || downloading}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 bg-[#040941] text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Download className="w-4 h-4" />
                 <span>{downloading ? 'Downloading...' : 'Bulk Download'}</span>
@@ -1073,13 +1077,13 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
 
           {/* Row 3: Bulk Update Actions */}
           {selectedTranscripts.size > 0 && (
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-              <div className="flex items-center space-x-2">
+            <div className="flex flex-col gap-4 items-center">
+              <div className="text-center">
                 <span className="text-sm font-medium text-gray-700">
                   Bulk Status Update for {selectedTranscripts.size} selected:
                 </span>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex flex-wrap items-center justify-center gap-3">
                 <Tooltip content="Mark all selected transcripts as being actively reviewed">
                   <button
                     onClick={() => handleBulkStatusUpdateWithConfirm('UNDER_REVIEW')}
@@ -1798,57 +1802,24 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
         )}
 
         {/* Enhanced Review Guidelines */}
-        <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-5">
-          <h3 className="font-semibold text-green-900 mb-3 flex items-center">
-            <AlertTriangle className="w-4 h-4 mr-2" />
-            Transcript Review Guidelines & Criteria:
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <div className="flex items-start space-x-2">
-                <span className="text-green-600 font-bold text-sm">✓</span>
-                <div className="text-sm text-green-800">
-                  <strong>Academic Standing:</strong> Verify minimum GPA requirements (typically 3.0+ for undergraduate TAs, 3.5+ for graduate TAs)
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <span className="text-green-600 font-bold text-sm">✓</span>
-                <div className="text-sm text-green-800">
-                  <strong>Course Prerequisites:</strong> Ensure completion of required prerequisite courses and relevant subject matter knowledge
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <span className="text-green-600 font-bold text-sm">✓</span>
-                <div className="text-sm text-green-800">
-                  <strong>Grade Quality:</strong> Check for consistent performance in related coursework (B+ or higher in relevant subjects)
-                </div>
-              </div>
-            </div>
-            <div className="space-y-3">
-              <div className="flex items-start space-x-2">
-                <span className="text-green-600 font-bold text-sm">⚠</span>
-                <div className="text-sm text-green-800">
-                  <strong>Document Authenticity:</strong> Verify official transcript format, institutional seals, and proper formatting
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <span className="text-green-600 font-bold text-sm">⚠</span>
-                <div className="text-sm text-green-800">
-                  <strong>Completeness:</strong> Ensure all required courses and degree progress are clearly documented
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <span className="text-green-600 font-bold text-sm">🔒</span>
-                <div className="text-sm text-green-800">
-                  <strong>Privacy Compliance:</strong> Handle all academic records confidentially and institutional policies
-                </div>
-              </div>
-            </div>
+
+        <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-3">
+          <div className="flex items-center mb-2">
+            <AlertTriangle className="w-4 h-4 mr-2 text-green-700" />
+            <span className="font-semibold text-green-900 text-sm">Transcript Review Criteria</span>
           </div>
-          <div className="mt-4 pt-3 border-t border-green-200">
-            <p className="text-xs text-green-700 italic">
-              <strong>Review Process:</strong> Start with "Under Review" → Conduct thorough evaluation → Mark as "Approved", "Rejected", or "Needs Clarification" with detailed comments
-            </p>
+          <div className="grid grid-cols-2 gap-2 text-xs text-green-800">
+            <div className="flex items-center gap-1"><span className="text-green-600"></span> <span>GPA: 3.0+ (UG), 3.5+ (Grad)</span></div>
+            <div className="flex items-center gap-1"><span className="text-green-600"></span> <span>Prerequisite courses completed</span></div>
+            <div className="flex items-center gap-1"><span className="text-green-600"></span> <span>B+ or higher in relevant subjects</span></div>
+            <div className="flex items-center gap-1"><span className="text-green-600"></span> <span>Official format & seals</span></div>
+            <div className="flex items-center gap-1"><span className="text-green-600"></span> <span>All required courses shown</span></div>
+            <div className="flex items-center gap-1"><span className="text-green-600"></span> <span>Privacy & policy compliance</span></div>
+          </div>
+          <div className="mt-2 pt-2 border-t border-green-200">
+            <span className="text-xs text-green-700 italic">
+              <strong>Process:</strong> Under Review → Evaluate → Approve / Reject / Clarify (with comments)
+            </span>
           </div>
         </div>
 
