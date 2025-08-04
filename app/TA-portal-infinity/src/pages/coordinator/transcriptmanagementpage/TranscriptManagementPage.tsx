@@ -897,7 +897,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
@@ -909,43 +909,16 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
           </p>
           
           {/* Operation Guide */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="text-sm font-medium text-blue-900 mb-2">How to use this page:</h3>
-            <div className="text-sm text-blue-800 space-y-2">
-              <div className="flex items-start space-x-2">
-                <span className="text-blue-600 font-bold">1.</span>
-                <div>
-                  <span><strong>Search & Filter:</strong> Use the search bar to find students by name, email, student number, or filename. Filter by review status to focus on specific groups.</span>
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <span className="text-blue-600 font-bold">2.</span>
-                <div>
-                  <span><strong>Date Range & Actions:</strong> Apply date filters to narrow results by upload timeframe. Use "Export to CSV" for data analysis or "Bulk Download" for selected transcripts.</span>
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <span className="text-blue-600 font-bold">3.</span>
-                <div>
-                  <span><strong>Individual Review:</strong> Click "Review" button to open inline editing. Select status from dropdown, add detailed comments (use "Templates" button for quick common responses), then click "Save" to confirm changes.</span>
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <span className="text-blue-600 font-bold">4.</span>
-                <div>
-                  <span><strong>Bulk Status Updates:</strong> Check multiple transcript boxes, then use the bulk status buttons (Under Review, Approve, Reject, Needs Clarification) that appear below.</span>
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <span className="text-blue-600 font-bold">5.</span>
-                <div>
-                  <span><strong>Preview & Download:</strong> Click "Preview" to view transcript content in the tab below. Use "Fullscreen" for detailed examination or "Download" for offline review.</span>
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <span className="text-blue-600 font-bold">6.</span>
-                <div>
-                  <span><strong>Comment Templates:</strong> Use the "Templates" button in review mode to select from predefined comment templates (Approval, Rejection, Clarification, General) for consistent and efficient feedback.</span>
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+            <div className="flex items-start space-x-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="text-sm font-medium text-amber-900 mb-2">Quick Start Guide:</h3>
+                <div className="text-xs text-amber-800 space-y-1">
+                  <p><strong>Search & Filter:</strong> Use search bar and status filter to find specific transcripts.</p>
+                  <p><strong>Review Process:</strong> Click "Review" → Select status → Add comments using Templates → Save changes.</p>
+                  <p><strong>Bulk Actions:</strong> Select multiple transcripts → Use bulk status buttons or download selected files.</p>
+                  <p><strong>Preview:</strong> Click "Preview" to view content, "Fullscreen" for detailed examination.</p>
                 </div>
               </div>
             </div>
