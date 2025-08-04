@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import { Upload, File, CheckCircle, AlertTriangle, Trash2, Eye, Loader2, Maximize2, X, Download } from 'lucide-react';
+import { Upload, File, CheckCircle, AlertTriangle, Trash2, Eye, Loader2, Maximize2, X, Download, FileX, Mail } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { showToastConfirmation, showToastSuccess, showToastError, showToastInfo } from '../../../utility/confirmation/toastConfirmation';
@@ -55,6 +55,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
   const [showFullscreen, setShowFullscreen] = useState(false);
   const [fullscreenUrl, setFullscreenUrl] = useState<string | null>(null);
   const [lastToastMessage, setLastToastMessage] = useState<string | null>(null);
+  const [studentData, setStudentData] = useState<any>(null); // Store student data for email functionality
 
   // File validation constants
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -626,6 +627,21 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
     }
   };
 
+  const handleEmailStudent = (studentEmail: string, studentName: string) => {
+    const subject = encodeURIComponent('Transcript Upload Required');
+    const body = encodeURIComponent(
+      `Dear ${studentName},\n\n` +
+      `We noticed that you have not yet uploaded your official transcript to the TA portal. ` +
+      `Please log in to your account and upload your transcript as soon as possible.\n\n` +
+      `If you have any questions or need assistance, please don't hesitate to contact us.\n\n` +
+      `Best regards,\n` +
+      `TA Coordinator`
+    );
+    
+    window.location.href = `mailto:${studentEmail}?subject=${subject}&body=${body}`;
+    showToast('Email client opened');
+  };
+
   const openFullscreen = (url: string) => {
     // Create a new blob URL for fullscreen to avoid "moved, edited, or deleted" errors
     // when the original preview URL gets revoked
@@ -843,6 +859,36 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                   </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* No Transcript Message for Coordinators */}
+          {!loadingExisting && !existingTranscript && userRoles.includes("COORDINATOR") && (
+            <div className="xl:col-span-2">
+              <GenericAPIContainer<StudentOrInstructorOrCoordinator>
+                fetchFunction={() => fetchUserDetails(sId)}
+                render={(record) => (
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                    <div className="flex flex-col items-center justify-center py-8">
+                      <FileX className="w-16 h-16 text-gray-300 mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">No Transcript Uploaded</h3>
+                      <p className="text-gray-600 text-center mb-6 max-w-md">
+                        This student has not uploaded their official transcript yet. You can send them a reminder email to upload their transcript.
+                      </p>
+                      {record.email && (
+                        <button
+                          onClick={() => handleEmailStudent(record.email!, `${record.firstName} ${record.lastName}`)}
+                          className="flex items-center space-x-2 px-4 py-2 bg-[#040941] text-white rounded-lg hover:bg-blue-800 transition-colors"
+                          type="button"
+                        >
+                          <Mail className="w-4 h-4" />
+                          <span>Send Reminder Email</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              />
             </div>
           )}
 
