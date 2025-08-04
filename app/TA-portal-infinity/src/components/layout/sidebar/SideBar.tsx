@@ -23,7 +23,6 @@ import {
 } from 'lucide-react';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { UserRole } from '../../../interfaces/enum/UserRole';
-import ubcLogo from '../../../assets/logo.png';
 
 interface navItem {
     label: string;

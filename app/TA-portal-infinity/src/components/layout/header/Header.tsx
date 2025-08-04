@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import ubcLogo from "../../../assets/logo.png";
+import ubcLogo from "../../../assets/ubc-logo.png";
 import capIcon from "../../../assets/grad-cap.png";
 
 export default function Header() {
@@ -15,7 +15,7 @@ export default function Header() {
           className="h-20 sm:h-20 w-auto transition hover:drop-shadow-[0_0_1em_#FFFFFF]"
           />
        </Link>
-        <span className="text-center font-medium tracking-wide text-base sm:text-lg text-white hover:text-gray-200 transition-colors">
+        <span className="text-center font-semibold tracking-wide text-base sm:text-xl text-white hover:text-gray-200 transition-colors">
           TA-Portal-Infinity
         </span>
       </div>
