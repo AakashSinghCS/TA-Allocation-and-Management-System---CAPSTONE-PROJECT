@@ -5,17 +5,25 @@
 import React from 'react'
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react'
 import { vi } from 'vitest'
-import InstructorHomePage from './InstructorHomePage'
+import InstructorHomePage from './InstructorHomePage';
 
 // 1) AuthContext
 vi.mock('../../../context/AuthContext', () => ({
   useAuth: () => ({ userId: 1, token: 'fake-token' }),
 }))
 
-// 2) Section filter → returns an empty year list
-vi.mock('../../../api/course/sectionfilter/fetchAllExistingYears', () => ({
-  fetchAllExistingYears: vi.fn().mockResolvedValue([]),
+vi.mock('../../../api/semester/getAllSemesters', () => ({
+  getAllSemesters: vi.fn().mockResolvedValue([]),
 }))
+
+vi.mock('../../../api/allocation/fetchAllocationById', () => ({
+  fetchAllocationById: vi.fn().mockResolvedValue({}),
+}))
+
+// 2) Section filter → returns an empty year list
+// vi.mock('../../../api/course/sectionfilter/fetchAllExistingYears', () => ({
+//   fetchAllExistingYears: vi.fn().mockResolvedValue([]),
+// }))
 
 // 3) Section needs & allocations → empty
 vi.mock('../../../api/instructor/fetchSectionNeedAndAllocations', () => ({

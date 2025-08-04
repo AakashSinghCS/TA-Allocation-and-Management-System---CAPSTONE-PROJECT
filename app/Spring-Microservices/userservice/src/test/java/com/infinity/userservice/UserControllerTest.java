@@ -341,11 +341,15 @@ public class UserControllerTest {
 
         @Test
         void getUserDetailsById_returnsUserDto() throws Exception {
+                Long userIdFromHeader = 1L;
+                List<String> userRoles =List.of("ROLE_ADMIN");
                 UserDto instructorDto = new UserDto(2L, "Bob", "Instructor", "bob@example.com",
                                 List.of(UserRole.INSTRUCTOR), null, null, null, null, null, null, null, true);
-                when(userService.getUserDetailsById(2L)).thenReturn(instructorDto);
+                when(userService.getUserDetailsById(2L,userRoles, userIdFromHeader)).thenReturn(instructorDto);
 
-                mockMvc.perform(get("/users/profile/2"))
+                mockMvc.perform(get("/users/profile/2")
+                                .header("X-User-Roles",userRoles)
+                                .header("X-User-Id",userIdFromHeader))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.email").value("bob@example.com"))
                                 .andExpect(jsonPath("$.roles[0]").value("INSTRUCTOR"));

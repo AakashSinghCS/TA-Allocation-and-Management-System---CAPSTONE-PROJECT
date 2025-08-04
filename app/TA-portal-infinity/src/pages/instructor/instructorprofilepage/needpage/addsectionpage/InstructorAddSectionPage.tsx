@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchFilteredSections, type FilterSectionsProps } from "../../../../../api/course/sectionfilter/fetchFilteredSections";
+import { type FilterSectionsProps } from "../../../../../api/course/sectionfilter/fetchFilteredSections";
 import { fetchGetNeed } from "../../../../../api/need/fetchGetNeed";
 import { fetchUpdateNeed } from "../../../../../api/need/fetchUpdateNeed";
 import { fetchAssignInstructor } from "../../../../../api/section/instructor/fetchAssignInstructor";
@@ -10,6 +10,9 @@ import { useAuth } from "../../../../../context/AuthContext";
 import type { Course } from "../../../../../interfaces/course/Course";
 import type Section from "../../../../../interfaces/section/Section";
 import { convertFilterSectionsToSections } from "../../../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections";
+import { useDebounce } from "../../../../../utility/pagination/useDebounce";
+import { useSectionSearchPage } from "../../../../../api/course/sectionfilter/useSectionFilter";
+import Pagination from "../../../../../utility/pagination/pagination/Pagination";
 
 type Mode = "update" | "add";
 
@@ -26,11 +29,26 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
   const year = Number(yearParam);
   const [description, setDescription] = useState("");
   const [requiredHours, setRequiredHours] = useState(0);
-  const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
-  const [loading, setLoading] = useState(false);
+  // const [filteredSections, setFilteredSections] = useState<Section[] | null>([]);
+  // const [loading, setLoading] = useState(false);
   const [selectedPrereqs, setSelectedPrereqs] = useState<Course[]>([]);
   const [numHoursCurrentlyAllocated, setNumHoursCurrentlyAllocated] = useState(0);
 
+  const [filters, setFilters] = useState<FilterSectionsProps>({});
+  const [page, setPage] = useState(0);
+  const debouncedFilters = useDebounce(filters, 300);
+
+  useEffect(() => { setPage(0); }, [debouncedFilters]);
+
+    const {
+    data: pageData,
+    isFetching: loadingSections,
+    isError: fetchError,
+    error: fetchErrorMsg
+  } = useSectionSearchPage(debouncedFilters, page, 10);
+  const raw = pageData?.content ?? [];
+  const filteredSections = convertFilterSectionsToSections(raw);
+  
   useEffect(() => {
     if (mode === 'update' && courseId && year && semester) {
       fetchGetNeed(courseId,year,semester)
@@ -47,17 +65,17 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
     }
   }, [mode, courseId, year, semester, navigate]);
 
-  const handleFilterChange = async (filters: FilterSectionsProps) => {
-    setLoading(true);
-    try {
-      const raw = await fetchFilteredSections(filters);
-      setFilteredSections(convertFilterSectionsToSections(raw || []));
-    } catch (e) {
-      navigate('/error', { replace: true, state: { message: (e as Error).message } });
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const handleFilterChange = async (filters: FilterSectionsProps) => {
+  //   setLoading(true);
+  //   try {
+  //     const raw = await fetchFilteredSections(filters);
+  //     setFilteredSections(convertFilterSectionsToSections(raw || []));
+  //   } catch (e) {
+  //     navigate('/error', { replace: true, state: { message: (e as Error).message } });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // per‐section add (in “add” mode)
   const onSelect = async (section: Section) => {
@@ -172,12 +190,13 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
       )}
 
       <div className="shadow-lg p-4 rounded-2xl mb-4">
-        <SectionFilter onFilterChange={handleFilterChange} mode="large" />
+        <SectionFilter onFilterChange={setFilters} mode="large" />
       </div>
 
-      {loading ? (
+      {loadingSections ? (
         <p>Loading sections…</p>
       ) : (
+        <>
         <SectionList
           sections={filteredSections}
           mode={mode === 'add' ? 'instructorAddSection' : 'instructorPrereqCourse'}
@@ -185,6 +204,15 @@ export default function InstructorAddSectionPage({ mode = 'add' }: { mode?: Mode
           onSelectCourse={mode === 'update' ? onSelectCourseForPrereq : undefined}
           askForConfirmation={true}
         />
+        <div className="mt-4">
+          <Pagination
+            page={page}
+            pageCount={pageData?.totalPages ?? 0}
+            onPrev={() => setPage(p => Math.max(0,p-1))}
+            onNext={() => setPage(p => Math.min((pageData?.totalPages ?? 1)-1, p+1))}
+          />
+        </div>
+        </>
       )}
 
       {mode === 'update' && (

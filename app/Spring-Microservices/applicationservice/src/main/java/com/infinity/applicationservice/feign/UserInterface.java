@@ -26,7 +26,8 @@ public interface UserInterface {
     public ResponseEntity<UserDto> getStudentByNum(@PathVariable Integer studentNum);
 
     @GetMapping("/users/profile/{id}")
-    public ResponseEntity<UserDto> getUserDetailsById(@PathVariable Long id);
+    public ResponseEntity<UserDto> getUserDetailsById(@PathVariable Long id,@RequestHeader(name="X-User-Roles", required = true) List<String> headerRoles,
+    @RequestHeader(name="X-User-Id", required=false) Long userIdFromHeader);
 
     @GetMapping("/users/students/batch")
     List<UserDto> getStudentsByIds(@RequestParam List<Long> ids);

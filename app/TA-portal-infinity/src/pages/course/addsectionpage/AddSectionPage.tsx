@@ -93,11 +93,12 @@ export default function AddSectionPage() {
   };
 
   return (
+
     <div className="max-w-7xl w-full mx-auto px-4 md:px-8 -mt-4 p-4 z-10">
       <div className="flex justify-between items-stretch mb-4">
         <h1 className="text-2xl md:text-3xl font-bold text-[#040941]">Course & Section Management</h1>
       </div>
-      
+   
       {/* Tab Navigation */}
       <div className="mb-6">
         <div className="border-b border-gray-200">
@@ -151,6 +152,7 @@ export default function AddSectionPage() {
             <SectionCsvImportInline />
           </>
         )}
+
 
         {activeTab === 'course' && (
           <>

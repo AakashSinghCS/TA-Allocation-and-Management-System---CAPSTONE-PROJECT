@@ -3,6 +3,7 @@ package com.infinity.userservice.services;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -291,11 +292,27 @@ public class UserService {
         return "User deactivated";
     }
 
-    //Student methods
+    public UserDto getUserDetailsById(Long id, List<String> headerRoles, Long userIdFromHeader) {
+        boolean isPrivileged = headerRoles.contains("ROLE_COORDINATOR")
+                    || headerRoles.contains("ROLE_INSTRUCTOR")
+                    || headerRoles.contains("ROLE_ADMIN");
 
-    public UserDto getUserDetailsById(Long id) {
+        if (!isPrivileged) {
+            boolean isSelf = headerRoles.contains("ROLE_STUDENT") && Objects.equals(userIdFromHeader, id);
+            if (!isSelf) {
+                throw new AuthorizationException("Not allowed");
+            }
+        }
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found with id " + id));
+
+        boolean isAdminOrCoordinator   = headerRoles.contains("ROLE_ADMIN") || headerRoles.contains("ROLE_COORDINATOR");
+        boolean isSameUser = Objects.equals(userIdFromHeader, id);
+
+        if (!isAdminOrCoordinator && !isSameUser) {
+            user.setId(null);
+        }
+
         return userMapper.toDto(user);
     }
 

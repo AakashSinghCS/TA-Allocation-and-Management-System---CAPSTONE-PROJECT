@@ -96,6 +96,7 @@ class AuditServiceTest {
 
     @Test
     void getById_returnsEventWhenFound() {
+        List<String> headerRoles = List.of("ROLE_ADMIN");
         AuditEvent expected = AuditEvent.builder()
                 .id(42L)
                 .actorId(5L)
@@ -134,26 +135,28 @@ class AuditServiceTest {
                 true);
 
         when(auditRepo.findById(42L)).thenReturn(Optional.of(expected));
-        when(userRepository.getUserDetailsById(5L)).thenReturn(
+        when(userRepository.getUserDetailsById(5L, headerRoles, null)).thenReturn(
                 ResponseEntity.ok(actorDto));
 
         when(auditMapper.mapToDto(expected, "Actor Name", null)).thenReturn(auditDto);
 
-        AuditEventDto actual = service.getById(42L);
+        AuditEventDto actual = service.getById(42L, headerRoles);
         assertThat(actual).isSameAs(auditDto);
 
     }
 
     @Test
     void getById_throwsNotFound_whenMissing() {
+        List<String> headerRoles = List.of("ROLE_ADMIN");
         when(auditRepo.findById(99L)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> service.getById(99L))
+        assertThatThrownBy(() -> service.getById(99L, headerRoles))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("AuditEvent not found with id 99");
     }
 
     @Test
     void search_delegatesToRepositoryWithSpecificationAndPageable() {
+        List<String> headerRoles = List.of("ROLE_ADMIN");
         Pageable pageReq = PageRequest.of(1, 20);
         // no need to stub the return; we just verify interaction
         when(auditRepo.findAll(any(Specification.class), eq(pageReq)))
@@ -166,7 +169,8 @@ class AuditServiceTest {
                 555L,
                 ActionOptions.DELETE,
                 777L,
-                "2025-07-16");
+                "2025-07-16",
+                headerRoles);
 
         verify(auditRepo).findAll(
                 (Specification<AuditEvent>) any(Specification.class),
@@ -175,6 +179,7 @@ class AuditServiceTest {
 
     @Test
     void search_mapsEventsToDtos() {
+        List<String> headerRoles = List.of("ROLE_ADMIN");
         Pageable pageReq = PageRequest.of(0, 10);
 
         AuditEvent event = AuditEvent.builder()
@@ -197,7 +202,7 @@ class AuditServiceTest {
                 List.of(), null, null, null, null, null, null,
                 LocalDateTime.now(), true);
 
-        when(userRepository.getUserDetailsById(10L))
+        when(userRepository.getUserDetailsById(10L, headerRoles,null))
                 .thenReturn(ResponseEntity.ok(actorDto));
         AuditEventDto expectedDto = new AuditEventDto(
                 1L, 10L, "Alice Smith", event.getTimestamp(),
@@ -215,7 +220,8 @@ class AuditServiceTest {
                 20L,
                 ActionOptions.UPDATE,
                 10L,
-                null);
+                null,
+                headerRoles);
 
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0)).isEqualTo(expectedDto);
