@@ -1,7 +1,6 @@
 package com.infinity.applicationservice.models;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +25,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
@@ -76,10 +74,6 @@ public class Application {
 
     @Column(nullable = false)
     private String semester;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Transcript transcript;
 
      @OneToOne(mappedBy = "application", 
             cascade = CascadeType.ALL,

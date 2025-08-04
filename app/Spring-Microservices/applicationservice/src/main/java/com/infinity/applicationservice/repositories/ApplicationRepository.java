@@ -25,6 +25,9 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
      Optional<List<Application>> findAllByStudentId(Long studentId);
 
+     @Query("SELECT a FROM Application a WHERE a.studentId = :userId")
+     Optional<Application> findByUserId(@Param("userId") Long userId);
+
      @Query("""
                    SELECT a FROM Application a
                    WHERE (:year IS NULL OR a.year = :year)

@@ -22,6 +22,16 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+    }
+
+    @ExceptionHandler(java.io.IOException.class)
+    public ResponseEntity<?> handleIOException(java.io.IOException ex) {
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+    }
+
     /** Fallback: argument-validation errors, etc. */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex) {

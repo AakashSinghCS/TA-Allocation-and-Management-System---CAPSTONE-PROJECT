@@ -4311,6 +4311,202 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Transcripts (Profile Service)",
+			"item": [
+				{
+					"name": "Upload Transcript",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUwNzE0ODQ4fQ.example_token_here",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/profiles/transcripts/upload",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profiles",
+								"transcripts",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transcript Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUwNzE0ODQ4fQ.example_token_here",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/profiles/transcripts/status",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profiles",
+								"transcripts",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Download My Transcript",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUwNzE0ODQ4fQ.example_token_here",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/profiles/transcripts/download",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profiles",
+								"transcripts",
+								"download"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Transcript",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwidXNlcklkIjoxLCJyb2xlcyI6WyJST0xFX1NUVURFTlQiXSwiaWF0IjoxNzUwNzE0ODQ4fQ.example_token_here",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/profiles/transcripts/delete",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profiles",
+								"transcripts",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List All Transcripts (Admin/Coordinator)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/profiles/transcripts/list",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profiles",
+								"transcripts",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Download Transcript by ID (Admin/Coordinator)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjb29yZGluYXRvckB0ZXN0LmNvbSIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzUwNjI0NjU0fQ.M6awjokqjF2hSQ-RFI9okRsba5Q0EuEDW_9z2Eo4vDvzcHspW1sAewjn4EDUR6xe",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/profiles/transcripts/download/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profiles",
+								"transcripts",
+								"download",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

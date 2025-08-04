@@ -21,6 +21,7 @@ const StudentHomePage = lazy(() => import("../pages/student/student_homepage/Stu
 const ApplicationPage = lazy(() => import("../pages/student/applicationpage/ApplicationPage"));
 const ViewApplicationPage = lazy(() => import("../pages/student/viewapplicationpage/ViewApplicationPage"));
 const ScheduleViewer = lazy(() => import("../pages/student/scheduleviewer/ScheduleViewer"));
+const TranscriptUploadPage = lazy(() => import("../pages/student/transcriptuploadpage/TranscriptUploadPage"));
 
 const InstructorNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/InstructorNeedPage"));
 const InstructorQualificationPage = lazy(() => import("../pages/instructor/instructorprofilepage/qualificationpage/InstructorQualificationPage"));
@@ -35,6 +36,7 @@ const ApplicationViewPage = lazy(() => import("../pages/coordinator/applicationv
 const UserBrowsingPage = lazy(() => import("../pages/coordinator/userbrowsingpage/UserBrowsingPage"));
 const ManualCreateUserPage = lazy(() => import("../pages/coordinator/userbrowsingpage/manualcreateuserpage/ManualCreateUserPage"));
 const GlobalConfigPage = lazy(() => import("../pages/admin/globalconfig/GlobalConfigPage"));
+const TranscriptManagementPage = lazy(() => import("../pages/coordinator/transcriptmanagementpage/TranscriptManagementPage"));
 
 const CourseProfilePage = lazy(() => import("../pages/course/courseprofilepage/CourseProfilePage"));
 const SectionListPage = lazy(() => import("../pages/course/sectionlistpage/SectionListPage"));
@@ -84,6 +86,7 @@ export const router = createBrowserRouter([
           { path: "home", element: <Suspense fallback={<div>Loading...</div>}><StudentHomePage /></Suspense> },
           { path: "application", element: <Suspense fallback={<div>Loading...</div>}><ApplicationPage /></Suspense> },
           { path: "view-applications", element: <Suspense fallback={<div>Loading...</div>}><ViewApplicationPage /></Suspense> },
+          { path: "transcript-upload", element: <Suspense fallback={<div>Loading...</div>}><TranscriptUploadPage /></Suspense> },
 
           { path: "schedule", element: <Suspense fallback={<div>Loading...</div>}><ScheduleViewer  /></Suspense> },
           { path: "questions/:studentId", element: <TaQuestionnairePage /> },
@@ -130,6 +133,7 @@ export const router = createBrowserRouter([
           { path: "sections/export", element: <Suspense fallback={<div>Loading...</div>}><ExportToCSVPage /></Suspense> },
           { path: "applications", element: <Suspense fallback={<div>Loading...</div>}><ApplicationViewPage /></Suspense> },
           { path: "allocation", element: <Suspense fallback={<div>Loading...</div>}><AllocationPage /></Suspense> },
+          { path: "transcripts", element: <Suspense fallback={<div>Loading...</div>}><TranscriptManagementPage /></Suspense> },
           { path: "globalconfig", element: <Suspense fallback={<div>Loading...</div>}><GlobalConfigPage /></Suspense> },
           { path: "audit", element: <Suspense fallback={<div>Loading...</div>}><AuditLogsPage /></Suspense> },
           { path: "error", element: <Suspense fallback={<div>Loading...</div>}><ErrorPage /></Suspense> },
