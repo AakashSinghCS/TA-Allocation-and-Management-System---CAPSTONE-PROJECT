@@ -80,9 +80,9 @@ public class TranscriptService {
     
     private TranscriptInfoDTO enrichWithUserInfo(TranscriptInfoDTO transcriptInfo) {
         try {
-            // For service-to-service calls, we use SYSTEM role with null user ID
-            List<String> systemRoles = List.of("SYSTEM");
-            UserDto userDto = userInterface.getUserDetailsById(transcriptInfo.getStudentId(), systemRoles, null).getBody();
+            // For service-to-service calls, we use COORDINATOR role to access user information
+            List<String> coordinatorRoles = List.of("ROLE_COORDINATOR");
+            UserDto userDto = userInterface.getUserDetailsById(transcriptInfo.getStudentId(), coordinatorRoles, null).getBody();
             if (userDto != null) {
                 transcriptInfo.setStudentName(userDto.firstName() + " " + userDto.lastName());
                 transcriptInfo.setStudentEmail(userDto.email());
