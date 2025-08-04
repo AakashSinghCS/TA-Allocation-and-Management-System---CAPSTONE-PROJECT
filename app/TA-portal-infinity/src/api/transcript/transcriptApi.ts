@@ -1,6 +1,6 @@
 export interface TranscriptInfo {
   transcriptId: number;
-  id?: number; // For backward compatibility, map transcriptId to id
+  id: number; // For backward compatibility, map transcriptId to id (required)
   studentId: number;
   studentName: string;
   studentEmail: string;

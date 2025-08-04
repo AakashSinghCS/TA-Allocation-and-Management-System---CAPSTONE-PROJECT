@@ -1,9 +1,16 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Download, Eye, Search, Filter, ChevronDown, ChevronUp, Maximize2, X, Loader2, User, Mail, Hash, Edit3, Check, AlertTriangle, Clock, XCircle, Calendar } from 'lucide-react';
+import { Download, Eye, Search, Filter, ChevronDown, ChevronUp, Maximize2, X, Loader2, User, Mail, Hash, Edit3, Check, AlertTriangle, Clock, XCircle, Calendar, MessageSquare, Plus, FileText, ThumbsUp, ThumbsDown, HelpCircle, Info } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { StatusIndicator } from '../../../components/ui/statusindicator/StatusIndicator';
 import { fetchAllTranscripts, downloadTranscript, fetchTranscriptForPreview, updateTranscriptReview, type TranscriptInfo as ApiTranscriptInfo, type TranscriptReview } from '../../../api/transcript/transcriptApi';
+
+interface CommentTemplate {
+  id: string;
+  name: string;
+  comment: string;
+  category: 'approval' | 'rejection' | 'clarification' | 'general';
+}
 
 interface TranscriptInfo extends ApiTranscriptInfo {}
 
@@ -34,6 +41,12 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   const [reviewStatus, setReviewStatus] = useState<TranscriptInfo['reviewStatus']>('PENDING');
   const [reviewComments, setReviewComments] = useState('');
   const [updatingReview, setUpdatingReview] = useState(false);
+  
+  // Comment template states
+  const [showTemplateDropdown, setShowTemplateDropdown] = useState<number | null>(null);
+  const [customTemplates, setCustomTemplates] = useState<CommentTemplate[]>([]);
+  const [templateSearch, setTemplateSearch] = useState('');
+  const [selectedTemplateCategory, setSelectedTemplateCategory] = useState<CommentTemplate['category'] | 'all'>('all');
   
   // Filter states
   const [statusFilter, setStatusFilter] = useState<TranscriptInfo['reviewStatus'] | 'ALL'>('ALL');
@@ -118,6 +131,141 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
     setDateRangeError(error);
   };
 
+  // Predefined comment templates
+  const predefinedTemplates: CommentTemplate[] = [
+    {
+      id: 'approve-excellent',
+      name: 'Excellent Academic Record',
+      comment: 'Excellent academic performance with strong GPA and relevant coursework. All requirements met for TA position.',
+      category: 'approval'
+    },
+    {
+      id: 'approve-qualified',
+      name: 'Qualified Candidate',
+      comment: 'Meets all academic requirements. Good performance in relevant courses. Approved for TA consideration.',
+      category: 'approval'
+    },
+    {
+      id: 'reject-gpa',
+      name: 'GPA Requirements Not Met',
+      comment: 'Current GPA does not meet the minimum requirement of 3.0 for undergraduate TAs or 3.5 for graduate TAs.',
+      category: 'rejection'
+    },
+    {
+      id: 'reject-prerequisites',
+      name: 'Missing Prerequisites',
+      comment: 'Required prerequisite courses have not been completed. Please ensure all necessary coursework is finished before reapplying.',
+      category: 'rejection'
+    },
+    {
+      id: 'clarify-courses',
+      name: 'Course Information Needed',
+      comment: 'Please provide more detailed information about specific courses taken, including course codes and grades received.',
+      category: 'clarification'
+    },
+    {
+      id: 'clarify-document',
+      name: 'Document Quality Issues',
+      comment: 'The submitted transcript is difficult to read or appears incomplete. Please submit a clearer, official copy.',
+      category: 'clarification'
+    },
+    {
+      id: 'general-review',
+      name: 'Under Review',
+      comment: 'Your transcript is currently under review. We will provide feedback within 3-5 business days.',
+      category: 'general'
+    }
+  ];
+
+  // Get all available templates (predefined + custom)
+  const allTemplates = [...predefinedTemplates, ...customTemplates];
+
+  // Filter templates by category and search
+  const getFilteredTemplates = (category?: CommentTemplate['category']) => {
+    let templates = allTemplates;
+    
+    // Filter by category if specified
+    if (category) {
+      templates = templates.filter(template => template.category === category);
+    } else if (selectedTemplateCategory !== 'all') {
+      templates = templates.filter(template => template.category === selectedTemplateCategory);
+    }
+    
+    // Filter by search term
+    if (templateSearch) {
+      templates = templates.filter(template =>
+        template.name.toLowerCase().includes(templateSearch.toLowerCase()) ||
+        template.comment.toLowerCase().includes(templateSearch.toLowerCase())
+      );
+    }
+    
+    return templates;
+  };
+
+  // Handle template selection
+  const handleTemplateSelect = (template: CommentTemplate) => {
+    setReviewComments(template.comment);
+    setShowTemplateDropdown(null);
+    setTemplateSearch(''); // Clear search when template is selected
+  };
+
+  // Get category icon
+  const getCategoryIcon = (category: CommentTemplate['category']) => {
+    switch (category) {
+      case 'approval':
+        return <ThumbsUp className="w-4 h-4 text-green-600" />;
+      case 'rejection':
+        return <ThumbsDown className="w-4 h-4 text-red-600" />;
+      case 'clarification':
+        return <HelpCircle className="w-4 h-4 text-yellow-600" />;
+      case 'general':
+        return <Info className="w-4 h-4 text-blue-600" />;
+      default:
+        return <FileText className="w-4 h-4 text-gray-600" />;
+    }
+  };
+
+  // Get category color classes
+  const getCategoryClasses = (category: CommentTemplate['category']) => {
+    switch (category) {
+      case 'approval':
+        return {
+          bg: 'hover:bg-green-50',
+          border: 'border-l-green-500',
+          text: 'text-green-800',
+          badge: 'bg-green-100 text-green-800'
+        };
+      case 'rejection':
+        return {
+          bg: 'hover:bg-red-50',
+          border: 'border-l-red-500',
+          text: 'text-red-800',
+          badge: 'bg-red-100 text-red-800'
+        };
+      case 'clarification':
+        return {
+          bg: 'hover:bg-yellow-50',
+          border: 'border-l-yellow-500',
+          text: 'text-yellow-800',
+          badge: 'bg-yellow-100 text-yellow-800'
+        };
+      case 'general':
+        return {
+          bg: 'hover:bg-blue-50',
+          border: 'border-l-blue-500',
+          text: 'text-blue-800',
+          badge: 'bg-blue-100 text-blue-800'
+        };
+      default:
+        return {
+          bg: 'hover:bg-gray-50',
+          border: 'border-l-gray-500',
+          text: 'text-gray-800',
+          badge: 'bg-gray-100 text-gray-800'
+        };
+    }
+  };
+
   // Tooltip component
   const Tooltip: React.FC<{ children: React.ReactNode; content: string; className?: string }> = ({ 
     children, 
@@ -136,6 +284,23 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
   useEffect(() => {
     fetchTranscripts();
   }, [token]);
+
+  // Close template dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showTemplateDropdown !== null) {
+        const target = event.target as Element;
+        if (!target.closest('.template-dropdown')) {
+          setShowTemplateDropdown(null);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showTemplateDropdown]);
 
   // Cleanup preview URLs on component unmount and state changes
   useEffect(() => {
@@ -762,7 +927,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
               <div className="flex items-start space-x-2">
                 <span className="text-blue-600 font-bold">3.</span>
                 <div>
-                  <span><strong>Individual Review:</strong> Click "Review" button to open inline editing. Select status from dropdown, add detailed comments, then click "Save" to confirm changes.</span>
+                  <span><strong>Individual Review:</strong> Click "Review" button to open inline editing. Select status from dropdown, add detailed comments (use "Templates" button for quick common responses), then click "Save" to confirm changes.</span>
                 </div>
               </div>
               <div className="flex items-start space-x-2">
@@ -775,6 +940,12 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 <span className="text-blue-600 font-bold">5.</span>
                 <div>
                   <span><strong>Preview & Download:</strong> Click "Preview" to view transcript content in the tab below. Use "Fullscreen" for detailed examination or "Download" for offline review.</span>
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <span className="text-blue-600 font-bold">6.</span>
+                <div>
+                  <span><strong>Comment Templates:</strong> Use the "Templates" button in review mode to select from predefined comment templates (Approval, Rejection, Clarification, General) for consistent and efficient feedback.</span>
                 </div>
               </div>
             </div>
@@ -1296,9 +1467,171 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                                     <label className="block text-sm font-medium text-gray-700">
                                       Review Comments
                                     </label>
-                                    <span className={`text-xs ${reviewComments.length > 500 ? 'text-red-500' : 'text-gray-400'}`}>
-                                      {reviewComments.length}/500
-                                    </span>
+                                    <div className="flex items-center space-x-2">
+                                      {/* Template Dropdown Button */}
+                                      <div className="relative template-dropdown">
+                                        <button
+                                          type="button"
+                                          onClick={() => setShowTemplateDropdown(
+                                            showTemplateDropdown === transcript.id ? null : (transcript.id || null)
+                                          )}
+                                          className="inline-flex items-center px-2 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+                                        >
+                                          <MessageSquare className="w-3 h-3 mr-1" />
+                                          Templates
+                                          {showTemplateDropdown === transcript.id ? (
+                                            <ChevronUp className="w-3 h-3 ml-1" />
+                                          ) : (
+                                            <ChevronDown className="w-3 h-3 ml-1" />
+                                          )}
+                                        </button>
+                                        
+{/* Template Section - Inline Expandable */}
+                                        {showTemplateDropdown === transcript.id && (
+                                          <div className="mt-3 bg-gray-50 border border-gray-200 rounded-lg overflow-hidden transition-all duration-300 ease-in-out">
+                                            {/* Header */}
+                                            <div className="bg-white px-4 py-3 border-b border-gray-200">
+                                              <div className="flex items-center justify-between mb-3">
+                                                <h4 className="text-sm font-semibold text-gray-900 flex items-center">
+                                                  <MessageSquare className="w-4 h-4 mr-2 text-blue-600" />
+                                                  Comment Templates
+                                                </h4>
+                                                <button
+                                                  onClick={() => setShowTemplateDropdown(null)}
+                                                  className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                                                >
+                                                  <ChevronUp className="w-4 h-4 text-gray-500" />
+                                                </button>
+                                              </div>
+                                              
+                                              {/* Search Bar */}
+                                              <div className="relative mb-3">
+                                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                                <input
+                                                  type="text"
+                                                  placeholder="Search templates..."
+                                                  value={templateSearch}
+                                                  onChange={(e) => setTemplateSearch(e.target.value)}
+                                                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                                                />
+                                              </div>
+                                              
+                                              {/* Category Filter */}
+                                              <div className="flex flex-wrap gap-2">
+                                                <button
+                                                  onClick={() => setSelectedTemplateCategory('all')}
+                                                  className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                                                    selectedTemplateCategory === 'all'
+                                                      ? 'bg-blue-100 text-blue-800 border border-blue-200'
+                                                      : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                                                  }`}
+                                                >
+                                                  All
+                                                </button>
+                                                <button
+                                                  onClick={() => setSelectedTemplateCategory('approval')}
+                                                  className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                                                    selectedTemplateCategory === 'approval'
+                                                      ? 'bg-green-100 text-green-800 border border-green-200'
+                                                      : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                                                  }`}
+                                                >
+                                                  Approval
+                                                </button>
+                                                <button
+                                                  onClick={() => setSelectedTemplateCategory('rejection')}
+                                                  className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                                                    selectedTemplateCategory === 'rejection'
+                                                      ? 'bg-red-100 text-red-800 border border-red-200'
+                                                      : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                                                  }`}
+                                                >
+                                                  Rejection
+                                                </button>
+                                                <button
+                                                  onClick={() => setSelectedTemplateCategory('clarification')}
+                                                  className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                                                    selectedTemplateCategory === 'clarification'
+                                                      ? 'bg-yellow-100 text-yellow-800 border border-yellow-200'
+                                                      : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                                                  }`}
+                                                >
+                                                  Clarification
+                                                </button>
+                                                <button
+                                                  onClick={() => setSelectedTemplateCategory('general')}
+                                                  className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                                                    selectedTemplateCategory === 'general'
+                                                      ? 'bg-blue-100 text-blue-800 border border-blue-200'
+                                                      : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                                                  }`}
+                                                >
+                                                  General
+                                                </button>
+                                              </div>
+                                            </div>
+                                            
+                                            {/* Templates List */}
+                                            <div className="p-3 bg-gray-50 max-h-80 overflow-y-auto">
+                                              {getFilteredTemplates().length === 0 ? (
+                                                <div className="text-center py-8 text-gray-500">
+                                                  <MessageSquare className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                                                  <p className="text-sm">No templates found</p>
+                                                  {templateSearch && (
+                                                    <p className="text-xs mt-1">Try adjusting your search</p>
+                                                  )}
+                                                </div>
+                                              ) : (
+                                                <div className="grid gap-2">
+                                                  {getFilteredTemplates().map(template => {
+                                                    const categoryClasses = getCategoryClasses(template.category);
+                                                    return (
+                                                      <button
+                                                        key={template.id}
+                                                        onClick={() => handleTemplateSelect(template)}
+                                                        className={`w-full text-left p-3 rounded-lg border-l-4 ${categoryClasses.border} bg-white hover:shadow-md transition-all duration-200 group border border-gray-200`}
+                                                      >
+                                                        <div className="flex items-start justify-between">
+                                                          <div className="flex-1">
+                                                            <div className="flex items-center mb-2">
+                                                              {getCategoryIcon(template.category)}
+                                                              <span className="font-medium text-sm text-gray-900 ml-2">
+                                                                {template.name}
+                                                              </span>
+                                                              <span className={`ml-2 px-2 py-0.5 text-xs font-medium rounded-full ${categoryClasses.badge}`}>
+                                                                {template.category}
+                                                              </span>
+                                                            </div>
+                                                            <p className="text-xs text-gray-600 leading-relaxed">
+                                                              {template.comment.length > 100
+                                                                ? `${template.comment.substring(0, 100)}...`
+                                                                : template.comment
+                                                              }
+                                                            </p>
+                                                          </div>
+                                                          <Plus className="w-4 h-4 text-gray-400 ml-2 group-hover:text-blue-600 transition-colors" />
+                                                        </div>
+                                                      </button>
+                                                    );
+                                                  })}
+                                                </div>
+                                              )}
+                                            </div>
+                                            
+                                            {/* Footer */}
+                                            <div className="px-4 py-2 bg-white border-t border-gray-200">
+                                              <p className="text-xs text-gray-500 text-center">
+                                                💡 Click any template to insert it into your comment
+                                              </p>
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                      
+                                      <span className={`text-xs ${reviewComments.length > 500 ? 'text-red-500' : 'text-gray-400'}`}>
+                                        {reviewComments.length}/500
+                                      </span>
+                                    </div>
                                   </div>
                                   <textarea
                                     value={reviewComments}
