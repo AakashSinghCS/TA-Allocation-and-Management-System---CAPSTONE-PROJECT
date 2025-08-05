@@ -22,6 +22,7 @@ const ApplicationPage = lazy(() => import("../pages/student/applicationpage/Appl
 const ViewApplicationPage = lazy(() => import("../pages/student/viewapplicationpage/ViewApplicationPage"));
 const ScheduleViewer = lazy(() => import("../pages/student/scheduleviewer/ScheduleViewer"));
 const TranscriptUploadPage = lazy(() => import("../pages/student/transcriptuploadpage/TranscriptUploadPage"));
+const LabSkillsPage = lazy(() => import("../pages/student/taprofilepage/qualificationpage/StudentQualificationPage"));
 
 const InstructorNeedPage = lazy(() => import("../pages/instructor/instructorprofilepage/needpage/InstructorNeedPage"));
 const InstructorQualificationPage = lazy(() => import("../pages/instructor/instructorprofilepage/qualificationpage/InstructorQualificationPage"));
@@ -64,6 +65,7 @@ export const router = createBrowserRouter([
       // { path: "taprofile/:studentId", element: <Suspense fallback={<div>Loading...</div>}><TaProfilePage /></Suspense> },
       // { path: "taprofile/:userId/coursesTaken", element: <Suspense fallback={<div>Loading...</div>}><CoursesTakenPage /></Suspense> },
       { path: "taprofile/:userId/allocationHistory", element: <Suspense fallback={<div>Loading...</div>}><AllocationHistoryPage /></Suspense> },
+      { path: "taprofile/:userId/labSkills", element: <Suspense fallback={<div>Loading...</div>}><LabSkillsPage /></Suspense> },
       { path: "taprofile/:userId/transcript-upload", element: <Suspense fallback={<div>Loading...</div>}><TranscriptUploadPage /></Suspense> },
       { path: "taprofile/:userId/profileQuestions", element: <Suspense fallback={<div>Loading...</div>}><ViewProfileQuestionsPage /></Suspense> },
       // { path: "taprofile/:userId/compare", element: <Suspense fallback={<div>Loading...</div>}><StudentComparerPage /></Suspense> },
