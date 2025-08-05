@@ -1,3 +1,64 @@
+## Monday (Aug 1-4)
+
+### Timesheet
+Clockify report
+![alt text](./aug1-4.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Minor bug fixes  [540]("https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/540")
+  * #2: Final slides for presentation [547]("https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/547")
+  * #3: Final video for client [548]("https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/548")
+  * Tidying up various loose ends (missing endpoints, small features, bugs, documentation, will put in the issues when completed in future logs)
+
+### Progress Update (since July 31st 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Add seeded capstone course with a need and some sections  <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/521">521</a>
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Fix minor bugs <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/540">540</a>
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Final slides <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/547">547</a>
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Final video <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/548">548</a>
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Reviewed a bunch of PR's, and while doing that ended up fixing some bugs on the branches. Also did a PR to fix some bugs and aesthetics with the section page like making the buttons consistent for adding sections, and form validation for section schedules, removing times outside of 8am to 8pm for selection, and fixing the toastify. In doing that, also fixed a transcript issue that happened from merge conflicts.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * We'll meet tomorrow and while waiting for the feature set 2 validation we'll probably as a group service up some waiting PR's and do the video and final slides together in that time. After that, maybe some more small bug fixes from merge conflicts and documentation updates that are needed like setup, and then preparing for the final presentation and handoff on Friday.
+
 ## Thursday (July 29-31)
 
 ### Timesheet
