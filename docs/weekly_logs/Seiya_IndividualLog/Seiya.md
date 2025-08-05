@@ -1,3 +1,50 @@
+## Monday (August 1-4)
+
+### Timesheet
+Clockify report
+
+![alt text](./clockify_images/clockify_weekly_log_2025-08-01_08-04_seiya.png)
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **Transcript Upload (Student) - Tests** | • Completed comprehensive test suite for TranscriptUploadPage <br> <br>• Implemented authorization, security, and edge case testing scenarios |
+| **2** | **Addressed Feedbacks on PR534 Transcript Upload (Student)** | • Fixed service-to-service authentication issues in TranscriptService<br>• Resolved duplicate sidebar navigation problems on coordinator pages<br>• Enhanced error handling and null safety in transcript workflows |
+| **3** | **Transcript Management Page (Coordinator) - Frontend & Backend Integration** | • Built complete TranscriptManagementPage with preview, filtering, and bulk operations<br>• Integrated backend APIs for transcript review workflow with review status management<br>• Added CSV export functionality and comprehensive data visualization |
+| **4** | **Transcript Management (Coordinator) - Frontend & Backend Tests** | • Created comprehensive frontend tests covering normal operations and edge cases<br>• Added backend JUnit tests with security validation and role-based access control<br>• Implemented integration tests for review workflow and file download functionality |
+| **5** | **Transcript Management (Coordinator) - UI/UX Improvements** | • Implemented improved inline template system with 7 predefined comment templates for review feature<br>• Added template search and category-based filtering (approval, rejection, clarification)<br>• Enhanced date range filtering with timezone handling and tooltips for all major actions |
+
+### Progress Update (since July 31, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: Transcript Upload (Student) - Tests                                      | Complete |
+| #2: Addressed Feedbacks on PR#534 Transcript Upload (Student)                 | Complete |
+| #3: Transcript Management Page (Coordinator) - Frontend & Backend Integration | Complete |
+| #4: Transcript Management (Coordinator) - Frontend & Backend Tests           | Complete |
+| #5: Transcript Management (Coordinator) - UI/UX Improvements                 | In Progress |
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to complete the coordinator-side transcript management functionality end-to-end and address all feedback from the student transcript upload PR#534.
+
+What was done:
+* **Comprehensive Testing Framework**: Successfully delivered frontend tests and backend JUnit tests covering normal operations, security validation, authorization scenarios, and comprehensive edge cases including network timeouts and malformed data handling
+* **Complete Coordinator Transcript Management**: Built full-stack functionality including advanced filtering by student name/status/date, bulk operations for transcript approval/rejection, real-time preview with fullscreen PDF capability, and CSV export for institutional reporting
+* **Enhanced User Experience**: Implemented review comment template system with 7 predefined templates categorized by approval, rejection, clarification, and general feedback, and improved date range filtering with proper timezone handling
+* **Production-Ready Integration**: Resolved all PR534 feedback including service-to-service authentication fixes, duplicate sidebar navigation issues, and comprehensive security validation ensuring robust coordinator workflow functionality
+* **Advanced UI/UX Polish**: Added comprehensive tooltips for all major action buttons and status badges, improved tab-based preview functionality, enhanced status filtering capabilities, and unified control panel layout for optimal coordinator user experience
+
+What was not done:
+* **Transcript Management Page UI/UX Improvements**: Some detailed UI/UX enhancements remain, such as optimizing button placement and adding a "last upload date" column for better coordinator usability
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+
+* Improve UI/UX of the Transcript Management page for coordinators
+* Increase overall project test coverage (frontend and backend)
+* Unify UI design and user experience across all project pages
+
+
+
+
 ## Thursday (July 29-31)
 
 ### Timesheet
@@ -19,7 +66,7 @@ Clockify report
 
 
 
-### Progress Update (since July 24, 2025) 
+### Progress Update (since July 28, 2025) 
 | TASK / ISSUE # | STATUS |
 |----------------|--------|
 | #1: Fix Section Creation Errors                    | Complete |
