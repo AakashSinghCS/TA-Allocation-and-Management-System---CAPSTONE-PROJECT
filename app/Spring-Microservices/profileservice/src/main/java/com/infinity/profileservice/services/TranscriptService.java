@@ -72,7 +72,7 @@ public class TranscriptService {
         return transcriptRepository.findById(transcriptId);
     }
     
-    public List<TranscriptInfoDTO> getAllTranscriptInfo() {
+    public List<TranscriptInfoDTO> getAllTranscriptInfo(Long userIdFromHeader, List<String> headerRoles) {
         List<Transcript> transcripts = transcriptRepository.findAllTranscriptsForInfo();
         
         // Convert to DTOs and enrich with user information
