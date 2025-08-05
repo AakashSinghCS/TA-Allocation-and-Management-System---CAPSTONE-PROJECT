@@ -1929,12 +1929,12 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                         | STATUS      |
 |--------------|-----------------------------------------------------|-------------|
-| #490         | Add term fields to application form & change impacted flow          | Completed   |
-| #463         | Allocation page calendar frontend enhancement Reviewed      | Completed   |
-| #518         | Refined CSV section import Reviewed                         | Completed   |
-| #527,   |  improve UI/UX for final exam Availability page              | Completed   |
- | #528        |  522 improve the lab skills page   | Completed   |
-| #525       |  Reviewed  516 Improve student filter - exams page  | Completed   |
+| [#490](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/490)         | Add term fields to application form & change impacted flow          | Completed   |
+| [#463](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/463)         | Allocation page calendar frontend enhancement Reviewed      | Completed   |
+| [#518](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/518)       | Refined CSV section import Reviewed                         | Completed   |
+| [#527](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/527)   |  improve UI/UX for final exam Availability page              | Completed   |
+ |[#528](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/528)        |  522 improve the lab skills page   | Completed   |
+| [#525](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/525)      |  Reviewed  516 Improve student filter - exams page  | Completed   |
 ## Cycle Goal Review
 
 ### Reflection
@@ -1967,8 +1967,8 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                         | STATUS      |
 |--------------|-----------------------------------------------------|-------------|
-| #510         | Working on course related pages                     | In Progress |
-| #529, #530   | PRs reviewed and approved                           | Completed   |
+| [#510](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/510)         | Working on course related pages                     | In Progress |
+| [#529](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/529), [#530](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/530)   | PRs reviewed and approved                           | Completed   |
 
 ## Cycle Goal Review
 
@@ -2005,9 +2005,9 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                         | STATUS      |
 |--------------|-----------------------------------------------------|-------------|
-| #510         | Finalized course related pages                      | Completed   |
-| #539         | Reviewed requested changes                          | Completed   |
-| #546         | Worked on course page improvements                  | In Progress |
+|  [#510](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/510)         | Finalized course related pages                      | Completed   |
+|  [#539](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/539)         | Reviewed requested changes                          | Completed   |
+|  [#546](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/546)         | Worked on course page improvements                  | In Progress |
 
 ## Cycle Goal Review
 
@@ -2021,7 +2021,7 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                                                               | TYPE               |
 |--------------|-------------------------------------------------------------------------------------------|--------------------|
-| #546         | Finalize course page improvements and resolve outstanding bugs        | UI and bug fixes  |
+|  [#546](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/546)          | Finalize course page improvements and resolve outstanding bugs        | UI and bug fixes  |
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # 4 August, Monday
@@ -2039,8 +2039,8 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                         | STATUS      |
 |--------------|-----------------------------------------------------|-------------|
-| #546         | PR finalized                                        | Completed   |
-| #542         | Issue addressed                                     | Completed   |
+| [#546](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/546)       | PR finalized                                        | Completed   |
+| [#542](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/542)        | Issue addressed                                     | Completed   |
 
 ## Cycle Goal Review
 
@@ -2054,7 +2054,7 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 | TASK/ISSUE # | DESCRIPTION                                                                               | TYPE               |
 |--------------|-------------------------------------------------------------------------------------------|--------------------|
-| #546         | Monitor for further feedback and polish as needed                    | UI and bug fixes  |
+|[#546](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/546)       | Monitor for further feedback and polish as needed                    | UI and bug fixes  |
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
