@@ -1,3 +1,107 @@
+## Monday (Aug 1-4)
+
+### Timesheet
+Clockify report
+![alt text](./aug1-4.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Minor bug fixes  [540]("https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/540")
+  * #2: Final slides for presentation [547]("https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/547")
+  * #3: Final video for client [548]("https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/548")
+  * Tidying up various loose ends (missing endpoints, small features, bugs, documentation, will put in the issues when completed in future logs)
+
+### Progress Update (since July 31st 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Add seeded capstone course with a need and some sections  <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/521">521</a>
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Fix minor bugs <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/540">540</a>
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Final slides <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/547">547</a>
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Final video <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/548">548</a>
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Reviewed a bunch of PR's, and while doing that ended up fixing some bugs on the branches. Also did a PR to fix some bugs and aesthetics with the section page like making the buttons consistent for adding sections, and form validation for section schedules, removing times outside of 8am to 8pm for selection, and fixing the toastify. In doing that, also fixed a transcript issue that happened from merge conflicts.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * We'll meet tomorrow and while waiting for the feature set 2 validation we'll probably as a group service up some waiting PR's and do the video and final slides together in that time. After that, maybe some more small bug fixes from merge conflicts and documentation updates that are needed like setup, and then preparing for the final presentation and handoff on Friday.
+
+## Thursday (July 29-31)
+
+### Timesheet
+Clockify report
+![alt text](./jul29-31.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Add seeded capstone course with a need and some sections  [521]("https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/521")
+  * Tidying up various loose ends (missing endpoints, small features, bugs, documentation, will put in the issues when completed in future logs)
+
+### Progress Update (since July 28th 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Add seeded capstone course with a need and some sections  <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/521">521</a>
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Add term fields to application form & change impacted flow <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/490">490</a>
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I helped Mandeep finish up the 490 PR which was my backend and his frontend for the new application workflow to allow applications to be semester specific. Since there were some other major changes like allocations being clickable on the frontend plus lab prep hours, grading hours etc. there were a number of merge conflicts and various bugs to fix which took a while. I also added a PR for seeding some courses into the db on startup so we don't always have to do that. In there I fixed some issues in the frontend like duplicated keys for qualifications and a course filter by year issue with null values.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * I plan to continue to review PR's and help fix bugs that arise or any other missing features while also preparing the documentation and slides for the final handoff and presentation, and also preparation for feature set 2 and the video for Chad. Just basically finishing things up, I don't plan on doing any new features other than maybe more seeding or bug fixes.
+
 ## Monday (July 25-28)
 
 ### Timesheet
