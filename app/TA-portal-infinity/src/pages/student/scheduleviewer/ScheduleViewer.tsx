@@ -96,17 +96,71 @@ const StudentSchedulePage: React.FC = () => {
       setLoading(true);
 
       try {
-        const all = await fetchStudentAllocationHistory(Number(userId), token);
+        const allRaw = await fetchStudentAllocationHistory(Number(userId), token);
+        console.log("fetchStudentAllocationHistory result:", allRaw);
+        const all = Array.isArray(allRaw) ? allRaw : (allRaw ? [allRaw] : []);
         const confirmed = all.filter(a => a.status === "CONFIRMED");
         const allocationsWithSchedule = await Promise.all(
           confirmed.map(async (alloc: any) => {
+            // If section is missing, try to use allocatedSections
             if (!alloc.section || typeof alloc.section.id !== "number") {
-              return [flattenAllocation(alloc)];
+              if (Array.isArray(alloc.allocatedSections) && alloc.allocatedSections.length > 0) {
+                // Use first allocatedSection for details
+                const sectionId = alloc.allocatedSections[0].sectionId;
+                let sectionDetails = null;
+                try {
+                  sectionDetails = await fetchSectionIncludeInstructorId(sectionId);
+                  console.log("Section details (allocatedSection):", sectionDetails);
+                } catch (err) {
+                  console.error("Error fetching section details (allocatedSection):", err);
+                }
+                let sectionSchedule: SectionSchedule[] = [];
+                if (sectionDetails && Array.isArray(sectionDetails.sectionSchedule)) {
+                  sectionSchedule = sectionDetails.sectionSchedule;
+                } else {
+                  try {
+                    const rawSectionSchedule = await fetchSectionSchedule(sectionId, token);
+                    sectionSchedule = Array.isArray(rawSectionSchedule)
+                      ? rawSectionSchedule
+                      : [];
+                  } catch {
+                    // no schedule
+                  }
+                }
+                let instructorName = "N/A";
+                if (sectionDetails && sectionDetails.instructor && sectionDetails.instructor.firstName && sectionDetails.instructor.lastName) {
+                  instructorName = `${sectionDetails.instructor.firstName} ${sectionDetails.instructor.lastName}`;
+                }
+                const makeRow = (sch?: { day: string; startTime: string; endTime: string }) => ({
+                  id: typeof alloc.id === "number" ? alloc.id : 0,
+                  course: sectionDetails && sectionDetails.course ? `${sectionDetails.course.deptCode} ${sectionDetails.course.courseNum}` : "N/A",
+                  section: sectionDetails && sectionDetails.section ? sectionDetails.section : "N/A",
+                  instructor: instructorName,
+                  day: sch?.day ? (sch.day.length > 3 ? sch.day.charAt(0).toUpperCase() + sch.day.slice(1).toLowerCase() : sch.day) : "",
+                  startTime: sch?.startTime || "",
+                  endTime: sch?.endTime || "",
+                  status: alloc.status ?? "",
+                  semester: sectionDetails && sectionDetails.semester ? sectionDetails.semester : (alloc.semester ?? "N/A"),
+                  year: sectionDetails && typeof sectionDetails.year === "number" ? sectionDetails.year : (typeof alloc.year === "number" ? alloc.year : 0),
+                  numberOfHours: alloc.numberOfHours ?? 0,
+                });
+                return sectionSchedule.length > 0
+                  ? sectionSchedule.map(sch => makeRow({
+                      day: sch.day ?? "",
+                      startTime: sch.startTime ?? "",
+                      endTime: sch.endTime ?? ""
+                    }))
+                  : [makeRow()];
+              } else {
+                // Fallback to flattenAllocation if no allocatedSections
+                return [flattenAllocation(alloc)];
+              }
             }
-            // Fetch section details including instructorId
+            // ...existing code for alloc.section present...
             let sectionDetails = null;
             try {
               sectionDetails = await fetchSectionIncludeInstructorId(alloc.section.id);
+              console.log("Section details:", sectionDetails);
             } catch (err) {
               console.error("Error fetching section details:", err);
             }
@@ -123,14 +177,12 @@ const StudentSchedulePage: React.FC = () => {
                 // no schedule
               }
             }
-            // Fetch instructor details using instructorId from sectionDetails
             let instructorName = "N/A";
             if (sectionDetails && sectionDetails.instructor && sectionDetails.instructor.firstName && sectionDetails.instructor.lastName) {
               instructorName = `${sectionDetails.instructor.firstName} ${sectionDetails.instructor.lastName}`;
             } else {
               console.warn("No instructor info found in sectionDetails", sectionDetails);
             }
-            // ScheduleRow
             const makeRow = (sch?: { day: string; startTime: string; endTime: string }) => ({
               id: typeof alloc.id === "number" ? alloc.id : 0,
               course: sectionDetails && sectionDetails.course ? `${sectionDetails.course.deptCode} ${sectionDetails.course.courseNum}` : "N/A",
