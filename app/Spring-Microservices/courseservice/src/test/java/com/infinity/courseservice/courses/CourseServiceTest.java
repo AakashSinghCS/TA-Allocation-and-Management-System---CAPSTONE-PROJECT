@@ -709,7 +709,7 @@ public class CourseServiceTest {
 
                 courseService.deleteStudentTaughtCourse(studentId, courseId, semester, year, userIdFromHeader);
 
-                verify(studentTaughtCourseRepository).delete(stc);
+                verify(studentTaughtCourseRepository).deleteAll(List.of(stc));
 
                 verify(auditService).record(
                                 eq(userIdFromHeader),
