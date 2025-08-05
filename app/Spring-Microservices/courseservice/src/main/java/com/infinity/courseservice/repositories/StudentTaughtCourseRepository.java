@@ -12,4 +12,11 @@ public interface StudentTaughtCourseRepository extends JpaRepository<StudentTaug
     List<StudentTaughtCourse> findByStudentId(Long studentId);
     // StudentTaughtCourse deleteByStudentIdAndCourseId(Long studentId, Long courseId);
     StudentTaughtCourse findByStudentIdAndCourseId(Long studentId, Long courseId);
+
+    List<StudentTaughtCourse> findAllByStudentIdAndCourse_IdAndSemester_SemesterAndSemester_Year(
+        Long studentId,
+        Long courseId,
+        String semesterName,
+        Integer year
+    );
 }

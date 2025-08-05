@@ -126,6 +126,12 @@ const handleFilterChange = useCallback((f: FilterSectionsProps) => {
           >
             Import CSV
           </button>
+          <button
+            onClick={() => setShowImportModal(true)}
+            className="flex items-center justify-center bg-[#2e2e38] text-white px-3 py-2 rounded text-sm font-normal hover:bg-[#dce2ec] transition-colors"
+          >
+            Import Alloc.
+          </button>
         </div>
 
       </div>
@@ -233,7 +239,7 @@ const handleFilterChange = useCallback((f: FilterSectionsProps) => {
 
 function allocationsChangeErrorMsg(err: any): string {
   let friendlyMessage = 'Failed to import allocations: Unknown error occurred.';
-
+  console.log(err);
   const errorText = err.message || '';
 
   if (errorText.includes('User with student number')) {

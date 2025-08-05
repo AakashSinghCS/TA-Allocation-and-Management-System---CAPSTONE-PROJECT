@@ -158,12 +158,12 @@ public class CourseController {
         return ResponseEntity.ok().build();
     }
 
-    @Transactional
     @PreAuthorize("hasAnyRole('COORDINATOR', 'STUDENT')")
-    @DeleteMapping("/studentTaught/delete/{studentId}/{courseId}")
+    @DeleteMapping("/studentTaught/delete/{studentId}/{courseId}/{semester}/{year}")
     public ResponseEntity<Void> deleteStudentTaughtCourse(@PathVariable Long studentId, @PathVariable Long courseId,
+    @PathVariable String semester, @PathVariable Integer year,
     @RequestHeader(name="X-User-Id", required = true) Long userIdFromHeader) {
-        courseService.deleteStudentTaughtCourse(studentId, courseId,userIdFromHeader);
+        courseService.deleteStudentTaughtCourse(studentId, courseId, semester, year, userIdFromHeader);
         return ResponseEntity.ok().build();
     }
 

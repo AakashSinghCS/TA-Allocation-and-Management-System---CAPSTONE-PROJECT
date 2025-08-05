@@ -330,7 +330,7 @@ public class CourseControllerTest {
         void testDeleteStudentTaughtCourse() throws Exception {
                 Long userIdFromHeader = 1L;
         
-        mockMvc.perform(delete("/courses/studentTaught/delete/1/1")
+        mockMvc.perform(delete("/courses/studentTaught/delete/1/1/W1/2025")
                 .header("X-User-Id", userIdFromHeader))
                                 .andExpect(status().isOk());
         }

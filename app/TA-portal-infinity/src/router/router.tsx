@@ -74,7 +74,7 @@ export const router = createBrowserRouter([
       { path: "instructorprofile/:userId/need", element: <Suspense fallback={<div>Loading...</div>}><InstructorNeedPage /></Suspense> },
       { path: "instructorprofile/:userId/students", element: <Suspense fallback={<div>Loading...</div>}><StudentsAllocatedPage /></Suspense> },
       // { path: "instructorprofile/:instructorId/compare", element: <Suspense fallback={<div>Loading...</div>}><InstructorComparerPage /></Suspense> },
-      { path: "instructorprofile/:userId/qualifications", element: <Suspense fallback={<div>Loading...</div>}><InstructorQualificationPage /></Suspense> },
+      { path: "instructorprofile/:userId/labskills", element: <Suspense fallback={<div>Loading...</div>}><InstructorQualificationPage /></Suspense> },
       { path: "sectionprofile/:sectionId", element: <Suspense fallback={<div>Loading...</div>}><CourseProfilePage /></Suspense> },
       { path: "courseprofile/:courseId", element: <Suspense fallback={<div>Loading...</div>}><CourseProfilePage /></Suspense> },
 

@@ -1,5 +1,7 @@
 package com.infinity.courseservice.models;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
@@ -10,6 +12,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "studentTaughtcourse", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_stc_unique_row", 
+                columnNames = { "student_id","course_id", "semester_id"})
+})
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) //Audting recording might not work without this.
 public class StudentTaughtCourse {
 
@@ -17,6 +23,7 @@ public class StudentTaughtCourse {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "student_id", nullable = false)
     private Long studentId;
 
     @ManyToOne
@@ -40,3 +47,4 @@ public class StudentTaughtCourse {
         this.studentId = other.studentId;
     }
 }
+

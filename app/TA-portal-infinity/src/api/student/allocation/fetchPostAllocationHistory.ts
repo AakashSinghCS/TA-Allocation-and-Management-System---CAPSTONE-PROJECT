@@ -19,15 +19,29 @@ export async function fetchPostAllocationHistory(
   );
 
   // Identify which to add (in current, but not in initial)
-  const toAdd = sections.filter(s =>
-    !initialSections.some(init => init.course?.id === s.course?.id)
-  );
+  const initialKeys = new Set(
+  initialSections.map(init =>
+    `${init.course?.id}-${init.semester}-${init.year}`
+  )
+);
+
+  const seen = new Set();
+  const toAdd = sections.filter(s => {
+    const key = `${s.course?.id}-${s.semester}-${s.year}`;
+
+    if (initialKeys.has(key)) return false;
+    
+    if (seen.has(key)) return false;
+    
+    seen.add(key);
+    return true;
+  });
 
   // DELETE all that are gone
   for (const sec of toDelete) {
     const id = sec.course?.id;
     if (id == null) continue;
-    const deleteUrl = `http://localhost:8080/courses/studentTaught/delete/${studentId}/${id}`;
+    const deleteUrl = `http://localhost:8080/courses/studentTaught/delete/${studentId}/${id}/${sec.semester}/${sec.year}`;
     try {
       const delRes = await fetch(deleteUrl, {
         method: "DELETE",
@@ -54,7 +68,7 @@ export async function fetchPostAllocationHistory(
       continue;
     }
 
-    const postUrl = `http://localhost:8080/courses/studentTaught/add/${details.id}`;
+    const postUrl = `http://localhost:8080/courses/studentTaught/add/${details.course?.id}`;
     const body: AllocationHistoryRequest = {
       studentId,
       year: details.year,

@@ -61,7 +61,7 @@ export default function SideNav({expanded, setExpanded}:SideNavProps) {
     // { label: 'TA Allocations', to: `instructorprofile/${userId}/need`, icon: <Presentation size={22} />, roles: [UserRole.INSTRUCTOR] },
     // { label: 'Instructor Profile', to: `/user/instructorprofile/${userId}`, icon: <User size={22} />, roles: [UserRole.INSTRUCTOR] },
     // { label: 'Users', to: '/user/instructor/browseuser', icon: <Users size={22} />, roles: [UserRole.INSTRUCTOR] },
-    { label: 'Qualifications & Skills', to: `/user/instructorprofile/${userId}/qualifications`, icon: <Award size={22} />, roles: [UserRole.INSTRUCTOR] },
+    { label: 'Qualifications & Skills', to: `/user/instructorprofile/${userId}/labskills`, icon: <Award size={22} />, roles: [UserRole.INSTRUCTOR] },
 
     // Student
     { label: 'Dashboard', to: '/user/student/home', icon: <Home size={22} />, roles: [UserRole.STUDENT] },

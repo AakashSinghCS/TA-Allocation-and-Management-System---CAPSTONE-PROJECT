@@ -699,15 +699,17 @@ public class CourseServiceTest {
         void testDeleteStudentTaughtCourse_Success() {
                 Long studentId = 1001L;
                 Long courseId = 1L;
+                String semester = "W1";
+                Integer year = 2025;
                 Long userIdFromHeader = 1L;
                 StudentTaughtCourse stc = new StudentTaughtCourse();
 
-                when(studentTaughtCourseRepository.findByStudentIdAndCourseId(studentId, courseId))
-                                .thenReturn(stc);
+                when(studentTaughtCourseRepository.findAllByStudentIdAndCourse_IdAndSemester_SemesterAndSemester_Year(studentId, courseId, semester, year))
+                                .thenReturn(List.of(stc));
 
-                courseService.deleteStudentTaughtCourse(studentId, courseId, userIdFromHeader);
+                courseService.deleteStudentTaughtCourse(studentId, courseId, semester, year, userIdFromHeader);
 
-                verify(studentTaughtCourseRepository).delete(stc);
+                verify(studentTaughtCourseRepository).deleteAll(List.of(stc));
 
                 verify(auditService).record(
                                 eq(userIdFromHeader),

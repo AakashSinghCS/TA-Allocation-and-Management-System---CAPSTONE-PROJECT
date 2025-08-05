@@ -12,6 +12,8 @@ const makeSection = (id: number) => ({
     courseNum: '101',
     name: `Intro ${id}`,
   },
+  semester:"W1",
+  year:2025
 });
 
 // ---------- global mocks ----------
@@ -120,14 +122,14 @@ describe('<AddAllocationHistory />', () => {
     // 1. wait for initial history to render
     await waitFor(() =>
       expect(
-        screen.getByText(/COSC 101 – Intro 999/i),
+        screen.getByText(/COSC 101 – Intro 999-W1-2025/i),
       ).toBeInTheDocument(),
     );
 
     // 2. remove it
     fireEvent.click(screen.getByRole('button', { name: /remove/i }));
     expect(
-      screen.queryByText(/COSC 101 – Intro 999/i),
+      screen.queryByText(/COSC 101 – Intro 999-W1-2025/i),
     ).not.toBeInTheDocument();
 
     // 3. save
