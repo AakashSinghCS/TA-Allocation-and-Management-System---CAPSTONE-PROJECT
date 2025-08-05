@@ -1,9 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Upload, File, CheckCircle, AlertTriangle, Trash2, Eye, Loader2, Maximize2, X } from 'lucide-react';
+// import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Upload, File, CheckCircle, AlertTriangle, Trash2, Eye, Loader2, Maximize2, X, Download, FileX, Mail } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { showToastConfirmation, showToastSuccess, showToastError, showToastInfo } from '../../../utility/confirmation/toastConfirmation';
+import TabNav from '../../../components/layout/tabnav/TabNav';
+import { GenericAPIContainer } from '../../../utility/genericapicontainer/GenericAPIContainer';
+import { fetchUserDetails } from '../../../api/user/fetchUserDetails';
+import type { StudentOrInstructorOrCoordinator } from '../../../interfaces/user/User';
 
 interface TranscriptUploadPageProps {}
 
@@ -12,6 +17,7 @@ interface ExistingTranscript {
   fileSize: number;
   uploadDate: string;
   contentType: string;
+  transcriptId?: number; // Optional for coordinators who need to download by ID
 }
 
 interface UploadState {
@@ -24,8 +30,10 @@ interface UploadState {
 }
 
 const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
-  const navigate = useNavigate();
-  const { token } = useAuth();
+  const { userId } = useParams();
+  const sId = Number(userId);
+  // const navigate = useNavigate();
+  const { token, userRoles } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [uploadState, setUploadState] = useState<UploadState>({
@@ -47,6 +55,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
   const [showFullscreen, setShowFullscreen] = useState(false);
   const [fullscreenUrl, setFullscreenUrl] = useState<string | null>(null);
   const [lastToastMessage, setLastToastMessage] = useState<string | null>(null);
+  const [studentData, setStudentData] = useState<any>(null); // Store student data for email functionality
 
   // File validation constants
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -111,30 +120,74 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
     
     try {
       setLoadingExisting(true);
-      const response = await fetch('http://localhost:8080/transcripts/status', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      
+      if (userRoles.includes("COORDINATOR")) {
+        // For coordinators: fetch all transcripts and find the one for this student
+        console.log('Coordinator fetching transcripts for student:', sId);
+        
+        const response = await fetch('http://localhost:8080/transcripts/list', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        // Only set existing transcript if hasTranscript is true
-        if (data.hasTranscript) {
-          setExistingTranscript({
-            fileName: data.fileName,
-            fileSize: data.fileSize,
-            uploadDate: data.uploadDate,
-            contentType: data.contentType
-          });
+        console.log('Response status:', response.status);
+        if (response.ok) {
+          const allTranscripts = await response.json();
+          console.log('All transcripts:', allTranscripts);
+          
+          // Find transcript for the specific student
+          const studentTranscript = allTranscripts.find((t: any) => t.studentId === sId);
+          console.log('Student transcript:', studentTranscript);
+          
+          if (studentTranscript) {
+            setExistingTranscript({
+              fileName: studentTranscript.fileName,
+              fileSize: studentTranscript.fileSize,
+              uploadDate: studentTranscript.uploadDate,
+              contentType: 'application/pdf', // Default since not returned by list
+              transcriptId: studentTranscript.transcriptId // Store transcript ID for downloads
+            });
+          } else {
+            setExistingTranscript(null);
+          }
         } else {
+          console.error('Failed to fetch transcripts list', response.status);
           setExistingTranscript(null);
         }
-      } else if (response.status !== 404) {
-        // 404 means no transcript exists, which is fine
-        console.error('Failed to fetch existing transcript');
+      } else {
+        // For students: use the existing endpoint
+        console.log('Student fetching own transcript');
+        
+        const response = await fetch('http://localhost:8080/transcripts/status', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        console.log('Response status:', response.status);
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Response data:', data);
+          // Only set existing transcript if hasTranscript is true
+          if (data.hasTranscript) {
+            setExistingTranscript({
+              fileName: data.fileName,
+              fileSize: data.fileSize,
+              uploadDate: data.uploadDate,
+              contentType: data.contentType
+            });
+          } else {
+            setExistingTranscript(null);
+          }
+        } else if (response.status !== 404) {
+          // 404 means no transcript exists, which is fine
+          console.error('Failed to fetch existing transcript', response.status);
+        }
       }
     } catch (error) {
       console.error('Error fetching existing transcript:', error);
@@ -246,7 +299,11 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
     try {
       const formData = new FormData();
       formData.append('file', uploadState.file);
-      // studentId is not needed - the backend gets userId from JWT token
+      // If coordinator, add studentId to upload for the selected student
+      if (userRoles.includes("COORDINATOR") && sId) {
+        formData.append('studentId', sId.toString());
+      }
+      // studentId is not needed for students - the backend gets userId from JWT token
 
       const xhr = new XMLHttpRequest();
 
@@ -303,7 +360,17 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                 // Force show the new file preview in the existing transcript area
                 try {
                   setLoadingPreview(true);
-                  const downloadResponse = await fetch('http://localhost:8080/transcripts/download', {
+                  
+                  let downloadUrl: string;
+                  if (userRoles.includes("COORDINATOR") && existingTranscript?.transcriptId) {
+                    // For coordinators: use transcript ID endpoint
+                    downloadUrl = `http://localhost:8080/transcripts/download/${existingTranscript.transcriptId}`;
+                  } else {
+                    // For students: use their own download endpoint
+                    downloadUrl = 'http://localhost:8080/transcripts/download';
+                  }
+                  
+                  const downloadResponse = await fetch(downloadUrl, {
                     method: 'GET',
                     headers: {
                       'Authorization': `Bearer ${token}`,
@@ -410,9 +477,12 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
 
   const deleteExistingTranscript = async () => {
     if (!token || !existingTranscript || deletingTranscript) return;
+    const isCoordinator = userRoles.includes("COORDINATOR");
     const confirmed = await showToastConfirmation({
       title: 'Delete Transcript',
-      message: 'Are you sure you want to delete your existing transcript? This action cannot be undone.',
+      message: isCoordinator 
+        ? 'Are you sure you want to delete this student\'s transcript? This action cannot be undone.'
+        : 'Are you sure you want to delete your existing transcript? This action cannot be undone.',
       confirmText: 'Delete',
       cancelText: 'Cancel',
       type: 'danger',
@@ -420,7 +490,13 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
     if (!confirmed) return;
     try {
       setDeletingTranscript(true);
-      const response = await fetch('http://localhost:8080/transcripts/delete', {
+      // If coordinator, add studentId param to delete the selected student's transcript
+      let url = 'http://localhost:8080/transcripts/delete';
+      if (userRoles.includes("COORDINATOR") && sId) {
+        url += `?studentId=${sId}`;
+      }
+      
+      const response = await fetch(url, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -465,8 +541,19 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
     
     try {
       setLoadingPreview(true);
-      // Download the student's own transcript using the new endpoint
-      const downloadResponse = await fetch('http://localhost:8080/transcripts/download', {
+      
+      let url: string;
+      if (userRoles.includes("COORDINATOR") && existingTranscript?.transcriptId) {
+        // For coordinators: use transcript ID endpoint
+        url = `http://localhost:8080/transcripts/download/${existingTranscript.transcriptId}`;
+        console.log('Coordinator downloading transcript ID:', existingTranscript.transcriptId);
+      } else {
+        // For students: use their own download endpoint
+        url = 'http://localhost:8080/transcripts/download';
+        console.log('Student downloading own transcript');
+      }
+      
+      const downloadResponse = await fetch(url, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -496,12 +583,80 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
     }
   };
 
+  const handleDownloadTranscript = async () => {
+    if (!token || !existingTranscript) return;
+    
+    try {
+      let url: string;
+      if (userRoles.includes("COORDINATOR") && existingTranscript?.transcriptId) {
+        // For coordinators: use transcript ID endpoint
+        url = `http://localhost:8080/transcripts/download/${existingTranscript.transcriptId}`;
+      } else {
+        // For students: use their own download endpoint
+        url = 'http://localhost:8080/transcripts/download';
+      }
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to download transcript');
+      }
+
+      const blob = await response.blob();
+      
+      // Create download link
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = existingTranscript.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up
+      URL.revokeObjectURL(downloadUrl);
+      showToast('Transcript downloaded successfully');
+    } catch (error) {
+      console.error('Error downloading transcript:', error);
+      showToast('Failed to download transcript. Please try again.', 'error');
+    }
+  };
+
+  const handleEmailStudent = (studentEmail: string, studentName: string) => {
+    const subject = encodeURIComponent('Transcript Upload Required');
+    const body = encodeURIComponent(
+      `Dear ${studentName},\n\n` +
+      `We noticed that you have not yet uploaded your official transcript to the TA portal. ` +
+      `Please log in to your account and upload your transcript as soon as possible.\n\n` +
+      `If you have any questions or need assistance, please don't hesitate to contact us.\n\n` +
+      `Best regards,\n` +
+      `TA Coordinator`
+    );
+    
+    window.location.href = `mailto:${studentEmail}?subject=${subject}&body=${body}`;
+    showToast('Email client opened');
+  };
+
   const openFullscreen = (url: string) => {
     // Create a new blob URL for fullscreen to avoid "moved, edited, or deleted" errors
     // when the original preview URL gets revoked
     if (existingPreviewUrl && url === existingPreviewUrl) {
+      let downloadUrl: string;
+      if (userRoles.includes("COORDINATOR") && existingTranscript?.transcriptId) {
+        // For coordinators: use transcript ID endpoint
+        downloadUrl = `http://localhost:8080/transcripts/download/${existingTranscript.transcriptId}`;
+      } else {
+        // For students: use their own download endpoint
+        downloadUrl = 'http://localhost:8080/transcripts/download';
+      }
+      
       // For existing transcript preview, we need to create a new blob URL
-      fetch('http://localhost:8080/transcripts/download', {
+      fetch(downloadUrl, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -574,36 +729,47 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
   };
 
   return (
-    <div className="min-h-screen py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Upload Transcript
-              </h1>
-              <p className="text-gray-600">
-                Upload your official transcript (PDF only, max 5MB).
-              </p>
+    <section className="px-4 py-6 md:px-8 md:py-8 min-h-screen">
+      <div className="max-w-7xl -mt-12">
+        <GenericAPIContainer<StudentOrInstructorOrCoordinator>
+          fetchFunction={() => fetchUserDetails(sId)}
+          render={(record) => (
+            <TabNav roles={record.roles ?? []} />
+          )}
+        />
+        
+        <div className="min-h-screen py-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header - only show for students */}
+        {!userRoles.includes("COORDINATOR") && (
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Upload Transcript
+                </h1>
+                <p className="text-gray-600">
+                  Upload your official transcript (PDF only, max 5MB).
+                </p>
+              </div>
+            </div>
+            {/* Requirements Warning Box */}
+            <div className="mb-4 p-4 rounded-lg border border-amber-300 bg-amber-50 text-amber-900">
+              <div className="font-semibold mb-2">Requirements</div>
+              <ul className="text-sm list-disc pl-5 space-y-1">
+                <li>PDF files only (max 5MB)</li>
+                <li>Official academic transcript</li>
+                <li>Clear and readable content</li>
+                <li>Avoid special characters in filename</li>
+              </ul>
             </div>
           </div>
-          {/* Requirements Warning Box */}
-          <div className="mb-4 p-4 rounded-lg border border-amber-300 bg-amber-50 text-amber-900">
-            <div className="font-semibold mb-2">Requirements</div>
-            <ul className="text-sm list-disc pl-5 space-y-1">
-              <li>PDF files only (max 5MB)</li>
-              <li>Official academic transcript</li>
-              <li>Clear and readable content</li>
-              <li>Avoid special characters in filename</li>
-            </ul>
-          </div>
-        </div>
+        )}
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Left Column - Current Transcript */}
           {!loadingExisting && existingTranscript && (
-            <div className="space-y-4">
+            <div className={`space-y-4 ${userRoles.includes("COORDINATOR") ? 'xl:col-span-2' : ''}`}>
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                 <div className="flex items-center justify-between mb-3">
                   <h2 className="text-lg font-semibold text-gray-900">Current Transcript</h2>
@@ -629,18 +795,28 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                       </span>
                     </button>
                     <button
-                      onClick={deleteExistingTranscript}
-                      disabled={deletingTranscript || loadingPreview}
-                      className="flex items-center space-x-1 px-2 py-1 text-sm text-red-800 hover:text-red-800 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                      onClick={handleDownloadTranscript}
+                      className="flex items-center space-x-1 px-2 py-1 text-sm text-green-800 hover:text-green-800 hover:bg-green-50 rounded transition-colors"
                       type="button"
                     >
-                      {deletingTranscript ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                      ) : (
-                        <Trash2 className="w-3 h-3" />
-                      )}
-                      <span>{deletingTranscript ? 'Deleting...' : 'Delete'}</span>
+                      <Download className="w-3 h-3" />
+                      <span>Download</span>
                     </button>
+                    {!userRoles.includes("COORDINATOR") && (
+                      <button
+                        onClick={deleteExistingTranscript}
+                        disabled={deletingTranscript || loadingPreview}
+                        className="flex items-center space-x-1 px-2 py-1 text-sm text-red-800 hover:text-red-800 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                        type="button"
+                      >
+                        {deletingTranscript ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-3 h-3" />
+                        )}
+                        <span>{deletingTranscript ? 'Deleting...' : 'Delete'}</span>
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -653,7 +829,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
                   </div>
                 </div>
                 <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
-                  <strong>Note:</strong> This file will be replaced when you upload a new transcript.
+                  <strong>Note:</strong> This file will be replaced when {userRoles.includes("COORDINATOR") ? "a new transcript is uploaded" : "you upload a new transcript"}.
                 </div>
               </div>
 
@@ -686,8 +862,39 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
             </div>
           )}
 
+          {/* No Transcript Message for Coordinators */}
+          {!loadingExisting && !existingTranscript && userRoles.includes("COORDINATOR") && (
+            <div className="xl:col-span-2">
+              <GenericAPIContainer<StudentOrInstructorOrCoordinator>
+                fetchFunction={() => fetchUserDetails(sId)}
+                render={(record) => (
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                    <div className="flex flex-col items-center justify-center py-8">
+                      <FileX className="w-16 h-16 text-gray-300 mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">No Transcript Uploaded</h3>
+                      <p className="text-gray-600 text-center mb-6 max-w-md">
+                        This student has not uploaded their official transcript yet. You can send them a reminder email to upload their transcript.
+                      </p>
+                      {record.email && (
+                        <button
+                          onClick={() => handleEmailStudent(record.email!, `${record.firstName} ${record.lastName}`)}
+                          className="flex items-center space-x-2 px-4 py-2 bg-[#040941] text-white rounded-lg hover:bg-blue-800 transition-colors"
+                          type="button"
+                        >
+                          <Mail className="w-4 h-4" />
+                          <span>Send Reminder Email</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              />
+            </div>
+          )}
+
           {/* Right Column - New Upload */}
-          <div className={`space-y-4 ${!existingTranscript ? 'xl:col-span-2' : ''}`}>
+          {!userRoles.includes("COORDINATOR") && (
+            <div className={`space-y-4 ${!existingTranscript ? 'xl:col-span-2' : ''}`}>
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* File Upload Zone */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
@@ -849,6 +1056,7 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
 
             {/* Compact Information Section */}
           </div>
+          )}
         </div>
 
         {/* Fullscreen Modal */}
@@ -879,8 +1087,10 @@ const TranscriptUploadPage: React.FC<TranscriptUploadPageProps> = () => {
             </div>
           </div>
         )}
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

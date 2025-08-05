@@ -21,6 +21,7 @@ const isCoordinator = useAuth().userRoles.includes("COORDINATOR");
       { to: `/user/profile/${userId}`, label: 'Profile' },
       { to: `${base}/qualifications`, label: 'Student Skills/Qualifications' },
       { to: `${base}/allocationHistory`, label: 'Allocation History' },
+      { to: `${base}/transcript-upload`, label: 'Transcript Upload' },
       { to: `${base}/profileQuestions`, label: 'Profile Questions' }
     );
   }

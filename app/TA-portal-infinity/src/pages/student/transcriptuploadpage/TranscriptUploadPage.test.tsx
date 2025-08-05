@@ -40,7 +40,24 @@ vi.mock('../../../context/AuthContext', () => ({
     token: 'mock-jwt-token',
     userId: 123,
     isAuthenticated: true,
+    userRoles: ['STUDENT'],
   }),
+}));
+
+vi.mock('../../../components/layout/tabnav/TabNav', () => ({
+  default: ({ roles }: { roles: string[] }) => React.createElement('div', { 'data-testid': 'tab-nav' }, `TabNav with roles: ${roles.join(', ')}`),
+}));
+
+vi.mock('../../../utility/genericapicontainer/GenericAPIContainer', () => ({
+  GenericAPIContainer: ({ render }: { render: (data: any) => React.ReactNode }) => {
+    // Mock user data for the container
+    const mockRecord = { roles: ['STUDENT'] };
+    return render(mockRecord);
+  },
+}));
+
+vi.mock('../../../api/user/fetchUserDetails', () => ({
+  fetchUserDetails: vi.fn().mockResolvedValue({ roles: ['STUDENT'] }),
 }));
 
 // Global fetch mock
