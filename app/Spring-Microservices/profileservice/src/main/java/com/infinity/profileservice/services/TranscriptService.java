@@ -78,7 +78,7 @@ public class TranscriptService {
         // Convert to DTOs and enrich with user information
         return transcripts.stream()
                 .map(this::convertToTranscriptInfoDTO)
-                .map(this::enrichWithUserInfo)
+                .map(transcript -> enrichWithUserInfo(transcript, userIdFromHeader, headerRoles))
                 .collect(Collectors.toList());
     }
     
@@ -106,11 +106,10 @@ public class TranscriptService {
         return dto;
     }
     
-    private TranscriptInfoDTO enrichWithUserInfo(TranscriptInfoDTO transcriptInfo) {
+    private TranscriptInfoDTO enrichWithUserInfo(TranscriptInfoDTO transcriptInfo, Long userIdFromHeader, List<String> headerRoles) {
         try {
-            // For service-to-service calls, we use COORDINATOR role to access user information
-            List<String> coordinatorRoles = List.of("ROLE_COORDINATOR");
-            UserDto userDto = userInterface.getUserDetailsById(transcriptInfo.getStudentId(), coordinatorRoles, null).getBody();
+            UserDto userDto = userInterface.getUserDetailsById(transcriptInfo.getStudentId(), 
+                    headerRoles, userIdFromHeader).getBody();
             if (userDto != null) {
                 transcriptInfo.setStudentName(userDto.firstName() + " " + userDto.lastName());
                 transcriptInfo.setStudentEmail(userDto.email());
@@ -120,7 +119,7 @@ public class TranscriptService {
             // Enrich reviewer information if available
             if (transcriptInfo.getReviewedBy() != null) {
                 try {
-                    UserDto reviewerDto = userInterface.getUserDetailsById(transcriptInfo.getReviewedBy(), coordinatorRoles, null).getBody();
+                    UserDto reviewerDto = userInterface.getUserDetailsById(transcriptInfo.getReviewedBy(), headerRoles, userIdFromHeader).getBody();
                     if (reviewerDto != null) {
                         transcriptInfo.setReviewerName(reviewerDto.firstName() + " " + reviewerDto.lastName());
                     }
