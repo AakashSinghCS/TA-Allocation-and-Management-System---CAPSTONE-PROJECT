@@ -1,8 +1,15 @@
 package com.infinity.profileservice;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -202,8 +209,16 @@ class TranscriptServiceTest {
     @Test
     void getAllTranscriptInfo_WithUserInfo_ShouldEnrichWithUserData() {
         // Given
-        TranscriptInfoDTO transcriptInfo = new TranscriptInfoDTO(1L, userId, "test.pdf", LocalDateTime.of(2024, 1, 15, 10, 0), 1024L);
-        when(transcriptRepository.findAllTranscriptInfo()).thenReturn(Arrays.asList(transcriptInfo));
+        Transcript mockTranscript = new Transcript();
+        mockTranscript.setId(1L);
+        mockTranscript.setUserId(userId);
+        mockTranscript.setFileName("test.pdf");
+        mockTranscript.setUploadDate(LocalDateTime.of(2024, 1, 15, 10, 0));
+        mockTranscript.setFileSize(1024L);
+        mockTranscript.setContentType("application/pdf");
+        mockTranscript.setReviewStatus("PENDING");
+        
+        when(transcriptRepository.findAllTranscriptsForInfo()).thenReturn(Arrays.asList(mockTranscript));
         
         UserDto userDto = new UserDto(userId, "John", "Doe", "student@test.com", 
                                     Arrays.asList(), 12345, "Computer Science", 2024, 4, 
@@ -220,15 +235,23 @@ class TranscriptServiceTest {
         assertEquals("student@test.com", result.get(0).getStudentEmail());
         assertEquals("12345", result.get(0).getStudentNumber());
         
-        verify(transcriptRepository).findAllTranscriptInfo();
+        verify(transcriptRepository).findAllTranscriptsForInfo();
         verify(userInterface).getUserDetailsById(userId, headerRoles, userIdFromHeader);
     }
 
     @Test
     void getAllTranscriptInfo_FeignException_ShouldUseDefaultValues() {
         // Given
+        Transcript mockTranscript = new Transcript();
+        mockTranscript.setId(1L);
+        mockTranscript.setUserId(userId);
+        mockTranscript.setFileName("test.pdf");
+        mockTranscript.setUploadDate(LocalDateTime.of(2024, 1, 15, 10, 0));
+        mockTranscript.setFileSize(1024L);
+        mockTranscript.setContentType("application/pdf");
+        mockTranscript.setReviewStatus("PENDING");
         TranscriptInfoDTO transcriptInfo = new TranscriptInfoDTO(1L, userId, "test.pdf", LocalDateTime.of(2024, 1, 15, 10, 0), 1024L);
-        when(transcriptRepository.findAllTranscriptInfo()).thenReturn(Arrays.asList(transcriptInfo));
+        when(transcriptRepository.findAllTranscriptsForInfo()).thenReturn(Arrays.asList(mockTranscript));
         when(userInterface.getUserDetailsById(userId, headerRoles, userIdFromHeader)).thenThrow(FeignException.class);
 
         // When
@@ -241,7 +264,7 @@ class TranscriptServiceTest {
         assertEquals("Unknown", result.get(0).getStudentEmail());
         assertEquals("Unknown", result.get(0).getStudentNumber());
         
-        verify(transcriptRepository).findAllTranscriptInfo();
+        verify(transcriptRepository).findAllTranscriptsForInfo();
         verify(userInterface).getUserDetailsById(userId, headerRoles, userIdFromHeader);
     }
 

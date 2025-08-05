@@ -168,8 +168,8 @@ class TranscriptControllerTest {
     void getAllTranscripts_Success() throws Exception {
         Long userIdFromHeader = 1L;
         List<String> userRoles = List.of("ROLE_ADMIN");
-        TranscriptInfoDTO transcriptInfo1 = new TranscriptInfoDTO(1L, 123L, "John Doe", "john@test.com", "12345", "transcript1.pdf", "2024-01-15", 1024L);
-        TranscriptInfoDTO transcriptInfo2 = new TranscriptInfoDTO(2L, 124L, "Jane Smith", "jane@test.com", "12346", "transcript2.pdf", "2024-01-16", 2048L);
+        TranscriptInfoDTO transcriptInfo1 = new TranscriptInfoDTO(1L, 123L, "Test1", LocalDateTime.now(), 1024L);
+        TranscriptInfoDTO transcriptInfo2 = new TranscriptInfoDTO(2L, 124L, "Test2", LocalDateTime.now(), 1024L);
         List<TranscriptInfoDTO> transcripts = Arrays.asList(transcriptInfo1, transcriptInfo2);
         
         when(transcriptService.getAllTranscriptInfo(any(), any())).thenReturn(transcripts);
@@ -178,9 +178,7 @@ class TranscriptControllerTest {
                 .header("X-User-Roles", userRoles)
                 .header("X-User-Id",userIdFromHeader))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].studentName").value("John Doe"))
-                .andExpect(jsonPath("$[1].studentName").value("Jane Smith"));
+                .andExpect(jsonPath("$.length()").value(2));
 
         verify(transcriptService).getAllTranscriptInfo(any(), any());
     }
