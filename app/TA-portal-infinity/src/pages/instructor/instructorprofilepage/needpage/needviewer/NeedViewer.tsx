@@ -176,6 +176,18 @@ export default function NeedViewer({ instructorId, className = "", initial }: Ne
         {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-900">Filter Sections</h3>
+        {isInstructor && (
+            <Link
+              to="/user/instructor/addsection"
+              className="inline-flex items-center px-4 py-2 bg-[#040941] text-white rounded-md 
+                hover:bg-[#030735] transition-colors font-medium text-sm"
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              Add Section
+            </Link>
+          )}
       </div>
         
         {/* Filter Controls */}

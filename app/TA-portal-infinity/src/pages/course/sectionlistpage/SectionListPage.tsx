@@ -126,6 +126,12 @@ const handleFilterChange = useCallback((f: FilterSectionsProps) => {
           >
             Import CSV
           </button>
+          <button
+            onClick={() => setShowImportModal(true)}
+            className="flex items-center justify-center bg-[#2e2e38] text-white px-3 py-2 rounded text-sm font-normal hover:bg-[#dce2ec] transition-colors"
+          >
+            Import Alloc.
+          </button>
         </div>
 
       </div>
