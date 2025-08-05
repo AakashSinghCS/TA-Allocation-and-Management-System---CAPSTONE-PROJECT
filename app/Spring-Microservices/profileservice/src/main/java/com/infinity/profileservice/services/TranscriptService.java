@@ -69,18 +69,19 @@ public class TranscriptService {
         return transcriptRepository.findById(transcriptId);
     }
     
-    public List<TranscriptInfoDTO> getAllTranscriptInfo() {
+    public List<TranscriptInfoDTO> getAllTranscriptInfo(Long userIdFromHeader, List<String> headerRoles) {
         List<TranscriptInfoDTO> transcriptInfos = transcriptRepository.findAllTranscriptInfo();
         
         // Enrich with user information
         return transcriptInfos.stream()
-                .map(this::enrichWithUserInfo)
+                .map(transcript -> enrichWithUserInfo(transcript, userIdFromHeader, headerRoles))
                 .collect(Collectors.toList());
     }
     
-    private TranscriptInfoDTO enrichWithUserInfo(TranscriptInfoDTO transcriptInfo) {
+    private TranscriptInfoDTO enrichWithUserInfo(TranscriptInfoDTO transcriptInfo, Long userIdFromHeader, List<String> headerRoles) {
         try {
-            UserDto userDto = userInterface.getUserDetailsById(transcriptInfo.getStudentId()).getBody();
+            UserDto userDto = userInterface.getUserDetailsById(transcriptInfo.getStudentId(), 
+                    headerRoles, userIdFromHeader).getBody();
             if (userDto != null) {
                 transcriptInfo.setStudentName(userDto.firstName() + " " + userDto.lastName());
                 transcriptInfo.setStudentEmail(userDto.email());

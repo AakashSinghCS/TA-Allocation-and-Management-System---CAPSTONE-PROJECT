@@ -48,10 +48,14 @@ class TranscriptServiceTest {
     private Transcript testTranscript;
     private MockMultipartFile validPdfFile;
     private Long userId;
+    private Long userIdFromHeader;
+    private List<String> headerRoles;
 
     @BeforeEach
     void setUp() {
         userId = 123L;
+        userIdFromHeader = 123L;
+        headerRoles = List.of("ROLE_ADMIN");
         
         testTranscript = new Transcript();
         testTranscript.setId(1L);
@@ -204,10 +208,10 @@ class TranscriptServiceTest {
         UserDto userDto = new UserDto(userId, "John", "Doe", "student@test.com", 
                                     Arrays.asList(), 12345, "Computer Science", 2024, 4, 
                                     null, null, LocalDateTime.now(), true);
-        when(userInterface.getUserDetailsById(userId)).thenReturn(ResponseEntity.ok(userDto));
+        when(userInterface.getUserDetailsById(userId, headerRoles, userIdFromHeader)).thenReturn(ResponseEntity.ok(userDto));
 
         // When
-        List<TranscriptInfoDTO> result = transcriptService.getAllTranscriptInfo();
+        List<TranscriptInfoDTO> result = transcriptService.getAllTranscriptInfo(userIdFromHeader, headerRoles);
 
         // Then
         assertNotNull(result);
@@ -217,7 +221,7 @@ class TranscriptServiceTest {
         assertEquals("12345", result.get(0).getStudentNumber());
         
         verify(transcriptRepository).findAllTranscriptInfo();
-        verify(userInterface).getUserDetailsById(userId);
+        verify(userInterface).getUserDetailsById(userId, headerRoles, userIdFromHeader);
     }
 
     @Test
@@ -225,10 +229,10 @@ class TranscriptServiceTest {
         // Given
         TranscriptInfoDTO transcriptInfo = new TranscriptInfoDTO(1L, userId, "test.pdf", LocalDateTime.of(2024, 1, 15, 10, 0), 1024L);
         when(transcriptRepository.findAllTranscriptInfo()).thenReturn(Arrays.asList(transcriptInfo));
-        when(userInterface.getUserDetailsById(userId)).thenThrow(FeignException.class);
+        when(userInterface.getUserDetailsById(userId, headerRoles, userIdFromHeader)).thenThrow(FeignException.class);
 
         // When
-        List<TranscriptInfoDTO> result = transcriptService.getAllTranscriptInfo();
+        List<TranscriptInfoDTO> result = transcriptService.getAllTranscriptInfo(userIdFromHeader, headerRoles);
 
         // Then
         assertNotNull(result);
@@ -238,7 +242,7 @@ class TranscriptServiceTest {
         assertEquals("Unknown", result.get(0).getStudentNumber());
         
         verify(transcriptRepository).findAllTranscriptInfo();
-        verify(userInterface).getUserDetailsById(userId);
+        verify(userInterface).getUserDetailsById(userId, headerRoles, userIdFromHeader);
     }
 
     @Test
