@@ -1,1 +1,2228 @@
 
+## Wednesday 5/21 (5/21 - 5/27)
+
+### Timesheet
+
+![alt text](clockify_images/5.21.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Project Planning
+
+### Progress Update (since 21/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Met with teammates on discord to work on the initial part of project plan. Completed functional and non functional requirements. Full document not complete yet. 
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete  technical requirements, tech stack, high-level risks, assumptions and constraints,summary milestone schedule, teamwork planning.
+
+
+## Thursday 5/22 (5/21 - 5/27)
+
+### Timesheet
+
+![alt text](clockify_images/5.22.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Project Planning
+
+### Progress Update (since 21/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Met with teammates on discord to further work on the project plan. Worked on the technical requirements, tech stack, high-level risks, milestones, team planning, project objectives, and proto-personas. Process is going well, communication and coordination between teammates is excellent.
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Review project plan before submission. Then, work on the the DFD, use case diagrams, database design, architecture design, and UI design.
+
+## Monday 5/26 (5/21 - 5/27)
+
+### Timesheet
+
+![alt text](clockify_images/5.26.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Project Planning
+
+### Progress Update (since 22/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met with teammates on discord and finished the Team planning, milestone and distribution section. 
+Retrospective: process is going well, we are finishing tasks well ahead of time.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Work on the the DFD, use case diagrams, database design, architecture design, and UI design.
+
+## Tuesday 5/27 (5/21 - 5/27)
+
+### Timesheet
+
+![alt text](clockify_images/5.27.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Project Planning
+
+### Progress Update (since 26/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met with teammates after our in class meeting with the professor regarding the project plan. We divided roles into different groups. I am in charge of Use Case diagram. 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Work on the use case diagram with Dup. We have decided to meet at 2pm tomorrow.
+
+## Wednesday 5/28 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/5.28.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Project Design
+
+### Progress Update (since 27/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In progress
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met with Dup on discord to work on use case diagram. There was a lot to do so we are meeting again tomorrow at 2pm to work on it. 
+What didn't go well: Everything was good!
+Retrospective: Process is going smoothly, we have to clean up the diagram as its a bit clustered. We just started the descriptions. 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin actual coding. We have not distributed the coding tasks yet but we will start with the workload distribution by weeks end.
+
+## Thursday 5/29 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/5.29.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Project Design
+
+### Progress Update (since 28/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Almost complete, few modifications left
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met with Dup on discord to work on use case diagram and descriptions. We have almost completed all of it. We just have to reorder and renumber a couple of things. 
+What didn't go well: Everything was good!
+Retrospective: Process is going smoothly, we are understanding more of how the system will function as we are discussing a lot of things whilst drawing the diagram and writing use case descriptions.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin actual coding. We have not distributed the coding tasks yet but we will start with the workload distribution by weeks end.
+
+## Saturday 5/31 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/5.31.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Project Design
+
+### Progress Update (since 29/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Final modifications for my assigned part of use case completed. Proof read the entire document and made modifications in the user requirements upon discussing with the entire group. 
+What didn't go well: Everything was good!
+Retrospective: Process is going smoothly, we are understanding more of how the application will work at the end. 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Database creation and then begin actual coding for the issues.
+
+## Monday 6/02 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/6.02.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Project Design
+  * #2: SpringBoot Tutorials
+
+### Progress Update (since 31/5/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress, still learning
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: User requirements slightly modified and design document completed. Currently learning springboot from youtube tutorials, hard at first but I'm starting to learn more as i progress.
+What didn't go well: Everything was good!
+Retrospective: Process is going smoothly, all team members are on track with their assigned tasks. We should begin assigning issues to individual members from kanban soon to start coding the application.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * DataBase design. Assign issues from kanban to indiviudal members to begin coding of the application. 
+
+## Tuesday 6/03 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/6.03.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Design Video Transcript and Recording
+  * #2: Kanban User Story Breakdown Into Sub-issues
+
+### Progress Update (since 02/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Completed the trascript for my part of use cases. I also recorded the video for the presentation and made the slide decks. The team also met up after the meeting to break down user stories on kanban into individual sub-issues.
+What didn't go well: Everything was good!
+Retrospective: Process is going smoothly, all team members are on track with their assigned tasks. We should begin assigning issues to individual members from kanban soon to start coding the application.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Assign issues from kanban to indiviudal members and begin coding of the application.
+
+## Wednesday 6/04 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/6.04.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Design video presentation compilation and editing
+  * #2: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 03/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress.
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I received all videos from my team for the design video presentation. I volunteered to do the compilation and editing. At the end the video was perfect with all criteria met. I also met up with Dup on discord to discuss how we were going to code the profile section of the application. I am handling the backend while Dup is working on the frontend.
+What didn't go well: Some videos sent by the team members required a lot of time to edit. But i was able to handle it. 
+Retrospective: Process is going well. The entire team is working hard on the project. We have assigned individual coding tasks to everyone. 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Get environment set up locally, complete the profile section of the application, and begin next assigned coding task after meeting with the team.
+
+## Thursday 6/05 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/6.05.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Environment setup - Docker & Spring Boot
+  * #2: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 04/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress, 50% complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress.
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I was able to get the docker containers up and running. Front end on local host port was displaying as expected.
+What didn't go well: I wasn't able to figure out the setup for spring boot. I will be meeting with Alex tomorrow after the meeting to discuss how to get my environment up and running locally. 
+Retrospective: Process is going well. All team members are working hard to get their parts completed.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team. 
+
+## Friday 6/06 (5/28 - 6/6)
+
+### Timesheet
+
+![alt text](clockify_images/6.06.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Environment setup - Docker & Spring Boot
+  * #2: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 05/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress, 80% complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress.
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I met up with alex after our in-class meeting to get help in setting up the environment on my laptop. 
+What didn't go well: The environment was not setting up on my laptop after hours of work. There is a weird bug which we can't seem to fix. The microservices were running but my IDE is not able to recognize JavaSe24 which is required for our spring boot app. This was weird because everything was working but I had errors all over in my IDE which would cause issues in compiling code later on. I will try to fix this over the weekend.
+Retrospective: Process is going well. All team members are working hard to get their parts completed.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team. 
+
+## Saturday 6/07 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.07.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Environment setup - Docker & Spring Boot
+  * #2: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 06/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress. 20% Complete
+        </td>
+    </tr>
+        
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I was finally able to fix the bug and got my environment set up. This process took me a long time close to 8 hours to get fixed. I was able to get started on my assigned part of the backend of the profile section service.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. I will continue working on the profile service to get it done ASAP.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team.
+
+## Sunday 6/08 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.08.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 07/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 70% Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I finished setting up the basic pom.xml files, linked the profile service to API gateway, and finished 70% of the requirements.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. I will continue working on the profile service to get it done ASAP.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team.
+
+## Monday 6/09 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.09.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 08/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> 90% Complete. Mods required.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Almost done with the profile service. Few modifications remaining after discussing with team members.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. I will continue working on the profile service to get it done ASAP.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team.
+
+## Tuesday 6/10 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.10.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 09/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> 70% Complete. Bug fix and mods required.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Almost done with the profile service. I ran into a bug while doing modifications which i will fix today and tomorrow.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. I will continue working on the profile service to get it done ASAP.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team.
+
+## Wednesday 6/11 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.11.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 10/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> 80% Complete. Mods left
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Almost done with the profile service. I fixed the bug i encountered yesterday. Now i am working on modifications so Dup gets the required things from the backend for his assigned front-end.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. I will continue working on the profile service to get it done ASAP.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete profile section of the application, and begin next assigned coding task after meeting with the team.
+
+## Thursday 6/12 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.12.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Profile section of application: I am responsible for handling the backend of this section and Dup is handling the frontend.
+
+### Progress Update (since 11/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Done with the profile service. I completed all modifications that Dup required. He now gets everything required in the front end.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task after meeting with group tomorrow. 
+
+## Sunday 6/15 (6/07 - 6/16)
+
+### Timesheet
+
+![alt text](clockify_images/6.15.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation History - Backend: I have to create the backend to view the allocation history of a TA.
+
+### Progress Update (since 12/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 10% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I started the planning of allocation history backend. I designed the tables required and how i plan on implementing the functionality. I will begin coding it soon once i have finalized the design. I am currently a bit busy with other commitments so i will not be able to put much time into this until tuesday. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete Allocation History and begin next assigned coding task after meeting with group.
+
+## Tuesday 6/17 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.17.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation History - Backend: I have to create the backend to view the allocation history of a TA.
+
+### Progress Update (since 15/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 30% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I started coding the backend for allocationhistory. Made the initial DTOs, controllers, etc. Have to figure out how to implement the feign clients in spring boot microservices. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete Allocation History and begin next assigned coding task after meeting with group.
+
+## Wednesday 6/18 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.18.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation History - Backend: I have to create the backend to view the allocation history of a TA.
+
+### Progress Update (since 17/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 80% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I finished most of the backend for allocation history. However, I ran into a bug which i am currently trying to fix. The tests are working as expected but when trying to test the endpoints on postman, I get a 403/503 error when the feign client is called.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete Allocation History and begin next assigned coding task after meeting with group.
+
+## Thursday 6/19 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.19.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation History - Backend: I have to create the backend to view the allocation history of a TA.
+
+### Progress Update (since 18/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I finished coding the backend for allocation history. The bug was fixed. Turns out I needed to add a request interceptor so that the json token is forwarded to the feign client. This took me a while to figure out but i got it done!
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin coding of next assigned task after meeting with group.
+
+## Friday 6/20 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.20.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation History - Merge Conflict Fix
+
+### Progress Update (since 19/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: There were a lot of merge conflicts that came up as Allen and I had worked on sections due to miscommunication. I had to modify/delete a lot of files to prevent breakage of either of our codes. I successfully did it. I also met with the team in the morning to assign coding tasks for next cycle. 
+What didn't go well: After the merge conflicts were resolved, i was unable to synch the changes with my branch due to a bug. So, i had to create a new branch and submit a new PR. I got the issue fixed. 
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin coding of assigning students to courses/labs manually.
+
+
+## Saturday 6/21 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.21.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allens code modification
+
+### Progress Update (since 20/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I was able to correctly modify allens code to prevent code breakage. I modified his code to use sectionDto and courseDto accordingly.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. Some members are busy next week due to finals and have notified us in advance.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin coding of assigning students to courses/labs manually.
+
+## Monday 6/23 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.23.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Offer Workflow - Backend
+
+### Progress Update (since 21/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 20% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I began coding the backend for the offer workflow of allocating students to courses/labs. Initial dtos and mappings created.  
+What didn't go well: I had to go through a lot of files since offer is connected to application which is in turn connected to student. But i was able to figure it out in the end. 
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete the backend offer workflow for allocation and begin next assigned coding task.
+
+## Tuesday 6/24 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.24.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Offer Workflow - Backend
+
+### Progress Update (since 23/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 80% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Most of the backend for offer workflow is complete. CRUD operations for coordinator are ready. Next, i need to create mappings for accept/deny offer along with the relevant services and integrate that with allocating a student.
+What didn't go well: Everything went well.
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete the backend offer workflow for allocation and begin next assigned coding task.
+
+## Wednesday 6/25 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.25.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Offer Workflow - Backend
+
+### Progress Update (since 24/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 100% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: mappings for accept/deny offer are complete along with the relevant services. Controllers and services fully complete as well.
+What didn't go well: Everything went well.
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
+## Thursday 6/26 (6/17 - 6/26)
+
+### Timesheet
+
+![alt text](clockify_images/6.26.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Offer Workflow - Backend
+
+### Progress Update (since 25/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 95% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: I ran into a bug when trying to run the microservice. It took me a long time to figure out but i was able to get it done. I have submitted a PR on github and am waiting for my teammates to provide feedback.
+What didn't go well: Everything went well.
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
+## Friday 6/27 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/6.27.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Workflow - Backend
+
+### Progress Update (since 26/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 50% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met up with the team today morning on discord and we decided not to keep the offer table since it served no additional functionality opposed to what we had planned initially. I will have to go through my pr and modify accordingly. We decided to create an allocation when the allocate student button is clicked setting the isConfirmed field to false and creating additional mappings in the allocation controller itself to change the isCompleted to true upon offer acceptation.
+What didn't go well: I would've appreciated it if my team members had notified me of this change before i submitted a PR. I have to change the entire workflow from scratch now. But it's okay, i should hopefully be done with this by tomorrow. 
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
+## Saturday 6/28 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/6.28.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation Workflow - Backend
+
+### Progress Update (since 27/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Deleted the offer table since it served no additional functionality opposed to what we had planned initially. Created an allocation so that when the allocate student button is clicked, the isConfirmed field is set to false. Created additional mappings in the allocation controller itself to change the isCompleted to true upon offer acceptation.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * I am assigned to finish the studentTaughtCourse feature. I will finish coding this and begin the next assigned coding task.
+
+## Sunday 6/29 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/6.29.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Taught Course - Backend : stores details of previously taught courses by the student.
+
+### Progress Update (since 28/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 40% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Designed how I will implement the workflow for student-taught courses. Created initial dtos, and a couple of methods in course service. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. All team members are working hard to get their parts completed. All teammates are cooperative and hardworking.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete studentTaughtCourse feature and begin next assigned coding task.
+
+## Monday 6/30 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/6.30.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Taught Course - Backend : stores details of previously taught courses by the student.
+  * #2: Allocation - Additional mappings and service methods
+
+### Progress Update (since 29/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress. 20% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Implemented the workflow for student-taught courses. All endpoint mappings, dtos, and service methods have been created and work as expected. Waiting on reviews on the PR should any modifications be required. Also, Mandeep requested for a couple of additional endpoint mappings and service methods for allocations. I will hopefully get that done by tomorrow or day after. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Most team members are working hard to get their parts completed. I don't know what Allen and Seiya are doing, they have not submitted any PR in a while and are also not replying to our messages. 
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additional endpoint mappings and service methods requested by Mandeep and begin next assigned coding task. 
+
+## Tuesday 7/01 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/7.01.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation - Additional mappings and service methods
+
+### Progress Update (since 30/6/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 80% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Created additional allocation filter mappings that mandeep requested. Have some slight modifications left.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additional endpoint mappings and service methods requested by Mandeep and begin next assigned coding task. 
+
+## Wednesday 7/02 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/7.02.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allocation - Additional mappings and service methods
+  * #2: Application - utilizing mappers created for allocation in applications
+
+### Progress Update (since 01/7/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Completed additional allocation filter mappings. Added all service methods and created tests. Utilized a mapper for Dto conversions. Alex asked me to utilize these same mappers for the applications. I was able to get it working. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Prepare for MVP presentation and begin next assigned coding task. 
+
+## Thursday 7/03 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/7.03.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: MVP : create presentation and assign duties for presentation tomorrow.
+
+### Progress Update (since 02/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met up with Alex, Mandeep, and Dup to discuss regarding the MVP presentation tomorrow. We created the slides and assigned duties. I will be talking about the testing tomorrow. Also did a demo run to test if everything is working as expected.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Prepare for MVP presentation and begin next assigned coding task. 
+
+
+## Saturday 7/05 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/7.05.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Import past allocation : Backend - handle the backend for importing past allocations
+
+### Progress Update (since 03/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 50% complete
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Successfully planned out workflow for backend csv parsing. Had to modify couple of files but i figured it out to prevent code breakage. Initial mapping and service method created, some modifications required.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete backend for importing past allocations and then work on front end. 
+
+## Sunday 7/06 (6/27- 7/06)
+
+### Timesheet
+
+![alt text](clockify_images/7.06.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Import past allocation : Backend - handle the backend for importing past allocations
+
+### Progress Update (since 05/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> 80% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: All mappings, service method, and tests are complete. But, i might have to change everything again as my teammates just informed me that we should consider parsing csv in the frontend due to the small file size. I will meet with them tomorrow to finalize the changes and get the update completed.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete backend for importing past allocations and then work on front end.
+
+
+## Monday 7/07 (7/07- 7/16)
+
+
+### Timesheet
+
+![alt text](clockify_images/7.07.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Import past allocation : Backend - handle the backend for importing past allocations
+
+### Progress Update (since 06/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Changed backend logic to handle the parsed csv from the frontend. Updated mappings, service method, and tests. Everything works as expected now.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Work on frontend for importing past allocations.
+
+
+## Tuesday 7/08 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.08.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Import past allocation : Frontend 
+
+### Progress Update (since 07/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 40% Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met with team to discuss next tasks assigned to each person. I am in charge of frontend for past allocations.Designed the front end button to import csv past allocations and created modal that pops up when button clicked. Have to integrate backend with frontend.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Work on frontend for importing past allocations then begin next assigned coding task.
+
+## Wednesday 7/09 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.09.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Import past allocation : Frontend 
+
+### Progress Update (since 08/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 80% Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Integrated backend with front end and all design elements have been created. Functionality works as expected, and tests pass. However, my team has asked me to make the error messages more user-friendly instead of displaying the backend error thrown directly. They have all asked me to implement a checkbox so that if the user clicks it, new courses/sections are created if they don't exist in the database.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Work on frontend for importing past allocations then begin next assigned coding task.
+
+## Thursday 7/10 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.10.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Import past allocation : Frontend 
+
+### Progress Update (since 09/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Made the error messages more user-friendly instead of displaying the backend error thrown directly. Implemented a checkbox so that if the user clicks it, new courses/sections are created if they don't exist in the database. The functionality is now fully complete.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Meet with team and begin next assigned coding task.
+
+
+## Saturday 7/12 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.12.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Frontend: GTA - Availability during final exams
+
+### Progress Update (since 10/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 20% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Created initial availability page with a basic calendar. Have to modify layout a bit and add role based access.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete front end for GTA final exam availability and begin next coding task.
+
+## Sunday 7/13 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.13.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Frontend: GTA - Availability during final exams
+
+### Progress Update (since 12/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 70% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Calendar now supports multiple time slots to be selected. Page is only accessible to graduate students now, this is fetched from the application the student submitted. Have to add tests and make slight modifications next.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete front end for GTA final exam availability and begin backend integration.
+
+## Monday 7/14 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.14.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Frontend: GTA - Availability during final exams
+
+### Progress Update (since 13/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Added tests for the page. Added a reset button to the calendar, forward and backward buttons to change the week. Waiting for Allen to complete the backend so i can work on the integration next.  
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin frontend and backend integration for GTA final exam availability.
+
+
+## Tuesday 7/15 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.15.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Backend Frontend Integration - GTA exam availability
+
+### Progress Update (since 13/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Added new endpoint in examController to delete availabilities by studentId. Added respective service method and tests as well. Modified reset button in calendar to use this delete endpoint so that students can change their availabilities during busy exam periods. Integrated backend with the submit button so that students can add their availabilities. Added front end tests as well.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin coding for UR 4.6 - Must be able to view final assignments in a calendar view (lab, marking, prep coordination) and GTA must be able to see their exam assignments.
+
+
+## Wednesday 7/16 (7/07- 7/16)
+
+### Timesheet
+
+![alt text](clockify_images/7.16.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Page - View Exam Assignments
+  * #2: Coordinator Page - Create exam and assign student to exam
+
+### Progress Update (since 15/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 80% Complete.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress. 30% Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Update schedule page for students so that they can view their exam assignments in a calendar view. Have to make few modifications once I get the updated backend from Allen. Created initial coordinator exams page where they can create an exam using a form. Have to add assigning a student to the exam with a form next.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete exam assignment feature and begin next assigned coding task.
+
+## Thursday 7/17 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.17.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Page - View Exam Assignments
+  * #2: Coordinator Page - Create exam and assign student to exam
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Students can now view their exam assignments in a calendar view along with a schedule row at the bottom with more details. Added assign student to exam form on coordinators exam page. Once student is assigned to an exam, the students schedule calendar is successfully updated as well. Wrote tests as well. All are passing.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
+## Sunday 7/20 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.20.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page (Coordinator): Validation checks + improved workflow
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 50% complete
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Modified assign student to exam form to auto update the exams dropdown without refreshing the page once a new exam is added. Added startTime and endTime validation to ensure consistency with students schedule viewer calendar. Tomorrow, I have to display the students availabilites once student is selected from the dropdown to improve workflow and UX. I also have to ensure the student has a graduate application submitted before assigning them to an exam. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
+## Monday 7/21 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.21.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page (Coordinator): Validation checks + improved workflow
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Display the students availabilites once student is selected from the dropdown to improve workflow and UX in assign student to exam form. Ensured the student has a graduate application submitted before assigning them to an exam. Also, if task selected is "Coordination", verified that start and end times match the exams start and end time. Displayed user-friendly error messages at each step to guide the coordinator through the process.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned coding task.
+
+## Tuesday 7/22 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.22.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Section Model and Allocation Page updates: details provided below
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 60% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Modified section model to include numberOfTAsAllocated which stores the current number of TAs allocated to that particular section. Modified tests and prevented code breakage. Next, i have to prevent the coordinator from allocating to a lecture in the allocation page and also display the numberOfTAsAllocated in the side in the SectionDetails. I also have to give warnings to the coordinator when they are allocating more than 1 TA to a section. We also had a team meeting today after the in-person meeting with professor scott to discuss next tasks. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete section and allocation page updates and begin working on additions in exams page for coordinator.
+
+## Wednesday 7/23 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.23.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Section Model and Allocation Page updates: details provided below
+  * #2: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress. 30% Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Modified all section related things due to the addition of a new numberofTasallocated field. When clicking a section, the Allocation Page shows the number of TAs allocated to the section, and give a warning when a coordinator tries to allocate more than 1 TA to a section. Coordinator is prevented from allocating a student to a LECTURE. Toasts are displayed when relevant.
+I also started working on the exams page. Created the backend required to unassign students from exams and also update assignments by studentId. Also created backend to get all assignments by examId. Wrote tests. All are passing. Have to do the frontend updates next and then integrate frontend and backend later. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task. 
+
+## Thursday 7/24 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.24.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 70% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Backend is fully working and tested in postman and unit tests. I created the view all exams component in the exams page. Integrated with backend to display all exams along with their assignments. Created update and delete buttons as well. Next, i have to create the forms for updating and also integrate the backend with the update and delete buttons. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task. 
+
+## Friday 7/25 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.25.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+  * #2: Team meeting
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 70% complete.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met with team after our meeting with the professor to discuss next steps. Took advice on the workflow for the exam page i am creating. Will integrate recommendations tomorrow. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task.
+
+## Saturday 7/26 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.26.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 90% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Most functionality is working, updating exam works but the page has to be refreshed to see changes. Same issue for assignment updates. Delete buttons will be added tomorrow. I also ran into a bug where I was getting multiple toasts, will fix that tomorrow as well. I also have to add time validation. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task.
+
+## Sunday 7/27 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.27.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: All update and delete buttons work as expected. The exam/assignment card is updated instantly upon update/delete. No need to refresh the page now. Added time validation to create an exam form and assign student to exam form.  
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task.
+
+## Monday 7/28 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.28.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Modifications: Exam Page - need to add time validation to update buttons as well. And upon creating an exam or assignment, the new data should be loaded in the below Exams & assignments section without the need to refresh the page.
+  * #2: Team meeting
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: When an exam or assignment is created, the exams & assignment section is instantly updated without the need to refresh the page. I also added the same time validation as in the forms to the update buttons in exams & assignments. Also, in the assign student to exam form, once a matching student is selected, the student name and student number fields are auto populated.
+We also had a team meeting today to discuss regarding the peer testing event tomorrow. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned task.
+
+## Tuesday 7/29 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.29.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Filter: modify student filter in assign student to exam form to display all students with a graduate application submitted in the dropdown instead of manually entering student name and student number.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 50% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Created new endpoints in userservice and applicationservice. The end point in userservice returns a list of UserDtos based on the provided studentIds. The end point in applicationservice sends a list of studentIds that have a graduate application to the above mapping and returns the list of UserDtos. Endpoints are working as expected and all tests pass. Have to modify frontend next to utilize these new mappings and modify existing code as well. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete student filter update and begin looking for bugs in the system to fix. 
+
+## Wednesday 7/30 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.30.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Filter: modify student filter in assign student to exam form to display all students with a graduate application submitted in the dropdown instead of manually entering student name and student number.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Modified frontend to utilize the new mappings. Changed the form layout so that the dropdown of students with a graduate application is displayed first. Autopopulated student name and student number based on the selected student. Prevented input to student name/number boxes as well. Integrated backend and frontend completely. All tests pass. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin looking for bugs in the system to fix. 
+
+## Thursday 7/31 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.31.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Refactoring + Availability Matching: Move all api calls to api folder instead of directly calling them in the page. Verify assigned time for exam task is within the students availability.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Initially i had made all requests to the backend directly in the page itself for ease of accessibility. Upon the review of my PR, alex suggested to move all requests to the api folder. This required a lot of refactoring which i got done. I also added validation to the assign button to verify that the assigned start time and end time for the exam task matches the students actual availability. If not, error is displayed and assignment is not completed. All tests pass. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin looking for bugs in the system to fix and work on final report/presentation. 

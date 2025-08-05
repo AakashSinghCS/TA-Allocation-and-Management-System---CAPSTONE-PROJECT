@@ -4,19 +4,23 @@ import HomePage from "../pages/homepage/HomePage";
 import AboutPage from "../pages/aboutpage/AboutPage";
 import TaProfilePage from "../pages/taprofilepage/TaProfilePage";
 import LoginPage from "../pages/loginPage/LoginPage";
-import { mockStudent } from "../mocked-objects/mockUsers";
-import { mockSection } from "../mocked-objects/mockSection";
+import ErrorPage from "../pages/errorpage/ErrorPage";
+
 import PublicLayout from "../components/layout/publicLayout/PublicLayout";
 
 
 
 export const router = createBrowserRouter([
   {
-    element: <App />,           
+    path: "/",              
+    element: <App />,
+    errorElement: <ErrorPage />,
     children: [
-      { path: "/", element: <HomePage /> },
-      { path: "/about", element: <AboutPage /> },
-      { path: "/taprofile", element: <TaProfilePage student = {mockStudent} section={[mockSection]}/> },
+      { index: true, element: <HomePage /> },               
+      { path: "about", element: <AboutPage /> },            
+      { path: "taprofile/:studentId", element: <TaProfilePage />},
+      { path: "error", element: <ErrorPage /> },
+      { path: "*", element: <ErrorPage /> },                
      
     ],
   },

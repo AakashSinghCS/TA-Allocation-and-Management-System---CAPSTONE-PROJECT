@@ -12,17 +12,10 @@ describe("LoginPage", () => {
 
   it("renders login form fields", () => {
     render(<LoginPage />);
-    expect(screen.getByLabelText(/Username\/Email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Login/i })).toBeInTheDocument();
     expect(screen.getByText(/Please log in to continue/i)).toBeInTheDocument();
-  });
-
-  it("renders header navigation buttons", () => {
-    render(<LoginPage />);
-    ["Home", "About", "Contact", "Sign In", "Sign Up"].forEach((label) => {
-      expect(screen.getByRole("button", { name: label })).toBeInTheDocument();
-    });
   });
 
   it("shows Forgot password link", () => {
@@ -32,20 +25,20 @@ describe("LoginPage", () => {
 
   it("accepts input and submits form", () => {
     render(<LoginPage />);
-    const usernameInput = screen.getByLabelText(/Username\/Email/i);
+    const emailInput = screen.getByLabelText(/Email/i);
     const passwordInput = screen.getByLabelText(/Password/i);
 
-    fireEvent.change(usernameInput, { target: { value: "testuser" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
+    fireEvent.change(emailInput, { target: { value: "test@example.com" } });
+    fireEvent.change(passwordInput, { target: { value: "Password@123" } });
 
-    expect(usernameInput).toHaveValue("testuser");
-    expect(passwordInput).toHaveValue("password123");
+    expect(emailInput).toHaveValue("test@example.com");
+    expect(passwordInput).toHaveValue("Password@123");
 
     const consoleSpy = vi.spyOn(console, "log");
     fireEvent.submit(screen.getByRole("button", { name: /Login/i }));
     expect(consoleSpy).toHaveBeenCalledWith(
       "Login attempted with:",
-      { username: "testuser", password: "password123" }
+      { email: "test@example.com", password: "Password@123" }
     );
   });
 });
