@@ -75,19 +75,10 @@ public class UserController {
     @GetMapping("/search")
      public ResponseEntity<List<UserDto>> searchUsers(
         @RequestParam(required = false) String role,
-
-
-
             @RequestParam(required = false, defaultValue = "") String firstname,
-
-
-             @RequestParam(required = false, defaultValue = "") String lastname,
-
-
+            @RequestParam(required = false, defaultValue = "") String lastname,
             @RequestParam(required = false, defaultValue = "0") int universityNumber,
-
-
-             @RequestParam(required = false) Long userId) {
+            @RequestParam(required = false) Long userId) {
 
          List<UserDto> results = userService.search(role, firstname, lastname, universityNumber, userId);
 

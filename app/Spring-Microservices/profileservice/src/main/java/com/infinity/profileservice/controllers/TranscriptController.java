@@ -12,12 +12,16 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.infinity.profileservice.dto.TranscriptInfoDTO;
+import com.infinity.profileservice.dto.TranscriptReviewDTO;
 import com.infinity.profileservice.dto.TranscriptStatusDTO;
 import com.infinity.profileservice.models.Transcript;
 import com.infinity.profileservice.services.TranscriptService;
@@ -66,9 +70,15 @@ public class TranscriptController {
     
     @GetMapping("/list")
     @PreAuthorize("hasAnyRole('COORDINATOR', 'ADMIN')")
-    public ResponseEntity<List<TranscriptInfoDTO>> getAllTranscripts() {
-        List<TranscriptInfoDTO> transcripts = transcriptService.getAllTranscriptInfo();
+    public ResponseEntity<List<TranscriptInfoDTO>> getAllTranscripts(@RequestHeader("X-User-Id") Long requesterId,
+            @RequestHeader("X-User-Roles") List<String> roles) {
+        List<TranscriptInfoDTO> transcripts = transcriptService.getAllTranscriptInfo(requesterId, roles);
         return ResponseEntity.ok(transcripts);
+    }
+    
+    @GetMapping("/test")
+    public ResponseEntity<String> testEndpoint() {
+        return ResponseEntity.ok("Transcript service is working!");
     }
     
     @GetMapping("/download")
@@ -102,5 +112,26 @@ public class TranscriptController {
                     .body(transcript.getData());
             })
             .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @PutMapping("/review/{transcriptId}")
+    @PreAuthorize("hasAnyRole('COORDINATOR', 'ADMIN')")
+    public ResponseEntity<String> updateTranscriptReview(
+            @PathVariable Long transcriptId, 
+            @RequestBody TranscriptReviewDTO reviewDTO) {
+        
+        // Get reviewer ID from JWT token
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long reviewerId = Long.parseLong(username);
+        
+        // Ensure the transcriptId in path matches the DTO
+        reviewDTO.setTranscriptId(transcriptId);
+        
+        try {
+            transcriptService.updateTranscriptReview(reviewDTO, reviewerId);
+            return ResponseEntity.ok("Transcript review updated successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body("Failed to update transcript review: " + e.getMessage());
+        }
     }
 }

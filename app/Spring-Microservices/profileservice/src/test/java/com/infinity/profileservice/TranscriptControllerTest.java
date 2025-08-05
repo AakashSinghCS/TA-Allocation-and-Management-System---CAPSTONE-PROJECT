@@ -1,10 +1,21 @@
 package com.infinity.profileservice;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -16,9 +27,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.infinity.profileservice.controllers.TranscriptController;
@@ -33,7 +44,7 @@ class TranscriptControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private TranscriptService transcriptService;
 
     private Transcript mockTranscript;
@@ -155,19 +166,21 @@ class TranscriptControllerTest {
     @Test
     @WithMockUser(username = "123", roles = "COORDINATOR")
     void getAllTranscripts_Success() throws Exception {
-        TranscriptInfoDTO transcriptInfo1 = new TranscriptInfoDTO(1L, 123L, "John Doe", "john@test.com", "12345", "transcript1.pdf", "2024-01-15", 1024L);
-        TranscriptInfoDTO transcriptInfo2 = new TranscriptInfoDTO(2L, 124L, "Jane Smith", "jane@test.com", "12346", "transcript2.pdf", "2024-01-16", 2048L);
+        Long userIdFromHeader = 1L;
+        List<String> userRoles = List.of("ROLE_ADMIN");
+        TranscriptInfoDTO transcriptInfo1 = new TranscriptInfoDTO(1L, 123L, "Test1", LocalDateTime.now(), 1024L);
+        TranscriptInfoDTO transcriptInfo2 = new TranscriptInfoDTO(2L, 124L, "Test2", LocalDateTime.now(), 1024L);
         List<TranscriptInfoDTO> transcripts = Arrays.asList(transcriptInfo1, transcriptInfo2);
         
-        when(transcriptService.getAllTranscriptInfo()).thenReturn(transcripts);
+        when(transcriptService.getAllTranscriptInfo(any(), any())).thenReturn(transcripts);
 
-        mockMvc.perform(get("/transcripts/list"))
+        mockMvc.perform(get("/transcripts/list")
+                .header("X-User-Roles", userRoles)
+                .header("X-User-Id",userIdFromHeader))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].studentName").value("John Doe"))
-                .andExpect(jsonPath("$[1].studentName").value("Jane Smith"));
+                .andExpect(jsonPath("$.length()").value(2));
 
-        verify(transcriptService).getAllTranscriptInfo();
+        verify(transcriptService).getAllTranscriptInfo(any(), any());
     }
 
     @Test
