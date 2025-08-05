@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
 import com.infinity.courseservice.enums.SectionType;
 import com.infinity.courseservice.models.Course;
+import com.infinity.courseservice.models.StudentTaughtCourse;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
@@ -181,4 +182,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
       @Param("endTime") java.time.LocalTime endTime,
       @Param("searchText") String searchText,
       Pageable pageable);
+
+    
 }

@@ -278,25 +278,43 @@ public class CourseService {
             "StudentTaughtCourse",   
             null,               
             saved,           
-            saved.getId()   
+            saved.getId()
         );
         
         return studentTaughtCourseMapper.toDto(student,saved);
     }
 
-    public void deleteStudentTaughtCourse(Long studentId, Long courseId, Long userIdFromHeader) {
-        StudentTaughtCourse toDelete = 
-            stcRepository.findByStudentIdAndCourseId(studentId, courseId);
-        stcRepository.delete(toDelete);
-        
-        auditService.record(
-            userIdFromHeader,
-            ActionOptions.DELETE,
-            "StudentTaughtCourse",   
-            toDelete,               
-            null,           
-            toDelete.getId()   
-        );
+    public void deleteStudentTaughtCourse(
+        Long studentId,
+        Long courseId,
+        String semesterName,
+        Integer year,
+        Long userIdFromHeader
+    ) {
+        List<StudentTaughtCourse> toDelete = stcRepository
+            .findAllByStudentIdAndCourse_IdAndSemester_SemesterAndSemester_Year(
+                studentId, courseId, semesterName, year
+            );
+
+        if (toDelete.isEmpty()) {
+            throw new NotFoundException(String.format(
+                "No StudentTaughtCourse found for studentId=%d, courseId=%d, semester=%s, year=%d",
+                studentId, courseId, semesterName, year
+            ));
+        }
+
+        stcRepository.deleteAll(toDelete);
+
+        toDelete.forEach(stc -> {
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.DELETE,
+                "StudentTaughtCourse",
+                stc,
+                null,
+                stc.getId()
+            );
+        });
     }
 
     public List<StudentTaughtCourseDto> getCoursesTaughtByStudent(Long studentId) {

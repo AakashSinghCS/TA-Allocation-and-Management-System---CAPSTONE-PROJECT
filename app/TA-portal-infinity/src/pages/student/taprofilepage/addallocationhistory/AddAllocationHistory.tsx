@@ -28,12 +28,11 @@ export default function AddAllocationHistory() {
   useEffect(() => {
     const fetchData = async () => {
       const fetched = await fetchStudentAllocationHistory(studentId);
-      const sectionsWithSids: Section[] = fetched.map((sec) => ({
+      const sectionsWithNoSIds: Section[] = fetched.map((sec) => ({
         ...sec,
-        id: sec?.id ?? sec.course?.id ?? -1,
       }));
-      setSelectedSections(sectionsWithSids);
-      setInitialSections(sectionsWithSids);
+      setSelectedSections(sectionsWithNoSIds);
+      setInitialSections(sectionsWithNoSIds);
     };
     fetchData();
   }, [studentId]);
@@ -49,8 +48,8 @@ export default function AddAllocationHistory() {
     );
   }, []);
 
-  const onRemovePrereq = (sidToRemove: number) => {
-    setSelectedSections((prev) => prev.filter((s) => s?.id !== sidToRemove));
+  const onRemovePrereq = (courseId : number, semester : string, year : number) => {
+    setSelectedSections((prev) => prev.filter((s) => ((s?.course?.id !== courseId) && (s.semester !== semester) && (s.year !== year))));
   };
 
   const handleSaveHistory = async () => {
@@ -106,19 +105,19 @@ export default function AddAllocationHistory() {
         </div>
         <div className="space-y-2">
           {selectedSections.map((sec) => {
-            const sid = sec?.id;
+            const key = `${sec.course?.id}-${sec.semester}-${sec.year}-${sec.section}`
             return (
               <div
-                key={sid}
+                key={key}
                 className="flex items-center justify-between bg-slate-50 px-3 py-2 rounded"
               >
                 <span>
                   {sec.course?.deptCode} {sec.course?.courseNum} –{" "}
-                  {sec.course?.name}
+                  {sec.course?.name}-{sec.semester}-{sec.year}
                 </span>
                 <button
                   type="button"
-                  onClick={() => sid != null && onRemovePrereq(sid)}
+                  onClick={() => key != null && onRemovePrereq(sec.course?.id ?? -1, sec.semester ?? "", sec.year ?? -1)}
                   className="text-red-600 hover:underline text-sm"
                 >
                   Remove
