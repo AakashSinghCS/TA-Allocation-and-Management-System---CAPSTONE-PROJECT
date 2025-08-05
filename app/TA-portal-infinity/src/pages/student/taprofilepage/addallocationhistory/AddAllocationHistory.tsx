@@ -49,7 +49,13 @@ export default function AddAllocationHistory() {
   }, []);
 
   const onRemovePrereq = (courseId : number, semester : string, year : number) => {
-    setSelectedSections((prev) => prev.filter((s) => ((s?.course?.id !== courseId) && (s.semester !== semester) && (s.year !== year))));
+    setSelectedSections(prev =>
+      prev.filter(s =>
+        s.course?.id !== courseId ||
+        s.semester      !== semester ||
+        s.year          !== year
+      )
+    );
   };
 
   const handleSaveHistory = async () => {

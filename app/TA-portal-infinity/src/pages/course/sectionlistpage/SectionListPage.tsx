@@ -239,7 +239,7 @@ const handleFilterChange = useCallback((f: FilterSectionsProps) => {
 
 function allocationsChangeErrorMsg(err: any): string {
   let friendlyMessage = 'Failed to import allocations: Unknown error occurred.';
-
+  console.log(err);
   const errorText = err.message || '';
 
   if (errorText.includes('User with student number')) {
