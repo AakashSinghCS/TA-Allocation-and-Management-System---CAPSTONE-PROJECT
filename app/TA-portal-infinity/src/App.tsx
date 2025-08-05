@@ -18,8 +18,8 @@ export default function App() {
   }
 
   return (
-    <div className="flex min-h-screen">
-      {/* 2) pass both state and setter into SideNav */}
+    <div className="flex min-h-screen app-container">
+      {/* 2) pass both state and setter into SideNav - ensure single instance */}
       <SideNav
         expanded={sidebarExpanded}
         setExpanded={setSidebarExpanded}
@@ -27,7 +27,7 @@ export default function App() {
 
       {/* 3) dynamically pad (or margin) the content */}
       <div
-        className={`flex flex-col flex-1 transition-all duration-300 ${
+        className={`flex flex-col flex-1 transition-all duration-300 app-main-content ${
           sidebarExpanded ? "pl-56" : "pl-20"
         }`}
       >
