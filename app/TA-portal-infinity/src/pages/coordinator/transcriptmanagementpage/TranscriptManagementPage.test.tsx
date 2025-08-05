@@ -106,13 +106,13 @@ describe('TranscriptManagementPage', () => {
       });
     });
 
-    // it('renders instructions section', async () => {
-    //   renderWithAuth(<TranscriptManagementPage />);
+    it('renders instructions section', async () => {
+      renderWithAuth(<TranscriptManagementPage />);
       
-    //   await waitFor(() => {
-    //     expect(screen.getByText('How to use this page:')).toBeInTheDocument();
-    //   });
-    // });
+      await waitFor(() => {
+        expect(screen.getByText('Quick Start Guide:')).toBeInTheDocument();
+      });
+    });
   });
 
   describe('Search Functionality', () => {
@@ -419,7 +419,7 @@ describe('TranscriptManagementPage', () => {
       
       await waitFor(() => {
         expect(screen.getByText('Student Transcripts')).toBeInTheDocument();
-        // expect(screen.getByText('How to use this page:')).toBeInTheDocument();
+        expect(screen.getByText('Quick Start Guide:')).toBeInTheDocument();
       });
     });
 
