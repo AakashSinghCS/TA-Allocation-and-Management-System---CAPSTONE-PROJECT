@@ -1,8 +1,15 @@
 package com.infinity.profileservice;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -48,10 +55,14 @@ class TranscriptServiceTest {
     private Transcript testTranscript;
     private MockMultipartFile validPdfFile;
     private Long userId;
+    private Long userIdFromHeader;
+    private List<String> headerRoles;
 
     @BeforeEach
     void setUp() {
         userId = 123L;
+        userIdFromHeader = 123L;
+        headerRoles = List.of("ROLE_ADMIN");
         
         testTranscript = new Transcript();
         testTranscript.setId(1L);
@@ -60,14 +71,13 @@ class TranscriptServiceTest {
         testTranscript.setContentType("application/pdf");
         testTranscript.setFileSize(2048576L);
         testTranscript.setUploadDate(LocalDateTime.now());
-        testTranscript.setData(new byte[]{1, 2, 3, 4, 5});
+        testTranscript.setData(new byte[] { 1, 2, 3, 4, 5 });
 
         validPdfFile = new MockMultipartFile(
-            "file",
-            "test-transcript.pdf",
-            "application/pdf",
-            "PDF content".getBytes()
-        );
+                "file",
+                "test-transcript.pdf",
+                "application/pdf",
+                "PDF content".getBytes());
     }
 
     @Test
@@ -93,7 +103,7 @@ class TranscriptServiceTest {
         existingTranscript.setId(1L);
         existingTranscript.setUserId(userId);
         existingTranscript.setFileName("old-transcript.pdf");
-        
+
         when(transcriptRepository.findByUserId(userId)).thenReturn(Optional.of(existingTranscript));
         when(transcriptRepository.save(any(Transcript.class))).thenReturn(existingTranscript);
 
@@ -111,14 +121,13 @@ class TranscriptServiceTest {
     void uploadTranscript_EmptyFile_ShouldThrowRuntimeException() {
         // Given
         MockMultipartFile emptyFile = new MockMultipartFile(
-            "file", "empty.pdf", "application/pdf", new byte[0]
-        );
+                "file", "empty.pdf", "application/pdf", new byte[0]);
 
         // When & Then
-        RuntimeException exception = assertThrows(RuntimeException.class, 
-            () -> transcriptService.uploadTranscript(userId, emptyFile));
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> transcriptService.uploadTranscript(userId, emptyFile));
         assertEquals("File is empty", exception.getMessage());
-        
+
         verify(transcriptRepository, never()).save(any());
     }
 
@@ -127,14 +136,13 @@ class TranscriptServiceTest {
         // Given
         byte[] largeContent = new byte[6 * 1024 * 1024]; // 6MB (over 5MB limit)
         MockMultipartFile largeFile = new MockMultipartFile(
-            "file", "large.pdf", "application/pdf", largeContent
-        );
+                "file", "large.pdf", "application/pdf", largeContent);
 
         // When & Then
-        RuntimeException exception = assertThrows(RuntimeException.class, 
-            () -> transcriptService.uploadTranscript(userId, largeFile));
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> transcriptService.uploadTranscript(userId, largeFile));
         assertEquals("File size exceeds maximum limit of 5MB", exception.getMessage());
-        
+
         verify(transcriptRepository, never()).save(any());
     }
 
@@ -142,14 +150,13 @@ class TranscriptServiceTest {
     void uploadTranscript_InvalidContentType_ShouldThrowRuntimeException() {
         // Given
         MockMultipartFile invalidFile = new MockMultipartFile(
-            "file", "document.txt", "text/plain", "Text content".getBytes()
-        );
+                "file", "document.txt", "text/plain", "Text content".getBytes());
 
         // When & Then
-        RuntimeException exception = assertThrows(RuntimeException.class, 
-            () -> transcriptService.uploadTranscript(userId, invalidFile));
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> transcriptService.uploadTranscript(userId, invalidFile));
         assertEquals("Only PDF files are allowed", exception.getMessage());
-        
+
         verify(transcriptRepository, never()).save(any());
     }
 
@@ -157,14 +164,13 @@ class TranscriptServiceTest {
     void uploadTranscript_InvalidFileExtension_ShouldThrowRuntimeException() {
         // Given
         MockMultipartFile invalidFile = new MockMultipartFile(
-            "file", "document.txt", "application/pdf", "Content".getBytes()
-        );
+                "file", "document.txt", "application/pdf", "Content".getBytes());
 
         // When & Then
-        RuntimeException exception = assertThrows(RuntimeException.class, 
-            () -> transcriptService.uploadTranscript(userId, invalidFile));
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> transcriptService.uploadTranscript(userId, invalidFile));
         assertEquals("File must have .pdf extension", exception.getMessage());
-        
+
         verify(transcriptRepository, never()).save(any());
     }
 
@@ -198,16 +204,24 @@ class TranscriptServiceTest {
     @Test
     void getAllTranscriptInfo_WithUserInfo_ShouldEnrichWithUserData() {
         // Given
-        TranscriptInfoDTO transcriptInfo = new TranscriptInfoDTO(1L, userId, "test.pdf", LocalDateTime.of(2024, 1, 15, 10, 0), 1024L);
-        when(transcriptRepository.findAllTranscriptInfo()).thenReturn(Arrays.asList(transcriptInfo));
+        Transcript mockTranscript = new Transcript();
+        mockTranscript.setId(1L);
+        mockTranscript.setUserId(userId);
+        mockTranscript.setFileName("test.pdf");
+        mockTranscript.setUploadDate(LocalDateTime.of(2024, 1, 15, 10, 0));
+        mockTranscript.setFileSize(1024L);
+        mockTranscript.setContentType("application/pdf");
+        mockTranscript.setReviewStatus("PENDING");
+        
+        when(transcriptRepository.findAllTranscriptsForInfo()).thenReturn(Arrays.asList(mockTranscript));
         
         UserDto userDto = new UserDto(userId, "John", "Doe", "student@test.com", 
                                     Arrays.asList(), 12345, "Computer Science", 2024, 4, 
                                     null, null, LocalDateTime.now(), true);
-        when(userInterface.getUserDetailsById(userId)).thenReturn(ResponseEntity.ok(userDto));
+        when(userInterface.getUserDetailsById(userId, headerRoles, userIdFromHeader)).thenReturn(ResponseEntity.ok(userDto));
 
         // When
-        List<TranscriptInfoDTO> result = transcriptService.getAllTranscriptInfo();
+        List<TranscriptInfoDTO> result = transcriptService.getAllTranscriptInfo(userIdFromHeader, headerRoles);
 
         // Then
         assertNotNull(result);
@@ -216,19 +230,27 @@ class TranscriptServiceTest {
         assertEquals("student@test.com", result.get(0).getStudentEmail());
         assertEquals("12345", result.get(0).getStudentNumber());
         
-        verify(transcriptRepository).findAllTranscriptInfo();
-        verify(userInterface).getUserDetailsById(userId);
+        verify(transcriptRepository).findAllTranscriptsForInfo();
+        verify(userInterface).getUserDetailsById(userId, headerRoles, userIdFromHeader);
     }
 
     @Test
     void getAllTranscriptInfo_FeignException_ShouldUseDefaultValues() {
         // Given
+        Transcript mockTranscript = new Transcript();
+        mockTranscript.setId(1L);
+        mockTranscript.setUserId(userId);
+        mockTranscript.setFileName("test.pdf");
+        mockTranscript.setUploadDate(LocalDateTime.of(2024, 1, 15, 10, 0));
+        mockTranscript.setFileSize(1024L);
+        mockTranscript.setContentType("application/pdf");
+        mockTranscript.setReviewStatus("PENDING");
         TranscriptInfoDTO transcriptInfo = new TranscriptInfoDTO(1L, userId, "test.pdf", LocalDateTime.of(2024, 1, 15, 10, 0), 1024L);
-        when(transcriptRepository.findAllTranscriptInfo()).thenReturn(Arrays.asList(transcriptInfo));
-        when(userInterface.getUserDetailsById(userId)).thenThrow(FeignException.class);
+        when(transcriptRepository.findAllTranscriptsForInfo()).thenReturn(Arrays.asList(mockTranscript));
+        when(userInterface.getUserDetailsById(userId, headerRoles, userIdFromHeader)).thenThrow(FeignException.class);
 
         // When
-        List<TranscriptInfoDTO> result = transcriptService.getAllTranscriptInfo();
+        List<TranscriptInfoDTO> result = transcriptService.getAllTranscriptInfo(userIdFromHeader, headerRoles);
 
         // Then
         assertNotNull(result);
@@ -237,8 +259,8 @@ class TranscriptServiceTest {
         assertEquals("Unknown", result.get(0).getStudentEmail());
         assertEquals("Unknown", result.get(0).getStudentNumber());
         
-        verify(transcriptRepository).findAllTranscriptInfo();
-        verify(userInterface).getUserDetailsById(userId);
+        verify(transcriptRepository).findAllTranscriptsForInfo();
+        verify(userInterface).getUserDetailsById(userId, headerRoles, userIdFromHeader);
     }
 
     @Test
@@ -261,7 +283,7 @@ class TranscriptServiceTest {
 
         // When & Then
         assertDoesNotThrow(() -> transcriptService.deleteTranscript(userId));
-        
+
         verify(transcriptRepository).findByUserId(userId);
         verify(transcriptRepository, never()).delete(any());
     }
@@ -269,7 +291,8 @@ class TranscriptServiceTest {
     @Test
     void getTranscriptStatus_ExistingTranscript_ShouldReturnStatus() {
         // Given
-        TranscriptStatusDTO expectedStatus = new TranscriptStatusDTO(true, "test.pdf", "2024-01-15", 1024L, "application/pdf");
+        TranscriptStatusDTO expectedStatus = new TranscriptStatusDTO(true, "test.pdf", "2024-01-15", 1024L,
+                "application/pdf");
         when(transcriptRepository.findByUserId(userId)).thenReturn(Optional.of(testTranscript));
         when(transcriptMapper.toTranscriptStatus(testTranscript)).thenReturn(expectedStatus);
 

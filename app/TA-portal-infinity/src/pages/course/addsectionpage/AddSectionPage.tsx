@@ -172,9 +172,6 @@ export default function AddSectionPage() {
               <Info className="w-5 h-5 mt-0.5 flex-shrink-0" />
               <span className="text-sm">Add a section to an existing course. Make sure the course already exists before adding a section.</span>
             </div>
-            {sectionCreated && (
-              <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick pauseOnHover />
-            )}
             <CreateSectionForm onCreateSection={handleCreateSection} mode="section" refreshOptions={refreshSectionOptions} />
           </>
         )}

@@ -170,6 +170,19 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
       }
       setSectionErrors(errMap);
       setCourseErrors({});
+      if (form.sectionSchedules && form.sectionSchedules.length > 0) {
+        form.sectionSchedules.forEach((sched, index) => {
+          if (!sched.startTime || !sched.endTime) return;
+
+          const startIdx = timeOptions.indexOf(sched.startTime);
+          const endIdx = timeOptions.indexOf(sched.endTime);
+
+          if (startIdx >= endIdx) {
+            errMap[`schedule_${index}`] = `Schedule ${index + 1}: Start time must be before end time.`;
+          }
+        });
+      }
+
       if (Object.keys(errMap).length > 0) return;
     }
     setCourseErrors({});
@@ -192,6 +205,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
       if (result === true) {
         setForm(initialForm); // reset only on success
         setSectionErrors({});
+        setSelectedInstructor(null);
       }
     } else {
       onCreateSection(cleanedForm);
@@ -435,7 +449,7 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
                 <button
                   type="button"
                   onClick={() => setSelectedInstructor(null)}
-                  className="text-red-600 hover:underline text-sm"
+                  className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition-all font-medium text-sm flex items-center gap-2"
                 >
                   Clear
                 </button>
@@ -455,84 +469,76 @@ export default function CreateSectionForm({ onCreateSection, mode, refreshOption
             )}
           </div>
 
-          {/* schedules */}
           <div className="space-y-2">
             <h3 className="font-medium text-sm">Section Schedules</h3>
             {form.sectionSchedules && form.sectionSchedules.map((sched, i) => (
-              <div
-                key={i}
-                className="grid grid-cols-4 gap-1 items-end text-sm"
-              >
-                <div>
-                  <label className="text-xs block mb-1">Day</label>
-                  <select
-                    value={sched.day}
-                    onChange={e =>  
-                      updateSchedule(i, { day: e.target.value })
-                    }
-                    className="w-full border rounded px-1 py-1 text-xs disabled:bg-gray-100 disabled:cursor-not-allowed"
+              <div key={i} className="space-y-1">
+                <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-1 items-end text-sm">
+                  <div>
+                    <label className="text-xs block mb-1">Day</label>
+                    <select
+                      value={sched.day}
+                      onChange={e => updateSchedule(i, { day: e.target.value })}
+                      className="w-full border rounded px-2 py-2 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    >
+                      <option value="">—</option>
+                      {['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map(d => (
+                        <option key={d} value={d}>{d}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs block mb-1">Start</label>
+                    <select
+                      value={sched.startTime}
+                      onChange={e => updateSchedule(i, { startTime: e.target.value })}
+                      className="w-full border rounded px-2 py-2 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    >
+                      <option value="">—</option>
+                      {timeOptions.map(t => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs block mb-1">End</label>
+                    <select
+                      value={sched.endTime}
+                      onChange={e => updateSchedule(i, { endTime: e.target.value })}
+                      className="w-full border rounded px-2 py-2 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    >
+                      <option value="">—</option>
+                      {timeOptions.map(t => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => removeSchedule(i)}
+                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700  font-medium text-sm"
                   >
-                    <option value="">—</option>
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(
-                      d => (
-                        <option key={d} value={d}>
-                          {d}
-                        </option>
-                      )
-                    )}
-                  </select>
+                    Remove
+                  </button>
                 </div>
-                <div>
-                  <label className="text-xs block mb-1">Start</label>
-                  <select
-                    value={sched.startTime}
-                    onChange={e =>  
-                      updateSchedule(i, {
-                        startTime: e.target.value
-                      })
-                    }
-                    className="w-full border rounded px-1 py-1 text-xs disabled:bg-gray-100 disabled:cursor-not-allowed"
-                  >
-                    <option value="">—</option>
-                    {timeOptions.map(t => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs block mb-1">End</label>
-                  <select
-                    value={sched.endTime}
-                    onChange={e =>   
-                      updateSchedule(i, { endTime: e.target.value })
-                    }
-                    className="w-full border rounded px-1 py-1 text-xs disabled:bg-gray-100 disabled:cursor-not-allowed"
-                  >
-                    <option value="">—</option>
-                    {timeOptions.map(t => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeSchedule(i)}
-                  className="text-red-600 hover:text-red-100 text-xs"
-                >
-                  Remove
-                </button>
+
+                {sectionErrors[`schedule_${i}`] && (
+                  <div className="text-red-600 text-xs mt-0.5 ml-1">
+                    {sectionErrors[`schedule_${i}`]}
+                  </div>
+                )}
               </div>
             ))}
+
             <button
               type="button"
               onClick={addSchedule}
-              className="text-[#040941] hover:text-[#040491] text-sm"
+              className="bg-[#040941] text-white px-3 py-1.5 rounded hover:bg-[#232a5c] transition-colors flex-1 text-sm"
             >
-              + Add a Schedule
+              Add a Schedule
             </button>
           </div>
         </fieldset>

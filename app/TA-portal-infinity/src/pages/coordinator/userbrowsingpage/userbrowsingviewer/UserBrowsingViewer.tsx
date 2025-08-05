@@ -160,7 +160,7 @@ export default function UserBrowsingViewer({
                                         if (col === 'createdAt' && disp) disp = formatDateForDisplay(new Date(disp));
                                         if (col === 'name') {
                                             return (
-                                                <td key={col} className={`border border-gray-300 ${mode === 'select' ? 'px-2 py-1' : 'px-3 py-1'}`}>
+                                                <td key={col} className={`border border-gray-300 text-center ${mode === 'select' ? 'px-2 py-1' : 'px-3 py-1'}`}>
                                                     <Link
                                                         to={`/user/profile/${user.id}`}
                                                         onClick={e => handleNavConfirm(e, user.id!)}
@@ -171,14 +171,14 @@ export default function UserBrowsingViewer({
                                                 </td>
                                             );
                                         }
-                                        return <td key={col} className={`border border-gray-300 ${mode === 'select' ? 'px-2 py-1' : 'px-3 py-1'}`}>{disp}</td>;
+                                        return <td key={col} className={`border border-gray-300 text-center ${mode === 'select' ? 'px-2 py-1' : 'px-3 py-1'}`}>{disp}</td>;
                                     })}
-                                    <td className={`border border-gray-300 ${mode === 'select' ? 'px-2 py-1' : 'px-3 py-1'}`}>
+                                    <td className={`border border-gray-300 text-center ${mode === 'select' ? 'px-2 py-1' : 'px-3 py-1'}`}>
                                         {mode === 'select' ? (
                                             <button
                                                 type="button"
                                                 onClick={() => onSelect?.(user)}
-                                                className={`text-blue-600 hover:text-red-300 ${mode === 'select' ? 'text-xs px-2 py-1' : ''}`}
+                                                className={`bg-[#040941] text-white px-3 py-0.5 rounded hover:bg-[#232a5c] transition-colors flex-1 text-sm`}
                                             >
                                                 Select
                                             </button>

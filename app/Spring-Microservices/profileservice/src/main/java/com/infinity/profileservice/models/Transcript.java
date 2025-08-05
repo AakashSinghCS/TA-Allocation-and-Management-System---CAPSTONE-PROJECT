@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -43,9 +42,21 @@ public class Transcript {
     @Column(nullable = false, columnDefinition = "LONGBLOB")
     private byte[] data;
 
+    // Review workflow fields
+    @Column(nullable = false)
+    private String reviewStatus = "PENDING"; // PENDING, UNDER_REVIEW, APPROVED, REJECTED, NEEDS_CLARIFICATION
+
+    @Column(columnDefinition = "TEXT")
+    private String reviewComments;
+
+    @Column
+    private Long reviewedBy; // User ID of the reviewer
+
+    @Column
+    private LocalDateTime reviewDate;
+
     @PrePersist
-    @PreUpdate
-    protected void onCreateOrUpdate() {
+    protected void onCreate() {
         uploadDate = LocalDateTime.now();
     }
 }
