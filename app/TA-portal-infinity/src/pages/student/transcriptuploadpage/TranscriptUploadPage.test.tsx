@@ -1471,4 +1471,123 @@ describe('TranscriptUploadPage', () => {
       expect(uploadButton).toBeDisabled();
     });
   });
+
+  describe('File Removal Functionality', () => {
+    beforeEach(async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+      renderWithRouter(<TranscriptUploadPage />);
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upload Transcript' })).toBeInTheDocument();
+      });
+    });
+
+    it('removes selected file and clears file input', async () => {
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const testFile = createMockFile('test-document.pdf', 2000000, 'application/pdf');
+
+      // Select a file
+      fireEvent.change(fileInput, { target: { files: [testFile] } });
+
+      await waitFor(() => {
+        expect(screen.getByText('test-document.pdf')).toBeInTheDocument();
+      });
+
+      // Find and click remove button (trash icon)
+      const removeButton = screen.getByRole('button', { name: '' }); // Trash icon button
+      fireEvent.click(removeButton);
+
+      await waitFor(() => {
+        expect(screen.queryByText('test-document.pdf')).not.toBeInTheDocument();
+        expect(screen.getByText('Choose a PDF file or drag it here')).toBeInTheDocument();
+      });
+
+      // Verify file input is cleared
+      expect(fileInput.value).toBe('');
+    });
+  });
+
+  describe('Advanced File Validation', () => {
+    beforeEach(async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+      renderWithRouter(<TranscriptUploadPage />);
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upload Transcript' })).toBeInTheDocument();
+      });
+    });
+
+    it('validates file extension case insensitively', async () => {
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const upperCaseExtFile = createMockFile('test-document.PDF', 2000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [upperCaseExtFile] } });
+
+      await waitFor(() => {
+        // Should accept uppercase .PDF extension
+        expect(screen.queryByText(/invalid file format/i)).not.toBeInTheDocument();
+        expect(screen.getByText('test-document.PDF')).toBeInTheDocument();
+      });
+    });
+
+    it('handles files with special characters in filename correctly', async () => {
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const specialCharFile = createMockFile("test'file\"with%special&chars.pdf", 2000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [specialCharFile] } });
+
+      await waitFor(() => {
+        // The component should show validation error for special characters
+        expect(screen.getByText('File name contains invalid characters. Please rename your file and try again.')).toBeInTheDocument();
+      });
+
+      // Verify upload button is disabled due to invalid filename
+      const uploadButton = screen.getByRole('button', { name: 'Upload Transcript' });
+      expect(uploadButton).toBeDisabled();
+    });
+
+    it('handles extremely long filename (255 characters)', async () => {
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      // Create a 255-character filename (251 chars + ".pdf")
+      const longName = 'a'.repeat(251) + '.pdf';
+      const longNameFile = createMockFile(longName, 2000000, 'application/pdf');
+
+      fireEvent.change(fileInput, { target: { files: [longNameFile] } });
+
+      await waitFor(() => {
+        // The component validates filename length and shows error for long names
+        expect(screen.getByText('File name is too long. Please use a shorter name (max 100 characters).')).toBeInTheDocument();
+      });
+
+      // Verify upload button is disabled due to long filename
+      const uploadButton = screen.getByRole('button', { name: 'Upload Transcript' });
+      expect(uploadButton).toBeDisabled();
+    });
+  });
+
+  describe('File Size Formatting', () => {
+    it('handles zero byte files correctly', async () => {
+      // Mock successful fetch response with zero-byte file
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({
+          hasTranscript: true,
+          fileName: 'empty-transcript.pdf',
+          fileSize: 0,
+          uploadDate: '2024-01-01T12:00:00Z',
+          contentType: 'application/pdf'
+        }),
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+      
+      await waitFor(() => {
+        expect(screen.getByText(/0 Bytes/)).toBeInTheDocument();
+      });
+    });
+  });
 });

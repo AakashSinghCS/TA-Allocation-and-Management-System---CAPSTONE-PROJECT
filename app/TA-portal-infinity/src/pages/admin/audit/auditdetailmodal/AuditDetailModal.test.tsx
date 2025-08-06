@@ -57,8 +57,10 @@ describe('AuditDetailModal', () => {
         const mockData = {
             service: 'MyService',
             actorId: 42,
+            actorName: 'John Doe',
             action: 'UPDATE',
             entityType: 'TestEntity',
+            entityName: 'Test Entity Name',
             entityId: 99,
             timestamp: '2025-07-16T12:00:00Z',
             beforeJson: '{"foo":"bar"}',
@@ -66,9 +68,39 @@ describe('AuditDetailModal', () => {
         };
         const mockAuditEvent = {
             data: mockData,
-            isLoading: true,
+            isLoading: false,
             error: null,
         } as unknown as UseQueryResult<AuditEvent, Error>
         vi.spyOn(auditHook, 'useAuditEvent').mockReturnValue(mockAuditEvent);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <AuditDetailModal id={1} onClose={onCloseMock} serviceFilter="" />
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByText('Audit Event #1')).toBeInTheDocument();
+        expect(screen.getByText('MyService')).toBeInTheDocument();
+        expect(screen.getByText('John Doe')).toBeInTheDocument();
+        expect(screen.getByText('Test Entity Name')).toBeInTheDocument();
+        expect(screen.getByText('Before')).toBeInTheDocument();
+        expect(screen.getByText('After')).toBeInTheDocument();
+    });
+
+    it('shows "No details available" when data is null', () => {
+        const mockAuditEvent = {
+            data: null,
+            isLoading: false,
+            error: null,
+        } as unknown as UseQueryResult<AuditEvent, Error>
+        vi.spyOn(auditHook, 'useAuditEvent').mockReturnValue(mockAuditEvent);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <AuditDetailModal id={1} onClose={onCloseMock} serviceFilter="" />
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByText('No details available.')).toBeInTheDocument();
     });
 });
