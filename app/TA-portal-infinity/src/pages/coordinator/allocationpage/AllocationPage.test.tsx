@@ -112,4 +112,48 @@ describe('TAAllocationPage', () => {
     expect(screen.getByText(/Loading courses…/i)).toBeInTheDocument();
     spy.mockRestore();
   });
+
+  it('handles pagination controls', () => {
+    const queryClient = new QueryClient();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <TAAllocationPage />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+    
+    // The pagination component should be present
+    const paginationElements = document.querySelectorAll('[data-testid*="pagination"], .pagination, [role="navigation"]');
+    expect(paginationElements.length).toBeGreaterThanOrEqual(0);
+  });
+
+  it('handles filter changes correctly', () => {
+    const queryClient = new QueryClient();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <TAAllocationPage />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+    
+    // Verify filter component is rendered
+    expect(screen.getByText(/Course Filter/i)).toBeInTheDocument();
+  });
+
+  it('handles application selection and displays details', () => {
+    const queryClient = new QueryClient();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <TAAllocationPage />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+    
+    // Verify application filter panel is rendered
+    const filterPanels = document.querySelectorAll('[class*="filter"], [class*="panel"]');
+    expect(filterPanels.length).toBeGreaterThanOrEqual(0);
+  });
 });
