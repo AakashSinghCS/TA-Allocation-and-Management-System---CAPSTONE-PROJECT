@@ -1,6 +1,3 @@
-
-// ...existing code...
-
 // Top-level navigation mock (must be before all imports)
 let navigatedPath: string | null = null;
 const mockNavigate = (...args: any[]) => {
@@ -19,10 +16,10 @@ vi.mock('react-router-dom', async () => {
 import { render, screen } from '@testing-library/react';
 import * as fetchFilteredSectionsModule from '../../../api/course/sectionfilter/fetchFilteredSections';
 import TAAllocationPage from './AllocationPage';
-import type { SectionType } from '../../../interfaces/section/SectionDetails';
 import { vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import * as useSectionPageModule from '../../../api/course/sectionfilter/useSectionFilter';
 
 vi.mock('../../../context/AuthContext', () => ({
   useAuth: () => ({
@@ -69,7 +66,6 @@ describe('TAAllocationPage', () => {
         </MemoryRouter>
       </QueryClientProvider>
     );
-    // Section listが空の場合の表示（例: "No courses found"）
     expect(await screen.findByText(/No courses found/i)).toBeInTheDocument();
   });
   
@@ -102,4 +98,18 @@ describe('TAAllocationPage', () => {
     expect(screen.getByText(/Course Filter/i)).toBeInTheDocument();
   });
   
+  it('shows loading courses when sections are being fetched', () => {
+    const spy = vi.spyOn(useSectionPageModule, 'useSectionSearchPage');
+   spy.mockReturnValue({ data: undefined, isFetching: true } as any);
+    const queryClient = new QueryClient();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <TAAllocationPage />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+    expect(screen.getByText(/Loading courses…/i)).toBeInTheDocument();
+    spy.mockRestore();
+  });
 });
