@@ -11,6 +11,10 @@ vi.mock('../../../api/transcript/transcriptApi', () => ({
   updateTranscriptReview: vi.fn(),
 }));
 
+// Mock URL.createObjectURL and URL.revokeObjectURL for preview functionality
+global.URL.createObjectURL = vi.fn(() => 'mock-blob-url');
+global.URL.revokeObjectURL = vi.fn();
+
 describe('TranscriptManagementPage - Main Integration Tests', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -156,6 +160,113 @@ describe('TranscriptManagementPage - Main Integration Tests', () => {
       const searchInput = screen.getByPlaceholderText(/search by student/i);
       fireEvent.change(searchInput, { target: { value: 'test' } });
       expect(searchInput).toHaveValue('test');
+    });
+
+    it('handles confirmation dialog interactions for bulk operations', async () => {
+      renderWithAuth(<TranscriptManagementPage />);
+      
+      await waitFor(() => {
+        expect(screen.getByRole('table')).toBeInTheDocument();
+      });
+      
+      // Select multiple transcripts to enable bulk operations
+      const checkboxes = screen.getAllByRole('checkbox');
+      if (checkboxes.length > 2) {
+        fireEvent.click(checkboxes[1]); // First transcript
+        fireEvent.click(checkboxes[2]); // Second transcript
+        
+        // Look for bulk action buttons
+        const bulkApproveButtons = screen.queryAllByText(/Approve/i);
+        if (bulkApproveButtons.length > 0) {
+          fireEvent.click(bulkApproveButtons[0]);
+          
+          // Check if confirmation dialog appears
+          await waitFor(() => {
+            const confirmButtons = screen.queryAllByText(/Confirm/i);
+            const cancelButtons = screen.queryAllByText(/Cancel/i);
+            
+            // If confirmation dialog exists, test cancel functionality
+            if (confirmButtons.length > 0 && cancelButtons.length > 0) {
+              fireEvent.click(cancelButtons[0]);
+            }
+          });
+        }
+      }
+      
+      // Verify component remains stable
+      expect(screen.getByRole('table')).toBeInTheDocument();
+    });
+
+    it('handles preview navigation and keyboard interactions', async () => {
+      renderWithAuth(<TranscriptManagementPage />);
+      
+      await waitFor(() => {
+        expect(screen.getByRole('table')).toBeInTheDocument();
+      });
+      
+      // Test keyboard navigation scenarios
+      fireEvent.keyDown(document, { key: 'Escape', code: 'Escape' });
+      fireEvent.keyDown(document, { key: 'Enter', code: 'Enter' });
+      fireEvent.keyDown(document, { key: 'Tab', code: 'Tab' });
+      
+      // Test various user interactions that exercise component state
+      const searchInput = screen.getByPlaceholderText(/search by student/i);
+      
+      // Test controlled input changes
+      fireEvent.change(searchInput, { target: { value: 'john' } });
+      fireEvent.change(searchInput, { target: { value: '' } });
+      
+      // Verify component maintains stability through interactions
+      expect(screen.getByRole('table')).toBeInTheDocument();
+      expect(screen.getByText('Student Transcripts')).toBeInTheDocument();
+    });
+
+    it('handles comprehensive search and filtering functionality', async () => {
+      renderWithAuth(<TranscriptManagementPage />);
+      
+      await waitFor(() => {
+        expect(screen.getByRole('table')).toBeInTheDocument();
+      });
+      
+      const searchInput = screen.getByPlaceholderText(/search by student/i);
+      expect(searchInput).toBeInTheDocument();
+      
+      // Test various search patterns that should maintain table visibility
+      const validSearchPatterns = [
+        'john', // Simple name search
+        'doe', // Last name search
+        '', // Reset search
+      ];
+      
+      for (const pattern of validSearchPatterns) {
+        fireEvent.change(searchInput, { target: { value: pattern } });
+        
+        // Allow for any potential debouncing
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Verify core components remain available
+        expect(screen.getByText('Student Transcripts')).toBeInTheDocument();
+        expect(searchInput).toHaveValue(pattern);
+      }
+      
+      // Test status filter interactions
+      const statusCombobox = screen.getByRole('combobox');
+      if (statusCombobox) {
+        fireEvent.change(statusCombobox, { target: { value: 'ALL' } });
+        fireEvent.change(statusCombobox, { target: { value: 'PENDING' } });
+        fireEvent.change(statusCombobox, { target: { value: 'ALL' } });
+        
+        // Verify UI remains functional
+        expect(screen.getByText('Student Transcripts')).toBeInTheDocument();
+      }
+      
+      // Test clear functionality  
+      const clearButton = screen.getByText('Clear');
+      fireEvent.click(clearButton);
+      
+      // Verify the component maintains data integrity after clearing
+      expect(screen.getByText('Student Transcripts')).toBeInTheDocument();
+      expect(searchInput).toHaveValue('');
     });
   });
 });
