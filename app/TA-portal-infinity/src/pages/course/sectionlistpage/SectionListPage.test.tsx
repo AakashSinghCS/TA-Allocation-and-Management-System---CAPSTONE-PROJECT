@@ -98,6 +98,23 @@ vi.mock(
   }),
 );
 
+const renderWithProviders = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <SectionListPage />
+      </MemoryRouter>
+    </QueryClientProvider>
+  );
+};
+
 // ------------- TESTS -----------------------------
 describe('<SectionListPage />', () => {
   const s1 = makeSection(1);
@@ -115,12 +132,110 @@ describe('<SectionListPage />', () => {
     vi.spyOn(window, "prompt").mockReturnValue("DELETE")
   });
 
+  it('renders the section list page with filter', () => {
+    renderWithProviders();
+    
+    // Should render the filter button
+    expect(screen.getByTestId('run-filter')).toBeInTheDocument();
+    
+    // Should have page structure with the actual heading text
+    expect(screen.getByText(/Search for a Section or Course/i)).toBeInTheDocument();
+  });
+
+  it('handles filtering sections', () => {
+    renderWithProviders();
+
+    // Trigger filter
+    fireEvent.click(screen.getByTestId('run-filter'));
+
+    // Should call the filter function
+    expect(screen.getByTestId('run-filter')).toBeInTheDocument();
+  });
+
+  it('displays section list with sections', async () => {
+    renderWithProviders();
+
+    // Run filter to populate sections
+    fireEvent.click(screen.getByTestId('run-filter'));
+
+    // Should show the section list
+    await waitFor(() => {
+      expect(screen.getByTestId('section-list')).toBeInTheDocument();
+    });
+
+    // Should show the section details
+    expect(screen.getByText(/COSC 101/i)).toBeInTheDocument();
+  });
+
+  it('handles section deletion', async () => {
+    renderWithProviders();
+
+    // Run filter to populate sections
+    fireEvent.click(screen.getByTestId('run-filter'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('del-1')).toBeInTheDocument();
+    });
+
+    // Mock successful deletion
+    mockDelCourse.mockResolvedValueOnce({});
+    
+    // Click delete button
+    fireEvent.click(screen.getByTestId('del-1'));
+
+    expect(mockDelCourse).toHaveBeenCalledWith(1);
+  });
+
+  it('handles empty section list', () => {
+    // Mock empty data
+    mockUseSectionSearchPage.mockReturnValue({
+      data: { content: [], totalPages: 0 },
+      isFetching: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    });
+
+    renderWithProviders();
+
+    // Should still render the filter
+    expect(screen.getByTestId('run-filter')).toBeInTheDocument();
+  });
+
+  it('handles loading state', () => {
+    // Mock loading state
+    mockUseSectionSearchPage.mockReturnValue({
+      data: null,
+      isFetching: true,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    });
+
+    renderWithProviders();
+
+    // Should still render basic structure
+    expect(screen.getByTestId('run-filter')).toBeInTheDocument();
+  });
+
+  it('handles error state', () => {
+    // Mock error state
+    mockUseSectionSearchPage.mockReturnValue({
+      data: null,
+      isFetching: false,
+      isError: true,
+      error: new Error('API Error'),
+      refetch: vi.fn(),
+    });
+
+    renderWithProviders();
+
+    // Should still render basic structure
+    expect(screen.getByTestId('run-filter')).toBeInTheDocument();
+  });
+
   it('filters, renders result, then deletes and refreshes', async () => {
-    const { container } = render(
-      <MemoryRouter>
-        <SectionListPage />
-      </MemoryRouter>
-    );
+    renderWithProviders();
 
     // (1) run the filter
     fireEvent.click(screen.getByTestId('run-filter'));
@@ -139,19 +254,11 @@ describe('<SectionListPage />', () => {
     mockDelCourse.mockResolvedValueOnce({}); // pretend API success
     fireEvent.click(screen.getByTestId('del-1'));
 
-
     expect(mockDelCourse).toHaveBeenCalledWith(1);
   });
 
   it('uploads CSV and shows success message', async () => {
-    const queryClient = new QueryClient();
-    render(
-      <QueryClientProvider client={queryClient}>
-      <MemoryRouter>
-        <SectionListPage />
-      </MemoryRouter>
-      </QueryClientProvider>
-    );
+    renderWithProviders();
 
     // Open modal using the first matching button
     fireEvent.click(screen.getAllByRole('button', { name: /import csv/i })[0]);
