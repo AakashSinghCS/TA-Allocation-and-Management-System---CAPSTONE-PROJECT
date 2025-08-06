@@ -181,4 +181,43 @@ describe('SectionFilter', () => {
     }, { timeout: 500 });
   });
 
+  it('toggles filters visibility in small mode', () => {
+    render(
+      <MemoryRouter>
+        <SectionFilter onFilterChange={onFilterChange} mode="small" />
+      </MemoryRouter>
+    );
+    onFilterChange.mockClear();
+    // initially, type select is hidden
+    expect(screen.queryByRole('combobox')).toBeNull();
+    // open filters
+    fireEvent.click(screen.getByRole('button', { name: /Show Section Filters/i }));
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
+    // toggle aria-label updates
+    expect(screen.getByRole('button', { name: /Hide Section Filters/i })).toBeInTheDocument();
+  });
+
+  it('toggles filters visibility in large mode using chevron buttons', () => {
+    render(
+      <MemoryRouter>
+        <SectionFilter onFilterChange={onFilterChange} mode="large" />
+      </MemoryRouter>
+    );
+    // show button (ChevronDown)
+    const showBtn = screen.getByRole('button', { name: /Show Section Filters/i });
+    fireEvent.click(showBtn);
+    // hide button (ChevronUp) appears
+    expect(screen.getByRole('button', { name: /Hide Section Filters/i })).toBeInTheDocument();
+  });
+
+  it('in large mode, name input has correct title attribute after opening filters', () => {
+    render(
+      <MemoryRouter>
+        <SectionFilter onFilterChange={onFilterChange} mode="large" />
+      </MemoryRouter>
+    );
+    fireEvent.click(screen.getByRole('button', { name: /Show Section Filters/i }));
+    const nameInput = screen.getByTitle(/Course Name/);
+    expect(nameInput).toHaveAttribute('placeholder', expect.stringContaining('Course Name'));
+  });
 });
