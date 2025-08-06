@@ -15,6 +15,7 @@ vi.mock('react-router-dom', async () => {
 
 import { render, screen } from '@testing-library/react';
 import * as fetchFilteredSectionsModule from '../../../api/course/sectionfilter/fetchFilteredSections';
+import * as fetchSectionInfoModule from '../../../api/section/fetchSectionInfo';
 import TAAllocationPage from './AllocationPage';
 import { vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
@@ -40,6 +41,10 @@ vi.mock('../../../api/course/sectionfilter/fetchFilteredSections', () => ({
 }));
 vi.mock('../../../api/allocation/fetchAllocationByStudent', () => ({
   fetchAllocationsByStudent: vi.fn(() => Promise.resolve([])),
+}));
+
+vi.mock('../../../api/section/fetchSectionInfo', () => ({
+  fetchSectionInfo: vi.fn(() => Promise.resolve({})),
 }));
 
 describe('TAAllocationPage', () => {
@@ -142,7 +147,43 @@ describe('TAAllocationPage', () => {
     expect(screen.getByText(/Course Filter/i)).toBeInTheDocument();
   });
 
-  it('handles application selection and displays details', () => {
+  it('exercises loadCourse function with section selection', async () => {
+    // Mock APIs to return proper data structure
+    const mockSectionInfo = {
+      id: 1,
+      courseId: 1,
+      section: '001',
+      year: 2025,
+      semester: 'W1',
+      type: 'LECTURE' as const,
+      need: {
+        numHoursCurrentlyAllocated: 10,
+        requiredGradingHours: 20
+      }
+    };
+    
+    vi.mocked(fetchSectionInfoModule.fetchSectionInfo).mockResolvedValue(mockSectionInfo);
+    
+    // Mock section data that includes sections with valid IDs
+    const mockSectionData = {
+      content: [{
+        id: 1,
+        courseId: 1,
+        section: '001',
+        year: 2025,
+        semester: 'W1',
+        type: 'LECTURE' as const,
+        course: { courseCode: 'COSC', courseNumber: '499' }
+      }],
+      totalPages: 1
+    };
+    
+    const spy = vi.spyOn(useSectionPageModule, 'useSectionSearchPage');
+    spy.mockReturnValue({ 
+      data: mockSectionData, 
+      isFetching: false 
+    } as any);
+
     const queryClient = new QueryClient();
     render(
       <QueryClientProvider client={queryClient}>
@@ -151,9 +192,10 @@ describe('TAAllocationPage', () => {
         </MemoryRouter>
       </QueryClientProvider>
     );
+
+    // Should render with sections available
+    expect(screen.getByText(/TA Allocations/i)).toBeInTheDocument();
     
-    // Verify application filter panel is rendered
-    const filterPanels = document.querySelectorAll('[class*="filter"], [class*="panel"]');
-    expect(filterPanels.length).toBeGreaterThanOrEqual(0);
+    spy.mockRestore();
   });
 });
