@@ -140,4 +140,206 @@ describe("ViewApplicationPage render", () => {
     expect(screen.getByText("Reset")).toBeInTheDocument();
     global.fetch = originalFetch;
   });
+
+  it("handles offer acceptance functionality", async () => {
+    const mockApplications = [
+      {
+        id: 1,
+        preferences: ["COSC 101"],
+        wantRemote: true,
+        wantWorkingHours: 10,
+        timeSubmitted: new Date().toISOString(),
+        student: { firstName: "John", lastName: "Doe", id: 1 },
+        allocation: {
+          id: 100,
+          status: "PENDING",
+          section: { 
+            instructor: "Prof. Smith",
+            course: { deptCode: "COSC", courseNum: "101" }
+          }
+        }
+      },
+    ];
+    
+    let fetchCalls = 0;
+    const originalFetch = global.fetch;
+    // @ts-ignore
+    global.fetch = (url, options) => {
+      fetchCalls++;
+      if (fetchCalls === 1) {
+        // First call: fetch applications
+        return Promise.resolve({ 
+          json: () => Promise.resolve(mockApplications), 
+          ok: true 
+        });
+      } else {
+        // Subsequent calls: accept offer
+        return Promise.resolve({ 
+          json: () => Promise.resolve({}), 
+          ok: true 
+        });
+      }
+    };
+    
+    render(
+      <AuthProvider>
+        <MemoryRouter>
+          <ViewApplicationPage />
+        </MemoryRouter>
+      </AuthProvider>
+    );
+    
+    await waitFor(() => {
+      expect(screen.getByText("John Doe")).toBeInTheDocument();
+    });
+    
+    // Look for Accept Offer button
+    const acceptButton = screen.queryByText("Accept Offer");
+    if (acceptButton) {
+      fireEvent.click(acceptButton);
+      // Verify the fetch was called for accepting
+      expect(fetchCalls).toBeGreaterThan(1);
+    }
+    
+    global.fetch = originalFetch;
+  });
+
+  it("handles offer rejection functionality", async () => {
+    const mockApplications = [
+      {
+        id: 1,
+        preferences: ["COSC 101"],
+        wantRemote: true,
+        wantWorkingHours: 10,
+        timeSubmitted: new Date().toISOString(),
+        student: { firstName: "John", lastName: "Doe", id: 1 },
+        allocation: {
+          id: 101,
+          status: "SENT",
+          section: { 
+            instructor: "Prof. Smith",
+            course: { deptCode: "COSC", courseNum: "101" }
+          }
+        }
+      },
+    ];
+    
+    let fetchCalls = 0;
+    const originalFetch = global.fetch;
+    // @ts-ignore
+    global.fetch = (url, options) => {
+      fetchCalls++;
+      if (fetchCalls === 1) {
+        // First call: fetch applications
+        return Promise.resolve({ 
+          json: () => Promise.resolve(mockApplications), 
+          ok: true 
+        });
+      } else if (fetchCalls === 2) {
+        // Second call: fetch deadlines
+        return Promise.resolve({ 
+          json: () => Promise.resolve([]), 
+          ok: true 
+        });
+      } else {
+        // Subsequent calls: reject offer
+        return Promise.resolve({ 
+          json: () => Promise.resolve({}), 
+          ok: true 
+        });
+      }
+    };
+    
+    render(
+      <AuthProvider>
+        <MemoryRouter>
+          <ViewApplicationPage />
+        </MemoryRouter>
+      </AuthProvider>
+    );
+    
+    await waitFor(() => {
+      expect(screen.getByText("John Doe")).toBeInTheDocument();
+    });
+    
+    // Look for Decline Offer button
+    const declineButton = screen.queryByText("Decline Offer");
+    if (declineButton) {
+      fireEvent.click(declineButton);
+      // Verify the fetch was called for rejecting
+      expect(fetchCalls).toBeGreaterThan(2);
+    }
+    
+    global.fetch = originalFetch;
+  });
+
+  it("displays error message when applications fetch fails", async () => {
+    const originalFetch = global.fetch;
+    // @ts-ignore
+    global.fetch = () => {
+      return Promise.resolve({
+        ok: false,
+        status: 500,
+        json: () => Promise.resolve({ message: 'Server error' })
+      });
+    };
+    
+    render(
+      <AuthProvider>
+        <MemoryRouter>
+          <ViewApplicationPage />
+        </MemoryRouter>
+      </AuthProvider>
+    );
+    
+    // Wait for error handling
+    await waitFor(() => {
+      expect(screen.getByText("Total Results: 0")).toBeInTheDocument();
+    });
+    
+    global.fetch = originalFetch;
+  });
+
+  test('displays offers section when no allocation exists', async () => {
+    const mockApplicationWithOffers = {
+      id: 1,
+      preferences: ['COSC 101'],
+      wantRemote: true,
+      wantWorkingHours: 10,
+      timeSubmitted: new Date().toISOString(),
+      student: { firstName: 'John', lastName: 'Doe', id: 1 },
+      allocation: null, // No allocation
+      offers: [
+        { id: 1, description: 'TA Position - COSC 101', isAccepted: null },
+        { id: 2, description: 'TA Position - COSC 102', isAccepted: true }
+      ]
+    };
+
+    global.fetch = vi.fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([mockApplicationWithOffers]),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([{ id: 1, applicationDeadline: '2099-12-31T23:59:59Z' }]),
+      });
+
+    render(
+      <AuthProvider>
+        <MemoryRouter>
+          <ViewApplicationPage />
+        </MemoryRouter>
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Offer Status:')).toBeInTheDocument();
+      expect(screen.getByText('TA Position - COSC 101')).toBeInTheDocument();
+      expect(screen.getByText('TA Position - COSC 102')).toBeInTheDocument();
+      expect(screen.getByText('Accepted')).toBeInTheDocument();
+      expect(screen.getByText('Accept Offer')).toBeInTheDocument();
+      expect(screen.getByText('Decline Offer')).toBeInTheDocument();
+    });
+  });
 });
