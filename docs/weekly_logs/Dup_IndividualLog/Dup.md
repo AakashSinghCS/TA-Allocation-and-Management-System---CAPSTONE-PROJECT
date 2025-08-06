@@ -3190,7 +3190,7 @@ Updated Tech stack, NFR, FR, UR, UVP, Description, DFD L1, DFD L0, ER diagram, S
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
  - TBA.
 
-## Saturday 8/2 (8/1~8/5)
+## Monday 8/4 (8/1~8/5)
 
 ### Timesheet
 Clockify report
@@ -3222,6 +3222,51 @@ Documentation update to fulfill the requirements in Canvas (65%).
  - Listed all the features of the project along with who did what.
  - Almost finished with Use Cases. The Diagram is complete.
  
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+ - TBA.
+
+## Tuesday 8/5 (8/1~8/5)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/August05.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#524](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/524)
+  * [#544](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/544)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>Merged
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Documentation update to fulfill the requirements in Canvas (65%).
+ - Finished the use cases
+
+Fixed Student Allocation History bug.
+
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
  - TBA.
 
