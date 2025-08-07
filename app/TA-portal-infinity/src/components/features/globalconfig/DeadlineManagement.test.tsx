@@ -276,6 +276,18 @@ describe('DeadlineManagement', () => {
     });
   });
 
+  it('shows error toast when updateDeadline throws network error', async () => {
+    vi.mocked(fetchDeadlines).mockResolvedValue(mockDeadlines);
+    vi.mocked(updateDeadline).mockRejectedValue({ request: {} });
+    render(<DeadlineManagement token={mockToken} />);
+    await waitFor(() => expect(screen.getByText('Application Deadline')).toBeInTheDocument());
+    const saveButtons = screen.getAllByText('Save');
+    await user.click(saveButtons[0]);
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Error updating deadline');
+    });
+  });
+
   it('handles fetch error', async () => {
     vi.mocked(fetchDeadlines).mockRejectedValue(new Error('Fetch failed'));
     
@@ -304,6 +316,14 @@ describe('DeadlineManagement', () => {
     await waitFor(() => {
       const saveButtons = screen.getAllByText('Save');
       expect(saveButtons).toHaveLength(mockDeadlines.length);
+    });
+  });
+
+  it('renders save button with correct aria-label', async () => {
+    vi.mocked(fetchDeadlines).mockResolvedValue(mockDeadlines);
+    render(<DeadlineManagement token={mockToken} />);
+    await waitFor(() => {
+      expect(screen.getByLabelText('save-deadline-APPLICATION_DEADLINE')).toBeInTheDocument();
     });
   });
 
@@ -356,6 +376,32 @@ describe('DeadlineManagement', () => {
       // Should have 2 inputs each (desktop and mobile)
       expect(startInputs).toHaveLength(2);
       expect(endInputs).toHaveLength(2);
+    });
+  });
+
+  it('handles HTTP 400 error response gracefully', async () => {
+    vi.mocked(fetchDeadlines).mockResolvedValue(mockDeadlines);
+    const error = { response: { status: 400, data: 'Bad Request' } };
+    vi.mocked(updateDeadline).mockRejectedValue(error);
+    render(<DeadlineManagement token={mockToken} />);
+    await waitFor(() => expect(screen.getByText('Application Deadline')).toBeInTheDocument());
+    const saveButtons = screen.getAllByText('Save');
+    await user.click(saveButtons[0]);
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Error updating deadline');
+    });
+  });
+
+  it('handles HTTP 500 error response gracefully', async () => {
+    vi.mocked(fetchDeadlines).mockResolvedValue(mockDeadlines);
+    const error = { response: { status: 500, data: 'Server error' } };
+    vi.mocked(updateDeadline).mockRejectedValue(error);
+    render(<DeadlineManagement token={mockToken} />);
+    await waitFor(() => expect(screen.getByText('Application Deadline')).toBeInTheDocument());
+    const saveButtons = screen.getAllByText('Save');
+    await user.click(saveButtons[0]);
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Error updating deadline');
     });
   });
 });

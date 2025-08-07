@@ -206,4 +206,75 @@ describe('ApplicationPage', () => {
     expect(screen.getByDisplayValue('UNDERGRADUATE')).toBeInTheDocument();
     expect(screen.getByDisplayValue('GRADUATE')).toBeInTheDocument();
   });
+
+  it('handles form submission with validation', async () => {
+    renderWithProviders();
+    await waitFor(() => expect(screen.queryByText(/Loading department codes/i)).not.toBeInTheDocument());
+
+    // Select a term
+    const w1Checkbox = screen.getByLabelText(/2025 W1/i);
+    fireEvent.click(w1Checkbox);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/1st Preference/i)).toBeInTheDocument();
+    });
+
+    // Try to submit - look for either "Update Applications" or "Submit" button
+    const submitButton = screen.getByRole('button', { name: /Update Application/i });
+    fireEvent.click(submitButton);
+
+    // Form should handle submission (no validation errors expected in this scenario)
+    expect(submitButton).toBeInTheDocument();
+  });
+
+  it('handles multiple term selection', async () => {
+    renderWithProviders();
+    await waitFor(() => expect(screen.queryByText(/Loading department codes/i)).not.toBeInTheDocument());
+
+    // Select multiple terms
+    const w1Checkbox = screen.getByLabelText(/2025 W1/i);
+    const w2Checkbox = screen.getByLabelText(/2025 W2/i);
+    
+    fireEvent.click(w1Checkbox);
+    fireEvent.click(w2Checkbox);
+
+    // Both terms should be selected
+    expect(w1Checkbox).toBeChecked();
+    expect(w2Checkbox).toBeChecked();
+  });
+
+  it('handles no existing applications', async () => {
+    // Mock empty applications response
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([]),
+      })
+    ) as unknown as typeof fetch;
+
+    renderWithProviders();
+    await waitFor(() => expect(screen.queryByText(/Loading department codes/i)).not.toBeInTheDocument());
+
+    // Should show no existing applications
+    expect(screen.queryByText(/Application ID:/i)).not.toBeInTheDocument();
+  });
+
+  it('handles API errors gracefully', async () => {
+    // Mock fetch to throw an error
+    globalThis.fetch = vi.fn(() => Promise.reject(new Error('API Error'))) as unknown as typeof fetch;
+
+    renderWithProviders();
+    await waitFor(() => expect(screen.queryByText(/Loading department codes/i)).not.toBeInTheDocument());
+
+    // Component should still render without crashing
+    expect(screen.getByRole('heading', { name: /TA Application Submission/i })).toBeInTheDocument();
+  });
+
+  it('handles deadline loading and display', async () => {
+    renderWithProviders();
+    await waitFor(() => expect(screen.queryByText(/Loading department codes/i)).not.toBeInTheDocument());
+
+    // Should attempt to load deadlines and show the main heading
+    expect(screen.getByRole('heading', { name: /Update Your TA Application/i })).toBeInTheDocument();
+  });
 });

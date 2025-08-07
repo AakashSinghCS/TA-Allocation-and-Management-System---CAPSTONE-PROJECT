@@ -361,4 +361,48 @@ describe('AddTermForm', () => {
       expect(activeCheckbox.checked).toBe(true); // Should reset to true
     });
   });
+
+  it('shows error when save fails', async () => {
+    vi.mocked(addSemester).mockResolvedValue(false);
+    render(<AddTermForm token={mockToken} onTermAdded={mockOnTermAdded} />);
+    const startDateInput = screen.getByLabelText('Start Date');
+    const endDateInput = screen.getByLabelText('End Date');
+    await user.type(startDateInput, '2025-01-08');
+    await user.type(endDateInput, '2025-04-12');
+    const submitButton = screen.getByText('Add Term');
+    await user.click(submitButton);
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Failed to save term configuration.');
+    });
+  });
+
+  it('handles not found error (404)', async () => {
+    const error = { response: { status: 404, data: 'Not Found' } };
+    vi.mocked(addSemester).mockRejectedValue(error);
+    render(<AddTermForm token={mockToken} onTermAdded={mockOnTermAdded} />);
+    const startDateInput = screen.getByLabelText('Start Date');
+    const endDateInput = screen.getByLabelText('End Date');
+    await user.type(startDateInput, '2025-01-08');
+    await user.type(endDateInput, '2025-04-12');
+    const submitButton = screen.getByText('Add Term');
+    await user.click(submitButton);
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Resource not found.');
+    });
+  });
+
+  it('handles internal server error (500)', async () => {
+    const error = { response: { status: 500, data: 'Server error' } };
+    vi.mocked(addSemester).mockRejectedValue(error);
+    render(<AddTermForm token={mockToken} onTermAdded={mockOnTermAdded} />);
+    const startDateInput = screen.getByLabelText('Start Date');
+    const endDateInput = screen.getByLabelText('End Date');
+    await user.type(startDateInput, '2025-01-08');
+    await user.type(endDateInput, '2025-04-12');
+    const submitButton = screen.getByText('Add Term');
+    await user.click(submitButton);
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Internal server error. Please try again later.');
+    });
+  });
 });

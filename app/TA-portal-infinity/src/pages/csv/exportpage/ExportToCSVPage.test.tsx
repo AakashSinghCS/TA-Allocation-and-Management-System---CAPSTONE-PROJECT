@@ -1,20 +1,31 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import ExportToCSVPage from './ExportToCSVPage';
 import { AuthContext } from '../../../context/AuthContext';
 import { UserRole } from '../../../interfaces/enum/UserRole';
 import * as fetchExportSections from '../../../api/csv/fetchExportSections';
-import * as fetchFilteredSections from '../../../api/course/sectionfilter/fetchFilteredSections';
+import * as useSectionFilterModule from '../../../api/course/sectionfilter/useSectionFilter';
 import { convertFilterSectionsToSections } from '../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections';
 import type PageableResponse from '../../../interfaces/admin/audit/PageableResponse';
-import type { FilterSectionsProps } from '../../../api/course/sectionfilter/fetchFilteredSections';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+// Mock react-toastify
+vi.mock('react-toastify', () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+}));
 
 // Mock the converter utility
 vi.mock('../../../utility/convertfiltersectionstosections/ConvertFilterSectionsToSections', () => ({
   convertFilterSectionsToSections: vi.fn(),
+}));
+
+// Mock the section filter API
+vi.mock('../../../api/course/sectionfilter/useSectionFilter', () => ({
+  useSectionSearchPage: vi.fn(),
 }));
 
 // Mock the CSV export API functions
@@ -22,11 +33,6 @@ vi.mock('../../../api/csv/fetchExportSections', () => ({
   fetchExportSectionsAsCSV: vi.fn(),
   fetchExportAllSectionsAsCSV: vi.fn(),
   downloadCSVBlob: vi.fn(),
-}));
-
-// Mock the section filter API
-vi.mock('../../../api/course/sectionfilter/fetchFilteredSections', () => ({
-  fetchFilteredSections: vi.fn(),
 }));
 
 // Mock the section filter component
@@ -216,9 +222,20 @@ describe('ExportToCSVPage', () => {
     // Mock window.alert properly
     vi.stubGlobal('alert', vi.fn());
     
-    // Setup default successful API responses
-    // fetchFilteredSections should return the raw DTO data, not converted sections
-    vi.mocked(fetchFilteredSections.fetchFilteredSections).mockResolvedValue(mockCourseSectionScheduleDtos as any);
+    // Setup default successful hook response
+    vi.mocked(useSectionFilterModule.useSectionSearchPage).mockReturnValue({
+      data: {
+        content: mockCourseSectionScheduleDtos,
+        totalPages: 1,
+        totalElements: mockCourseSectionScheduleDtos.length,
+        size: 10,
+        number: 0,
+      },
+      isFetching: false,
+      isError: false,
+      error: null,
+    } as any);
+    
     // Mock the converter function to return the expected sections
     vi.mocked(convertFilterSectionsToSections).mockReturnValue(mockSections);
     vi.mocked(fetchExportSections.fetchExportSectionsAsCSV).mockResolvedValue(new Blob(['test csv content'], { type: 'text/csv' }));
@@ -265,10 +282,11 @@ describe('ExportToCSVPage', () => {
       fireEvent.click(searchButton);
 
       await waitFor(() => {
-        expect(fetchFilteredSections.fetchFilteredSections).toHaveBeenCalledWith({
-          deptCode: 'COSC',
-          courseNum: '111'
-        },0,10);
+        expect(useSectionFilterModule.useSectionSearchPage).toHaveBeenCalledWith(
+          { deptCode: 'COSC', courseNum: '111' },
+          0,
+          10
+        );
       });
 
       await waitFor(() => {
@@ -589,6 +607,148 @@ describe('ExportToCSVPage', () => {
         exportingButtons.forEach(button => {
           expect(button).toBeDisabled();
         });
+      });
+    });
+  });
+
+  describe('Additional Coverage Cases', () => {
+    it('handles null blob response from fetchExportAllSectionsAsCSV', async () => {
+      const { toast } = await import('react-toastify');
+      // Mock null blob response
+      vi.mocked(fetchExportSections.fetchExportAllSectionsAsCSV).mockResolvedValue(null);
+
+      renderWithProviders();
+
+      const exportAllButton = screen.getByText('Export All Sections');
+      fireEvent.click(exportAllButton);
+
+      await waitFor(() => {
+        expect(toast.error).toHaveBeenCalledWith('Export failed. Please try again.');
+      });
+    });
+
+    it('handles error from fetchExportAllSectionsAsCSV', async () => {
+      // Mock error response
+      const error = new Error('Network error');
+      vi.mocked(fetchExportSections.fetchExportAllSectionsAsCSV).mockRejectedValue(error);
+
+      renderWithProviders();
+
+      const exportAllButton = screen.getByText('Export All Sections');
+      fireEvent.click(exportAllButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Export all failed')).toBeInTheDocument();
+      });
+    });
+
+    it('shows loading state when sections are being fetched', () => {
+      vi.mocked(useSectionFilterModule.useSectionSearchPage).mockReturnValue({
+        data: undefined,
+        isFetching: true,
+        isError: false,
+        error: null,
+        isPending: true,
+        isLoading: true,
+        isLoadingError: false,
+        isRefetchError: false,
+        isSuccess: false,
+        refetch: vi.fn(),
+        fetchStatus: 'fetching',
+        status: 'pending',
+        dataUpdatedAt: 0,
+        errorUpdatedAt: 0,
+        failureCount: 0,
+        failureReason: null,
+        isInitialLoading: true,
+        isFetched: false,
+        isFetchedAfterMount: false,
+        isPlaceholderData: false,
+        isPaused: false,
+        isRefetching: false,
+        isStale: false,
+      } as any);
+
+      renderWithProviders();
+
+      expect(screen.getByText('Loading sections…')).toBeInTheDocument();
+    });
+
+    it('shows error state when section fetch fails', async () => {
+      vi.mocked(useSectionFilterModule.useSectionSearchPage).mockReturnValue({
+        data: undefined,
+        isFetching: false,
+        isError: true,
+        error: new Error('Network error'),
+        isPending: false,
+        isLoading: false,
+        isLoadingError: true,
+        isRefetchError: false,
+        isSuccess: false,
+        refetch: vi.fn(),
+        fetchStatus: 'idle',
+        status: 'error',
+        dataUpdatedAt: 0,
+        errorUpdatedAt: Date.now(),
+        failureCount: 1,
+        failureReason: new Error('Network error'),
+        isInitialLoading: false,
+        isFetched: true,
+        isFetchedAfterMount: true,
+        isPlaceholderData: false,
+        isPaused: false,
+        isRefetching: false,
+        isStale: false,
+      } as any);
+
+      renderWithProviders();
+
+      await waitFor(() => {
+        expect(screen.getByText('Failed to fetch sections')).toBeInTheDocument();
+      });
+    });
+
+    it('shows empty state when no sections are found', async () => {
+      // Mock empty response
+      const emptyResponse: PageableResponse<any> = {
+        content: [],
+        totalPages: 0,
+        totalElements: 0,
+        size: 10,
+        number: 0,
+      };
+
+      vi.mocked(useSectionFilterModule.useSectionSearchPage).mockReturnValue({
+        data: emptyResponse,
+        isFetching: false,
+        isError: false,
+        error: null,
+        isPending: false,
+        isLoading: false,
+        isLoadingError: false,
+        isRefetchError: false,
+        isSuccess: true,
+        refetch: vi.fn(),
+        fetchStatus: 'idle',
+        status: 'success',
+        dataUpdatedAt: Date.now(),
+        errorUpdatedAt: 0,
+        failureCount: 0,
+        failureReason: null,
+        isInitialLoading: false,
+        isFetched: true,
+        isFetchedAfterMount: true,
+        isPlaceholderData: false,
+        isPaused: false,
+        isRefetching: false,
+        isStale: false,
+      } as any);
+      vi.mocked(convertFilterSectionsToSections).mockReturnValue([]);
+
+      renderWithProviders();
+
+      await waitFor(() => {
+        expect(screen.getByText('Use the search filter above to find sections')).toBeInTheDocument();
       });
     });
   });

@@ -1384,7 +1384,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                               
                               {/* Preview Button */}
                               <Tooltip content="Preview transcript content in the tab below">
-                                <button
+                                <button data-testid="preview-button"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handlePreview(transcript);
@@ -1648,7 +1648,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900">Transcript Preview</h3>
+                  <h3 data-testid="transcript-preview-header" className="text-lg font-semibold text-gray-900">Transcript Preview</h3>
                   <div className="flex items-center space-x-4 mt-1 text-sm text-gray-600">
                     <div className="flex items-center space-x-1">
                       <User className="w-4 h-4" />
@@ -1691,6 +1691,7 @@ const TranscriptManagementPage: React.FC<TranscriptManagementPageProps> = () => 
                 <div className="flex flex-col space-y-2 ml-4">
                   <Tooltip content="Return to the transcripts list view">
                     <button
+                      data-testid="back-to-list-button"
                       onClick={() => setActiveView('table')}
                       className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded border border-gray-300 transition-colors flex items-center space-x-1"
                     >
