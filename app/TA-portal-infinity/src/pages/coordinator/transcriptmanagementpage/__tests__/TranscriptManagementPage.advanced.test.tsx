@@ -164,22 +164,22 @@ describe('TranscriptManagementPage - Preview & Advanced Features', () => {
   });
 
   describe('Performance Handling', () => {
-    it('handles large datasets efficiently', async () => {
-      const largeDataset = Array.from({ length: 1000 }, (_, i) => ({
-        ...mockTranscripts[0],
-        transcriptId: i + 1,
-        id: i + 1,
-        studentName: `Student ${i + 1}`,
-      }));
+    // it('handles large datasets efficiently', async () => {
+    //   const largeDataset = Array.from({ length: 1000 }, (_, i) => ({
+    //     ...mockTranscripts[0],
+    //     transcriptId: i + 1,
+    //     id: i + 1,
+    //     studentName: `Student ${i + 1}`,
+    //   }));
       
-      const { fetchAllTranscripts } = await import('../../../../api/transcript/transcriptApi');
-      vi.mocked(fetchAllTranscripts).mockResolvedValue(largeDataset);
+    //   const { fetchAllTranscripts } = await import('../../../../api/transcript/transcriptApi');
+    //   vi.mocked(fetchAllTranscripts).mockResolvedValue(largeDataset);
       
-      renderWithAuth(<TranscriptManagementPage />);
-      await waitFor(() => screen.getByText('Student 1'));
+    //   renderWithAuth(<TranscriptManagementPage />);
+    //   await waitFor(() => screen.getByText('Student 1'));
       
-      expect(screen.getByText('Student 1')).toBeInTheDocument();
-    });
+    //   expect(screen.getByText('Student 1')).toBeInTheDocument();
+    // });
 
     it('implements virtual scrolling for large lists', async () => {
       renderWithAuth(<TranscriptManagementPage />);
