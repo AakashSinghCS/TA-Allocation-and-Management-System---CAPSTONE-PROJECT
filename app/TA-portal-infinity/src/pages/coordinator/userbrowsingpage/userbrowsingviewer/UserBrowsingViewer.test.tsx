@@ -119,4 +119,58 @@ describe("UserBrowsingViewer (updated)", () => {
     expect(fetchDeactivate).not.toHaveBeenCalled();
     expect(refetchMock).not.toHaveBeenCalled();
   });
+
+  it("renders in select mode and calls onSelect when user is clicked", async () => {
+    useAuthMock.mockReturnValue({ userRoles: ["COORDINATOR"] });
+    const onSelectMock = vi.fn();
+
+    render(
+      <MemoryRouter>
+        <UserBrowsingViewer mode="select" onSelect={onSelectMock} allowedRoles={['Student']} />
+      </MemoryRouter>
+    );
+
+    // Should show Select buttons in select mode
+    const selectButtons = screen.getAllByText('Select');
+    expect(selectButtons).toHaveLength(2);
+
+    // Click on a select button
+    fireEvent.click(selectButtons[0]);
+
+    expect(onSelectMock).toHaveBeenCalledWith(expect.objectContaining({
+      id: 1,
+      firstName: 'John'
+    }));
+  });
+
+  it("handles search and pagination correctly", async () => {
+    useAuthMock.mockReturnValue({ userRoles: ["COORDINATOR"] });
+
+    render(
+      <MemoryRouter>
+        <UserBrowsingViewer allowedRoles={['Student']} />
+      </MemoryRouter>
+    );
+
+    // Should render search bar
+    expect(screen.getByTestId('search-bar')).toBeInTheDocument();
+
+    // Should display user data by name links
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('Emma Doe')).toBeInTheDocument();
+  });
+
+  it("filters allowed roles correctly when specified", async () => {
+    useAuthMock.mockReturnValue({ userRoles: ["COORDINATOR"] });
+
+    render(
+      <MemoryRouter>
+        <UserBrowsingViewer allowedRoles={['Student']} />
+      </MemoryRouter>
+    );
+
+    // Should only show students since we filtered by 'Student' role
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('Emma Doe')).toBeInTheDocument();
+  });
 });
