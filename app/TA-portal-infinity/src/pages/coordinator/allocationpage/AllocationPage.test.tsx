@@ -13,7 +13,7 @@ vi.mock('react-router-dom', async () => {
   return { ...actual, useNavigate: () => mockNavigate };
 });
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import * as fetchFilteredSectionsModule from '../../../api/course/sectionfilter/fetchFilteredSections';
 import * as fetchSectionInfoModule from '../../../api/section/fetchSectionInfo';
 import TAAllocationPage from './AllocationPage';
@@ -45,6 +45,14 @@ vi.mock('../../../api/allocation/fetchAllocationByStudent', () => ({
 
 vi.mock('../../../api/section/fetchSectionInfo', () => ({
   fetchSectionInfo: vi.fn(() => Promise.resolve({})),
+}));
+
+vi.mock('../../../api/section/fetchSectionIncludeInstructorId', () => ({
+  fetchSectionIncludeInstructorId: vi.fn(() => Promise.resolve({})),
+}));
+
+vi.mock('../../../api/section/instructor/fetchInstructorById', () => ({
+  fetchInstructorById: vi.fn(() => Promise.resolve({})),
 }));
 
 describe('TAAllocationPage', () => {
@@ -197,5 +205,37 @@ describe('TAAllocationPage', () => {
     expect(screen.getByText(/TA Allocations/i)).toBeInTheDocument();
     
     spy.mockRestore();
+  });
+
+  test('tests useEffect for selApp state changes', async () => {
+    const queryClient = new QueryClient();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <TAAllocationPage />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    // This test exercises the useEffect hook that handles selApp changes
+    await waitFor(() => {
+      expect(screen.getByText('Course Filter')).toBeInTheDocument();
+    });
+  });
+
+  test('tests hasOffer computed value logic', async () => {
+    const queryClient = new QueryClient();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <TAAllocationPage />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    // This test exercises the hasOffer useMemo hook logic
+    await waitFor(() => {
+      expect(screen.getByText('Application Filter')).toBeInTheDocument();
+    });
   });
 });

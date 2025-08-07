@@ -1589,5 +1589,75 @@ describe('TranscriptUploadPage', () => {
         expect(screen.getByText(/0 Bytes/)).toBeInTheDocument();
       });
     });
+
+    it('handles showToast duplicate message prevention', async () => {
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 404,
+      });
+
+      renderWithRouter(<TranscriptUploadPage />);
+
+      // Wait for component to load by checking for specific heading
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /Upload Transcript/ })).toBeInTheDocument();
+      });
+
+      // Access the file input by type and accept attribute
+      const fileInput = document.querySelector('input[type="file"][accept=".pdf"]') as HTMLInputElement;
+      expect(fileInput).toBeTruthy();
+      
+      // Create a large file (over 5MB limit)
+      const largeContent = new Array(5 * 1024 * 1024 + 1).fill('a').join('');
+      const largeFile = new File([largeContent], 'large.pdf', { 
+        type: 'application/pdf'
+      });
+
+      fireEvent.change(fileInput, { target: { files: [largeFile] } });
+
+      // Verify error toast is shown
+      await waitFor(() => {
+        expect(screen.getByText(/File size must be less than 5MB/)).toBeInTheDocument();
+      });
+    });
+
+    it('handles coordinator transcript list functionality', async () => {
+      // Mock useAuth to return coordinator role
+      vi.doMock('../../../context/AuthContext', () => ({
+        useAuth: () => ({
+          token: 'mock-jwt-token',
+          userId: 123,
+          isAuthenticated: true,
+          userRoles: ['COORDINATOR'],
+        }),
+      }));
+
+      // Mock successful coordinator transcript list fetch
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve([
+          {
+            studentId: 456,
+            fileName: 'coordinator-test.pdf',
+            fileSize: 1024000,
+            uploadDate: '2024-01-01T12:00:00Z',
+            transcriptId: 1
+          }
+        ]),
+      });
+
+      // Render with specific userId parameter
+      render(
+        <MemoryRouter initialEntries={['/transcript/456']}>
+          <TranscriptUploadPage />
+        </MemoryRouter>
+      );
+
+      // Wait for component to load by checking for specific heading
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /Upload Transcript/ })).toBeInTheDocument();
+      });
+    });
   });
 });

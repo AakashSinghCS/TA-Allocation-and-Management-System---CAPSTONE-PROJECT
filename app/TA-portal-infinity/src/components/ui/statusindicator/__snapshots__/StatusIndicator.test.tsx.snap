@@ -1,0 +1,24 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`StatusIndicator > matches snapshot when loading 1`] = `
+<div
+  class="flex items-center justify-center self-center"
+>
+  <div
+    class="
+            animate-spin
+            rounded-full
+            h-6 w-6
+            border-2
+            border-blue-600
+            border-t-transparent
+          "
+  />
+</div>
+`;
+
+exports[`StatusIndicator > matches snapshot when not loading 1`] = `
+<div
+  class="flex items-center justify-center self-center"
+/>
+`;
