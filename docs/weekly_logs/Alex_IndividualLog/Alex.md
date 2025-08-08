@@ -39,6 +39,14 @@ Clockify report
         <td>Complete
         </td>
     </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Final report - PRs + Lessons Learned <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/565">565</a>
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
     
 </table>
 
