@@ -53,7 +53,7 @@ All Completed, Submission for final report, presentation slides,demo video for c
 | Seiya       | 28:24        |
 
 
-![alt text](aug_5-8_images\time.png)
+![alt text](aug_5-8_images/time.png)
 
 ## Completed Tasks:
 | Task ID                                                                            | Description                                                                 | Completed By |
