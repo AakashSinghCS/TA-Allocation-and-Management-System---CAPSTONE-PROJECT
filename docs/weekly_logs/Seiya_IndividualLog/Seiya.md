@@ -1,3 +1,177 @@
+## Thursday (July 29-31)
+
+### Timesheet
+Clockify report
+
+![alt text](./clockify_images/clockify_weekly_log_2025-07-29_07-31_seiya.png)
+
+
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **Fix Section Creation Errors** | • Fixed section creation unique constraint errors by properly handling empty fields<br>• Improved error handling for duplicate sections and invalid year/semester combinations<br>• Enhanced backend error responses to return structured JSON for better frontend display |
+| **2** | **Convert Section Creation to Dropdown Style and Other UI/UX Improvements**         | • Implemented dropdown filtering: Dept Code shows existing course departments<br>• Course Num dropdown filters based on selected Dept Code<br>• Auto-populate dropdowns after course creation<br>• Added visual improvements: red asterisks for required fields, improved button colors<br>• Enhanced UX with persistent success messages and better error feedback |
+| **3** | **Transcript Upload (Student) - Frontend** | • Built complete PDF upload interface with drag-and-drop functionality<br>• Implemented file preview with PDF viewer and fullscreen mode<br>• Added support for existing transcript display and replacement workflow<br>• Enhanced UI with 2-column layout and auto-refresh after upload |
+| **4** | **Transcript Upload (Student) - Backend** | • Created TranscriptController with upload, retrieve, and delete endpoints<br>• Implemented TranscriptService with file validation and database storage<br>• Added Transcript model and repository with LONGBLOB for PDF data<br>• Built comprehensive error handling and file type validation |
+| **5** | **Transcript Upload (Student) - Integration and UI/UX Improvements** | • Integrated frontend with backend APIs for seamless file operations<br>• Added navigation routing and sidebar links for transcript functionality<br>• Implemented success/error messaging with toast notifications<br>• Enhanced user guidance with clearer instructions and validation feedback |
+| **6** | **Transcript Upload (Student) - Tests** | • Created comprehensive test suite for TranscriptUploadPage component<br>• Added backend tests for TranscriptController functionality<br>• Implemented HTTP status and edge case testing<br>• Added file validation and error handling test scenarios |
+
+
+
+### Progress Update (since July 24, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: Fix Section Creation Errors                    | Complete |
+| #2: Convert Section Creation to Dropdown Style and Other UI/UX Improvements | Complete |
+| #3: Transcript Upload (Student) - Frontend    | Complete |
+| #4: Transcript Upload (Student) - Backend     | Complete |
+| #5: Transcript Upload (Student) - Integration and UI/UX Improvements | Complete |
+| #6: Transcript Upload (Student) - Tests       | In Progress |
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to complete the Student Transcript Upload feature end-to-end and resolve critical issues with Section Creation functionality that were blocking user workflows.
+
+What was done:
+* **Section Creation Fixes**: Resolved unique constraint errors by implementing proper null handling for empty fields, improved dropdown filtering with cascading Department → Course Number selection, and enhanced error messaging with clear duplicate section warnings and structured JSON responses
+* **Complete Student Transcript Upload Feature**: Built full-stack PDF upload functionality including drag-and-drop UI, real-time file preview with fullscreen capability, backend validation with LONGBLOB database storage, and comprehensive error handling for file type validation
+* **Advanced UI/UX Improvements**: Implemented responsive 2-column layout, persistent success messages with auto-dismiss functionality, visual indicators (red asterisks) for required fields, and consistent UBC branding colors (#040941) across all buttons
+* **Comprehensive Testing Framework**: Added 15+ test cases for TranscriptUploadPage component covering normal operations, edge cases, and error scenarios, plus backend controller tests for TranscriptController functionality with HTTP status validation
+* **Seamless Integration & Navigation**: Connected frontend-backend APIs with robust error handling, added intuitive sidebar navigation for transcript functionality, implemented toast notifications for user feedback, and enhanced user guidance with clearer instructions
+
+What was not done:
+* **Complete Transcript Upload (Student) Testing**: Some edge case test scenarios and integration tests remain incomplete, particularly for file upload error handling and concurrent user operations
+* **Coordinator Dashboard Frontend**: Missing coordinator interface for reviewing student transcript submissions, including filtering, search, and bulk operations capabilities
+* **Coordinator Backend Infrastructure**: Backend endpoints for coordinator transcript management, approval workflows, and data export functionality not yet implemented
+* **Coordinator Workflow Implementation**: Comprehensive workflow for transcript review, feedback provision, status tracking, and automated notification system requires development and refinement
+* **Coordinator Testing Suite**: Testing framework for all coordinator-side functionality including unit tests, integration tests, and end-to-end workflow validation needs completion
+
+**Retrospective**: This cycle demonstrated strong execution on complex full-stack features. The transcript upload implementation went smoothly due to lessons learned from previous CSV import work. However, the coordinator-side features require more upfront planning to ensure proper integration with existing user management systems. The testing approach is becoming more systematic, which will be crucial for the more complex coordinator workflows ahead.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* **Finalize Student Testing Suite**: Complete remaining edge case scenarios for Transcript Upload, focusing on concurrent operations, large file handling, and comprehensive integration tests to achieve 100% coverage and robust error recovery
+* **Build Coordinator Management Dashboard**: Develop comprehensive frontend interface with advanced filtering (by student, date, status), search functionality, bulk operations (approve/reject multiple transcripts), and intuitive data visualization for transcript submission trends
+* **Implement Coordinator Backend Infrastructure**: Create scalable backend endpoints supporting transcript management workflows, including approval state machines, automated email notifications, audit logging, and data export capabilities for institutional reporting
+* **Design Enhanced Coordinator Workflow**: Implement streamlined review processes with customizable feedback templates, status tracking with real-time updates, role-based permissions, and integration with existing university systems for seamless coordinator experience
+* **Establish Comprehensive Testing**: Develop thorough test coverage including unit tests, API integration tests, and end-to-end user journey validation to ensure system reliability
+
+
+
+
+## Monday (July 25-28)
+
+### Timesheet
+Clockify report
+
+![alt text](./clockify_images/clockify_weekly_log_2025-07-25_07-28_seiya.png)
+
+
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **Course & Section Creation – Inline CSV Import** | • Implemented in‑page import with inline styling<br>• Integrated drag‑and‑drop upload into Course & Section Creation view                                                                                          |
+| **2** | **Section CSV Import Refinements**         | • Added automatic page reload after successful import<br>• Enhanced preview with row numbers and taller viewport<br>• Re‑positioned modal close button for better UX<br>• Replaced sample CSV with clearer example |
+| **3** | **CSV Import for Student Transcript** | - Initial backend and frontend scaffolding for transcript import<br>- Defined required CSV columns and validation rules<br>- Started UI design for transcript upload and preview<br>- Began implementing error handling and feedback for transcrip. |
+
+
+
+### Progress Update (since July 24, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: Course & Section Creation – Inline CSV Import | Complete |
+| #2: Section CSV Import Refinements | Complete |
+| #3: CSV Import for Student Transcript | In Progress |
+
+
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to 
+
+
+What was done:
+* Inline CSV import was added to the Course and Section Creation page with drag and drop and consistent styling
+* The existing Section CSV import was refined with automatic reload, a taller preview that now shows row numbers, a better modal layout, and a clearer sample file
+* A first pass of backend endpoints, database schema, and frontend scaffold for Transcript CSV import is in place
+
+
+What was not done:
+* Full validation, error messaging, and data persistence for Transcript CSV import
+* Integration and unit tests for the transcript flow
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Complete the Transcript CSV import end to end, including backend validation rules, migrations, and full preview and feedback on the frontend
+* Add unit and integration tests for all CSV import paths
+
+
+
+
+
+
+
+
+
+
+
+## Thursday (July 22-24)
+
+### Timesheet
+Clockify report
+
+![alt text](./clockify_images/clockify_weekly_log_2025-07-22_07-24_seiya.png)
+
+
+### Current Tasks (Provide sufficient detail)
+| # | Task | Key Work Items This Cycle |
+|---|------|---------------------------|
+| **1** | **Import Sections from CSV** | - Improved feedback messages (text and color)<br>- Added drag-and-drop CSV import<br>- Disabled upload button after click until a new file is selected<br>- Added "Close Window" button after successful import<br>- Implemented sample CSV download. |
+| **2** | **CSV Import for Student Transcript** | - Initial backend and frontend scaffolding for transcript import<br>- Defined required CSV columns and validation rules<br>- Started UI design for transcript upload and preview<br>- Began implementing error handling and feedback for transcrip. |
+
+
+
+
+### Progress Update (since July 21, 2025) 
+| TASK / ISSUE # | STATUS |
+|----------------|--------|
+| #1: Import Sections from CSV | Complete |
+| #2: CSV Import for Student Transcript | In Progress |
+
+
+
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+The primary goals for this cycle were to improve the usability and feedback of the CSV import feature and begin work on student transcript import.
+
+
+What was done:
+* Enhanced feedback messages (clearer text and color, concise success/error summaries and removal of raw SQL traces)
+* Added drag-and-drop CSV import functionality
+* Disabled upload button after click until a new file is selected
+* Added a "Close Window" button after successful import
+* Providing a downloadable sample CSV template so users have a clear reference for “import from csv”
+
+
+What was not done:
+* CSV Import for Student Transcript (still in progress)
+    - Backend and frontend integration is underway
+    - UI improvements and validation are ongoing
+    - Automated testing for this feature has not
+
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+* Finish transcript CSV parsing, validation, and preview UI
+* Implement robust error messages and edge case handling
+* Add automated tests and sample data for transcript import
+
+
+
+
+
 ## Monday (July 18-21)
 
 ### Timesheet

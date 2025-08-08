@@ -1847,3 +1847,382 @@ Retrospective: Process is going well. Team members are working hard to get their
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin next assigned coding task.
 
+## Tuesday 7/22 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.22.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Section Model and Allocation Page updates: details provided below
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 60% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Modified section model to include numberOfTAsAllocated which stores the current number of TAs allocated to that particular section. Modified tests and prevented code breakage. Next, i have to prevent the coordinator from allocating to a lecture in the allocation page and also display the numberOfTAsAllocated in the side in the SectionDetails. I also have to give warnings to the coordinator when they are allocating more than 1 TA to a section. We also had a team meeting today after the in-person meeting with professor scott to discuss next tasks. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete section and allocation page updates and begin working on additions in exams page for coordinator.
+
+## Wednesday 7/23 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.23.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Section Model and Allocation Page updates: details provided below
+  * #2: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> In progress. 30% Complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Modified all section related things due to the addition of a new numberofTasallocated field. When clicking a section, the Allocation Page shows the number of TAs allocated to the section, and give a warning when a coordinator tries to allocate more than 1 TA to a section. Coordinator is prevented from allocating a student to a LECTURE. Toasts are displayed when relevant.
+I also started working on the exams page. Created the backend required to unassign students from exams and also update assignments by studentId. Also created backend to get all assignments by examId. Wrote tests. All are passing. Have to do the frontend updates next and then integrate frontend and backend later. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task. 
+
+## Thursday 7/24 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.24.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 70% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Backend is fully working and tested in postman and unit tests. I created the view all exams component in the exams page. Integrated with backend to display all exams along with their assignments. Created update and delete buttons as well. Next, i have to create the forms for updating and also integrate the backend with the update and delete buttons. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task. 
+
+## Friday 7/25 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.25.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+  * #2: Team meeting
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 70% complete.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met with team after our meeting with the professor to discuss next steps. Took advice on the workflow for the exam page i am creating. Will integrate recommendations tomorrow. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task.
+
+## Saturday 7/26 (7/17- 7/26)
+
+### Timesheet
+
+![alt text](clockify_images/7.26.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 90% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Most functionality is working, updating exam works but the page has to be refreshed to see changes. Same issue for assignment updates. Delete buttons will be added tomorrow. I also ran into a bug where I was getting multiple toasts, will fix that tomorrow as well. I also have to add time validation. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task.
+
+## Sunday 7/27 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.27.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Exams page coordinator: display all exams along with their assignments and provide update/delete options for both.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: All update and delete buttons work as expected. The exam/assignment card is updated instantly upon update/delete. No need to refresh the page now. Added time validation to create an exam form and assign student to exam form.  
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete additions in exams page for coordinator and begin next assigned task.
+
+## Monday 7/28 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.28.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Modifications: Exam Page - need to add time validation to update buttons as well. And upon creating an exam or assignment, the new data should be loaded in the below Exams & assignments section without the need to refresh the page.
+  * #2: Team meeting
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: When an exam or assignment is created, the exams & assignment section is instantly updated without the need to refresh the page. I also added the same time validation as in the forms to the update buttons in exams & assignments. Also, in the assign student to exam form, once a matching student is selected, the student name and student number fields are auto populated.
+We also had a team meeting today to discuss regarding the peer testing event tomorrow. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin next assigned task.
+
+## Tuesday 7/29 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.29.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Filter: modify student filter in assign student to exam form to display all students with a graduate application submitted in the dropdown instead of manually entering student name and student number.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 50% complete.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Created new endpoints in userservice and applicationservice. The end point in userservice returns a list of UserDtos based on the provided studentIds. The end point in applicationservice sends a list of studentIds that have a graduate application to the above mapping and returns the list of UserDtos. Endpoints are working as expected and all tests pass. Have to modify frontend next to utilize these new mappings and modify existing code as well. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Complete student filter update and begin looking for bugs in the system to fix. 
+
+## Wednesday 7/30 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.30.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Student Filter: modify student filter in assign student to exam form to display all students with a graduate application submitted in the dropdown instead of manually entering student name and student number.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Modified frontend to utilize the new mappings. Changed the form layout so that the dropdown of students with a graduate application is displayed first. Autopopulated student name and student number based on the selected student. Prevented input to student name/number boxes as well. Integrated backend and frontend completely. All tests pass. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin looking for bugs in the system to fix. 
+
+## Thursday 7/31 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/7.31.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Refactoring + Availability Matching: Move all api calls to api folder instead of directly calling them in the page. Verify assigned time for exam task is within the students availability.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Initially i had made all requests to the backend directly in the page itself for ease of accessibility. Upon the review of my PR, alex suggested to move all requests to the api folder. This required a lot of refactoring which i got done. I also added validation to the assign button to verify that the assigned start time and end time for the exam task matches the students actual availability. If not, error is displayed and assignment is not completed. All tests pass. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Begin looking for bugs in the system to fix and work on final report/presentation. 

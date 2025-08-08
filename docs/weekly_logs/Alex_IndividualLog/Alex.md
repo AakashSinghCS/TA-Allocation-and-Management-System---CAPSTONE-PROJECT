@@ -1,3 +1,200 @@
+## Monday (Aug 1-4)
+
+### Timesheet
+Clockify report
+![alt text](./aug1-4.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Minor bug fixes  [540]("https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/540")
+  * #2: Final slides for presentation [547]("https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/547")
+  * #3: Final video for client [548]("https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/548")
+  * Tidying up various loose ends (missing endpoints, small features, bugs, documentation, will put in the issues when completed in future logs)
+
+### Progress Update (since July 31st 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Add seeded capstone course with a need and some sections  <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/521">521</a>
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Fix minor bugs <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/540">540</a>
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Final slides <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/547">547</a>
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Final video <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/548">548</a>
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Reviewed a bunch of PR's, and while doing that ended up fixing some bugs on the branches. Also did a PR to fix some bugs and aesthetics with the section page like making the buttons consistent for adding sections, and form validation for section schedules, removing times outside of 8am to 8pm for selection, and fixing the toastify. In doing that, also fixed a transcript issue that happened from merge conflicts.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * We'll meet tomorrow and while waiting for the feature set 2 validation we'll probably as a group service up some waiting PR's and do the video and final slides together in that time. After that, maybe some more small bug fixes from merge conflicts and documentation updates that are needed like setup, and then preparing for the final presentation and handoff on Friday.
+
+## Thursday (July 29-31)
+
+### Timesheet
+Clockify report
+![alt text](./jul29-31.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Add seeded capstone course with a need and some sections  [521]("https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/521")
+  * Tidying up various loose ends (missing endpoints, small features, bugs, documentation, will put in the issues when completed in future logs)
+
+### Progress Update (since July 28th 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Add seeded capstone course with a need and some sections  <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/521">521</a>
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Add term fields to application form & change impacted flow <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/490">490</a>
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I helped Mandeep finish up the 490 PR which was my backend and his frontend for the new application workflow to allow applications to be semester specific. Since there were some other major changes like allocations being clickable on the frontend plus lab prep hours, grading hours etc. there were a number of merge conflicts and various bugs to fix which took a while. I also added a PR for seeding some courses into the db on startup so we don't always have to do that. In there I fixed some issues in the frontend like duplicated keys for qualifications and a course filter by year issue with null values.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * I plan to continue to review PR's and help fix bugs that arise or any other missing features while also preparing the documentation and slides for the final handoff and presentation, and also preparation for feature set 2 and the video for Chad. Just basically finishing things up, I don't plan on doing any new features other than maybe more seeding or bug fixes.
+
+## Monday (July 25-28)
+
+### Timesheet
+Clockify report
+![alt text](./jul25-28.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allow applications to be semester specific - backend [477](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/477)
+  * Tidying up various loose ends (missing endpoints, small features, bugs, will put in the issues when completed in future logs)
+
+### Progress Update (since July 24th 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Backend for global config for term <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/428">428</a>
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Allow applications to be semester specific - backend <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/477">477</a>
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Have backend search that searches all parameters for course from text<a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/500">500</a>
+        </td>
+        <!-- Status -->
+        <td>Completed
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I finished the backend portion of the application for specific semesters, and now Mandeep has finished up the frontend and just waiting for it to be merged. I also did a small fix to add back a search bar for courses that is based on the fields using text rather than all the drop downs in frontend and backend.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * First needing to help merge a number of PR's that were waiting for the peer testing to finish, then I will go into Allen's PR's and clean them up since he's been unresponsive to the github comments. After that, I will address various bugs that are needed for the final project submission.
+
+## Thursday (July 22-24)
+
+### Timesheet
+Clockify report
+![alt text](./jul22-24.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Allow applications to be semester specific - backend [477](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/477)
+
+### Progress Update (since July 21st 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Backend for global config for term <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/428">428</a>
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Allow applications to be semester specific - backend <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/477">477</a>
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+I finished the backend for global config, which ended up being a lengthy issue for all the refactoring that took place and fixing tests. But I think it works well and is overall better and allows more flexibility down the line having these semesters bound in a table. I started doing the application refactor to be semester specific which now pretty much works except a number of tests have understandably broken and will need to be fixed before I make the PR.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Once the application changes are finalized in the backend, I'll decide whether I need to do another new task in the backend or if I should complete the frontend portion of this. I've been still doing a lot of pair programming for front and back end with Mandeep but if his hands are too full I may step in and complete some of this functionality for him there.
+
 ## Monday (July 18-21)
 
 ### Timesheet
@@ -5,7 +202,7 @@ Clockify report
 ![alt text](./jul18-21.png)
 
 ### Current Tasks (Provide sufficient detail)
-  * #1: Backend for global config for term
+  * #1: Backend for global config for term [428](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/428)
 
 ### Progress Update (since July 17th 2025) 
 <table>

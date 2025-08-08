@@ -1871,8 +1871,8 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 |--------------|-----------------------------------------------------|------------------------|
 | [#510](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/510)       | Improve course related pages including the details one(s),     | UI and bug fixes  |
 
-
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 # 29 July, Tuesday
 
 **Clockify:** ![clockify_images/july_29.png](clockify_images/july_29.png)
@@ -1906,6 +1906,7 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 | TASK/ISSUE # | DESCRIPTION                                                                               | TYPE               |
 |--------------|-------------------------------------------------------------------------------------------|--------------------|
 | [#510](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/510)       | Improve course related pages including the details one(s),                              | UI and bug fixes  |
+
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2058,3 +2059,4 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
