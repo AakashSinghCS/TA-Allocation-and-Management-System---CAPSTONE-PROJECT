@@ -1,0 +1,173 @@
+
+x-global-env: &global-env
+  TZ: America/Vancouver
+  JAVA_TOOL_OPTIONS: -Duser.timezone=America/Vancouver
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./app/TA-portal-infinity
+      dockerfile: Dockerfile
+    volumes:
+      - ./app/TA-portal-infinity:/app
+      - node_modules:/app/node_modules
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host 0.0.0.0 #0.0.0.0 means listen on all network interfaces inside the container. -- means to pass '--host 0.0.0.0' to VITE and not run it in npm.
+    environment:
+      VITE_HOST: "0.0.0.0"
+      NODE_ENV: "development"
+      CHOKIDAR_USEPOLLING: true
+      CHOKIDAR_INTERVAL: "10000"
+  gateway-service:
+    build: 
+      context: ./app/Spring-Microservices/gatewayservice
+      dockerfile: Dockerfile
+    container_name: gateway-service
+    depends_on:
+      service-registry:
+          condition: service_healthy 
+    ports: 
+      - 8080:8080
+  service-registry:
+    build: 
+      context: ./app/Spring-Microservices/serviceregistry
+      dockerfile: Dockerfile
+    container_name: eureka
+    ports: 
+      - 8761:8761
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+  user-service:
+    build: 
+      context: ./app/Spring-Microservices/userservice
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports: 
+      - 8081:8081
+    depends_on:
+      mysql:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy 
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/user_db
+      SPRING_DATASOURCE_USERNAME: dev_user
+      SPRING_DATASOURCE_PASSWORD: secret
+    
+  course-service:
+    build: 
+      context: ./app/Spring-Microservices/courseservice
+      dockerfile: Dockerfile
+    container_name: course-service
+    ports: 
+      - 8082:8082
+    depends_on:
+      mysql:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy 
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/course_db
+      SPRING_DATASOURCE_USERNAME: dev_user
+      SPRING_DATASOURCE_PASSWORD: secret
+  application-service:
+    build: 
+      context: ./app/Spring-Microservices/applicationservice
+      dockerfile: Dockerfile
+    container_name: application-service
+    ports: 
+      - 8084:8084
+    depends_on:
+      mysql:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy 
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/application_db
+      SPRING_DATASOURCE_USERNAME: dev_user
+      SPRING_DATASOURCE_PASSWORD: secret
+  notification-service:
+    build: 
+      context: ./app/Spring-Microservices/notificationservice
+      dockerfile: Dockerfile
+    container_name: notification-service
+    ports: 
+      - 8085:8085
+    depends_on:
+      service-registry:
+          condition: service_healthy
+  profile-service:
+    build:
+      context: ./app/Spring-Microservices/profileservice
+      dockerfile: Dockerfile
+    container_name: profile-service
+    ports:
+      - 8083:8083           # hostPort:containerPort
+    depends_on:
+      mysql:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/profiles_db
+      SPRING_DATASOURCE_USERNAME: dev_user
+      SPRING_DATASOURCE_PASSWORD: secret
+  mysql:
+    image: 'mysql:latest'
+    container_name: mysql
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=verysecret'
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml 
+    #only expose port when developing. Don't expose in production
+    #ports:
+    # - "9090:9090"
+    depends_on:
+      - user-service
+      - application-service
+      - profile-service
+      - notification-service
+      - course-service
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: grafana
+    depends_on: 
+      mysql:
+        condition: service_healthy
+    environment:
+      # GF_SECURITY_ALLOW_EMBEDDING: "true"     # optional, for <iframe> later
+      GF_SECURITY_ADMIN_USER: "admin"
+      GF_SECURITY_ADMIN_PASSWORD: "VERYSTRONGPASSWORD"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_PATHS_PROVISIONING_DASHBOARDS: /etc/grafana/provisioning/dashboards
+    ports:
+     - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana          
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/dashboards-json:/etc/grafana/provisioning/dashboards-json
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./monitoring/grafana/grafana.ini:/etc/grafana/grafana.ini
+
+volumes:
+  node_modules:
+  grafana-data:

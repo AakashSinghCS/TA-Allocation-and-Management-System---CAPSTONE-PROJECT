@@ -27,6 +27,11 @@ dist-ssr
 # test coverage
 coverage/
 .nyc_output/
+app/TA-portal-infinity/my-custom-coverage
 
 # local caches
 .cache/
+
+
+# Maven
+**/target/

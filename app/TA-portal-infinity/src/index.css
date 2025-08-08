@@ -1,41 +1,95 @@
+@import "tailwindcss";
+@import 'react-toastify/dist/ReactToastify.css';
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  /* color-scheme: light dark; */
+  color: #213547;
+  /* color-scheme: light dark; */
+  color: #213547;
   background-color: #242424;
 
-  font-synthesis: none;
+  /* font-synthesis: none;
+  /* font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; */
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
+
+
+/* — your global defaults go into the “base” layer: */
+@layer base {
+  input,
+  select {
+    border: 1px solid #cbd5e0;
+    border-radius: 0.375rem;
+    padding: 0.35rem 0.60rem;    /* default for un‑layered inputs */
+    box-sizing: border-box;
+  }
+}
+
+@layer base {
+/* deletes the highlighting of the column in calendar*/
+.fc {
+  --fc-today-bg-color: transparent;   /* FC v6 uses this var */
+}
+
+/* belt & suspenders */
+.fc .fc-day-today,
+.fc .fc-timegrid-col.fc-day-today,
+.fc .fc-daygrid-day.fc-day-today {
+  background: transparent !important;
+}
+}
+/* a {
   font-weight: 500;
-  color: #646cff;
+  color: #ffffff;
   text-decoration: inherit;
 }
 a:hover {
   color: #535bf2;
+} */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideDown {
+  from { transform: translateY(-30px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-down {
+  animation: slideDown 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes foldBar {
+  from { transform: translate(-50%, -20px); opacity: 0; }
+  to   { transform: translate(-50%, 0); opacity: 1; }
+}
+.animate-fold-bar {
+  animation: foldBar 0.5s cubic-bezier(0.4,0,0.2,1);
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+.animate-slide-down {
+  animation: slideDown 0.6s cubic-bezier(0.4,0,0.2,1);
 }
-
-h1 {
-  font-size: 3.2em;
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+/* h1 {
+  font-size: 2.2em;
   line-height: 1.1;
-}
+} */
+/* h2 {
+  font-size: 1.3em;
+  line-height: 1.1;
+} */
 
-button {
+/* button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
@@ -52,9 +106,9 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
+} */
 
-@media (prefers-color-scheme: light) {
+/* @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
@@ -65,4 +119,6 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
+} */
+/* third‑party */
+@import 'react-toastify/dist/ReactToastify.css';

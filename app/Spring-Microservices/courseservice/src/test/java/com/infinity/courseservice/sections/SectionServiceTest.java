@@ -1,0 +1,761 @@
+package com.infinity.courseservice.sections;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.mockito.Mockito;
+
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
+
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
+import com.infinity.courseservice.dtos.SectionDtos.AssignInstructorRequest;
+import com.infinity.courseservice.dtos.SectionDtos.SectionAddDtoRequest;
+import com.infinity.courseservice.dtos.SectionDtos.SectionCsvData;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDtoWithInstructorId;
+import com.infinity.courseservice.dtos.SectionDtos.SectionScheduleDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.ActionOptions;
+import com.infinity.courseservice.enums.SectionType;
+import com.infinity.courseservice.enums.UserRole;
+import com.infinity.courseservice.exceptions.BadRequestException;
+import com.infinity.courseservice.exceptions.NotFoundException;
+import com.infinity.courseservice.feign.ApplicationInterface;
+import com.infinity.courseservice.feign.UserInterface;
+import com.infinity.courseservice.models.Course;
+import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.SectionSchedule;
+import com.infinity.courseservice.models.Semester;
+import com.infinity.courseservice.repositories.CourseRepository;
+import com.infinity.courseservice.repositories.SectionRepository;
+import com.infinity.courseservice.repositories.SectionScheduleRepository;
+import com.infinity.courseservice.services.AuditService;
+import com.infinity.courseservice.repositories.SemesterRepository;
+import com.infinity.courseservice.services.EnrollmentService;
+import com.infinity.courseservice.services.SectionService;
+import com.infinity.courseservice.utility.SectionMapper;
+
+@ExtendWith(MockitoExtension.class)
+public class SectionServiceTest {
+
+    @Mock
+    private CourseRepository courseRepository;
+
+    @Mock
+    private SectionRepository sectionRepository;
+
+    @Mock
+    private SectionScheduleRepository sectionScheduleRepository;
+
+    @Mock
+    private UserInterface userInterface;
+
+    @Mock
+    private ApplicationInterface applicationInterface;
+
+    @Mock
+    private SemesterRepository semesterRepository;
+
+    @Mock
+    private EnrollmentService enrollmentService;
+
+    @Mock
+    private SectionMapper sectionMapper;
+
+    @Mock
+    private AuditService auditService;
+
+    @InjectMocks
+    private SectionService sectionService;
+
+    private Course course;
+    private CourseDto courseDto;
+    private SectionAddDtoRequest request;
+    private Section section;
+    private Semester semester;
+    private SectionDto sectionDto;
+
+    @BeforeEach
+    void setUp() {
+
+        course = new Course("COSC", "Software Engineering", "310");
+        course.setId(1L);
+        request = new SectionAddDtoRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null);
+        semester = new Semester(2025, "W1", null, null, true);
+        section = new Section(semester, "001", SectionType.LECTURE, course, null);
+        section.setId(10L);
+        section.setSectionSchedules(
+                List.of(new SectionSchedule("Tue", LocalTime.of(10, 0), LocalTime.of(11, 0), section)));
+        section.getSectionSchedules().get(0).setId(1L);
+        courseDto = new CourseDto(1L, "COSC", "Software Engineering", "310");
+        sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LECTURE, courseDto, 1);
+    }
+
+    @Test
+    void testAddSectionSuccess() {
+        Long userIdFromHeader = 1L;
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+        when(sectionRepository.save(any(Section.class))).thenReturn(section);
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(semester));
+        when(sectionMapper.sectionToDto(any())).thenReturn(sectionDto);
+
+        var result = sectionService.addSection(1L, request, userIdFromHeader);
+
+        assertEquals("001", result.section());
+        assertEquals("W1", result.semester());
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.CREATE),
+                eq("Section"),
+                isNull(),
+                eq(section),
+                eq(section.getId()));
+    }
+
+    @Test
+    void testAddSection_CourseNotFound() {
+        Long userIdFromHeader = 1L;
+        when(courseRepository.findById(99L)).thenReturn(Optional.empty());
+
+        SectionAddDtoRequest request = new SectionAddDtoRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null);
+        assertThrows(NotFoundException.class, () -> sectionService.addSection(99L, request, userIdFromHeader));
+    }
+
+    @Test
+    void testAddSection_Duplicate() {
+        Long userIdFromHeader = 1L;
+        SectionAddDtoRequest request = new SectionAddDtoRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null);
+        Course course = new Course("COSC", "Test", "123");
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+        when(sectionRepository.save(any(Section.class)))
+                .thenThrow(new DataIntegrityViolationException("Duplicate entry"));
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(semester));
+
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                () -> sectionService.addSection(1L, request, userIdFromHeader));
+
+        assertEquals("Section already exists org.springframework.dao.DataIntegrityViolationException: Duplicate entry",
+                ex.getMessage());
+    }
+
+    @Test
+    void testUpdateSectionNotFound() {
+        Long userIdFromHeader = 1L;
+        CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null, null, null);
+        when(sectionRepository.findById(1L)).thenReturn(Optional.empty());
+
+        NotFoundException ex = assertThrows(NotFoundException.class,
+                () -> sectionService.updateSection(1L, request, userIdFromHeader));
+
+        assertEquals("No section with id 1", ex.getMessage());
+    }
+
+    @Test
+    void testUpdateSectionSuccess() {
+        Long userIdFromHeader = 1L;
+        Section before = new Section(section);
+        when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(semester));
+        when(sectionMapper.sectionToDto(any())).thenReturn(sectionDto);
+        when(sectionRepository.save(any(Section.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        CourseRequest request = new CourseRequest("COSC", "Test", "123", "001",
+                SectionType.LECTURE, 2025, "W1", null, null, null, null);
+
+        SectionDto dto = sectionService.updateSection(1L, request, userIdFromHeader);
+
+        Course courseInSectionDto = new Course(dto.course().deptCode(), dto.course().name(), dto.course().courseNum());
+        courseInSectionDto.setId(dto.course().id());
+        Section after = new Section(semester, dto.section(), dto.type(), courseInSectionDto, null);
+        after.setId(before.getId());
+        assertEquals(SectionType.LECTURE, dto.type());
+        assertEquals(2025, dto.year());
+        assertEquals("W1", dto.semester());
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.UPDATE),
+                eq("Section"),
+                eq(before),
+                eq(after),
+                eq(before.getId()));
+    }
+
+    @Test
+    void testDeleteSectionNotFound() {
+        Long userIdFromHeader = 1L;
+        when(sectionRepository.findById(section.getId())).thenReturn(Optional.empty());
+
+        NotFoundException ex = assertThrows(NotFoundException.class,
+                () -> sectionService.deleteSection(section.getId(), userIdFromHeader));
+
+        assertEquals("No section with id 10", ex.getMessage());
+    }
+
+    @Test
+    void testDeleteSectionSuccess() {
+        Long userIdFromHeader = 1L;
+        when(sectionRepository.findById(section.getId())).thenReturn(Optional.of(section));
+        when(applicationInterface.setSectionIdNull(section.getId()))
+                .thenReturn(ResponseEntity.ok(3));
+        when(enrollmentService.clearSectionFromStudentCourses(section.getId()))
+                .thenReturn(5);
+
+        String response = sectionService.deleteSection(section.getId(), userIdFromHeader);
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.DELETE),
+                eq("Section"),
+                eq(section),
+                eq(null),
+                eq(section.getId()));
+        assertEquals("Section deleted. 3 allocations cleared. 5 enrollments affected.", response);
+    }
+
+    @Test
+    void testAddSectionScheduleSuccess() {
+        Long userIdFromHeader = 1L;
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00", null);
+        SectionSchedule schedule = new SectionSchedule("Tue", LocalTime.of(10, 0), LocalTime.of(11, 0), section);
+        schedule.setId(1L);
+        when(sectionRepository.findById(20L)).thenReturn(Optional.of(section));
+        when(sectionScheduleRepository.save(any(SectionSchedule.class)))
+            .thenAnswer(invocation -> {
+                SectionSchedule toSave = invocation.getArgument(0);
+                toSave.setId(schedule.getId());
+                return toSave;
+            });
+
+        var result = sectionService.addSectionSchedule(20L, req, userIdFromHeader);
+
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.CREATE),
+                eq("SectionSchedule"),
+                eq(null),
+                eq(schedule),
+                eq(result.id()));
+        assertEquals("Tue", result.day());
+        assertEquals(LocalTime.of(10, 0), result.startTime());
+        assertEquals(10L, result.sectionId());
+    }
+
+    @Test
+    void testAddSectionSchedule_SectionNotFound() {
+        Long userIdFromHeader = 1L;
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00", null);
+
+        when(sectionRepository.findById(100L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> sectionService.addSectionSchedule(100L, req, userIdFromHeader));
+    }
+
+    @Test
+    void testAddSectionSchedule_Duplicate() {
+        Long userIdFromHeader = 1L;
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00", null);
+
+        when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
+        doThrow(new DataIntegrityViolationException("Duplicate entry"))
+                .when(sectionScheduleRepository).save(any(SectionSchedule.class));
+
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                () -> sectionService.addSectionSchedule(1L, req, userIdFromHeader));
+
+        assertTrue(ex.getMessage().startsWith("Schedule already exists"));
+    }
+
+    @Test
+    void testUpdateSectionScheduleNotFound() {
+        Long userIdFromHeader = 1L;
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Tue", "10:00", "11:00", null);
+        when(sectionScheduleRepository.findById(1L)).thenReturn(Optional.empty());
+
+        NotFoundException ex = assertThrows(NotFoundException.class,
+                () -> sectionService.updateSectionSchedule(1L, req, userIdFromHeader));
+
+        assertEquals("No schedule with id 1", ex.getMessage());
+    }
+
+    @Test
+    void testUpdateSectionScheduleSuccess() {
+        Long userIdFromHeader = 1L;
+        SectionSchedule schedule = new SectionSchedule("Tue", LocalTime.of(10, 0), LocalTime.of(11, 0), section);
+        SectionSchedule before = new SectionSchedule(schedule);
+        CourseRequest req = new CourseRequest(null, null, null, null, null, null, null, "Wed", "10:00", "11:00", null);
+        when(sectionScheduleRepository.findById(1L)).thenReturn(Optional.of(schedule));
+        // when(sectionScheduleRepository.save(any())).thenReturn(schedule);
+        when(sectionScheduleRepository.save(any(SectionSchedule.class)))
+          .thenAnswer(invocation -> invocation.getArgument(0));
+
+        SectionScheduleDto dto = sectionService.updateSectionSchedule(1L, req, userIdFromHeader);
+
+        assertEquals("Wed", dto.day());
+        assertEquals(LocalTime.parse("10:00"), dto.startTime());
+        assertEquals(LocalTime.parse("11:00"), dto.endTime());
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.UPDATE),
+                eq("SectionSchedule"),
+                eq(before),
+                eq(schedule),
+                eq(schedule.getId()));
+    }
+
+    @Test
+    void testDeleteSectionScheduleNotFound() {
+        Long userIdFromHeader = 1L;
+        when(sectionScheduleRepository.findById(1L)).thenReturn(Optional.empty());
+        NotFoundException ex = assertThrows(NotFoundException.class,
+                () -> sectionService.deleteSectionSchedule(1L, userIdFromHeader));
+
+        assertEquals("No schedule with id 1", ex.getMessage());
+    }
+
+    @Test
+    void testDeleteSectionScheduleSuccess() {
+        Long userIdFromHeader = 1L;
+
+        when(sectionScheduleRepository.findById(1L)).thenReturn(Optional.of(section.getSectionSchedules().get(0)));
+
+        String response = sectionService.deleteSectionSchedule(section.getSectionSchedules().get(0).getId(),
+                userIdFromHeader);
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.DELETE),
+                eq("SectionSchedule"),
+                eq(section.getSectionSchedules().get(0)),
+                eq(null),
+                eq(section.getSectionSchedules().get(0).getId()));
+
+        assertEquals("Section schedule deleted", response);
+    }
+
+    @Test
+    void testGetSectionById_Success() {
+        when(sectionRepository.findById(55L)).thenReturn(Optional.of(section));
+        when(sectionMapper.sectionToDto(any())).thenReturn(sectionDto);
+
+        SectionDto result = sectionService.getSectionById(55L);
+        assertEquals("001", result.section());
+        assertEquals("COSC", result.course().deptCode());
+    }
+
+    @Test
+    void testGetSectionById_NotFound() {
+        when(sectionRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> sectionService.getSectionById(99L));
+    }
+
+    @Test
+    void testGetSectionSchedules_NotFound() {
+        when(sectionRepository.findById(any())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> sectionService.getSectionSchedules(99L));
+    }
+
+    @Test
+    void testGetSectionSchedules_Success() {
+        SectionSchedule schedule = new SectionSchedule("Tue", LocalTime.of(10, 0), LocalTime.of(11, 0), section);
+        section.setSectionSchedules(List.of(schedule));
+        when(sectionRepository.findById(any())).thenReturn(Optional.of(section));
+        List<SectionScheduleDto> scheduleDtos = sectionService.getSectionSchedules(1L);
+        assertEquals("Tue", scheduleDtos.get(0).day());
+        assertEquals(LocalTime.parse("10:00"), scheduleDtos.get(0).startTime());
+        assertEquals(LocalTime.parse("11:00"), scheduleDtos.get(0).endTime());
+    }
+
+    @Test
+    void testAssignInstructor_Success() {
+        Long userIdFromHeader = 1L;
+        AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L);
+
+        UserDto instructorDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.INSTRUCTOR), null,
+                null, null, null, 12345678,
+                "COSC", null, true);
+        section.setId(101L);
+        Section before = new Section(section);
+        when(userInterface.getInstructorById(99L)).thenReturn(instructorDto);
+        when(sectionRepository.findById(101L)).thenReturn(Optional.of(section));
+        // when(sectionRepository.save(any())).thenReturn(section);
+        when(sectionRepository.save(any(Section.class)))
+          .thenAnswer(invocation -> invocation.getArgument(0));
+
+        String result = sectionService.assignInstructor(request, userIdFromHeader);
+
+        assertEquals("Instructor assigned to section 101", result);
+        assertEquals(2L, section.getInstructorId());
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.UPDATE),
+                eq("Section"),
+                eq(before),
+                eq(section),
+                eq(section.getId()));
+    }
+
+    @Test
+    void testAssignInstructor_SectionNotFound() {
+        Long userIdFromHeader = 1L;
+        AssignInstructorRequest request = new AssignInstructorRequest(99L, 101L);
+        UserDto instructorDto = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.INSTRUCTOR), null,
+                null, null, null, 12345678, "COSC", null, false);
+
+        when(userInterface.getInstructorById(99L)).thenReturn(instructorDto);
+        when(sectionRepository.findById(101L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> sectionService.assignInstructor(request, userIdFromHeader));
+    }
+
+    @Test
+    void testUnassignInstructor_Success() {
+        Long userIdFromHeader = 1L;
+        section.setId(101L);
+        section.setInstructorId(99L);
+        Section before = new Section(section);
+        when(sectionRepository.findById(101L)).thenReturn(Optional.of(section));
+        // when(sectionRepository.save(any())).thenReturn(section);
+        when(sectionRepository.save(any(Section.class)))
+          .thenAnswer(invocation -> invocation.getArgument(0));
+
+        String result = sectionService.unassignInstructor(101L, 99L, userIdFromHeader);
+        assertEquals("Instructor unassigned from 101", result);
+        assertEquals(null, section.getInstructorId());
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.UPDATE),
+                eq("Section"),
+                eq(before),
+                eq(section),
+                eq(section.getId()));
+    }
+
+    @Test
+    void testUnassignInstructor_SectionNotFound() {
+        Long userIdFromHeader = 1L;
+        when(sectionRepository.findById(101L)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> sectionService.unassignInstructor(101L, 99L, userIdFromHeader));
+    }
+
+    @Test
+    void testGetInstructorSections_Success() {
+        Course course1 = new Course("COSC", "Security", "430");
+        course1.setId(1L);
+        Course course2 = new Course("COSC", "AI", "310");
+        course2.setId(2L);
+
+        Section s1 = new Section(semester, "001", SectionType.LECTURE, course1, null);
+        s1.setId(10L);
+        Section s2 = new Section(semester, "002", SectionType.LABORATORY, course2, null);
+        s2.setId(11L);
+
+        List<Section> sections = List.of(s1, s2);
+        when(sectionRepository.findAllByInstructorId(99L)).thenReturn(sections);
+        when(sectionMapper.sectionToDto(any())).thenReturn(sectionDto);
+
+        var result = sectionService.getInstructorSections(99L);
+
+        assertEquals(2, result.size());
+        assertEquals("Software Engineering", result.get(0).course().name());
+        assertEquals("COSC", result.get(1).course().deptCode());
+    }
+
+    @Test
+    void add_WithNewCourseAndSchedule_ReturnsTrue() {
+        Long userIdFromHeader = 1L;
+
+        SectionAddDtoRequest req = new SectionAddDtoRequest(
+                "COSC",
+                "Intro to CS",
+                "111",
+                "001",
+                SectionType.LECTURE,
+                2024,
+                "W1",
+                List.of(new SectionScheduleDto(
+                        "Monday",
+                        LocalTime.of(8, 0),
+                        LocalTime.of(9, 30),
+                        null,
+                        2L)),
+                42L);
+
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111"))
+                .thenReturn(Optional.empty());
+        Course savedCourse = new Course("COSC", "Intro to CS", "111");
+        savedCourse.setId(1L);
+        when(courseRepository.save(any(Course.class)))
+            .thenAnswer(invocation -> {
+                Course toSave = invocation.getArgument(0);
+                toSave.setId(savedCourse.getId());
+                return toSave;
+            });
+        Section savedSection = new Section(
+                semester,
+                "001",
+                SectionType.LECTURE,
+                42L,
+                savedCourse);
+        SectionSchedule schedule = new SectionSchedule("Monday", LocalTime.of(8, 0),
+                LocalTime.of(9, 30), savedSection);
+                schedule.setId(1L);
+        savedSection.setId(2L);
+        when(sectionRepository.save(any(Section.class)))
+            .thenAnswer(invocation -> {
+                Section toSave = invocation.getArgument(0);
+                toSave.setId(savedSection.getId());
+                return toSave;
+            });
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(semester));
+        when(sectionScheduleRepository.save(any(SectionSchedule.class)))
+            .thenAnswer(invocation -> {
+                SectionSchedule toSave = invocation.getArgument(0);
+                toSave.setId(schedule.getId());
+                return toSave;
+            });
+
+        boolean result = sectionService.add(req, userIdFromHeader);
+
+        assertTrue(result);
+        verify(courseRepository).save(any(Course.class));
+        verify(sectionRepository).save(any(Section.class));
+        verify(sectionScheduleRepository).save(any(SectionSchedule.class));
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.CREATE),
+                eq("Course"),
+                eq(null),
+                eq(savedCourse),
+                eq(savedCourse.getId()));
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.CREATE),
+                eq("Section"),
+                eq(null),
+                eq(savedSection),
+                eq(savedSection.getId()));
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.CREATE),
+                eq("SectionSchedule"),
+                eq(null),
+                eq(schedule),
+                eq(schedule.getId()));
+    }
+
+    @Test
+    void add_WithBlankDeptOrCourseNum_ThrowsBadRequest() {
+        Long userIdFromHeader = 1L;
+        SectionAddDtoRequest req = new SectionAddDtoRequest(
+                "   ", 
+                null,
+                "   ", 
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> sectionService.add(req,userIdFromHeader));
+        assertTrue(ex.getMessage().contains("Both deptCode and courseNum are required"));
+    }
+
+    @Test
+    void testGetSectionWithInstructorIdById_Success() {
+        SectionDtoWithInstructorId mappedDto = new SectionDtoWithInstructorId(1L, 1L, 2025, "W1", "001",
+                SectionType.LECTURE, courseDto, 1);
+        section.setId(55L);
+
+        when(sectionRepository.findById(55L)).thenReturn(Optional.of(section));
+        when(sectionMapper.sectionDtoWithInstructorId(any())).thenReturn(mappedDto);
+
+        SectionDtoWithInstructorId result = sectionService.getSectionWithInstructorIdById(55L);
+        assertEquals("COSC", result.course().deptCode());
+        assertEquals(1L, result.instructorId());
+    }
+
+    @Test
+    void testGetSectionWithInstructorIdById_NotFound() {
+        when(sectionRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> sectionService.getSectionWithInstructorIdById(99L));
+    }
+
+    @Test
+    void testIncrementNumberOfTAsAllocated() {
+        Long userIdFromHeader = 1L;
+        Section section = new Section();
+        Section before = new Section(section);
+        section.setNumberOfTAsAllocated(2);
+
+        when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
+        when(sectionRepository.save(any(Section.class)))
+            .thenAnswer(invocation -> invocation.getArgument(0));
+        sectionService.incrementNumberOfTAsAllocated(1L,userIdFromHeader);
+
+        assertEquals(3, section.getNumberOfTAsAllocated());
+        verify(sectionRepository).save(section);
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.UPDATE),
+                eq("Section"),
+                eq(before),
+                eq(section),
+                eq(section.getId()));
+    }
+
+    @Test
+    void testDecrementNumberOfTAsAllocated() {
+        Long userIdFromHeader = 1L;
+        Section section = new Section();
+        Section before = new Section(section);
+        section.setNumberOfTAsAllocated(2);
+
+        when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
+        when(sectionRepository.save(any(Section.class)))
+            .thenAnswer(invocation -> invocation.getArgument(0));
+
+        sectionService.decrementNumberOfTAsAllocated(1L,userIdFromHeader);
+
+        assertEquals(1, section.getNumberOfTAsAllocated());
+        verify(sectionRepository).save(section);
+        verify(auditService).record(
+                eq(userIdFromHeader),
+                eq(ActionOptions.UPDATE),
+                eq("Section"),
+                eq(before),
+                eq(section),
+                eq(section.getId()));
+    }
+
+    @Test
+    void testDecrementNumberOfTAsAllocated_DoesNotGoBelowZero() {
+        Long userIdFromHeader = 1L;
+        Section section = new Section();
+        section.setNumberOfTAsAllocated(0);
+
+        when(sectionRepository.findById(1L)).thenReturn(Optional.of(section));
+
+        sectionService.decrementNumberOfTAsAllocated(1L,userIdFromHeader);
+
+        // No change
+        assertEquals(0, section.getNumberOfTAsAllocated());
+        verify(sectionRepository, never()).save(any());
+    }
+
+    @Test
+    void testIncrementThrowsIfSectionNotFound() {
+        Long userIdFromHeader = 1L;
+        when(sectionRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> sectionService.incrementNumberOfTAsAllocated(99L,userIdFromHeader));
+    }
+
+    @Test
+    void testDecrementThrowsIfSectionNotFound() {
+        Long userIdFromHeader = 1L;
+        when(sectionRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> sectionService.decrementNumberOfTAsAllocated(99L,userIdFromHeader));
+    }
+
+    // --- CSV Import/Export tests ---
+    @Test
+    void importSectionsFromJson_success() {
+        Long userIdFromHeader = 1L;
+        var data = new SectionCsvData(
+                "COSC", "111", "Intro to CS", 2025, "Winter", "001", "LECTURE", "Mon", "09:00", "10:00");
+        Course course = new Course("COSC", "Intro to CS", "111");
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
+        when(sectionRepository.findByCourseAndSemester_YearAndSemester_SemesterAndSectionAndType(course, 2025, "Winter",
+                "001",
+                SectionType.LECTURE)).thenReturn(Optional.empty());
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(semester));
+        when(sectionRepository.save(any())).thenReturn(Mockito.mock(Section.class));
+        when(sectionScheduleRepository.save(any())).thenReturn(Mockito.mock(SectionSchedule.class));
+        String result = sectionService.importSectionsFromJson(List.of(data), userIdFromHeader);
+        assertTrue(result.contains("Success: 1"));
+        assertFalse(result.contains("Errors: 1"));
+    }
+
+    @Test
+    void importSectionsFromJson_missingRequiredFields() {
+        Long userIdFromHeader = 1L;
+        var data = new SectionCsvData("", "", "", null, "", "", "", "", "",
+                "");
+        String result = sectionService.importSectionsFromJson(List.of(data), userIdFromHeader);
+        assertTrue(result.contains("Failed: 1"));
+        assertTrue(result.contains("Missing required fields"));
+    }
+
+    @Test
+    void importSectionsFromJson_invalidType() {
+        Long userIdFromHeader = 1L;
+        var data = new SectionCsvData("COSC", "111", "Intro to CS", 2025,
+                "Winter", "001", "INVALID", "Mon", "09:00", "10:00");
+        Course course = new Course("COSC", "Intro to CS", "111");
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
+        String result = sectionService.importSectionsFromJson(List.of(data), userIdFromHeader);
+        // assertTrue(result.contains("Section import failed."));
+        assertTrue(result.contains("Failed: 1"));
+        assertTrue(result.contains("Invalid section type"));
+    }
+
+    @Test
+    void importSectionsFromJson_invalidSemester() {
+        Long userIdFromHeader = 1L;
+        var data = new SectionCsvData("COSC", "111", "Intro to CS", 2025,
+                "Winter", "001", "LECTURE", "Mon", "invalid", "invalid");
+        Course course = new Course("COSC", "Intro to CS", "111");
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
+        when(sectionRepository.findByCourseAndSemester_YearAndSemester_SemesterAndSectionAndType(course, 2025, "Winter",
+                "001",
+                SectionType.LECTURE)).thenReturn(Optional.empty());
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.empty());
+        String result = sectionService.importSectionsFromJson(List.of(data), userIdFromHeader);
+        assertTrue(result.contains("Section import failed."));
+        // assertTrue(result.contains("Errors: 1"));
+        // assertTrue(result.contains("That semester doesn't exist"));
+    }
+
+    @Test
+    void importSectionsFromJson_invalidTimeFormat() {
+        Long userIdFromHeader = 1L;
+        var data = new SectionCsvData("COSC", "111", "Intro to CS", 2025,
+                "Winter", "001", "LECTURE", "Mon", "invalid", "invalid");
+        Course course = new Course("COSC", "Intro to CS", "111");
+        when(courseRepository.findByDeptCodeAndCourseNum("COSC", "111")).thenReturn(Optional.of(course));
+        when(sectionRepository.findByCourseAndSemester_YearAndSemester_SemesterAndSectionAndType(course, 2025, "Winter",
+                "001",
+                SectionType.LECTURE)).thenReturn(Optional.empty());
+        when(semesterRepository.findByYearAndSemester(any(), any())).thenReturn(Optional.of(semester));
+        String result = sectionService.importSectionsFromJson(List.of(data), userIdFromHeader);
+        assertTrue(result.contains("Section import failed."));
+        // assertTrue(result.contains("Failed: 1"));
+        // assertTrue(result.contains("Invalid time format"));
+    }
+}

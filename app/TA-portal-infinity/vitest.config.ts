@@ -6,7 +6,15 @@ export default defineConfig({
   test: {
     globals: true,                // use describe/it/expect without imports
     environment: 'jsdom',         // simulate a browser DOM
-    setupFiles: './src/setupTests.ts',
-    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    setupFiles: './setupTests.ts',
+    include: ['src/**/*.{test,spec}.{ts,tsx}','tests/**/*.{test,spec}.{ts,tsx}'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      reportsDirectory: './my-custom-coverage', 
+      exclude: [
+        'src/api/**',
+      ],
+    },
   },
 })

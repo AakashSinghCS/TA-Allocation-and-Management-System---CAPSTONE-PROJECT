@@ -1,0 +1,373 @@
+package com.infinity.courseservice.services;
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
+
+import com.infinity.courseservice.dtos.AllocationDtos.AllocatedSectionDto;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
+import com.infinity.courseservice.dtos.CourseDtos.CourseNeedAndAllocations;
+import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
+import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
+import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
+import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
+import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.ActionOptions;
+import com.infinity.courseservice.exceptions.BadRequestException;
+import com.infinity.courseservice.exceptions.NotFoundException;
+import com.infinity.courseservice.feign.ApplicationInterface;
+import com.infinity.courseservice.feign.UserInterface;
+import com.infinity.courseservice.models.Course;
+import com.infinity.courseservice.models.Section;
+import com.infinity.courseservice.models.Semester;
+import com.infinity.courseservice.models.StudentTaughtCourse;
+import com.infinity.courseservice.repositories.CourseRepository;
+import com.infinity.courseservice.repositories.SectionRepository;
+import com.infinity.courseservice.repositories.SectionScheduleRepository;
+import com.infinity.courseservice.repositories.SemesterRepository;
+import com.infinity.courseservice.repositories.StudentTaughtCourseRepository;
+import com.infinity.courseservice.utility.CourseMapper;
+import com.infinity.courseservice.utility.SectionMapper;
+import com.infinity.courseservice.utility.StudentTaughtCourseMapper;
+
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@Data
+@RequiredArgsConstructor
+public class CourseService {
+
+    private final CourseRepository courseRepository;
+    private final SectionRepository sectionRepository;
+    private final SectionScheduleRepository sectionScheduleRepository;
+    private final UserInterface userInterface;
+    private final NeedService needService;
+    private final ApplicationInterface applicationInterface;
+    private final SectionService sectionService;
+    private final CourseMapper courseMapper;
+    private final StudentTaughtCourseRepository stcRepository;
+    private final SectionMapper sectionMapper;
+    private final SemesterRepository semesterRepository;
+    private final StudentTaughtCourseMapper studentTaughtCourseMapper;
+    private final AuditService auditService;
+    // private final EnrollmentService enrollmentService;
+
+    public CourseDto addCourse(CourseRequest request, Long userIdFromHeader) {
+        String deptCode = Optional.ofNullable(request.deptCode()).orElse("").trim();
+        String name = Optional.ofNullable(request.name()).orElse("").trim();
+        String courseNum = Optional.ofNullable(request.courseNum()).orElse("").trim();
+
+        if (deptCode.isEmpty() || courseNum.isEmpty()) {
+            throw new BadRequestException("Department code and course number are required.");
+        }
+        Course course = new Course(deptCode, name, courseNum);
+        try {
+            courseRepository.save(course);
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("Course already exists " + ex);
+        }
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "Course",   
+            null,               
+            course,           
+            course.getId()   
+        );
+
+        return courseMapper.courseToDto(course);
+    }
+
+    public CourseDto findCourse(Long id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Course with ID " + id + " not found"));
+        return courseMapper.courseToDto(course);
+    }
+
+    public CourseDto updateCourse(CourseRequest request, Long courseId, Long userIdFromHeader) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
+
+        Course before = new Course(course);
+        course.setDeptCode(request.deptCode());
+        course.setName(request.name());
+        course.setCourseNum(request.courseNum());
+        Course saved = courseRepository.save(course);
+        System.out.println(saved);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.UPDATE,
+            "Course",   
+            before,               
+            saved,           
+            saved.getId()   
+        );
+
+        return courseMapper.courseToDto(course);
+    }
+
+    public String deleteCourse(Long courseId, Long userIdFromHeader) {
+        // if (!courseRepository.existsById(courseId)) {
+        //     throw new NotFoundException("No course with id " + courseId);
+        // }
+        
+        Course toDelete = courseRepository
+            .findById(courseId)
+            .orElseThrow(() -> new NotFoundException(
+               "No course with id " + courseId));
+
+        // courseRepository.deleteById(courseId);
+        courseRepository.delete(toDelete);
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.DELETE,
+            "Course",   
+            toDelete,               
+            null,           
+            toDelete.getId()   
+        );
+
+        return "Course deleted";
+    }
+
+    public List<CourseDto> findCoursesByIds(List<Long> ids) {
+        List<Course> courses = courseRepository.findAllById(ids);
+        return courses.stream().map(course -> courseMapper.courseToDto(course)).toList();
+    }
+
+    // public List<CourseSectionScheduleDto> filterCourses(CourseFilterRequest filter) {
+    //     return courseRepository.courseFilter(filter.deptCode(), filter.courseNum(), filter.name(), filter.section(),
+    //             filter.year(), filter.semester(), filter.type(), filter.day(), filter.startTime(), filter.endTime());
+    // }
+
+    public Page<CourseSectionScheduleDto> filterCoursesByPage(CourseFilterRequest filter, Pageable pageable) {
+        return courseRepository.courseFilter(
+            filter.deptCode(), filter.courseNum(), filter.name(), filter.section(),
+            filter.year(), filter.semester(), filter.type(), filter.day(), filter.startTime(), filter.endTime(),
+            filter.searchText(), pageable                                 
+        );
+    }
+
+    public CourseNeedAndAllocations getCourseNeedAndAllocations(Long courseId, Integer year, String semester) {
+        Section section = sectionRepository.findByCourseIdAndSemester_YearAndSemester_Semester(courseId, year, semester)
+                .orElseThrow(() -> new NotFoundException("No course with id " + courseId));
+        NeedDto need = needService.getNeed(courseId, year, semester);
+        List<AllocatedSectionDto> allocations = applicationInterface
+                .getAllocationsBySectionId(section.getId()).getBody();
+        SectionDto sectionDto = sectionMapper.sectionToDto(section);
+        return new CourseNeedAndAllocations(sectionDto, need, allocations);
+
+    }
+
+    public List<CourseNeedAndAllocations> getInstructorCourseNeedsAndAllocations(Long instructorId) {
+        List<SectionDto> sections = sectionService.getInstructorSections(instructorId);
+        Set<String> uniqueKeys = new HashSet<>();
+        List<CourseNeedAndAllocations> result = new ArrayList<>();
+
+        for (SectionDto section : sections) {
+            Long courseId = section.course().id();
+            Long sectionId = section.id();
+            Integer year = section.year();
+            String semester = section.semester();
+            String key = sectionId.toString();
+            if (!uniqueKeys.contains(key)) {
+                uniqueKeys.add(key);
+
+                NeedDto need = null;
+                List<AllocatedSectionDto> allocations = new ArrayList<>();
+
+                try {
+
+                    need = needService.getNeed(courseId, year, semester);
+                } catch (NotFoundException e) {
+                }
+                try {
+                    List<AllocatedSectionDto> fetched = applicationInterface
+                            .getAllocationsBySectionId(sectionId).getBody();
+                    if (fetched != null) {
+                        allocations = fetched;
+                    }
+                } catch (NotFoundException e) {
+                }
+                CourseNeedAndAllocations entry = new CourseNeedAndAllocations(section, need, allocations);
+
+                result.add(entry);
+            }
+        }
+        return result;
+    }
+
+    public List<CourseNeedAndAllocations> getInstructorSpecificCourseNeedsAndAllocations(
+        Long instructorId,
+        @Nullable Long courseId,
+        Integer year,
+        String semester
+    ) {
+        // fetch filtered Section entities
+        List<Section> sections = (courseId != null)
+            ? sectionRepository.findByInstructorIdAndCourseIdAndSemester_YearAndSemester_Semester(
+                  instructorId, courseId, year, semester
+              )
+            : sectionRepository.findByInstructorIdAndSemester_YearAndSemester_Semester(
+                  instructorId, year, semester
+              );
+
+        List<CourseNeedAndAllocations> result = new ArrayList<>();
+        for (Section section : sections) {
+            // map entity → DTO
+            SectionDto secDto = sectionMapper.sectionToDto(section);
+
+            // get need (nullable)
+            NeedDto needDto = null;
+            try {
+                needDto = needService.getNeed(
+                    section.getCourse().getId(),
+                    section.getSemester().getYear(),
+                    section.getSemester().getSemester()
+                );
+            } catch (Exception ignored) {}
+
+            // get allocations (empty list if null)
+            List<AllocatedSectionDto> allocations =
+                Optional.ofNullable(
+                    applicationInterface.getAllocationsBySectionId(section.getId())
+                                        .getBody()
+                ).orElse(Collections.emptyList());
+
+            result.add(new CourseNeedAndAllocations(secDto, needDto, allocations));
+        }
+        return result;
+    }
+
+    public StudentTaughtCourseDto addStudentTaughtCourse(Long courseId, StudentTaughtCourseRequest request, Long userIdFromHeader) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new NotFoundException("Course not found"));
+        Semester semester = semesterRepository.findByYearAndSemester(request.year(), request.semester())
+                .orElseThrow(() -> new NotFoundException("Semester doesn't exist"));
+
+        StudentTaughtCourse record = StudentTaughtCourse.builder()
+                .course(course)
+                .studentId(request.studentId())
+                .semester(semester)
+                .build();
+
+        StudentTaughtCourse saved = stcRepository.save(record);
+
+        UserDto student = userInterface.getStudentById(saved.getStudentId());
+
+        auditService.record(
+            userIdFromHeader,
+            ActionOptions.CREATE,
+            "StudentTaughtCourse",   
+            null,               
+            saved,           
+            saved.getId()
+        );
+        
+        return studentTaughtCourseMapper.toDto(student,saved);
+    }
+
+    public void deleteStudentTaughtCourse(
+        Long studentId,
+        Long courseId,
+        String semesterName,
+        Integer year,
+        Long userIdFromHeader
+    ) {
+        List<StudentTaughtCourse> toDelete = stcRepository
+            .findAllByStudentIdAndCourse_IdAndSemester_SemesterAndSemester_Year(
+                studentId, courseId, semesterName, year
+            );
+
+        if (toDelete.isEmpty()) {
+            throw new NotFoundException(String.format(
+                "No StudentTaughtCourse found for studentId=%d, courseId=%d, semester=%s, year=%d",
+                studentId, courseId, semesterName, year
+            ));
+        }
+
+        stcRepository.deleteAll(toDelete);
+
+        toDelete.forEach(stc -> {
+            auditService.record(
+                userIdFromHeader,
+                ActionOptions.DELETE,
+                "StudentTaughtCourse",
+                stc,
+                null,
+                stc.getId()
+            );
+        });
+    }
+
+    public List<StudentTaughtCourseDto> getCoursesTaughtByStudent(Long studentId) {
+        UserDto student = userInterface.getStudentById(studentId);
+
+        return stcRepository.findByStudentId(studentId).stream()
+                .map(record -> studentTaughtCourseMapper.toDto(student, record))
+                .toList();
+    }
+
+    public List<String> getAllDeptCodes() {
+        return courseRepository.findAllUniqueDeptCode();
+    }
+
+    public List<String> getAllCourseNums(String deptCode) {
+        return courseRepository.findDistinctCourseNumByDeptCode(deptCode);
+    }
+
+    public List<String> getAllSections(String deptCode, String courseNum) {
+        return courseRepository.findSectionsByDeptCodeAndCourseNum(deptCode, courseNum);
+    }
+
+    public List<String> getAllYears() {
+        return courseRepository.findAllDistinctYearStrings();
+    }
+
+    // public List<String> getAllSemester(String deptCode, String courseNum, String
+    // section, String year) {
+    // return
+    // courseRepository.findSemestersByDeptCodeAndCourseNumAndSectionAndYear(deptCode,
+    // courseNum, section, year);
+    // }
+
+    public CourseDto getByDeptCodeAndCourseNum(String deptCode, String courseNum) {
+        Course course = courseRepository.findByDeptCodeAndCourseNum(deptCode, courseNum)
+                .orElseThrow(() -> new NotFoundException("Course not found with: " + deptCode + " " + courseNum));
+        return courseMapper.courseToDto(course);
+    }
+
+    public List<CourseDto> getCoursesForInstructor(Long instructorId) {
+        return courseRepository
+        .findDistinctCoursesByInstructorId(instructorId)
+        .stream()
+        .map(courseMapper::courseToDto)   // or build new CourseDto(...)
+        .toList();
+    }
+
+    public List<CourseDto> getCoursesWithoutNeeds(Integer year, String semester) {
+        List<Course> courses = courseRepository.findCoursesWithoutNeedsByYearAndSemester(year, semester);
+        return courses.stream()
+                  .map(courseMapper::courseToDto)
+                  .collect(Collectors.toList());
+    }
+
+
+}

@@ -1,0 +1,32 @@
+package com.infinity.courseservice.feign;
+
+import java.util.List;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+
+import com.infinity.courseservice.config.FeignClientInterceptor;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocatedSectionDto;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDto;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
+import com.infinity.courseservice.dtos.DeadlineDto;
+
+@FeignClient(name = "APPLICATION-SERVICE", configuration = FeignClientInterceptor.class)
+public interface ApplicationInterface {
+
+    @GetMapping("/allocations/student/{studentId}/history")
+    public ResponseEntity<List<AllocationHistoryDto>> getStudentAllocationHistory(@PathVariable Long studentId);
+
+    @GetMapping("/allocations/filter/section/{sectionId}")
+    ResponseEntity<List<AllocatedSectionDto>> getAllocationsBySectionId(@PathVariable Long sectionId);
+
+    @GetMapping("/config/{name}")
+    ResponseEntity<DeadlineDto> getDeadlineByName(@PathVariable String name);
+
+    @PutMapping("/allocations/{sectionId}/setSectionIdNull")
+    public ResponseEntity<Integer> setSectionIdNull(@PathVariable Long sectionId);
+
+}

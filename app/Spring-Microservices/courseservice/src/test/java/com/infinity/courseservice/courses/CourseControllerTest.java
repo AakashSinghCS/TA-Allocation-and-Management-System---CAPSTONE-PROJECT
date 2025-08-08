@@ -1,0 +1,464 @@
+package com.infinity.courseservice.courses;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalTime;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infinity.courseservice.controllers.CourseController;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocatedSectionDto;
+import com.infinity.courseservice.dtos.AllocationDtos.AllocationHistoryDtoWithCourse;
+import com.infinity.courseservice.dtos.ApplicationDtos.ApplicationDto;
+import com.infinity.courseservice.dtos.CourseDtos.CourseDto;
+import com.infinity.courseservice.dtos.CourseDtos.CourseFilterRequest;
+import com.infinity.courseservice.dtos.CourseDtos.CourseNeedAndAllocations;
+import com.infinity.courseservice.dtos.CourseDtos.CourseRequest;
+import com.infinity.courseservice.dtos.CourseDtos.CourseSectionScheduleDto;
+import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseDto;
+import com.infinity.courseservice.dtos.CourseDtos.StudentTaughtCourseRequest;
+import com.infinity.courseservice.dtos.NeedDtos.NeedDto;
+import com.infinity.courseservice.dtos.SectionDtos.SectionDto;
+import com.infinity.courseservice.dtos.UserDtos.UserDto;
+import com.infinity.courseservice.enums.ApplicationStatus;
+import com.infinity.courseservice.enums.SectionType;
+import com.infinity.courseservice.enums.TaskType;
+import com.infinity.courseservice.enums.UserRole;
+import com.infinity.courseservice.services.CourseService;
+import com.infinity.courseservice.services.SectionService;
+
+@WebMvcTest(CourseController.class)
+@AutoConfigureMockMvc(addFilters = false)
+public class CourseControllerTest {
+
+        @Autowired
+        private MockMvc mockMvc;
+
+        @MockitoBean
+        private CourseService courseService;
+
+        @MockitoBean
+        SectionService SectionService;
+
+        @Autowired
+        private ObjectMapper objectMapper;
+
+        @Test
+        void testFindCourse() throws Exception {
+                CourseDto courseDto = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+                when(courseService.findCourse(1L)).thenReturn(courseDto);
+
+                mockMvc.perform(get("/courses/1"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.deptCode").value("COSC"))
+                                .andExpect(jsonPath("$.name").value("Distributed Systems"))
+                                .andExpect(jsonPath("$.courseNum").value(455));
+        }
+
+        @Test
+        void testAddCourse() throws Exception {
+                CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null,
+                                null, null,
+                                null, null);
+                CourseDto response = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+                Long userIdFromHeader = 1L;
+
+                when(courseService.addCourse(any(CourseRequest.class), eq(userIdFromHeader))).thenReturn(response);
+
+                mockMvc.perform(post("/courses/addCourse")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request))
+                                .header("X-User-Id", userIdFromHeader))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.deptCode").value("COSC"))
+                                .andExpect(jsonPath("$.name").value("Distributed Systems"))
+                                .andExpect(jsonPath("$.courseNum").value(455));
+        }
+
+        @Test
+        void testUpdateCourse() throws Exception {
+                CourseRequest request = new CourseRequest("COSC", "Distributed Systems", "455", null, null, null, null,
+                                null, null,
+                                null, null);
+                CourseDto response = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+                Long userIdFromHeader = 1L;
+                when(courseService.updateCourse(any(CourseRequest.class), any(), eq(userIdFromHeader))).thenReturn(response);
+
+                mockMvc.perform(put("/courses/updateCourse/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request))
+                                .header("X-User-Id", userIdFromHeader))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.deptCode").value("COSC"))
+                                .andExpect(jsonPath("$.name").value("Distributed Systems"))
+                                .andExpect(jsonPath("$.courseNum").value(455));
+        }
+
+        @Test
+        void testDeleteCourse() throws Exception {
+                Long userIdFromHeader = 1L;
+                String response = "Course deleted";
+
+                when(courseService.deleteCourse(any(),eq(userIdFromHeader))).thenReturn(response);
+
+                mockMvc.perform(delete("/courses/deleteCourse/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-User-Id", userIdFromHeader))
+                                .andExpect(status().isOk());
+        }
+
+        // @Test
+        // void testFilterCourses() throws Exception {
+        // CourseFilterRequest filterRequest = new CourseFilterRequest("COSC",
+        // "systems", null, null, 2024, "W1",
+        // null, null,
+        // LocalTime.of(14, 00), null);
+
+        // CourseSectionScheduleDto dto = new CourseSectionScheduleDto(1L, 1L, "COSC",
+        // "Distributed Systems",
+        // "455", "001",
+        // 2024, "W1", SectionType.LABORATORY, "Wed", LocalTime.of(14, 00),
+        // LocalTime.of(15, 30),
+        // false);
+
+        // when(courseService.filterCourses(any(CourseFilterRequest.class)))
+        // .thenReturn(List.of(dto));
+
+        // mockMvc.perform(post("/courses/filterCourses")
+        // .contentType(MediaType.APPLICATION_JSON)
+        // .content(objectMapper.writeValueAsString(filterRequest)))
+        // .andExpect(status().isOk())
+        // .andExpect(jsonPath("$[0].deptCode").value("COSC"))
+        // .andExpect(jsonPath("$[0].courseNum").value(455));
+        // }
+
+        @TestConfiguration
+        @EnableSpringDataWebSupport
+        static class PageableConfig {
+        }
+
+        @Test
+        void whenFilterCoursesByPage_thenReturnsPagedResults() throws Exception {
+                // given
+                CourseFilterRequest filterRequest = new CourseFilterRequest(
+                                "COSC", null, null, null,
+                                2025, "W1", SectionType.LABORATORY, "Wed",
+                                LocalTime.of(14, 0), LocalTime.of(15, 30), null);
+
+                CourseSectionScheduleDto dto1 = new CourseSectionScheduleDto(
+                                1L, 3L, "COSC", "Distributed Systems", "455", "001",
+                                2025, "W1", SectionType.LABORATORY, "Wed",
+                                LocalTime.of(14, 0), LocalTime.of(15, 30), false);
+
+                CourseSectionScheduleDto dto2 = new CourseSectionScheduleDto(
+                                2L, 4L, "COSC", "Operating Systems", "456", "002",
+                                2025, "W2", SectionType.LABORATORY, "Wed",
+                                LocalTime.of(14, 0), LocalTime.of(15, 30), false);
+
+                Page<CourseSectionScheduleDto> page = new PageImpl<>(
+                                List.of(dto1, dto2),
+                                PageRequest.of(0, 2, Sort.by("courseNum").ascending()),
+                                2);
+
+                when(courseService.filterCoursesByPage(
+                                any(CourseFilterRequest.class),
+                                any(Pageable.class))).thenReturn(page);
+
+                // when / then
+                mockMvc.perform(post("/courses/filterCourses/page")
+                                .param("page", "0")
+                                .param("size", "2")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(filterRequest))
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.content.length()").value(2))
+                                .andExpect(jsonPath("$.content[0].deptCode").value("COSC"))
+                                .andExpect(jsonPath("$.content[0].courseNum").value("455"))
+                                .andExpect(jsonPath("$.totalElements").value(2))
+                                .andExpect(jsonPath("$.size").value(2))
+                                .andExpect(jsonPath("$.number").value(0));
+        }
+
+        @Test
+        void testGetCoursesByIds() throws Exception {
+                CourseDto dto1 = new CourseDto(1L, "COSC", "Distributed Systems", "455");
+                CourseDto dto2 = new CourseDto(1L, "COSC", "Operating Systems", "315");
+
+                when(courseService.findCoursesByIds(List.of(1L, 2L))).thenReturn(List.of(dto1, dto2));
+
+                mockMvc.perform(get("/courses/allById?ids=1&ids=2"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0].name").value("Distributed Systems"))
+                                .andExpect(jsonPath("$[1].name").value("Operating Systems"));
+        }
+
+        @Test
+        void testGetCourseNeedAndAllocations() throws Exception {
+                Long courseId = 1L;
+                Integer year = 2025;
+                String semester = "W1";
+                NeedDto need = new NeedDto(10L, courseId, "Marking", 30, 10, year, semester, null);
+                CourseDto course = new CourseDto(courseId, "COSC", "Security", "430");
+                SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001", SectionType.LABORATORY, course,0);
+                // AllocationHistoryDtoWithCourse alloc = new AllocationHistoryDtoWithCourse(1L,
+                //                 new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT), 12345678,
+                //                                 "COSC", 2025, 3, null,
+                //                                 null, null, true),
+                //                 new ApplicationDto(null, null, null, null, true, null, null, null),
+                //                 ApplicationStatus.CONFIRMED, 10,
+                //                 new SectionDto(5L, 2025, "W1", "001", SectionType.LABORATORY, course, 1));
+                AllocatedSectionDto alloc = new AllocatedSectionDto(1L, 1L, 1L, TaskType.GRADING);
+
+                CourseNeedAndAllocations response = new CourseNeedAndAllocations(sectionDto, need, List.of(alloc));
+                when(courseService.getCourseNeedAndAllocations(courseId, year, semester)).thenReturn(response);
+
+                mockMvc.perform(get("/courses/needAndAllocations/{courseId}/{year}/{semester}", courseId, year,
+                                semester))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.section.semester").value("W1"))
+                                .andExpect(jsonPath("$.section.course.name").value("Security"))
+                                .andExpect(jsonPath("$.need.description").value("Marking"))
+                                .andExpect(jsonPath("$.allocatedSections.length()").value(1))
+                                .andExpect(jsonPath("$.section.numberOfTAsAllocated").value(0));
+        }
+
+        @Test
+        void testGetInstructorCourseNeedsAndAllocations() throws Exception {
+                Long instructorId = 77L;
+                CourseDto course = new CourseDto(1L, "COSC", "Networks", "329");
+                NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2", null);
+                SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001",
+                                SectionType.LABORATORY, course, 1);
+                 AllocatedSectionDto alloc = new AllocatedSectionDto(1L, 1L, 1L, TaskType.GRADING);
+        CourseNeedAndAllocations entry = new CourseNeedAndAllocations(sectionDto,
+        need, List.of(alloc));
+
+        when(courseService.getInstructorCourseNeedsAndAllocations(instructorId)).thenReturn(List.of(entry));
+        when(courseService.getInstructorCourseNeedsAndAllocations(instructorId)).thenReturn(List.of(entry));
+
+        mockMvc.perform(get("/courses/needAndAllocations/{instructorId}",
+        instructorId))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].section.semester").value("W1"))
+        .andExpect(jsonPath("$[0].section.course.name").value("Networks"))
+        .andExpect(jsonPath("$[0].need.description").value("Grading"))
+        .andExpect(jsonPath("$[0].allocatedSections.length()").value(1))
+        .andExpect(jsonPath("$[0].section.numberOfTAsAllocated").value(1));
+        }
+
+        @Test
+        void testGetInstructorSpecificCourseNeedsAndAllocations_Controller() throws Exception {
+                Long instructorId = 77L;
+                Long courseId = 1L;
+                Integer year = 2025;
+                String semester = "W1";
+
+                CourseDto course = new CourseDto(1L, "COSC", "Security", "430");
+                SectionDto sectionDto = new SectionDto(
+                                10L, 2025, semester, "001", SectionType.LECTURE, course,1);
+
+                NeedDto need = new NeedDto(10L, 1L, "Labs", 25, 10, year, semester, null);
+
+                // UserDto student = new UserDto(
+                // 2L, "Alice", "Wang", "awang@test.com",
+                // List.of(UserRole.STUDENT),
+                // 12345678, "COSC", 2025, 3,
+                // null, null, null,true);
+                // CourseDto course = new CourseDto(1L, "COSC", "Networks", "329");
+                // NeedDto need = new NeedDto(20L, 1L, "Grading", 25, 12, 2024, "W2", null);
+                // SectionDto sectionDto = new SectionDto(1L, 2025, "W1", "001",
+                // SectionType.LABORATORY, course);
+                 AllocatedSectionDto alloc = new AllocatedSectionDto(1L, 1L, 1L, TaskType.GRADING);
+                CourseNeedAndAllocations entry = new CourseNeedAndAllocations(sectionDto, need, List.of(alloc));
+
+                when(courseService.getInstructorSpecificCourseNeedsAndAllocations(
+                                instructorId, courseId, year, semester))
+                                .thenReturn(List.of(entry));
+
+                mockMvc.perform(get("/courses/needAndAllocations/specific/{instructorId}", instructorId)
+                                .param("courseId", courseId.toString())
+                                .param("year", year.toString())
+                                .param("semester", semester)
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.length()").value(1))
+                                .andExpect(jsonPath("$[0].section.semester").value("W1"))
+                                .andExpect(jsonPath("$[0].section.course.name").value("Security"))
+                                .andExpect(jsonPath("$[0].need.description").value("Labs"))
+                                .andExpect(jsonPath("$[0].allocatedSections.length()").value(1))
+                                .andExpect(jsonPath("$[0].section.numberOfTAsAllocated").value(1));
+        }
+
+        @Test
+        void testAddStudentTaughtCourse() throws Exception {
+                StudentTaughtCourseRequest request = new StudentTaughtCourseRequest(1001L, 2025, "W1");
+
+                        Long userIdFromHeader = 1L;
+        mockMvc.perform(post("/courses/studentTaught/add/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request))
+                .header("X-User-Id", userIdFromHeader))
+                                .andExpect(status().isOk());
+        }
+
+        @Test
+        void testDeleteStudentTaughtCourse() throws Exception {
+                Long userIdFromHeader = 1L;
+        
+        mockMvc.perform(delete("/courses/studentTaught/delete/1/1/W1/2025")
+                .header("X-User-Id", userIdFromHeader))
+                                .andExpect(status().isOk());
+        }
+
+        @Test
+        void testGetStudentTaughtCourses() throws Exception {
+                UserDto student = new UserDto(2L, "Alice", "Wang", "awang@test.com", List.of(UserRole.STUDENT),
+                                12345678,
+                                "COSC", 2025, 3, null,
+                                null, null, true);
+                CourseDto course = new CourseDto(1L, "COSC", "Algorithms", "320");
+                Long stcId = 1L;
+                StudentTaughtCourseDto dto = new StudentTaughtCourseDto(stcId,student, course, 2022, "S2");
+
+                when(courseService.getCoursesTaughtByStudent(1001L)).thenReturn(List.of(dto));
+
+                mockMvc.perform(get("/courses/studentTaught/1001"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0].student.firstName").value("Alice"))
+                                .andExpect(jsonPath("$[0].course.name").value("Algorithms"))
+                                .andExpect(jsonPath("$[0].semester").value("S2"))
+                                .andExpect(jsonPath("$[0].year").value(2022));
+        }
+
+        @Test
+        void testGetAllDeptCodes() throws Exception {
+                when(courseService.getAllDeptCodes()).thenReturn(List.of("COSC", "EECE"));
+
+                mockMvc.perform(get("/courses/allDeptCodes"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0]").value("COSC"))
+                                .andExpect(jsonPath("$[1]").value("EECE"));
+        }
+
+        @Test
+        void testGetAllCourseNums() throws Exception {
+                when(courseService.getAllCourseNums("COSC")).thenReturn(List.of("121", "310"));
+
+                mockMvc.perform(get("/courses/allCourseNums").param("deptCode", "COSC"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0]").value("121"))
+                                .andExpect(jsonPath("$[1]").value("310"));
+        }
+
+        @Test
+        void testGetAllSections() throws Exception {
+                when(courseService.getAllSections("COSC", "310")).thenReturn(List.of("001", "002"));
+
+                mockMvc.perform(get("/courses/allSections")
+                                .param("deptCode", "COSC")
+                                .param("courseNum", "310"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0]").value("001"))
+                                .andExpect(jsonPath("$[1]").value("002"));
+        }
+
+        @Test
+        void testGetAllYearsEndpoint() throws Exception {
+                List<String> mockYears = List.of("2023", "2024");
+                when(courseService.getAllYears()).thenReturn(mockYears);
+
+                mockMvc.perform(get("/courses/allYears"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0]").value("2023"))
+                                .andExpect(jsonPath("$[1]").value("2024"));
+        }
+
+        // @Test
+        // void testGetAllSemesters() throws Exception {
+        // when(courseService.getAllSemester("COSC", "310", "001",
+        // "2024")).thenReturn(List.of("W1", "W2"));
+
+        // mockMvc.perform(get("/courses/allSemesters")
+        // .param("deptCode", "COSC")
+        // .param("courseNum", "310")
+        // .param("section", "001")
+        // .param("year", "2024"))
+        // .andExpect(status().isOk())
+        // .andExpect(jsonPath("$[0]").value("W1"))
+        // .andExpect(jsonPath("$[1]").value("W2"));
+        // }
+
+        @Test
+        void shouldReturnCourseByDeptCodeAndCourseNum() throws Exception {
+                CourseDto courseDto = new CourseDto(1L, "COSC", "CAPSTONE", "499");
+
+                when(courseService.getByDeptCodeAndCourseNum("COSC", "499"))
+                                .thenReturn(courseDto);
+
+                mockMvc.perform(get("/courses/getByDeptCodeAndCourseNum/COSC/499"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.deptCode").value("COSC"))
+                                .andExpect(jsonPath("$.courseNum").value("499"));
+        }
+
+        @Test
+        void testGetCoursesWithoutNeeds() throws Exception {
+                CourseDto courseDto = new CourseDto(1L, "COSC", "CAPSTONE", "499");
+
+                when(courseService.getCoursesWithoutNeeds(any(), any())).thenReturn(List.of(courseDto));
+
+                mockMvc.perform(get("/courses/withoutNeeds/2025/W1"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0].deptCode").value("COSC"))
+                                .andExpect(jsonPath("$[0].courseNum").value("499"));
+        }
+
+        @Test
+        // @DisplayName("GET /allCourses/{instructorId} returns list of CourseDto")
+        void testGetInstructorCourses() throws Exception {
+                Long instructorId = 42L;
+                List<CourseDto> courseDtos = List.of(
+                                new CourseDto(1L, "COSC", "Distributed Systems", "455"),
+                                new CourseDto(2L, "MATH", "Calculus", "101"));
+
+                // 3. Stub service call
+                when(courseService.getCoursesForInstructor(instructorId))
+                                .thenReturn(courseDtos);
+
+                // 4. Perform request and assert JSON array and fields
+                mockMvc.perform(get("/courses/allCourses/{instructorId}", instructorId))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$", org.hamcrest.Matchers.hasSize(2)))
+                                .andExpect(jsonPath("$[0].deptCode").value("COSC"))
+                                .andExpect(jsonPath("$[0].name").value("Distributed Systems"))
+                                .andExpect(jsonPath("$[0].courseNum").value("455"))
+                                .andExpect(jsonPath("$[1].deptCode").value("MATH"))
+                                .andExpect(jsonPath("$[1].name").value("Calculus"))
+                                .andExpect(jsonPath("$[1].courseNum").value("101"));
+        }
+}

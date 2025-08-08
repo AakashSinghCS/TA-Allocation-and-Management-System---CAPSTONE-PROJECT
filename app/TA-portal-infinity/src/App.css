@@ -1,4 +1,4 @@
-#root {
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -12,7 +12,7 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em #040941);
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
@@ -39,4 +39,14 @@
 
 .read-the-docs {
   color: #888;
+} */
+/* Style FullCalendar nav and custom buttons with #040941 */
+.fc .fc-button, .fc .fc-button-primary {
+  background-color: #040941 !important;
+  border-color: #040941 !important;
+  color: #fff !important;
+}
+.fc .fc-button:hover, .fc .fc-button-primary:hover {
+  background-color: #22306e !important;
+  border-color: #22306e !important;
 }
