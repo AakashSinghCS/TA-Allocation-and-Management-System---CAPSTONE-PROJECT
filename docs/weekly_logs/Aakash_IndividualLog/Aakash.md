@@ -2334,3 +2334,46 @@ Retrospective: Process is going well. Team members are working hard to get their
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Work on final report/presentation.
+
+## Wednesday 8/06 (8/04 - 8/08)
+
+### Timesheet
+
+![alt text](clockify_images/8.06.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Final report/video presentation
+  * #2: Final Report - User manual for coordinator and WBS/FBS
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met with the team today to divide tasks for the final report. I had to create the detailed user manual for the coordinator side. I also had to give details on my PRs to date along with clockify hours. We also have to do the lessons learned individually. Everything is complete and we will be submitting the final report by thursday. 
+What didn't go well: Everything went well!
+Retrospective: Process went extremely well. We have completed the COSC 499 capstone course with success and I am proud of what our team could achieve. It was a great experience.   
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Everything is complete!
+
