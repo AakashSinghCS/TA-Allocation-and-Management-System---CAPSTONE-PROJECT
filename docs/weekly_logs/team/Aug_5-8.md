@@ -66,7 +66,7 @@ All Completed, Submission for final report, presentation slides,demo video for c
 | [#559](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/559)| Improve test coverge on frontend | Improve test coverage                          | Seiya    | Complete |
 | [#567](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/567) |   User manual for instructor side                                               | final report             | Seiya      | Complete  |
 | [#565](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/565) | final report- PR's and lesson learned            | final Report         | Seiya,Mandeep,aakash,Alex,Dup, Allen    | Complete |
-
+| [#550](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/550) | schedule view on student side was not showing timing assigned           | bug in schedule viewer         | Mandeep   | Complete |
 
 
 
