@@ -3305,7 +3305,7 @@ Project Discussion.
  - TBA.
 
 
-## Thursday 8/5 (8/5~8/8)
+## Thursday 8/7 (8/5~8/8)
 
 ### Timesheet
 Clockify report
