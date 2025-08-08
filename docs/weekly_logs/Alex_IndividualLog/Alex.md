@@ -1,3 +1,53 @@
+## Thursday (Aug 5-7)
+
+### Timesheet
+Clockify report
+![alt text](./aug5-7.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Final Documentation  [524]("https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/524")
+
+### Progress Update (since August 4th 2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Fix minor bugs <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/540">540</a>
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Final slides <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/547">547</a>
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Final video <a href="https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/548">548</a>
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Finished the video for the client and practiced for the presentation on Friday with the group going over the slides. Updated the documentation including some of the handover guide, as well as the individual portions like project management times for the tasks I've done, and my personal lessons learned section. Everything went well leading up to the end of the course.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Tomorrow is the presentation, and after that we just need to merge our logs, and finalize the screenshots for the documentation like the coverage reports for testing and the clockify hours for the project management section. Once that's done, we'll merge everything and submit the document also on canvas and finish this course up.
+
 ## Monday (Aug 1-4)
 
 ### Timesheet
