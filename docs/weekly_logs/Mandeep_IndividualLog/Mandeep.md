@@ -2058,5 +2058,51 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 |[#546](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/546)       | Monitor for further feedback and polish as needed                    | UI and bug fixes  |
 
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
 
+# 5–8 August, 2025
+
+**Clockify:** ![clockify_images/aug_5-8.png](clockify_images/aug_5-8.png)
+
+## Time Slot
+
+- **Aug 5, 9:30AM – 1:01PM:** #550 fixed bug in schedule viewer, team view
+- **Aug 6, 3:29PM – 6:45PM:** Slides for final presentation #547
+- **Aug 6, 7:54PM – 9:35PM:** Final Report listing PRs in Doc #565
+- **Aug 6, 11:55PM – 1:08AM (+1):** Final Report #565
+- **Aug 7, 10:00AM – 11:03AM:** Mock presentation with team
+- **Aug 7, 2:29PM – 3:29PM:** Final report #fixed layout
+
+## Current Tasks
+
+* Fixed issue in schedule viewer (#550)
+* Created and refined slides for final presentation (#547)
+* Compiled and documented PRs in the final report (#565)
+* Finalized and formatted the final report
+* Participated in mock team presentation
+* Adjusted final report layout and formatting
+
+## Progress Update
+
+| TASK/ISSUE # | DESCRIPTION                                           | STATUS     |
+|--------------|-------------------------------------------------------|------------|
+| [#550](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/550) | Fixed bug in schedule and team viewer              | Completed  |
+| [#547](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/547) | Final presentation slides                          | Completed  |
+| [#565](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/565) | Final report writing, PR documentation, formatting | Completed  |
+
+## Cycle Goal Review
+
+### Reflection
+Worked on polishing the final report, created the final presentation slides, fixed UI/logic bugs, and prepared as a team through a mock presentation session.
+
+### Retrospective
+Productivity was strong with a clear focus on quality and detail in deliverables. Final testing and formatting required more time than expected, highlighting the importance of early MVP review and bug testing.
+
+## Next Cycle Goals
+
+| TASK/ISSUE # | DESCRIPTION                                               | TYPE                |
+|--------------|-----------------------------------------------------------|---------------------|
+|All completed | submission on Canvas|
+------------------------------------------------
+
+### THANK YOU , HAVE A GREAT REST OF YOUR SUMMER :)
