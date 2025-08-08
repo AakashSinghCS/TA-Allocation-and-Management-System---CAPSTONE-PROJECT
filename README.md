@@ -19,28 +19,7 @@ More information on using Docker and the general files for setup can be found [h
 2. For coverage, run `npm run test -- --coverage` and you will see the coverage, index.html file, in my-custom-coverage folder.
 
 [![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=19555150&assignment_repo_type=AssignmentRepo)
-# Project-Starter
-
-Please use the provided folder structure for your docs (project plan, design documenation, communications log, weekly logs and final documentation), source code, tesing, etc.    You are free to organize any additional internal folder structure as required by the project.  The team **MUST** use a branching workflow and once an item is ready, do remember to issue a PR, review and merge in into the master brach.
-```
-.
-├── docs                    # Documentation files (alternatively `doc`)
-│   ├── TOC.md              # Table of contents
-│   ├── plan                # Scope and Charter
-│   ├── design              # Getting started guide
-│   ├── final               # Getting started guide
-│   ├── logs                # Team Logs
-│   └── ...
-├── build                   # Compiled files (alternatively `dist`))    
-├── app                     # Source files (alternatively `lib` or `src`)
-├── test                    # Automated tests (alternatively `spec` or `tests`)
-├── tools                   # Tools and utilities
-├── LICENSE                 # The license for this project 
-└── README.md
-```
-You can find additional information on folder structure convetions [here](https://github.com/kriasoft/Folder-Structure-Conventions). 
-
-Also, update your README.md file with the team and client/project information.  You can find details on writing GitHub Markdown [here](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) as well as a [handy cheatsheet](https://enterprise.github.com/downloads/en/markdown-cheatsheet.pdf).   
+  
 
 # Spring Boot
 You can find documentation for the framework [here](https://docs.spring.io/spring-boot/index.html).
@@ -70,6 +49,8 @@ The service registry microservice is running the [Eureka](https://cloud.spring.i
 
 Inter service communication is done using [OpenFeign](https://spring.io/projects/spring-cloud-openfeign), and allows the use of interfaces to call methods in another microservice.
 
+The notification service uses SMTP through the Java Mailer library. Right now it's configured to localhost and also if the environment is dev or docker then it also only logs it to the console. Would need to comment that out, or run in prod env, and also configure an smtp service in the application.properties.
+
 ## Tests
 
 Testing is done using [JUnit](https://junit.org/junit5/) and [Mockito](https://site.mockito.org/) is a nice library for mocking database and object calls for our unit testing, and coverage is run with [Jacoco](https://www.eclemma.org/jacoco/). Go to the service you are trying to get coverage for and run `mvn test jacoco:report`. You can run individual unit tests through the java test runner extension, but that won't give coverage. Once the tests pass there, you can then run the Jacoco command to get coverage. If you install the Coverage Gutters extension and set it so `watch` and `show coverage` in the command pallette you can then see which lines are covered and which aren't. Jacoco also creates an html if you just want to see it there found in `target/site/jacoco/index.html`.
@@ -80,11 +61,10 @@ Eventually, we can use `@SpringBootTest` for integration tests with an in-memory
 
 Authentication is done using JWT's through the [jjwt](https://github.com/jwtk/jjwt) library to manage them. At the moment, the gateway service has a filter that checks if the JWT is valid before allowing any routes through, except for auth. On login in the user service, a JWT is created with the users email as the subject, and with claims of their role and id. The gateway when it parses this JWT extracts these and puts them into the headers to be forwarded downstream, which means that if the token is valid you'll know their privileges and id to do functions.
 
-I've commented out the part of assigning an expiration time, since it means that in the postman calls the JWT used for authentication would need to be changed constantly. This also means that if a user has their account deleted, they can still access the system if they have their old JWT. What this means is that in general for sensitive operations we should make sure the user is available, and once more of the core functionalities of the system are working, it would be good to re-introduce the time expiry for JWT's as well as using refresh tokens to account for users being deleted from the system.
+You can comment out the expiration time if you want a token for postman calls which are used currently in the tools section for postman, since it means that in the postman calls the JWT used for authentication would need to be changed constantly. This also means that if a user has their account deleted, they can still access the system if they have their old JWT. What this means is that in general for sensitive operations we should make sure the user is available, and once more of the core functionalities of the system are working, it would be good to re-introduce the time expiry for JWT's as well as using refresh tokens to account for users being deleted from the system.
+
+The secret key for the JWT is stored in the application properties of both the gateway and the user service. It is generic and not secure. For production, you would need to change this, maybe dynamically generated. The issue is since they are in separate services, you can't generate and use it in code - maybe need a .env file that is hidden and stores it for both services, and is updated regularly.
 
 Each service will need spring security with JWT auth filter to handle granted authorities from the headers, and the method security provides the use of annotations to specify which role can do what function. Finally the security config just specifies that the JWT filter has to provide auth for anything to work in that service.
-
-## Logging in Spring boot
-Just a note here for future reference: In spring boot to log, ` import org.slf4j.Logger;  import org.slf4j.LoggerFactory;` and `private static final Logger log = LoggerFactory.getLogger(ProfileService.class);` and add `# logging.level.com.infinity.profileservice=DEBUG` in application.properties or maybe application-dev.properties. Run something like `log.debug(">>> saveAnswers DTO = {}", request);`
 
 
