@@ -31,9 +31,7 @@ What was not done (deferred):
 
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
-
 * Nothing left.
-
 
 
 

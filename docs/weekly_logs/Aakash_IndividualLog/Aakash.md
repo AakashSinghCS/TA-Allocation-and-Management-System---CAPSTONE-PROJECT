@@ -2226,3 +2226,154 @@ Retrospective: Process is going well. Team members are working hard to get their
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
   * Begin looking for bugs in the system to fix and work on final report/presentation. 
+
+## Saturday 8/02 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/8.02.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Bug find: go through entire system to find bugs and fix if any.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress. 30% completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Going through the system to find bugs and fix if any are found. As of now, i found a couple of bugs but they are already being worked on by my team members. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Work on final report/presentation.
+
+## Sunday 8/03 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/8.03.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Bug find: go through entire system to find bugs and fix if any.
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Going through the system to find bugs and fix if any are found. No new bugs found, the remaining bugs are all being worked on by team members. 
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Work on final report/presentation.
+
+## Monday 8/04 (7/26- 8/04)
+
+### Timesheet
+
+![alt text](clockify_images/8.04.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Final report/video presentation
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> In progress.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Started initial final report preparation. We will be meeting as a team tomorrow morning to work on it together.
+What didn't go well: Everything went well!
+Retrospective: Process is going well. Team members are working hard to get their parts completed.  
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Work on final report/presentation.
+
+## Wednesday 8/06 (8/04 - 8/08)
+
+### Timesheet
+
+![alt text](clockify_images/8.06.png)
+
+### Current Tasks (Provide sufficient detail)
+  * #1: Final report/video presentation
+  * #2: Final Report - User manual for coordinator and WBS/FBS
+
+### Progress Update (since 16/7/2025)
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE #</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td> Completed.
+        </td>
+    </tr>
+    
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+What went well: Met with the team today to divide tasks for the final report. I had to create the detailed user manual for the coordinator side. I also had to give details on my PRs to date along with clockify hours. We also have to do the lessons learned individually. Everything is complete and we will be submitting the final report by thursday. 
+What didn't go well: Everything went well!
+Retrospective: Process went extremely well. We have completed the COSC 499 capstone course with success and I am proud of what our team could achieve. It was a great experience.   
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+  * Everything is complete!
+

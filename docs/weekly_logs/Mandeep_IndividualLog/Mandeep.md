@@ -1871,7 +1871,7 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 |--------------|-----------------------------------------------------|------------------------|
 | [#510](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/510)       | Improve course related pages including the details one(s),     | UI and bug fixes  |
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # 29 July, Tuesday
 
@@ -1906,3 +1906,203 @@ Building on the momentum from yesterday's completion of 6 major issues. The inst
 | TASK/ISSUE # | DESCRIPTION                                                                               | TYPE               |
 |--------------|-------------------------------------------------------------------------------------------|--------------------|
 | [#510](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/510)       | Improve course related pages including the details one(s),                              | UI and bug fixes  |
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# 30 July, Wednesday
+
+**Clockify:** ![clockify_images/july_30.png](clockify_images/july_30.png)
+
+## Time Slot
+* **11:01AM – 3:30PM:** Resolved merge conflicts, fixed bugs, reviewed PRs, frontend enhancements
+* **6:35PM – 9:04PM:** Finalized and reviewed #527,#522,#527 made changes
+* **9:51PM – 1:41AM (+1):** Finalized #528, reviewed #525, made changes
+
+## Current Tasks
+* Resolved merge conflicts for #490
+* Fixed minor bugs in #490
+* Reviewed #463 allocation page calendar frontend enhancement
+* Reviewed Refine CSV section import #518
+* Finalized and reviewed #528 and #525
+
+## Progress Update
+
+| TASK/ISSUE # | DESCRIPTION                                         | STATUS      |
+|--------------|-----------------------------------------------------|-------------|
+| [#490](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/490)         | Add term fields to application form & change impacted flow          | Completed   |
+| [#463](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/463)         | Allocation page calendar frontend enhancement Reviewed      | Completed   |
+| [#518](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/518)       | Refined CSV section import Reviewed                         | Completed   |
+| [#527](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/527)   |  improve UI/UX for final exam Availability page              | Completed   |
+ |[#528](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/528)        |  522 improve the lab skills page   | Completed   |
+| [#525](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/525)      |  Reviewed  516 Improve student filter - exams page  | Completed   |
+## Cycle Goal Review
+
+### Reflection
+* Addressed multiple issues and enhancements, ensuring smooth integration and improved frontend experience.
+
+### Retrospective
+* Productive day resolving conflicts, fixing bugs, and enhancing frontend features.
+
+## Next Cycle Goals
+
+| TASK/ISSUE # | DESCRIPTION                                                                               | TYPE               |
+|--------------|-------------------------------------------------------------------------------------------|--------------------|
+| [#510](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/510)       | Continue improvements on course related pages, details, and bug fixes | UI and bug fixes  |
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# 2 August, Saturday
+
+**Clockify:** ![clockify_images/aug_2.png](clockify_images/aug_2.png)
+
+## Time Slot
+* **4:40PM – 12:24AM (+1):** Working on #510
+* **2:09PM – 3:50PM:** Reviewed #529 and #530
+
+## Current Tasks
+* Continued work on #510 (course related pages)
+* Reviewed and approved PRs #529 and #530
+
+## Progress Update
+
+| TASK/ISSUE # | DESCRIPTION                                         | STATUS      |
+|--------------|-----------------------------------------------------|-------------|
+| [#510](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/510)         | Working on course related pages                     | In Progress |
+| [#529](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/529), [#530](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/530)   | PRs reviewed and approved                           | Completed   |
+
+## Cycle Goal Review
+
+### Reflection
+* Progressed on course page improvements and kept PR reviews up to date.
+
+### Retrospective
+* Maintained steady development pace and ensured code quality through reviews.
+
+## Next Cycle Goals
+
+| TASK/ISSUE # | DESCRIPTION                                                                               | TYPE               |
+|--------------|-------------------------------------------------------------------------------------------|--------------------|
+| [#510](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/510)       | Finalize course page improvements and resolve outstanding bugs        | UI and bug fixes  |
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# 3 August, Sunday
+
+**Clockify:** ![clockify_images/aug_3.png](clockify_images/aug_3.png)
+
+## Time Slot
+* **2:32AM – 4:22AM:** #510 finalized
+* **12:30PM – 1:08PM:** #539 reviewed requested changes
+* **6:29PM – 7:10PM:** #546
+
+## Current Tasks
+* Finalized #510 (course related pages)
+* Reviewed requested changes for #539
+* Worked on #546
+
+## Progress Update
+
+| TASK/ISSUE # | DESCRIPTION                                         | STATUS      |
+|--------------|-----------------------------------------------------|-------------|
+|  [#510](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/510)         | Finalized course related pages                      | Completed   |
+|  [#539](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/539)         | Reviewed requested changes                          | Completed   |
+|  [#546](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/546)         | Worked on course page improvements                  | In Progress |
+
+## Cycle Goal Review
+
+### Reflection
+* Finalized course page improvements and kept up with PR reviews and requested changes.
+
+### Retrospective
+* Productive day with progress on course pages and review tasks.
+
+## Next Cycle Goals
+
+| TASK/ISSUE # | DESCRIPTION                                                                               | TYPE               |
+|--------------|-------------------------------------------------------------------------------------------|--------------------|
+|  [#546](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/546)          | Finalize course page improvements and resolve outstanding bugs        | UI and bug fixes  |
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# 4 August, Monday
+
+**Clockify:** ![clockify_images/aug_4.png](clockify_images/aug_4.png)
+
+## Time Slot
+* **12:17PM – 5:23PM:** #546 PR finalized and #542 issue addressed
+
+## Current Tasks
+* Finalized PR for #546
+* Addressed issue #542
+
+## Progress Update
+
+| TASK/ISSUE # | DESCRIPTION                                         | STATUS      |
+|--------------|-----------------------------------------------------|-------------|
+| [#546](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/546)       | PR finalized                                        | Completed   |
+| [#542](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/542)        | Issue addressed                                     | Completed   |
+
+## Cycle Goal Review
+
+### Reflection
+* Finalized PR and addressed outstanding issue for the day.
+
+### Retrospective
+* Maintained code quality and resolved blockers efficiently.
+
+## Next Cycle Goals
+
+| TASK/ISSUE # | DESCRIPTION                                                                               | TYPE               |
+|--------------|-------------------------------------------------------------------------------------------|--------------------|
+|[#546](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/546)       | Monitor for further feedback and polish as needed                    | UI and bug fixes  |
+
+
+-------------------------------------------------------------------------------------------------------------------------
+
+# 5–8 August, 2025
+
+**Clockify:** ![clockify_images/aug_5-8.png](clockify_images/aug_5-8.png)
+
+## Time Slot
+
+- **Aug 5, 9:30AM – 1:01PM:** #550 fixed bug in schedule viewer, team view
+- **Aug 6, 3:29PM – 6:45PM:** Slides for final presentation #547
+- **Aug 6, 7:54PM – 9:35PM:** Final Report listing PRs in Doc #565
+- **Aug 6, 11:55PM – 1:08AM (+1):** Final Report #565
+- **Aug 7, 10:00AM – 11:03AM:** Mock presentation with team
+- **Aug 7, 2:29PM – 3:29PM:** Final report #fixed layout
+
+## Current Tasks
+
+* Fixed issue in schedule viewer (#550)
+* Created and refined slides for final presentation (#547)
+* Compiled and documented PRs in the final report (#565)
+* Finalized and formatted the final report
+* Participated in mock team presentation
+* Adjusted final report layout and formatting
+
+## Progress Update
+
+| TASK/ISSUE # | DESCRIPTION                                           | STATUS     |
+|--------------|-------------------------------------------------------|------------|
+| [#550](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/550) | Fixed bug in schedule and team viewer              | Completed  |
+| [#547](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/547) | Final presentation slides                          | Completed  |
+| [#565](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/565) | Final report writing, PR documentation, formatting | Completed  |
+
+## Cycle Goal Review
+
+### Reflection
+Worked on polishing the final report, created the final presentation slides, fixed UI/logic bugs, and prepared as a team through a mock presentation session.
+
+### Retrospective
+Productivity was strong with a clear focus on quality and detail in deliverables. Final testing and formatting required more time than expected, highlighting the importance of early MVP review and bug testing.
+
+## Next Cycle Goals
+
+| TASK/ISSUE # | DESCRIPTION                                               | TYPE                |
+|--------------|-----------------------------------------------------------|---------------------|
+|All completed | submission on Canvas|
+------------------------------------------------
+
+### THANK YOU , HAVE A GREAT REST OF YOUR SUMMER :)

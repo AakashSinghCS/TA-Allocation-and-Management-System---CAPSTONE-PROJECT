@@ -3096,3 +3096,245 @@ Tomorrow:
 -[#523](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/523)
 - [#524](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/524)
 
+## Friday 8/1 (7/29~8/1)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/August01.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#471](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#523](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/523)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Did some things that were delayed:
+
+1. Removed the UBC logos and UBC images to prepare for Open Source production. Also, moved the logo to the header as Mandeep requested.
+2. Improved security of the getUserDetailsById function as Alex requested.
+3. Fixed the bug where the Add Section page in the instructor's side was not working.
+4. Fixed the "glitching" in the Section Creation page. Had some feedback that the glitching makes it looks like it's broken.
+Tomorrow:
+- issue 524
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+- [#524](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/524)
+
+
+## Saturday 8/2 (8/1~8/5)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/August02.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#523](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/523)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#524](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/524)]
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>In Progress
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Documentation update to fulfill the requirements in Canvas (65%).
+Updated Tech stack, NFR, FR, UR, UVP, Description, DFD L1, DFD L0, ER diagram, System Architecture Diagram and its description.
+
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+ - TBA.
+
+## Monday 8/4 (8/1~8/5)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/August04.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#524](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/524)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Documentation update to fulfill the requirements in Canvas (65%).
+ - Listed all the features of the project along with who did what.
+ - Almost finished with Use Cases. The Diagram is complete.
+ 
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+ - TBA.
+
+## Tuesday 8/5 (8/1~8/5)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/August05.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [UBCO-COSC499-S2025/team-10-capstone-infinity#524](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/524)
+  * [#544](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/544)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 2
+        </td>
+        <!-- Status -->
+        <td>Merged
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Documentation update to fulfill the requirements in Canvas (65%).
+ - Finished the use cases
+
+Fixed Student Allocation History bug.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+ - TBA.
+
+## Wednesday 8/6 (8/5~8/8)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/August06.png)
+
+### Current Tasks (Provide sufficient detail)
+  * [#544](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/544)
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>In Review
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Documentation update to fulfill the requirements in Canvas (65%).
+Project Discussion.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+ - TBA.
+
+
+## Thursday 8/7 (8/5~8/8)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/August07.png)
+
+### Current Tasks (Provide sufficient detail)
+  * Project Discussion and Presentation Preparation
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Project Discussion and Presentation discussion.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+ - None.
+
