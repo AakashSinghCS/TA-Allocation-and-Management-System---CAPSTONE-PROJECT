@@ -23,7 +23,6 @@
 | [#547](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)| final presentation slides with all the expected components            | final presentation | Mandeep       | Complete |
 | [#562](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/562) | Student user manual for the final report                      |final report          | Allen      | Complete |
 | [#564](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/564) |  User Manual for Co-ordinator         | final report         | Aakash     | Complete |
-
 | [#559](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/559)| Improve test coverge on frontend | Improve test coverage                          | Seiya    | Complete |
 | [#567](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/567) |   User manual for instructor side                                               | final report             | Seiya      | Complete  |
 | [#565](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/565) | final report- PR's and lesson learned            | final Report         | Seiya,Mandeep,aakash,Alex,Dup, Allen    | Complete |
@@ -64,7 +63,6 @@ All Completed, Submission for final report, presentation slides,demo video for c
 | [#547](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/471)| final presentation slides with all the expected components            | final presentation | Mandeep       | Complete |
 | [#562](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/562) | Student user manual for the final report                      |final report          | Allen      | Complete |
 | [#564](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/564) |  User Manual for Co-ordinator         | final report         | Aakash     | Complete |
-
 | [#559](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/559)| Improve test coverge on frontend | Improve test coverage                          | Seiya    | Complete |
 | [#567](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/567) |   User manual for instructor side                                               | final report             | Seiya      | Complete  |
 | [#565](https://github.com/UBCO-COSC499-S2025/team-10-capstone-infinity/issues/565) | final report- PR's and lesson learned            | final Report         | Seiya,Mandeep,aakash,Alex,Dup, Allen    | Complete |
