@@ -3270,7 +3270,7 @@ Fixed Student Allocation History bug.
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
  - TBA.
 
-## Wednesday 8/5 (8/1~8/5)
+## Wednesday 8/6 (8/5~8/8)
 
 ### Timesheet
 Clockify report
@@ -3303,4 +3303,38 @@ Project Discussion.
 
 ### Next Cycle Goals (What are you going to accomplish during the next cycle)
  - TBA.
+
+
+## Thursday 8/5 (8/5~8/8)
+
+### Timesheet
+Clockify report
+![Clockify Report](clockify_images/August07.png)
+
+### Current Tasks (Provide sufficient detail)
+  * Project Discussion and Presentation Preparation
+
+### Progress Update (since 5/21/2025) 
+<table>
+    <tr>
+        <td><strong>TASK/ISSUE # 1</strong>
+        </td>
+        <td><strong>STATUS</strong>
+        </td>
+    </tr>
+    <tr>
+        <!-- Task/Issue # -->
+        <td>Task 1
+        </td>
+        <!-- Status -->
+        <td>Complete
+        </td>
+    </tr>
+</table>
+
+### Cycle Goal Review (Reflection: what went well, what was done, what didn't; Retrospective: how is the process going and why?)
+Project Discussion and Presentation discussion.
+
+### Next Cycle Goals (What are you going to accomplish during the next cycle)
+ - None.
 
